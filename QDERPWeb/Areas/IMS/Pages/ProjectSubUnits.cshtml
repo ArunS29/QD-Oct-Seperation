@@ -291,6 +291,7 @@
                 success: function () {
                 DevExpress.ui.notify("ProjectSubUnits saved successfully!", "success", 2000);
                     $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                     $("#txtProjectSubUnit").dxTextBox("instance").option("value","");
                 },
                 error: function () {
                     DevExpress.ui.notify("Failed to save signatory.", "error", 2000);

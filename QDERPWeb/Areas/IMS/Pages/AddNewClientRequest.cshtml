@@ -415,7 +415,6 @@
 						<td style="display: flex; align-items: end; width:100%;" colspan="2">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Client Name:')"))
-														.AcceptCustomValue(true)
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
 														.LoadAction("GetClientDetails")
@@ -1444,12 +1443,12 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					//.FilterRow(f => f.Visible(true))//
+					.FilterRow(f => f.Visible(false))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+					.SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(235))
 					.Columns(columns =>
 					{
 						columns.Add().DataField("ClientName");
@@ -1476,10 +1475,11 @@
 					.OnSelectionChanged("dataGridSelectionChanged2")
 					.OnInitialized("dataGridInitialized2")
 					.HeaderFilter(p => p.Visible(true))
+					.FilterRow(f => f.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1511,10 +1511,11 @@
 					.OnSelectionChanged("dataGridSelectionChanged3")
 					.OnInitialized("dataGridInitialized3")
 					.HeaderFilter(p => p.Visible(true))
+					.FilterRow(f => f.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1545,10 +1546,11 @@
 					.OnSelectionChanged("dataGridSelectionChanged4")
 					.OnInitialized("dataGridInitialized4")
 					.HeaderFilter(p => p.Visible(true))
+					.FilterRow(f => f.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1577,10 +1579,11 @@
 					.OnSelectionChanged("dataGridSelectionChanged5")
 					.OnInitialized("dataGridInitialized5")
 					.HeaderFilter(p => p.Visible(true))
+					.FilterRow(f => f.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1615,7 +1618,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.FilterRow(f => f.Visible(false))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1649,7 +1652,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.FilterRow(f => f.Visible(false))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1682,7 +1685,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.FilterRow(f => f.Visible(false))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1715,7 +1718,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.FilterRow(f => f.Visible(false))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1748,7 +1751,7 @@
 							.ShowBorders(true)
 							.HoverStateEnabled(true)
 							.Paging(p => p.PageSize(15))
-							.FilterRow(f => f.Visible(true))//
+							.FilterRow(f => f.Visible(false))//
 							.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 							.Height(345)
 							.Selection(s => s.Mode(SelectionMode.Single))
@@ -1782,7 +1785,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.FilterRow(f => f.Visible(false))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1850,7 +1853,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-					.FilterRow(f => f.Visible(true))//
+					.FilterRow(f => f.Visible(false))//
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
@@ -1883,7 +1886,7 @@
 					.ShowBorders(true)
 					.ShowColumnHeaders(true)
 
-					.SearchPanel(sp => sp.HighlightSearchText(false))
+					//.SearchPanel(sp => sp.HighlightSearchText(false))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("PaymentMeansdataGridSelectionChanged")
 					.OnInitialized("CommondataGridInitialized")
@@ -1922,7 +1925,7 @@
 					.ShowBorders(true)
 					.ShowColumnHeaders(true)
 					.FilterRow(f => f.Visible(false))
-					.SearchPanel(sp => sp.HighlightSearchText(true))
+					//.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("ClientCodedataGridSelectionChanged")
 					.OnInitialized("ClientCodedataGridInitialized")
@@ -1962,11 +1965,11 @@
 					.ShowBorders(true)
 					.ShowColumnHeaders(false)
 					.FilterRow(f => f.Visible(false))
-					.SearchPanel(sp => sp.HighlightSearchText(false))
+					//.SearchPanel(sp => sp.HighlightSearchText(false))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("ClientNamedataGridSelectionChanged")
 					.OnInitialized("ClientCodedataGridInitialized")
-					.HeaderFilter(p => p.Visible(true))
+					//.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -2027,9 +2030,9 @@
 					.ShowBorders(true)
 					.ShowColumnHeaders(true)
 					.FilterRow(f => f.Visible(true))
-					.SearchPanel(sp => sp.HighlightSearchText(true))
+					//.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.HeaderFilter(p => p.Visible(true))
+					//.HeaderFilter(p => p.Visible(true))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -2058,7 +2061,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-					.SearchPanel(sp => sp.HighlightSearchText(true))
+					//.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
 					.SelectedRowKeys(new JS(@"component.option(""value"")"))
@@ -2121,7 +2124,7 @@
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(10))
-					.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
+				//	.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true))
 					.FilterRow(f => f.Visible(true))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					)
@@ -2141,7 +2144,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-					.SearchPanel(sp => sp.HighlightSearchText(true))
+					//.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
 					.SelectedRowKeys(new JS(@"component.option(""value"")"))
@@ -2422,22 +2425,28 @@
 			dataGrid = e.component;
 		}
 
-		// 	function refreshModeOfRequestDropDown() {
-		// 	const dropdown = $("#ddGetModeOfRequest").dxDropDownBox("instance");
-		// 	if (dropdown) {
-		// 		const dataSource = dropdown.getDataSource();
-		// 		if (dataSource) {
-		// 			dataSource.reload();
-		// 		}
-		// 	}
-		// }
-			  // This function is called by the modal (child window)
-		function refreshSupplierCategoryDropDown() {
-				const dropDownInstance = $("#ddGetModeOfRequest").dxDropDownBox("instance");
-			if (dropDownInstance) {
-				dropDownInstance.getDataSource().reload();
+				function refreshModeOfRequestDropDown() {
+				const dropdown = $("#ddGetModeOfRequest").dxDropDownBox("instance");
+			if (dropdown) {
+				const ds = dropdown.getDataSource();
+				ds.reload().done(() => {
+					dropdown.repaint();
+				});
 			}
 		}
+
+		function refreshTypeOfRequestDropDown() {
+		const dropdown = $("#ddGetTypeOfRequest").dxDropDownBox("instance");
+		if (dropdown) {
+			const ds = dropdown.getDataSource();
+			ds.reload().done(() => {
+				dropdown.repaint();
+			});
+		}
+	}
+
+
+
 
 		let Approved=null;
 		$(document).ready(function () {
@@ -2584,6 +2593,10 @@
 					// âœ… your columns, editing, dropdowns, and templates go here, unchanged
 					// Just make sure to close all functions properly
 					// For brevity, I'm skipping repeating all the column config here
+						 selection: {
+			mode: "multiple",
+			showCheckBoxesMode: "always"
+		},
 						columns: [
 							{
 
@@ -2593,6 +2606,7 @@
 									allowEditing: false, // Prevent manual editing
 									visible: false // Hide the column
 								},
+
 								{
 
 									dataField: "LineOrderNo",
@@ -3162,7 +3176,9 @@
 
 						editing: {
 
-							mode: "cell"
+								mode: "cell",
+								allowDeleting: true,
+					             confirmDelete: false
 
 							//allowUpdating: true,
 
@@ -3177,7 +3193,153 @@
 							e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 						},
+							onContextMenuPreparing: function (e) {
+			if (e.target === "content") {
+				e.items = [
+						{
+			text: "Delete Line Item",
+			icon: "trash",
+			onItemClick: function () {
+				const rowIndex = e.row?.rowIndex;
+				if (rowIndex >= 0) {
+					DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+						if (!result) return;
 
+						const childId = e.row?.data?.MprchildSlNo;
+
+						if (childId) {
+							// ✅ Delete from database
+							$.ajax({
+								url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+								type: "DELETE",
+								success: function (res) {
+									if (res.success) {
+										// ✅ Remove from rowData by ID
+										const index = rowData.findIndex(r => r.MprchildSlNo === childId);
+										if (index !== -1) rowData.splice(index, 1);
+
+										// ✅ Resequence LineOrderNo
+										rowData.forEach((row, idx) => {
+											row.LineOrderNo = idx + 1;
+										});
+
+										dataGridInstance.option("dataSource", rowData);
+										dataGridInstance.refresh();
+
+										DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+									} else {
+										DevExpress.ui.notify(res.message, "error", 2000);
+									}
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to delete row", "error", 2000);
+								}
+							});
+						} else {
+							// ✅ Unsaved row deletion
+							rowData.splice(rowIndex, 1);
+
+							// ✅ Resequence LineOrderNo
+							rowData.forEach((row, idx) => {
+								row.LineOrderNo = idx + 1;
+							});
+
+							dataGridInstance.option("dataSource", rowData);
+							dataGridInstance.refresh();
+
+							DevExpress.ui.notify("Row removed", "success", 1500);
+						}
+					});
+				}
+			}
+		},
+
+							{
+			text: "Delete Selected Rows",
+			icon: "trash",
+			onItemClick: function () {
+				const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+				const selectedKeys = dataGridInstance.getSelectedRowKeys();
+
+				if (selectedKeys.length === 0) {
+					DevExpress.ui.notify("No rows selected", "warning", 2000);
+					return;
+				}
+
+				// Collect MprchildSlNo values (used for DB deletion)
+				const selectedChildIds = selectedKeys
+					.map(key => {
+						const rowIndex = dataGridInstance.getRowIndexByKey(key);
+						return dataGridInstance.cellValue(rowIndex, "MprchildSlNo");
+					})
+					.filter(id => id); // Only valid saved rows
+
+				DevExpress.ui.dialog.confirm(`Delete ${selectedKeys.length} selected row(s)?`, "Confirm").done(function (result) {
+					if (!result) return;
+
+					// If there are DB rows to delete
+					if (selectedChildIds.length > 0) {
+						$.ajax({
+							url: "/api/AddNewClientRequest/DeleteMultipleChildren",
+							type: "DELETE",
+							contentType: "application/json",
+							data: JSON.stringify(selectedChildIds),
+							success: function (res) {
+								if (res.success) {
+									// ✅ Remove deleted rows from rowData
+									rowData = rowData.filter(row => !selectedChildIds.includes(row.MprchildSlNo));
+
+									// ✅ Re-sequence LineOrderNo
+									rowData.forEach((row, index) => {
+										row.LineOrderNo = index + 1;
+									});
+
+									// ✅ Rebind and refresh the grid
+									dataGridInstance.option("dataSource", rowData);
+									dataGridInstance.refresh();
+
+									DevExpress.ui.notify("Rows deleted successfully", "success", 2000);
+								} else {
+									DevExpress.ui.notify(res.message, "error", 2000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to delete rows", "error", 3000);
+							}
+						});
+					} else {
+						// Only unsaved rows — delete from UI
+						selectedKeys.forEach(key => {
+							const rowIndex = dataGridInstance.getRowIndexByKey(key);
+							if (rowIndex >= 0) dataGridInstance.deleteRow(rowIndex);
+						});
+
+						// ✅ Re-sequence and rebind rowData
+						rowData = dataGridInstance.option("dataSource");
+						rowData.forEach((row, index) => {
+							row.LineOrderNo = index + 1;
+						});
+
+						dataGridInstance.option("dataSource", rowData);
+						dataGridInstance.refresh();
+
+						DevExpress.ui.notify("Unsaved rows removed", "success", 1500);
+					}
+				});
+			}
+		},
+
+
+					{
+						text: "Add New Line",
+							icon: "plus",
+						onItemClick: function () {
+								addNewLineToB2BGrid();
+						}
+					}
+				];
+			}
+		},
 						columnAutoWidth: true,
 
 						showBorders: true,
@@ -3241,6 +3403,10 @@
 				dataSource: rowData,
 
 				keyExpr: "LineOrderNo",
+					 selection: {
+			mode: "multiple",
+			showCheckBoxesMode: "always"
+		},
 
 				columns: [
 
@@ -3745,13 +3911,13 @@
 
 				editing: {
 
-					mode: "cell"
+					mode: "cell",
+	            allowDeleting: true,
+		         confirmDelete: false
 
 					// allowUpdating: true,
 
 					// allowAdding: false, // We'll add manually
-
-					//allowDeleting: true
 
 				},
 
@@ -3760,6 +3926,153 @@
 					e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 				},
+					onContextMenuPreparing: function (e) {
+		if (e.target === "content") {
+			e.items = [
+					{
+		text: "Delete Line Item",
+		icon: "trash",
+		onItemClick: function () {
+			const rowIndex = e.row?.rowIndex;
+			if (rowIndex >= 0) {
+				DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+					if (!result) return;
+
+					const childId = e.row?.data?.MprchildSlNo;
+
+					if (childId) {
+						// ✅ Delete from database
+						$.ajax({
+							url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+							type: "DELETE",
+							success: function (res) {
+								if (res.success) {
+									// ✅ Remove from rowData by ID
+									const index = rowData.findIndex(r => r.MprchildSlNo === childId);
+									if (index !== -1) rowData.splice(index, 1);
+
+									// ✅ Resequence LineOrderNo
+									rowData.forEach((row, idx) => {
+										row.LineOrderNo = idx + 1;
+									});
+
+									dataGridInstance.option("dataSource", rowData);
+									dataGridInstance.refresh();
+
+									DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+								} else {
+									DevExpress.ui.notify(res.message, "error", 2000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to delete row", "error", 2000);
+							}
+						});
+					} else {
+						// ✅ Unsaved row deletion
+						rowData.splice(rowIndex, 1);
+
+						// ✅ Resequence LineOrderNo
+						rowData.forEach((row, idx) => {
+							row.LineOrderNo = idx + 1;
+						});
+
+						dataGridInstance.option("dataSource", rowData);
+						dataGridInstance.refresh();
+
+						DevExpress.ui.notify("Row removed", "success", 1500);
+					}
+				});
+			}
+		}
+	},
+
+						{
+		text: "Delete Selected Rows",
+		icon: "trash",
+		onItemClick: function () {
+			const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+			const selectedKeys = dataGridInstance.getSelectedRowKeys();
+
+			if (selectedKeys.length === 0) {
+				DevExpress.ui.notify("No rows selected", "warning", 2000);
+				return;
+			}
+
+			// Collect MprchildSlNo values (used for DB deletion)
+			const selectedChildIds = selectedKeys
+				.map(key => {
+					const rowIndex = dataGridInstance.getRowIndexByKey(key);
+					return dataGridInstance.cellValue(rowIndex, "MprchildSlNo");
+				})
+				.filter(id => id); // Only valid saved rows
+
+			DevExpress.ui.dialog.confirm(`Delete ${selectedKeys.length} selected row(s)?`, "Confirm").done(function (result) {
+				if (!result) return;
+
+				// If there are DB rows to delete
+				if (selectedChildIds.length > 0) {
+					$.ajax({
+						url: "/api/AddNewClientRequest/DeleteMultipleChildren",
+						type: "DELETE",
+						contentType: "application/json",
+						data: JSON.stringify(selectedChildIds),
+						success: function (res) {
+							if (res.success) {
+								// ✅ Remove deleted rows from rowData
+								rowData = rowData.filter(row => !selectedChildIds.includes(row.MprchildSlNo));
+
+								// ✅ Re-sequence LineOrderNo
+								rowData.forEach((row, index) => {
+									row.LineOrderNo = index + 1;
+								});
+
+								// ✅ Rebind and refresh the grid
+								dataGridInstance.option("dataSource", rowData);
+								dataGridInstance.refresh();
+
+								DevExpress.ui.notify("Rows deleted successfully", "success", 2000);
+							} else {
+								DevExpress.ui.notify(res.message, "error", 2000);
+							}
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to delete rows", "error", 3000);
+						}
+					});
+				} else {
+					// Only unsaved rows — delete from UI
+					selectedKeys.forEach(key => {
+						const rowIndex = dataGridInstance.getRowIndexByKey(key);
+						if (rowIndex >= 0) dataGridInstance.deleteRow(rowIndex);
+					});
+
+					// ✅ Re-sequence and rebind rowData
+					rowData = dataGridInstance.option("dataSource");
+					rowData.forEach((row, index) => {
+						row.LineOrderNo = index + 1;
+					});
+
+					dataGridInstance.option("dataSource", rowData);
+					dataGridInstance.refresh();
+
+					DevExpress.ui.notify("Unsaved rows removed", "success", 1500);
+				}
+			});
+		}
+	},
+
+
+				{
+					text: "Add New Line",
+						icon: "plus",
+					onItemClick: function () {
+							addNewLineToB2BGrid();
+					}
+				}
+			];
+		}
+	},
 
 				columnAutoWidth: true,
 
@@ -3809,6 +4122,39 @@ $("#btnAddNew").on("click", function (e) {
 			});
 	});
 
+		function addNewLineToB2BGrid() {
+		const $btn = $("#btnSave");
+		$btn.dxButton("instance").option("disabled", false);
+
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		const store = grid.getDataSource().store();
+		const currentData = grid.getDataSource().items();
+
+		const nextLineOrderNo = currentData.length > 0
+			? Math.max(...currentData.map(row => row.LineOrderNo || 0)) + 1
+			: 1;
+
+		const newRow = {
+			LineOrderNo: nextLineOrderNo,
+			QuoteGroupItemSlNo: null,
+			GSCode: null,
+			Description: null,
+			UnitRateMethod: null,
+			QtyRequested: 0,
+			ExpectedUnitRate: 0,
+			LineTotal: 0
+		};
+
+		store.insert(newRow)
+			.then(() => {
+				grid.refresh();
+				const button = $("#btnSave").dxButton("instance");
+				button.option("text", "Update");
+			})
+			.catch(error => {
+				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+			});
+	}
 
 
 				// Fetch dropdown data (same API can be used if needed)
@@ -6313,6 +6659,11 @@ $("#btnAddNew").on("click", function (e) {
 
 					data[index2] = temp;
 					console.log("Swapped Data:", data);
+						 // ✅ Reassign LineOrderNo sequentially
+	    	data.forEach((row, idx) => {
+			row.LineOrderNo = idx + 1;
+		});
+
 
 					// Get the DataGrid instance and update the data source
 					var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
@@ -6323,30 +6674,6 @@ $("#btnAddNew").on("click", function (e) {
 				}
 
 
-				function disableEditing() {
-					// Disable all input fields and buttons except for specific ones
-					$('input, select, textarea').prop('disabled', true);
-
-					$('.dx-button').each(function () {
-
-						const allowedButtons = ['btnMoveDown','btnBack', 'btnMoveUp', 'btnSave','btnSaveAndClose','btnPostToLedgers','btnPostTag'];
-
-						if (!allowedButtons.includes($(this).attr('id'))) {
-							$(this).dxButton('option', 'disabled', true);
-						}
-					});
-
-					const print1 = $("#btnPrint1").dxDropDownButton("instance");
-					 print1.option("disabled", false);
-
-				// Disable DataGrid Editing and Deleting
-				var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-				if (dataGrid) {
-					dataGrid.option("editing.allowUpdating", false);
-					dataGrid.option("editing.allowDeleting", false);
-				}
-
-				}
 
 
 				$("#btnBack").on("click", function (e) {

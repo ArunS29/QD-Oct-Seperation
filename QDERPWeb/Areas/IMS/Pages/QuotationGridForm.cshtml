@@ -157,6 +157,7 @@
             <div class="calc-input">
                 @(Html.DevExtreme().NumberBox()
                                 .ID("Discount")
+                                .ShowSpinButtons(true)
                                 .Label("Discount on the Items:")
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Value(0.00)
@@ -186,4 +187,24 @@
         </div>
     </div>
 </div>
+<script>
+    $(function() {
+      const params = new URLSearchParams(window.location.search);
+
+      const unitPrice = parseFloat(params.get("unitPriceProfit"))|| 0;
+      const totalCost = parseFloat(params.get("totalCost"))|| 0;
+      const profitOrLoss = parseFloat(params.get("profitOrLoss"))|| 0;
+       const discount = parseFloat(params.get("discount"))|| 0;
+       const QuotedItemTotalPrice = profitOrLoss - totalCost;
+      $("#ItemCost").dxNumberBox("instance").option("value", totalCost);
+       $("#TotalCost").dxNumberBox("instance").option("value", totalCost);
+      $("#UnitPriceProfit").dxNumberBox("instance").option("value", unitPrice);
+   
+      $("#ProfitLoss").dxNumberBox("instance").option("value", profitOrLoss);
+      $("#Discount").dxNumberBox("instance").option("value", discount);
+       $("#QuotedPrice").dxNumberBox("instance").option("value", QuotedItemTotalPrice);
+    });
+</script>
+
+    
 
