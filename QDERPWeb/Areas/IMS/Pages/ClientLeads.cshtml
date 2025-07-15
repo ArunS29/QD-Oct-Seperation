@@ -11,16 +11,6 @@
 }
 <link rel="stylesheet" href="~/css/animationCard.css" />
 <style>
-    #dataGrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
-        color: black;
-    }
-
-    .datagrid {
-        height: 600px;
-        padding: 18px;
-    }
-
     .dx-fieldset {
         margin: 3px 1px ! important;
         padding: 7px ! important;
@@ -102,7 +92,7 @@
     </div>
 </div> *@
 @await Html.PartialAsync("/Pages/Shared/IMS/ClientLeadFooter.cshtml")
-<div>
+<div class="ledgerResult">
     @(
         Html.DevExtreme().DataGrid()
         .ID("dataGrid")
@@ -112,16 +102,17 @@
         .KeyExpr("ClientCode")
         .ElementAttr("class", "datagrid")
         .ShowBorders(true)
-        .Width("100%")
+        .Width("100%")      
+        .Height("65vh")
         .ColumnAutoWidth(true)
         .OnCellPrepared("oncellPrepared")
         .ShowColumnLines(true)
         .ShowRowLines(true)
         .OnContextMenuPreparing("onClientsGridContextMenu")
         .AllowColumnResizing(true) // Enable column resizing
-        .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
+        .ColumnResizingMode(ColumnResizingMode.Widget) // Optional: can be "Widget" or "NextColumn"
         .AllowColumnReordering(true) // Optional: allow dragging columns
-        .ColumnChooser(chooser => chooser
+        .ColumnChooser(chooser => chooser 
         .Enabled(false)
         .Mode(GridColumnChooserMode.DragAndDrop) // You can also use "DragAndDrop"
         )
