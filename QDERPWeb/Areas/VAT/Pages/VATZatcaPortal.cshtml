@@ -579,7 +579,7 @@
 
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
-		<div class="dx-fieldset horizontal-container">
+		<div class="horizontal-container">
 			@(Html.DevExtreme().Tabs()
 						.Items(items =>
 						{
@@ -618,7 +618,7 @@
 							
 							</tr>
 						</table>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).ID("XMLResponse").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).ID("XMLResponse").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 						<div style="margin-top: 10px;">Connection Status:</div>
 					</div>
 
@@ -691,26 +691,26 @@
 
 			<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 				<tr>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("txtInvoiceNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Unique Invoice ID')")).ID("txtUniqueInvoiceID").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date')")).ID("txtInvoiceIssueDate").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Time')")).ID("txtInvoiceIssueTime").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("txtInvoiceNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Unique Invoice ID')")).ID("txtUniqueInvoiceID").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date')")).ID("txtInvoiceIssueDate").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Time')")).ID("txtInvoiceIssueTime").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 				</tr>
 				<tr>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Type Code')")).ID("txtInvoiceTypeCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Transaction Code')")).ID("txtTransactionCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Note')")).ID("txtInvoiceNote").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Currency Code')")).ID("txtInvoiceCurrencyCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Type Code')")).ID("txtInvoiceTypeCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Transaction Code')")).ID("txtTransactionCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Note')")).ID("txtInvoiceNote").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Currency Code')")).ID("txtInvoiceCurrencyCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 				</tr>
 				<tr>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Tax Currency Code')")).ID("txtTaxCurrencyCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Purchase Order No')")).ID("txtPurchaseOrderNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Contract No')")).ID("txtContractNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("txtInvoiceCounterValue").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Tax Currency Code')")).ID("txtTaxCurrencyCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Purchase Order No')")).ID("txtPurchaseOrderNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Contract No')")).ID("txtContractNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("txtInvoiceCounterValue").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 				</tr>
 				<tr>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reference Invoice No')")).ID("txtReferenceInvoiceNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reason for Credit Note')")).ID("txtReasonForCreditNote").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reference Invoice No')")).ID("txtReferenceInvoiceNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reason for Credit Note')")).ID("txtReasonForCreditNote").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 				</tr>
 			</table>
 
@@ -726,13 +726,13 @@
 					</td>
 				</tr>
 				<tr>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Previous Invoice HASH of XML Files')")).ID("txtPreInvHash").LabelMode(EditorLabelMode.Outside).Width(350))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Hash of XML File')")).ID("txtHashXmlFile").LabelMode(EditorLabelMode.Outside).Width(350))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA signature of the XML Hash(Digest Value)-Base64')")).ID("txtECDSASignatureBase64").LabelMode(EditorLabelMode.Outside).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Previous Invoice HASH of XML Files')")).ID("txtPreInvHash").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Hash of XML File')")).ID("txtHashXmlFile").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA signature of the XML Hash(Digest Value)-Base64')")).ID("txtECDSASignatureBase64").LabelMode(EditorLabelMode.Floating).Width(350))</td>
 				</tr>
 				<tr>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA public key extracted from the signing private key-HEX Format')")).ID("txtECDSAPublicKeyHex").LabelMode(EditorLabelMode.Outside).Width(350))</td>
-					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('The ECDSA signature of the cryptographic stamp-HEX Format')")).ID("txtECDSASignatureStampHex").LabelMode(EditorLabelMode.Outside).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('ECDSA public key extracted from the signing private key-HEX Format')")).ID("txtECDSAPublicKeyHex").LabelMode(EditorLabelMode.Floating).Width(350))</td>
+					<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('The ECDSA signature of the cryptographic stamp-HEX Format')")).ID("txtECDSASignatureStampHex").LabelMode(EditorLabelMode.Floating).Width(350))</td>
 				</tr>
 			</table>
 
@@ -744,56 +744,56 @@
 				<h3>Buyer Details</h3>
 				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 					<tr> 
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Buyer ID')")).ID("txtOtherBuyerID").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street')")).ID("txtBuyerStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Street')")).ID("txtBuyerAddlStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Building Number')")).ID("txtBuyerBuildingNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Buyer ID')")).ID("txtOtherBuyerID").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street')")).ID("txtBuyerStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Street')")).ID("txtBuyerAddlStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Building Number')")).ID("txtBuyerBuildingNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 					</tr>
 					<tr>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Number')")).ID("txtBuyerAddlNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City')")).ID("txtBuyerCity").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Postal Code')")).ID("txtBuyerPostalCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Province/State')")).ID("txtBuyerProvinceState").LabelMode(EditorLabelMode.Outside).Width(300))</td> <!-- FIXED duplicate ID -->
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Addl Number')")).ID("txtBuyerAddlNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City')")).ID("txtBuyerCity").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Postal Code')")).ID("txtBuyerPostalCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Province/State')")).ID("txtBuyerProvinceState").LabelMode(EditorLabelMode.Floating).Width(300))</td> <!-- FIXED duplicate ID -->
 					</tr>
 					<tr>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District')")).ID("txtBuyerDistrict").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Country Code')")).ID("txtBuyerCountryCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer VAT No')")).ID("txtBuyerVATNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name')")).ID("txtBuyerName").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District')")).ID("txtBuyerDistrict").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Country Code')")).ID("txtBuyerCountryCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer VAT No')")).ID("txtBuyerVATNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name')")).ID("txtBuyerName").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 					</tr>
 					<tr>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name in Arabic')")).ID("txtBuyerNameinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street in Arabic')")).ID("txtBuyerStreetinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City in Arabic')")).ID("txtBuyerCityinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District in Arabic')")).ID("txtBuyerDistrictinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Name in Arabic')")).ID("txtBuyerNameinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer Street in Arabic')")).ID("txtBuyerStreetinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer City in Arabic')")).ID("txtBuyerCityinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Buyer District in Arabic')")).ID("txtBuyerDistrictinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 					</tr>
 				</table>
 
 				<h3>Seller Details</h3>
 				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 					<tr>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Seller ID')")).ID("txtOtherSellerID").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street')")).ID("txtSellerStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Street')")).ID("txtSellerAddlStreet").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Building Number')")).ID("txtSellerBuildingNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other Seller ID')")).ID("txtOtherSellerID").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street')")).ID("txtSellerStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Street')")).ID("txtSellerAddlStreet").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Building Number')")).ID("txtSellerBuildingNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 					</tr>
 					<tr>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Number')")).ID("txtSellerAddlNumber").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City')")).ID("txtSellerCity").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Postal Code')")).ID("txtSellerPostalCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Province/State')")).ID("txtSellerProvinceState").LabelMode(EditorLabelMode.Outside).Width(300))</td> <!-- FIXED duplicate ID -->
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Addl Number')")).ID("txtSellerAddlNumber").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City')")).ID("txtSellerCity").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Postal Code')")).ID("txtSellerPostalCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Province/State')")).ID("txtSellerProvinceState").LabelMode(EditorLabelMode.Floating).Width(300))</td> <!-- FIXED duplicate ID -->
 					</tr>
 					<tr>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District')")).ID("txtSellerDistrict").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Country Code')")).ID("txtSellerCountryCode").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller VAT No')")).ID("txtSellerVATNo").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name')")).ID("txtSellerName").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District')")).ID("txtSellerDistrict").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Country Code')")).ID("txtSellerCountryCode").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller VAT No')")).ID("txtSellerVATNo").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name')")).ID("txtSellerName").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 					</tr>
 					<tr>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name in Arabic')")).ID("txtSellerNameinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street in Arabic')")).ID("txtSellerStreetinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City in Arabic')")).ID("txtSellerCityinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District in Arabic')")).ID("txtSellerDistrictinArabic").LabelMode(EditorLabelMode.Outside).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Name in Arabic')")).ID("txtSellerNameinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller Street in Arabic')")).ID("txtSellerStreetinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller City in Arabic')")).ID("txtSellerCityinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Seller District in Arabic')")).ID("txtSellerDistrictinArabic").LabelMode(EditorLabelMode.Floating).Width(300))</td>
 					</tr>
 				</table>
 			</div>
@@ -808,12 +808,12 @@
 					<h3>Payment & Supply Details</h3>
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply Date')")).ID("txtSupplyDate1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply End Date')")).ID("txtSupplyEndDate1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Means Type Code')")).ID("txtPaymentMeansTypeCode1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("txtPaymentTerms1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Account Identifier')")).ID("txtPaymentAccountIdentifier1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date & Time')")).ID("txtInvoiceIssueDateTime1").LabelMode(EditorLabelMode.Outside).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply Date')")).ID("txtSupplyDate1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Supply End Date')")).ID("txtSupplyEndDate1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Means Type Code')")).ID("txtPaymentMeansTypeCode1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("txtPaymentTerms1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Account Identifier')")).ID("txtPaymentAccountIdentifier1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Issue Date & Time')")).ID("txtInvoiceIssueDateTime1").LabelMode(EditorLabelMode.Floating).Width(210))</td>
 						</tr>
 					</table>
 				</div>
@@ -844,7 +844,7 @@
 						<td>@(Html.DevExtreme().TextBox().ID("LessAdvance").Value("Less: Advance").Width("90%"))</td>
 						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate3").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
 						<td>@(Html.DevExtreme().Button().ID("convertToArabic1").Height(0).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { AdvanceconvertToArabic(); }"))</td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Outside).ID("LessAdvanceAr").Value("اقب المسبق").Width("100%").RtlEnabled(true))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Floating).ID("LessAdvanceAr").Value("اقب المسبق").Width("100%").RtlEnabled(true))</td>
 					</tr>
 
 					<!-- Row 2 -->
@@ -852,7 +852,7 @@
 						<td>@(Html.DevExtreme().TextBox().ID("LessOtherDeductions").Value("Less: Other Deductions").Width("90%"))</td>
 						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate4").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
 						<td><span class="input-group-prepend" style="margin-right: 10px;">@(Html.DevExtreme().Button().ID("convertToArabic2").Height(30).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { OtherDeductionsconvertToArabic(); }"))</span></td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Outside).ID("LessAdvanceAr1").Value("ناقص قيمة الخصومات الأخرى").Width("100%").RtlEnabled(true))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Floating).ID("LessAdvanceAr1").Value("ناقص قيمة الخصومات الأخرى").Width("100%").RtlEnabled(true))</td>
 					</tr>
 
 					<!-- Row 3 -->
@@ -860,7 +860,7 @@
 						<td>@(Html.DevExtreme().TextBox().ID("LessRetention").Value("Less: Retention").Width("90%"))</td>
 						<td>@(Html.DevExtreme().NumberBox().ID("currencyexchangerate5").Min(1).Step(1).ShowSpinButtons(true).Width("90%"))</td>
 						<td><span class="input-group-prepend" style="margin-right: 10px;">@(Html.DevExtreme().Button().ID("convertToArabic3").Height(30).Icon("fas fa-language").ElementAttr(new { @class = "input-button" }).OnClick("function() { RetentionconvertToArabic(); }"))</span></td>
-						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Outside).ID("LessAdvanceAr2").Value("احتفاظ أقل").Width("100%").RtlEnabled(true))</td>
+						<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('')")).LabelMode(EditorLabelMode.Floating).ID("LessAdvanceAr2").Value("احتفاظ أقل").Width("100%").RtlEnabled(true))</td>
 					</tr>
 				</table>
 			</div>

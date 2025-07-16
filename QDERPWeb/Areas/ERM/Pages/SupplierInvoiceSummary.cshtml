@@ -32,27 +32,7 @@
 		height: 100%;
 	}
 
-	.dx-datagrid-headers {
-		border: 1px solid #686868 !important;
-		width: 100%; /* Adjust to fit the container */
-		overflow-x: auto; /* Enable horizontal scrolling */
-		white-space: nowrap; /* Prevent wrapping of headings */
-		overflow-y: hidden;
-	}
-
-		.dx-datagrid-headers .dx-row > td {
-			border: 1px solid #686868 !important;
-			text-align: center !important;
-			/* 	width:1000px; */
-		}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-size: 12px !important;
-		white-space: nowrap !important; /* Prevent wrapping of text */
-		text-align: center !important;
-		font-weight: bold;
-		color: black;
-	}
+	
 
 	.close-btn {
 		position: absolute;
@@ -173,7 +153,7 @@
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
@@ -184,7 +164,7 @@
 	@(Html.DevExtreme().DateBox()
 		.ID("todateBox")
 		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month

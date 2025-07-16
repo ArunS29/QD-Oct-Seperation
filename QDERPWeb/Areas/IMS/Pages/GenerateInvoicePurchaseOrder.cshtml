@@ -37,11 +37,7 @@
 		font-weight: bold;
 	}
 
-	/* Ensure text in grid headers is always centered */
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
-		text-align: center !important;
-	}
+
 
 	/* Ensure column headers text aligns to center */
 	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
@@ -127,17 +123,6 @@
 			border-color: #508ae1 !important;
 		}
 
-	#dataGrid .dx-header-row .dx-datagrid-text-content {
-		font-weight: bold;
-		color: black;
-	}
-
-
-	.dx-datagrid-header-panel {
-		background-color: #909ead00;
-		/* display:none; */
-	}
-
 	.no-border-input {
 		border: none !important;
 		outline: none !important;
@@ -206,7 +191,7 @@
     .DisplayExpr("SupplierName")
     .SearchEnabled(true)
     .Label("Supplier Name")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width(470))
 		</div>
 
@@ -220,7 +205,7 @@
     .DisplayExpr("Pono")
     .SearchEnabled(true)
     .Label("Purchase Order #:")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width(470))
 		</div>
 

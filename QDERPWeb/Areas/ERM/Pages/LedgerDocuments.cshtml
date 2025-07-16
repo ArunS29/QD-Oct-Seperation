@@ -82,7 +82,7 @@
                     <div>
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Document No')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("DocumentNo")
                             .Value(null)
                             .Width("100%")
@@ -99,7 +99,7 @@
                             .LoadMode(DataSourceLoadMode.Raw)
                             .Key("DocumentTypeId")
                             )
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("accountMasterDropDownBox")
                             .Width(770)
                             @*  .ShowClearButton(true)
@@ -145,7 +145,7 @@
                     <div class="col-12 col-md-4">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Reference No')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("ReferenceNo")
                             .Value(null)
                             .Width("100%")
@@ -155,7 +155,7 @@
                     <div class="col-12 col-md-6">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Remarks/Notes')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("Remarks")
                             .Value(null)
                             .Width("100%"))
@@ -180,7 +180,7 @@
                     <div class="col-12 col-md-4">
                         @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Document Expiry Date')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Type(DateBoxType.Date)
                             .DisplayFormat("dd-MMM-yyyy")
                             .ID("expiryId")
@@ -205,7 +205,7 @@
                     <div class="col-10 col-md-3">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Expiry Date (Hijri)')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("ExpiryDate")
                             .Value(null)
                             .Width("100%"))
@@ -213,7 +213,7 @@
                     <div class="col-10 col-md-3">
                         @(Html.DevExtreme().DateBox()
                             .Label(new JS("formatMessage('Notification Date')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Type(DateBoxType.Date)
                             .DisplayFormat("dd-MMM-yyyy")
                             .ID("notificationId")

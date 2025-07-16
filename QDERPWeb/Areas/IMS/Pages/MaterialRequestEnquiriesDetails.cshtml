@@ -63,27 +63,8 @@
 		height: 100%;
 	}
 
-	.dx-datagrid-headers {
-		border: 1px solid #686868 !important;
-		width: 100%; /* Adjust to fit the container */
-		overflow-x: auto; /* Enable horizontal scrolling */
-		white-space: nowrap; /* Prevent wrapping of headings */
-		overflow-y:hidden;
-	}
-
-		.dx-datagrid-headers .dx-row > td {
-			border: 1px solid #686868 !important;
-			text-align: center !important;
-			/* 	width:1000px; */
-		}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-size: 12px !important;
-		white-space: nowrap !important; /* Prevent wrapping of text */
-		text-align: center !important;
-		font-weight: bold;
-		color: black;
-	}
+	
+	
 
 	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
@@ -287,7 +268,7 @@
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
@@ -298,7 +279,7 @@
 	@(Html.DevExtreme().DateBox()
 		.ID("todateBox")
 		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
@@ -392,28 +373,25 @@
 	         {
 				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-		function(e) {
-		if (e.value === null || e.value === undefined) {
-		return ''; // Return empty string for null/undefined
-		}
-		return Number(e.value).toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
-		});
-		}
-		");
-				band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-		function(e) {
-		if (e.value === null || e.value === undefined) {
-		return ''; // Return empty string for null/undefined
-		}
-		return Number(e.value).toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
-		});
-		}
-		");
-
+						function(e) {
+						if (e.value === null || e.value === undefined) {
+						return ''; // Return empty string for null/undefined
+						}
+						return Number(e.value).toLocaleString(undefined, {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+						});
+						}");
+						band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
+						function(e) {
+						if (e.value === null || e.value === undefined) {
+						return ''; // Return empty string for null/undefined
+						}
+						return Number(e.value).toLocaleString(undefined, {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+						});
+						}");
 			});
 
 				columns.Add().Caption(new JS("formatMessage('Sales Order Details')")).Columns(band =>

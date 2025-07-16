@@ -25,7 +25,7 @@
 
 
 
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container">
 	@(Html.DevExtreme().DropDownBox()
 		.DataSource(d => d.WebApi()
 		.Controller("AccountLedgerMaster")
@@ -33,7 +33,7 @@
 		.LoadMode(DataSourceLoadMode.Raw)
 		.Key("AccountGroupId") // This is the unique key for the data source
 		)
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.Label(new JS("formatMessage('Stock Group')"))
 		.ID("ddlAccountGroup")
 		.ShowClearButton(true)
@@ -69,7 +69,7 @@
 	@(Html.DevExtreme().TextBox()
 		.ID("txtVatPurchaseNo")
 		.Label(new JS("formatMessage('Vat Purchase No')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)
@@ -77,21 +77,21 @@
 	@(Html.DevExtreme().TextBox()
 		.ID("txtPurchaseInvoiceNo")
 		.Label(new JS("formatMessage('Proforma Invoice No')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)
 	@(Html.DevExtreme().TextBox()
 		.ID("txtInvoiceNo")
 		.Label(new JS("formatMessage('Invoice No')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)
 	@(Html.DevExtreme().TextBox()
 		.ID("txtRegisterNo")
 		.Label(new JS("formatMessage('Request No')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Text")
 		.Width("17%")
 		)

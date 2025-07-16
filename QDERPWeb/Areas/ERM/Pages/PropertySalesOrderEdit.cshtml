@@ -4,21 +4,7 @@
 }
 
 <style>
-    .dx-datagrid-headers {
-        border: 1px solid #686868 !important;
-        width: 100%; /* Adjust to fit the container */
-        overflow-x: auto; /* Enable horizontal scrolling */
-        white-space: nowrap; /* Prevent wrapping of headings */
-        overflow-y: hidden;
-    }
-
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        font-size: 12px !important;
-        white-space: nowrap !important; /* Prevent wrapping of text */
-        text-align: center !important;
-        font-weight: bold;
-        color: black;
-    }
+    
 
     .ledgerResult {
         overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
@@ -291,7 +277,7 @@
                             .Message("Sales Order No is required");
                             })
                             .Label("Sales Order NO:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
@@ -305,7 +291,7 @@
                             .Value(DateTime.Today)
                             .DateSerializationFormat("yyyy-MM-dd")  // ✅ Ensure consistent format
                             .Label("Sales Order Date")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
 
@@ -327,7 +313,7 @@
                                     .Key("ClientCode")
                                     )
                                     .Label("Client Name")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%")
                                     .ValidationRules(rules =>
                                     {
@@ -358,7 +344,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("QuotationNo")
                             .Label("Quotation No:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -366,7 +352,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("QuotationDate")
                             .Label("Quotation Date:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -376,7 +362,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientRefName")
                                     .Label("Client Ref. Name:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
@@ -384,7 +370,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientEmail")
                                     .Label("Client Email:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Mode(TextBoxMode.Email)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
@@ -393,7 +379,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientContact")
                                     .Label("Client Contact No:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
@@ -407,7 +393,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("ClientPoNo")
                             .Label("Client PO No:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                              @(Html.DevExtreme().Button()
@@ -421,7 +407,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("ClientPoDate")
                             .Label("Client PO Date:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -430,7 +416,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ReferenceNo")
                                     .Label("Client Email")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
@@ -448,7 +434,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ProjectId")
                                     )
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
                                     .ContentTemplate(new TemplateName("ProjectDropDownTemplate"))
@@ -552,7 +538,7 @@
                                 @(Html.DevExtreme().DropDownBox()
                                 .ID("SalesPerson")
                                 .Label("Company Branch / Division")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                )
                             </div>
@@ -561,13 +547,13 @@
                             @(Html.DevExtreme().DropDownBox()
                             .ID("InventoryGroup")
                             .Label("Sales Person")    
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                           )
                             @(Html.DevExtreme().DropDownBox()
                             .ID("CostCenter")
                             .Label("Reference No")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
 
@@ -582,7 +568,7 @@
                             @(Html.DevExtreme().DateBox()
                                 .ID("OrderExpirydate")
                                 .Label("Order Expiry Date")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                         </div>
@@ -601,18 +587,18 @@
                                     @(Html.DevExtreme().DropDownBox()
                                         .ID("preparedBy")
                                         .Label("Prepared By:")
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .Width("100%")
                                       )
                                         @(Html.DevExtreme().DropDownBox()
                                             .ID("Verifiedby")
                                             .Label("Verified By:")
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                             .Width("100%") )
                                         @(Html.DevExtreme().DropDownBox()
                                             .ID("Approvedby")
                                             .Label("Approved By:")
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                             .Width("100%")
                                             )
                                 </div>  

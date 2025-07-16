@@ -225,6 +225,9 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                         HttpContext.Session.SetString("TenantName", request.TenantName);
                         HttpContext.Session.SetString("UserName", request.Username);
                         HttpContext.Session.SetString("DefaultcompanyID", tenant.DefaultcompanyID);
+                        HttpContext.Session.SetString("currencytype", tenant.currencytype);
+                        HttpContext.Session.SetString("currencyID", tenant.currencyID);
+                        HttpContext.Session.SetString("baseCurrencyname", tenant.baseCurrencyname);
                         HttpContext.Session.SetString("UserId", user.UserId.ToString());
 
                         return Ok(new

@@ -4,10 +4,6 @@
 @{
 }
 <style>
-	.dx-datagrid-headers .center-header {
-		text-align: center !important;
-	}
-
 	.Head {
 		margin-bottom: 10px;
 	}
@@ -214,10 +210,6 @@
 	.dx-fieldset {
 		margin: 3px 3px !important;
 		padding: 0px;
-	}
-
-	.dx-datagrid-headers th {
-		text-align: center; /* Centers the text */
 	}
 
 	.columnheader {
@@ -449,6 +441,74 @@
 			background-color: #ffc107; /* Bootstrap yellow */
 			color: black;
 		}
+
+	.context-menuInvoice {
+		position: absolute;
+		background: #fff;
+		border-radius: 8px;
+		box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+		width: 200px;
+		display: none;
+		flex-direction: column;
+		padding: 5px 0;
+		z-index: 1000;
+	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+	#btnClearNotes .dx-button-content,
+	#btnSetDefault .dx-button-content {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.dx-popup-content {
+		-webkit-user-drag: none;
+		padding: 1px;
+	}
+
+	/* .full-height-container {
+			height: 100%;
+		} */
+	.context-menuInvoice {
+		background: white;
+		border: 1px solid #ccc;
+		width: 200px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+		font-family: Arial, sans-serif;
+	}
+
+	.context-menu-itemInvoice {
+		padding: 8px 12px;
+		cursor: pointer;
+	}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -458,8 +518,20 @@
 		<div id="VATPurchaseEdit" class="no-border-title"></div>
 	</div>
 </div> *@
+<div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
+	<div class="context-menu-itemInvoice" data-action="add">
+		<i class="dx-icon-plus"></i> Add Line Item
+	</div>
+	<div class="context-menu-itemInvoice" data-action="delete">
+		<i class="dx-icon-close"></i> Delete Line Item
+	</div>
+	<div class="context-menu-itemInvoice" data-action="deleteAll">
+		<i class="dx-icon-trash"></i> Delete All Line Items
+	</div>
+</div>
+
 	<div class="content-container-top">
-	<div class="dx-fieldset horizontal-container" style="width:100%;">
+	<div class="horizontal-container" style="width:100%;">
 			@(Html.DevExtreme().Tabs()
 						.Items(items =>
 						{
@@ -490,7 +562,7 @@
 														.Label("")
 														.Label(new JS("formatMessage('Purchase Voucher No')"))
 														.LabelMode(EditorLabelMode.Outside)
-														@* .Disabled(true) *@)
+														.Disabled(true))
 						</td>
 
 						<!-- 2. Voucher Date -->
@@ -499,7 +571,7 @@
 														.Label(new JS("formatMessage('Voucher Date')"))
 														.ID("InvoiceDate")
 														.InputAttr("aria-label", "Date")
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
@@ -523,7 +595,7 @@
 														.DisplayExpr("InvoiceNo")
 														.ValueExpr("InvoiceNo")
 														.Label(new JS("formatMessage('Supplier Invoice No')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ShowClearButton(true)
 														@* .Disabled(true)
 														.AcceptCustomValue(true)
@@ -541,7 +613,7 @@
 														.DisplayExpr("InvoiceNo")
 														.ValueExpr("InvoiceNo")
 														.Label(new JS("formatMessage('Supplier Invoice No')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ShowClearButton(true)
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
@@ -561,7 +633,7 @@
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Label(new JS("formatMessage('Invoice Date')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.LabelMode(EditorLabelMode.Floating))
 						</td>
 					</tr>
 
@@ -572,7 +644,7 @@
 							@(Html.DevExtreme().TextBox()
 														.ID("VATInvoiceType")
 														.Label(new JS("formatMessage('Order No')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Value("")
 														@* .Disabled(true) *@)
 						</td>
@@ -586,7 +658,7 @@
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
 														.Label(new JS("formatMessage('Order Date')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.LabelMode(EditorLabelMode.Floating))
 						</td>
 					</tr>
 
@@ -597,7 +669,7 @@
 							@(Html.DevExtreme().TextBox()
 														.ID("MaterialReceipt")
 														.Label(new JS("formatMessage('Material Receipts')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Placeholder(""))
 						</td>
 
@@ -610,7 +682,7 @@
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
 														.Label(new JS("formatMessage('Supply Date')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.LabelMode(EditorLabelMode.Floating))
 						</td>
 					</tr>
 				</table>
@@ -621,10 +693,10 @@
 							<tr>
 								<!-- 9. Supplier Code (GridLookUpEdit) -->
 								<td>
-									@(Html.DevExtreme().DropDownBox()
+									@* @(Html.DevExtreme().DropDownBox()
 																			.ID("ddclientcode")
 																			.Label(new JS("formatMessage('Supplier Code')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
 																			.LoadAction("GetSupplierCode")
@@ -635,7 +707,26 @@
 																			.ShowClearButton(true)
 														 // ✅ Width of the editor box
 														.DropDownOptions(d => d.Width(800))
-														.ContentTemplate(new TemplateName("ClientCodeContentTemplate")))
+														.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))) *@
+
+
+							@(Html.DevExtreme().DropDownBox()
+														.ID("ddclientcode")
+														.Label(new JS("formatMessage('Supplier Code')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetSupplierCode")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("AccountId"))
+														.ValueExpr("AccountId")
+														.DisplayExpr("AccountId")
+														.ShowClearButton(true)
+														.DropDownOptions(d => d.Width(800))
+														.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
+														.OnFocusIn("onSupplierDropDownFirstClick")  // 🔗 bind alert function
+														)
+
 								</td>
 
 								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
@@ -696,7 +787,7 @@
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ddclientname")
 																			.Label(new JS("formatMessage('Supplier Name')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
 																			.LoadAction("GetSupplierCode")
@@ -733,7 +824,7 @@
 									@(Html.DevExtreme().TextBox()
 																			.ID("GroupVATNo")
 																			.Label(new JS("formatMessage('Group VAT No')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.MaxLength(15)
 														.Mask("300000000010000") // 15 digits
 														.MaskChar("_") // Optional: makes it more readable
@@ -745,7 +836,7 @@
 									@(Html.DevExtreme().TextBox()
 																			.ID("ClientVATNo")
 																			.Label(new JS("formatMessage('Supplier VAT No')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 														.Mask("300000000000003") // 15 digits
 														.MaskChar("_") // Optional: makes it more readable
 																			)
@@ -757,7 +848,7 @@
 									@(Html.DevExtreme().TextBox()
 																			.ID("ClientNameArabic")
 																			.Label(new JS("formatMessage('Supplier Name in Arabic')"))
-																			.LabelMode(EditorLabelMode.Outside))
+																			.LabelMode(EditorLabelMode.Floating))
 								</td>
 							</tr>
 
@@ -767,7 +858,7 @@
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("OtherIDType")
 																			.Label(new JS("formatMessage('Other ID Type')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
 																			.LoadAction("GetVATInvoiceMaster")
@@ -785,7 +876,7 @@
 									@(Html.DevExtreme().TextBox()
 																			.ID("ClientOtherID")
 																			.Label(new JS("formatMessage('Supplier Other ID')"))
-																			.LabelMode(EditorLabelMode.Outside))
+																			.LabelMode(EditorLabelMode.Floating))
 								</td>
 
 								<!-- 16. Supplier Address Details (PopContainerEdit) -->
@@ -795,7 +886,7 @@
 																			.Label(new JS("formatMessage('Supplier Address Details')"))
 																			.ShowClearButton(true)
 																			.Width("100%")
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.DropDownOptions(o => o.Width(600).Height(550))
 																			.OpenOnFieldClick(true)
 																			.ContentTemplate(@<text>
@@ -810,21 +901,21 @@
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Address - Street Name:')"))
 												.ID("StreetName")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td>
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
 												.ID("StreetNameArabic")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td>
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Building Number:')"))
 												.ID("BuildingNumber")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 										</tr>
@@ -833,21 +924,21 @@
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Address - Additional Address:')"))
 												.ID("AdditionalAddress")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td>
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
 												.ID("AdditionalAddressArabic")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td>
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Additional Number:')"))
 												.ID("AdditionalNumber")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 
@@ -858,21 +949,21 @@
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Client City:')"))
 												.ID("ClientCity")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td>
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Client City: (Arabic)')"))
 												.ID("ClientCityArabic")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td>
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Postal Code:')"))
 												.ID("PostalCode")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 										</tr>
@@ -882,14 +973,14 @@
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Province / State:')"))
 												.ID("Province")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td>
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Province / State: (Arabic)')"))
 												.ID("ProvinceArabic")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 
@@ -897,7 +988,7 @@
 												@(Html.DevExtreme().SelectBox()
 												.ID("CountryCode")
 												.Label(new JS("formatMessage('Country Code:')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Items(new[] { "US", "UK", "IN", "SA", "UAE" })
 												.Value("IN")
 												.SearchEnabled(true)
@@ -910,14 +1001,14 @@
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('District / Neighborhood:')"))
 												.ID("District")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 											<td colspan="2">
 												@(Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 												.ID("DistrictArabic")
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Width("100%"))
 											</td>
 
@@ -938,7 +1029,7 @@
 							@(Html.DevExtreme().TextBox()
 														.ID("InvoiceCounterValue")
 														.Label(new JS("formatMessage('Invoice Period')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.LabelMode(EditorLabelMode.Floating))
 						</td>
 
 						<!-- 18. Reference No -->
@@ -947,7 +1038,7 @@
 							@(Html.DevExtreme().TextBox()
 														.ID("UUID")
 														.Label(new JS("formatMessage('Reference No')"))
-														.LabelMode(EditorLabelMode.Outside))
+														.LabelMode(EditorLabelMode.Floating))
 						</td>
 					</tr>
 
@@ -960,8 +1051,8 @@
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr colspan="1">
 							
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
-					<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Outside))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Effective Date')")).ID("EffectiveDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
+					<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Due Date')")).ID("InvoiceDueDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating))</td>
 					<td>
 						@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Revenue Account')")).ID("RevenueAccount")
 								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
@@ -979,7 +1070,7 @@
 													.Message(new JS("formatMessage('Revenue Account should be entered')"));
 												})
 
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddlGoodsGroup2")
 													.ShowClearButton(true)
 													.AcceptCustomValue(true)
@@ -1012,7 +1103,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("CostAllocationUnitId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddlGoodsGroup1")
 													.ShowClearButton(true)
 
@@ -1051,7 +1142,7 @@
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Label(new JS("formatMessage('Invoice Submitted On:')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ShowClearButton(true)
 														.Width("90%"))
 
@@ -1068,7 +1159,7 @@
 														)
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Invoice Received By')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														.ID("SubmittedBytext")
 														.Value(null)
@@ -1087,7 +1178,7 @@
 							<td>
 								@(Html.DevExtreme().TextArea()
 																						.Label(new JS("formatMessage('Invoice Notes')"))
-																						.LabelMode(EditorLabelMode.Outside)
+																						.LabelMode(EditorLabelMode.Floating)
 																						.ID("txtInvoiceNotes")
 																						.Value("")
 																						.Height(40)
@@ -1112,7 +1203,7 @@
 							@(
 														Html.DevExtreme().TextArea()
 														.Label(new JS("formatMessage('Notes in Arabic')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("txtNotesinArabic")
 														.Value("")
 														.Placeholder(new JS("formatMessage('Enter your comments here...')"))
@@ -1207,7 +1298,7 @@
 
 						@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Verified By')"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("VerifiedBytext")
 													.Value(null) // Default value		
 													.Disabled(true)
@@ -1216,7 +1307,7 @@
 
 						@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Verified On')"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("VerifiedOnDate")
 													.Value(null) // Default value
 													.Disabled(true)
@@ -1231,7 +1322,7 @@
 															.Disabled(true))
 						@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Approved By')"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ApprovedBytext")
 													.Value(null) // Default value												
 													.Width("90%")
@@ -1240,7 +1331,7 @@
 													)
 						@(Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Approved On')"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ApprovedOntext")
 													.Value(null) // Default value
 													.Disabled(true)
@@ -1261,7 +1352,7 @@
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("CompanyDivision")
 																			.Label(new JS("formatMessage('Company Division')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
 																			.LoadAction("GetCompanyList") // Make sure backend returns CompanyID + CompanyName
@@ -1287,7 +1378,7 @@
 									@(Html.DevExtreme().DropDownBox()
 																			.Label(new JS("formatMessage('Division')"))
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlDivision")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1307,7 +1398,7 @@
 								<td>
 									@(Html.DevExtreme().DateBox()
 																			.Label(new JS("formatMessage('Inventory Effective Date:')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("InventoryEffectiveDate")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1333,7 +1424,7 @@
 									@(Html.DevExtreme().DropDownBox()
 																			.ID("ddlSupplierArabicName")
 																			.Label(new JS("formatMessage('Supplier Name in Arabic')"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.DataSource(d => d.WebApi()
 																			.Controller("VATModule")
 																			.LoadAction("GetAllSuppliers")
@@ -1415,7 +1506,7 @@
 					.LoadAction("GetGoodsAndServices")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("Gscode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("accountDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
@@ -1461,7 +1552,7 @@
 
 				.DisplayExpr("UnitDesc")
 				.Value(new JS("cellInfo.value"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.OpenOnFieldClick(true)
 				.ShowClearButton(true)
 				.Width(200)
@@ -1512,7 +1603,7 @@
 					.LoadAction("GetVatTaxSlabs")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("TaxSlabCode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("TaxSlabDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
@@ -2613,9 +2704,24 @@
 
 }
 
-<!-- Modal Structure -->
-
+<input type="file" id="fileInput" style="display: none;" />
+<div id="CalcardPopover"></div>
 <script>
+		var hasSupplierAlertShown = false;
+
+		function onSupplierDropDownFirstClick(e) {
+			if (!hasSupplierAlertShown) {
+				e.component.blur(); // temporarily stop the dropdown from opening
+
+				DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Supplier to edit").done(function () {
+					hasSupplierAlertShown = true;
+					// Now open the dropdown manually after alert
+					setTimeout(function () {
+						e.component.focus(); // this will re-trigger dropdown after alert
+					}, 100);
+				});
+			}
+		}
 
 
 		  function onClientCodeRowPrepared(e) {
@@ -2958,7 +3064,7 @@
 					width: 50,
 					allowEditing: true,
 					editCellTemplate: function (cellElement, cellInfo) {
-						let url = `/${tenantName}/VAT/CreditDetailDescription`;
+						let url = `/${tenantName}/VAT/PurchaseDetailDescription`;
 						let title = "VAT Details Description";
 						window.currentDescriptionCell = cellInfo;
 						openModal(url, title);
@@ -3436,7 +3542,7 @@
 					   window.currentDescriptionCell = options;
 
 					   // Open modal
-					   let url = `/${tenantName}/VAT/VATDetailsDescription`;
+					   let url = `/${tenantName}/VAT/PurchaseDetailDescription`;
 					   let title = "VAT Details Description";
 					   openModal(url, title);
 				   }
@@ -3586,117 +3692,25 @@
 				   { dataField: "Discount", caption: formatMessage('Discount'), width: 150, cssClass: "center-header" },
 
 				   //{ dataField: "DiscountDetails", caption: "...", width: 50 },
-					   {
-			   dataField: "DiscountDetails",
-			   caption: "...",
-			   cssClass: "center-header",
-			   width: 100,
-			   allowEditing: true,
-					   cellTemplate: function (container, options) {
-			   container.empty();
-
-			   $("<div>")
-				   .dxButton({
-					   icon: "percent", // DevExtreme built-in icon
-					   hint: "Apply percentage discount", // Tooltip
-					   type: "normal", // Keeps styling neutral
-					   stylingMode: "outlined", // Ensures border is visible
-					   onClick: function (e) {
-						   // Your button click logic here
-						   console.log("Percent button clicked", options.data);
-					   }
-				   })
-				   .css({
-					   width: "70%",
-					   border: "1px solid #add8e6",  // Light blue border
-					   backgroundColor: "#ffffff",   // White background
-					   borderRadius: "3px"
-				   })
-				   .appendTo(container);
-		   },
-			   editCellTemplate: function (cellElement, cellInfo) {
-
-				   // Create Popup content
-				   let $popupContent = $("<div>").css({
-					   padding: "20px",
-					   fontFamily: "Segoe UI, sans-serif",
-					   display: "flex",
-					   flexDirection: "column",
-					   gap: "10px",
-					   width: "100%"  // Full width inside popup
-				   });
-
-				   // Total Amount (read-only)
-				   $("<div>").appendTo($popupContent).dxNumberBox({
-					   label: "Total Amount",
-					   labelMode: "outside",
-					   min: 0,
-					   format: "#,##0.00",
-					   value: cellInfo.row.data.Amount || 0,
-					   readOnly: true
-				   });
-
-				   // Discount input + OK button row
-				   let $discountRow = $("<div>").css({
-					   display: "flex",
-					   gap: "10px",
-					   alignItems: "end"
-				   }).appendTo($popupContent);
-
-				   let discountEditor = $("<div>").appendTo($discountRow).dxNumberBox({
-					   label: "Discount",
-					   labelMode: "outside",
-					   min: 0,
-					   format: "#,##0.00",
-					   value: cellInfo.value || 0
-				   }).dxNumberBox("instance");
-
-				   $("<div>").appendTo($discountRow).dxButton({
-					   text: "OK",
-					   width: 70,
-					   onClick: function () {
-						   let discountValue = discountEditor.option("value") || 0;
-						   cellInfo.setValue(discountValue.toFixed(2));
-						   popup.hide();
-					   }
-				   });
-
-				   // Percentage buttons
-				   let $grid = $("<div>").css({
-					   marginTop: "10px",
-					   display: "flex",
-					   flexWrap: "wrap",
-					   gap: "8px"
-				   }).appendTo($popupContent);
-
-				   [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100].forEach(function (percent) {
-					   $("<div>").appendTo($grid).dxButton({
-						   text: percent + " %",
-						   width: 80,
-						   onClick: function () {
-							   let totalAmount = cellInfo.row.data.Amount || 0;
-							   let discount = (totalAmount * percent) / 100;
-							   discountEditor.option("value", discount);
-						   }
-					   });
-				   });
-
-				   // Create Popup
-				   let popup = $("<div>").appendTo(cellElement).dxPopup({
-					   contentTemplate: function () {
-						   return $popupContent;
-					   },
-					   width: 550,     // ✅ set nice width
-					   height: "auto",
-					   showTitle: true,
-					   title: "Set Discount Details",
-					   visible: true,
-					   dragEnabled: true,
-					   closeOnOutsideClick: true
-				   }).dxPopup("instance");
-
-			   }
-		   },
+					 {
+		dataField: "DiscountDetails",
+		caption: "...",
+		cssClass: "center-header",
+		width: 100,
+		allowEditing: false,
+		cellTemplate: function (container, options) {  // ✅ fixed here
+			$("<div>").dxButton({
+					icon: "fa fa-calculator", // or another valid icon
+				hint: "VAT Calculator",
+				stylingMode: "text",
+				width: 60,
+				onClick: function (e) {
+					onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+				}
+			}).appendTo(container);
+		}
+	}
+	,
 
 
 						   { dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
@@ -3707,7 +3721,7 @@
 					   dataField: "VATPercentage",
 					   caption: formatMessage('VAT Description'),
 					   cssClass: "center-header",
-					   width: 150,
+					   width: 200,
 					     cellTemplate: function (container, options) {
 							getTaxSlabData().done(function (dropdownData) {
 								let found = dropdownData.find(d => d.TaxSlabCode == options.data.VATPercentage);
@@ -3767,7 +3781,7 @@
 
 				   { dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150, cssClass: "center-header" },
 
-					   { dataField: "LineTotal", caption: formatMessage('Total'), width: 150, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+					   { dataField: "LineTotal", caption: formatMessage('Total'), width: 100, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
 				   { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -3859,6 +3873,19 @@
 				}));
 			});
 		}
+
+				function onCalCardClick(cellElement) {
+					const popover = $("#CalcardPopover").dxPopover("instance");
+
+				// Set the new target element for the popover
+				popover.option("target", cellElement);
+
+				if (popover.option("visible")) {
+					popover.hide();
+				} else {
+					popover.show();
+				}
+			}
 		function getUnitRateMethods() {
 			return $.ajax({
 				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -3895,7 +3922,32 @@
 				}));
 			});
 		}
+		$(function () {
+		$("#CalcardPopover").dxPopover({
+			width: 550,
+			position: "bottom",
+			showEvent: "", // Manual control
+			hideEvent: "", // Manual control
+			hideOnOutsideClick: true,
+			contentTemplate: function (contentElement) {
+				contentElement.empty();
+						   debugger;
+				// Get the latest amount value from somewhere accessible
+				let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 
+				$.ajax({
+					url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
+					type: 'GET',
+					success: function (data) {
+						contentElement.html(data);
+					},
+					error: function () {
+						contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+					}
+				});
+			}
+		});
+	});
 		// $(document).ready(function () {
 		// 	if (IsCurrent !== "true") {
 		// 		$.ajax({
@@ -7238,5 +7290,183 @@
 
 
 					}
+						$(function () {
+		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+			width: 600,
+			height: 400,
+			showTitle: true,
+			title: "Details",
+			visible: false,
+			dragEnabled: true,
+			closeOnOutsideClick: true,
+			contentTemplate: function () {
+				return $("<div>").attr("id", "popupFormContent");
+			}
+		}).dxPopup("instance");
+		var contextMenu = $("#contextMenu");
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+		$("#B2BdataGrid").customizeGridContextMenu();
+		$("#B2BdataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			var rowIndex = $(this).index();
+				var rowData = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+			 invoiceNo = rowData.InvoiceNo;
+			console.log(rowData);
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
+
+						$(function () {
+				var selectedRowKey = null;
+			// Hide context menu when clicking outside
+			$(document).on("click", function () {
+				$("#contextMenu").hide();
+			});
+
+			// Handle context menu item clicks
+			$(".context-menu-itemInvoice").on("click", function (e) {
+				e.stopPropagation(); // Prevent menu from hiding immediately
+
+				const action = $(this).data("action");
+				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+				const selectedRowKeys = grid.getSelectedRowKeys();
+				selectedRowKey = selectedRowKeys.length > 0 ? selectedRowKeys[0] : null;
+
+				if (!grid) {
+					DevExpress.ui.notify("Grid instance not found.", "error", 2000);
+					return;
+				}
+
+				if (action === "add") {
+					grid.addRow();
+				}
+				else if (action === "delete") {
+					if (selectedRowKey !== null) {
+						const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+						if (rowIndex >= 0) {
+							const rowData = grid.getDataSource().items()[rowIndex];
+							const { InvoiceChildSlNo, InvoiceNo } = rowData;
+
+							if (!InvoiceChildSlNo) {
+								grid.deleteRow(rowIndex); // Deletes from UI
+							} else {
+								DevExpress.ui.dialog.confirm(
+									"You are about to delete invoice line item.\nAre you sure you want to delete this invoice detail?",
+									"Delete Invoice"
+								).done(function (confirmResult) {
+									if (confirmResult) {
+										$.ajax({
+											url: "/api/VATModule/DeleteInvoiceChild",
+											type: "POST",
+											contentType: "application/json",
+											data: JSON.stringify(InvoiceChildSlNo),
+											success: function (response) {
+												if (response.success) {
+													grid.refresh();
+													DevExpress.ui.dialog.alert("VAT Invoice Line Item Deleted Successfully.", "Data Delete Successful");
+
+													// Fetch updated data and re-bind the grid
+													$.ajax({
+														type: "GET",
+														url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+														dataType: 'json',
+														success: function (data) {
+															debugger;
+															const newRowData = data.map((item, index) => ({
+																SNo: index + 1,
+																...item
+															}));
+															initializeDataGrid(newRowData);
+														},
+														error: function () {
+															DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+														}
+													});
+												} else {
+													DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+												}
+											},
+											error: function (xhr) {
+												DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+											}
+										});
+									}
+								});
+							}
+						}
+					} else {
+						DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+					}
+				}
+				else if (action === "deleteAll") {
+					if (selectedRowKey !== null) {
+						const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+						if (rowIndex >= 0) {
+							const rowData = grid.getDataSource().items()[rowIndex];
+							const { InvoiceNo } = rowData;
+
+							if (!InvoiceNo) {
+								const dataSource = grid.option("dataSource");
+								dataSource.length = 0;
+								grid.option("dataSource", dataSource);
+								grid.refresh();
+							} else {
+								DevExpress.ui.dialog.confirm(
+									"You are about to delete all the invoice line items.\nAre you sure you want to delete this invoice detail?",
+									"Delete Invoice"
+								).done(function (confirmResult) {
+									if (confirmResult) {
+										$.ajax({
+											url: "/api/VATModule/DeleteInvoiceAllLineItem",
+											type: "POST",
+											contentType: "application/json",
+											data: JSON.stringify(InvoiceNo),
+											success: function (response) {
+												if (response.success) {
+													grid.refresh();
+													DevExpress.ui.dialog.alert("VAT Invoice Line Items Deleted Successfully.", "Data Delete Successful");
+
+													$.ajax({
+														type: "GET",
+														url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+														dataType: 'json',
+														success: function (data) {
+															const newRowData = data.map((item, index) => ({
+																SNo: index + 1,
+																...item
+															}));
+															initializeDataGrid(newRowData);
+														},
+														error: function () {
+															DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+														}
+													});
+												} else {
+													DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+												}
+											},
+											error: function (xhr) {
+												DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+											}
+										});
+									}
+								});
+							}
+						}
+					} else {
+						DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+					}
+				}
+
+				$("#contextMenu").hide();
+			});
+		});
+
+		
+	
+
+
 </script>
 

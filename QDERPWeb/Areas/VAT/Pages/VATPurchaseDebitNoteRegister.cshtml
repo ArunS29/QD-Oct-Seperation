@@ -61,26 +61,6 @@
 		width: 100%;
 		height: 100%;
 	}
-
-	.dx-datagrid-headers {
-		border: 1px solid #686868 !important;
-		width: 5000px;
-	}
-
-		.dx-datagrid-headers .dx-row > td {
-			border: 1px solid #686868 !important;
-			text-align: center !important;
-			/* 	width:1000px; */
-		}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-size: 12px !important;
-		white-space: normal !important;
-		text-align: center !important;
-		font-weight: bold;
-		color: black;
-	}
-
 	.close-btn {
 		position: absolute;
 		top: 10px;
@@ -208,11 +188,11 @@
 </div>
 
 
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
@@ -223,7 +203,7 @@
 	@(Html.DevExtreme().DateBox()
 		.ID("todateBox")
 		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
@@ -237,7 +217,7 @@
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
 		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
+		
 		.TabIndex(4)
 		.DropDownOptions(options => options.Width(230))
 		.Items(items =>

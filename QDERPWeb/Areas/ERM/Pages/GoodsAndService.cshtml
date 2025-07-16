@@ -65,7 +65,7 @@
         @(Html.DevExtreme().TextBox()
                 .ID("txtGoodsCode7")
                 .Label(new JS("formatMessage('Goods & Services Code:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .Width("100%")
                 .ValidationRules(rules =>
                 {
@@ -83,7 +83,7 @@
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("GsgroupCode")
                 )
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("GetProjectDropDown")
                 .Width(900)
                 @*  .ShowClearButton(true)
@@ -114,7 +114,7 @@
         @(Html.DevExtreme().TextBox()
                 .ID("txtItemPartNo4")
                 .Label(new JS("formatMessage('Item Part No:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .Width("100%"))
     </div>
     </div>
@@ -125,7 +125,7 @@
         @(Html.DevExtreme().TextArea()
                 .ID("txtDescription8")
                 .Label(new JS("formatMessage('Goods & Services Description:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ElementAttr("style", "height:150px !important;")
         .ValidationRules(rules =>
             {
@@ -142,7 +142,7 @@
         <div class="col" style="width:50%;">
             @(Html.DevExtreme().TextArea()
                 .Label(new JS("formatMessage('Goods & Services Description (in Arabic):')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtDescriptionArabic").Width("100%")
                 .ElementAttr("style", "height:150px !important;"))
         
@@ -161,7 +161,7 @@
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("UnitCode")
                 )
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("GetLedgerNoDropDown")
                 .Width(900)
                 @*  .ShowClearButton(true)
@@ -198,7 +198,7 @@
         @(Html.DevExtreme().NumberBox()
                 .ID("packingUnit")
                 .Label(new JS("formatMessage('Packing Unit:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .Value(1)
             .Width("100%"))
     </div>
@@ -206,7 +206,7 @@
         @(Html.DevExtreme().NumberBox()
                 .ID("sellingRate")
                 .Label(new JS("formatMessage('Selling Rate:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .Value(1)
             .Width("100%"))
     </div>
@@ -214,7 +214,7 @@
         @(Html.DevExtreme().NumberBox()
                 .ID("txtCostPrice3")
                 .Label(new JS("formatMessage('Cost Price:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .Value(1)
             .Width("100%"))
     </div>
@@ -226,7 +226,7 @@
         @(Html.DevExtreme().TextArea()
                 .ID("txtDetailedDescription")
                 .Label(new JS("formatMessage('Detailed Description:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ElementAttr("style", "height:150px !important;")
             .Width("100%"))
             @(Html.DevExtreme().Button()
@@ -239,7 +239,7 @@
         <div class="col" style="width:50%">
             @(Html.DevExtreme().TextArea()
                 .Label(new JS("formatMessage('Detailed Description (in Arabic):')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtDetailedDescriptionArabic")
                 .ElementAttr("style", "height:150px !important;")
                 .Width("100%"))

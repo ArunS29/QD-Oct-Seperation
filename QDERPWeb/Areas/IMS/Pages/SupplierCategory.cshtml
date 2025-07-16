@@ -149,7 +149,7 @@
         @(
             Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Supplier Category & Add to the Existing List:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("txtSupplierCategory")
             .Value(null)
             .ValidationRules(rules =>
@@ -166,7 +166,7 @@
             @(
                 Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Supplier Category Code:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtCategoryCode")
                 .Value(null)
                         .ValidationRules(rules =>
@@ -214,21 +214,9 @@
 <script type="text/javascript">
 
          function btnbackbt() {
-        // Optional: confirm before closing
-        DevExpress.ui.dialog.confirm("Do you want to go back?", "Back").done(function (result) {
-            if (result) {
-                // Call parent to refresh dropdown
-                if (window.parent && typeof window.parent.refreshSupplierCategoryDropDown === "function") {
-                    window.parent.refreshSupplierCategoryDropDown();
-                }
-
-                // Call parent to close modal
-                if (window.parent && typeof window.parent.closeModal === "function") {
+       
                     window.parent.closeModal();
-                }
-            }
-        });
-    }
+                  }
 
 
     $(function () {
@@ -540,6 +528,12 @@
 
                         // Optionally, you can reload the data grid to reflect the newly added branch
                         $("#gridContainer").dxDataGrid("instance").refresh();
+                         //Reload  P.dd
+          setTimeout(() => {
+        if (window.parent && typeof window.parent.refreshSupplierCategoryDropDown === "function") {
+            window.parent.refreshSupplierCategoryDropDown();
+        }
+    }, 300);
                     } else {
                         Swal.fire({
                             icon: 'error',

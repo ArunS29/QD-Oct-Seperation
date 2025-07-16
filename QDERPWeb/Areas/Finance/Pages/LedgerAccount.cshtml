@@ -11,7 +11,10 @@
     .body {
         padding-top: 0px;
     }
-
+    .tab-content{
+        height:100%;
+        overflow-y:scroll;
+    }
     .content {
         margin: 0px;
     }
@@ -226,41 +229,7 @@
         gap: 10px; */
     }
 
-    /* Tab appearance */
-    .dx-tab {
-        background-color: #ffffff;
-        border-radius: 50px !important;
-        padding: 8px 8px !important;
-        font-weight: 500;
-        font-size: 12px;
-        /* color: #333; */
-        transition: all 0.3s ease;
-        /* border: 1px solid #ddd; */
-        /* min-height: 40px; */
-        width: auto;
-    }
-
-        /* Tab hover effect */
-        .dx-tab:hover {
-            background-color: #e9f2ff;
-            color: lightskyblue;
-            border-color: #cce5ff;
-        }
-
-        /* Selected tab styling */
-        .dx-tab.dx-tab-selected {
-            background-color: lightskyblue !important;
-            color: #fff !important;
-            font-weight: 600;
-            border: 1px solid lightskyblue !important;
-            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
-        }
-
-        /* Optional: better icon spacing */
-        .dx-tab .dx-icon {
-            margin-right: 6px;
-            font-size: 12px;
-        }
+   
 
     .containerLedgerAccount{
         overflow:auto !important;
@@ -269,11 +238,6 @@
     .background{
     background-color:white!important;
     }
-
-    .dx-tab.dx-tab-selected .dx-icon, .dx-tab.dx-tab-selected .dx-tab-text {
-        color: white;
-    }
-
     .dx-fieldset{
         margin:0px !important;
     }
@@ -289,7 +253,7 @@
         <div class="form-wrapper" style="display: flex; flex-direction: column; gap: 16px; margin-top:0px;">
 
             <!-- 🔹 Row 1 -->
-            <div class="container-fluid px-2" style="width: 111%;">
+            <div class="container-fluid px-2" style="width: 100%;    display: flex;flex-direction: column;">
                 <!-- 🔹 Row 1 -->
                 <div class="row g-3 align-items-end ">
                     <div class="form-group col-lg-3 col-md-4 col-sm-6">
@@ -417,7 +381,7 @@
 
 
         <!-- Tab Content -->
-        <div class="dx-fieldset" style="background-color:white;">
+        <div class="" style="background-color:white;height:60%;">
             <div id="tab-content-1" class="tab-content" style="display: none;">
                 <div class="container-fluid p-3 rounded border shadow-sm">
                     <!-- Opening Balance Section -->
@@ -611,7 +575,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAddDivision")
                                     .Icon("plus")
-                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .ElementAttr("class", "button-group")
                                     .OnClick("redirectToBranchMaster")
                                     )
                             </td>
@@ -653,7 +617,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAddSubgroup")
                                     .Icon("plus")
-                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .ElementAttr("class", "button-group")
                                     .OnClick("redirecttoledgersubgroup")
                                     )
                             </td>
@@ -694,7 +658,7 @@
                                 @(Html.DevExtreme().Button()
                                     .ID("btnAddSalesperson")
                                     .Icon("plus")
-                                    .ElementAttr("class", "button-alignment-down button-group")
+                                    .ElementAttr("class", "button-group")
                                     .OnClick("redirecttosalespersonmaster")
                                     )
                             </td>
@@ -909,7 +873,7 @@
                 </div>
             </div>
 
-            <div id="tab-content-4" class="tab-content">
+            <div id="tab-content-4" class="tab-content" style="display: none;">
                 <div class="background">
                     <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                         <tr>
@@ -1353,7 +1317,7 @@
                     </table>
                 </div>
             </div>
-            <div id="tab-content-5" class="tab-content">
+            <div id="tab-content-5" class="tab-content" style="display: none;">
                 <div class="background">
 
                     <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
@@ -1797,7 +1761,7 @@
            @*  this line for select attachment *@
             <input type="file" id="fileInput" style="display: none;">
 
-            <div id="tab-content-6" class="tab-content">
+            <div id="tab-content-6" class="tab-content" style="display: none;">
                 <div class="background">
                     <table width="100%" style="border-color:skyblue; border-radius:3px; font-size:14px;">
                         <tr>
@@ -2092,7 +2056,7 @@
                 </div>
             </div>
 
-            <div id="tab-content-8" class="tab-content">
+            <div id="tab-content-8" class="tab-content" style="display: none;">
                 <div class="background">
                     <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
                         <tr>
@@ -2178,8 +2142,7 @@
         </div>
 
         <!-- Card 5: CreatedOn Details -->
-      <div class="content-container" style="width: 100%; max-width: 1200px;">
-    <div class="dx-fieldset horizontal-container">
+      <div class="" style="width: 100%; max-width: 1200px;">
         <div class="form-group-row1"
              style="display: flex; gap: 20px; align-items: center; justify-content: space-evenly; width: 100%;">
              
@@ -2211,7 +2174,6 @@
                 </div>
             </div>
 
-        </div>
     </div>
 </div>
 
@@ -3303,18 +3265,14 @@ function syncSupVATNumbers(e) {
             dataType: 'json',  // Expecting JSON response
             success: function (response) {
            []
-             var ModifiedBy = $('#ModifiedBy').dxTextBox("instance");
-                    if (ModifiedBy) {
-                        ModifiedBy.option("value", response.UserName);
+                       if (response.accountDetails && response.accountDetails.length > 0) {
+                            const data = response.accountDetails[0];
 
-                    }
-                    console.log("hi",ModifiedBy)
-                     var ModifiedOn = $('#ModifiedOn').dxTextBox("instance");
-                    if (ModifiedOn) {
-                        ModifiedOn.option("value", formatDate(new Date()));
-
-                    }
-      
+                            $("#CreatedBy").dxTextBox("instance").option("value", data.RecordCreatedBy || "");
+                            $("#CreatedOn").dxTextBox("instance").option("value", data.RecordCreatedOn || "");
+                            $("#ModifiedBy").dxTextBox("instance").option("value", data.RecordModifiedBy || "");
+                            $("#ModifiedOn").dxTextBox("instance").option("value", data.RecordModifiedOn || "");
+                        }
 
                console.log("userName:",userName);
                 if (response && response.accountDetails && response.accountDetails.length > 0) {
@@ -3787,18 +3745,7 @@ function syncSupVATNumbers(e) {
 
                     }
 
-                    var CreatedBy = $('#CreatedBy').dxTextBox("instance");
-                   if (CreatedBy) {
-                        CreatedBy.option("value", account.RecordCreatedBy);
-
-                    }
-                    var CreatedOn = $("#CreatedOn").dxTextBox("instance");
-
-                    if (CreatedOn && account.RecordCreatedOn) {
-                        var formattedDate = formatDate(new Date(account.RecordCreatedOn));
-                        CreatedOn.option("value", formattedDate);
-                    }
-
+                    
 
 
 
@@ -3908,19 +3855,20 @@ function syncSupVATNumbers(e) {
 
     function redirectToBranchMaster() {
 
-        const modal = document.getElementById("ledgerAccountMasterModal");
-        const iframe = document.getElementById("ledgerAccountMasterIframe");
+        // const modal = document.getElementById("ledgerAccountMasterModal");
+        // const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/${tenantName}/Finance/Divmaster`;
+        // iframe.src = `/${tenantName}/Finance/Divmaster`;
 
-        modal.style.display = "block";
+        // modal.style.display = "block";
 
-        const closeBtn = modal.querySelector(".close");
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-            refreshaccountledgerSelectBox();
-        };
-
+        // const closeBtn = modal.querySelector(".close");
+        // closeBtn.onclick = () => {
+        //     modal.style.display = "none";
+        //     refreshaccountledgerSelectBox();
+        // };
+        url = `/${tenantName}/Finance/Divmaster`;
+        openModal(url,"");
         window.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
@@ -3954,19 +3902,20 @@ function syncSupVATNumbers(e) {
 
     function redirecttoledgersubgroup() {
 
-        const modal = document.getElementById("ledgerAccountMasterModal");
-        const iframe = document.getElementById("ledgerAccountMasterIframe");
+        // const modal = document.getElementById("ledgerAccountMasterModal");
+        // const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/${tenantName}/Finance/LedgerSubGroupMaster`;
+        // iframe.src = `/${tenantName}/Finance/LedgerSubGroupMaster`;
 
-        modal.style.display = "block";
+        // modal.style.display = "block";
 
-        const closeBtn = modal.querySelector(".close");
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-            refreshaccountledgerSelectBox();
-        };
-
+        // const closeBtn = modal.querySelector(".close");
+        // closeBtn.onclick = () => {
+        //     modal.style.display = "none";
+        //     refreshaccountledgerSelectBox();
+        // };
+            url = `/${tenantName}/Finance/LedgerSubGroupMaster`;
+        openModal(url,"");
         window.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
@@ -4000,19 +3949,20 @@ function syncSupVATNumbers(e) {
 
     function redirecttosalespersonmaster() {
 
-        const modal = document.getElementById("ledgerAccountMasterModal");
-        const iframe = document.getElementById("ledgerAccountMasterIframe");
+        // const modal = document.getElementById("ledgerAccountMasterModal");
+        // const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/${tenantName}/Finance/SalesPersonMaster`;
+        // iframe.src = `/${tenantName}/Finance/SalesPersonMaster`;
 
-        modal.style.display = "block";
+        // modal.style.display = "block";
 
-        const closeBtn = modal.querySelector(".close");
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-            refreshaccountledgerSelectBox();
-        };
-
+        // const closeBtn = modal.querySelector(".close");
+        // closeBtn.onclick = () => {
+        //     modal.style.display = "none";
+        //     refreshaccountledgerSelectBox();
+        // };
+        url = `/${tenantName}/Finance/SalesPersonMaster`;
+        openModal(url,"");
         window.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
@@ -4045,19 +3995,20 @@ function syncSupVATNumbers(e) {
     }
 
     function redirectAccoutledgerMaster() {
-            const modal = document.getElementById("ledgerAccountMasterModal");
-            const iframe = document.getElementById("ledgerAccountMasterIframe");
+            // const modal = document.getElementById("ledgerAccountMasterModal");
+            // const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-                iframe.src = `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`;
+            //     iframe.src = `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`;
 
-            modal.style.display = "block";
+            // modal.style.display = "block";
 
-            const closeBtn = modal.querySelector(".close");
-            closeBtn.onclick = () => {
-                modal.style.display = "none";
-                refreshaccountledgerSelectBox();
-            };
-
+            // const closeBtn = modal.querySelector(".close");
+            // closeBtn.onclick = () => {
+            //     modal.style.display = "none";
+            //     refreshaccountledgerSelectBox();
+            // };
+                url = `/${tenantName}/Finance/LedgerAccount?AccountGroupId=A013`;
+            openModal(url,"");
             window.onclick = (event) => {
                 if (event.target === modal) {
                     modal.style.display = "none";
@@ -4073,19 +4024,20 @@ function syncSupVATNumbers(e) {
             disableTabs(["tab-content-3", "tab-content-7"]);
         }
 
-        const modal = document.getElementById("ledgerAccountMasterModal");
-        const iframe = document.getElementById("ledgerAccountMasterIframe");
+        // const modal = document.getElementById("ledgerAccountMasterModal");
+        // const iframe = document.getElementById("ledgerAccountMasterIframe");
 
-        iframe.src = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)} `;
+        // iframe.src = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)}`;
 
-        modal.style.display = "block";
+        // modal.style.display = "block";
 
-        const closeBtn = modal.querySelector(".close");
-        closeBtn.onclick = () => {
-            modal.style.display = "none";
-            refreshaccountledgerSelectBox();
-        };
-
+        // const closeBtn = modal.querySelector(".close");
+        // closeBtn.onclick = () => {
+        //     modal.style.display = "none";
+        //     refreshaccountledgerSelectBox();
+        // };
+        url = `/${tenantName}/Finance/LedgerAccountMaster?AccountGroup=${encodeURIComponent(accgrp)}&AccountGroupUnder=${encodeURIComponent(accgrpunder)}&AccountGroupId=${encodeURIComponent(accgrpId)}`;
+        openModal(url,"");
         window.onclick = (event) => {
             if (event.target === modal) {
                 modal.style.display = "none";
@@ -5157,29 +5109,7 @@ function syncSupVATNumbers(e) {
         var buttonText = button ? button.option("text") : "";
 
         // Only set CreatedBy on insert
-        if (buttonText !== "Update") {
-            $("#CreatedBy").dxTextBox("instance").option("value", getUN);
-        }
-      
-
-        
-        // $("#CreatedBy").dxTextBox("instance").option("value",getUN);
-         const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
- console.log("userN1:",getUN);
-       console.log("userN2:",CreatedBy);
-
-            var CreatedOns = $("#CreatedOn").dxTextBox("instance").option("value");
-            if (!CreatedOn || !Date.parse(CreatedOn)) {
-                CreatedOn = new Date().toISOString();
-            }
-
        
-
-        // $("#ModifiedBy").dxTextBox("instance").option("value",userNames);
-//  console.log("userN3:",userNames);
-   const ModifiedBy = $("#ModifiedBy").dxTextBox("instance").option("value");
-    console.log("userN4:",ModifiedBy);
-       const ModifiedOn = new Date().toISOString(); // Current date in ISO format
 
 
         //var obVATNoAr = $('#txtObsSupRegNoAr').dxNumberBox('option', 'value');
@@ -5313,6 +5243,18 @@ function syncSupVATNumbers(e) {
                 data: values,  // Convert the object to JSON
                 success: function (response) {
                     if (response.success) {
+                                // ✅ Set Created/Modified metadata if available
+                        if (response.createdBy)
+                            $("#CreatedBy").dxTextBox("instance").option("value", response.createdBy);
+
+                        if (response.createdOn)
+                            $("#CreatedOn").dxTextBox("instance").option("value", response.createdOn);
+
+                        if (response.modifiedBy)
+                            $("#ModifiedBy").dxTextBox("instance").option("value", response.modifiedBy);
+
+                        if (response.modifiedOn)
+                            $("#ModifiedOn").dxTextBox("instance").option("value", response.modifiedOn);
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000)
                         // Check if the button text is "Update"
@@ -5323,10 +5265,16 @@ function syncSupVATNumbers(e) {
 
                         // Close popup ONLY IF the button text is NOT "Update"
                         if (buttonText !== "Update") {
-                            setTimeout(function () {
-                                window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-                                window.parent.$("#popupContainer").dxPopup("instance").hide();
-                            }, 2000);
+
+
+                                        setTimeout(function () {
+                                            // Hide popups in parent
+                                            window.parent.$("#ledgerAccountPopup").dxPopup("instance")?.hide();
+                                            window.parent.$("#popupContainer").dxPopup("instance")?.hide();
+
+                                            // Reload the parent page after closing
+                                            window.parent.location.reload();
+                                        }, 2000);
                         }
                             
                     } else {

@@ -3,21 +3,9 @@
 @{
 }
 <style>
-    .dx-datagrid-headers {
-    border: 1px solid #686868 !important;
-    width: 100%; /* Adjust to fit the container */
-    overflow-x: auto; /* Enable horizontal scrolling */
-    white-space: nowrap; /* Prevent wrapping of headings */
-    overflow-y: hidden;
-    }
+    
 
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-    font-size: 12px !important;
-    white-space: nowrap !important; /* Prevent wrapping of text */
-    text-align: center !important;
-    font-weight: bold;
-    color: black;
-    }
+    
 
     .ledgerResult {
     overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
@@ -287,7 +275,7 @@
                          .ID("txtJoborederNo")
                         
                         .Label("Job Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         
                         .Width("100%")
                         )
@@ -299,7 +287,7 @@
                         .ID("txtJobOrderDate")
                         .Value(DateTime.Now)
                         .Label("Job Order Date:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -313,7 +301,7 @@
                                                     .LoadMode(DataSourceLoadMode.Raw)
                                                     .Key("CategoryCode")
                                                     )
-                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .LabelMode(EditorLabelMode.Floating)
                                                     .ID("GetProjectDropDown")
                                                     .Width(900)
                                                     .OpenOnFieldClick(false)
@@ -353,7 +341,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("txtSalesNo")
                         .Label("Work Order/Sales Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
 
@@ -368,7 +356,7 @@
                                                     .LoadMode(DataSourceLoadMode.Raw)
                                                     .Key("JobOrderStatusId")
                                                     )
-                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .LabelMode(EditorLabelMode.Floating)
                                                     .ID("ddJobOrderStatus")
                                                     .Width(900)
                                                     .OpenOnFieldClick(false)
@@ -394,7 +382,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("txtJobDescription")
                          .Label("Job Description:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                         @(Html.DevExtreme().Button()
@@ -422,7 +410,7 @@
                                                     .LoadMode(DataSourceLoadMode.Raw)
                                                     .Key("JobOrderStatusId")
                                                     )
-                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .LabelMode(EditorLabelMode.Floating)
                                                     .ID("ddCompanyBranch")
                                                     .Width(900)
                                                     .OpenOnFieldClick(false)
@@ -447,7 +435,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("SalesOrderNo")
                         .Label("Sales Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("40%")
                         )   
 
@@ -553,7 +541,7 @@
                                                                         .AcceptCustomValue(true)                            // Enables typing new values :contentReference[oaicite:1]{index=1}
                                                                         .OnCustomItemCreating("onComboValve_CustomItemCreating")
                                                                         .Label(new JS("formatMessage('Type:')"))
-                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        .LabelMode(EditorLabelMode.Floating)
                                                                         )
                                 </td>
                                 <td>
@@ -570,17 +558,17 @@
                                                                         .AcceptCustomValue(true)                            // Enables typing new values :contentReference[oaicite:1]{index=1}
                                                                         .OnCustomItemCreating("onComboValve_Operator")
                                                                         .Label(new JS("formatMessage('Operator:')"))
-                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        .LabelMode(EditorLabelMode.Floating)
                                                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("ModelNo").Width("100%").Label(new JS("formatMessage('Model No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("ClientWorkOrderNo").Width("100%").Label(new JS("formatMessage('Client Work Order No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                             </tr>
@@ -605,7 +593,7 @@
                                                                         .AcceptCustomValue(true)
                                                                         .OnCustomItemCreating("onComboSize_CustomItemCreating")
                                                                         .Label(new JS("formatMessage('Size:')"))
-                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        .LabelMode(EditorLabelMode.Floating)
                                                                         )
 
                                 </td>
@@ -626,18 +614,18 @@
                                                                         .AcceptCustomValue(true)
                                                                         .OnCustomItemCreating("onComboMaterial_CustomItemCreating")
                                                                         .Label(new JS("formatMessage('Material:')"))
-                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        .LabelMode(EditorLabelMode.Floating)
                                                                         )
 
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("TagNo").Width("100%").Label(new JS("formatMessage('Tag No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("ClientProject").Width("100%").Label(new JS("formatMessage('Client Project:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                             </tr>
@@ -655,30 +643,30 @@
                                                                         .AcceptCustomValue(true)  // Enables custom entries :contentReference[oaicite:2]{index=2}
                                                                         .OnCustomItemCreating("onComboClass_CustomItemCreating")
                                                                         .Label(new JS("formatMessage('Class:')"))
-                                                                        .LabelMode(EditorLabelMode.Outside)
+                                                                        .LabelMode(EditorLabelMode.Floating)
                                                                         )
 
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("Make").Width("100%").Label(new JS("formatMessage('Make:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("SerialNo").Width("100%").Label(new JS("formatMessage('Serial No:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         )
                                 </td>
                                 <td>
                                     @(Html.DevExtreme().TextBox().ID("txtvaluetype").Placeholder(new JS("formatMessage('Manual Valves')")).Width("100%").Label(new JS("formatMessage('Valve Type:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     )
                                 </td>
                             </tr>
                         </table>
                         <div style="margin-top: 10px;">
                             @(Html.DevExtreme().TextArea().ID("txtJobOrderDescription").Width("100%").ElementAttr("style", "  height: 400px ! important;").Label(new JS("formatMessage('Job Order Description (Detailed)')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 )
                         </div>
                         <div class="joborder-footer">
@@ -753,7 +741,7 @@
                                 @(Html.DevExtreme().DateBox()
                                     .ID("observationDate")
                                     .Label(new JS("formatMessage('Observation Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -763,7 +751,7 @@
                                 @(Html.DevExtreme().TextArea()
                                       .ID("ObservationRemarks1")
                                     .Label(new JS("formatMessage('Initial Observation Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -773,14 +761,14 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("preparedBy")
                                     .Label(new JS("formatMessage('Observation Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .ID("preparedOn")
                                     .Label(new JS("formatMessage('Prepared On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -790,14 +778,14 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("approvedBy")
                                     .Label(new JS("formatMessage('Observation Approved By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .ID("approvedOn")
                                     .Label(new JS("formatMessage('Approved On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -870,7 +858,7 @@
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .Label(new JS("formatMessage('Inspection Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("inspectionDate")
                                     .Width("100%"))
                             </div>
@@ -881,14 +869,14 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("preTested")
                                     .Label(new JS("formatMessage('Pre-Tested:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("scope")
                                     .Label(new JS("formatMessage('Scope:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -899,7 +887,7 @@
                                     .ID("inspectionRemarks")
                                     .Height(100)
                                     .Label(new JS("formatMessage('Inspection Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -909,28 +897,28 @@
                                 @(Html.DevExtreme().TextBox()
                                     .ID("InspectionPreparedBy")
                                     .Label(new JS("formatMessage('Inspection Report Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .ID("InspectionPreparedOn")
                                     .Label(new JS("formatMessage('Prepared On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox()
                                     .ID("InspectionApprovedBy")
                                     .Label(new JS("formatMessage('Inspection Report Approved By:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox()
                                     .ID("InspectionApprovedOn")
                                     .Label(new JS("formatMessage('Approved On:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%"))
                             </div>
                         </div>
@@ -1006,7 +994,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("repairReportDate").Label(new JS("formatMessage('Repair Report Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox()
@@ -1022,7 +1010,7 @@
                                                                 .AcceptCustomValue(true) // Enables typing custom values :contentReference[oaicite:1]{index=1}
                                                                 .OnCustomItemCreating("onComboStandard_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Standard:')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1043,7 +1031,7 @@
                                                                 .AcceptCustomValue(true)      // Allow typing new custom values :contentReference[oaicite:2]{index=2}
                                                                 .OnCustomItemCreating("onComboShell_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Shell')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1061,7 +1049,7 @@
                                                                 .AcceptCustomValue(true)      // Enables custom user input
                                                                 .OnCustomItemCreating("onComboBackSeat_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Back Seat:')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
                             </div>
                             <div class="form-group">
@@ -1076,7 +1064,7 @@
                                                                 .AcceptCustomValue(true) // Enables typing custom values :contentReference[oaicite:2]{index=2}
                                                                 .OnCustomItemCreating("onComboMedia_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Media:')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1097,7 +1085,7 @@
                                                                 .AcceptCustomValue(true)   // Allow user-entered values :contentReference[oaicite:2]{index=2}
                                                                 .OnCustomItemCreating("onComboSeatHP_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Seat(HP):')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1113,7 +1101,7 @@
                                                                 .AcceptCustomValue(true)   // Enables entering custom values :contentReference[oaicite:2]{index=2}
                                                                 .OnCustomItemCreating("onComboSeatLP_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Seat(LP):')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1131,7 +1119,7 @@
                                                                 .AcceptCustomValue(true)  // Enables custom input :contentReference[oaicite:0]{index=0}
                                                                 .OnCustomItemCreating("onComboShellTime_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Shell Time:')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1140,7 +1128,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox().ID("result").Label(new JS("formatMessage('Result:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().SelectBox()
@@ -1152,7 +1140,7 @@
                                                                 .AcceptCustomValue(true) // Allows entering custom values :contentReference[oaicite:1]{index=1}
                                                                 .OnCustomItemCreating("onComboLeakageClass_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Seat Leakage Class:')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1168,7 +1156,7 @@
                                                                 .AcceptCustomValue(true)   // Enables user to enter custom values :contentReference[oaicite:1]{index=1}
                                                                 .OnCustomItemCreating("onComboSeatTime_CustomItemCreating")
                                                                 .Label(new JS("formatMessage('Seat Time:')"))
-                                                                .LabelMode(EditorLabelMode.Outside)
+                                                                .LabelMode(EditorLabelMode.Floating)
                                                                 )
 
                             </div>
@@ -1180,31 +1168,31 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("ReportpreparedBy").Label(new JS("formatMessage('Repair Report Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("preparedByPosition").Label(new JS("formatMessage('Prepared By (Position):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("RepairPreparedOn").Label(new JS("formatMessage('Prepared On:')"))
-                                                                .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                                                .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("RepairWitnessedOn").Label(new JS("formatMessage('Witnessed On:')"))
-                                                                .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                                                .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("witnessedBy").Label(new JS("formatMessage('Repair Report Witnessed By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("witnessedByPosition").Label(new JS("formatMessage('Witnessed By (Position):')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                     </fieldset>
@@ -1278,7 +1266,7 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("dispatchDate").Label(new JS("formatMessage('Dispatch Report Date:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
 
@@ -1287,7 +1275,7 @@
                                 @(Html.DevExtreme().TextArea()
                                     .ID("dispatchRemarks")
                                     .Label(new JS("formatMessage('Dispatch Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Height(100)
                                     .Width("100%")
                                     .MaxLength(500))
@@ -1297,22 +1285,22 @@
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("DispatchPreparedBy").Label(new JS("formatMessage('Dispatch Report Prepared By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("DispatchPreparedOn").Label(new JS("formatMessage('Prepared On:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
 
                         <div class="form-row">
                             <div class="form-group">
                                 @(Html.DevExtreme().TextBox().ID("DispatchApprovedBy").Label(new JS("formatMessage('Dispatch Report Approved By:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                             <div class="form-group">
                                 @(Html.DevExtreme().DateBox().ID("DispatchApprovedOn").Label(new JS("formatMessage('Approved On:')"))
-                                    .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                                    .LabelMode(EditorLabelMode.Floating).Width("100%"))
                             </div>
                         </div>
                     </fieldset>

@@ -31,27 +31,6 @@
 		height: 100%;
 	}
 
-	.dx-datagrid-headers {
-		width: 100%; /* Adjust to fit the container */
-		overflow-x: auto; /* Enable horizontal scrolling */
-		white-space: nowrap; /* Prevent wrapping of headings */
-		overflow-y: hidden;
-	}
-
-		.dx-datagrid-headers .dx-row > td {
-			border: 1px solid #686868 !important;
-			text-align: center !important;
-			/* 	width:1000px; */
-		}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		font-size: 12px !important;
-		white-space: nowrap !important; /* Prevent wrapping of text */
-		text-align: center !important;
-		font-weight: bold;
-		color: black;
-	}
-
 	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
@@ -161,11 +140,6 @@
 
 	.dx-fieldset.horizontal-container {
 		margin-top: 10px;
-	}
-
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
-		text-align: center;
 	}
 
 	.custom-submenu {
@@ -325,11 +299,11 @@
 </div>
 
 
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of month
@@ -340,7 +314,7 @@
 	@(Html.DevExtreme().DateBox()
 		.ID("todateBox")
 		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
@@ -354,7 +328,6 @@
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
 		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
 		.TabIndex(4)
 		.DropDownOptions(options => options.Width(230))
 		.Items(items =>
@@ -378,9 +351,9 @@
 		.ID("chkUseEffectiveDate")
 		.Text(new JS("formatMessage('Use Effective Date')"))
 		.Value(false)
-		.ElementAttr("class", "mt-4 ml-4"))
-									   </div>
-									   <div class="dx-field ledgerResult">
+		)
+	</div>
+	<div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
@@ -757,6 +730,7 @@
 			});
 		})
 		.Height("65vh") // <<< fixed height
+		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.ColumnAutoWidth(true)
 		.Width("98%")
 				  	@* 	.WordWrapEnabled(true) *@

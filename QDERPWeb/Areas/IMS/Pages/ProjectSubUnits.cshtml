@@ -112,7 +112,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("txtProjectSubUnit")
                 .Label(new JS("formatMessage('Type new Project Sub Unit & Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Project Sub Unit is required");
@@ -291,6 +291,7 @@
                 success: function () {
                 DevExpress.ui.notify("ProjectSubUnits saved successfully!", "success", 2000);
                     $("#SignatoryGrid").dxDataGrid("instance").refresh();
+                     $("#txtProjectSubUnit").dxTextBox("instance").option("value","");
                 },
                 error: function () {
                     DevExpress.ui.notify("Failed to save signatory.", "error", 2000);

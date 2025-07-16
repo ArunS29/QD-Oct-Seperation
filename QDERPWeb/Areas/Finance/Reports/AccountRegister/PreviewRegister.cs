@@ -236,16 +236,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
                     pictureBox7.Image = bitmap;
                     pictureBox7.Sizing = ImageSizeMode.Normal;
                 }
-                if (FindControl("xrPictureBox8", true) is XRPictureBox pictureBox8)
-                {
-                    pictureBox8.Image = bitmap;
-                    pictureBox8.Sizing = ImageSizeMode.Normal;
-                }
-                if (FindControl("xrPictureBox9", true) is XRPictureBox pictureBox9)
-                {
-                    pictureBox9.Image = bitmap;
-                    pictureBox9.Sizing = ImageSizeMode.Normal;
-                }
+               
 
             }
             catch
@@ -268,5 +259,67 @@ namespace QD.ERP.Web.Areas.Finance.Reports.AccountRegister
                 }
             }
         }
+        private void AlignCurrencyWithAmount(Bitmap bitmap)
+        {
+            var pairs = new[]
+            {
+        new { Label = "xrLabel12", Picture = "xrPictureBox4" },
+        new { Label = "xrLabel11", Picture = "xrPictureBox6" },
+        new { Label = "xrLabel3", Picture = "xrPictureBox6" },
+                        //new { Label = "xrLabel23", Picture = "xrPictureBox3" },
+                                        //new { Label = "xrLabel22", Picture = "xrPictureBox2" },
+                        //new { Label = "xrLabel7", Picture = "xrPictureBox5" },
+                        new { Label = "xrLabel5", Picture = "xrPictureBox7" },
+
+                new { Label = "xrLabel8", Picture = "xrPictureBox14" },
+
+
+    };
+
+            foreach (var p in pairs)
+            {
+                var label = FindControl(p.Label, true) as XRLabel;
+                var pictureBox = FindControl(p.Picture, true) as XRPictureBox;
+
+                if (label == null || pictureBox == null)
+                    continue;
+
+                pictureBox.Image = bitmap;
+                pictureBox.Sizing = ImageSizeMode.StretchImage;
+
+                label.BeforePrint += (s, e) =>
+                {
+                    var lbl = (XRLabel)s;
+
+                    float iconWidth = 10f;
+                    float iconHeight = 10f;
+
+                    pictureBox.WidthF = iconWidth;
+                    pictureBox.HeightF = iconHeight;
+
+                    // Center the icon vertically with respect to the label
+                    float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
+
+                    // Convert DXFont to System.Drawing.Font manually
+                    using (var g = Graphics.FromImage(new Bitmap(1, 1)))
+                    {
+                        using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
+                        {
+                            var format = StringFormat.GenericTypographic;
+                            format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+                            float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
+
+                            // Align image to left of text with 5 units padding
+                            float rightEdge = lbl.LocationF.X + lbl.WidthF;
+                            float posX = rightEdge - textWidth - iconWidth - 8f; // Adjusted spacing for visual gap
+
+                            pictureBox.LocationF = new PointF(posX, posY);
+                        }
+                    }
+                };
+            }
+        }
+
     }
 }

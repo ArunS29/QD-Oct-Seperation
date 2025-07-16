@@ -3,22 +3,6 @@
 @{
 }
 <style>
-    .dx-datagrid-headers {
-    border: 1px solid #686868 !important;
-    width: 100%; 
-    overflow-x: auto; 
-    white-space: nowrap; 
-    overflow-y: hidden;
-    }
-
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-    font-size: 12px !important;
-    white-space: nowrap !important; 
-    text-align: center !important;
-    font-weight: bold;
-    color: black;
-    }
-
     .ledgerResult {
     overflow-x: auto;  
     width: 100%;
@@ -277,7 +261,7 @@
                         .ID("deliveryNoteNo")
                         .Value("") // leave it blank initially
                         .Label("Delivery Note No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ReadOnly(false)
                         .Width("100%")
                         )
@@ -289,7 +273,7 @@
                         .ID("deliveryNoteDate")
                         .Value(DateTime.Now)
                         .Label("Delivery Note Date:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -303,7 +287,7 @@
                         .Key("ClientCode")
                         )
                         .Label(new JS("formatMessage('Client Name:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ValueExpr("ClientCode")
                         .DisplayExpr("ClientName")
                         .ContentTemplate(new TemplateName("GetClientContentTemplate"))
@@ -342,7 +326,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("TypeOfRequestId")
                         )
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetSalesPerson")
                         .Width(900)
                         .OpenOnFieldClick(false)//
@@ -363,7 +347,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("clientPOnumber")
                         .Label("Quotation No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -371,7 +355,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
                         .Label("Client Ref. Name / Attention To:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -379,7 +363,7 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("ClientPODate")
                         .Label("Client PO Date:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -387,7 +371,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientContactNo")
                         .Label("Client Contact No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -402,7 +386,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("StoreId")
                         )
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetModeOfRequest")
                         .Width(900)
                         .OpenOnFieldClick(false)//
@@ -436,7 +420,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("TypeOfRequestId")
                         )
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetTypeOfRequest")
                         .Width(900)
                         .OpenOnFieldClick(false)//
@@ -468,7 +452,7 @@
                         .ID("ClientEmail")
                         .Mode(TextBoxMode.Email)
                         .Label("Client Email:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -477,7 +461,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("clientProject")
                         .Label(" Client Project:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -570,7 +554,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("SignatoryID")
                                     )
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("Dnsignatory")
                                     .ShowClearButton(true)
                                     .AcceptCustomValue(true)
@@ -645,7 +629,7 @@
                         )
                         .DisplayExpr("CompanyName")
                         .ValueExpr("CompanyId")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("95%")
                         )
                     </div>
@@ -663,7 +647,7 @@
                         .DisplayExpr("Name")   
                         .Value(1)              
                         .Label("Delivery Type:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)  
                         )
@@ -682,7 +666,7 @@
                         .DisplayExpr("Name")
                         .ValueExpr("Id")
                         .Label("Inventory Group Master: *")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         ) 
                     </div>
@@ -692,7 +676,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("SalesOrderNo")
                         .Label("Sales Order No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
                         )
@@ -702,7 +686,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("QuotationNo")
                         .Label("Quotation No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
                         )
@@ -712,7 +696,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("EnquiryRequestNo")
                         .Label("Enquiry/Request No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
                         )
@@ -731,7 +715,7 @@
     .ID("EquipmentDeliveried")
     .Label("Equipment Deliveried")
     .Width("100%")
-    .LabelMode(EditorLabelMode.Outside) )
+    .LabelMode(EditorLabelMode.Floating) )
   @(Html.DevExtreme().Button()
     .ID("Quotebtn") 
     .Icon("plus")
@@ -747,37 +731,37 @@
     .ID("Quotemethod")
     .Label("Quote Method")
     .Width("100%")
-    .LabelMode(EditorLabelMode.Outside) )
+    .LabelMode(EditorLabelMode.Floating) )
    @(Html.DevExtreme().SelectBox()
     .ID("showUom")
     .Label("UOM")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width("100%"))
    @(Html.DevExtreme().NumberBox()
     .ID("showQuantity")
     .Label("Quantity")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width("100%"))
    @(Html.DevExtreme().NumberBox()
     .ID("showRatemonth")
     .Label("Rate/Month")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width("100%"))
    @(Html.DevExtreme().NumberBox()
     .ID("showRatehr")
     .Label("Rate/Hour")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width("100%"))
    @(Html.DevExtreme().NumberBox()
     .ID("showOthr")
     .Label("OT/Hours")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width("100%"))
  <div style="align-items: flex-end; display:flex;">
   @(Html.DevExtreme().SelectBox()
     .ID("showNum")
     .Label("")
-    .LabelMode(EditorLabelMode.Outside)
+    .LabelMode(EditorLabelMode.Floating)
     .Width("100%"))
   @(Html.DevExtreme().Button()
     .ID("showplusbtn")

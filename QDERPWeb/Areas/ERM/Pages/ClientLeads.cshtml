@@ -11,16 +11,7 @@
 }
 
 <style>
-    #dataGrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
-        color: black;
-    }
-
-    .datagrid {
-        height: 600px;
-        padding: 18px;
-    }
-
+   
     .toolbar-buttons {
         /* position: fixed; */
         bottom: 20px; /* Distance from bottom */
@@ -63,7 +54,7 @@
         .ShowRowLines(true)
         .OnContextMenuPreparing("onClientsGridContextMenu")
         .AllowColumnResizing(true) // Enable column resizing
-        .ColumnResizingMode(ColumnResizingMode.NextColumn) // Optional: can be "Widget" or "NextColumn"
+        .ColumnResizingMode(ColumnResizingMode.Widget)
         .AllowColumnReordering(true) // Optional: allow dragging columns
         .ColumnChooser(chooser => chooser
         .Enabled(false)

@@ -182,7 +182,7 @@
             // 
             this.xrLabel31.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel31.Font = new DevExpress.Drawing.DXFont("Cambria", 18F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel31.ForeColor = System.Drawing.Color.DeepSkyBlue;
+            this.xrLabel31.ForeColor = System.Drawing.Color.DodgerBlue;
             this.xrLabel31.LocationFloat = new DevExpress.Utils.PointFloat(10F, 53.83334F);
             this.xrLabel31.Multiline = true;
             this.xrLabel31.Name = "xrLabel31";
@@ -238,7 +238,7 @@
             this.xrLabel21.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel21.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel21.ForeColor = System.Drawing.Color.Black;
-            this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(611.1696F, 0F);
+            this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(1042.563F, 1.499888F);
             this.xrLabel21.Name = "xrLabel21";
             this.xrLabel21.SizeF = new System.Drawing.SizeF(294.1035F, 15.49992F);
             this.xrLabel21.StylePriority.UseBorderColor = false;
@@ -249,15 +249,15 @@
             // pageInfo1
             // 
             this.pageInfo1.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(845.8336F, 0F);
+            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(1296.667F, 2.333171F);
             this.pageInfo1.Name = "pageInfo1";
             this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
-            this.pageInfo1.SizeF = new System.Drawing.SizeF(147.4999F, 14.66663F);
+            this.pageInfo1.SizeF = new System.Drawing.SizeF(175.333F, 14.66663F);
             this.pageInfo1.StylePriority.UseFont = false;
             // 
             // pageInfo2
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(438.9583F, 0F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(632.4167F, 2.333171F);
             this.pageInfo2.Name = "pageInfo2";
             this.pageInfo2.SizeF = new System.Drawing.SizeF(95.83331F, 23F);
             this.pageInfo2.StylePriority.UseTextAlignment = false;
@@ -268,7 +268,7 @@
             // 
             this.xrLabel28.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel28.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel28.ForeColor = System.Drawing.Color.DarkGray;
+            this.xrLabel28.ForeColor = System.Drawing.Color.Black;
             this.xrLabel28.LocationFloat = new DevExpress.Utils.PointFloat(9.999998F, 2.333133F);
             this.xrLabel28.Name = "xrLabel28";
             this.xrLabel28.SizeF = new System.Drawing.SizeF(165.3535F, 20.66685F);

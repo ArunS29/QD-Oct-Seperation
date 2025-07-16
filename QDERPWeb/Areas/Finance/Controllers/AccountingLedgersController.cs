@@ -126,7 +126,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-       
+
         public IActionResult GetAccountHeadName(string accountId)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -149,6 +149,36 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             return BadRequest(new { message = "Invalid tenant context" });
+        }
+        [HttpGet]
+        public IActionResult GetCurrencyIcon()
+        {
+            string currencyType = HttpContext.Session.GetString("currencytype");
+
+            if (string.IsNullOrEmpty(currencyType))
+            {
+                return BadRequest("Currency type not found in session.");
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var currency = dbContext.Tbl20169CurrencyExchanges
+                    .Where(c => c.CurrencyMasterCode == currencyType)
+                    .Select(c => new
+                    {
+                        Icon = c.CurrencyImage != null && c.CurrencyImage.Trim() != ""
+                        ? (string)c.CurrencyImage
+                        : c.CurrencySymbole
+                    })
+                    .FirstOrDefault();
+
+                if (currency == null)
+                    return NotFound("Currency not found.");
+
+                return Json(currency);
+            }
+
+            return Unauthorized("Invalid tenant.");
         }
 
     }

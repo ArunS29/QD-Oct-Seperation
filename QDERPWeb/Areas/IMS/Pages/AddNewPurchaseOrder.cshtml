@@ -6,21 +6,7 @@
 }
 
 <style>
-    .dx-datagrid-headers {
-        border: 1px solid #686868 !important;
-        width: 100%; /* Adjust to fit the container */
-        overflow-x: auto; /* Enable horizontal scrolling */
-        white-space: nowrap; /* Prevent wrapping of headings */
-        overflow-y: hidden;
-    }
-
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        font-size: 12px !important;
-        white-space: nowrap !important; /* Prevent wrapping of text */
-        text-align: center !important;
-        font-weight: bold;
-        color: black;
-    }
+    
 
     .ledgerResult {
         overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
@@ -326,7 +312,7 @@
                             .ID("PurchaseOrderNo")
                             .Value("")
                             .Label(new JS("formatMessage('Purchase Order No:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -335,7 +321,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("RevNo")
                             .Label(new JS("formatMessage('REV.No')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -343,7 +329,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("PoDate")
                             .Label(new JS("formatMessage('PO Date')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Value(DateTime.Now)
                             .Width("100%"))
@@ -353,7 +339,7 @@
                                 @(Html.DevExtreme().SelectBox()
                                 .ID("SupplierName")
                                 .Label(new JS("formatMessage('Supplier Name:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
                                 .DataSource(d => d.Mvc()
@@ -392,7 +378,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("ClientProjectRef")
                             .Label(new JS("formatMessage('Client Project Ref:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -404,7 +390,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("SupplierQuotationNo")
                             .Label(new JS("formatMessage('Supplier Quotation No:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -412,7 +398,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("SupplierQuoteDate")
                             .Label(new JS("formatMessage('Supplier Quote Date:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -421,7 +407,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("AttentionTo")
                                 .Label(new JS("formatMessage('Attention To:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%"))
                                 <div style="margin-left: 5px;">
@@ -436,7 +422,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("SupplierContactNo")
                             .Label(new JS("formatMessage('Supplier Contact No:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -444,7 +430,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("SupplierEmail")
                             .Label(new JS("formatMessage('Supplier Email:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Mode(TextBoxMode.Email)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -457,7 +443,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("ReferenceNo")
                             .Label(new JS("formatMessage('Reference No:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -466,7 +452,7 @@
                                 @(Html.DevExtreme().SelectBox()
                                 .ID("Project")
                                 .Label(new JS("formatMessage('Project:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
                                  .SearchEnabled(true)
@@ -493,7 +479,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("SalesPerson")
                             .Label(new JS("formatMessage('Sales Person:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
                             .DataSource(d => d.Mvc()
@@ -510,7 +496,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("RFQNo")
                             .Label(new JS("formatMessage('RFQ No')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -518,7 +504,7 @@
                             @(Html.DevExtreme().SelectBox()
                             .ID("RequestingUnit")
                             .Label(new JS("formatMessage('Requesting Unit:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
                             .DataSource(d => d.Mvc()
@@ -620,7 +606,7 @@
                             .ID("PaymentTerm")
                             .DataSource(new[] { "Cash", "Net 30", "Net 60" })
                             .Label(new JS("formatMessage('Payment Term:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                         </div>
@@ -629,7 +615,7 @@
                             .ID("DocumentsRequired")
                             .DataSource(new[] { "Invoice", "Packing List", "Certificate of Origin" })
                             .Label(new JS("formatMessage('Documents Required:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                         </div>
@@ -642,7 +628,7 @@
                             .ID("DeliveryTerm")
                             .DataSource(new[] { "FOB", "CIF", "EXW" })
                             .Label(new JS("formatMessage('Delivery Term:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                         </div>
@@ -651,7 +637,7 @@
                             .ID("WarrantyPeriod")
                             .DataSource(new[] { "6 Months", "1 Year", "2 Years" })
                             .Label(new JS("formatMessage('Warranty Period:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                         </div>
@@ -663,7 +649,7 @@
                         .ID("DeliveryPeriod")
                         .DataSource(new[] { "7 Days", "14 Days", "30 Days" })
                         .Label(new JS("formatMessage('Delivery Period:')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -759,7 +745,7 @@
                     )
                     .DisplayExpr("CompanyName")
                     .ValueExpr("CompanyId")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width("95%")
                     )
 
@@ -775,7 +761,7 @@
                             .ValueExpr("TypeOfRequestID")
                             .DisplayExpr("TypeOfRequest")
                             .Label(new JS("formatMessage('Type of Request:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
 
@@ -791,7 +777,7 @@
                                 .ValueExpr("POCategoryCode")
                                 .DisplayExpr("POCategoryName")
                                 .Label(new JS("formatMessage('P.O. Category:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
@@ -815,7 +801,7 @@
                         .ValueExpr("InventoryMasterGroupId")
                         .DisplayExpr("InventoryMasterGroup")
                         .Label(new JS("formatMessage('Inventory Group Master: *')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
 
@@ -836,7 +822,7 @@
                     .ValueExpr("CurrencyExchangeId")
                     .DisplayExpr("CurrencyName")
                     .Label(new JS("formatMessage('Currency')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Width("100%")
                     )
 
@@ -851,7 +837,7 @@
                             .Min(0.00)
                             .Step(0.01)
                             .ShowSpinButtons(true)
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                         </div>

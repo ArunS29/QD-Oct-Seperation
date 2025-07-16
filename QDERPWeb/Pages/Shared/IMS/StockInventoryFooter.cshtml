@@ -86,6 +86,14 @@
             )
     </div>
     <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnColumnChooser")
+                .Icon("columnchooser")
+                .Text(new JS("formatMessage('Column Chooser')"))
+                .OnClick("showColumnChooser")
+                )
+    </div>
+    <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonShow")
             .Icon("folder")
@@ -348,8 +356,5 @@
 
             window.location.href = url;
         }
-    }
-    function printFun() {
-        exportDataGridToPDF('dataGrid');
     }
 </script>

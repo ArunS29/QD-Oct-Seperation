@@ -108,7 +108,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("txtQuotationStatus")
                 .Label(new JS("formatMessage('Type new Quotation Status & Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Status is required");

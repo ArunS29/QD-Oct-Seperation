@@ -3,21 +3,9 @@
 @{
 }
 <style>
-    .dx-datagrid-headers {
-    border: 1px solid #686868 !important;
-    width: 100%; /* Adjust to fit the container */
-    overflow-x: auto; /* Enable horizontal scrolling */
-    white-space: nowrap; /* Prevent wrapping of headings */
-    overflow-y: hidden;
-    }
 
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-    font-size: 12px !important;
-    white-space: nowrap !important; /* Prevent wrapping of text */
-    text-align: center !important;
-    font-weight: bold;
-    color: black;
-    }
+
+    
 
     .ledgerResult {
     overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
@@ -271,7 +259,7 @@
                         @(Html.DevExtreme().TextArea()
                         .ID("StockAdjustmentRemarks")
                         .Label(new JS("formatMessage('Stock Adjustment Remarks')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Height("250px")
                         .Width("100%")
                         )
@@ -282,21 +270,21 @@
                         .Value("STK-ADJ-2025-0002")
                         .ReadOnly(true)
                         .Label(new JS("formatMessage('Stock Adjustment Entry No')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
 
                         @(Html.DevExtreme().SelectBox()
                         .ID("IssuedFromStore")
                         .Label(new JS("formatMessage('Items Issued from Store')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
 
                         @(Html.DevExtreme().TextBox()
                         .ID("StockCountedBy")
                         .Label(new JS("formatMessage('Physical Stock Counted By')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -307,21 +295,21 @@
                         .ID("EntryDate")
                         .Value(DateTime.Parse("2025-06-12"))
                         .Label(new JS("formatMessage('Entry Date')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
 
                         @(Html.DevExtreme().SelectBox()
                         .ID("IssuedToProject")
                         .Label(new JS("formatMessage('Issued to Project')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
 
                         @(Html.DevExtreme().DateBox()
                         .ID("StockCountedOn")
                         .Label(new JS("formatMessage('Stock Counted On')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -338,7 +326,7 @@
                                 <td colspan="2" style="padding:10px;">
                                     @(Html.DevExtreme().DropDownBox()
                                     .Label(new JS("formatMessage('Signatory:')"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("Dnsignatory")
                                     .Width("100%")
                                     )
@@ -387,7 +375,7 @@
                         .LoadAction("GetCompanyBranch"))
                         .DisplayExpr("CompanyName")
                         .ValueExpr("CompanyId")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("95%") )
                     </div>
                     <div class="col-md-4">
@@ -397,7 +385,7 @@
                         .DisplayExpr("Name")     
                         .Value(1)                
                         .Label(new JS("formatMessage('Inventory Group Master')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)          
                         )

@@ -8,21 +8,7 @@
     .titleCard-toggle1 {
         display: none;
     }
-    .dx-datagrid-headers {
-        border: 1px solid #686868 !important;
-        width: 100%; /* Adjust to fit the container */
-        overflow-x: auto; /* Enable horizontal scrolling */
-        white-space: nowrap; /* Prevent wrapping of headings */
-        overflow-y: hidden;
-    }
-
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        font-size: 12px !important;
-        white-space: nowrap !important; /* Prevent wrapping of text */
-        text-align: center !important;
-        font-weight: bold;
-        color: black;
-    }
+    
 
     .ledgerResult {
         overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
@@ -265,7 +251,7 @@
                             .Message("Sales Order No is required");
                             })
                             .Label("Sales Order NO:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
@@ -279,7 +265,7 @@
                             .Value(DateTime.Today)
                             .DateSerializationFormat("yyyy-MM-dd")  // ✅ Ensure consistent format
                             .Label("Sales Order Date")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
 
@@ -301,7 +287,7 @@
                                     .Key("ClientCode")
                                     )
                                     .Label("Client Name")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%")
                                     .ValidationRules(rules =>
                                     {
@@ -338,7 +324,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("QuotationNo")
                             .Label("Quotation No:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -346,7 +332,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("QuotationDate")
                             .Label("Quotation Date:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -356,7 +342,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientRefName")
                                     .Label("Client Ref. Name:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
@@ -364,7 +350,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientEmail")
                                     .Label("Client Email:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .Mode(TextBoxMode.Email)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
@@ -373,7 +359,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ClientContact")
                                     .Label("Client Contact No:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
@@ -387,7 +373,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("ClientPoNo")
                             .Label("Client PO No:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -395,7 +381,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("ClientPoDate")
                             .Label("Client PO Date:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -414,7 +400,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("ProjectId")
                                     )
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
                                     .ContentTemplate(new TemplateName("ProjectDropDownTemplate"))
@@ -442,7 +428,7 @@
                                     .Key("TypeOfRequestId")
                                     )
                                     .Label("Type of Sales Order:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
                                     .ContentTemplate(new TemplateName("typeofSalesOrderDropDownTemplate")))
@@ -458,7 +444,7 @@
                                     @(Html.DevExtreme().TextBox()
                                     .ID("ReferenceNo")
                                     .Label("Reference No:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%"))
                                 </div>
@@ -581,14 +567,14 @@
                                 .Key("CompanyId")
                                 )                            .StylingMode(EditorStylingMode.Outlined)
                                 .Label("Company Branch / Division")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ContentTemplate(new TemplateName("CompanyBranchDropDownTemplate")))
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ReferenceNo1")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Label("Reference No")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 30%; margin-left: 10px;"))
                             </div>
@@ -607,7 +593,7 @@
                                 .Key("SalesPersonCode")
                                 )
                                 .Label("Sales Person")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate")))
 
@@ -634,7 +620,7 @@
                             )
                             .StylingMode(EditorStylingMode.Outlined)
                             .Label("Inventory Group Master *")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("MasterGroupDropDownTemplate")))
 
@@ -653,7 +639,7 @@
                             )
                             .StylingMode(EditorStylingMode.Outlined)
                             .Label("Cost Center Master *")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
 
@@ -666,7 +652,7 @@
                             .ID("OrderExpiryDate")
                             .StylingMode(EditorStylingMode.Outlined)
                             .Label("Order Expiry Date")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%"))
 
                             <!-- Sales Order Remarks -->
@@ -675,7 +661,7 @@
                             .MinHeight(80)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Label("Sales Order Remarks")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
 
@@ -685,7 +671,7 @@
                                 .ID("ExpectedDeliveryDate")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Label("Expected Delivery Date")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%;"))
 
@@ -693,7 +679,7 @@
                                 .ID("DeliveryPeriod")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Label("Delivery Period")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 30%; margin-left: 10px;"))
 
@@ -701,7 +687,7 @@
                                 .ID("DeliveryTerms")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Label("Delivery Terms")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 .ElementAttr("style", "width: 33%; margin-left: 10px;"))
                             </div>

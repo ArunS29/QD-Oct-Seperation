@@ -142,13 +142,12 @@
 </div>
 <div class="maindiv">
     <table class="form-table">
-       
         <tr>
             <td>
                 @(Html.DevExtreme().TextArea()
                     .ID("NewStockServicesGroups")
-                    .Label(new JS("formatMessage('Type a New Stock or Services Group & Add to the Eisting List:')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .Label(new JS("formatMessage('Type a New Stock or Services Group & Add to the Existing List:')"))
+                    .LabelMode(EditorLabelMode.Floating)
                     .ValidationRules(rules =>
                     {
                         rules.AddRequired()
@@ -160,17 +159,12 @@
         </tr>
 
         <tr>
-            <td style="display: flex;">
+            <td style="display: flex; align-items:end;">
                 @(Html.DevExtreme().TextArea()
                     .ID("StockServicesGroups")
                     .Label(new JS("formatMessage('Stock / Service Group (In Arabic):')"))
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
+                    .LabelMode(EditorLabelMode.Floating)
                     )
                 @(Html.DevExtreme().Button()
                     .ID("convertToArabic1")
@@ -189,7 +183,7 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("GroupCode")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Group Code *')"))
                     .ValidationRules(rules =>
                     {
@@ -201,18 +195,14 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("Category")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Category')"))
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
                     )
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryMasterGroups")
+                    .SearchEnabled(true)
                     .DataSource(ds => ds.WebApi()
                     .Controller("StockInventory")
                     .LoadAction("GetInventoryMasterGroups")
@@ -220,7 +210,7 @@
                     .ValueExpr("InventoryMasterGroupId")
                     .DisplayExpr("InventoryMasterGroup") // selected item shows only the name
                     
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Inventory Master Groups')"))
 
                     .ValidationRules(rules =>
@@ -240,7 +230,8 @@
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryLedgerAccount")
-                    .LabelMode(EditorLabelMode.Outside)
+                     .SearchEnabled(true)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label(new JS("formatMessage('Inventory Ledger Account')"))
                     .DataSource(d => d.Mvc()
                     .Controller("StockInventory")
@@ -249,11 +240,6 @@
                     .DisplayExpr("DisplayText") 
                     .ValueExpr("AccountId")   
                     .Width(370)
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
                     )
             </td>
 
@@ -261,7 +247,8 @@
             <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("CostLedgerAccount")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
+                                .SearchEnabled(true)
                     .Label(new JS("formatMessage('Cost Ledger Account')"))
                     .DataSource(d => d.Mvc()
                     .Controller("StockInventory") // Replace with your actual controller name
@@ -269,11 +256,6 @@
                     )
                     .DisplayExpr("DisplayText") // Shows "AccountHead | AccountGroup"
                     .ValueExpr("AccountId")     // Submits AccountId
-                    .ValidationRules(rules =>
-                    {
-                        rules.AddRequired()
-                        .Message(new JS("formatMessage('It should be entered')"));
-                    })
                     )
             </td>
 
@@ -326,12 +308,19 @@
                     )
                     .RemoteOperations(false)
                     .Height(400)
+
                     .Editing(editing =>
                     {
                         editing.Mode(GridEditMode.Row);
                         editing.AllowUpdating(true);
                         editing.UseIcons(true);
+                           
                     })
+                                .Editing(editing => editing
+                                .Mode(GridEditMode.Batch)
+                               
+                                .AllowDeleting(true)
+                                )
                     .Columns(columns =>
                     {
                         columns.AddFor(m => m.GsgroupId)
@@ -375,6 +364,18 @@
                 }
                 }).appendTo(container);
                 }"));
+                                
+                                             // Add delete button column
+                                    columns.Add()
+                                    .Type(GridCommandColumnType.Buttons)
+                                    .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                    .Name(GridColumnButtonName.Delete)
+                                    .Icon("trash") // Use a trash icon
+                                    .Hint("Delete Row") // Tooltip
+                                    .OnClick("onDeleteButtonClick");
+                                    });
                     })
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -503,6 +504,31 @@
             }
         });
     });
+      function onDeleteButtonClick(e) {
+        e.event.preventDefault(); // prevent default delete
+
+        var grid = $("#dataGrid").dxDataGrid("instance");
+        var key = e.row.data.GsgroupId; // get the ID of the row
+
+        if (confirm("Are you sure you want to delete this row?")) {
+            $.ajax({
+                url: '/api/StockInventory/DeleteStock?key=' + key,
+                type: 'DELETE',
+                success: function () {
+                    grid.refresh();
+                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                    setTimeout(() => {
+                        if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
+                            window.parent.refreshModeOfRequestDropDown();
+                        }
+                    }, 300); // ✅ Properly closed
+                }, // ✅ This comma was missing in your version!
+                error: function () {
+                    DevExpress.ui.notify("Delete failed", "error", 2000);
+                }
+            });
+        }
+    }
 
     $(function () {
         var grid = $("#dataGrid").dxDataGrid("instance");

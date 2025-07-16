@@ -96,7 +96,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("PrjCode")
                 .Label(new JS("formatMessage('Project Code:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Width("100%"))
 
         </div>
@@ -105,7 +105,7 @@
             @(Html.DevExtreme().SelectBox()
                 .ID("ProjectGrp")
                 .Label(new JS("formatMessage('Project Group')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Width(400))
 
             @(Html.DevExtreme().Button()
@@ -120,7 +120,7 @@
     <div class="row mb-3">
         <div class="col-md-6" style="display:flex; align-items:end;">
             @(Html.DevExtreme().TextBox().ID("ProjectGrpArabic").Label(new JS("formatMessage('Project Description:')"))
-                .LabelMode(EditorLabelMode.Outside).Width("100%"))
+                .LabelMode(EditorLabelMode.Floating).Width("100%"))
             <div>
                 @(Html.DevExtreme().Button()
                     .ID("convertToCaptialORSmall3")
@@ -137,7 +137,7 @@
         @(Html.DevExtreme().SelectBox()
             .ID("Costcentercode")
             .Label(new JS("formatMessage('Cost Center Code: (Finance Module)')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ShowDropDownButton(true)
             .Width("50%"))
 

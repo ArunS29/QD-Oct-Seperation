@@ -10,6 +10,7 @@
     background-color: #c0dceb;
     padding: 5px;
 }
+
 .content-container-bottom {
     background-color: #c0dceb;
     border-bottom-left-radius: 10px; /* Radius for top-left corner */
@@ -57,9 +58,10 @@
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
 }
+
 * {
     /*    color: #525252;*/
-    font-size: 14px;
+    font-size: 12px;
     font-weight: 500;
     line-height: 20px;
 }
@@ -75,8 +77,6 @@
 a {
     color: black;
 }
-
-
 
 body {
     margin: 0;
@@ -119,32 +119,33 @@ body {
 .dx-datagrid {
     border-radius: 15px;
     /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
-    border: 1px solid #d3d3d3;
+    border: 1px solid var(--title-background-color);
     overflow: hidden;
 }
 
 .dx-datagrid-rowsview .dx-row {
-    font-size: 14px;
+    font-size: 12px;
 }
 
-.dx-datagrid-rowsview .dx-row .dx-command-edit,
-.dx-datagrid-rowsview .dx-row td {
-    padding: 8px;
-}
+    .dx-datagrid-rowsview .dx-row .dx-command-edit,
+    .dx-datagrid-rowsview .dx-row td {
+        padding: 8px;
+    }
 
-.dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
-    color: red; 
-    font-weight: bold;
-}
+        .dx-datagrid-rowsview .dx-row td[data-column-index="4"] {
+            color: red;
+            font-weight: bold;
+        }
 
-.dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
-    color: green; 
-    font-weight: bold;
-}
+        .dx-datagrid-rowsview .dx-row td[data-column-index="5"] {
+            color: green;
+            font-weight: bold;
+        }
 
-.dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
-    font-weight: bold;
-}
+        .dx-datagrid-rowsview .dx-row td[data-column-index="6"] {
+            font-weight: bold;
+        }
+
 .footer {
     display: flex;
     align-items: center;
@@ -166,7 +167,7 @@ body {
     /*border: 1px solid #d6e4f0 !important;*/ /* Soft border */
     /*border-radius: 4px !important;*/ /* Smaller rounded corners */
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-    font-size: 14px !important; /* Slightly smaller font */
+    font-size: 12px !important; /* Slightly smaller font */
     transition: all 0.2s ease-in-out !important;
     height: 39px !important; /* Fixed height */
 }
@@ -187,14 +188,14 @@ body {
 /* Button Styling */
 .dx-button {
     background-color: #909ead00 !important;
-/*    border: 1px solid #d6e4f0 !important;*/
+    /*    border: 1px solid #d6e4f0 !important;*/
     border-radius: 4px !important;
     padding: 6px 12px !important; /* Reduced button padding */
-    font-size: 14px !important;
+    font-size: 12px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
     transition: all 0.2s ease-in-out !important;
-/*    height: 39px !important;*/
-}                           
+    /*    height: 39px !important;*/
+}
 
     /* Hover Effect for Button */
     .dx-button:hover {
@@ -231,6 +232,7 @@ body {
     color: white;
     pointer-events: none; /* Prevents hover and click effects */
 }
+
 .dx-button-has-text .dx-icon {
     color: black !important;
 }
@@ -238,18 +240,19 @@ body {
 .dx-textbox-heading .dx-texteditor-input {
     font-size: 24px !important;
     font-weight: bold;
-    color:white;
+    color: white;
 }
+
 .dx-textbox-heading10 .dx-texteditor-input {
     font-size: 24px !important;
     font-weight: bold;
-    color:black;
+    color: black;
 }
-    /* Dark Mode Styles */
-    body.dark-mode {
-        background-color: #1a1a3c;
-        color: white;
-    }
+/* Dark Mode Styles */
+body.dark-mode {
+    background-color: #1a1a3c;
+    color: white;
+}
 
 #themeToggle {
     padding: 8px 16px;
@@ -264,6 +267,7 @@ body {
         background-color: black;
         color: white;
     }
+
 #fullscreenToggle {
     background: transparent;
     border: none;
@@ -275,8 +279,9 @@ body {
     #fullscreenToggle:hover {
         color: #000;
     }
-.displayFlex{
-    display:flex;
+
+.displayFlex {
+    display: flex;
 }
 
 .dx-textbox-heading1 .dx-texteditor-input {
@@ -285,6 +290,7 @@ body {
     color: white;
     text-align: center;
 }
+
 .dx-textbox-heading2 .dx-texteditor-input {
     font-weight: bold;
     background-color: #5A85B0;
@@ -292,6 +298,7 @@ body {
     text-align: center;
     width: 220px;
 }
+
 .dx-textbox-heading3 .dx-texteditor-input {
     font-weight: bold;
     background-color: #C94d44;
@@ -299,6 +306,7 @@ body {
     text-align: center;
     width: 220px;
 }
+
 .dx-textbox-heading4 .dx-texteditor-input {
     font-weight: bold;
     background-color: #0b6e25;
@@ -313,6 +321,7 @@ body {
 #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
     text-align: center !important;
 }
+
 #dataGrid .dx-datagrid-headers .dx-datagrid-action {
     text-align: center !important;
 }
@@ -322,7 +331,7 @@ body {
     border: 1px solid #d6e4f0 !important;
     border-radius: 4px !important;
     padding: 6px 12px !important; /* Reduced button padding */
-    font-size: 14px !important;
+    font-size: 12px !important;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
     transition: all 0.2s ease-in-out !important;
     height: 39px !important; /* Fixed height */
@@ -481,21 +490,23 @@ body {
 #ddButtonLayout .dx-icon {
     color: crimson !important;
 }
-#languageSelectBox{
-    border : 1px solid transparent !important;
+
+#languageSelectBox {
+    border: 1px solid transparent !important;
 }
-#rowHeightProperties .dx-icon
-{
+
+#rowHeightProperties .dx-icon {
     color: #f75d59 !important;
 }
-#btnToggleHeaderFilter .dx-icon
-{
+
+#btnToggleHeaderFilter .dx-icon {
     color: #48aaaa !important;
 }
-#btnRefresh .dx-icon
-{
+
+#btnRefresh .dx-icon {
     color: #00ff11 !important;
 }
+
 #btnToggleHeaderFilter,
 #btnPrint,
 #btnRefresh,
@@ -505,12 +516,12 @@ body {
 #ddButtonLayout,
 #rowHeightProperties {
     display: inline-block;
-    width: 55px !important;
+    width: 75px !important;
     overflow: hidden;
     transition: width 0.3s ease-in-out;
 }
 
-/* Expand button width on hover */
+
 #btnToggleHeaderFilter:hover,
 #btnPrint:hover,
 #btnRefresh:hover,
@@ -519,20 +530,20 @@ body {
 #btnColumnChooser:hover,
 #ddButtonLayout:hover,
 #rowHeightProperties:hover {
-    width: 200px !important; /* Adjust individually if needed */
+    width: 200px !important;
 }
 
-/* Hide button text initially */
-#btnToggleHeaderFilter .dx-button-text,
-#btnRefresh .dx-button-text,
-#btnPrint .dx-button-text,
-#btnToggleSearch .dx-button-text,
-#btntoggleGroupPanel .dx-button-text,
-#btnColumnChooser .dx-button-text,
-#ddButtonLayout .dx-button-text,
-#rowHeightProperties .dx-button-text {
-    display: none;
-}
+    /* Hide button text initially */
+    #btnToggleHeaderFilter .dx-button-text,
+    #btnRefresh .dx-button-text,
+    #btnPrint .dx-button-text,
+    #btnToggleSearch .dx-button-text,
+    #btntoggleGroupPanel .dx-button-text,
+    #btnColumnChooser .dx-button-text,
+    #ddButtonLayout .dx-button-text,
+    #rowHeightProperties .dx-button-text {
+        display: none;
+    }
 
 /* Show button text on hover */
 #btnToggleHeaderFilter:hover .dx-button-text,
@@ -566,13 +577,15 @@ body {
     box-shadow: none !important;
     background: transparent !important;
 }
+
 .dx-loadindicator-content {
-  position: absolute;
-  top: 0%;
-  left: 0%;
+    position: absolute;
+    top: 0%;
+    left: 0%;
 }
+
 .dx-loadindicator-icon .dx-loadindicator-segment {
-  display: none;
+    display: none;
 }
 /* Customize the background of the load panel */
 .dx-loadpanel {
@@ -648,4 +661,67 @@ body {
         background-position: 0px -34px, -12px -34px, 0px 0px, 34px -12px, 0px 0px, 34px 12px;
     }
 }
-    
+/* Tab appearance */
+.dx-tab {
+    background-color: #ffffff;
+    border-radius: 50px !important;
+    padding: 8px 8px !important;
+    font-weight: 500;
+    font-size: 12px;
+    /* color: #333; */
+    transition: all 0.3s ease;
+    /* border: none !important; */
+    /* min-height: 40px; */
+    width: auto;
+}
+
+.dx-tab.dx-tab-selected .dx-icon, .dx-tab.dx-tab-selected .dx-tab-text{
+    color:white;
+}
+.dx-tab.dx-tab-selected .dx-icon, .dx-tab.dx-tab-selected .dx-tab-text:hover {
+    color: black;
+}
+.dx-tab.dx-tab-selected {
+    background-color: var(--title-background-color) !important;
+    color: #fff !important;
+    font-weight: 600;
+/*    border: 1px solid var(--title-background-color) !important;*/
+/*    box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);*/
+    border-radius: 50px !important;
+}
+
+    .dx-tab:hover {
+        background-color: var(--background-color) !important;
+        color: black !important;
+        border-color: var(--title-background-color) !important;
+    }
+
+.dx-tab .dx-icon {
+    margin-right: 6px;
+    font-size: 12px;
+}
+
+.dx-tabs.dx-state-focused .dx-tab.dx-state-focused::after {
+     -webkit-border-before: none !important; 
+     border-block-start: none !important; 
+     -webkit-border-end: none !important; 
+     border-inline-end: none !important; 
+     -webkit-border-after: none !important; 
+     border-block-end: none !important; 
+     -webkit-border-start: none !important; 
+     border-inline-start: none !important; 
+}
+
+.dx-tab.dx-tab-selected::after {
+     -webkit-border-before: none !important; 
+     border-block-start: none !important; 
+     -webkit-border-end: none !important; 
+     border-inline-end: none !important; 
+     -webkit-border-after: none !important; 
+     border-block-end: none !important; 
+     -webkit-border-start: none !important; 
+     border-inline-start: none !important; 
+}
+.dx-tabs-wrapper{
+    border:none !important;
+}

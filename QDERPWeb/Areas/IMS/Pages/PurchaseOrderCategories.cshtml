@@ -107,7 +107,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("txtPurStatus")
                 .Label(new JS("formatMessage('Type new Purchase Order Category & Add to the Existing List:')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Status is required");

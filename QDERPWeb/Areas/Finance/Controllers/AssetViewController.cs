@@ -1,12 +1,15 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using SkiaSharp;
 using System;
+
+
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -288,8 +291,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @p0", assetLedgerNo);
+                    var param = new SqlParameter("@AssetLedgerNo", assetLedgerNo);
 
+                    var result = dbContext.Database.ExecuteSqlRaw("EXEC sp20121DeleteAssetRegister @AssetLedgerNo", param);
+
+                    if (result == 0)
+                    {
+                        return Ok(new { message = "No records were deleted. The provided AssetLedgerNo may not exist." });
+                    }
 
                     return Ok(new { message = "Asset deleted successfully." });
                 }
@@ -302,6 +311,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpPost]
         public IActionResult DeleteAsset(string assetLedgerNo)

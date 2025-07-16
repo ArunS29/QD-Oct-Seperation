@@ -30,10 +30,7 @@
     }
 
     /* Ensure text in grid headers is always centered */
-    .dx-datagrid .dx-header-row .dx-datagrid-text-content {
-        white-space: normal !important;
-        text-align: center !important;
-    }
+    
 
     /* Ensure column headers text aligns to center */
     .dx-datagrid-headers .dx-datagrid-table .dx-row > td {
@@ -118,17 +115,6 @@
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
             border-color: #508ae1 !important;
         }
-
-    #dataGrid .dx-header-row .dx-datagrid-text-content {
-        font-weight: bold;
-        color: black;
-    }
-
-
-    .dx-datagrid-header-panel {
-        background-color: #909ead00;
-        /* display:none; */
-    }
 
     .no-border-input {
         border: none !important;
@@ -253,7 +239,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("DocumentNo")
                         .Label("Document No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .ReadOnly(true))
                 </div>
@@ -262,7 +248,7 @@
                     @(Html.DevExtreme().SelectBox()
                         .ID("DocType")
                         .Label("Type of the Document Attached:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetDocumentTypes"))
                         .DisplayExpr("text")
@@ -287,7 +273,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("ReferenceNo")
                         .Label("Reference No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                 </div>
 
@@ -295,7 +281,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("Remarks")
                         .Label("Remarks / Notes:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                 </div>
             </div>
@@ -305,7 +291,7 @@
                     @(Html.DevExtreme().DateBox()
                         .ID("DocumentExpiryDate")
                         .Label("Document Expiry Date:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                 </div>
 
@@ -313,7 +299,7 @@
                     @(Html.DevExtreme().DateBox()
                         .ID("HijriExpiryDate")
                         .Label("Expiry Date (Hijri):")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Width("100%"))
                 </div>
@@ -322,7 +308,7 @@
                     @(Html.DevExtreme().DateBox()
                         .ID("NotificationDate")
                         .Label("Notification Date:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now.AddDays(7))
                         .Width("100%"))

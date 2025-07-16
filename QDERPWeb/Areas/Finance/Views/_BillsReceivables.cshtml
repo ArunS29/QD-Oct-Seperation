@@ -580,9 +580,9 @@
             const retainedCheckBox = $("#Retainedcheck").dxCheckBox("instance");
             const isRetainedChecked = retainedCheckBox.option("value");
 
-            // Compute rowBalance based on checkbox
-            let rowBalance = selectedRow.Balance || 0;
-            const retentionAmount = selectedRow.BalanceDueWithOutRetention || 0;
+             // Get rowBalance and retentionAmount as absolute values
+            let rowBalance = Math.abs(selectedRow.Balance || 0);
+            const retentionAmount = Math.abs(selectedRow.BalanceDueWithOutRetention || 0);
 
             if (isRetainedChecked) {
                 rowBalance = retentionAmount;

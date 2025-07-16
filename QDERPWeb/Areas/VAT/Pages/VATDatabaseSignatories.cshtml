@@ -27,11 +27,6 @@
         display: none !important;
     }
 
-    /* Optionally, remove padding/margin if needed */
-    .dx-datagrid-headers .dx-toolbar {
-        padding-right: 0 !important;
-    }
-
     .form-row .form-row-btn {
         margin: 2px;
         width: 340px;
@@ -144,7 +139,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("SignatoryName")
                         .Label(new JS("formatMessage('Signatory Name')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ValidationRules(rules =>
                         {
                             rules.AddRequired().Message("Signatory Name is required");
@@ -156,7 +151,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("SignatoryPosition")
                         .Label(new JS("formatMessage('Signatory Position')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ValidationRules(rules =>
                         {
                             rules.AddRequired().Message("Signatory Position is required");
@@ -168,7 +163,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("SignatoryContact")
                         .Label(new JS("formatMessage('Signatory Contact No.')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         )
                 </div>
 
@@ -178,7 +173,7 @@
                             @(Html.DevExtreme().DropDownBox()
                                 .ID("SignatoryUserId")
                                 .Label("Signatory User ID:")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ShowClearButton(true)
                                 .OpenOnFieldClick(true)
                                 .AcceptCustomValue(false)
@@ -250,7 +245,7 @@
                             .ID("SignatoryNameArabic")
                             .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
                             .Label(new JS("formatMessage('Signatory Name(Arabic)')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                     </div>
@@ -269,7 +264,7 @@
                             .ID("SignatoryPositionArabic")
                             .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
                             .Label(new JS("formatMessage('Signatory Position(Arabic)')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                     </div>
@@ -279,7 +274,7 @@
                     @(Html.DevExtreme().TextBox()
                         .ID("SignatoryEmail")
                         .Label(new JS("formatMessage('Signatory Email')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                 </div>

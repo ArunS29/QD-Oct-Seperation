@@ -399,7 +399,7 @@
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Request No')"))
 														.ID("txtRequestNo")
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														)
 
@@ -408,7 +408,7 @@
 							@(Html.DevExtreme().SelectBox()
 														.ID("ddRevNo")
 														.Label(new JS("formatMessage('Rev.No')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.DataSource(d => d.WebApi()
 														//.Controller("YourControllerName")
 														//.LoadAction("YourLoadActionName")
@@ -419,7 +419,7 @@
 														.ShowClearButton(true)
 														.SearchEnabled(true)
 														.Width("100%")
-														.Disabled(true)
+														.ReadOnly(true)
 														)
 
 						</td>
@@ -430,12 +430,12 @@
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
 														.Value(DateTime.Now)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														)
 						</td>
 						<td style="display: flex; align-items: end; width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).AcceptCustomValue(true)
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Client Name:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("AddNewClientRequest")
@@ -444,7 +444,7 @@
 														.Key("CategoryCode")
 
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("GetProjectDropDown")
 														.Width(900)
 														@*  .ShowClearButton(true)
@@ -485,7 +485,7 @@
 					</tr>
 					<tr style="display: flex; gap: 10px;align-items:end; width:100%;">
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).AcceptCustomValue(true)
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Store Code:')"))
 														.DataSource(d => d.WebApi()
 														.Controller("StoreCode")
@@ -493,7 +493,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("StoreId")
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddStoreCodeDropDown")
 														.Width(900)
 														@*  .ShowClearButton(true)
@@ -522,7 +522,7 @@
 
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).AcceptCustomValue(true)
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 														.Label(new JS("formatMessage('Department Requested By:')"))
 														.ID("ddDep")
 														.DataSource(d => d.WebApi()
@@ -536,7 +536,7 @@
 														.HoverStateEnabled(true)
 														.ValueExpr("InvoiceType")
 														.DisplayExpr("InvoiceType")
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														.Disabled(true)
 														)
@@ -554,7 +554,7 @@
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Name of the Requester:')"))
 														.ID("txtContactName")
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														)
 
@@ -563,7 +563,7 @@
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Requester Email:')"))
 														.ID("txtReqEmail")
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														)
 
@@ -572,7 +572,7 @@
 							@(Html.DevExtreme().TextBox()
 														.ID("ContactNo")
 														.Label(new JS("formatMessage('Contact No:')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%"))
 
 						</td>
@@ -587,7 +587,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("ModeOfRequestId")
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddGetModeOfRequest")
 														.Width(900)
 														@*  .ShowClearButton(true)
@@ -623,7 +623,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("TypeOfRequestId")
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddGetTypeOfRequest")
 														.Width(900)
 														@*  .ShowClearButton(true)
@@ -659,7 +659,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("TypeOfRequestId")
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddGetSalesPerson")
 														.Width(900)
 														@*  .ShowClearButton(true)
@@ -682,7 +682,7 @@
 							@(Html.DevExtreme().TextBox()
 														.Label(new JS("formatMessage('Reference No:')"))
 														.ID("txtReferenceNo")
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														)
 						</td>
@@ -695,7 +695,7 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("ProjectId")
 														)
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddProject")
 														.Width(900)
 														@*  .ShowClearButton(true)
@@ -742,7 +742,7 @@
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Purpose of Request:')"))
 															.ID("txtPurpose")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
 
@@ -754,7 +754,7 @@
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Priority:')"))
 															.ID("txtPriority")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
 
@@ -762,7 +762,7 @@
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Cost Center:')"))
 															.ID("txtCostCenter")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.Width("121%")
 															)
 							</td>
@@ -779,7 +779,7 @@
 															.LoadMode(DataSourceLoadMode.Raw)
 															.Key("PurchaseTaxSlabCode")
 															)
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddGetTax")
 															.Width(900)
 															@*  .ShowClearButton(true)
@@ -806,7 +806,7 @@
 															.Type(DateBoxType.Date)
 															.DisplayFormat("dd-MMM-yyyy")
 															
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
 
@@ -858,7 +858,7 @@
 															.LoadMode(DataSourceLoadMode.Raw)
 															.Key("CompanyId")
 															)
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddGetCompany")
 															.Width(900)
 															@*  .ShowClearButton(true)
@@ -888,7 +888,7 @@
 															.LoadMode(DataSourceLoadMode.Raw)
 															.Key("RequestedByCode")
 															)
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddRequestedBy")
 															.Width(900)
 															@*  .ShowClearButton(true)
@@ -917,7 +917,7 @@
 															.LoadMode(DataSourceLoadMode.Raw)
 															.Key("PurchaseRequestStatusId")
 															)
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddGetEnquiry")
 															.Width(900)
 															@*  .ShowClearButton(true)
@@ -946,7 +946,7 @@
 															.LoadMode(DataSourceLoadMode.Raw)
 															.Key("InventoryMasterGroupId")
 															)
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddGetInventoryGroup")
 															.Width(900)
 															@*  .ShowClearButton(true)
@@ -978,7 +978,7 @@
 																				.LoadMode(DataSourceLoadMode.Raw)
 																				.Key("ProjectSubUnitCode")
 																				)
-																				.LabelMode(EditorLabelMode.Outside)
+																				.LabelMode(EditorLabelMode.Floating)
 																				.ID("ddGetRequesstingUnit")
 																				.Width(900)
 																				@*  .ShowClearButton(true)
@@ -1038,7 +1038,7 @@
 															.Type(DateBoxType.Date) // Other options: DateTime, Time
 															
 															.DisplayFormat("dd/MM/yyyy")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.Width("100%")
 															)
 
@@ -1051,7 +1051,7 @@
 															.Type(DateBoxType.Date) // Other options: DateTime, Time
 															
 															.DisplayFormat("dd/MM/yyyy")
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.Width("100%")
 															)
 
@@ -1062,7 +1062,7 @@
 
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Client Project Details:')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("txtClientProject")
 
 															)
@@ -1097,7 +1097,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("SignatoryId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddPreparedby")
 													.Width(900)
 													@*  .ShowClearButton(true)
@@ -1137,7 +1137,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("SignatoryId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddVerifiedby")
 													.Width(900)
 													@*  .ShowClearButton(true)
@@ -1166,7 +1166,7 @@
 													.LoadMode(DataSourceLoadMode.Raw)
 													.Key("SignatoryId")
 													)
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("ddApprovedby")
 													.Width(900)
 													@*  .ShowClearButton(true)
@@ -1285,7 +1285,7 @@
 					.LoadAction("GetGoodsAndServices")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("Gscode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("accountDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
@@ -1331,7 +1331,7 @@
 
 				.DisplayExpr("UnitDesc")
 				.Value(new JS("cellInfo.value"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.OpenOnFieldClick(true)
 				.ShowClearButton(true)
 				.Width(200)
@@ -1382,7 +1382,7 @@
 					.LoadAction("GetVatTaxSlabs")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("TaxSlabCode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("TaxSlabDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
@@ -1452,7 +1452,7 @@
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 					.OnSelectionChanged("dataGridSelectionChanged1")
 					.OnInitialized("dataGridInitialized1")
-					.HeaderFilter(p => p.Visible(true))
+					.HeaderFilter(p => p.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -1488,7 +1488,7 @@
 					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 					.OnSelectionChanged("dataGridSelectionChanged2")
 					.OnInitialized("dataGridInitialized2")
-					.HeaderFilter(p => p.Visible(true))
+					.HeaderFilter(p => p.Visible(false))
 					.ShowBorders(true)
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
@@ -6111,7 +6111,10 @@
 
 					data[index2] = temp;
 					console.log("Swapped Data:", data);
-
+										 // ✅ Reassign LineOrderNo sequentially
+		data.forEach((row, idx) => {
+		row.LineOrderNo = idx + 1;
+	});
 					// Get the DataGrid instance and update the data source
 					var dataGrid1 = $("#B2BdataGrid").dxDataGrid("instance");
 					var dataGrid = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource", data);

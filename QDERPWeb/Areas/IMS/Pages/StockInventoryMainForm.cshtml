@@ -61,7 +61,7 @@
         background: #fff;
         border-radius: 8px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        width: 200px;
+        width: 210px;
         display: none;
         flex-direction: column;
         padding: 5px 0;
@@ -163,13 +163,13 @@
 </div>
 <div class="context-menuInvoice" id="contextMenu">
     <div class="context-menu-itemInvoice" onclick="viewRecord()">
-        <i class="dx-icon-search"></i> View
+        <i class="dx-icon-search"></i> View Stock Item Details
     </div>
     <div class="context-menu-itemInvoice" onclick="editRecord()">
-        <i class="dx-icon-edit"></i> Edit
+        <i class="dx-icon-edit"></i> Edit Stock Item
     </div>
     <div class="context-menu-itemInvoice" onclick="deleteRecord()">
-        <i class="dx-icon-trash"></i> Delete
+        <i class="dx-icon-trash"></i> Delete Stock Item
     </div>
 </div>
     <div class="dx-field ledgerResult" >
@@ -186,11 +186,7 @@
             .Width(120);
         columns.AddFor(m => m.Gsdescrpition)
                 .Caption(new JS("formatMessage('Description')"))
-            .Width(280);
-        columns.AddFor(m => m.GsgroupName)
-                .Caption(new JS("formatMessage('Stock Group')"))
-            .Width(180)
-            .GroupIndex(0);
+            .Width(280); columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
         columns.AddFor(m => m.ItemPartNo)
                 .Caption(new JS("formatMessage('Item Part No')"))
             .Width(150);
@@ -201,32 +197,99 @@
                 .Caption(new JS("formatMessage('Selling Price')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.CostPrice)
                 .Caption(new JS("formatMessage('Cost Price')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        "); 
         columns.AddFor(m => m.OpeningBalance)
                 .Caption(new JS("formatMessage('Opening Balance')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.TotalReceived)
                 .Caption(new JS("formatMessage('Received')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.TotalIssues)
                 .Caption(new JS("formatMessage('Issues')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
         columns.AddFor(m => m.ClosingBalance)
                 .Caption(new JS("formatMessage('Closing Balance')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120);
+            .Width(120).CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value === null || cellInfo.value === undefined) {
+        cellElement.text('');
+        return;
+        }
+
+        const formatted = Number(cellInfo.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+
+        cellElement.text(formatted);
+
+        if (cellInfo.value < 0) {
+        cellElement.css('color', 'red');
+        }}"));
+        
         columns.AddFor(m => m.MaxQty)
                 .Caption(new JS("formatMessage('Inventory Value (FIFO)')"))
             .Format("fixedPoint")
@@ -236,6 +299,177 @@
             .Caption(new JS("formatMessage('IsDiscontinued')"))
             .Visible(false)
             .Width(150);
+
+
+            columns.AddFor(m => m.GsdescriptionAr)
+            .Caption(new JS("formatMessage('Description (AR)')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsgroupNameAr)
+            .Caption(new JS("formatMessage('Stock Group (AR)')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsdetailedDesc)
+            .Caption(new JS("formatMessage('Detailed Description')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsdetailedDescAr)
+            .Caption(new JS("formatMessage('Detailed Description (AR)')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsgroupId)
+            .Caption(new JS("formatMessage('Group ID')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsuoM)
+            .Caption(new JS("formatMessage('UOM')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GspackingUnit)
+            .Caption(new JS("formatMessage('Packing Unit')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.CreatedBy)
+            .Caption(new JS("formatMessage('Created By')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.CreatedOn)
+            .Caption(new JS("formatMessage('Created On')"))
+            .Format("dd-MMM-yyyy")
+            .Visible(false);
+
+            columns.AddFor(m => m.ModifiedBy)
+            .Caption(new JS("formatMessage('Modified By')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ModifiedOn)
+            .Caption(new JS("formatMessage('Modified On')"))
+            .Format("dd-MMM-yyyy")
+            .Visible(false);
+
+            columns.AddFor(m => m.Remarks)
+            .Caption(new JS("formatMessage('Remarks')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemSize)
+            .Caption(new JS("formatMessage('Item Size')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemColor)
+            .Caption(new JS("formatMessage('Item Color')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemDimension)
+            .Caption(new JS("formatMessage('Item Dimension')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemThickness)
+            .Caption(new JS("formatMessage('Item Thickness')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemBrand)
+            .Caption(new JS("formatMessage('Item Brand')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemMake)
+            .Caption(new JS("formatMessage('Item Make')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StoreName)
+            .Caption(new JS("formatMessage('Store Name')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StoreId)
+            .Caption(new JS("formatMessage('Store ID')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StoreCode)
+            .Caption(new JS("formatMessage('Store Code')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.OpeningBal)
+            .Caption(new JS("formatMessage('Opening Balance (Raw)')"))
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Visible(false);
+
+            columns.AddFor(m => m.IsExpiringItem)
+            .Caption(new JS("formatMessage('Is Expiring Item')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StockClassification)
+            .Caption(new JS("formatMessage('Stock Classification')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.UnitDesc)
+            .Caption(new JS("formatMessage('Unit Description')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.IsServicesGroup)
+            .Caption(new JS("formatMessage('Is Services Group')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ExpiryDate)
+            .Caption(new JS("formatMessage('Expiry Date')"))
+            .Format("dd-MMM-yyyy")
+            .Visible(false);
+
+            columns.AddFor(m => m.BatchNo)
+            .Caption(new JS("formatMessage('Batch No')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.Hscode)
+            .Caption(new JS("formatMessage('HS Code')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ActualSize)
+            .Caption(new JS("formatMessage('Actual Size')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.Identification)
+            .Caption(new JS("formatMessage('Identification')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.InventoryMasterGroupId)
+            .Caption(new JS("formatMessage('Inventory Master Group ID')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.InventoryMasterGroup)
+            .Caption(new JS("formatMessage('Inventory Master Group')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.MinQty)
+            .Caption(new JS("formatMessage('Min Qty')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ReorderLevel)
+            .Caption(new JS("formatMessage('Reorder Level')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ReorderQty)
+            .Caption(new JS("formatMessage('Reorder Qty')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ReorderLeadTime)
+            .Caption(new JS("formatMessage('Reorder Lead Time')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ExFactoryCostPrice)
+            .Caption(new JS("formatMessage('Ex-Factory Cost Price')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.CountryOfOrigin)
+            .Caption(new JS("formatMessage('Country of Origin')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.MinSellingPrice)
+            .Caption(new JS("formatMessage('Min Selling Price')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.MaxSellingPrice)
+            .Caption(new JS("formatMessage('Max Selling Price')"))
+            .Visible(false);
+
     })
     .Paging(p => p.PageSize(20))
     .AllowColumnReordering(true)
@@ -246,13 +480,77 @@
     .WordWrapEnabled(true)
     .FilterRow(f => f.Visible(false))
     .Grouping(g => g.AutoExpandAll(true))
-    .GroupPanel(gp => gp.Visible(false))
+    .GroupPanel(gp => gp.Visible(true)) 
     .ShowBorders(true)
-    
+    .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
     .Height("100%")
     .Width("100%")
-)
+        .Summary(s => s // Add this Summary configuration
+        .TotalItems(totalItems =>
+        {
+        totalItems.AddFor(m => m.OpeningBalance)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
 
+            totalItems.AddFor(m => m.TotalReceived)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+
+            totalItems.AddFor(m => m.TotalIssues)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+
+            totalItems.AddFor(m => m.ClosingBalance)
+        .SummaryType(SummaryType.Sum)
+        .DisplayFormat("Total: {0}")
+            .Alignment(HorizontalAlignment.Right).CustomizeText(@"
+        function(e) {
+        if (e.value === null || e.value === undefined) {
+        return ''; // Return empty string for null/undefined
+        }
+        return Number(e.value).toLocaleString(undefined, {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+        });
+        }
+        ");
+        })
+)
+)
     </div>
 
 <script>
