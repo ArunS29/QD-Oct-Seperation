@@ -89,7 +89,7 @@
                             .Disabled(true)
 
                             )
-                    </div>
+                         </div>  
                     <div>
                         @(Html.DevExtreme().DropDownBox()
                             .Label(new JS("formatMessage('Type of the Document Attached:')"))
@@ -102,9 +102,7 @@
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("accountMasterDropDownBox")
                             .Width(770)
-                            @*  .ShowClearButton(true)
-                        .AcceptCustomValue(true) *@
-                            .OpenOnFieldClick(false)//
+                            .OpenOnFieldClick(false)
                             .ValueChangeEvent("input")
                             .HoverStateEnabled(true)
                             .ValueExpr("DocumentTypeId")
@@ -119,20 +117,22 @@
                                 .Message(new JS("formatMessage('Document is required')"));
                             })
 
-                            //.OnValueChanged("dropDownBoxValueChanged")
                             .ContentTemplate(new TemplateName("DocumentAttachedContentTemplate"))
-                            )
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("redirecttoDocumentTypes"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            }))
+                        </div>
                     </div>
-                    <div>
-                        @(Html.DevExtreme().Button()
-                            .ID("btnAddAHead")
-                            .Icon("plus")
-                            .Width("100%")
-                           .OnClick("redirecttoDocumentTypes") 
-                            )
-                    </div>
-                   
-                </div>
 
                 <!-- Second Row -->
                 <div class="row mb-3">

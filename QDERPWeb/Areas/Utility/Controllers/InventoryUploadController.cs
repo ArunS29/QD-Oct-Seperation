@@ -56,32 +56,32 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
         public class UploadStockRequest
         {
             public string GSGroupCode { get; set; }
-            public List<StockItemDto> Items { get; set; }
             public string RequestNo { get; set; }
-            // Add other properties as needed (e.g., User, Date)
+            public List<UploadItemDto> Items { get; set; }
+            public int GSGroupID { get; set; }  // Optional, in case you need it for SP
         }
 
-        public class StockItemDto
+        public class UploadItemDto
         {
             public string GSCode { get; set; }
             public string GSDescription { get; set; }
-            public string GSUoM { get; set; }
-            public decimal? RequestQty { get; set; }
-            public decimal? UnitPrice { get; set; }
+            public string GsdescriptionAr { get; set; }
+            public decimal RequestQty { get; set; }
+            public decimal UnitPrice { get; set; }
+            public string UnitCode { get; set; }
+            public string GsuomDesc { get; set; }
             public string PlanNo { get; set; }
             public string Manufacturer { get; set; }
             public string DeliveryPeriod { get; set; }
             public string Remarks { get; set; }
-            public string GsuomDesc { get; set; }
             public string ItemSize { get; set; }
             public string ItemPartNo { get; set; }
             public string ItemBrand { get; set; }
             public string ItemColor { get; set; }
             public string ItemDimension { get; set; }
             public string ItemThickness { get; set; }
-            public string GsdescriptionAr { get; set; }
-            // Add other fields as needed
         }
+
 
         [HttpPost]
         public async Task<IActionResult> UploadStock([FromBody] UploadStockRequest request)
@@ -126,8 +126,8 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
                 // Call stored procedure
                 await dbContext.Database.ExecuteSqlRawAsync(
-                    "EXEC sp600_21InventoryUploading @p0, @p1",
-                    new object[] { request.GSGroupCode, request.RequestNo }
+                  "EXEC sp600_21InventoryUploading @p0, @p1",
+                  new object[] { request.GSGroupCode, request.RequestNo }
                 );
 
                 await transaction.CommitAsync();
@@ -150,15 +150,14 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     .FirstOrDefault();
 
                 if (string.IsNullOrEmpty(code))
-                {
                     return NotFound("GSGroupCode not found for the given GSGroupID.");
-                }
 
-                return Ok(code); // returns just the string
+                return Ok(code); // ✅ Must return a plain string (not object or null)
             }
 
             return Unauthorized("Tenant context not resolved.");
         }
+
     }
 }
 
