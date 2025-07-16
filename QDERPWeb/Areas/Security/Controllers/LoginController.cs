@@ -219,7 +219,7 @@ namespace QD.ERP.Web.Areas.Security.Controllers
                         var token = GenerateJwtToken(user, request.TenantName);
 
                         SetHttpOnlyCookie("AuthToken", token, 20);
-                        SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
+                        // SetHttpOnlyCookie("Permissions", JsonSerializer.Serialize(permissions), 20);
                         // var sessionCookie = Request.Cookies[".AspNetCore.Session"];
 
                         HttpContext.Session.SetString("TenantName", request.TenantName);
