@@ -405,7 +405,17 @@
                            </text>);
             columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
             columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('Account Master')")).Alignment(HorizontalAlignment.Center).GroupIndex(0);
-            columns.AddFor(m => m.AccountHeadArabic).Caption(new JS("formatMessage('Account Head (Ar)')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
+            columns.AddFor(m => m.AccountHeadArabic)
+            .Caption(new JS("formatMessage('Account Head (Ar)')"))
+            .Alignment(HorizontalAlignment.Right)
+            .Visible(true)
+            .AllowEditing(true)
+            .CellTemplate(@<text>
+                               <div style="font-family: 'Times New Roman', Times, serif;">
+                                   <%-data.AccountHeadArabic%>
+                               </div>
+                           </text>);
+            ;
             columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).GroupIndex(1);
             columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('Account Group')")).Alignment(HorizontalAlignment.Center).AllowEditing(true);
             columns.AddFor(m => m.OpeningBalance).Caption(new JS("formatMessage('Opening Balance')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CustomizeText(@"

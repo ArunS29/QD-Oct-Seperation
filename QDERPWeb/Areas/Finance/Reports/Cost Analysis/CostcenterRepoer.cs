@@ -1,13 +1,11 @@
-﻿using System;
-using System.Drawing;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
-using DevExpress.DataAccess.ConnectionParameters;
-using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
 using DevExpress.XtraPrinting;
+using DevExpress.XtraReports.UI;
+using Microsoft.Data.SqlClient;
 using Svg;
+using System.Drawing;
 using System.Text;
-using Microsoft.Data.SqlClient; // Required for TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
 {
@@ -25,7 +23,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            TenantDbContextHelper tenantDbContextHelper,string username)
+            TenantDbContextHelper tenantDbContextHelper, string username)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
@@ -37,7 +35,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
         public CostcenterRepoer()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "", "");
         }
 
         private void SetReportParameters(
@@ -214,7 +212,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9" };
+                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8"};
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -232,7 +230,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
         }
         private void SetCurrencyImageNull()
         {
-            string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9" };
+            string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
 
             foreach (string name in pictureBoxNames)
             {
@@ -248,5 +246,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 currencyLabel.Text = "";
             }
         }
+
+
+
+
     }
 }

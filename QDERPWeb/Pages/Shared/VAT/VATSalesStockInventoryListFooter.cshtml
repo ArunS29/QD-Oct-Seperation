@@ -5,13 +5,7 @@
 }
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
-        text-align: center !important;
-    }
-
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-        text-align: center !important;
-    }
+    
     /* Button Styling */
     .dx-button {
         background-color: #909ead00 !important;
@@ -65,9 +59,7 @@
         margin-left: 1px !important;
     }
 
-    .dx-datagrid .dx-row {
-        margin-bottom: 50px;
-    }
+    
     /* Custom styles for context menu */
     .context-menu {
         display: none;
@@ -239,7 +231,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Layout')"))
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
@@ -258,7 +250,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Layout')"))
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
@@ -308,7 +300,7 @@
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
-            .Width(50)
+            .Width("100%")
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
@@ -322,7 +314,7 @@
             .Icon("search")
             .Text(new JS("formatMessage('Search')"))
             .ElementAttr(new { style = "display: none;" })
-            .Width(50)
+            .Width("100%")
             .OnClick("toggleFilterRow")
             )
     </div>
@@ -331,7 +323,7 @@
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Group')"))
             .ElementAttr(new { style = "display: none;" })
             .OnClick("toggleGroupPanel")

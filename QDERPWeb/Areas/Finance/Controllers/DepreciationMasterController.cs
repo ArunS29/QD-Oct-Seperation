@@ -32,7 +32,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var data = dbContext.Qry201205depreciationMasterViews.Select(e => new
+                    var currentYear = DateTime.Now.Year;
+                    var currentMonth = DateTime.Now.Month;
+
+                    var startDate = new DateTime(currentYear, 1, 1); // 2025-01-01
+                    var endDate = new DateTime(currentYear, currentMonth, DateTime.DaysInMonth(currentYear, currentMonth)); // e.g., 2025-07-31
+
+
+                    var data = dbContext.Qry201205depreciationMasterViews.Where(v => v.DeprStartDate >= startDate && v.DeprEndDate <= endDate)
+                        .Select(e => new
                     {
                         e.JournalVoucherNo,
                         e.DepreciationDocNo,

@@ -186,7 +186,7 @@
             .Width(120);
         columns.AddFor(m => m.Gsdescrpition)
                 .Caption(new JS("formatMessage('Description')"))
-            .Width(280);   columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true);
+            .Width(280); columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
         columns.AddFor(m => m.ItemPartNo)
                 .Caption(new JS("formatMessage('Item Part No')"))
             .Width(150);
@@ -299,6 +299,177 @@
             .Caption(new JS("formatMessage('IsDiscontinued')"))
             .Visible(false)
             .Width(150);
+
+
+            columns.AddFor(m => m.GsdescriptionAr)
+            .Caption(new JS("formatMessage('Description (AR)')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsgroupNameAr)
+            .Caption(new JS("formatMessage('Stock Group (AR)')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsdetailedDesc)
+            .Caption(new JS("formatMessage('Detailed Description')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsdetailedDescAr)
+            .Caption(new JS("formatMessage('Detailed Description (AR)')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsgroupId)
+            .Caption(new JS("formatMessage('Group ID')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GsuoM)
+            .Caption(new JS("formatMessage('UOM')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.GspackingUnit)
+            .Caption(new JS("formatMessage('Packing Unit')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.CreatedBy)
+            .Caption(new JS("formatMessage('Created By')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.CreatedOn)
+            .Caption(new JS("formatMessage('Created On')"))
+            .Format("dd-MMM-yyyy")
+            .Visible(false);
+
+            columns.AddFor(m => m.ModifiedBy)
+            .Caption(new JS("formatMessage('Modified By')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ModifiedOn)
+            .Caption(new JS("formatMessage('Modified On')"))
+            .Format("dd-MMM-yyyy")
+            .Visible(false);
+
+            columns.AddFor(m => m.Remarks)
+            .Caption(new JS("formatMessage('Remarks')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemSize)
+            .Caption(new JS("formatMessage('Item Size')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemColor)
+            .Caption(new JS("formatMessage('Item Color')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemDimension)
+            .Caption(new JS("formatMessage('Item Dimension')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemThickness)
+            .Caption(new JS("formatMessage('Item Thickness')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemBrand)
+            .Caption(new JS("formatMessage('Item Brand')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ItemMake)
+            .Caption(new JS("formatMessage('Item Make')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StoreName)
+            .Caption(new JS("formatMessage('Store Name')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StoreId)
+            .Caption(new JS("formatMessage('Store ID')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StoreCode)
+            .Caption(new JS("formatMessage('Store Code')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.OpeningBal)
+            .Caption(new JS("formatMessage('Opening Balance (Raw)')"))
+            .Format("fixedPoint")
+            .Alignment(HorizontalAlignment.Right)
+            .Visible(false);
+
+            columns.AddFor(m => m.IsExpiringItem)
+            .Caption(new JS("formatMessage('Is Expiring Item')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.StockClassification)
+            .Caption(new JS("formatMessage('Stock Classification')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.UnitDesc)
+            .Caption(new JS("formatMessage('Unit Description')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.IsServicesGroup)
+            .Caption(new JS("formatMessage('Is Services Group')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ExpiryDate)
+            .Caption(new JS("formatMessage('Expiry Date')"))
+            .Format("dd-MMM-yyyy")
+            .Visible(false);
+
+            columns.AddFor(m => m.BatchNo)
+            .Caption(new JS("formatMessage('Batch No')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.Hscode)
+            .Caption(new JS("formatMessage('HS Code')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ActualSize)
+            .Caption(new JS("formatMessage('Actual Size')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.Identification)
+            .Caption(new JS("formatMessage('Identification')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.InventoryMasterGroupId)
+            .Caption(new JS("formatMessage('Inventory Master Group ID')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.InventoryMasterGroup)
+            .Caption(new JS("formatMessage('Inventory Master Group')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.MinQty)
+            .Caption(new JS("formatMessage('Min Qty')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ReorderLevel)
+            .Caption(new JS("formatMessage('Reorder Level')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ReorderQty)
+            .Caption(new JS("formatMessage('Reorder Qty')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ReorderLeadTime)
+            .Caption(new JS("formatMessage('Reorder Lead Time')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.ExFactoryCostPrice)
+            .Caption(new JS("formatMessage('Ex-Factory Cost Price')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.CountryOfOrigin)
+            .Caption(new JS("formatMessage('Country of Origin')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.MinSellingPrice)
+            .Caption(new JS("formatMessage('Min Selling Price')"))
+            .Visible(false);
+
+            columns.AddFor(m => m.MaxSellingPrice)
+            .Caption(new JS("formatMessage('Max Selling Price')"))
+            .Visible(false);
+
     })
     .Paging(p => p.PageSize(20))
     .AllowColumnReordering(true)
@@ -311,7 +482,8 @@
     .Grouping(g => g.AutoExpandAll(true))
     .GroupPanel(gp => gp.Visible(true)) 
     .ShowBorders(true)
-    
+    .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
     .Height("100%")
     .Width("100%")
         .Summary(s => s // Add this Summary configuration

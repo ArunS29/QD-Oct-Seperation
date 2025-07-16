@@ -1709,6 +1709,30 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
-        
+        [HttpDelete]
+        public IActionResult DeleteStock(int key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl20165GoodsAndServicesGroups.FirstOrDefault(x => x.GsgroupId == key);
+                    if (record == null)
+                        return NotFound();
+
+                    dbContext.Tbl20165GoodsAndServicesGroups.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+        }
     }
 }
