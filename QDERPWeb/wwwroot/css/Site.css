@@ -725,3 +725,13 @@ body.dark-mode {
 .dx-tabs-wrapper{
     border:none !important;
 }
+dx-item-content dx-list-item-content {
+    padding: 10px 10px 10px 0px !important;
+}
+dx-item-content dx-list-item-content:hover{
+    padding: 10px 10px 10px 0px !important;
+    background-color:var(--background-color);
+}
+.dx-dropdownbutton-popup-wrapper .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item-content {
+    padding: 10px 10px 10px 0px !important;
+}

@@ -171,7 +171,13 @@ private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = $"SELECT TOP 1 CurrencyImage, CurrencySymbol FROM {tenant.schemaname}.tbl901companyDetails";
+
+                    string sql = $@"
+                        SELECT c.CurrencyImage, c.CurrencySymbol
+                        FROM {tenant.schemaname}.tbl901CompanyDetails AS c
+                        INNER JOIN dbo.fn_GetDefaultCompanyDetails() AS f
+                            ON c.CompanyId = f.CompanyId";
+
                     using (var command = new SqlCommand(sql, connection))
                     {
                         using (var reader = command.ExecuteReader())
@@ -184,7 +190,7 @@ private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs
                         }
                     }
                 }
-
+    
                 // Set currency symbol to label
                 if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel && !string.IsNullOrEmpty(currencySymbol))
                 {
@@ -228,6 +234,7 @@ private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs
                         pictureBox.Sizing = ImageSizeMode.Normal;
                     }
                 }
+                AlignCurrencyWithAmount(bitmap);
             }
             catch
             {
@@ -272,9 +279,13 @@ private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs
             {
 
 
-             new { Label = "xrLabel14",  Picture = "xrPictureBox7" },
-             new { Label = "xrLabel15",  Picture = "xrPictureBox6" },
-             new { Label = "xrLabel16",  Picture = "xrPictureBox5" },
+             new { Label = "xrLabel12",  Picture = "xrPictureBox9" },
+             new { Label = "xrLabel10",  Picture = "xrPictureBox10" },
+             new { Label = "xrLabel14",  Picture = "xrPictureBox11" },
+             new { Label = "xrLabel15",  Picture = "xrPictureBox12" },
+             new { Label = "xrLabel16",  Picture = "xrPictureBox13" },
+             new { Label = "xrLabel17",  Picture = "xrPictureBox14" },
+             new { Label = "xrLabel18",  Picture = "xrPictureBox15" },
              };
 
             foreach (var p in pairs)
