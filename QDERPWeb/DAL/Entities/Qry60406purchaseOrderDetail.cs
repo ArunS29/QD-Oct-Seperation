@@ -26,7 +26,6 @@ public partial class Qry60406purchaseOrderDetail
     public string SupplierContactEmail { get; set; }
 
     public string SubjectTitle { get; set; }
-
     public string PreparedBy { get; set; }
 
     public DateTime? PreparedOn { get; set; }

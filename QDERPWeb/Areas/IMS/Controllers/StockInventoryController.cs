@@ -1734,5 +1734,32 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             }
         }
+        [HttpGet] 
+        public async Task<IActionResult> GetInventoryMasterGroup()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var CostCenter = await dbContext.Tbl60008inventoryMasterGroups
+                       .Select(i => new
+                       {
+                           i.InventoryMasterGroupId,
+                           i.InventoryMasterGroup
+                         
+                       })
+                        .ToListAsync();
+
+                    return Json(CostCenter); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
     }
 }

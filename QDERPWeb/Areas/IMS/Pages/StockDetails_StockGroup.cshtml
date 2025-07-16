@@ -345,9 +345,24 @@
                         .Caption(new JS("formatMessage('Category')"))
                         .Alignment(HorizontalAlignment.Center);
 
-                        columns.AddFor(m => m.InventoryMasterGroupId)
+                @*         columns.AddFor(m => m.InventoryMasterGroupId)
                         .Caption(new JS("formatMessage('Inventory Master Groups')"))
-                        .Alignment(HorizontalAlignment.Center);
+                        .Alignment(HorizontalAlignment.Center); *@
+
+                                    columns.AddFor(m => m.InventoryMasterGroupId)
+                                    .Caption(new JS("formatMessage('Inventory Master Groups')"))
+                                    .Width(200)
+                                    .Lookup(lookup => lookup
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("StockInventory")
+                                    .LoadAction("GetInventoryMasterGroups")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("InventoryMasterGroupId")
+                                    )
+                                    .ValueExpr("InventoryMasterGroupId")     // Must match the value in your model
+                                    .DisplayExpr("InventoryMasterGroup")     // The user-friendly name
+                                    );
+
 
                         columns.AddFor(m => m.IsServicesGroup)
                         .Caption(new JS("formatMessage('Is Services?')"))
