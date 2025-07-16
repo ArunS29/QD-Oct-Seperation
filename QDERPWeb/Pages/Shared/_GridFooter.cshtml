@@ -5,6 +5,54 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
+    /* Container for each item */
+    .custom-dropdown-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 0px 0px;
+        position: relative;
+        /* border-left: 4px solid transparent; */
+        transition: background 0.2s;
+    }
+
+        .custom-dropdown-item:hover {
+            background: var(--background-color); /* subtle hover */
+        }
+
+        /* Colored bar on the left */
+        .custom-dropdown-item .side-bar {
+            width: 4px;
+            height: 11%;
+            margin-right: 30px;
+            /* background-color: red; */
+            position: fixed;
+            z-index: 1000;
+            border-radius: 0% 50% 50% 0%;
+            transition: width 0.2s ease;
+        }
+
+        .custom-dropdown-item:hover .side-bar {
+            width: 8px;
+        }
+        /* Text content */
+        .custom-dropdown-item .item-content {
+            display: flex;
+            /* flex-direction: column; */
+            margin-left:10px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .custom-dropdown-item .item-title {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .custom-dropdown-item .item-description {
+            font-size: 12px;
+            color: #888;
+        }
+
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -362,24 +410,53 @@
                 .ID("ddReports")
                 .Icon("doc")
                 .Text(new JS("formatMessage('Report')"))
-                .ElementAttr(new { style = "display: none;" })
                 .DropDownOptions(options => options.Width(320))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file").OnClick("showSubmenu4");
-                    items.Add().Text(new JS("formatMessage('Receivable Statements')")).Icon("file").OnClick("showSubmenu5");
-                    items.Add().Text(new JS("formatMessage('Payable Statements')")).Icon("file").OnClick("showSubmenu6");
-                    items.Add().Text(new JS("formatMessage('Cost Reports')")).Icon("file").OnClick("showSubmenu7");
-                    items.Add().Text(new JS("formatMessage('Bank Reconciliation')")).Icon("product");
-                    items.Add().Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')")).Icon("product");
-                    items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
+                    items.Add().Text("Account Statements")
+                    .Icon("home") // use DevExtreme icon name
+                    .Option("color", "#4285F4") // Blue
+                    .OnClick("showSubmenu4");
+
+                    items.Add().Text("Receivable Statements")
+                    .Icon("money")
+                    .Option("color", "#34A853") // Green
+                    .OnClick("showSubmenu5");
+
+                    items.Add().Text("Payable Statements")
+                    .Icon("cart")
+                    .Option("color", "#EA4335") // Red
+                    .OnClick("showSubmenu6");
+
+                    items.Add().Text("Cost Reports")
+                    .Icon("chart")
+                    .Option("color", "#FBBC05") // Yellow
+                    .OnClick("showSubmenu7");
+
+                    items.Add().Text("Bank Reconciliation")
+                    .Icon("product")
+                    .Option("color", "#AB47BC"); // Purple
+
+                    items.Add().Text("Ledger to Receivable/Payable Mapping")
+                    .Icon("product")
+                    .Option("color", "#00ACC1"); // Teal
+
+                    items.Add().Text("Ledger to Salary Payable Mapping")
+                    .Icon("product")
+                    .Option("color", "#FF7043"); // Orange
                 })
-                            .ItemTemplate(@<text>
-                        <div class="<%- text.replace(/\s+/g, '-').toLowerCase() %> submenu-item">
-                            <i class="dx-icon dx-icon-<%- icon %>"></i>
-                            <span><%- text %></span>
-                        </div>
-                    </text>)
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                        <div class="item-description">Lorem Ipsum of the Component</div>
+                    </div>
+                </div>
+            </div>
+        </text>)
                 .OnItemClick("addReportsButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -1048,5 +1125,5 @@
     function onCreateNewClick() {
         window.location.href = `/${tenantName}/Finance/JournalEntryEdit`;
     }
-            
+   
 </script>
