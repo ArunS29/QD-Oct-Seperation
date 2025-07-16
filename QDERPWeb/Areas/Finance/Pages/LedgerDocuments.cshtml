@@ -500,7 +500,33 @@
             onEditingStart: function (e) {
                 currentEditRowIndex = e.rowIndex;
             },
+            onEditorPrepared: function (e) {
+                if (e.dataField === "DocumentExpDate" && e.parentType === "dataRow") {
+                    const dateBox = e.editorElement.dxDateBox("instance");
+                    dateBox.on("valueChanged", function (args) {
+                        const gregDate = args.value;
+                        const hijriDate = convertToHijri(new Date(gregDate));
 
+                        const grid = $("#documentsGrid").dxDataGrid("instance");
+                        const editRowIndex = e.row.rowIndex;
+
+                        const cell = grid.getCellElement(editRowIndex, "DocumentExpDateAr");
+                        if (cell && cell.length) {
+                            const textbox = cell.find(".dx-texteditor-input");
+                            if (textbox.length) {
+                                textbox.val(hijriDate);
+                            }
+                        }
+
+                        grid.getController("editing")._editData.forEach(editItem => {
+                            if (editItem.key === e.row.key) {
+                                editItem.data = editItem.data || {};
+                                editItem.data.DocumentExpDateAr = hijriDate;
+                            }
+                        });
+                    });
+                }
+            },
             columns: [
                 { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
 
@@ -613,7 +639,7 @@
                 {
                     dataField: "DocumentExpDateAr",
                     caption: "Expiry (Hijri)",
-                    allowEditing: true,
+                    allowEditing: false,
                     editorType: "dxTextBox",
                     editorOptions: {
                         readOnly: true,
@@ -663,7 +689,7 @@
                     },
                     {
                         hint: "Download",
-                        icon: "dx-icon-download",
+                        icon: "fas fa-download",
                         onClick: function (e) {
                             e.event.stopPropagation(); // prevent row click
                             const fileUrl = e.row.data.FileUrl;
@@ -691,15 +717,20 @@
                 }
             },
 
-
-
             onRowUpdating: function (e) {
+                // Merge changes
                 e.newData = { ...e.oldData, ...e.newData };
-                if (e.newData.DocumentExpDate && !e.newData.DocumentExpDateAr) {
+
+                // Convert Hijri from updated ExpDate
+                if (e.newData.DocumentExpDate) {
                     const hijriDate = convertToHijri(new Date(e.newData.DocumentExpDate));
-                    e.newData.DocumentExpDateAr = hijriDate; 
+                    e.newData.DocumentExpDateAr = hijriDate; // ✅ Always set
+                } else if (e.oldData.DocumentExpDate && !e.newData.DocumentExpDate) {
+                    // fallback: if exp date removed
+                    e.newData.DocumentExpDateAr = "";
                 }
             }
+            
 
 
 
@@ -807,7 +838,7 @@
 
         // ✅ Filter files
         const validFiles = files.filter(file => {
-            const maxSizeMB = 10;
+            const maxSizeMB = 5;
             const disallowedTypes = ["video/", "application/zip", "application/x-zip-compressed"];
             const isTooBig = file.size > maxSizeMB * 1024 * 1024;
             const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
@@ -937,7 +968,7 @@
     }
 
 
-        function openPreviewDialog(doc) {
+    function openPreviewDialog(doc) {
         const preview = document.getElementById("preview");
         preview.innerHTML = "";
 
@@ -950,25 +981,36 @@
         const fileName = decodeURIComponent(url.split('/').pop().split('?')[0]);
         const ext = fileName.split('.').pop().toLowerCase();
         const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(ext);
-        const isPdf = ext === "pdf";
+        const isPdf = ["pdf"].includes(ext);
         const isOffice = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext);
 
         let previewContent = "";
+        let previewAvailable = true;
 
         if (isImage) {
             previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 300px;" />`;
         } else if (isPdf) {
-            previewContent = `<embed src="${url}#toolbar=0&navpanes=0&scrollbar=0" type="application/pdf" width="100%" height="400px" />`;
-        } else if (isOffice) {
-            // Use Microsoft Office Web Viewer (requires file to be publicly accessible)
+            const encodedUrl = encodeURIComponent(url); // Important!
             previewContent = `
                 <iframe
-                    src="https://view.officeapps.live.com/op/embed.aspx?src=${encodeURIComponent(url)}"
+                    src="https://docs.google.com/gview?url=${encodedUrl}&embedded=true"
                     width="100%"
-                    height="380px"
-                    frameborder="0">
+                    height="300px"
+                    style="border: none;"
+                    onerror="this.onerror=null; this.src=''; preview.innerHTML='<div>Unable to preview PDF.</div>';"
+                ></iframe>`;
+        } else if (isOffice) {
+            const encodedUrl = encodeURIComponent(url);
+            previewContent = `
+                <iframe
+                    src="https://view.officeapps.live.com/op/embed.aspx?src=${encodedUrl}"
+                    width="100%"
+                    height="300px"
+                    frameborder="0"
+                    onerror="this.onerror=null; this.src=''; preview.innerHTML='<div>Unable to preview document.</div>'; previewAvailable=false;">
                 </iframe>`;
         } else {
+            previewAvailable = false;
             previewContent = `<div>No preview available for .${ext} files</div>`;
         }
 
@@ -985,7 +1027,6 @@
                     <span><i class="fas fa-file-alt text-primary me-1"></i> ${fileName}</span>
                     <span><i class="fas fa-calendar-alt text-danger me-1"></i> ${expDate}</span>
                 </div>
-
             </div>
         `;
     }
