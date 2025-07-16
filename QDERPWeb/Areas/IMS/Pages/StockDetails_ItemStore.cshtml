@@ -263,7 +263,7 @@
              
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(true);
+                    columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center);
                     columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center);
                     columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center);
                 })
