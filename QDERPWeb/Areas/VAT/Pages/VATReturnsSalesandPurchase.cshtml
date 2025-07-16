@@ -2,6 +2,8 @@
 @model QD.ERP.Web.Areas.VAT.Pages.VATReturnsModel
 @{
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+
 <style>
     .mainContainer{
         width:100%;
@@ -558,6 +560,33 @@
         margin-top: 20px;
     }
 
+    .numberbox-with-icon {
+        position: relative;
+        display: inline-block;
+        width: 100%;
+    }
+
+    /* .dx-numberbox-iconed {
+        padding-right: 30px;
+    }
+ */
+    .print-icon {
+        position: absolute;
+        left: 6px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 20px; /* adjust size as needed */
+        color: #007bff;
+        cursor: pointer;
+        z-index: 2;
+    }
+
+        .print-icon:hover {
+            color: #0056b3;
+            transform: translateY(-50%) scale(1.1);
+        }
+
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -716,10 +745,44 @@
         <tr class="total-row">
             <td>6</td>
             <td>Total Sales</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("RevenueTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("CreditNoteTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DSSTotalSalesTax").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-        </tr>
+                            <td>
+                                <div class="numberbox-with-icon">
+                                    @(Html.DevExtreme().NumberBox()
+                                                                        .ID("RevenueTotal")
+                                                                        .Disabled(true)
+                                                                        .Format("#,##0.00")
+                                                                        .ShowSpinButtons(false)
+                                                                        .ElementAttr("class", "dx-numberbox-iconed text-right-number")
+                                                                        )
+                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('RevenueTotal', 'Total Sales - Revenue')"></span>
+
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="numberbox-with-icon">
+                                    @(Html.DevExtreme().NumberBox()
+                                                                        .ID("CreditNoteTotal")
+                                                                        .Disabled(true)
+                                                                        .Format("#,##0.00")
+                                                                        .ShowSpinButtons(false)
+                                                                        .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
+                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('CreditNoteTotal', 'Total Sales - Credit Note')"></span>
+                                </div>
+                            </td>
+
+                            <td>
+                                <div class="numberbox-with-icon">
+                                    @(Html.DevExtreme().NumberBox()
+                                                                        .ID("DSSTotalSalesTax")
+                                                                        .Disabled(true)
+                                                                        .Format("#,##0.00")
+                                                                        .ShowSpinButtons(false)
+                                                                        .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
+                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('DSSTotalSalesTax', 'Total Sales - Sales Tax')"></span>
+                                </div>
+                            </td>
+
 
                     </tbody>
                 </table>
@@ -798,12 +861,49 @@
                         <tr class="total-row">
                             <td>12</td>
                             <td>Total Purchases</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("PurchaseTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DebitNoteTotal").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("TotalPurchaseTax").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+
+                            <!-- PurchaseTotal -->
+                            <td>
+                                <div class="numberbox-with-icon">
+                                    @(Html.DevExtreme().NumberBox()
+                                                                        .ID("PurchaseTotal")
+                                                                        .Disabled(true)
+                                                                        .Format("#,##0.00")
+                                                                        .ShowSpinButtons(false)
+                                                                        .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
+                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('PurchaseTotal', 'Total Purchases - Purchase Total')"></span>
+                                </div>
+                            </td>
+
+                            <!-- DebitNoteTotal -->
+                            <td>
+                                <div class="numberbox-with-icon">
+                                    @(Html.DevExtreme().NumberBox()
+                                                                        .ID("DebitNoteTotal")
+                                                                        .Disabled(true)
+                                                                        .Format("#,##0.00")
+                                                                        .ShowSpinButtons(false)
+                                                                        .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
+                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('DebitNoteTotal', 'Total Purchases - Debit Note Total')"></span>
+                                </div>
+                            </td>
+
+                            <!-- TotalPurchaseTax -->
+                            <td>
+                                <div class="numberbox-with-icon">
+                                    @(Html.DevExtreme().NumberBox()
+                                                                        .ID("TotalPurchaseTax")
+                                                                        .Disabled(true)
+                                                                        .Format("#,##0.00")
+                                                                        .ShowSpinButtons(false)
+                                                                        .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
+                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('TotalPurchaseTax', 'Total Purchases - Tax Total')"></span>
+                                </div>
+                            </td>
+
                         </tr>
                     </tbody>
-                </table>
+                </table> 
             </div>
 
 
@@ -821,24 +921,24 @@
 <script>
 
 
-    function animateInvoiceCount(target) {
-      let i = 0;
-      const el = document.getElementById("invoiceCount");
-      el.classList.remove('bounce');
+    // function animateInvoiceCount(target) {
+    //   let i = 0;
+    //   const el = document.getElementById("invoiceCount");
+    //   el.classList.remove('bounce');
 
-      const timer = setInterval(() => {
-        if (i >= target) {
-          el.innerText = target;
-          el.classList.add('bounce');
-          clearInterval(timer);
-        } else {
-          el.innerText = i++;
-        }
-      }, 30);
-    }
+    //   const timer = setInterval(() => {
+    //     if (i >= target) {
+    //       el.innerText = target;
+    //       el.classList.add('bounce');
+    //       clearInterval(timer);
+    //     } else {
+    //       el.innerText = i++;
+    //     }
+    //   }, 30);
+    // }
 
-    // Animate to 40
-    animateInvoiceCount(40);
+    // // Animate to 40
+    // animateInvoiceCount(40);
 
 
     function countUpTurnover(targetStr) {

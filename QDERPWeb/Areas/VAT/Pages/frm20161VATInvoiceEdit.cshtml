@@ -2093,6 +2093,7 @@
 							.DataField("Description")
 							.Caption("Description")
 							.Width(500)
+							.EditorOptions(new { placeholder = "Enter or select description" })
 							.AllowEditing(true)
 							//.EditorOptions(new { placeholder = "Enter item code" })
 							.CellTemplate(@<text>
@@ -2290,8 +2291,14 @@
 								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum)
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
-								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum)
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
@@ -2299,10 +2306,10 @@
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-							totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum)
+								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum)
+								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
