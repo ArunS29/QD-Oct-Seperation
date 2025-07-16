@@ -407,10 +407,10 @@
  
 
     function ChangeRowHeight(newHeight) {
-        // Update the row height
-        $("#dataGrid .dx-data-row").css("height", newHeight + "px");
-        closeSubmenu();
+    $("#PurchaseGrid .dx-data-row, #stockCardGrid .dx-data-row, #invoiceGrid .dx-data-row, #quotationGrid .dx-data-row, #PurchaseOrderGrid .dx-data-row, #ItemDeliversGrid .dx-data-row, #ItemReceivedGrid .dx-data-row, #UnitConversionGrid .dx-data-row, #documentGrid .dx-data-row")
+    .css("height", newHeight + "px");
     }
+
     function showSubmenu(e) {
         e.event.stopPropagation();
         var $submenu = $('#submenuContainer');

@@ -90,7 +90,6 @@
 
         .playIcon {
             display:  none;
-
         }
     </style>
    
@@ -117,9 +116,9 @@
                             .ID("txtDescription8").Width("95%").Height(60))
                         </td>
                         <td>
-                            <div style="display: flex; gap: 10px; width: 100%;">
+                            <div style="display: flex; gap: 10px; width: 100%; align-items:end;">
                                 <!-- Language Button -->
-                                <div style="padding-top:25px;">
+                                <div>
                                     @(Html.DevExtreme().Button()
                                         .ID("convertToArabic1")
                                         .Width(60)
@@ -146,9 +145,7 @@
                                         .OnClick("addUomToDatabase"))
                                 </div>
                             </div>
-
                         </td>
-    
                     </tr>
                 </table>
             </div>
@@ -229,7 +226,8 @@
             .AllowColumnResizing(true)
             .Paging(p => p.Enabled(false))
             .HeaderFilter(filter => filter.Visible(false))
-            .Height(400)
+            .Height(330)
+            .SearchPanel(p => p.HighlightSearchText(true)) 
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .ShowBorders(true)

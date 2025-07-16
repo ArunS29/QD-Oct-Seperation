@@ -177,14 +177,6 @@
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount" type="hidden" />
-<div class="title">
-    <div class="header-container">
-        <div id="InventoryStockDetails" class="no-border-title" style="
-    border: none !important;
-    box-shadow: none !important;
-"></div>
-    </div>
-</div>
 <div class="containerInventoryStock">
 
         <div class="dx-fieldset horizontal-container">
@@ -214,14 +206,19 @@
                                 .SearchEnabled(true)
                                 .Width("90%")
                                 .OnValueChanged("onStockGroupChange")
-                                )
-                        @(Html.DevExtreme().Button()
-                            .ID("btnAddStockGroup")
-                            .Icon("plus")
-                            .Width(32)
-                            .ElementAttr("class", "inline-icon")
-                            .OnClick("StockGroup")
-                            )
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                    .Name("btnAddAccount")
+                                    .Location(TextEditorButtonLocation.After)
+                                    .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                    .OnClick("StockGroup"));
+                                    buttons.Add()
+                                    .Name("dropDown");
+                                }))
                         </div>
                     </td>
                     <td colspan="2">
@@ -235,52 +232,58 @@
                 <tr>
                     <td>
                         <div style="display:flex;align-items:end;" ;>
-                            @(Html.DevExtreme().SelectBox()
+                        @(Html.DevExtreme().SelectBox()
                                 .ID("ItemStore")
                                 .DisplayExpr("StoreName")
                                 .ValueExpr("StoreId")
-                                .SearchEnabled(true)
                                 .DataSource(d => d.WebApi()
-                                .Controller("StockInventory")
+                                .Controller("ERStockInventory")
                                 .LoadAction("GetStores")
                                 )
                                 .Label(new JS("formatMessage('Item Store')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("90%")
-                                )
-
-                        @(Html.DevExtreme().Button()
-                            .ID("btnAddStore")
-                            .Icon("plus")
-                            .Width(32)
-                            .ElementAttr("class", "inline-icon")
-                                .OnClick("ItemStore")
-                                )
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                    .Name("btnAddAccount")
+                                    .Location(TextEditorButtonLocation.After)
+                                    .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("ItemStore"));
+                                    buttons.Add()
+                                    .Name("dropDown");
+                                }))
                         </div>
                     </td>
                     <td>
                         <div style="display:flex;align-items:end;">
-                            @(Html.DevExtreme().SelectBox()
+                        @(Html.DevExtreme().SelectBox()
                                 .ID("ItemClassification")
                                 .DisplayExpr("StockClassification")
                                 .ValueExpr("StockClassId")
-                                                .SearchEnabled(true)
                                 .DataSource(d => d.WebApi()
-                                .Controller("StockInventory")
+                                .Controller("ERStockInventory")
                                 .LoadAction("GetItemClassifications")
                                 )
                                 .Label(new JS("formatMessage('Item Classification')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("90%")
-                                )
-
-                        @(Html.DevExtreme().Button()
-                            .ID("btnAddClassification")
-                            .Icon("plus")
-                            .Width(32)
-                            .ElementAttr("class", "inline-icon")
-                             .OnClick("ItemClassification")
-                                )
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                    .Name("btnAddAccount")
+                                    .Location(TextEditorButtonLocation.After)
+                                    .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("ItemClassification"));
+                                    buttons.Add()
+                                    .Name("dropDown");
+                                }))
                         </div>
                     </td>
                     <th style="display:flex; align-items:end;">
@@ -366,10 +369,10 @@
                 .Icon("money") // "Purchases"
                 .Text(new JS("formatMessage('Purchases')"));
 
-              @*   // tab-content-12
+               // tab-content-12
                 items.Add()
                 .Icon("bookmark") // "Matl.Requests"
-                .Text(new JS("formatMessage('Matl. Requests')")); *@
+                .Text(new JS("formatMessage('Matl. Requests')"));
             })
                 .SelectedIndex(0) // Default selected tab is the first one
                 .OnSelectionChanged("onTabSelectionChanged") // Event handler for tab selection changes
@@ -388,11 +391,10 @@
                 <style>
                     .form-table {
                         width: 100%;
-                        margin: 30px;
                         border-spacing: 10px;
                         font-family: Segoe UI, sans-serif;
                     }
-
+                        
                         .form-table th {
                             text-align: left;
                             font-weight: bold;
@@ -483,7 +485,7 @@
                     <table class="form-table">
                         <!-- Detailed Description -->
                         <tr>
-                            <th colspan="6" style="padding-bottom: 23px; padding-top: 30px;" id="DetailedDescriptionLabel"></th>
+                            <th colspan="6" id="DetailedDescriptionLabel"></th>
                         </tr>
                         <tr>
                             <td colspan="6">
@@ -505,24 +507,28 @@
                                 @(Html.DevExtreme().SelectBox()
                                     .ID("UnitOfMeasure")
                                     .DisplayExpr("UnitType")
-                                                                .SearchEnabled(true)
+                                    .SearchEnabled(true)
                                     .ValueExpr("UnitCode")
                                     .DataSource(d => d.WebApi()
-
                                     .Controller("StockInventory")
                                     .LoadAction("GetUnitCodes")
                                     )
                                     .Label(new JS("formatMessage('Unit of Measure : *')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width("140")
-                                    )
-                                @(Html.DevExtreme().Button()
-                                    .ID("btnAddUOM")
-                                    .Icon("plus")
-                                    .Width("45")
-                                    .ElementAttr("style", "margin-top:23px")
-                                    .OnClick("UnitOfMeasure")
-                                    )
+                                    .Width("260")
+                                    .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                        .Name("btnAddAccount")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                        .Type(ButtonType.Default)
+                                        .Icon("plus")
+                                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                        .OnClick("UnitOfMeasure"));
+                                        buttons.Add()
+                                        .Name("dropDown");
+                                    }))
                                 </div>
                             </td>
 
@@ -588,15 +594,19 @@
                                 .Value(0.00)
                                 .Format("#,##0.00")
                                 .LabelMode(EditorLabelMode.Floating)
-                                .Width("80%")
-                                .Label(new JS("formatMessage('Opening Balance : ')")))
-                            @(Html.DevExtreme().Button()
-                                .ID("btnAddOPB")
-                                .Icon("fa fa-dollar-sign")
-                                .Width("45")
-                                .ElementAttr("style", "margin-top:23px")
-                                .OnClick("OpeningBalanceOPB")
-                                )
+                                .Width("100%")
+                                .Label(new JS("formatMessage('Opening Balance : ')"))
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                    .Name("btnAddOPB")
+                                    .Location(TextEditorButtonLocation.After)
+                                    .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("fa fa-dollar-sign")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("OpeningBalanceOPB"));
+                                }))
                             </td>
 
                             <td>
@@ -650,24 +660,18 @@
                         <!-- Detailed Description Arabic -->
                         <tr class="flex-row" style="padding-bottom: 0px;">
                             <th colspan="6" class="flex-row" id="DetailedDescriptionInArabic"></th>
-                            <th>
+
+                        </tr>
+
+                        <tr>
+                            <td colspan="6" style="display:flex; align-items:end;">
                             @(Html.DevExtreme().Button()
                                 .ID("convertToArabic1")
                                 .Width(50)
                                 .Icon("fas fa-language")
                                 .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
-                                 .OnClick("convertToArabic")
+                                .OnClick("convertToArabic")
                                 )
-                            </th>
-
-
-
-
-                        </tr>
-
-                        <tr>
-                            <td colspan="6" style="display:flex;">
-
                             @(Html.DevExtreme().TextArea()
                                 .ID("ArabicDescription")
                                 .Width("100%")
@@ -733,93 +737,70 @@
                                 .LabelMode(EditorLabelMode.Floating))
                             </td>
 
-                        </tr>
-
-
-                    </table>
-
-                </div>
-                <div style="width:100%">
-                    <table>
-                        <tr>
-                            <td colspan="4" class="audit-box">
-                                <div style="display: flex; justify-content: space-between;">
-                                    <!-- Left Audit Info -->
-                                    <div class="audit">
-                                        <div class="audit-left">
-                                            <div class="audit-row">
-                                                <div class="audit-label" id="EnteredByLabel"></div>
-                                                <div class="audit-field">
-                                                @(Html.DevExtreme().TextArea()
-                                                    .ID("EnteredBy")
-                                                    .Value(enteredBy)
-                                                    .ReadOnly(true)
-                                                    .Height(40)
-                                                    .Width("90%"))
-                                                </div>
-                                            </div>
-                                            <div class="audit-row">
-                                                <div class="audit-label" id="EnteredOnLabel"></div>
-                                                <div class="audit-field">
-                                                @(Html.DevExtreme().TextArea()
-                                                    .ID("EnteredOn")
-                                                    .Value(enteredOn)
-                                                    .ReadOnly(true)
-                                                    .Height(40)
-                                                    .Width("90%"))
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Right Audit Info -->
-                                        <div class="audit-right">
-                                            <div class="audit-row">
-                                                <div class="audit-label" id="ModifiedByLabel"></div>
-                                                <div class="audit-field">
-                                                @(Html.DevExtreme().TextArea()
-                                                    .ID("ModifiedBy")
-                                                    .Value(modifiedBy)
-                                                    .ReadOnly(true)
-                                                    .Height(40)
-                                                    .Width("90%"))
-                                                </div>
-                                            </div>
-                                            <div class="audit-row">
-                                                <div class="audit-label" id="ModifiedOnLabel"></div>
-                                                <div class="audit-field">
-                                                @(Html.DevExtreme().TextArea()
-                                                    .ID("ModifiedOn")
-                                                    .Value(modifiedOn)
-                                                    .ReadOnly(true)
-                                                    .Height(40)
-                                                    .Width("90%"))
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <div class="audit-right">
-                                        <div class="audit-row">
-                                        </div>
-                                        <div class="flex-row" style="width: 100%">
-                                            <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
-
-                                            @(Html.DevExtreme().CheckBox()
-                                                .ID("ItemDiscontinued")
-                                                .Value(false))
-
-                                        </div>
-
-                                    </div>
-                                </div>
-
-                            </td>
-                        </tr>
+                        <td>
+                            <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
+                            @(Html.DevExtreme().CheckBox()
+                            .ID("ItemDiscontinued")
+                            .Value(true))
+                        </td>
                         
+                        </tr>
                     </table>
                 </div>
-            
 
+            <div style="width: 100%; padding: 10px;">
+                <div class="audit-box" style="display: flex; justify-content: space-between; gap: 20px;align-items: end; ">
+
+                    <!-- Entered By -->
+                    <div style="flex: 1;">
+                        @(Html.DevExtreme().TextArea()
+                                                .ID("EnteredBy")
+                                                .Value(enteredBy)
+                                                .Label(new JS("formatMessage('Entered By')"))
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .ReadOnly(true)
+                                                .Height(40)
+                                                .Width("100%"))
+                    </div>
+
+                    <!-- Entered On -->
+                    <div style="flex: 1;">
+                        @(Html.DevExtreme().TextArea()
+                                                .ID("EnteredOn")
+                                                .Value(enteredOn)
+                                                .Label(new JS("formatMessage('Entered On')"))
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .ReadOnly(true)
+                                                .Height(40)
+                                                .Width("100%"))
+                    </div>
+
+                    <!-- Modified By -->
+                    <div style="flex: 1;">
+                        @(Html.DevExtreme().TextArea()
+                                    .ID("ModifiedBy")
+                                    .Value(modifiedBy)
+                                    .Label(new JS("formatMessage('Modified By')"))
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .ReadOnly(true)
+                                    .Height(40)
+                                    .Width("100%"))
+                    </div>
+
+                    <!-- Modified On -->
+                    <div style="flex: 1;">
+                        @(Html.DevExtreme().TextArea()
+                                    .ID("ModifiedOn")
+                                    .Value(modifiedOn)
+                                    .Label(new JS("formatMessage('Modified On')"))
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .ReadOnly(true)
+                                    .Height(40)
+                                    .Width("100%"))
+                    </div>
+
+                </div>
+            </div>
 
                 <script>
 
@@ -1087,15 +1068,13 @@
                         <td>
                         @(Html.DevExtreme().DropDownButton()
                             .Text(new JS("formatMessage('View Stock Movement Report')"))
-                            .Icon("cart") // You can change to your preferred icon
+                            .Icon("cart") 
                             .Width(300)
                             .DisplayExpr("text")
                             .OnButtonClick("ViewStockMovementNavigation")
                             )
-
                         </td>
                     </tr>
-
                 </table>
                 <div class="dx-field ledgerResult" style="margin-bottom: 100px">
                     <table style="width:100%; margin-top: 15px;">
@@ -1104,7 +1083,7 @@
                             @(Html.DevExtreme().DataGrid()
                                 .ID("stockCardGrid")
                                 .OnInitialized("onStockGridInitialized")
-                                .Height(400)
+                                .Height(310)
                                 .Columns(columns =>
                                 {
                                     columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Document No')")).Alignment(HorizontalAlignment.Center);
@@ -1397,7 +1376,7 @@
 
                     @(Html.DevExtreme().DataGrid()
                         .ID("invoiceGrid")
-                        .Height(620)
+                        .Height(390)
                         .OnInitialized("onInvoiceGridInitialized")
                         .ShowBorders(true)
                         .ShowColumnLines(true)
@@ -1520,7 +1499,7 @@
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("quotationGrid")
-                    .Height(620)
+                    .Height(390)
                     .ShowBorders(true)
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -1622,7 +1601,7 @@
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("PurchaseOrderGrid")
-                    .Height(620)
+                    .Height(390)
                     .DataSource(Enumerable.Empty<object>())  // initially empty, or dummyData if you want placeholder
                     .ShowBorders(true)
                     .ShowColumnLines(true)
@@ -1721,7 +1700,7 @@
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("ItemDeliversGrid")
-                    .Height(620)
+                    .Height(390)
                     .ShowBorders(true)
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -1839,7 +1818,7 @@
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("ItemReceivedGrid")
-                    .Height(620)
+                    .Height(390)
                     .DataSource(Enumerable.Empty<object>()) // Initially empty
                     .ShowBorders(true)
                     .ShowColumnLines(true)
@@ -1948,7 +1927,7 @@
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("UnitConversionGrid")
-                    .Height(620)
+                    .Height(390)
                     .ShowBorders(true)
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -2259,7 +2238,7 @@
                     <div>
                     @(Html.DevExtreme().DataGrid()
                         .ID("documentGrid")
-                        .Height(500)
+                        .Height(360)
                         .Width("100%")
                         .ShowBorders(true)
                         .ShowColumnLines(true)
@@ -2421,7 +2400,7 @@
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("PurchaseGrid")
-                    .Height(620)
+                    .Height(390)
                     .DataSource(Enumerable.Empty<object>()) 
                     .ShowBorders(true)
                     .ShowColumnLines(true)
@@ -2559,13 +2538,18 @@
 
             </div>
         </div>
-      @*   <div id="tab-content-12" class="tab-content">
+
+
+        <div id="tab-content-12" class="tab-content">
             <div>
 
                 @await Html.PartialAsync("~/Pages/Shared/IMS/StockDetails_MaterialRequest.cshtml")
 
             </div>
-        </div> *@
+        </div>
+
+
+
         <div class="Footer">
         @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
         </div>
@@ -2628,7 +2612,7 @@
     }
 
         function inventoryDocumentBind(){
-                const url = `/${tenantName}/IMS/InventoryDocument`;
+                const url = `/${tenantName}/IMS/IMSLedgerDocument`;
               const title = "";
                   openModal(url, title);
           }
