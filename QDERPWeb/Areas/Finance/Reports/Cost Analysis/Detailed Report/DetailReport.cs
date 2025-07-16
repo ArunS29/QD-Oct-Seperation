@@ -1,14 +1,10 @@
-﻿using System;
-using System.Drawing;
-using System.Collections;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
-using DevExpress.DataAccess.ConnectionParameters;
-using QD.ERP.Web.Service;
-using Microsoft.Data.SqlClient;
 using DevExpress.XtraPrinting;
+using DevExpress.XtraReports.UI;
+using Microsoft.Data.SqlClient;
 using Svg;
+using System.Drawing;
 using System.Text; // Make sure this is the correct namespace for TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
@@ -32,13 +28,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report
             InitializeComponent();
             LoadCurrencySymbolAndImage();
 
-            SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username);
+            SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username);
         }
 
         public DetailReport()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "", "");
         }
 
         private void SetReportParameters(

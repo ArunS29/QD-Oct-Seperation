@@ -212,7 +212,7 @@ private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime to
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9" };
+                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox4", "xrPictureBox5", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox15" };
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -222,6 +222,7 @@ private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime to
                         pictureBox.Sizing = ImageSizeMode.Normal;
                     }
                 }
+                AlignCurrencyWithAmount(bitmap);
             }
             catch
             {
@@ -230,7 +231,7 @@ private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime to
         }
         private void SetCurrencyImageNull()
         {
-            string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9" };
+            string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox4", "xrPictureBox5", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox15" };
 
             foreach (string name in pictureBoxNames)
             {
@@ -244,6 +245,71 @@ private void ConfigureDataSource(string accountId, DateTime frmDate, DateTime to
             if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel)
             {
                 currencyLabel.Text = "";
+            }
+        }
+
+
+        private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
+        {
+            var fixedPictureBoxes = new[] { "xrPictureBox9", "xrPictureBox10", "xrPictureBox11","xrPictureBox12" };
+            foreach (var name in fixedPictureBoxes)
+            {
+                if (FindControl(name, true) is XRPictureBox picBox)
+                {
+                    picBox.Image = bitmap;
+                    picBox.Sizing = ImageSizeMode.StretchImage;
+                    picBox.WidthF = iconSize;
+                    picBox.HeightF = iconSize;
+                }
+            }
+
+            var pairs = new[]
+            {
+
+
+          new { Label = "xrLabel10",  Picture = "xrPictureBox4" },
+          new { Label = "xrLabel5",  Picture = "xrPictureBox5" },
+          new { Label = "xrLabel7",  Picture = "xrPictureBox2" },
+         };
+
+            foreach (var p in pairs)
+            {
+                var label = FindControl(p.Label, true) as XRLabel;
+                var pictureBox = FindControl(p.Picture, true) as XRPictureBox;
+
+                if (label == null || pictureBox == null)
+                    continue;
+
+                pictureBox.Image = bitmap;
+                pictureBox.Sizing = ImageSizeMode.StretchImage;
+
+                label.BeforePrint += (s, e) =>
+                {
+                    var lbl = (XRLabel)s;
+
+                    using (var g = Graphics.FromImage(new Bitmap(1, 1)))
+                    using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
+                    {
+                        float iconHeight = lbl.Font.Size + 0.2f;// Match icon to font height
+                        float iconWidth = iconHeight;            // Keep square
+
+                        pictureBox.WidthF = iconWidth;
+                        pictureBox.HeightF = iconHeight;
+
+                        float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
+
+                        var format = StringFormat.GenericTypographic;
+                        format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+                        float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
+                        float spaceWidth = g.MeasureString(" ", sysFont).Width;
+
+                        float rightEdge = lbl.LocationF.X + lbl.WidthF;
+                        float posX = rightEdge - textWidth - iconWidth - 5f - spaceWidth;
+
+                        pictureBox.LocationF = new PointF(posX, posY);
+                    }
+                };
             }
         }
     }
