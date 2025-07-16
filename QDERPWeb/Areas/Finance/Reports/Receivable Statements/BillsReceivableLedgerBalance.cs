@@ -176,7 +176,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = $"SELECT TOP 1 CurrencyImage, CurrencySymbol FROM {tenant.schemaname}.tbl901companyDetails";
+
+                    string sql = $@"
+                        SELECT c.CurrencyImage, c.CurrencySymbol
+                        FROM {tenant.schemaname}.tbl901CompanyDetails AS c
+                        INNER JOIN dbo.fn_GetDefaultCompanyDetails() AS f
+                            ON c.CompanyId = f.CompanyId";
+
                     using (var command = new SqlCommand(sql, connection))
                     {
                         using (var reader = command.ExecuteReader())
@@ -189,6 +195,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Receivable_Statements
                         }
                     }
                 }
+
 
                 // Set currency symbol to label
                 if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel && !string.IsNullOrEmpty(currencySymbol))

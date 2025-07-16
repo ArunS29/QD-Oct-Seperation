@@ -289,26 +289,26 @@
             // 
             // xrPictureBox4
             // 
-            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(551.8818F, 12F);
+            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(554.8818F, 14F);
             this.xrPictureBox4.Name = "xrPictureBox4";
-            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(17.30762F, 18F);
+            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox4.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrPictureBox3
             // 
             this.xrPictureBox3.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox3.LocationFloat = new DevExpress.Utils.PointFloat(464.3029F, 10F);
+            this.xrPictureBox3.LocationFloat = new DevExpress.Utils.PointFloat(467.3029F, 14F);
             this.xrPictureBox3.Name = "xrPictureBox3";
-            this.xrPictureBox3.SizeF = new System.Drawing.SizeF(23.83F, 18F);
+            this.xrPictureBox3.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox3.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             this.xrPictureBox3.StylePriority.UseBorders = false;
             // 
             // xrPictureBox2
             // 
             this.xrPictureBox2.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(359.666F, 10F);
+            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(361.666F, 12F);
             this.xrPictureBox2.Name = "xrPictureBox2";
-            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(22.83002F, 18F);
+            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox2.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             this.xrPictureBox2.StylePriority.UseBorders = false;
             // 
