@@ -237,17 +237,17 @@
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-list-item-selected {
-            background-color: var(--title-background-color);
+            background-color: var(--background-color);
             color: #fff;
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused.dx-list-item-selected {
-            background-color: var(--title-background-color);
+            background-color: var(--background-color);
             color: #fff;
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
-            background-color: var(--title-background-color);
+            background-color: var(--background-color);
             color: #fff;
         }
 
@@ -1564,10 +1564,17 @@
 
         <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccounts" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
+                    <div style="background-color:#4285F4;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccounts"></div>
+                    </div>
                 </div>
+                @* <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts')"> *@
+                @*     <i class="fa fa-th-list"></i> *@
+                @*     <span id="StatementOfAccounts" class="no-border-input"></span> *@
+                @* </div> *@
                 <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (With Narration)')">
                     <i class="fa fa-th-list"></i>
                     <span id="StatementOfAccountsWithNarration" class="no-border-input"></span>
