@@ -2736,19 +2736,17 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     string yearSuffix = DateTime.Now.ToString("yy"); // Get last two digits of the year
 
                     // Get invoice abbreviation
-                    var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
-                        .Select(c => c.EinvoiceAbbrv)
-                        .FirstOrDefaultAsync();
+                    //var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
+                    //    .Select(c => c.EinvoiceAbbrv)
+                    //    .FirstOrDefaultAsync();
 
-                    if (string.IsNullOrEmpty(invoiceAbbrv))
-                        return BadRequest("Invoice abbreviation not found.");
 
                     // Get last invoice number
                     var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
-                        .Where(i => i.InvoiceNo.StartsWith($"{invoiceAbbrv}{yearSuffix}-"))
-                        .OrderByDescending(i => i.InvoiceNo)
-                        .Select(i => i.InvoiceNo)
-                        .FirstOrDefaultAsync();
+                    .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
+                    .OrderByDescending(i => i.InvoiceNo)
+                    .Select(i => i.InvoiceNo)
+                    .FirstOrDefaultAsync();
 
                     int newNumber = 1; // Default if no previous invoices exist
                     if (!string.IsNullOrEmpty(lastInvoiceNumber))
@@ -2761,7 +2759,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     // Generate new invoice number
-                    string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
+                   
+                    string newInvoiceNumber = $"{yearSuffix}-{newNumber:D5}";
 
                     // Extract values from the fetched invoice
                     string ToInvoiceNo = newInvoiceNumber; // You can generate or assign this as needed
