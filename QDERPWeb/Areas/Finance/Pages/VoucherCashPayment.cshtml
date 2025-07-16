@@ -27,6 +27,8 @@
     .titleCard-toggle1{
         display:none;
     }
+   
+
 </style>
 
 
@@ -821,10 +823,7 @@ buttons.Add()
                          .ElementAttr(new { @class = "light-theme-input" })
                         )
                 </div>
-            </div>
-
-            <!-- Remaining Fields -->
-            <div class="form-group" style="flex: 1 1 120px;">
+                 <div class="col-md-2" style="display:none;">
                 @(Html.DevExtreme().SelectBox()
                     .Label(new JS("formatMessage('Bank Payment')"))
                     .LabelMode(EditorLabelMode.Floating)
@@ -836,8 +835,11 @@ buttons.Add()
                         .ElementAttr(new { @class = "custom-disabled-selectbox" })
                     )
             </div>
+            </div>
 
-              <div id="verifiedBySection" class="form-group" style="flex: 1 1 95px; display: none;">
+            <!-- Remaining Fields -->
+           
+<div id="verifiedBySection" class="form-group" style="display: none !important;">
     @(Html.DevExtreme().CheckBox()
         .Text(new JS("formatMessage('Verified By')"))
         .ID("VerifiedBy")
@@ -851,7 +853,7 @@ buttons.Add()
     )
 </div>
 
-<div id="approvedBySection" class="form-group" style="flex: 1 1 95px; display: none;">
+<div id="approvedBySection" class="form-group" style="display: none;">
     @(Html.DevExtreme().CheckBox()
         .Text(new JS("formatMessage('Approved By')"))
         .ID("ApprovedBy")
@@ -865,7 +867,7 @@ buttons.Add()
     )
 </div>
 
-<div id="verifiedOnSection" class="form-group" style="flex: 1 1 95px; display: none;">
+<div id="verifiedOnSection" class="form-group" style="display: none !important;">
     @(Html.DevExtreme().TextBox()
         .Label(new JS("formatMessage('Verified On')"))
         .LabelMode(EditorLabelMode.Floating)
@@ -876,7 +878,7 @@ buttons.Add()
     )
 </div>
 
-<div id="approvedOnSection" class="form-group" style="flex: 1 1 95px; display: none;">
+<div id="approvedOnSection" class="form-group" style="display: none;">
     @(Html.DevExtreme().TextBox()
         .Label(new JS("formatMessage('Approved On')"))
         .LabelMode(EditorLabelMode.Floating)
@@ -888,18 +890,16 @@ buttons.Add()
 </div>
 
 
+
+
+
+
+
         </div>
- <div  id="mainFooter" class="footer-fixed">
+ <div  id="mainFooter"  >
     @await Html.PartialAsync("_Formfooter")
 </div>
       </div>
-
-
-
-
-
-            
-        <!-- Drop Down Grid Template -->
         <!-- Drop Down Account Head Grid Template -->
         @using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
         {
@@ -1321,6 +1321,8 @@ buttons.Add()
                                 // Change button label to "Update"
                                var button = $("#btnSave").dxButton("instance");
                                 button.option("text", "Update");
+                                  // ✅ Sync workflow
+                                syncWorkflowFromFields();
                             } else {
                                 alert("Update failed: " + response.message);
                             }
@@ -4042,8 +4044,8 @@ function fetchUpdatedData(voucherEntryNo) {
                      if (formattedDate) {
                          $("#btnVerify").dxButton("instance").option("disabled", true);
                          // ✅ Show hidden verified sections
-                        $("#verifiedBySection").css("display", "flex");
-                        $("#verifiedOnSection").css("display", "flex");
+                        // $("#verifiedBySection").css("display", "flex");
+                        // $("#verifiedOnSection").css("display", "flex");
 
                         // Add visual confirmation
                         const btn = document.getElementById("btnVerify");
@@ -4229,26 +4231,87 @@ function showMainFooter() {
     document.getElementById("mainFooter")?.classList.remove("footer-hidden");
 }
 
-  $(function () {
+  // $(function () {
 
-        setTimeout(function () {
-            const showIfHasValue = (editorId, sectionId) => {
-                const editor = DevExpress.ui.dxTextBox.getInstance(document.getElementById(editorId));
-                if (editor && editor.option("value")) {
-                    document.getElementById(sectionId).style.display = "flex"; // restore flex
-                }
-            };
+  //       setTimeout(function () {
+  //           const showIfHasValue = (editorId, sectionId) => {
+  //               const editor = DevExpress.ui.dxTextBox.getInstance(document.getElementById(editorId));
+  //               if (editor && editor.option("value")) {
+  //                   document.getElementById(sectionId).style.display = "flex"; restore flex
+  //               }
+  //           };
 
-            showIfHasValue("VerifiedBytext", "verifiedBySection");
-            showIfHasValue("ApprovedBytext", "approvedBySection");
-            showIfHasValue("VerifiedOnDate", "verifiedOnSection");
-            showIfHasValue("ApprovedOntext", "approvedOnSection");
-        }, 300); // wait a bit to ensure DevExtreme is ready
-    });
+  //           showIfHasValue("VerifiedBytext", "verifiedBySection");
+  //           showIfHasValue("ApprovedBytext", "approvedBySection");
+  //           showIfHasValue("VerifiedOnDate", "verifiedOnSection");
+  //           showIfHasValue("ApprovedOntext", "approvedOnSection");
+  //       }, 300); wait a bit to ensure DevExtreme is ready
+  //   });
     function onReferenceDropdownOpened(e) {
         const grid = $("#ReferenceGrid").dxDataGrid("instance");
         if (grid) {
             grid.getDataSource().reload();
         }
     }
+    let isVoucherSaved = false;
+
+    function getWorkflowStatusFromFields() {
+        const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
+        const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+
+        if (approved) return 2;
+        if (verified) return 1;
+        if (isVoucherSaved) return 0;
+
+        return -1;
+    }
+
+   function updateWorkflowVisual(status) {
+    const steps = [
+        { id: "step-update", label: "Updated" },
+        { id: "step-verify", label: "Verified" },
+        { id: "step-approve", label: "Approved" }
+    ];
+
+    steps.forEach((step, index) => {
+        const element = document.getElementById(step.id);
+        const statusMsg = element.querySelector(".step-status-msg");
+        element.classList.remove("completed", "current", "upcoming");
+
+        if (index < status) {
+            element.classList.add("completed");
+            if (statusMsg) statusMsg.textContent = "Done";
+        } else if (index === status) {
+            element.classList.add("current");
+            if (statusMsg) statusMsg.textContent = "In Progress";
+        } else {
+            element.classList.add("upcoming");
+            if (statusMsg) statusMsg.textContent = "Pending";
+        }
+    });
+
+    // Optional: hide the old status box if you’re not using it anymore
+    const statusBox = document.getElementById("statusBox");
+    if (statusBox) statusBox.style.display = "none";
+   }
+
+
+    function syncWorkflowFromFields() {
+        const status = getWorkflowStatusFromFields();
+        updateWorkflowVisual(status);
+    }
+
+    function attachWorkflowWatchers() {
+        $("#VerifiedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+        $("#ApprovedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+    }
+
+    $(function () {
+        setTimeout(() => {
+            attachWorkflowWatchers();
+            syncWorkflowFromFields();
+        }, 300);
+    });
+
+
 </script>
