@@ -78,6 +78,8 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate));
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
+            this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
             this.xrLabel25 = new DevExpress.XtraReports.UI.XRLabel();
@@ -136,8 +138,7 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
-            this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
@@ -157,14 +158,49 @@
             this.BottomMargin.HeightF = 46.79165F;
             this.BottomMargin.Name = "BottomMargin";
             // 
+            // xrLabel18
+            // 
+            this.xrLabel18.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel18.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'Reported By: \' + [Parameters.UserName] + \' on \' + FormatString(\'{0:dd MMMM yyyy " +
+                    "hh:mm tt}\', Now())\n")});
+            this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel18.ForeColor = System.Drawing.Color.Black;
+            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(1016.147F, 0F);
+            this.xrLabel18.Name = "xrLabel18";
+            this.xrLabel18.SizeF = new System.Drawing.SizeF(342.8535F, 20.66685F);
+            this.xrLabel18.StylePriority.UseBorderColor = false;
+            this.xrLabel18.StylePriority.UseFont = false;
+            this.xrLabel18.StylePriority.UseForeColor = false;
+            this.xrLabel18.StylePriority.UseTextAlignment = false;
+            this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
+            // xrLabel14
+            // 
+            this.xrLabel14.BackColor = System.Drawing.Color.Transparent;
+            this.xrLabel14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
+            this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Times New Roman", 10F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel14.ForeColor = System.Drawing.Color.Black;
+            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
+            this.xrLabel14.Multiline = true;
+            this.xrLabel14.Name = "xrLabel14";
+            this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel14.SizeF = new System.Drawing.SizeF(289.4098F, 23F);
+            this.xrLabel14.StylePriority.UseBackColor = false;
+            this.xrLabel14.StylePriority.UseFont = false;
+            this.xrLabel14.StylePriority.UseForeColor = false;
+            // 
             // pageInfo2
             // 
+            this.pageInfo2.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8.25F, DevExpress.Drawing.DXFontStyle.Bold);
             this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(643.4178F, 0F);
             this.pageInfo2.Name = "pageInfo2";
             this.pageInfo2.SizeF = new System.Drawing.SizeF(90.7691F, 23F);
             this.pageInfo2.StyleName = "PageInfo";
+            this.pageInfo2.StylePriority.UseFont = false;
             this.pageInfo2.StylePriority.UseTextAlignment = false;
-            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.pageInfo2.TextFormatString = "Page {0} of {1}";
             // 
             // ReportHeader
@@ -205,7 +241,7 @@
             // xrLabel21
             // 
             this.xrLabel21.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel21.ForeColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel21.ForeColor = System.Drawing.Color.DodgerBlue;
             this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(0F, 49.83337F);
             this.xrLabel21.Multiline = true;
             this.xrLabel21.Name = "xrLabel21";
@@ -251,7 +287,7 @@
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.table2});
-            this.Detail.HeightF = 42.29166F;
+            this.Detail.HeightF = 32.29166F;
             this.Detail.Name = "Detail";
             // 
             // table2
@@ -261,7 +297,7 @@
             this.table2.OddStyleName = "DetailData3_Odd";
             this.table2.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.tableRow2});
-            this.table2.SizeF = new System.Drawing.SizeF(1359F, 42.29166F);
+            this.table2.SizeF = new System.Drawing.SizeF(1359F, 32.29166F);
             // 
             // tableRow2
             // 
@@ -287,14 +323,18 @@
             this.tableCell15.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell15.BorderWidth = 1F;
             this.tableCell15.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHeadNo]")});
-            this.tableCell15.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell15.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell15.Name = "tableCell15";
             this.tableCell15.StyleName = "DetailData1";
             this.tableCell15.StylePriority.UseBorderColor = false;
             this.tableCell15.StylePriority.UseBorders = false;
+            this.tableCell15.StylePriority.UseBorderWidth = false;
             this.tableCell15.StylePriority.UseFont = false;
+            this.tableCell15.StylePriority.UseTextAlignment = false;
+            this.tableCell15.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.tableCell15.TextFormatString = "{0:dd-MMM-yy}";
             this.tableCell15.Weight = 0.070784084694565472D;
             // 
@@ -304,16 +344,18 @@
             this.tableCell16.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell16.BorderWidth = 1F;
             this.tableCell16.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHead]")});
-            this.tableCell16.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell16.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9F);
             this.tableCell16.Name = "tableCell16";
             this.tableCell16.StyleName = "DetailData1";
             this.tableCell16.StylePriority.UseBorderColor = false;
             this.tableCell16.StylePriority.UseBorders = false;
+            this.tableCell16.StylePriority.UseBorderWidth = false;
             this.tableCell16.StylePriority.UseFont = false;
             this.tableCell16.StylePriority.UseTextAlignment = false;
-            this.tableCell16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
+            this.tableCell16.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
             this.tableCell16.TextFormatString = "{0:C2}";
             this.tableCell16.Weight = 0.15449811559986548D;
             // 
@@ -323,13 +365,15 @@
             this.tableCell19.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell19.BorderWidth = 1F;
             this.tableCell19.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[InvoiceAmount]")});
-            this.tableCell19.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell19.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell19.Name = "tableCell19";
             this.tableCell19.StyleName = "DetailData1";
             this.tableCell19.StylePriority.UseBorderColor = false;
             this.tableCell19.StylePriority.UseBorders = false;
+            this.tableCell19.StylePriority.UseBorderWidth = false;
             this.tableCell19.StylePriority.UseFont = false;
             this.tableCell19.StylePriority.UseTextAlignment = false;
             this.tableCell19.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -342,13 +386,15 @@
             this.tableCell20.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell20.BorderWidth = 1F;
             this.tableCell20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[ReceivedAmount]")});
-            this.tableCell20.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell20.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell20.Name = "tableCell20";
             this.tableCell20.StyleName = "DetailData1";
             this.tableCell20.StylePriority.UseBorderColor = false;
             this.tableCell20.StylePriority.UseBorders = false;
+            this.tableCell20.StylePriority.UseBorderWidth = false;
             this.tableCell20.StylePriority.UseFont = false;
             this.tableCell20.StylePriority.UseTextAlignment = false;
             this.tableCell20.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -357,19 +403,21 @@
             // 
             // tableCell21
             // 
-            this.tableCell21.BackColor = System.Drawing.Color.Gray;
+            this.tableCell21.BackColor = System.Drawing.Color.Transparent;
             this.tableCell21.BorderColor = System.Drawing.Color.Black;
             this.tableCell21.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell21.BorderWidth = 1F;
             this.tableCell21.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[BalanceAmount]")});
-            this.tableCell21.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell21.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.tableCell21.Name = "tableCell21";
             this.tableCell21.StyleName = "DetailData1";
             this.tableCell21.StylePriority.UseBackColor = false;
             this.tableCell21.StylePriority.UseBorderColor = false;
             this.tableCell21.StylePriority.UseBorders = false;
+            this.tableCell21.StylePriority.UseBorderWidth = false;
             this.tableCell21.StylePriority.UseFont = false;
             this.tableCell21.StylePriority.UseTextAlignment = false;
             this.tableCell21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -382,13 +430,15 @@
             this.tableCell22.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell22.BorderWidth = 1F;
             this.tableCell22.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[NotOverdue]")});
-            this.tableCell22.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell22.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell22.Name = "tableCell22";
             this.tableCell22.StyleName = "DetailData1";
             this.tableCell22.StylePriority.UseBorderColor = false;
             this.tableCell22.StylePriority.UseBorders = false;
+            this.tableCell22.StylePriority.UseBorderWidth = false;
             this.tableCell22.StylePriority.UseFont = false;
             this.tableCell22.StylePriority.UseTextAlignment = false;
             this.tableCell22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -401,13 +451,15 @@
             this.tableCell23.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell23.BorderWidth = 1F;
             this.tableCell23.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less30]")});
-            this.tableCell23.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell23.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell23.Name = "tableCell23";
             this.tableCell23.StyleName = "DetailData1";
             this.tableCell23.StylePriority.UseBorderColor = false;
             this.tableCell23.StylePriority.UseBorders = false;
+            this.tableCell23.StylePriority.UseBorderWidth = false;
             this.tableCell23.StylePriority.UseFont = false;
             this.tableCell23.StylePriority.UseTextAlignment = false;
             this.tableCell23.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -420,13 +472,15 @@
             this.tableCell24.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell24.BorderWidth = 1F;
             this.tableCell24.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less30to60]")});
-            this.tableCell24.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell24.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell24.Name = "tableCell24";
             this.tableCell24.StyleName = "DetailData1";
             this.tableCell24.StylePriority.UseBorderColor = false;
             this.tableCell24.StylePriority.UseBorders = false;
+            this.tableCell24.StylePriority.UseBorderWidth = false;
             this.tableCell24.StylePriority.UseFont = false;
             this.tableCell24.StylePriority.UseTextAlignment = false;
             this.tableCell24.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -439,13 +493,15 @@
             this.tableCell25.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell25.BorderWidth = 1F;
             this.tableCell25.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less60to90]")});
-            this.tableCell25.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell25.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell25.Name = "tableCell25";
             this.tableCell25.StyleName = "DetailData1";
             this.tableCell25.StylePriority.UseBorderColor = false;
             this.tableCell25.StylePriority.UseBorders = false;
+            this.tableCell25.StylePriority.UseBorderWidth = false;
             this.tableCell25.StylePriority.UseFont = false;
             this.tableCell25.StylePriority.UseTextAlignment = false;
             this.tableCell25.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -458,18 +514,20 @@
             this.tableCell26.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell26.BorderWidth = 1F;
             this.tableCell26.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less90to180]")});
-            this.tableCell26.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell26.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell26.Name = "tableCell26";
             this.tableCell26.StyleName = "DetailData1";
             this.tableCell26.StylePriority.UseBorderColor = false;
             this.tableCell26.StylePriority.UseBorders = false;
+            this.tableCell26.StylePriority.UseBorderWidth = false;
             this.tableCell26.StylePriority.UseFont = false;
             this.tableCell26.StylePriority.UseTextAlignment = false;
             this.tableCell26.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell26.TextFormatString = "{0:0.00}";
-            this.tableCell26.Weight = 0.073634233696285759D;
+            this.tableCell26.Weight = 0.065123480163124359D;
             // 
             // tableCell27
             // 
@@ -477,18 +535,20 @@
             this.tableCell27.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell27.BorderWidth = 1F;
             this.tableCell27.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Less180to365]")});
-            this.tableCell27.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell27.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell27.Name = "tableCell27";
             this.tableCell27.StyleName = "DetailData1";
             this.tableCell27.StylePriority.UseBorderColor = false;
             this.tableCell27.StylePriority.UseBorders = false;
+            this.tableCell27.StylePriority.UseBorderWidth = false;
             this.tableCell27.StylePriority.UseFont = false;
             this.tableCell27.StylePriority.UseTextAlignment = false;
             this.tableCell27.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.tableCell27.TextFormatString = "{0:0.00}";
-            this.tableCell27.Weight = 0.064351924472750108D;
+            this.tableCell27.Weight = 0.072862678005911508D;
             // 
             // tableCell28
             // 
@@ -496,13 +556,15 @@
             this.tableCell28.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.tableCell28.BorderWidth = 1F;
             this.tableCell28.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[More365]")});
-            this.tableCell28.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.tableCell28.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F);
             this.tableCell28.Name = "tableCell28";
             this.tableCell28.StyleName = "DetailData1";
             this.tableCell28.StylePriority.UseBorderColor = false;
             this.tableCell28.StylePriority.UseBorders = false;
+            this.tableCell28.StylePriority.UseBorderWidth = false;
             this.tableCell28.StylePriority.UseFont = false;
             this.tableCell28.StylePriority.UseTextAlignment = false;
             this.tableCell28.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
@@ -512,6 +574,7 @@
             // ReportFooter
             // 
             this.ReportFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLine1,
             this.xrTable3});
             this.ReportFooter.Name = "ReportFooter";
             // 
@@ -522,7 +585,7 @@
             this.xrTable3.OddStyleName = "DetailData3_Odd";
             this.xrTable3.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.xrTableRow3});
-            this.xrTable3.SizeF = new System.Drawing.SizeF(1359F, 42.29166F);
+            this.xrTable3.SizeF = new System.Drawing.SizeF(1359F, 34.79166F);
             // 
             // xrTableRow3
             // 
@@ -544,36 +607,40 @@
             // 
             // xrTableCell16
             // 
-            this.xrTableCell16.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell16.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell16.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell16.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell16.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell16.BorderWidth = 1F;
             this.xrTableCell16.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Count()")});
-            this.xrTableCell16.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell16.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell16.Name = "xrTableCell16";
             this.xrTableCell16.StyleName = "DetailData1";
             this.xrTableCell16.StylePriority.UseBackColor = false;
             this.xrTableCell16.StylePriority.UseBorderColor = false;
             this.xrTableCell16.StylePriority.UseBorders = false;
+            this.xrTableCell16.StylePriority.UseBorderWidth = false;
             this.xrTableCell16.StylePriority.UseFont = false;
             this.xrTableCell16.TextFormatString = "{0:dd-MMM-yy}";
             this.xrTableCell16.Weight = 0.07170882557780886D;
             // 
             // xrTableCell18
             // 
-            this.xrTableCell18.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell18.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell18.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell18.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell18.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.xrTableCell18.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell18.BorderWidth = 1F;
+            this.xrTableCell18.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell18.Name = "xrTableCell18";
             this.xrTableCell18.StyleName = "DetailData1";
             this.xrTableCell18.StylePriority.UseBackColor = false;
             this.xrTableCell18.StylePriority.UseBorderColor = false;
             this.xrTableCell18.StylePriority.UseBorders = false;
+            this.xrTableCell18.StylePriority.UseBorderWidth = false;
             this.xrTableCell18.StylePriority.UseFont = false;
             this.xrTableCell18.StylePriority.UseTextAlignment = false;
             this.xrTableCell18.Text = " Grand Total :";
@@ -583,19 +650,21 @@
             // 
             // xrTableCell29
             // 
-            this.xrTableCell29.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell29.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell29.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell29.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell29.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell29.BorderWidth = 1F;
             this.xrTableCell29.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([InvoiceAmount])")});
-            this.xrTableCell29.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell29.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell29.Name = "xrTableCell29";
             this.xrTableCell29.StyleName = "DetailData1";
             this.xrTableCell29.StylePriority.UseBackColor = false;
             this.xrTableCell29.StylePriority.UseBorderColor = false;
             this.xrTableCell29.StylePriority.UseBorders = false;
+            this.xrTableCell29.StylePriority.UseBorderWidth = false;
             this.xrTableCell29.StylePriority.UseFont = false;
             this.xrTableCell29.StylePriority.UseTextAlignment = false;
             xrSummary1.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -606,19 +675,21 @@
             // 
             // xrTableCell30
             // 
-            this.xrTableCell30.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell30.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell30.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell30.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell30.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell30.BorderWidth = 1F;
             this.xrTableCell30.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([ReceivedAmount])")});
-            this.xrTableCell30.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell30.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell30.Name = "xrTableCell30";
             this.xrTableCell30.StyleName = "DetailData1";
             this.xrTableCell30.StylePriority.UseBackColor = false;
             this.xrTableCell30.StylePriority.UseBorderColor = false;
             this.xrTableCell30.StylePriority.UseBorders = false;
+            this.xrTableCell30.StylePriority.UseBorderWidth = false;
             this.xrTableCell30.StylePriority.UseFont = false;
             this.xrTableCell30.StylePriority.UseTextAlignment = false;
             xrSummary2.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -629,19 +700,21 @@
             // 
             // xrTableCell31
             // 
-            this.xrTableCell31.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell31.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell31.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell31.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell31.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell31.BorderWidth = 1F;
             this.xrTableCell31.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([BalanceAmount])")});
-            this.xrTableCell31.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell31.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell31.Name = "xrTableCell31";
             this.xrTableCell31.StyleName = "DetailData1";
             this.xrTableCell31.StylePriority.UseBackColor = false;
             this.xrTableCell31.StylePriority.UseBorderColor = false;
             this.xrTableCell31.StylePriority.UseBorders = false;
+            this.xrTableCell31.StylePriority.UseBorderWidth = false;
             this.xrTableCell31.StylePriority.UseFont = false;
             this.xrTableCell31.StylePriority.UseTextAlignment = false;
             xrSummary3.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -652,19 +725,21 @@
             // 
             // xrTableCell32
             // 
-            this.xrTableCell32.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell32.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell32.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell32.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell32.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell32.BorderWidth = 1F;
             this.xrTableCell32.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([NotOverdue])")});
-            this.xrTableCell32.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell32.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell32.Name = "xrTableCell32";
             this.xrTableCell32.StyleName = "DetailData1";
             this.xrTableCell32.StylePriority.UseBackColor = false;
             this.xrTableCell32.StylePriority.UseBorderColor = false;
             this.xrTableCell32.StylePriority.UseBorders = false;
+            this.xrTableCell32.StylePriority.UseBorderWidth = false;
             this.xrTableCell32.StylePriority.UseFont = false;
             this.xrTableCell32.StylePriority.UseTextAlignment = false;
             xrSummary4.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -675,19 +750,21 @@
             // 
             // xrTableCell33
             // 
-            this.xrTableCell33.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell33.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell33.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell33.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell33.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell33.BorderWidth = 1F;
             this.xrTableCell33.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([Less30])")});
-            this.xrTableCell33.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell33.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell33.Name = "xrTableCell33";
             this.xrTableCell33.StyleName = "DetailData1";
             this.xrTableCell33.StylePriority.UseBackColor = false;
             this.xrTableCell33.StylePriority.UseBorderColor = false;
             this.xrTableCell33.StylePriority.UseBorders = false;
+            this.xrTableCell33.StylePriority.UseBorderWidth = false;
             this.xrTableCell33.StylePriority.UseFont = false;
             this.xrTableCell33.StylePriority.UseTextAlignment = false;
             xrSummary5.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -698,19 +775,21 @@
             // 
             // xrTableCell34
             // 
-            this.xrTableCell34.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell34.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell34.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell34.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell34.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell34.BorderWidth = 1F;
             this.xrTableCell34.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([Less30to60])")});
-            this.xrTableCell34.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell34.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell34.Name = "xrTableCell34";
             this.xrTableCell34.StyleName = "DetailData1";
             this.xrTableCell34.StylePriority.UseBackColor = false;
             this.xrTableCell34.StylePriority.UseBorderColor = false;
             this.xrTableCell34.StylePriority.UseBorders = false;
+            this.xrTableCell34.StylePriority.UseBorderWidth = false;
             this.xrTableCell34.StylePriority.UseFont = false;
             this.xrTableCell34.StylePriority.UseTextAlignment = false;
             xrSummary6.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -721,19 +800,21 @@
             // 
             // xrTableCell35
             // 
-            this.xrTableCell35.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell35.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell35.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell35.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell35.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell35.BorderWidth = 1F;
             this.xrTableCell35.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([Less60to90])")});
-            this.xrTableCell35.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell35.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell35.Name = "xrTableCell35";
             this.xrTableCell35.StyleName = "DetailData1";
             this.xrTableCell35.StylePriority.UseBackColor = false;
             this.xrTableCell35.StylePriority.UseBorderColor = false;
             this.xrTableCell35.StylePriority.UseBorders = false;
+            this.xrTableCell35.StylePriority.UseBorderWidth = false;
             this.xrTableCell35.StylePriority.UseFont = false;
             this.xrTableCell35.StylePriority.UseTextAlignment = false;
             xrSummary7.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -744,65 +825,71 @@
             // 
             // xrTableCell36
             // 
-            this.xrTableCell36.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell36.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell36.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell36.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell36.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell36.BorderWidth = 1F;
             this.xrTableCell36.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([Less90to180])")});
-            this.xrTableCell36.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell36.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell36.Name = "xrTableCell36";
             this.xrTableCell36.StyleName = "DetailData1";
             this.xrTableCell36.StylePriority.UseBackColor = false;
             this.xrTableCell36.StylePriority.UseBorderColor = false;
             this.xrTableCell36.StylePriority.UseBorders = false;
+            this.xrTableCell36.StylePriority.UseBorderWidth = false;
             this.xrTableCell36.StylePriority.UseFont = false;
             this.xrTableCell36.StylePriority.UseTextAlignment = false;
             xrSummary8.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
             this.xrTableCell36.Summary = xrSummary8;
             this.xrTableCell36.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrTableCell36.TextFormatString = "{0:0.00}";
-            this.xrTableCell36.Weight = 0.074596234357795083D;
+            this.xrTableCell36.Weight = 0.065974265155483228D;
             // 
             // xrTableCell37
             // 
-            this.xrTableCell37.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell37.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell37.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell37.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell37.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell37.BorderWidth = 1F;
             this.xrTableCell37.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([Less180to365])")});
-            this.xrTableCell37.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell37.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell37.Name = "xrTableCell37";
             this.xrTableCell37.StyleName = "DetailData1";
             this.xrTableCell37.StylePriority.UseBackColor = false;
             this.xrTableCell37.StylePriority.UseBorderColor = false;
             this.xrTableCell37.StylePriority.UseBorders = false;
+            this.xrTableCell37.StylePriority.UseBorderWidth = false;
             this.xrTableCell37.StylePriority.UseFont = false;
             this.xrTableCell37.StylePriority.UseTextAlignment = false;
             xrSummary9.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
             this.xrTableCell37.Summary = xrSummary9;
             this.xrTableCell37.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrTableCell37.TextFormatString = "{0:0.00}";
-            this.xrTableCell37.Weight = 0.065192635174001479D;
+            this.xrTableCell37.Weight = 0.073814604376313334D;
             // 
             // xrTableCell38
             // 
-            this.xrTableCell38.BackColor = System.Drawing.Color.Gray;
-            this.xrTableCell38.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell38.BackColor = System.Drawing.Color.Gainsboro;
+            this.xrTableCell38.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell38.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrTableCell38.BorderWidth = 1F;
             this.xrTableCell38.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([More365])")});
-            this.xrTableCell38.Font = new DevExpress.Drawing.DXFont("Cambria", 8F);
+            this.xrTableCell38.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell38.Name = "xrTableCell38";
             this.xrTableCell38.StyleName = "DetailData1";
             this.xrTableCell38.StylePriority.UseBackColor = false;
             this.xrTableCell38.StylePriority.UseBorderColor = false;
             this.xrTableCell38.StylePriority.UseBorders = false;
+            this.xrTableCell38.StylePriority.UseBorderWidth = false;
             this.xrTableCell38.StylePriority.UseFont = false;
             this.xrTableCell38.StylePriority.UseTextAlignment = false;
             xrSummary10.Running = DevExpress.XtraReports.UI.SummaryRunning.Report;
@@ -815,7 +902,7 @@
             // 
             this.PageHeader.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.xrTable1});
-            this.PageHeader.HeightF = 59.16665F;
+            this.PageHeader.HeightF = 50.8333F;
             this.PageHeader.Name = "PageHeader";
             // 
             // xrTable1
@@ -824,7 +911,7 @@
             this.xrTable1.Name = "xrTable1";
             this.xrTable1.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.xrTableRow1});
-            this.xrTable1.SizeF = new System.Drawing.SizeF(1359F, 58.625F);
+            this.xrTable1.SizeF = new System.Drawing.SizeF(1359F, 50.8333F);
             // 
             // xrTableRow1
             // 
@@ -846,13 +933,13 @@
             // 
             // xrTableCell1
             // 
-            this.xrTableCell1.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell1.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell1.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell1.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell1.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.xrTableCell1.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell1.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell1.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrTableCell1.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell1.Name = "xrTableCell1";
             this.xrTableCell1.StyleName = "DetailCaption1";
             this.xrTableCell1.StylePriority.UseBackColor = false;
@@ -862,18 +949,18 @@
             this.xrTableCell1.StylePriority.UseForeColor = false;
             this.xrTableCell1.StylePriority.UseTextAlignment = false;
             this.xrTableCell1.Text = "Client Code";
-            this.xrTableCell1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrTableCell1.Weight = 0.086132247695670849D;
             // 
             // xrTableCell2
             // 
-            this.xrTableCell2.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell2.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell2.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell2.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell2.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
-            this.xrTableCell2.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell2.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell2.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrTableCell2.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell2.Name = "xrTableCell2";
             this.xrTableCell2.StyleName = "DetailCaption1";
             this.xrTableCell2.StylePriority.UseBackColor = false;
@@ -883,18 +970,18 @@
             this.xrTableCell2.StylePriority.UseForeColor = false;
             this.xrTableCell2.StylePriority.UseTextAlignment = false;
             this.xrTableCell2.Text = "Client Name";
-            this.xrTableCell2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
             this.xrTableCell2.Weight = 0.18799808479816185D;
             // 
             // xrTableCell5
             // 
-            this.xrTableCell5.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell5.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell5.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell5.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell5.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell5.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell5.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell5.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell5.Name = "xrTableCell5";
             this.xrTableCell5.StyleName = "DetailCaption1";
             this.xrTableCell5.StylePriority.UseBackColor = false;
@@ -904,18 +991,18 @@
             this.xrTableCell5.StylePriority.UseForeColor = false;
             this.xrTableCell5.StylePriority.UseTextAlignment = false;
             this.xrTableCell5.Text = "Invoiced Amount";
-            this.xrTableCell5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell5.Weight = 0.071327880985534622D;
             // 
             // xrTableCell6
             // 
-            this.xrTableCell6.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell6.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell6.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell6.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell6.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell6.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell6.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell6.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell6.Multiline = true;
             this.xrTableCell6.Name = "xrTableCell6";
             this.xrTableCell6.StyleName = "DetailCaption1";
@@ -926,18 +1013,18 @@
             this.xrTableCell6.StylePriority.UseForeColor = false;
             this.xrTableCell6.StylePriority.UseTextAlignment = false;
             this.xrTableCell6.Text = "Amount Received";
-            this.xrTableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell6.Weight = 0.067859157576388857D;
             // 
             // xrTableCell7
             // 
-            this.xrTableCell7.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell7.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell7.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell7.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell7.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell7.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell7.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell7.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell7.Multiline = true;
             this.xrTableCell7.Name = "xrTableCell7";
             this.xrTableCell7.StyleName = "DetailCaption1";
@@ -948,18 +1035,18 @@
             this.xrTableCell7.StylePriority.UseForeColor = false;
             this.xrTableCell7.StylePriority.UseTextAlignment = false;
             this.xrTableCell7.Text = "Balance";
-            this.xrTableCell7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell7.Weight = 0.069904457972967168D;
             // 
             // xrTableCell8
             // 
-            this.xrTableCell8.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell8.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell8.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell8.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell8.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell8.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell8.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell8.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell8.Multiline = true;
             this.xrTableCell8.Name = "xrTableCell8";
             this.xrTableCell8.StyleName = "DetailCaption1";
@@ -970,18 +1057,18 @@
             this.xrTableCell8.StylePriority.UseForeColor = false;
             this.xrTableCell8.StylePriority.UseTextAlignment = false;
             this.xrTableCell8.Text = "NotOver\r\n Due";
-            this.xrTableCell8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell8.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell8.Weight = 0.0773237900446121D;
             // 
             // xrTableCell9
             // 
-            this.xrTableCell9.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell9.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell9.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell9.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell9.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell9.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell9.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell9.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell9.Multiline = true;
             this.xrTableCell9.Name = "xrTableCell9";
             this.xrTableCell9.StyleName = "DetailCaption1";
@@ -992,18 +1079,18 @@
             this.xrTableCell9.StylePriority.UseForeColor = false;
             this.xrTableCell9.StylePriority.UseTextAlignment = false;
             this.xrTableCell9.Text = "Overdue \r\n < 30 Days";
-            this.xrTableCell9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell9.Weight = 0.077970853620788871D;
             // 
             // xrTableCell10
             // 
-            this.xrTableCell10.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell10.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell10.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell10.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell10.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell10.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell10.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell10.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell10.Multiline = true;
             this.xrTableCell10.Name = "xrTableCell10";
             this.xrTableCell10.StyleName = "DetailCaption1";
@@ -1014,18 +1101,18 @@
             this.xrTableCell10.StylePriority.UseForeColor = false;
             this.xrTableCell10.StylePriority.UseTextAlignment = false;
             this.xrTableCell10.Text = "Overdue \r\n31 to 60 Days";
-            this.xrTableCell10.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell10.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell10.Weight = 0.084443705658118873D;
             // 
             // xrTableCell11
             // 
-            this.xrTableCell11.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell11.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell11.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell11.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell11.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell11.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell11.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell11.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell11.Multiline = true;
             this.xrTableCell11.Name = "xrTableCell11";
             this.xrTableCell11.StyleName = "DetailCaption1";
@@ -1036,18 +1123,18 @@
             this.xrTableCell11.StylePriority.UseForeColor = false;
             this.xrTableCell11.StylePriority.UseTextAlignment = false;
             this.xrTableCell11.Text = "Overdue \r\n61 to  90 Days";
-            this.xrTableCell11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell11.Weight = 0.086385494899568427D;
             // 
             // xrTableCell12
             // 
-            this.xrTableCell12.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell12.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell12.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell12.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell12.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell12.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell12.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell12.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell12.Multiline = true;
             this.xrTableCell12.Name = "xrTableCell12";
             this.xrTableCell12.StyleName = "DetailCaption1";
@@ -1057,19 +1144,19 @@
             this.xrTableCell12.StylePriority.UseFont = false;
             this.xrTableCell12.StylePriority.UseForeColor = false;
             this.xrTableCell12.StylePriority.UseTextAlignment = false;
-            this.xrTableCell12.Text = "Overdue \r\n91-180 \r\nDays";
-            this.xrTableCell12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.xrTableCell12.Weight = 0.089600492970549478D;
+            this.xrTableCell12.Text = "Overdue \r\n91-180 Days \r\n";
+            this.xrTableCell12.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrTableCell12.Weight = 0.079244246152305492D;
             // 
             // xrTableCell13
             // 
-            this.xrTableCell13.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell13.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell13.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell13.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell13.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell13.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell13.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell13.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell13.Multiline = true;
             this.xrTableCell13.Name = "xrTableCell13";
             this.xrTableCell13.StyleName = "DetailCaption1";
@@ -1079,19 +1166,19 @@
             this.xrTableCell13.StylePriority.UseFont = false;
             this.xrTableCell13.StylePriority.UseForeColor = false;
             this.xrTableCell13.StylePriority.UseTextAlignment = false;
-            this.xrTableCell13.Text = "Overdue\r\n 181-365\r\n Days";
-            this.xrTableCell13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.xrTableCell13.Weight = 0.078305401732493479D;
+            this.xrTableCell13.Text = "Overdue\r\n 181-365 days\r\n ";
+            this.xrTableCell13.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrTableCell13.Weight = 0.088661648550737465D;
             // 
             // xrTableCell14
             // 
-            this.xrTableCell14.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell14.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell14.BackColor = System.Drawing.Color.LightBlue;
+            this.xrTableCell14.BorderColor = System.Drawing.Color.Gray;
             this.xrTableCell14.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell14.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrTableCell14.ForeColor = System.Drawing.Color.Black;
+            this.xrTableCell14.ForeColor = System.Drawing.Color.DimGray;
             this.xrTableCell14.Multiline = true;
             this.xrTableCell14.Name = "xrTableCell14";
             this.xrTableCell14.StyleName = "DetailCaption1";
@@ -1102,7 +1189,7 @@
             this.xrTableCell14.StylePriority.UseForeColor = false;
             this.xrTableCell14.StylePriority.UseTextAlignment = false;
             this.xrTableCell14.Text = "Overdue\r\n  > 365 Days";
-            this.xrTableCell14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrTableCell14.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             this.xrTableCell14.Weight = 0.078305063697116914D;
             // 
             // sqlDataSource1
@@ -1237,38 +1324,14 @@
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
             // 
-            // xrLabel14
+            // xrLine1
             // 
-            this.xrLabel14.BackColor = System.Drawing.Color.Transparent;
-            this.xrLabel14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
-            this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Calibri", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
-            this.xrLabel14.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
-            this.xrLabel14.Multiline = true;
-            this.xrLabel14.Name = "xrLabel14";
-            this.xrLabel14.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel14.SizeF = new System.Drawing.SizeF(289.4098F, 23F);
-            this.xrLabel14.StylePriority.UseBackColor = false;
-            this.xrLabel14.StylePriority.UseFont = false;
-            this.xrLabel14.StylePriority.UseForeColor = false;
-            // 
-            // xrLabel18
-            // 
-            this.xrLabel18.BorderColor = System.Drawing.Color.Transparent;
-            this.xrLabel18.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'Reported By: \' + [Parameters.UserName] + \' on \' + FormatString(\'{0:dd MMMM yyyy " +
-                    "hh:mm tt}\', Now())\n")});
-            this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel18.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(1016.147F, 0F);
-            this.xrLabel18.Name = "xrLabel18";
-            this.xrLabel18.SizeF = new System.Drawing.SizeF(342.8535F, 20.66685F);
-            this.xrLabel18.StylePriority.UseBorderColor = false;
-            this.xrLabel18.StylePriority.UseFont = false;
-            this.xrLabel18.StylePriority.UseForeColor = false;
-            this.xrLabel18.StylePriority.UseTextAlignment = false;
-            this.xrLabel18.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.xrLine1.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.xrLine1.LineWidth = 3F;
+            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(1.271566E-05F, 35.79167F);
+            this.xrLine1.Name = "xrLine1";
+            this.xrLine1.SizeF = new System.Drawing.SizeF(1359F, 3.125F);
+            this.xrLine1.StylePriority.UseForeColor = false;
             // 
             // BillsReceivablesSummaryAgeingasperLedgerBalanceByEndDate
             // 
@@ -1367,5 +1430,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel25;
         private DevExpress.XtraReports.UI.XRLabel xrLabel14;
         private DevExpress.XtraReports.UI.XRLabel xrLabel18;
+        private DevExpress.XtraReports.UI.XRLine xrLine1;
     }
 }

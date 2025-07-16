@@ -447,85 +447,20 @@
                 .OnRowRemoving("onexpenserowremoving")
                 )
     </div>
-    <div class="container">
+    <div class="px-3">
         <!-- Row 1: Submission, Approval, Verification, Claim Type, Voucher -->
-        <div class="row w-100 align-items-start" style="margin-top: 8px;">
-            <div class="form-group col-md-1">
-                @(Html.DevExtreme().CheckBox().ID("IsSubmitted").Disabled(true))
-            </div>
-            <div class="form-group col-md-2">
-                <label>Submitted By:</label>
-            </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().TextBox()
-                                .ID("SubmittedBytext")
-                                .Value(null)
-                                .Disabled(true)
-                                .Label("Submitted By:")
-                                .LabelMode(EditorLabelMode.Floating))
-            </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().TextBox()
-                                .ID("SubmittedOnDate")
-                                .Value(null)
-                                .Disabled(true)
-                                .Label("Submitted On:")
-                                .LabelMode(EditorLabelMode.Floating))
-            </div>
-            <div class="form-group col-md-1">
-                @(Html.DevExtreme().CheckBox().ID("IsApproved").Disabled(true))
-            </div>
-            <div class="form-group col-md-2">
-                <label>Approved By:</label>
-            </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().TextBox()
-                                .ID("ApprovedBytext")
-                                .Value(null)
-                                .Disabled(true)
-                                .Label("Approved By:")
-                                .LabelMode(EditorLabelMode.Floating))
-            </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().TextBox()
-                                .ID("ApprovedOntext")
-                                .Value(null)
-                                .Disabled(true)
-                                .Label("Approved On:")
-                                .LabelMode(EditorLabelMode.Floating))
-            </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().CheckBox().ID("IsVerified").Disabled(true))
-            </div>
-            <div class="form-group col-md-2">
-                <label>Verified By:</label>
-            </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().TextBox()
-                                .ID("VerifiedBytext")
-                                .Value(null)
-                                .Disabled(true)
-                                .Label("Verified By:")
-                                .LabelMode(EditorLabelMode.Floating))
-            </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().TextBox()
-                                .ID("VerifiedOntext")
-                                .Value(null)
-                                .Disabled(true)
-                                .Label("Verified On:")
-                                .LabelMode(EditorLabelMode.Floating))
-            </div>
-            <div class="form-group col-md-3">
+        <div class="row w-100 align-items-center justify-content-center ms-0" style="margin-top: 8px;">
+            <div class="col-3 d-flex justify-content-start align-items-center gap-2">
+              <div class="form-group">
                 @(Html.DevExtreme().SelectBox()
-                                .Label("Type of Claim:")
-                                .ID("ClaimType")
-                                .LabelMode(EditorLabelMode.Floating)
-                                .DataSource(new[] { "Expenses Claim Request" })
-                                .Value("Expenses Claim Request")
-                                .Disabled(true))
-            </div>
-            <div class="form-group col-md-3">
+                .Label("Type of Claim:")
+                .ID("ClaimType")
+                .LabelMode(EditorLabelMode.Floating)
+                .DataSource(new[] { "Expenses Claim Request" })
+                .Value("Expenses Claim Request")
+                .Disabled(true))
+              </div>
+                <div class="form-group">
                 @(Html.DevExtreme().TextBox()
                                 .ID("Voucher")
                                 .Value(null)
@@ -533,12 +468,9 @@
                                 .Label("Voucher")
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
-        </div>
-
-
-        <!-- Row 2: Payment Details + Dropdown + Button -->
-        <div class="row w-100 align-items-start" style="margin-top: 8px;">
-            <div class="form-group col-md-3">
+            </div>
+            <div class="col-4 d-flex justify-content-between align-items-center">
+                    <div class="form-group">
                 @(Html.DevExtreme().RadioGroup()
                                 .ID("radioGroup")
                                 .Items(new[] { "Cash Payment", "Bank Payment" })
@@ -546,25 +478,15 @@
                                 .Layout(Orientation.Horizontal)
                                 .OnValueChanged("onRadioGroupValueChanged"))
             </div>
-            <div class="form-group col-md-3">
+            <div class="form-group">
                 @(Html.DevExtreme().TextBox()
                                 .ID("GenerateVoucher")
                                 .Value(null)
                                 .ReadOnly(true))
             </div>
-            <div class="form-group col-md-2">
-                @(Html.DevExtreme().CheckBox().ID("IsPaid").Disabled(true))
             </div>
-            <div class="form-group col-md-2">
-                <label>Paid By:</label>
-                @(Html.DevExtreme().TextBox().ID("paidBytext").Value(null).Disabled(true))
-            </div>
-            <div class="form-group col-md-2">
-                <label>Paid On:</label>
-                @(Html.DevExtreme().TextBox().ID("paidOntext").Value(null).Disabled(true))
-            </div>
-            <div class="form-group col-md-2">
-                <label>PaymentAccounts :</label>
+            <div class="col-3">
+                            <div class="form-group">
                 @(Html.DevExtreme().DropDownBox()
                                 .LabelMode(EditorLabelMode.Floating)
                                 .ID("ddAccountHead")
@@ -574,6 +496,8 @@
                                 .ValueChangeEvent("input")
                                 .HoverStateEnabled(true)
                                 .ValueExpr("AccountId")
+                                .Label("Payment Accounts")
+                                .LabelMode(EditorLabelMode.Floating)
                                 .DisplayExpr("AccountHead")
                                 .OnInput("dropDownBoxOnInput")
                                 .OnOpened("onPaymentOpened")
@@ -582,7 +506,9 @@
                                 .OnKeyDown("onKeyDown")
                                 .ContentTemplate(new TemplateName("AccountHeadContentTemplate")))
             </div>
-            <div class="form-group col-md-2 d-flex align-items-end" style="padding-top: 40px;">
+            </div>
+            <div class="col-2">
+                            <div class="form-group d-flex align-items-end">
                 @(Html.DevExtreme().Button()
                                 .ID("btnPaytheClaim")
                                 .Text("Pay the Claim")
@@ -590,6 +516,115 @@
                                 .ElementAttr(new { @class = "bold-button" })
                                 .Height(100)
                                 .OnClick("generateVoucherNo"))
+            </div>
+            </div>
+        </div>
+
+
+        <!-- Row 2: Payment Details + Dropdown + Button -->
+        <div class="row w-100 align-items-start ms-0" style="margin-top: 8px;">
+            <div class="col-3 d-flex justify-content-center gap-3 align-items-start">
+                <div class="form-group" style="margin-top: 7.5px;">
+                @(Html.DevExtreme().CheckBox().ID("IsSubmitted").Disabled(true))
+                </div>
+                <div class="w-100">
+                <div>
+                <div class="form-group w-100">
+                @(Html.DevExtreme().TextBox()
+                                .ID("SubmittedBytext")
+                                .Value(null)
+                                .Disabled(true)
+                                .Label("Submitted By:")
+                                .LabelMode(EditorLabelMode.Floating))
+                    </div>
+                </div>
+                <div>
+                            <div class="form-group w-100">
+                @(Html.DevExtreme().TextBox()
+                                .ID("SubmittedOnDate")
+                                .Value(null)
+                                .Disabled(true)
+                                .Label("Submitted On:")
+                                .LabelMode(EditorLabelMode.Floating))
+            </div>
+                </div>
+                </div>
+            </div>
+
+                        <div class="col-3 d-flex justify-content-center gap-3 align-items-start">
+                            <div class="form-group" style="margin-top: 7.5px;">
+                @(Html.DevExtreme().CheckBox().ID("IsVerified").Disabled(true))
+            </div>
+                            <div class="w-100">
+                <div>
+                                       <div class="form-group w-100">
+                @(Html.DevExtreme().TextBox()
+                                .ID("VerifiedBytext")
+                                .Value(null)
+                                .Disabled(true)
+                                .Label("Verified By:")
+                                .LabelMode(EditorLabelMode.Floating))
+            </div>
+                </div>
+                              <div>
+                                <div class="form-group w-100">
+                @(Html.DevExtreme().TextBox()
+                                .ID("VerifiedOntext")
+                                .Value(null)
+                                .Disabled(true)
+                                .Label("Verified On:")
+                                .LabelMode(EditorLabelMode.Floating))
+            </div>
+                </div>
+                            </div>
+            </div>
+
+            <div class="col-3 d-flex justify-content-center gap-3 align-items-start">
+                <div class="form-group" style="margin-top: 7.5px;">
+                @(Html.DevExtreme().CheckBox().ID("IsApproved").Disabled(true))
+                </div>
+                <div class="w-100">
+                <div>
+                            <div class="form-group w-100">
+                @(Html.DevExtreme().TextBox()
+                                .ID("ApprovedBytext")
+                                .Value(null)
+                                .Disabled(true)
+                                .Label("Approved By:")
+                                .LabelMode(EditorLabelMode.Floating))
+            </div>
+                </div>
+                <div >
+                                <div class="form-group w-100">
+                @(Html.DevExtreme().TextBox()
+                                .ID("ApprovedOntext")
+                                .Value(null)
+                                .Disabled(true)
+                                .Label("Approved On:")
+                                .LabelMode(EditorLabelMode.Floating))
+            </div>
+                </div>
+                </div>
+            </div>
+
+            <div class="col-3 d-flex justify-content-center gap-3 align-items-start">
+                <div class="form-group" style="margin-top: 7.5px;">
+                @(Html.DevExtreme().CheckBox().ID("IsPaid").Disabled(true))
+                </div>
+                <div class="w-100">
+                <div>
+                    <div class="form-group w-100 d-flex justify-content-start align-items-center gap-2">
+                <label>Paid By:</label>
+                @(Html.DevExtreme().TextBox().ID("paidBytext").Value(null).Disabled(true))
+            </div>
+                </div>
+                <div>
+                            <div class="form-group w-100 d-flex justify-content-start align-items-center gap-2">
+                <label>Paid On:</label>
+                @(Html.DevExtreme().TextBox().ID("paidOntext").Value(null).Disabled(true))
+            </div>
+                </div>
+                </div>
             </div>
         </div>
     </div>

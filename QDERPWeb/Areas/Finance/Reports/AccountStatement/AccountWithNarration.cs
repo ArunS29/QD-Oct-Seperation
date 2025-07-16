@@ -216,14 +216,18 @@ namespace QD.ERP.Web.Reports
         {
             var pairs = new[]
             {
-                 new { Label = "xrLabel5", Picture = "xrPictureBox12" },
-                        new { Label = "xrLabel9", Picture = "xrPictureBox11" },
-        new { Label = "xrLabel22", Picture = "xrPictureBox2" },
-        new { Label = "xrLabel23", Picture = "xrPictureBox3" },
-        new { Label = "xrLabel7", Picture = "xrPictureBox6" },
-                new { Label = "xrLabel8", Picture = "xrPictureBox5" },
-                        new { Label = "xrLabel11", Picture = "xrPictureBox4" },
-                             new { Label = "xrLabel8", Picture = "xrPictureBox8" },
+                 new { Label = "xrLabel5", Picture = "xrPictureBox8" },
+                 new { Label = "xrLabel6", Picture = "xrPictureBox11" },
+                 new { Label = "xrLabel11", Picture = "xrPictureBox5" },
+                 new { Label = "xrLabel3", Picture = "xrPictureBox4" },
+                 new { Label = "xrLabel4", Picture = "xrPictureBox6" },
+
+
+
+        //new { Label = "xrLabel22", Picture = "xrPictureBox2" },
+        //new { Label = "xrLabel23", Picture = "xrPictureBox3" },
+        //        new { Label = "xrLabel8", Picture = "xrPictureBox5" },
+        //                     new { Label = "xrLabel8", Picture = "xrPictureBox8" },
 
 
     };

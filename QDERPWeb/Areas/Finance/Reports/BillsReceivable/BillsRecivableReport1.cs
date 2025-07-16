@@ -5,6 +5,8 @@ using DevExpress.DataAccess.ConnectionParameters;
 using System;
 using System.Drawing;
 using QD.ERP.Web.Service;
+using Microsoft.Data.SqlClient;
+using System.Data.SqlClient;
 using DevExpress.CodeParser; // For TenantDbContextHelper
 
 namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable

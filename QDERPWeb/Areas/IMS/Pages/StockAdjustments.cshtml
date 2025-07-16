@@ -145,6 +145,9 @@
 		overflow: hidden;
 	}
 
+	.horizontal-container{
+		margin:10px;
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -199,7 +202,7 @@
 	</div>
 </div>
 @await Html.PartialAsync("/Pages/Shared/IMS/StockAdjustmentFooter.cshtml")
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
@@ -228,7 +231,7 @@
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
 		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
+		.ElementAttr("class", "button-alignment-up")
 		.TabIndex(4)
 		.DropDownOptions(options => options.Width(230))
 		.Items(items =>
@@ -247,7 +250,7 @@
 		)
 
 </div>
-<div class="dx-field ledgerResult">
+<div class="ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)

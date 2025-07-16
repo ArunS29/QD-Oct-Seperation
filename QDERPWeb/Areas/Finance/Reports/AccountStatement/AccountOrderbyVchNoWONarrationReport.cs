@@ -260,8 +260,8 @@ namespace QD.ERP.Web.Reports
         {
             string[] pictureBoxNames =
             {
-        "xrPictureBox2", "xrPictureBox3", "xrPictureBox4",
-        "xrPictureBox5", "xrPictureBox6", "xrPictureBox7"
+        "xrPictureBox2", "xrPictureBox3", "xrPictureBox4","xrPictureBox14",
+        "xrPictureBox5", "xrPictureBox6", "xrPictureBox7","xrPictureBox8"
     };
 
             foreach (string name in pictureBoxNames)
@@ -282,14 +282,12 @@ namespace QD.ERP.Web.Reports
         new { Label = "xrLabel4", Picture = "xrPictureBox8" },
         new { Label = "xrLabel11", Picture = "xrPictureBox5" },
         new { Label = "xrLabel3", Picture = "xrPictureBox6" },
-                        new { Label = "xrLabel23", Picture = "xrPictureBox3" },
-
-                                        new { Label = "xrLabel22", Picture = "xrPictureBox2" },
-
-                        new { Label = "xrLabel7", Picture = "xrPictureBox5" },
+                        //new { Label = "xrLabel23", Picture = "xrPictureBox3" },
+                                        //new { Label = "xrLabel22", Picture = "xrPictureBox2" },
+                        //new { Label = "xrLabel7", Picture = "xrPictureBox5" },
                         new { Label = "xrLabel5", Picture = "xrPictureBox7" },
 
-                new { Label = "xrLabel8", Picture = "xrPictureBox4" },
+                new { Label = "xrLabel8", Picture = "xrPictureBox14" },
 
 
     };
