@@ -1117,6 +1117,34 @@
                                     columns.Add().DataField("ReceivedQty").Caption(new JS("formatMessage('Received')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
                                     columns.Add().DataField("IssuedQty").Caption(new JS("formatMessage('Issued')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
                                     columns.Add().DataField("StockReceiptAndOpnBalQty").Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Center).Format("fixedPoint");
+                                                                                                                                                                                                                        // === Unused / Hidden Columns ===
+                                                            columns.Add().DataField("ReceiptChildSlNo")
+                                                            .Caption(new JS("formatMessage('Receipt Child Sl No')"))
+                                                            .Visible(false);
+
+                                                            columns.Add().DataField("Transactions")
+                                                            .Caption(new JS("formatMessage('Transaction Description')"))
+                                                            .Visible(false);
+
+                                                            columns.Add().DataField("OpeningBalanceQty")
+                                                            .Caption(new JS("formatMessage('Opening Balance Qty')"))
+                                                            .Visible(false)
+                                                            .Alignment(HorizontalAlignment.Center)
+                                                            .Format("fixedPoint");
+
+                                                            columns.Add().DataField("ReceivedQty")
+                                                            .Caption(new JS("formatMessage('Received Qty (Calculated)')"))
+                                                            .Visible(false)
+                                                            .Alignment(HorizontalAlignment.Center)
+                                                            .Format("fixedPoint");
+
+                                                            columns.Add().DataField("StockReceiptAndOpnBalQty")
+                                                            .Caption(new JS("formatMessage('Opening + Received Qty')"))
+                                                            .Visible(false)
+                                                            .Alignment(HorizontalAlignment.Center)
+                                                            .Format("fixedPoint");
+
+
                                 })
                                 .Summary(summary =>
                                 {
@@ -1134,6 +1162,8 @@
                                 .ShowColumnHeaders(true)
                                 .ColumnAutoWidth(true)
                                 .AllowColumnReordering(true)
+                                .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
                                 .AllowColumnResizing(true)
                                 .ColumnFixing(fixing => fixing.Enabled(true))
                                 .GroupPanel(panel => panel.Visible(false))
@@ -1374,27 +1404,57 @@
                         .ShowRowLines(true)
                         .RowAlternationEnabled(true)
                         .ColumnAutoWidth(true)
+                          .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
                         .Columns(columns =>
                         {
                             columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
-                            columns.Add().DataField("InvoiceDate").Caption(new JS("formatMessage('Invoice Date')")).DataType(GridColumnDataType.Date);
+                                            columns.Add().DataField("InvoiceDate").Caption(new JS("formatMessage('Invoice Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                             columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
                             columns.Add().DataField("QuantityInvoiced").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                             columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
-                            columns.Add().DataField("UnitRate").Caption(new JS("formatMessage('Unit Rate')"));
+                            columns.Add().DataField("UnitRate").Caption(new JS("formatMessage('Unit Rate')")).Format("##,##0.00");
                             columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
                             columns.Add().DataField("VatAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
                             columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                                            columns.Add().DataField("ItemCode")
+                                            .Caption(new JS("formatMessage('Item Code')"))
+                                            .Visible(false);
+
+                                            columns.Add().DataField("Gsdescrpition")
+                                            .Caption(new JS("formatMessage('Item Description')"))
+                                            .Visible(false);
+
+                                            columns.Add().DataField("UnitsToBill")
+                                            .Caption(new JS("formatMessage('Units To Bill')"))
+                                            .Visible(false);
+
                         })
                         .Summary(summary =>
                         {
                             summary.TotalItems(items =>
                             {
                                 items.Add().Column("InvoiceNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
-                                items.Add().Column("QuantityInvoiced").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                                items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                                items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                                items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                                                items.Add().Column("QuantityInvoiced")
+                                            .SummaryType(SummaryType.Sum)
+                                            .ValueFormat("##,##0")
+                                            .DisplayFormat("{0}");
+
+                                                items.Add().Column("Discount")
+                                            .SummaryType(SummaryType.Sum)
+                                            .ValueFormat("##,##0.00")
+                                            .DisplayFormat("{0}");
+
+                                                items.Add().Column("VatAmount")
+                                            .SummaryType(SummaryType.Sum)
+                                            .ValueFormat("##,##0.00")
+                                            .DisplayFormat("{0}");
+
+                                                items.Add().Column("Total")
+                                            .SummaryType(SummaryType.Sum)
+                                            .ValueFormat("##,##0.00")
+                                            .DisplayFormat("{0}");
+
                             });
                         })
                         )
@@ -1466,16 +1526,24 @@
                     .ShowRowLines(true)
                     .RowAlternationEnabled(true)
                     .ColumnAutoWidth(true)
+                     .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
                     .OnInitialized("onQuotationGridInitialized")
                     .Columns(columns =>
                     {
                         columns.Add().DataField("QuoteNo").Caption(new JS("formatMessage('Quote No')"));
-                        columns.Add().DataField("QuoteDate").Caption(new JS("formatMessage('Quote Date')")).DataType(GridColumnDataType.Date);
+                        columns.Add().DataField("QuoteDate").Caption(new JS("formatMessage('Quote Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                         columns.Add().DataField("ClientName").Caption(new JS("formatMessage('Client Name')"));
                         columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("QuotedUnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
                         columns.Add().DataField("QuotedDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
+                                    columns.Add().DataField("UnitDesc")
+                                    .Caption(new JS("formatMessage('Unit Desc')"))
+                                    .Visible(false);
+                                    columns.Add().DataField("Gscode")
+                                    .Caption(new JS("formatMessage('GS Code')"))
+                                    .Visible(false);
                     })
 
                     .Summary(summary =>
@@ -1483,9 +1551,9 @@
                         summary.TotalItems(items =>
                         {
                             items.Add().Column("QuoteNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
-                            items.Add().Column("QuotedQuantity").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                            items.Add().Column("QuotedDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                            items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                                        items.Add().Column("QuotedQuantity").SummaryType(SummaryType.Sum).ValueFormat("##,##0").DisplayFormat("{0}");
+                                        items.Add().Column("QuotedDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
                         });
                     })
 
@@ -1560,28 +1628,36 @@
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
                     .RowAlternationEnabled(true)
+                     .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
                     .ColumnAutoWidth(true)
                     .OnInitialized("onPurchaseOrderGridInitialized")  // hook event to get instance
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("PONo").Caption(new JS("formatMessage('PO No')"));
-                        columns.Add().DataField("PODate").Caption(new JS("formatMessage('PO Date')")).DataType(GridColumnDataType.Date);
+                                    columns.Add().DataField("Pono").Caption(new JS("formatMessage('PO No')"));
+                                    columns.Add().DataField("Podate").Caption(new JS("formatMessage('PO Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                         columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
-                        columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
+                                    columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
-                        columns.Add().DataField("Discount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
-                        columns.Add().DataField("VatAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
-                        columns.Add().DataField("Total").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                                    columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
+                                    columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
+                                    columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                                    columns.Add().DataField("UnitDesc")
+                                    .Caption(new JS("formatMessage('Unit Desc')"))
+                                    .Visible(false);
+                                    columns.Add().DataField("Gscode")
+                                    .Caption(new JS("formatMessage('GS Code')"))
+                                    .Visible(false);
                     })
                     .Summary(summary =>
                     {
                         summary.TotalItems(items =>
                         {
                             items.Add().Column("PONo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
-                            items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                            items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                            items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                            items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                             items.Add().Column("Qty").SummaryType(SummaryType.Sum).ValueFormat("##,##0").DisplayFormat("{0}");
+                                        items.Add().Column("Discount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("VatAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("Total").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
                         });
                     })
                     )
@@ -1651,26 +1727,48 @@
                     .ShowRowLines(true)
                     .RowAlternationEnabled(true)
                     .ColumnAutoWidth(true)
+                    .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
                     .OnInitialized("onItemDeliversGridInitialized") // JS event to capture grid instance
                     .Columns(columns =>
                     {
+                                    columns.Add().DataField("DeliveryType").Caption(new JS("formatMessage('Delivery Type')")).GroupIndex(0);
                         columns.Add().DataField("DeliveryNoteNo").Caption(new JS("formatMessage('Delivery Note No')"));
-                        columns.Add().DataField("DeliveryDate").Caption(new JS("formatMessage('Delivery Date')")).DataType(GridColumnDataType.Date);
-                        columns.Add().DataField("Status").Caption(new JS("formatMessage('Status')")); 
-                        columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
+                                    columns.Add().DataField("DeliveryDate").Caption(new JS("formatMessage('Delivery Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                                    columns.Add().DataField("ClientInvoiceStatus").Caption(new JS("formatMessage('Status')"));
+                                    columns.Add().DataField("InvoiceNo").Caption(new JS("formatMessage('Invoice No')"));
                         columns.Add().DataField("IssuedFromStoreName").Caption(new JS("formatMessage('Issued From(Store)')")); 
                         columns.Add().DataField("DeliveryIssuedTo").Caption(new JS("formatMessage('Issued To')"));
                         columns.Add().DataField("IssuedQty").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
-                        columns.Add().DataField("IssuedUnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+                                    columns.Add().DataField("IssuedUnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
                         columns.Add().DataField("UnitTotalPrice").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
+                                    columns.Add().DataField("BatchNo")
+                                    .Caption(new JS("formatMessage('Batch No')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("ClientName")
+                                    .Caption(new JS("formatMessage('Client Name')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("ExpiryDate")
+                                    .Caption(new JS("formatMessage('Expiry Date')"))
+                                    .Visible(false);
+                                    columns.Add().DataField("UnitDesc")
+                                    .Caption(new JS("formatMessage('Unit Desc')"))
+                                    .Visible(false);
+                                    columns.Add().DataField("Gscode")
+                                    .Caption(new JS("formatMessage('GS Code')"))
+                                    .Visible(false);
+
+
                     })
                     .Summary(summary =>
                     {
                         summary.TotalItems(items =>
                         {
                             items.Add().Column("DeliveryNoteNo").SummaryType(SummaryType.Count).DisplayFormat("{0}");
-                            items.Add().Column("IssuedQty").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                            items.Add().Column("UnitTotalPrice").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                                        items.Add().Column("IssuedQty").SummaryType(SummaryType.Sum).ValueFormat("##,##0").DisplayFormat("{0}");
+                                        items.Add().Column("UnitTotalPrice").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
                         });
                     })
                     )
@@ -1751,12 +1849,22 @@
                     .OnInitialized("onItemReceivedGridInitialized") // Needed for JS setup
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Receipt No')"));
-                        columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date);
+                        //columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Receipt No')"));
+                                    columns.Add().DataField("ReceiptNo")
+                                    .Caption(new JS("formatMessage('Receipt No')"))
+                                    .Width(130)
+                                    .Alignment(HorizontalAlignment.Center)
+                                    .CellTemplate(@<text>
+                                                       <a href="/<%= tenantName %>/IMS/MaterialReceiptFromSupplier?ReceiptNo=<%= data.ReceiptNo %>" target="_blank" style="color: #0398fc; text-decoration: underline;">
+                                                           <%= data.ReceiptNo %>
+                                                       </a>
+                                                   </text>);
+
+                             columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                         columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
-                        columns.Add().DataField("QtyReceived").Caption(new JS("formatMessage('Qty Received')")).DataType(GridColumnDataType.Number);
+                        columns.Add().DataField("QtyReceived").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
-                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')"));
+                                    columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
                         columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
@@ -1766,10 +1874,10 @@
                         summary.TotalItems(items =>
                         {
                             items.Add().Column("ReceiptNo").SummaryType(SummaryType.Count).DisplayFormat(" {0}");
-                            items.Add().Column("QtyReceived").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                            items.Add().Column("ItemDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                            items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                            items.Add().Column("LineTotalWithTax").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                                        items.Add().Column("QtyReceived").SummaryType(SummaryType.Sum).ValueFormat("##,##0").DisplayFormat("{0}");
+                                        items.Add().Column("ItemDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("LineTotalWithTax").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
                         });
                     })
                     )
@@ -2320,28 +2428,95 @@
                     .ShowRowLines(true)
                     .RowAlternationEnabled(true)
                     .ColumnAutoWidth(true)
+                    .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+
                     .OnInitialized("onPurchaseGridInitialized")
                     .Columns(columns =>
                     {
                         columns.Add().DataField("Gscode").Caption(new JS("formatMessage('Item Code')"));
                         columns.Add().DataField("Pono").Caption(new JS("formatMessage('Purchase Voucher No')"));
-                        columns.Add().DataField("Podate").Caption(new JS("formatMessage('Purchase Voucher Date')")).DataType(GridColumnDataType.Date);
-                        columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Quantity Invoiced')"));
+                         columns.Add().DataField("Podate").Caption(new JS("formatMessage('Purchase Voucher Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                        columns.Add().DataField("QuotedQuantity").Caption(new JS("formatMessage('Quantity Invoiced')")).Alignment(HorizontalAlignment.Center);
                         columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
                         columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Rate')"));
                         columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTotalAfterDisc").Caption(new JS("formatMessage('Total After Disc')")).Format("##,##0.00");
                         columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('Tax Amount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total With Tax')")).Format("##,##0.00");
+
+                                    columns.Add().DataField("AccountHead")
+                                    .Caption(new JS("formatMessage('Account Head')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("CostAllocationGroup")
+                                    .Caption(new JS("formatMessage('Cost Allocation Group')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("Gsdescrpition")
+                                    .Caption(new JS("formatMessage('GS Description')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("Gscode")
+                                    .Caption(new JS("formatMessage('Item Code')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("LineTotalBeforeTax")
+                                    .Caption(new JS("formatMessage('Line Amount Before Discount')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("MaterialReceiptDate")
+                                    .Caption(new JS("formatMessage('Material Receipt Date')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("MaterialReceiptNo")
+                                    .Caption(new JS("formatMessage('Material Receipt No')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("PurchaseBillDate")
+                                    .Caption(new JS("formatMessage('Purchase Bill Date')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("PurchaseBillNo")
+                                    .Caption(new JS("formatMessage('Purchase Bill No')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("PurchaseDeliveryDate")
+                                    .Caption(new JS("formatMessage('Purchase Delivery Date')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("Podate")
+                                    .Caption(new JS("formatMessage('Purchase Order Date')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("Pono")
+                                    .Caption(new JS("formatMessage('Purchase Order No')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("SupplierCode")
+                                    .Caption(new JS("formatMessage('Supplier Code')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("LineTaxAmount")
+                                    .Caption(new JS("formatMessage('Tax Amount')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("LineTotalAfterDisc")
+                                    .Caption(new JS("formatMessage('Total After Disc.')"))
+                                    .Visible(false);
+
+                                    columns.Add().DataField("LineTotalWithTax")
+                                    .Caption(new JS("formatMessage('Total With Tax')"))
+                                    .Visible(false);
+
                     })
                     .Summary(summary =>
                     {
                         summary.TotalItems(items =>
                         {
-                            items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Count).DisplayFormat("{0}");
-                            items.Add().Column("LineTotalAfterDisc").SummaryType(SummaryType.Sum).ValueFormat("##,##0");
-                            items.Add().Column("ItemDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
-                            items.Add().Column("LineTotalWithTax").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00");
+                                        items.Add().Column("LineTaxAmount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("LineTotalAfterDisc").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("ItemDiscount").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
+                                        items.Add().Column("LineTotalWithTax").SummaryType(SummaryType.Sum).ValueFormat("##,##0.00").DisplayFormat("{0}");
                         });
                     })
                     )
