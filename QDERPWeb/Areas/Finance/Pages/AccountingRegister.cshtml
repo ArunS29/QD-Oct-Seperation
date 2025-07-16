@@ -1009,6 +1009,8 @@
 					 success: function (data) {
 						 // Bind the data to the DataGrid
 						 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+							 injectHeaderSVG();
+							injectCurrencyToCards();
 						 // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
 					 },
 					 error: function () {
@@ -1138,8 +1140,9 @@
 	});
 
 	function handleGridContentReady(e){
-	
-	   injectHeaderSVG();
+
+		  injectHeaderSVG();
+		injectCurrencyToCards();
 	
 	}
 
@@ -1147,61 +1150,107 @@
 	function handleGridOptionChanged(e) {
 		if (e.name === "columns" || e.name === "visible") {
 			// Columns changed, so re-inject SVG
-			 injectHeaderSVG(); // slight delay to wait for DOM re-render
+			 injectHeaderSVG();
+			 injectCurrencyToCards();// slight delay to wait for DOM re-render
 		}
 	}
 	function injectHeaderSVG() {
-		let gridElement = $('#dataGrid');
-		let dataGrid = gridElement.dxDataGrid("instance");
-		if (!dataGrid) return;
-
-		let dataSource = dataGrid.option("dataSource");
-		if (!dataSource || dataSource.length === 0) return;
-
-		let svgIcon = dataSource[0].CurrencyImage;
-		if (!svgIcon) return;
-
-		svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
-
-		gridElement.find(".dx-header-row td").each(function () {
+		$.ajax({
+			url: '/api/AccountingLedgers/GetCurrencyIcon',
+			type: 'GET',
+			success: function (response) {
 				debugger;
-			const $cell = $(this);
-			const dataField = $cell.attr("data-field");  // 👈 This is key
+				let svgIcon = response.Icon;
+				if (!svgIcon) return;
 
-				const $debitHeader = $(".debit-header");
-				const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
-				$debitHeader.data("original-text", debitText); // Save original once
+				// Set default width/height for SVG if needed
+				if (svgIcon.startsWith("<svg")) {
+					svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+				} else {
+					// If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+					svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+				}
 
-				$debitHeader.html(`
-					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-						${svgIcon}
-						<span style="font-weight: bold;">${debitText}</span>
-					</div>
-				`);
-				debugger;
-				// 👉 Credit
-				const $creditHeader = $(".credit-header");
-				const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
-				$creditHeader.data("original-text", creditText);
+				let $grid = $('#dataGrid');
+				let gridInstance = $grid.dxDataGrid("instance");
+				if (!gridInstance) return;
 
-				$creditHeader.html(`
-					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-						${svgIcon}
-						<span style="font-weight: bold;">${creditText}</span>
-					</div>
-				`);
+				$grid.find(".dx-header-row td").each(function () {
+					const $cell = $(this);
 
-				// const $balanceHeader = $(".balance-header");
-				// 	const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
-				// 	$balanceHeader.data("original-text", balanceText);
+					const $debitHeader = $(".debit-header");
+					const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+					$debitHeader.data("original-text", debitText);
+					$debitHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${debitText}</span>
+						</div>
+					`);
 
-				// 	$balanceHeader.html(`
-				// 		<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-				// 			${svgIcon}
-				// 			<span style="font-weight: bold;">${balanceText}</span>
-				// 		</div>
-				// 	`);
+					const $creditHeader = $(".credit-header");
+					const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+					$creditHeader.data("original-text", creditText);
+					$creditHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${creditText}</span>
+						</div>
+					`);
+
+					const $balanceHeader = $(".balance-header");
+					const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
+					$balanceHeader.data("original-text", balanceText);
+					$balanceHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${balanceText}</span>
+						</div>
+					`);
+				});
+			},
+			error: function (xhr) {
+				console.error("Failed to load currency icon:", xhr.responseText);
+			}
 		});
 	}
+
+	function injectCurrencyToCards() {
+		$.ajax({
+			url: "/api/AccountingLedgers/GetCurrencyIcon",
+			method: "GET",
+			success: function (response) {
+				debugger;
+				if (!response || !response.Icon) return;
+
+				const icon = response.Icon.trim();
+
+				// Inject into Balance
+				$('#cardBalance .value-slider span').each(function () {
+					$(this).html(icon + $(this).text().trim().replace(icon, ''));
+				});
+
+				// Inject into Debit
+				$('#cardDebit .value-slider span').each(function () {
+					$(this).html(icon + $(this).text().trim().replace(icon, ''));
+				});
+
+				// Inject into Credit
+				$('#cardCredit .value-slider span').each(function () {
+					$(this).html(icon + $(this).text().trim().replace(icon, ''));
+				});
+			},
+			error: function (err) {
+				console.error("Failed to load currency icon:", err);
+			}
+		});
+	}
+
+	// Call this on document ready or after cards are rendered
+	$(document).ready(function () {
+		injectCurrencyToCards();
+		injectHeaderSVG();
+	});
+
 
 </script>
