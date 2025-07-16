@@ -3512,7 +3512,15 @@ var dictionary = {
   "Submitted On": "Submitted On",
   "Verified By": "Verified By",
   "Verified On": "Verified On",
-  "Bid Closing Date": "Bid Closing Date"
+  "Bid Closing Date": "Bid Closing Date",
+        "Attach Multiple Files": "Attach Multiple Files",
+        "Attachments": "Attachments",
+        "Type of Document Attached:": "Type of Document Attached:",
+        "Document No:": "Document No:",
+        "Attach a Document": "Attach a Document",
+        "Document Expiry Date:": "Document Expiry Date:",
+        "Notification Date:": "Notification Date:",
+        "Remarks / Notes":"Remarks / Notes",
 
         
  

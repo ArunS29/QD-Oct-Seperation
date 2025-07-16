@@ -452,13 +452,14 @@
 						<tr>
 							<td style="width: 50%;">
 								@(Html.DevExtreme().DateBox()
-															.Label(new JS("formatMessage('Performa Invoice Date:')"))
-															.ID("InvoiceIssuedDateTime")
-															.Type(DateBoxType.DateTime)
-															.DisplayFormat(new JS("'dd-MMM-yyyy hh:mm:ss a'"))
-															.LabelMode(EditorLabelMode.Floating)
-															.Value(DateTime.Now)
-															)
+																.Label(new JS("formatMessage('Performa Invoice Date:')"))
+																.ID("InvoiceIssuedDateTime")
+																.Type(DateBoxType.Date) // ✅ Only date, no time
+																.DisplayFormat(new JS("'dd-MMM-yyyy'")) // ✅ Format: 15-Jul-2025
+																.LabelMode(EditorLabelMode.Floating)
+																.Value(DateTime.Now)
+																)
+
 							</td>
 							<td style="width: 50%;">
 								@(Html.DevExtreme().DateBox()
@@ -487,7 +488,7 @@
 															.ID("PODate")
 															.Type(DateBoxType.Date)
 															.DisplayFormat("dd-MMM-yyyy")
-															.Value(DateTime.Now)
+															@* .Value(DateTime.Now) *@
 															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
@@ -510,7 +511,7 @@
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
-															//.Value("Tax Invoice")
+															.Value("Tax Invoice")
 															.ValueExpr("InvoiceSubTypeCode")
 															.DisplayExpr("InvoiceSubType")
 															.LabelMode(EditorLabelMode.Floating)
@@ -1561,13 +1562,12 @@
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
 					.ShowColumnHeaders(false)
-					.FilterRow(f => f.Visible(false))
-					.SearchPanel(sp => sp.HighlightSearchText(false))
+					.FilterRow(f => f.Visible(true))
+					.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
 					.OnSelectionChanged("ClientNamedataGridSelectionChanged")
 					.OnInitialized("ClientCodedataGridInitialized")
-					.HeaderFilter(p => p.Visible(false))
-					.ShowBorders(true)
+					.HeaderFilter(p => p.Visible(true))
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
 
@@ -1852,8 +1852,8 @@
 											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 											.Columns(columns =>
 											{
-												columns.Add().DataField("InvoiceSubType").Caption(new JS("formatMessage('Invoice SubType')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("InvoiceSubTypeCode").Caption(new JS("formatMessage('Invoice SubType Code')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("InvoiceSubTypeCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("InvoiceSubType").Caption(new JS("formatMessage('Invoice Sub Type')")).Alignment(HorizontalAlignment.Center);
 												
 											})
 
