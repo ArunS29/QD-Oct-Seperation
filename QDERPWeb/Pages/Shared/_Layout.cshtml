@@ -680,7 +680,7 @@
             display: flex;
             align-items: center;
             padding: 10px 10px;
-            gap: 16px;
+            /* gap: 16px; */
             cursor: pointer;
             transition: background-color 0.3s ease;
             border-bottom: 1px solid #ddd;
@@ -1329,6 +1329,8 @@
             padding-bottom: 15px;
             padding-left: 10px;
         }
+
+      
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1710,18 +1712,18 @@
                 </div>
             </div>
         </div>
-        <div id="submenuContainer8" class="context-menu" style="display: none; width: 300px;">
+        <div id="submenuContainer8" class="context-menu" style="display: none;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleVATClick('TaxSummaryReport')">
-                    <span class="no-border-input">Tax Summary Report</span>
+                    <span id="TaxSummaryReport" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleVATClick('TaxVATReport')">
-                    <span class="no-border-input">Tax Report (Revenue Classified)</span>
+                    <span id="TaxVATReport" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleVATClick('TaxReportRevenueInArabic')">
-                    <span class="no-border-input">Tax Report (Revenue Classified) in Arabic</span>
+                    <span id="TaxReportRevenueInArabic" class="no-border-input"></span>
                 </div>
             </div>
         </div>
@@ -1773,10 +1775,10 @@
         <div id="submenuContainer9" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="stockInventoryReport()">
-                    <span class="no-border-input">Stock Inventory Report</span>
+                    <span id="stockInventoryReport" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="cogsposting()">
-                    <span class="no-border-input">COGS Posting</span>
+                    <span id="cogsposting" class="no-border-input"></span>
                 </div>
 
 
@@ -2202,8 +2204,6 @@
                         width:400,
                         readOnly: true
                     });
-
-
                 });
                 $(function () {
                     $("#StatementOfAccounts").dxTextBox({
@@ -2382,6 +2382,40 @@
 
                     });
                 });
+
+                 $(function () {
+                   $("#TaxSummaryReport").dxTextBox({
+                   text: formatMessage("Tax Summary Report"),
+                   width:400,
+                   readOnly: true
+                 });
+       
+                  $("#TaxVATReport").dxTextBox({
+                  text: formatMessage("Tax Report (Revenue Classified)"),
+                  width:400,
+                  readOnly: true
+                 });
+       
+                  $("#TaxReportRevenueInArabic").dxTextBox({
+                  text: formatMessage("Tax Report (Revenue Classified) in Arabic"),
+                  width:400,
+                  readOnly: true
+                 });
+               });
+                $(function () {
+                   $("#stockInventoryReport").dxTextBox({
+                   text: formatMessage("Stock Inventory Report"),
+                   width:400,
+                   readOnly: true
+                 });
+                   $("#cogsposting").dxTextBox({
+                   text: formatMessage("COGS Posting"),
+                   width:400,
+                   readOnly: true
+                 });
+               });
+
+
                 $(function () {
                     $("#Short").dxTextBox({
                         text: formatMessage("Short"),
@@ -3928,6 +3962,7 @@
 
 
                 function handleVATClick(selectedText) {
+                       $('#submenuContainer8').hide();
                     console.log("handleVATClick triggered with:", selectedText);
 
                     try {

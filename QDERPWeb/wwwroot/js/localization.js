@@ -3520,7 +3520,12 @@ var dictionary = {
         "Attach a Document": "Attach a Document",
         "Document Expiry Date:": "Document Expiry Date:",
         "Notification Date:": "Notification Date:",
-        "Remarks / Notes":"Remarks / Notes",
+        "Remarks / Notes": "Remarks / Notes",
+        "Tax Summary Report": "Tax Summary Report",
+        "Tax Report (Revenue Classified)": "Tax Report (Revenue Classified)",
+        "Tax Report (Revenue Classified) in Arabic": "Tax Report (Revenue Classified) in Arabic",
+        "Stock Inventory Report": "Stock Inventory Report",
+        "COGS Posting":"COGS Posting",
 
   "Description (AR)": "Description (AR)",
         "Stock Group (AR)": "Stock Group (AR)",
