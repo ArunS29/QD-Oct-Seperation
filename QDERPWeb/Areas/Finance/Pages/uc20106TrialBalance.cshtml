@@ -358,116 +358,146 @@
             }
         });
     }
-     function initializePivotGrid(data) {
-        var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
-            dataSource: {
-                store: {
-                    type: "array",
-                    data: data
-                },
-                fields: [
-                    { dataField: "MasterGroup", area: "row", caption: "Master Group" },
-                    { dataField: "LedgerNo", area: "row", caption: "Ledger No" },
-                    { dataField: "DrCr", area: "column", caption: "Dr Cr" },
-                    { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
-                    { dataField: "DrAmount", area: "data", caption: "Debit Amount", summaryType: "sum" },
-                    { dataField: "CrAmount", area: "data", caption: "Credit Amount", summaryType: "sum" },
-                    { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount", summaryType: "sum" },
-                    { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" }
-                ]
+   function initializePivotGrid(data) {
+    var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
+        dataSource: {
+            store: {
+                type: "array",
+                data: data
             },
-            width: "100%",
-            height: "100%",
-            allowSortingBySummary: true,
-            allowSorting: true,
-            allowFiltering: true,
-            allowExpandAll: true,
-            showBorders: true,
-            showColumnHeaders: true,
-            columnAutoWidth: true,
-            allowColumnResizing: true,
-            rowHeaderLayout: "standard",
-            wordWrapEnabled: true,
+            fields: [
+                { dataField: "MasterGroup", area: "row", caption: "Master Group" },
+                { dataField: "LedgerNo", area: "row", caption: "Ledger No" },
+                { dataField: "DrCr", area: "column", caption: "Dr Cr" },
+                { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
+                { dataField: "DrAmount", area: "data", caption: "Debit Amount", summaryType: "sum" },
+                { dataField: "CrAmount", area: "data", caption: "Credit Amount", summaryType: "sum" },
+                { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount", summaryType: "sum" },
+                { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" }
+            ]
+        },
+        width: "100%",
+        height: "100%",
+        allowSortingBySummary: true,
+        allowSorting: true,
+        allowFiltering: true,
+        allowExpandAll: true,
+        showBorders: true,
+        showColumnHeaders: true,
+        columnAutoWidth: true,
+        allowColumnResizing: true,
+        rowHeaderLayout: "standard",
+        wordWrapEnabled: true,
+        fieldChooser: {
+            enabled: true,
+            allowSearch: true
+        },
+        scrolling: {
+            mode: "virtual"
+        },
+        fieldPanel: {
+            visible: true,
+            allowFieldDragging: true,
+            showRowFields: true,
+            showColumnFields: true,
+            showDataFields: true,
+            showFilterFields: true
+        },
+        showColumnTotals: true,
+        showColumnGrandTotals: true,
+        showDataHeaders: true,
+        showRowTotals: false,
+        showRowGrandTotals: true,
+        onContentReady: function () {
+            updateTrialBalanceChart(pivotGrid);
+        }
+    }).dxPivotGrid("instance");
 
-            fieldChooser: {
-                enabled: true,
-                allowSearch: true
-            },
-            scrolling: {
-                mode: "virtual"
-            },
-            fieldPanel: {
-                visible: true,
-                allowFieldDragging: true,
-                showRowFields: true,
-                showColumnFields: true,
-                showDataFields: true,
-                showFilterFields: true
-            },
-            showColumnTotals: true,
-            showColumnGrandTotals: true,
-            showDataHeaders: true,
-            showRowTotals: false,
-            showRowGrandTotals: true
-        }).dxPivotGrid("instance");
-
-        // ✅ Chart Setup (non-intrusive)
-        var chart = $("#pivotChartContainer").dxChart({
-            commonSeriesSettings: {
-                type: "bar"
-            },
-            tooltip: {
-                enabled: true
-            },
-            legend: {
-                visible: true
-            },
-            export: {
-                enabled: true
-            }
-        }).dxChart("instance");
-
-        // ✅ Bind Chart to PivotGrid
-        pivotGrid.bindChart(chart, {
-            dataFieldsDisplayMode: "splitPanes", // also try: "singleAxis"
-            alternateDataFields: false
-        });
-
-        // ✅ Expand rows (your logic preserved)
-        setTimeout(function () {
-            var dataSource = pivotGrid.getDataSource();
-            var accountGroups = dataSource.getData().rows;
-            accountGroups.forEach(function (group) {
-                if (group.text) {
-                    dataSource.expandHeaderItem("row", [group.text]);
+    // ✅ Chart Initialization (Trial Balance)
+    $("#pivotChartContainer").dxChart({
+        rotated: true,
+        commonSeriesSettings: {
+            argumentField: "account",
+            type: "bar"
+        },
+        series: [
+            {
+                valueField: "debit",
+                name: "Debit (SAR)",
+                color: "#7ec8e3",
+                label: {
+                    visible: true,
+                    customizeText: function (arg) {
+                        return arg.point.data.debitPercent || "";
+                    }
                 }
-            });
-        }, 100);
+            },
+            {
+                valueField: "credit",
+                name: "Credit (SAR)",
+                color: "#f08080",
+                label: {
+                    visible: true,
+                    customizeText: function (arg) {
+                        return arg.point.data.creditPercent || "";
+                    }
+                }
+            }
+        ],
+        title: "Trial Balance - Debit vs Credit with Percentage",
+        legend: {
+            visible: true,
+            position: "bottom"
+        },
+        tooltip: {
+            enabled: true,
+            customizeTooltip: function (arg) {
+                return {
+                    text: `${arg.seriesName}: SAR ${arg.valueText}`
+                };
+            }
+        },
+        export: {
+            enabled: true
+        }
+    });
 
-        // ✅ Adjust height on resize
-        $(window).resize(function () {
-            var height = $(window).height() - 50;
-            pivotGrid.option("height", height);
-            chart.option("height", height);
+    // ✅ Expand rows logic
+    setTimeout(function () {
+        var dataSource = pivotGrid.getDataSource();
+        var accountGroups = dataSource.getData().rows;
+        accountGroups.forEach(function (group) {
+            if (group.text) {
+                dataSource.expandHeaderItem("row", [group.text]);
+            }
         });
+    }, 100);
 
-        // ✅ Custom styles
-        $(".dx-pivotgrid-container").css({
-            "font-size": "14px",
-            "border-radius": "8px"
-        });
+    // ✅ Adjust height on resize
+    $(window).resize(function () {
+        var height = $(window).height() - 50;
+        pivotGrid.option("height", height);
+        $("#pivotChartContainer").dxChart("instance").option("height", height);
+    });
 
-        $(".dx-pivotgrid-row, .dx-pivotgrid-column").css({
-            "padding": "10px",
-            "border-bottom": "1px solid #ddd"
-        });
+    // ✅ Custom styles
+    $(".dx-pivotgrid-container").css({
+        "font-size": "14px",
+        "border-radius": "8px"
+    });
 
-        $(".dx-pivotgrid-cell").hover(function () {
-            $(this).css("background-color", "#f5f5f5");
-        }, function () {
-            $(this).css("background-color", "");
-        });
-    }
+    $(".dx-pivotgrid-row, .dx-pivotgrid-column").css({
+        "padding": "10px",
+        "border-bottom": "1px solid #ddd"
+    });
+
+    $(".dx-pivotgrid-cell").hover(function () {
+        $(this).css("background-color", "#f5f5f5");
+    }, function () {
+        $(this).css("background-color", "");
+    });
+}
+
 
 
 
@@ -549,7 +579,32 @@
     $("#pivotGridContainer").css("height", newHeight);
 });
 
-    
+function updateTrialBalanceChartByLedger(pivotGridInstance) {
+    const rawData = pivotGridInstance.option("dataSource").store.data;
+
+    const grouped = {};
+
+    rawData.forEach(item => {
+        const key = item.LedgerNo || "Unnamed";
+        if (!grouped[key]) {
+            grouped[key] = { account: key, debit: 0, credit: 0 };
+        }
+        grouped[key].debit += item.DrAmount || 0;
+        grouped[key].credit += item.CrAmount || 0;
+    });
+
+    const finalData = Object.values(grouped);
+
+    const totalDebit = finalData.reduce((sum, d) => sum + d.debit, 0);
+    const totalCredit = finalData.reduce((sum, d) => sum + d.credit, 0);
+
+    finalData.forEach(d => {
+        d.debitPercent = d.debit ? ((d.debit / totalDebit) * 100).toFixed(2) + "%" : "";
+        d.creditPercent = d.credit ? ((d.credit / totalCredit) * 100).toFixed(2) + "%" : "";
+    });
+    $("#pivotChartContainer").dxChart("instance").option("dataSource", finalData);
+}
+
 
 </script>
 

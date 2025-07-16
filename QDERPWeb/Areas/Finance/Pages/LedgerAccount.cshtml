@@ -229,41 +229,7 @@
         gap: 10px; */
     }
 
-    /* Tab appearance */
-    .dx-tab {
-        background-color: #ffffff;
-        border-radius: 50px !important;
-        padding: 8px 8px !important;
-        font-weight: 500;
-        font-size: 12px;
-        /* color: #333; */
-        transition: all 0.3s ease;
-        /* border: 1px solid #ddd; */
-        /* min-height: 40px; */
-        width: auto;
-    }
-
-        /* Tab hover effect */
-        .dx-tab:hover {
-            background-color: #e9f2ff;
-            color: lightskyblue;
-            border-color: #cce5ff;
-        }
-
-        /* Selected tab styling */
-        .dx-tab.dx-tab-selected {
-            background-color: lightskyblue !important;
-            color: #fff !important;
-            font-weight: 600;
-            border: 1px solid lightskyblue !important;
-            box-shadow: 0 4px 8px rgba(0, 123, 255, 0.1);
-        }
-
-        /* Optional: better icon spacing */
-        .dx-tab .dx-icon {
-            margin-right: 6px;
-            font-size: 12px;
-        }
+   
 
     .containerLedgerAccount{
         overflow:auto !important;
@@ -272,11 +238,6 @@
     .background{
     background-color:white!important;
     }
-
-    .dx-tab.dx-tab-selected .dx-icon, .dx-tab.dx-tab-selected .dx-tab-text {
-        color: white;
-    }
-
     .dx-fieldset{
         margin:0px !important;
     }
@@ -3304,18 +3265,14 @@ function syncSupVATNumbers(e) {
             dataType: 'json',  // Expecting JSON response
             success: function (response) {
            []
-             var ModifiedBy = $('#ModifiedBy').dxTextBox("instance");
-                    if (ModifiedBy) {
-                        ModifiedBy.option("value", response.UserName);
+                       if (response.accountDetails && response.accountDetails.length > 0) {
+                            const data = response.accountDetails[0];
 
-                    }
-                    console.log("hi",ModifiedBy)
-                     var ModifiedOn = $('#ModifiedOn').dxTextBox("instance");
-                    if (ModifiedOn) {
-                        ModifiedOn.option("value", formatDate(new Date()));
-
-                    }
-      
+                            $("#CreatedBy").dxTextBox("instance").option("value", data.RecordCreatedBy || "");
+                            $("#CreatedOn").dxTextBox("instance").option("value", data.RecordCreatedOn || "");
+                            $("#ModifiedBy").dxTextBox("instance").option("value", data.RecordModifiedBy || "");
+                            $("#ModifiedOn").dxTextBox("instance").option("value", data.RecordModifiedOn || "");
+                        }
 
                console.log("userName:",userName);
                 if (response && response.accountDetails && response.accountDetails.length > 0) {
@@ -3788,18 +3745,7 @@ function syncSupVATNumbers(e) {
 
                     }
 
-                    var CreatedBy = $('#CreatedBy').dxTextBox("instance");
-                   if (CreatedBy) {
-                        CreatedBy.option("value", account.RecordCreatedBy);
-
-                    }
-                    var CreatedOn = $("#CreatedOn").dxTextBox("instance");
-
-                    if (CreatedOn && account.RecordCreatedOn) {
-                        var formattedDate = formatDate(new Date(account.RecordCreatedOn));
-                        CreatedOn.option("value", formattedDate);
-                    }
-
+                    
 
 
 
@@ -5163,29 +5109,7 @@ function syncSupVATNumbers(e) {
         var buttonText = button ? button.option("text") : "";
 
         // Only set CreatedBy on insert
-        if (buttonText !== "Update") {
-            $("#CreatedBy").dxTextBox("instance").option("value", getUN);
-        }
-      
-
-        
-        // $("#CreatedBy").dxTextBox("instance").option("value",getUN);
-         const CreatedBy = $("#CreatedBy").dxTextBox("instance").option("value");
- console.log("userN1:",getUN);
-       console.log("userN2:",CreatedBy);
-
-            var CreatedOns = $("#CreatedOn").dxTextBox("instance").option("value");
-            if (!CreatedOn || !Date.parse(CreatedOn)) {
-                CreatedOn = new Date().toISOString();
-            }
-
        
-
-        // $("#ModifiedBy").dxTextBox("instance").option("value",userNames);
-//  console.log("userN3:",userNames);
-   const ModifiedBy = $("#ModifiedBy").dxTextBox("instance").option("value");
-    console.log("userN4:",ModifiedBy);
-       const ModifiedOn = new Date().toISOString(); // Current date in ISO format
 
 
         //var obVATNoAr = $('#txtObsSupRegNoAr').dxNumberBox('option', 'value');
@@ -5319,6 +5243,18 @@ function syncSupVATNumbers(e) {
                 data: values,  // Convert the object to JSON
                 success: function (response) {
                     if (response.success) {
+                                // ✅ Set Created/Modified metadata if available
+                        if (response.createdBy)
+                            $("#CreatedBy").dxTextBox("instance").option("value", response.createdBy);
+
+                        if (response.createdOn)
+                            $("#CreatedOn").dxTextBox("instance").option("value", response.createdOn);
+
+                        if (response.modifiedBy)
+                            $("#ModifiedBy").dxTextBox("instance").option("value", response.modifiedBy);
+
+                        if (response.modifiedOn)
+                            $("#ModifiedOn").dxTextBox("instance").option("value", response.modifiedOn);
                         //alert(response.message);
                         DevExpress.ui.notify(response.message, "success", 3000)
                         // Check if the button text is "Update"
@@ -5329,10 +5265,16 @@ function syncSupVATNumbers(e) {
 
                         // Close popup ONLY IF the button text is NOT "Update"
                         if (buttonText !== "Update") {
-                            setTimeout(function () {
-                                window.parent.$("#ledgerAccountPopup").dxPopup("instance").hide();
-                                window.parent.$("#popupContainer").dxPopup("instance").hide();
-                            }, 2000);
+
+
+                                        setTimeout(function () {
+                                            // Hide popups in parent
+                                            window.parent.$("#ledgerAccountPopup").dxPopup("instance")?.hide();
+                                            window.parent.$("#popupContainer").dxPopup("instance")?.hide();
+
+                                            // Reload the parent page after closing
+                                            window.parent.location.reload();
+                                        }, 2000);
                         }
                             
                     } else {
