@@ -1,6 +1,7 @@
 DevExpress.localization.loadMessages({
     "en": {
-      
+        "Voucher Abbr": "Voucher Abbr",
+        "No Of Days":"No Of Days",
         "Client Contact List": "Client Contact List",
         "Division:": "Division:",
         "Create PO": "Create PO",
