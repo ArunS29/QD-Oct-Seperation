@@ -1789,7 +1789,86 @@ GO
 
 
 
-  ALTER PROCEDURE [Aicon].[StProAccountLedger]    
+  ALter  PROCEDURE [Aicon].[StProAccountLedgerByVoucherType]       
+    @VoucherType VARCHAR(50),       
+    @StartDate DATETIME,      
+    @EndDate DATETIME      
+AS      
+  
+BEGIN      
+  
+    SET NOCOUNT ON;      
+    -- Declare currency-related variables    
+  
+    DECLARE       
+  
+        @BaseCurrencyCode VARCHAR(10),      
+        @BaseCurrencyImage NVARCHAR(MAX),      
+        @BaseCurrencySymbole NVARCHAR(50),      
+        @BaseCurrencyNote NVARCHAR(50),      
+        @BaseCurrencyDisplayCode VARCHAR(50);      
+    -- Get Base Currency Code from Company Table      
+  
+    SELECT  @BaseCurrencyCode = CurrencyType       
+  
+    FROM Aicon.fn_GetDefaultCompanyDetails();      
+  
+  
+  
+    -- Get Base Currency Details      
+  
+    SELECT TOP 1      
+  
+        @BaseCurrencyImage = CurrencyImage,      
+        @BaseCurrencySymbole = CurrencySymbole,      
+        @BaseCurrencyNote = CurrencyNote,      
+        @BaseCurrencyDisplayCode = CurrencyCode      
+    FROM Aicon.tbl20169CurrencyExchange       
+  
+    WHERE CurrencyMasterCode = @BaseCurrencyCode;      
+  
+    IF @VoucherType IS NOT NULL      
+  
+    BEGIN      
+   SELECT q.VoucherNo,q.VoucherDate,q.VoucherRefNo, q.VoucherNarration, q.VoucherEnteredBy, q.VoucherEnteredOn, q.VoucherVerifiedBy, q.VoucherVerifiedOn, q.VoucherApprovedBy, q.VoucherApprovedOn, q.VoucherEntryNo, q.AccountHead,
+   q.AccountHeadName, q.DrCr, q.DrAmount, q.CrAmount, q.VoucherAmountFormatted, q.EntryNarration, ag.AccountGroup, mg.MasterGroup, q.VoucherType, q.SysRemarks, q.VoucherEffectiveDate, q.SubGroupName, q.VoucherModifiedBy,
+   q.VoucherModifiedOn, cex.CurrencyName AS TransactionCurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol,cex.CurrencyImage as TransactionCurrencyImage, q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, q.DrAmount * ISNULL(q.CurrencyRate,
+   1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.CurrencyRate AS ExchangeRate, @BaseCurrencyCode AS CurrencyType, @BaseCurrencyImage AS CurrencyImage, @BaseCurrencySymbole AS
+   CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode
+       
+  
+        FROM Aicon.tbl201MasterGroup mg    
+        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
+        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
+        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
+LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
+    
+  
+        WHERE     
+            q.VoucherType = @VoucherType    
+            AND q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)    
+    END      
+    ELSE      
+    BEGIN      
+       SELECT q.VoucherNo, q.VoucherDate, q.VoucherRefNo, q.VoucherNarration, q.VoucherEnteredBy, q.VoucherEnteredOn, q.VoucherVerifiedBy, q.VoucherVerifiedOn, q.VoucherApprovedBy, q.VoucherApprovedOn, q.VoucherEntryNo,
+	   q.AccountHead, q.AccountHeadName, q.DrCr, q.DrAmount, q.CrAmount, q.VoucherAmountFormatted, q.EntryNarration, ag.AccountGroup, mg.MasterGroup, q.VoucherType, q.SysRemarks, q.VoucherEffectiveDate, q.SubGroupName,
+	   q.VoucherModifiedBy, q.VoucherModifiedOn, cex.CurrencyName AS TransactionCurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol, q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, q.DrAmount
+	   * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.CurrencyRate AS ExchangeRate, @BaseCurrencyCode AS CurrencyType, @BaseCurrencyImage AS CurrencyImage,
+	   @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode,cex.CurrencyImage as TransactionCurrencyImage
+	   
+        FROM Aicon.tbl201MasterGroup mg    
+        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
+        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
+        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
+LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
+  
+        WHERE     
+            q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)    
+    END      
+END   
+
+
+ALTER PROCEDURE [Aicon].[StProAccountLedger]    
 
     @ParamAccountNo VARCHAR(50),    
 
@@ -1846,7 +1925,7 @@ BEGIN
 	SUM(VoucherAmountFormatted * ISNULL(CurrencyRate, 1)) AS ConvertedAmount, 0 AS ConvertedDrAmount, 0 AS ConvertedCrAmount, 'Opening Balance' AS EntryNarration, AccountGroup, MasterGroup, 'Opening Balance' AS VoucherType,
 	'Opening Balance' AS SysRemarks, '' AS VoucherModifiedBy, '' AS VoucherModifiedOn, '' AS BillNo, '' AS BillDate, '' AS BillPaidTo, '' AS BillRemarks, @StartDate AS VoucherEffectiveDate, AccountHeadArabic, 
 	'' AS ReferenceNote, @BaseCurrencyCode AS CurrencyType, 1 AS ExchangeRate, @BaseCurrencyImage AS CurrencyImage, @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, 
-	@BaseCurrencyDisplayCode AS CurrencyCode, NULL AS CurrencyName, NULL AS TransactionCurrencySymbol
+	@BaseCurrencyDisplayCode AS CurrencyCode, NULL AS CurrencyName, NULL AS TransactionCurrencySymbol,NULL AS TransactionCurrencyImage
 
     FROM Aicon.qry201MainVoucherEntriesWithMaster   
 
@@ -1872,7 +1951,7 @@ BEGIN
  
     -- Transaction Records Section
 
-    SELECT q.VoucherNo, q.VoucherDate, q.VoucherRefNo, q.VoucherNarration, q.VoucherEnteredBy, q.VoucherEnteredOn, q.VoucherVerifiedBy, q.VoucherVerifiedOn, q.VoucherApprovedBy, q.VoucherApprovedOn, q.VoucherEntryNo, q.AccountHead, q.AccountHeadName, q.DrCr, q.DrAmount, q.CrAmount, q.VoucherAmountFormatted, q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.EntryNarration, ag.AccountGroup, mg.MasterGroup, q.VoucherType, q.SysRemarks, q.VoucherModifiedBy, q.VoucherModifiedOn, q.BillNo, q.BillDate, q.BillPaidTo, q.BillRemarks, q.VoucherEffectiveDate, q.AccountHeadArabic, q.ReferenceNote, @BaseCurrencyCode AS CurrencyType, q.CurrencyRate AS ExchangeRate, @BaseCurrencyImage AS CurrencyImage, @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode, cex.CurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol
+    SELECT q.VoucherNo, q.VoucherDate, q.VoucherRefNo, q.VoucherNarration, q.VoucherEnteredBy, q.VoucherEnteredOn, q.VoucherVerifiedBy, q.VoucherVerifiedOn, q.VoucherApprovedBy, q.VoucherApprovedOn, q.VoucherEntryNo, q.AccountHead, q.AccountHeadName, q.DrCr, q.DrAmount, q.CrAmount, q.VoucherAmountFormatted, q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, q.DrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.EntryNarration, ag.AccountGroup, mg.MasterGroup, q.VoucherType, q.SysRemarks, q.VoucherModifiedBy, q.VoucherModifiedOn, q.BillNo, q.BillDate, q.BillPaidTo, q.BillRemarks, q.VoucherEffectiveDate, q.AccountHeadArabic, q.ReferenceNote, @BaseCurrencyCode AS CurrencyType, q.CurrencyRate AS ExchangeRate, @BaseCurrencyImage AS CurrencyImage, @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode, cex.CurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol,cex.CurrencyImage as TransactionCurrencyImage
  
     FROM Aicon.qry201MainVoucherEntriesWithMaster q 
 
@@ -1889,88 +1968,6 @@ BEGIN
       AND q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate) 
 
 END
-   
-  
-  
-  
-  
-ALter  PROCEDURE [Aicon].[StProAccountLedgerByVoucherType]       
-    @VoucherType VARCHAR(50),       
-    @StartDate DATETIME,      
-    @EndDate DATETIME      
-AS      
-  
-BEGIN      
-  
-    SET NOCOUNT ON;      
-    -- Declare currency-related variables    
-  
-    DECLARE       
-  
-        @BaseCurrencyCode VARCHAR(10),      
-        @BaseCurrencyImage NVARCHAR(MAX),      
-        @BaseCurrencySymbole NVARCHAR(50),      
-        @BaseCurrencyNote NVARCHAR(50),      
-        @BaseCurrencyDisplayCode VARCHAR(50);      
-    -- Get Base Currency Code from Company Table      
-  
-    SELECT  @BaseCurrencyCode = CurrencyType       
-  
-    FROM Aicon.fn_GetDefaultCompanyDetails();      
-  
-  
-  
-    -- Get Base Currency Details      
-  
-    SELECT TOP 1      
-  
-        @BaseCurrencyImage = CurrencyImage,      
-        @BaseCurrencySymbole = CurrencySymbole,      
-        @BaseCurrencyNote = CurrencyNote,      
-        @BaseCurrencyDisplayCode = CurrencyCode      
-    FROM Aicon.tbl20169CurrencyExchange       
-  
-    WHERE CurrencyMasterCode = @BaseCurrencyCode;      
-  
-    IF @VoucherType IS NOT NULL      
-  
-    BEGIN      
-   SELECT q.VoucherNo,q.VoucherDate,q.VoucherRefNo, q.VoucherNarration, q.VoucherEnteredBy, q.VoucherEnteredOn, q.VoucherVerifiedBy, q.VoucherVerifiedOn, q.VoucherApprovedBy, q.VoucherApprovedOn, q.VoucherEntryNo, q.AccountHead,
-   q.AccountHeadName, q.DrCr, q.DrAmount, q.CrAmount, q.VoucherAmountFormatted, q.EntryNarration, ag.AccountGroup, mg.MasterGroup, q.VoucherType, q.SysRemarks, q.VoucherEffectiveDate, q.SubGroupName, q.VoucherModifiedBy,
-   q.VoucherModifiedOn, cex.CurrencyName AS TransactionCurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol, q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, q.DrAmount * ISNULL(q.CurrencyRate,
-   1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.CurrencyRate AS ExchangeRate, @BaseCurrencyCode AS CurrencyType, @BaseCurrencyImage AS CurrencyImage, @BaseCurrencySymbole AS
-   CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode
-       
-  
-        FROM Aicon.tbl201MasterGroup mg    
-        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
-        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
-        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
-LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
-    
-  
-        WHERE     
-            q.VoucherType = @VoucherType    
-            AND q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)    
-    END      
-    ELSE      
-    BEGIN      
-       SELECT q.VoucherNo, q.VoucherDate, q.VoucherRefNo, q.VoucherNarration, q.VoucherEnteredBy, q.VoucherEnteredOn, q.VoucherVerifiedBy, q.VoucherVerifiedOn, q.VoucherApprovedBy, q.VoucherApprovedOn, q.VoucherEntryNo,
-	   q.AccountHead, q.AccountHeadName, q.DrCr, q.DrAmount, q.CrAmount, q.VoucherAmountFormatted, q.EntryNarration, ag.AccountGroup, mg.MasterGroup, q.VoucherType, q.SysRemarks, q.VoucherEffectiveDate, q.SubGroupName,
-	   q.VoucherModifiedBy, q.VoucherModifiedOn, cex.CurrencyName AS TransactionCurrencyName, cex.CurrencySymbole AS TransactionCurrencySymbol, q.VoucherAmountFormatted * ISNULL(q.CurrencyRate, 1) AS ConvertedAmount, q.DrAmount
-	   * ISNULL(q.CurrencyRate, 1) AS ConvertedDrAmount, q.CrAmount * ISNULL(q.CurrencyRate, 1) AS ConvertedCrAmount, q.CurrencyRate AS ExchangeRate, @BaseCurrencyCode AS CurrencyType, @BaseCurrencyImage AS CurrencyImage,
-	   @BaseCurrencySymbole AS CurrencySymbole, @BaseCurrencyNote AS CurrencyNote, @BaseCurrencyDisplayCode AS CurrencyCode
-	   
-        FROM Aicon.tbl201MasterGroup mg    
-        RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON mg.MasterGroupID = ag.AccountGroupUnder    
-        RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts ca ON ag.AccountGroupID = ca.AccountGroupID    
-        RIGHT OUTER JOIN Aicon.qry201MainVoucherEntriesWithMaster q ON ca.AccountID = q.AccountHead    
-LEFT JOIN Aicon.tbl20169CurrencyExchange cex ON cex.CurrencyExchangeId = q.Currencyid   
-  
-        WHERE     
-            q.VoucherDate BETWEEN @StartDate AND DATEADD(SECOND, 86399, @EndDate)    
-    END      
-END    
 
 
 
