@@ -1144,7 +1144,7 @@
 														.Label(new JS("formatMessage('Invoice Submitted On:')"))
 														.LabelMode(EditorLabelMode.Floating)
 														.ShowClearButton(true)
-														.Width("90%"))
+														.Width("90%").OnValueChanged("onSubmittedDateValueChanged"))
 
 				       </div>
 					</td>
@@ -3229,7 +3229,7 @@
 	},
 			
 				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
-				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
+				{ dataField: "CalcLineWithTax", caption: formatMessage('Total'), width: 150 },
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 			],
 			editing: {
@@ -3905,16 +3905,16 @@
 			// Fetch dropdown data (same API can be used if needed)
 		 function getTaxSlabData() {
 			return $.ajax({
-				url: "/api/VATModule/GetVatTaxSlabs", // Update with your actual API endpoint
+				url: "/api/VATModule/GetPurchaseVatTaxSlabs", // Update with your actual API endpoint
 				method: "GET",
 				dataType: "json"
 			}).then(function(response) {
 
 				return response.map(item => ({
-				TaxSlab: item.TaxSlab,
-				TaxRate:item.TaxRate,
-				TaxSlabCode:item.TaxSlabCode,
-				TaxCodeToDisplay:item.TaxCodeToDisplay
+				TaxSlab: item.PurchaseTaxSlabCode,
+				TaxRate:item.PurchaseTaxSlab,
+				TaxSlabCode:item.PurchaseTaxRate,
+				TaxCodeToDisplay:item.PurchaseTaxInWords
 
 
 				}));
@@ -6748,43 +6748,44 @@
 		dropDownBox.close();
 	});
 
-		function showLedgerAccountPopup() {
-			var popup = $("#ledgerAccountPopup").dxPopup("instance");
-			popup.show();
-			let IsPurchaseEdit=true;
-			// alert("1")
-			// debugger;
-			// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsPurchaseEdit=${encodeURIComponent(IsPurchaseEdit)}`);
-		}
 
-	function showLedgerAccountEditPopup() {
-		
-			const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
-			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
-			// Add an event to refresh the page when the popup is closed
-			popupInstance.option("onHidden", function () {
-				//location.reload(); // Reloads the page after closing the popup
-			});
+			function showLedgerAccountPopup() {
+				var popup = $("#ledgerAccountPopup").dxPopup("instance");
+				popup.show();
 
-			popupInstance.show();
+				// Correct URL to your LedgerAccount view
+				$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+			}
 
-			setTimeout(function () {
-				var iframe = document.getElementById("ledgerEditAccountFrame");
+			function showLedgerAccountEditPopup() {
 
-				if (!iframe) {
-					console.error("Error: ledgerEditAccountFrame not found!");
-					return;
-				}
+				let IsPurchaseEdit=true;
+				const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsPurchaseEdit=${IsPurchaseEdit}`;
+				var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
 
-				iframe.onload = function () {
-					console.log("Iframe loaded successfully.");
-				};
+				// Add an event to refresh the page when the popup is closed
+				popupInstance.option("onHidden", function () {
+					//location.reload(); // Reloads the page after closing the popup
+				});
 
-				iframe.src = url;
-			}, 300);
-		}
+				popupInstance.show();
+
+				setTimeout(function () {
+					var iframe = document.getElementById("ledgerEditAccountFrame");
+
+					if (!iframe) {
+						console.error("Error: ledgerEditAccountFrame not found!");
+						return;
+					}
+
+					iframe.onload = function () {
+						console.log("Iframe loaded successfully.");
+					};
+
+					iframe.src = url;
+				}, 300);
+			}
 
 
 			 function onVoucherDateChanged(e) {
@@ -7042,6 +7043,63 @@
 		});
 	}
 
+
+		function onSubmittedDateValueChanged() {
+		$.ajax({
+			url: '/api/AccountLedgerMaster/GetAccountDetails',
+			type: 'GET',
+			data: { accountID: accheadid },
+			success: function (result) {
+				debugger;
+
+				// Handle API response structure properly
+				const details = Array.isArray(result)
+					? result[0]
+					: (result?.accountDetails || [])[0];
+
+				if (!details) {
+					DevExpress.ui.notify("No account details returned", "warning", 3000);
+					return;
+				}
+
+				// Get base invoice date (fall back to today)
+				const invoiceDateBox = $("#InvoiceDate").dxDateBox("instance");
+				const baseDate = invoiceDateBox?.option("value")
+					? new Date(invoiceDateBox.option("value"))
+					: new Date();
+
+				// Default credit days from master
+				const creditDays = Number(details.NoOfDaysCreditPeriod) || 0;
+				let NoOfDays = creditDays;
+
+				// Check "Submitted By" checkbox
+				const isSubmitted = $('#SubmittedBy').dxCheckBox("instance")?.option("value");
+				if (isSubmitted) {
+					const submittedDate = $("#ddlinvoicesubmittedon").dxDateBox("instance")?.option("value");
+
+					if (submittedDate) {
+						const diffMs = new Date(submittedDate) - baseDate;
+						const SubcreditDays = Math.ceil(diffMs / (1000 * 60 * 60 * 24));
+						NoOfDays += SubcreditDays;
+					}
+				}
+
+				// Compute and set the due date
+				const dueDate = new Date(baseDate);
+				dueDate.setDate(dueDate.getDate() + NoOfDays);
+
+				const dueDateBox = $("#InvoiceDueDate").dxDateBox("instance");
+				if (dueDateBox) {
+					dueDateBox.option("value", dueDate);
+				}
+			},
+			error: function () {
+				DevExpress.ui.notify("Failed to fetch data for client", "error", 2000);
+			}
+		});
+	}
+
+
 		// function disableEditing() {
 		// 	// Disable all input fields and buttons except for specific ones
 		// 	$('input, select, textarea').prop('disabled', true);
@@ -7078,7 +7136,7 @@
 						if ($(this).data('dxButton')) {
 							$(this).dxButton('option', 'disabled', true);
 						} else if ($(this).data('dxDropDownButton')) {
-							$(this).dxDropDownButton('option', 'disabled', true);
+							$(this).dxDropDownButton('option', 'disabled',false);
 						}
 					}
 				});

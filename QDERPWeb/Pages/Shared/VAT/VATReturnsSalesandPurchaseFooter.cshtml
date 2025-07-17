@@ -169,7 +169,7 @@
                 .Items(items =>
                 {
                     items.Add().Text("VAT Returns Form").Icon("file");
-                    items.Add().Text("VAT Summary Report").Icon("file").OnClick("showSubmenu10");
+                    items.Add().Text("VAT Summary Report").Icon("file");//.OnClick("showSubmenu10");
 
                 })
                 .OnItemClick("handleReportClick")
@@ -196,10 +196,10 @@
             let pathParts = window.location.pathname.split('/');
             let tenantName = pathParts[1] || "defaultTenant";
 
-            if (!tenantName) {
-                console.error("tenantName is not defined.");
-                return;
-            }
+            // if (!tenantName) {
+            //     console.error("tenantName is not defined.");
+            //     return;
+            // }
 
              function navigateToInvoiceEdit() {
                // Replace with the actual tenant name dynamically
