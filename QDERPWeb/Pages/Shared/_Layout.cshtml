@@ -4204,6 +4204,15 @@
             }
         });
 
+                $(function () {
+            $(".dx-datebox").each(function () {
+                var instance = $(this).dxDateBox("instance");
+                if (instance) {
+                    instance.option("showClearButton", true);
+                }
+            });
+        });
+
     </script>
 </body>
 </html>

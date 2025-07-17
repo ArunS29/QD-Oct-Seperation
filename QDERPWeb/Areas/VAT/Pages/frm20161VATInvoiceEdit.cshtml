@@ -583,6 +583,15 @@
 																		)
 
 									@(Html.DevExtreme().Button()
+																		.ID("EditClient")
+																		.Icon("edit")
+																		.Hint("Edit Description")
+																	
+																		.ElementAttr("style", "display: flex; width: 35px; justify-content: center; align-items: center;")
+																		.OnClick("showLedgerAccountEditPopup")
+																		.OnClick("onEditClientClick") // 👈 Attach handler
+																		)
+									@(Html.DevExtreme().Button()
 														
 									.ID("AddClient")
 																		.Icon("plus")
@@ -592,14 +601,6 @@
 																		.OnClick("showLedgerAccountPopup")
 																		)
 
-									@(Html.DevExtreme().Button()
-																		.ID("EditClient")
-																		.Icon("edit")
-																		.Hint("Edit Description")
-																	
-																		.ElementAttr("style", "display: flex; width: 35px; justify-content: center; align-items: center;")
-																		.OnClick("showLedgerAccountEditPopup")
-																		)
 								</div>
 
 								<!-- Add Popup -->
@@ -716,7 +717,19 @@
 																			
 																			)
 								</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating).Width(250))</td>
+							<td>
+    @(Html.DevExtreme().DateBox()
+        .Label(new JS("formatMessage('Supply Date')"))
+        .ID("SupplyDate")
+        .Type(DateBoxType.Date)
+        .DisplayFormat("dd-MMM-yyyy")
+        .Value(DateTime.Now)
+        .LabelMode(EditorLabelMode.Floating)
+        .Width(250)
+        .ShowClearButton(true) // Clear button added
+    )
+</td>
+
 
 							<td>
 								@(Html.DevExtreme().DropDownBox()
@@ -1588,9 +1601,7 @@
 																.LoadAction("GetCompanyBranch")
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("CompanyId")
-
 																)
-
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup7")
 																.ShowClearButton(true)
@@ -1602,7 +1613,7 @@
 																.DisplayExpr("CompanyId")
 																.OnInput("dropDownBoxOnInput")
 																.OnOpened("onOpened")
-													  								//.Width(650)
+																.Value(1)               //.Width(650)
 																.TabIndex(1)
 																.DropDownOptions(o => o
 																.Width(1000)
@@ -1628,6 +1639,7 @@
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("SellerOtherIdtype")
 																)
+																.Disabled(true)
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup8")
 																.ShowClearButton(true)
@@ -3404,6 +3416,18 @@
 <script>
 
 
+		function onEditClientClick() {
+				var clientId = $("#ddclientcode").dxDropDownBox("option", "value");
+
+			if (!clientId) {
+				DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
+				return;
+			}
+
+			// Proceed with edit logic (e.g., open modal or navigate)
+			console.log("Client selected: ", clientId);
+			// yourEditFunction(clientId); // call your edit method here
+		}
 	
 			 function dataGridSelectionabc(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any

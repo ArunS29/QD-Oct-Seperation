@@ -3599,6 +3599,7 @@ var dictionary = {
         "Country of Origin": "Country of Origin",
         "Min Selling Price": "Min Selling Price",
         "Max Selling Price": "Max Selling Price",
+        "Cost Center":"Cost Center",
         
  
     },

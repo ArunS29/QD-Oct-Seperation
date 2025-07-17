@@ -102,7 +102,7 @@
     <div class="Head">    
             @await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceReportingFooter.cshtml")
     </div>
-
+    <div id="loadPanel"></div>
     <!-- Input Controls in One Line -->
     <div class="horizontal-container">
        
@@ -179,6 +179,58 @@
 
 
 <script type="text/javascript">
+
+      $(function () {
+        $("#loadPanel").dxLoadPanel({
+            shadingColor: "rgba(0,0,0,0.4)",
+            position: { of: "body" }, // or change to "#mainContent" if you want to limit area
+            visible: false,
+            showIndicator: true,
+            showPane: true,
+            message: "Loading..."
+        });
+    });
+     function loadAllRecords() {
+        console.log("Loading sales reporting records...");
+
+        const today = new Date();
+
+        // Define date range: Jan 1st of last year to end of current month
+        const firstDay = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 last year
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of current month
+        var loadPanel = $("#loadPanel").dxLoadPanel("instance");
+        loadPanel.show();
+        $.ajax({
+            url: '/api/VATModule/GetVATInvoiceReporting',
+            type: 'GET',
+            data: {
+                startDate: firstDay.toISOString().split('T')[0],
+                endDate: lastDay.toISOString().split('T')[0],
+                accountGroup: "" // include this if your API expects it
+            },
+            success: function (data) {
+                debugger;
+                if (Array.isArray(data)) {
+                    pivotData = data; // Set global
+                    initializePivotGrid(data);
+                   console.log("pivotdata",data)
+                } else {
+                    console.error("Unexpected response format", data);
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching trial balance records:", xhr.responseText || error);
+            },
+            complete: function () {
+                $("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
+            }
+        });
+    }
+    $(document).ready(function () {
+        // Load all records on page load (ignore default date values)
+        // initializePivotGrid([]);
+        loadAllRecords();
+    });
 
     let pivotData = [];
     $(function () {
