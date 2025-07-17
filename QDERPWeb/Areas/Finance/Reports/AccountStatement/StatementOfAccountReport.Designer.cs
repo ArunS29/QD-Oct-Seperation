@@ -493,27 +493,27 @@ namespace QD.ERP.Web.Reports
             // xrPictureBox8
             // 
             this.xrPictureBox8.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(710.2012F, 44.49994F);
+            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(710.2012F, 41.49994F);
             this.xrPictureBox8.Name = "xrPictureBox8";
-            this.xrPictureBox8.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
+            this.xrPictureBox8.SizeF = new System.Drawing.SizeF(20.30328F, 22.50005F);
             this.xrPictureBox8.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             this.xrPictureBox8.StylePriority.UseBorders = false;
             // 
             // xrPictureBox5
             // 
             this.xrPictureBox5.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(772.7209F, 3.794983F);
+            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(772.7209F, 0F);
             this.xrPictureBox5.Name = "xrPictureBox5";
-            this.xrPictureBox5.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
+            this.xrPictureBox5.SizeF = new System.Drawing.SizeF(16.96997F, 17.87496F);
             this.xrPictureBox5.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             this.xrPictureBox5.StylePriority.UseBorders = false;
             // 
             // xrPictureBox4
             // 
             this.xrPictureBox4.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(657.6227F, 2.794983F);
+            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(657.6227F, 2.795003F);
             this.xrPictureBox4.Name = "xrPictureBox4";
-            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
+            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(19.18201F, 17.07998F);
             this.xrPictureBox4.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             this.xrPictureBox4.StylePriority.UseBorders = false;
             // 
@@ -689,18 +689,18 @@ namespace QD.ERP.Web.Reports
             // xrPictureBox3
             // 
             this.xrPictureBox3.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox3.LocationFloat = new DevExpress.Utils.PointFloat(767.3296F, 118.9616F);
+            this.xrPictureBox3.LocationFloat = new DevExpress.Utils.PointFloat(765.3296F, 116.9616F);
             this.xrPictureBox3.Name = "xrPictureBox3";
-            this.xrPictureBox3.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
+            this.xrPictureBox3.SizeF = new System.Drawing.SizeF(18F, 18F);
             this.xrPictureBox3.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             this.xrPictureBox3.StylePriority.UseBorders = false;
             // 
             // xrPictureBox2
             // 
             this.xrPictureBox2.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(655.6226F, 118.9616F);
+            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(654.6226F, 116.9616F);
             this.xrPictureBox2.Name = "xrPictureBox2";
-            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
+            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(18F, 18F);
             this.xrPictureBox2.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             this.xrPictureBox2.StylePriority.UseBorders = false;
             // 
@@ -877,17 +877,21 @@ namespace QD.ERP.Web.Reports
             // 
             // xrPictureBox7
             // 
-            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(777.7208F, 8.419952F);
+            this.xrPictureBox7.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(777.7208F, 5.419952F);
             this.xrPictureBox7.Name = "xrPictureBox7";
             this.xrPictureBox7.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox7.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            this.xrPictureBox7.StylePriority.UseBorders = false;
             // 
             // xrPictureBox6
             // 
-            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(664.8347F, 8.086853F);
+            this.xrPictureBox6.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(664.8347F, 5.086853F);
             this.xrPictureBox6.Name = "xrPictureBox6";
             this.xrPictureBox6.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox6.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            this.xrPictureBox6.StylePriority.UseBorders = false;
             // 
             // xrLabel15
             // 
@@ -897,8 +901,8 @@ namespace QD.ERP.Web.Reports
             this.xrLabel15.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel15.BorderWidth = 0.5F;
             this.xrLabel15.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Iif([VoucherAmountFormatted] > 0, FormatString(\'{0:#,##0.00}\', [VoucherAmo" +
-                    "untFormatted]), \'-\')\n\n)")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  Sum([VoucherAmountFormatted]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([Vou" +
+                    "cherAmountFormatted])),\n  \'-\'\n)\n\n")});
             this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(664.8348F, 1.333038F);
             this.xrLabel15.Name = "xrLabel15";
@@ -923,7 +927,8 @@ namespace QD.ERP.Web.Reports
             this.xrLabel18.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel18.BorderWidth = 0.5F;
             this.xrLabel18.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([CrAmount])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  Sum([CrAmount]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([CrAmount])),\n  \'-" +
+                    "\'\n)\n\n")});
             this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(777.7208F, 1F);
             this.xrLabel18.Name = "xrLabel18";
