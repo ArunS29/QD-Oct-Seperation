@@ -88,6 +88,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string CurrencyName { get; set; }
         public string EntryNarration { get; set; }
         public string TransactionCurrencySymbol { get; set; }
+        public string TransactionCurrencyImage { get; set; }
         public string AccountGroup { get; set; }
         public string MasterGroup { get; set; }
         public string VoucherType { get; set; }
@@ -133,6 +134,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string CurrencyImage { get; set; }
         public string TransactionCurrencyName { get; set; }
         public string TransactionCurrencySymbol { get; set; }
+        public string TransactionCurrencyImage { get; set; }
         public decimal? VoucherAmountFormatted { get; set; }
         public string EntryNarration { get; set; }
         public string AccountGroup { get; set; }
