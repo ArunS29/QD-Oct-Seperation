@@ -30,45 +30,45 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, string filterType = null)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var query = dbContext.Qry60001inventoryStockViews.Select(i => new
-                    {
-                        i.Gscode,
-                        i.Gsdescrpition,
-                        i.GsgroupName,
-                        i.ItemPartNo,
-                        i.ClosingBalance,
-                        i.TotalReceived,
-                        i.TotalIssues,
-                        i.GssellingRate,
-                        i.UnitType,
-                        i.ReorderLevel,
-                        i.ReorderQty,
-                        i.CostPrice,
-                        i.IsDiscontinued
+        //[HttpGet]
+        //public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, string filterType = null)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+        //            var query = dbContext.Qry60001inventoryStockViews.Select(i => new
+        //            {
+        //                i.Gscode,
+        //                i.Gsdescrpition,
+        //                i.GsgroupName,
+        //                i.ItemPartNo,
+        //                i.ClosingBalance,
+        //                i.TotalReceived,
+        //                i.TotalIssues,
+        //                i.GssellingRate,
+        //                i.UnitType,
+        //                i.ReorderLevel,
+        //                i.ReorderQty,
+        //                i.CostPrice,
+        //                i.IsDiscontinued
 
-                    });
+        //            });
 
 
 
-                    var result = await DataSourceLoader.LoadAsync(query, loadOptions);
-                    return Json(result);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in Get: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
-                }
-            }
+        //            var result = await DataSourceLoader.LoadAsync(query, loadOptions);
+        //            return Json(result);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError($"Error in Get: {ex.Message}");
+        //            return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
+        //        }
+        //    }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //}
         [HttpGet]
         public IActionResult GetStockGroups(DataSourceLoadOptions loadOptions)
         {
@@ -1761,5 +1761,77 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetStockGroupNames(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry60001inventoryStockViews
+                        .Where(i => !string.IsNullOrEmpty(i.GsgroupName))
+                        .GroupBy(i => new { i.GsgroupId, i.GsgroupName })
+                        .Select(g => new
+                        {
+                            g.Key.GsgroupId,
+                            g.Key.GsgroupName
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetStockGroupNames: {ex.Message}");
+                    return StatusCode(500, new { message = "Error loading stock group names", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, int? gsgroupId = null)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry60001inventoryStockViews.AsQueryable();
+
+                    if (gsgroupId.HasValue)
+                    {
+                        query = query.Where(i => i.GsgroupId == gsgroupId);
+                    }
+
+                    var result = await DataSourceLoader.LoadAsync(query.Select(i => new
+                    {
+                        i.Gscode,
+                        i.Gsdescrpition,
+                        i.GsgroupName,
+                        i.ItemPartNo,
+                        i.ClosingBalance,
+                        i.TotalReceived,
+                        i.TotalIssues,
+                        i.GssellingRate,
+                        i.UnitType,
+                        i.ReorderLevel,
+                        i.ReorderQty,
+                        i.CostPrice,
+                        i.IsDiscontinued
+                    }), loadOptions);
+
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetInventory: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
     }
 }

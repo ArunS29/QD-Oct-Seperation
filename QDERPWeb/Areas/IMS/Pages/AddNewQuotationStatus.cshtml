@@ -260,14 +260,14 @@
         
 
     function addQuotationStatus() {
-            // Validate fields using the Validator components
-            // const nameValidationResult = $("#quotationName").dxValidator("instance").validate();
-            // const positionValidationResult = $("#quotationPosition").dxValidator("instance").validate();
+            
+            const nameValidationResult = $("#txtQuotationStatus").dxValidator("instance").validate();
+            
 
-            // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
-            //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
-            //     return;
-            // }
+            if (!nameValidationResult.isValid) {
+                DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+                return;
+            }
 
             const data = {
             QuoteStatus: $("#txtQuotationStatus").dxTextBox("instance").option("value"),
@@ -282,9 +282,10 @@
                 DevExpress.ui.notify("Quotation Status saved successfully!", "success", 2000);
                     $("#QuotationStatusGrid").dxDataGrid("instance").refresh();
                 },
-                error: function () {
-                    DevExpress.ui.notify("Failed to save quotation.", "error", 2000);
-                }
+                error: function (xhr) {
+            const errorMsg = xhr.responseJSON?.message || "Failed to save quotation.";
+            DevExpress.ui.notify(errorMsg, "error", 3000); // 👉 Shows "Quotation Status is already present"
+        }
             });
         }
 

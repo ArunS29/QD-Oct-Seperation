@@ -55,31 +55,37 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     var now = DateTime.Now;
 
+                    // ✅ Check for duplicate QuoteStatus when inserting a new record
+                    bool isDuplicate = await dbContext.Tbl60107quotationStatuses
+                        .AnyAsync(x => x.QuoteStatus == model.QuoteStatus && x.QuoteStatusId != model.QuoteStatusId);
+
+                    if (isDuplicate)
+                    {
+                        return BadRequest(new { success = false, message = "Quotation Status already exists." });
+                    }
+
                     var existing = await dbContext.Tbl60107quotationStatuses
-                        .FirstOrDefaultAsync(x => x.QuoteStatusId == model.QuoteStatusId
-                    );
+                        .FirstOrDefaultAsync(x => x.QuoteStatusId == model.QuoteStatusId);
 
                     if (existing != null)
                     {
+                        // Update
                         existing.QuoteStatus = model.QuoteStatus;
-
-
                     }
                     else
                     {
-                        // Assign new SignatoryId
+                        // Insert
                         var lastId = await dbContext.Tbl60107quotationStatuses
                             .OrderByDescending(x => x.QuoteStatusId)
                             .Select(x => x.QuoteStatusId)
                             .FirstOrDefaultAsync();
 
-                        model.QuoteStatusId = (byte)(lastId + 1); // Assuming short type
+                        model.QuoteStatusId = (byte)(lastId + 1);
 
                         dbContext.Tbl60107quotationStatuses.Add(model);
                     }
 
                     await dbContext.SaveChangesAsync();
-
                     return Ok(new { success = true, message = "Saved successfully", id = model.QuoteStatusId });
                 }
                 catch (Exception ex)
@@ -91,6 +97,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteQuotationStatus(byte id)
         {
