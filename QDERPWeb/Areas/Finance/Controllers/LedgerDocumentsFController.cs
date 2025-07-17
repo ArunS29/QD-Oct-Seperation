@@ -437,6 +437,40 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             public string key { get; set; }
         }
 
+        // Attachment Count 
+        [HttpGet]
+        public async Task<IActionResult> GetDocumentCount(string folderId, string module)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
+                if (string.IsNullOrWhiteSpace(tenantName))
+                    return Unauthorized("Tenant name not found in session.");
+
+                if (string.IsNullOrWhiteSpace(module) || string.IsNullOrWhiteSpace(folderId))
+                    return BadRequest("Both module and folderId are required.");
+
+                var normalizedModule = module.Replace(" ", "_").Trim();
+                var normalizedFolderId = folderId.Trim();
+
+                var count = await dbContext.Tbl20116LedgerDocuments
+                    .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
+                                d.AzurePath.Contains(normalizedModule) &&
+                                d.AzurePath.Contains(normalizedFolderId))
+                    .CountAsync();
+
+                return Ok(count); // <-- Just return the count
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetDocumentCount: {ex}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
 
     }
 }
