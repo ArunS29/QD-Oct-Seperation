@@ -261,21 +261,21 @@
                 )
 
              
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center);
-                    columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center);
-                    columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center);
-                })
-                .Editing(editing => editing
-                .Mode(GridEditMode.Row)
-                .AllowUpdating(true)
-                .AllowAdding(false)
-                .AllowDeleting(false)
-                .UseIcons(true)
-                )
+        .Columns(columns =>
+        {
+            columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(true);
+            columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+            columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+        })
+        .Editing(editing => editing
+        .Mode(GridEditMode.Row)
+        .AllowUpdating(true)
+        .AllowAdding(false)
+        .AllowDeleting(false)
+        .UseIcons(true)
+        )
 
-                )
+        )
 
 
         </div>

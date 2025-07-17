@@ -444,41 +444,41 @@
         $("#btnAdd").dxButton("instance").option("onClick", function () {
             // Get validator instances for each field
             var groupCodeValidator = $("#GroupCode").dxValidator("instance");
-            var categoryValidator = $("#Category").dxValidator("instance");
+           // var categoryValidator = $("#Category").dxValidator("instance");
             var inventoryGroupValidator = $("#InventoryMasterGroups").dxValidator("instance");
-            var inventoryLedgerValidator = $("#InventoryLedgerAccount").dxValidator("instance");
-            var costLedgerValidator = $("#CostLedgerAccount").dxValidator("instance");
+           // var inventoryLedgerValidator = $("#InventoryLedgerAccount").dxValidator("instance");
+         //   var costLedgerValidator = $("#CostLedgerAccount").dxValidator("instance");
             var gsgroupNameValidator = $("#NewStockServicesGroups").dxValidator("instance");
-            var gsgroupNameArValidator = $("#StockServicesGroups").dxValidator("instance");
+        //    var gsgroupNameArValidator = $("#StockServicesGroups").dxValidator("instance");
 
             // Validate all fields
             var groupCodeValid = groupCodeValidator.validate().isValid;
-            var categoryValid = categoryValidator.validate().isValid;
+          //  var categoryValid = categoryValidator.validate().isValid;
             var inventoryGroupValid = inventoryGroupValidator.validate().isValid;
-            var inventoryLedgerValid = inventoryLedgerValidator.validate().isValid;
-            var costLedgerValid = costLedgerValidator.validate().isValid;
+         //   var inventoryLedgerValid = inventoryLedgerValidator.validate().isValid;
+          //  var costLedgerValid = costLedgerValidator.validate().isValid;
             var gsgroupNameValid = gsgroupNameValidator.validate().isValid;
-            var gsgroupNameArValid = gsgroupNameArValidator.validate().isValid;
+          //  var gsgroupNameArValid = gsgroupNameArValidator.validate().isValid;
 
             // Check if all fields are valid
             if (
                 groupCodeValid &&
-                categoryValid &&
+              //categoryValid &&
                 inventoryGroupValid &&
-                inventoryLedgerValid &&
-                costLedgerValid &&
-                gsgroupNameValid &&
-                gsgroupNameArValid
+            //  inventoryLedgerValid &&
+           //   costLedgerValid &&
+                gsgroupNameValid 
+            //  gsgroupNameArValid
             ) {
                 // If all valid, collect values and send ajax
                 const groupCode = $("#GroupCode").dxTextBox("instance").option("value");
-                const category = $("#Category").dxTextBox("instance").option("value");
+             //   const category = $("#Category").dxTextBox("instance").option("value");
                 const inventoryGroupId = $("#InventoryMasterGroups").dxSelectBox("instance").option("value");
-                const inventoryLedger = $("#InventoryLedgerAccount").dxSelectBox("instance").option("value");
-                const costLedger = $("#CostLedgerAccount").dxSelectBox("instance").option("value");
-                const isServiceGroup = $("#ServicesGroup").dxCheckBox("instance").option("value");
+             //   const inventoryLedger = $("#InventoryLedgerAccount").dxSelectBox("instance").option("value");
+              //  const costLedger = $("#CostLedgerAccount").dxSelectBox("instance").option("value");
+              //  const isServiceGroup = $("#ServicesGroup").dxCheckBox("instance").option("value");
                 const gsgroupName = $("#NewStockServicesGroups").dxTextArea("instance").option("value");
-                const gsgroupNameAr = $("#StockServicesGroups").dxTextArea("instance").option("value");
+            //    const gsgroupNameAr = $("#StockServicesGroups").dxTextArea("instance").option("value");
 
                 const data = {
                     GsgroupCode: groupCode,
