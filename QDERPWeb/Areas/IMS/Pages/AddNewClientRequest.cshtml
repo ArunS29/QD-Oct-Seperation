@@ -339,9 +339,17 @@
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="ClientRequestMasterForm" class="no-border-title"></div>
+	</div>
+</div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="ClientRequestMasterForm" class="titleText no-border-title"></div>
 	</div>
 </div>
 <div class="containerLedgerAccount">
@@ -1419,7 +1427,7 @@
 						.OnEditorPreparing("onEditorPreparing")
 						)
 		</div>
-		<div id="materialRequestFooter">
+		<div id="materialRequestFooter" class="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter.cshtml")
 		</div>
 

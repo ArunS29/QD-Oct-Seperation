@@ -761,14 +761,13 @@
                                                 .ReadOnly(true)
                                                 .Height(40)
                                                 .Width("100%"))
-                    </div>
-
+                    </div>      
                     <!-- Entered On -->
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                                 .ID("EnteredOn")
                                                 .Value(enteredOn)
-                                                .Label(new JS("formatMessage('Entered On')"))
+                                                .Label(new JS("formatMessage('Entered On : ')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ReadOnly(true)
                                                 .Height(40)
@@ -2550,9 +2549,10 @@
 
 
 
-        <div class="Footer">
+        <div class="footer-fixed">
         @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
         </div>
+
         </div>
 <script>
 

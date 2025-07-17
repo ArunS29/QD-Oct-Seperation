@@ -239,12 +239,15 @@
 
 	
 </style>
-<meta charset="UTF-8">
-<div class="title">
-	<div class="header-container">
-		<div id="MaterialReceipts" class="no-border-input"></div>
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="MaterialReceipts" class="titleText no-border-title"></div>
 	</div>
 </div>
+
 <div class="form-container">
 	<div class="form-container">
 		<!-- Tab Menu -->
@@ -1145,8 +1148,9 @@
 																})
 																)
 }
+<div class="footer-fixed">
 @await Html.PartialAsync("/Pages/Shared/IMS/MaterialReceiptFormFooter.cshtml")
-
+</div>
 <script>
 
 	function onOpened(e) {

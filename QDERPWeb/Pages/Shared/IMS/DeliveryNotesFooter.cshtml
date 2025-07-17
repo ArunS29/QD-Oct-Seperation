@@ -1,78 +1,123 @@
 ﻿
 
 
-<style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
-        text-align: center !important;
-    }
-
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-        text-align: center !important;
-    }
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
-    }
-
-    .button-alignment-down {
-        margin-top: 23px;
-    }
-
-    .button-group {
-        margin-left: -10px !important;
-    }
-
-    /* Custom styles for context menu */
-    .context-menu {
-        display: none;
-        position: absolute;
-        /* background-color: aliceblue;
-                            border: 1px solid aliceblue; */
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
-
-    .context-menu-item {
-        padding: 0px, 15px,10px 15px;
-        cursor: pointer;
-    }
-
-    .ledgerResult {
-        margin: 15px !important;
-    }
-
-    #rowHeightMenu {
-        position: absolute;
-        top: 100px; /* Adjust positioning as per your design */
-        left: 300px; /* Adjust positioning as per your design */
-        display: none; /* Keep it hidden until needed */
-    }
-
-    /* #previewModal {
-                            border: 1px solid aliceblue;
-                        } */
-
-    .bold-button .dx-button-text {
-        font-weight: bold;
-    }
-
-    .dx-icon-green-circle::before {
-        content: '';
-        display: inline-block;
-        width: 12px;
-        height: 12px;
-        border-radius: 50%;
-        background-color: green;
-        vertical-align: middle;
-    }
-</style>
 <div class="dx-fieldset horizontal-container mt-2">
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Save')"))
+                .Icon("save")
+                .Hint("Click to save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                .OnClick("saveDeliveryNote") // Bind JS function here
+                )
+    </div>
 
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSaveAndClose")
+                .Icon("save")
+                .Text(new JS("formatMessage('Save And Close')"))
+                .Hint("Save and Close")
+                .Width(150)
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("onSaveAndCloseClicked") // Save and go back
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .Hint("Click to go back")
+                .Width(150)
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                .OnClick("onBackButtonClick")
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAttach")
+                .Icon("attach")
+                .Text(new JS("formatMessage('Attach')"))
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                .Width(200)
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnPrint")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr(new { @class = "bold-button" })
+                .DropDownOptions(options => options.Width(280))
+                .ShowArrowIcon(false)
+                .Items(items =>
+                {
+                    items.Add().Text("Custom Report Designs ").Icon("print");
+                    items.Add().Text("Preview Delivery Note").Icon("file");
+                    items.Add().Text("Preview Material Issue Note").Icon("folder");
+                    items.Add().Text("Preview Delivery Note (Dot Matrix)").Icon("folder");
+                    items.Add().Text("Preview Delivery Note (with Price)").Icon("folder");
+                    items.Add().Text("Preview Delivery Note (WIth Cost Price)").Icon("folder");
+
+                })
+                .OnItemClick("handleDeliveryNote")
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnDelete")
+                .Icon("trash")
+                .Text(new JS("formatMessage('Delete')"))
+                .Hint("Delete")
+                .Width(150)
+                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
+                .OnClick("onDeleteClick")  // <-- Call JS function here
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnApprove")
+                .Icon("verify")
+                .Text(new JS("formatMessage('Approve')"))
+                .Width(200)
+                .ElementAttr(new { @class = "dx-button-custom btn-approve" })
+                .OnClick("approveDeliveryNote")
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnAddNewPayment")
+                .Icon("money")
+                .Text(new JS("formatMessage('Add New Stock Item')"))
+                .Width(200)
+                )
+
+
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPostbooks")
+                .Icon("book")
+                .Text(new JS("formatMessage('Post')"))
+                .Width(200)
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnReceive")
+                .Icon("grid")
+                .Text(new JS("formatMessage('Receive')"))
+                .Width(200)
+                )
+
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
@@ -145,131 +190,13 @@
             .ShowArrowIcon(false)
         )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSave")
-            .Text(new JS("formatMessage('Save')"))
-            .Icon("save")
-            .Hint("Click to save")
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("saveDeliveryNote") // Bind JS function here
-            )
-    </div>
+ 
 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSaveAndClose")
-            .Icon("save")
-            .Text(new JS("formatMessage('Save And Close')"))
-            .Hint("Save and Close")
-            .Width(150)
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onSaveAndCloseClicked") // Save and go back
-            )
-    </div>
-   @*  <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPrint")
-            .Text(new JS("formatMessage('Print')"))
-            .Icon("print")
-            .Hint("Click to print")
-            .OnClick("function() { openPrint(); }")
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div> *@
+   
 
-
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnPrint")
-            .Text(new JS("formatMessage('Print')"))
-            .Icon("print")
-            .ElementAttr(new { @class = "bold-button" })
-            .DropDownOptions(options => options.Width(280))
-            .ShowArrowIcon(false)
-            .Items(items =>
-            {
-                items.Add().Text("Custom Report Designs ").Icon("print");
-                items.Add().Text("Preview Delivery Note").Icon("file");
-                items.Add().Text("Preview Material Issue Note").Icon("folder");
-                items.Add().Text("Preview Delivery Note (Dot Matrix)").Icon("folder");
-                items.Add().Text("Preview Delivery Note (with Price)").Icon("folder");
-                items.Add().Text("Preview Delivery Note (WIth Cost Price)").Icon("folder");
-
-            })
-            .OnItemClick("handleDeliveryNote")
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnDelete")
-            .Icon("trash")
-            .Text(new JS("formatMessage('Delete')"))
-            .Hint("Delete")
-            .Width(150)
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onDeleteClick")  // <-- Call JS function here
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNewPayment")
-            .Icon("money")
-            .Text(new JS("formatMessage('Add New Stock Item')"))
-            .Width(200)
-            )
-
-
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            .Hint("Click to go back")
-            .Width(150)
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onBackButtonClick")
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnAttach")
-            .Icon("attach")
-            .Text(new JS("formatMessage('')"))
-            .Width(200)
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnApprove")
-            .Icon("verify")
-            .Text(new JS("formatMessage('Approve')"))
-            .Width(200)
-            .OnClick("approveDeliveryNote")
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnPostbooks")
-            .Icon("book")
-            .Text(new JS("formatMessage('Post')"))
-            .Width(200)
-            )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnReceive")
-            .Icon("grid")
-            .Text(new JS("formatMessage('Receive')"))
-            .Width(200)
-            )
-
-    </div>
+ 
+  
+ 
 </div>
 <script type="text/javascript">
 

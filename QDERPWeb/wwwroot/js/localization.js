@@ -1,6 +1,9 @@
 ﻿
 var dictionary = {
     "en": {
+        "Receive":"Receive",
+        "Stock Availability":"Stock Availability",
+        "Upload":"Upload",
         "Batch No": "Batch No",
         "Client Name": "Client Name",
         "Expiry Date": "Expiry Date",
