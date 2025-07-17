@@ -705,7 +705,7 @@
             // 
             // xrPictureBox5
             // 
-            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(702.2008F, 48.83319F);
+            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(702.2008F, 43.16652F);
             this.xrPictureBox5.Name = "xrPictureBox5";
             this.xrPictureBox5.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.xrPictureBox5.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
@@ -714,7 +714,7 @@
             // 
             // xrPictureBox4
             // 
-            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(747.4892F, 10F);
+            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(747.4892F, 3F);
             this.xrPictureBox4.Name = "xrPictureBox4";
             this.xrPictureBox4.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.xrPictureBox4.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
@@ -723,7 +723,7 @@
             // 
             // xrPictureBox6
             // 
-            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(632.1943F, 9.833385F);
+            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(632.1943F, 2.999974F);
             this.xrPictureBox6.Name = "xrPictureBox6";
             this.xrPictureBox6.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.xrPictureBox6.SizeF = new System.Drawing.SizeF(23.83337F, 18F);

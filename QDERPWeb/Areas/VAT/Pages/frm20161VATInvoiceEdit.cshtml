@@ -3477,8 +3477,10 @@
 							ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
 							$('#InvoiceDate').dxDateBox("instance")?.option("value", account.InvoiceDate);
 							$('#InvoiceIssuedDateTime').dxDateBox("instance")?.option("value", account.InvoiceDateWtTime);
-
-
+							$("#SupplyDate").dxDateBox("instance").option("value",account.InvoiceDeliveryDate);
+						     $("#InvoiceDueDate").dxDateBox("instance").option("value",account.InvoiceDueDate);
+								$("#EffectiveDate").dxDateBox("instance").option("value",account.InvoiceEffectiveDate);
+							
 							$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
 							$('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
 							$('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
@@ -4011,38 +4013,46 @@
 					rowIx=rowIndex;
 						debugger;
 					let newValue = args.value;
+					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 
-					// Get existing values or updated ones
-						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-						let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-					let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+	                if (qty <= 0) {
 
-					// VAT rate handling
-					let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
-					let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+					DevExpress.ui.dialog.alert(
+						"Quantity cannot be zero or negative.",
+						"Quantity Error"
+						)
+                 	}
+					else
+					{
+							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
+						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
 
-					// Calculate amount
-					let amount = qty * unitPrice;
-					let discountedAmount = amount - discount;
+						// VAT rate handling
+						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+						let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
-					// Ensure discountedAmount doesn't go negative
-					if (discountedAmount < 0) discountedAmount = 0;
+						// Calculate amount
+						let amount = qty * unitPrice;
+						let discountedAmount = amount - discount;
 
-					let vatValue = discountedAmount * vatRate;
-					let totalValue = discountedAmount + vatValue;
+						// Ensure discountedAmount doesn't go negative
+						if (discountedAmount < 0) discountedAmount = 0;
 
-					// Update grid cells
-					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-					grid.cellValue(rowIndex, "Unit Price",unitPrice);
-					grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-					grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
-					grid.cellValue(rowIndex, "Discount",discount);
-					grid.cellValue(rowIndex, "Qty", qty);
-					grid.cellValue(rowIndex, "VAT%", vatRateStr);
+						let vatValue = discountedAmount * vatRate;
+						let totalValue = discountedAmount + vatValue;
 
-						applyDiscount(amount.toFixed(2));
-				
+						// Update grid cells
+						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+						grid.cellValue(rowIndex, "Unit Price",unitPrice);
+						grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+						grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
+						grid.cellValue(rowIndex, "Discount",discount);
+						grid.cellValue(rowIndex, "Qty", qty);
+						grid.cellValue(rowIndex, "VAT%", vatRateStr);
+
+							applyDiscount(amount.toFixed(2));
+					}
 			};
 		}
 	}
@@ -5020,7 +5030,7 @@
 				PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value") || null,
 				QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value") || null,
 				DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value") || null,
-				InvoiceDueDate: $("#PODate").dxDateBox("instance").option("value") || null,
+					InvoiceDueDate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
 				ClientGrnreferenceNo: $("#ClientGRNReference").dxTextBox("instance").option("value") || null,
 				AddedBy: $("#SubmittedBytext").dxTextBox("instance").option("value") || null,
 				AddedOn: $("#ddlinvoicesubmittedon").dxDateBox("instance").option("value") || null,
@@ -6856,10 +6866,19 @@
 					debugger;
 				let newValue = args.value;
 
+						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 
-				// Get existing values or updated ones
-					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-						let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
+						if (qty <= 0) {
+
+						DevExpress.ui.dialog.alert(
+							"Quantity cannot be zero or negative.",
+							"Quantity Error"
+							)
+						}
+						else
+						{
+				
+				let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
 				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
 
 				// VAT rate handling
@@ -6888,6 +6907,7 @@
 
 			  // Store value for use in popover
                window.currentAmount = amount.toFixed(2);
+			   }
 
 			};
 		}
@@ -6966,7 +6986,7 @@
 			PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
 			QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
 			DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
-			InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
+				InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
 			ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
@@ -7181,7 +7201,7 @@
 			PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
 			QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
 			DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
-			InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
+			InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
 			ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
@@ -8570,7 +8590,7 @@
 			// Set disabled flag on specific items
 			items.forEach(function (item) {
 					if (item.text === "Print Simplified TAX Invoice" ) {
-					item.disabled = true;
+					item.disabled = false;
 				}
 			});
 
@@ -8844,6 +8864,80 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 					}
 				}
 			});
+
+
+	//Invoice Details
+		const clientNameBox = $("#ddclientname").dxDropDownBox("instance");
+		if (clientNameBox) {
+			clientNameBox.option("disabled", true);
+		}
+
+		const clientCodeBox = $("#ddclientcode").dxDropDownBox("instance");
+		if (clientCodeBox) {
+			clientCodeBox.option("disabled", true);
+		}
+
+		const addressDetailsBox = $("#ClientAddressDetails").dxDropDownBox("instance");
+		if (addressDetailsBox) {
+			addressDetailsBox.option("disabled", true);
+		}
+
+		const invoiceTransactionsBox = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+		if (invoiceTransactionsBox) {
+			invoiceTransactionsBox.option("disabled", true);
+		}
+
+		const paymentMeansBox = $("#ddpaymentmeans").dxDropDownBox("instance");
+		if (paymentMeansBox) {
+			paymentMeansBox.option("disabled", true);
+		}
+
+		const supplyDateBox = $("#SupplyDate").dxDateBox("instance");
+		if (supplyDateBox) {
+			supplyDateBox.option("disabled", true);
+		}
+
+		//Other Details
+			const InvoiceDueDateBox = $("#InvoiceDueDate").dxDateBox("instance");
+			if (InvoiceDueDateBox) {
+				InvoiceDueDateBox.option("disabled", true);
+			}
+
+					const EffectiveDateBox = $("#EffectiveDate").dxDateBox("instance");
+			if (EffectiveDateBox) {
+				EffectiveDateBox.option("disabled", true);
+			}
+
+			//Purchase order details
+			const OurSalesOrderNoBox = $("#OurSalesOrderNo").dxDropDownBox("instance");
+			if (OurSalesOrderNoBox) {
+					OurSalesOrderNoBox.option("disabled", true);
+			}
+
+								const PODateBox = $("#PODate").dxDateBox("instance");
+				if (PODateBox) {
+							PODateBox.option("disabled", true);
+				}
+						const ddlGoodsGroup3Box = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+			if (ddlGoodsGroup3Box) {
+						ddlGoodsGroup3Box.option("disabled", true);
+			}
+
+								const CurrencyExchangeRateBox = $("#currencyexchangerate").dxNumberBox("instance");
+				if (CurrencyExchangeRateBox) {
+								CurrencyExchangeRateBox.option("disabled", true);
+				}
+
+						const ddlGoodsGroup7Box = $("#ddlGoodsGroup7").dxDropDownBox("instance");
+				if (ddlGoodsGroup7Box) {
+							ddlGoodsGroup7Box.option("disabled", true);
+				}
+
+				const ddlGoodsGroup8Box = $("#ddlGoodsGroup8").dxDropDownBox("instance");
+				if (ddlGoodsGroup8Box) {
+							ddlGoodsGroup8Box.option("disabled", true);
+				}
+			
 
 			// Disable DataGrid Editing and Deleting
 			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");

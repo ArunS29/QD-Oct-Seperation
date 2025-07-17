@@ -280,21 +280,21 @@
             // 
             this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(591.7177F, 10F);
             this.xrPictureBox4.Name = "xrPictureBox4";
-            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(23.83F, 18F);
+            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox4.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrPictureBox3
             // 
             this.xrPictureBox3.LocationFloat = new DevExpress.Utils.PointFloat(494.6806F, 10F);
             this.xrPictureBox3.Name = "xrPictureBox3";
-            this.xrPictureBox3.SizeF = new System.Drawing.SizeF(12.16339F, 18F);
+            this.xrPictureBox3.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox3.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrPictureBox2
             // 
             this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(391.6806F, 9.999995F);
             this.xrPictureBox2.Name = "xrPictureBox2";
-            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(13.53589F, 18F);
+            this.xrPictureBox2.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
             this.xrPictureBox2.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrLabel20

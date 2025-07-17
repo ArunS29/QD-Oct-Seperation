@@ -184,7 +184,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-
                     string sql = $@"
                         SELECT c.CurrencyImage, c.CurrencySymbol
                         FROM {tenant.schemaname}.tbl901CompanyDetails AS c
@@ -434,9 +433,9 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             }
             var pairs = new[]
             {
-        new { Label = "xrLabel5",  Picture = "xrPictureBox5" },
-        new { Label = "xrLabel7",  Picture = "xrPictureBox7" },
-        new { Label = "xrLabel4",  Picture = "xrPictureBox6" },
+        new { Label = "xrLabel5",  Picture = "xrPictureBox8" },
+        new { Label = "xrLabel7",  Picture = "xrPictureBox9" },
+        new { Label = "xrLabel4",  Picture = "xrPictureBox10" },
     };
 
             foreach (var p in pairs)
