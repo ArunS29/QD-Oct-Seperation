@@ -656,7 +656,7 @@
 														.ID("OrderDate")
 														.Type(DateBoxType.Date)
 														.DisplayFormat("dd-MMM-yyyy")
-														.Value(DateTime.Now)
+														@* .Value(DateTime.Now) *@
 														.Label(new JS("formatMessage('Order Date')"))
 														.LabelMode(EditorLabelMode.Floating))
 						</td>
@@ -1621,9 +1621,7 @@
 				</div>
 			</text>);
 
-											columns.Add().DataField("ExcemptionCode")
-								.Caption(new JS("formatMessage('Excemption Code')"))
-								.Width(200);
+											
 
 											columns.Add().DataField("VAT")
 								.Caption(new JS("formatMessage('VAT')"))
@@ -2113,8 +2111,8 @@
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
 										{
-											columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('CostAllocationUnit')"));
-											columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('CostAllocationUnit')"));
+											columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center Code')"));
+											columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')"));
 
 
 										})
@@ -3229,7 +3227,7 @@
 			});
 		}
 	},
-				{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
+			
 				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
 				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
@@ -3777,7 +3775,7 @@
 					   }
 				   },
 
-				   { dataField: formatMessage('ExcemptionCode'), caption: "Excemption Code", width: 150, cssClass: "center-header"},
+				
 
 				   { dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150, cssClass: "center-header" },
 
