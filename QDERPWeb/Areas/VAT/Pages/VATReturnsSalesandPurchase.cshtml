@@ -909,13 +909,16 @@
 
         </div>
     </div>
+
+
+    <div class="Head" style="margin-left: 15px;">
+
+                @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
+        
+    </div>
+
 </div>
 
-
-<div class="Head" style="margin-left: 15px;">
-   
-        @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
-    </div>
 
 
 <script>
@@ -1236,6 +1239,7 @@
         });
     });
      $(document).ready(function () {
+         debugger;
                                 console.log('Start permission handling');
                                 // Form ID
                                                 var formId = "frm20166VATReturnsForm";
@@ -1252,8 +1256,8 @@
                                             // Default visibility and enable status for buttons
                                             var controlStates = {
                                                       
-                                                        "btnPrint": { "Visible": true, "Enabled": false },
-                                                          "ddReports4": { "Visible": true, "Enabled": false },
+                                                        "btnPrint": { "Visible": true, "Enabled": true },
+                                                          "ddReports4": { "Visible": true, "Enabled": true },
 
                                             };
 

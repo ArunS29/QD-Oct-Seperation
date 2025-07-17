@@ -564,26 +564,26 @@
 							<td>
 								@(Html.DevExtreme().DropDownBox()
 																.Label(new JS("formatMessage('Invoice Type (Arabic)')"))
-																.DataSource(d => d.WebApi()
-																.Controller("VATModule")
-																.LoadAction("")
-																.LoadMode(DataSourceLoadMode.Raw)
-																.Key("BuyerIdtypeName"))
-																.LabelMode(EditorLabelMode.Floating)
-																.ID("InvoiceTypeAr")
-																.ShowClearButton(true)
-																.AcceptCustomValue(true)
-																.OpenOnFieldClick(false)
-																.ValueChangeEvent("input")
-																.HoverStateEnabled(true)
-																.ValueExpr("BuyerIdtypeName")
-																.DisplayExpr("BuyerIdtypeName")
-																.Width("100%")
-																.TabIndex(1)
-																.DropDownOptions(o => o.Width(1000))
-																.OnKeyDown("onKeyDown")
-																.ContentTemplate(new TemplateName("ClientNameContent"))
-																)
+															.DataSource(d => d.WebApi()
+															.Controller("VATModule")
+																.LoadAction("GetTaxCategory")
+															.LoadMode(DataSourceLoadMode.Raw)
+															.Key("TaxCategoryId"))
+															.LabelMode(EditorLabelMode.Floating)
+															.ID("ddlInvTypeAr")
+															.ShowClearButton(true)
+															.AcceptCustomValue(true)
+															.OpenOnFieldClick(false)
+															.ValueChangeEvent("input")
+															.HoverStateEnabled(true)
+																.ValueExpr("TaxCategoryId")
+																.DisplayExpr("TaxCategory")
+															.Width("100%")
+															.TabIndex(1)
+															.DropDownOptions(o => o.Width(1000))
+															.OnKeyDown("onKeyDown")
+															.ContentTemplate(new TemplateName("InvoiceTypeArCategoryContentTemplate"))
+															)
 							</td>
 							<td>
 								@(Html.DevExtreme().DropDownBox()
@@ -2509,6 +2509,41 @@
 						.OnInitialized("dataGridInitialized")
 						)
 }
+
+
+@using (Html.DevExtreme().NamedTemplate("InvoiceTypeArCategoryContentTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+						.ID("InvTypeAr-datagrid")
+						.DataSource(d => d.WebApi()
+						.Controller("VATModule")
+						.LoadAction("GetTaxCategory")
+						.LoadMode(DataSourceLoadMode.Raw)
+							.Key("TaxCategoryId")
+						)
+						.WordWrapEnabled(true)
+						.ShowBorders(true)
+						.ShowColumnHeaders(true)
+						.FilterRow(f => f.Visible(true))
+						.SearchPanel(sp => sp.HighlightSearchText(true))
+						.Selection(sl => sl.Mode(SelectionMode.Single))
+						.HeaderFilter(p => p.Visible(false))
+						.ShowBorders(true)
+						.HoverStateEnabled(true)
+						.Paging(p => p.PageSize(15))
+						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+						.Height(200)
+						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+						.Columns(columns =>
+						{
+								columns.Add().DataField("TaxCategoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center);
+								columns.Add().DataField("TaxCategoryAr").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center);
+						})
+								.OnSelectionChanged("dataCategoryIDArGridSelectionChanged")
+						.OnInitialized("dataGridInitialized")
+						)
+}
+
 
 @using (Html.DevExtreme().NamedTemplate("BranchAndDivisionTemplate"))
 {
@@ -6519,7 +6554,7 @@
 
 				  function dataCategoryIDGridSelectionChanged(e) {
 						const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-							const ddbInstance = $("#ddlCategoryId").dxDropDownBox("instance");
+							const ddbInstance = $("#ddlInvTypeAr").dxDropDownBox("instance");
 
 						if (selectedKey) {
 							ddbInstance.option("value", selectedKey);
@@ -6527,7 +6562,7 @@
 						}
 					  if(IsCurrent!="true")
 						{
-							var selectedRowData = $("#category-datagrid").dxDataGrid("instance").getSelectedRowsData();
+							var selectedRowData = $("#InvTypeAr-datagrid").dxDataGrid("instance").getSelectedRowsData();
 						  if (selectedRowData.length > 0) {
 										
 
@@ -6538,6 +6573,29 @@
 						}
 
 					}
+
+					  function dataCategoryIDArGridSelectionChanged(e) {
+						const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+							const ddbInstance = $("#ddlCategoryId").dxDropDownBox("instance");
+
+						if (selectedKey) {
+							ddbInstance.option("value", selectedKey);
+								ddbInstance.close();
+						}
+					  if(IsCurrent!="true")
+						{
+							var selectedRowData = $("#category-datagrid").dxDataGrid("instance").getSelectedRowsData();
+						  if (selectedRowData.length > 0) {
+
+
+									} else {
+										DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+										return;
+									}
+						}
+
+					}
+
 
 			 //english text convert to arabic
 

@@ -2192,7 +2192,7 @@
 				)
 			</text>)
 						.CellTemplate(@<text>
-				<%- data.DescriptionDetailsText ? data.DescriptionDetailsText : "No Selection" %>
+				<%- data.UnitRateMethod ? data.UnitRateMethod : "No Selection" %>
 			</text>);
 
 
@@ -2624,7 +2624,7 @@
 			let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 			if (rowIndex !== -1) {
 			grid.cellValue(rowIndex, "DescriptionDetails", selectedItem.UnitCode);
-			grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+				grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
 			}
 
 			component.close();
@@ -3873,7 +3873,7 @@
                                             let grid = $("#B2BdataGrid").dxDataGrid("instance");
                                             let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                             if (rowIndex !== -1) {
-                                                grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
 													UnitCode=selectedItem.UnitCode;
                                             }
                                             e.component.close();
@@ -3899,7 +3899,7 @@
             },
 				{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
             { dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-            { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
+				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,allowEditing: false },
             { dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 					{
 		dataField: "DiscountDetails",
@@ -3918,9 +3918,8 @@
 				}
 			}).appendTo(container);
 		}
-	}
-	,
-            { dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
+	},
+				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,allowEditing: false },
             {
     dataField: "VATPercentage",
     caption: formatMessage('VAT%'),
@@ -4016,8 +4015,8 @@
     }
 },
             { dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
-            { dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
-            { dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
+				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,allowEditing: false },
+				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150,allowEditing: false},
             { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
         ],
         editing: {
@@ -4076,6 +4075,8 @@
 						grid.cellValue(rowIndex, "VAT%", vatRateStr);
 
 							applyDiscount(amount.toFixed(2));
+
+							//applyDiscount(rowIndex);
 					}
 			};
 		}
@@ -4525,7 +4526,7 @@
 
 												if (rowIndex !== -1) {
 
-													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+														grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
 													UnitCode=selectedItem.UnitCode;
 
 												}
@@ -4576,7 +4577,7 @@
 
 				{ dataField: "UnitRate", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150 },
 
-					{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 } },
+						{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
 					{ dataField: "Discount", caption: formatMessage('Discount'), cssClass: "center-header",width: 150 },
 
@@ -4594,14 +4595,14 @@
 				stylingMode: "text",
 				width: 60,
 				onClick: function (e) {
+				  
 					onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
 				}
 			}).appendTo(container);
 		}
-	}
-	,
+	},
 
-						{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
+				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -4687,9 +4688,9 @@
 
 
 
-					{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
+						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150,allowEditing: false },
 
-					{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 } },
+						{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
 					{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -6937,6 +6938,67 @@
 		}
 	}
 
+
+			function onEditorPreparing(e) {
+			if (e.parentType === "dataRow" &&
+					(e.dataField === "QuantityInvoiced" ||
+					 e.dataField === "UnitRate" ||
+				// e.dataField === "VATPercentage" ||
+				 e.dataField === "Discount")) {
+
+				e.editorOptions.onValueChanged = function (args) {
+					let grid = $("#B2BdataGrid").dxDataGrid("instance");
+					let rowIndex = e.row.rowIndex;
+							rowIx=rowIndex;
+						debugger;
+					let newValue = args.value;
+
+							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
+
+							if (qty <= 0) {
+
+							DevExpress.ui.dialog.alert(
+								"Quantity cannot be zero or negative.",
+								"Quantity Error"
+								)
+							}
+							else
+							{
+
+					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
+					let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+
+					// VAT rate handling
+					let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+					let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+
+					// Calculate amount
+					let amount = qty * unitPrice;
+					let discountedAmount = amount - discount;
+
+					// Ensure discountedAmount doesn't go negative
+					if (discountedAmount < 0) discountedAmount = 0;
+
+					let vatValue = discountedAmount * vatRate;
+					let totalValue = discountedAmount + vatValue;
+
+					// Update grid cells
+					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+					grid.cellValue(rowIndex, "Unit Price",unitPrice);
+					grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+					grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
+					grid.cellValue(rowIndex, "Discount",discount);
+					grid.cellValue(rowIndex, "Qty", qty);
+					grid.cellValue(rowIndex, "VAT%", vatRateStr);
+
+				  // Store value for use in popover
+				   window.currentAmount = amount.toFixed(2);
+				   }
+
+				};
+			}
+		}
 	   
 
 
@@ -8622,19 +8684,53 @@
 		});
 
 
-				function applyDiscount() {
-				//debugger;
-		let grid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 			function applyDiscount() {
+	// 			//debugger;
+	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
+	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+	// 	const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+
+	// 	const finalAmount = total - discount;
+
+	// 	// Set value to FinalAmount column (or any appropriate column)
+	// 			grid.cellValue(rowIx, "Discount", discount);
+	// 	        grid.cellValue(rowIx, "LineTotal", finalAmount);
+
+	// }
+
+
+		function applyDiscount() {
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		debugger;
+		// Get values from UI
 		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 		const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-		const finalAmount = total - discount;
 
-		// Set value to FinalAmount column (or any appropriate column)
-				grid.cellValue(rowIx, "Discount", discount);
+		// Get required values from grid for the specific row
+		const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
+		const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
+		let vatRateStr = grid.cellValue(rowIx, "VAT%") || "0%";
+		let vatRate = parseFloat(vatRateStr.toString().replace("%", "")) / 100;
 
-		DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+		// Calculate the raw amount
+		let amount = qty * unitPrice;
+
+		// Apply discount, ensure it doesn't go negative
+		let discountedAmount = amount - discount;
+		if (discountedAmount < 0) discountedAmount = 0;
+
+		// VAT and total calculations
+		let vatValue = discountedAmount * vatRate;
+		let totalValue = discountedAmount + vatValue;
+
+		// Update the grid values
+			grid.cellValue(rowIx, "Discount", discount);
+			grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
+		grid.cellValue(rowIx, "LineTotal", totalValue);
+
 	}
+
 
 		$(document).ready(function () {
 				console.log('Start permission handling');
@@ -9123,9 +9219,41 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 							}
 						}
 					});
-
-					
 				}
+
+	let companyBranchList = [];
+
+	$(async function () {
+		// Fetch company list from API
+			await $.get("/api/VATModule/GetDefalutCompanyBranch", function (data) {
+			companyBranchList = data;
+
+			if (companyBranchList.length > 0) {
+				// You can replace '0' with a specific ID using .find()
+				const defaultCompany = companyBranchList[0]; // or: companyBranchList.find(c => c.CompanyId === 1);
+
+				const dropDown = $("#ddlGoodsGroup7").dxDropDownBox("instance");
+
+				// Set default selected value in DropDownBox
+				dropDown.option("value", defaultCompany.CompanyId);
+
+				// Fill other company fields
+				fillCompanyFields(defaultCompany);
+			}
+		});
+	});
+
+
+
+	// Populate all related fields based on selected company
+	function fillCompanyFields(company) {
+		$("#OurGroupVATNo").dxTextBox("instance").option("value", company.SellerGroupVatnumber);
+		$("#OurVATNo").dxTextBox("instance").option("value", company.CompanyVatno);
+		$("#OtherID1").dxTextBox("instance").option("value", company.SellerOtherSellerId);
+		$("#ddlGoodsGroup8").dxDropDownBox("instance").option("value", company.SellerOtherIdtype);
+		$("#OurCompanyRegisteredName").dxTextBox("instance").option("value", company.CompanyName);
+		$("#OurCompanyNameinArabic").dxTextBox("instance").option("value", company.CompanyNameAr);
+	}
 
 
 </script>

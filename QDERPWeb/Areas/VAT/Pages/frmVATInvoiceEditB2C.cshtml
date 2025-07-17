@@ -8683,19 +8683,51 @@
 		});
 
 
-				function applyDiscount() {
-				debugger;
-		let grid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 			function applyDiscount() {
+	// 			debugger;
+	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
-		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
-		const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-		const finalAmount = total - discount;
+	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+	// 	const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+	// 	const finalAmount = total - discount;
 
-		// Set value to FinalAmount column (or any appropriate column)
+	// 	// Set value to FinalAmount column (or any appropriate column)
+	// 			grid.cellValue(rowIx, "Discount", discount);
+
+	// 	DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+	// }
+
+
+			function applyDiscount() {
+			const grid = $("#B2BdataGrid").dxDataGrid("instance");
+			debugger;
+			// Get values from UI
+			const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+			const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+
+			// Get required values from grid for the specific row
+			const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
+			const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
+			let vatRateStr = grid.cellValue(rowIx, "VAT%") || "0%";
+			let vatRate = parseFloat(vatRateStr.toString().replace("%", "")) / 100;
+
+			// Calculate the raw amount
+			let amount = qty * unitPrice;
+
+			// Apply discount, ensure it doesn't go negative
+			let discountedAmount = amount - discount;
+			if (discountedAmount < 0) discountedAmount = 0;
+
+			// VAT and total calculations
+			let vatValue = discountedAmount * vatRate;
+			let totalValue = discountedAmount + vatValue;
+
+			// Update the grid values
 				grid.cellValue(rowIx, "Discount", discount);
+				grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
+			grid.cellValue(rowIx, "LineTotal", totalValue);
 
-		DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
-	}
+		}
 
 			$(document).ready(function () {
 					console.log('Start permission handling');
@@ -9067,8 +9099,25 @@
 								}
 							}
 						});
-
-
 					}
+
+			$(async function () {
+			try {
+					const result = await fetch('/api/VATModule/GetPettyCashAccount');
+				const data = await result.json();
+
+				if (data && data.AccountID) {
+					// Set default value to DropDownBox
+					const dropDownBox = $("#ddclientcode").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("value", data.AccountID);
+					}
+				}
+			} catch (err) {
+				console.error("Failed to load default client code:", err);
+			}
+		});
+
+
 </script>
 
