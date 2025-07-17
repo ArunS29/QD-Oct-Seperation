@@ -142,11 +142,11 @@
         display: none; /* Keep it hidden until needed */
     }
 
-    .context-menu-item1 {
-        height: 300px;
-        overflow-y: scroll;
-        overflow-x: hidden;
-    }
+    /* .context-menu-item1 { */
+    /*     height: 300px; */
+    /*     overflow-y: scroll; */
+    /*     overflow-x: hidden; */
+    /* } */
 </style>
 
 <div class="dx-fieldset horizontal-container">
@@ -864,9 +864,9 @@
             var offset = $target.offset();
 
             // Always position to the right of the button
-            const submenuWidth = 350;
+            const submenuWidth = 372;
             const topPos = offset.top + $target.outerHeight() - 45;
-            const leftPos = offset.left + $target.outerWidth() - 670;
+            const leftPos = offset.left + $target.outerWidth() - 610;
 
             $submenu.css({
                 'width': submenuWidth + 'px',
@@ -877,7 +877,7 @@
                 'background': '#fff',
                'border-radius':'8px',
                 // 'padding': '5px',
-                'z-index': 9999
+                // 'z-index': 9999
             });
 
             // Optional: Add animation
@@ -937,46 +937,32 @@
 
      function showSubmenu5(e) {
         e.event.stopPropagation();
+        hideAllSubmenus(); // Hide all submenus
 
         // Check accgroup validity
         if (!currentAccGroup.toUpperCase().includes("SUNDRY DEBTORS")) {
-            $("#popupWarningMessage").text("No records to print");
-            $("#warningPopup").dxPopup("instance").show();
+            showToastModal('warning', 'Warning!', 'No records to print');
+            // $("#popupWarningMessage").text("No records to print");
+            // $("#warningPopup").dxPopup("instance").show();
             return;
         }
 
-        hideAllSubmenus(); // Hide all submenus
-
         var $submenu = $('#submenuContainer5');
         var $target = $(e.event.target).closest('.dx-item-content');
-
-        if (!$target.length) return;
-
         var offset = $target.offset();
-        var submenuWidth = $submenu.outerWidth();
-        var targetWidth = $target.outerWidth();
-        var windowWidth = $(window).width();
-
-        // Default position: right of button
-        var leftPos = offset.left + targetWidth + 10;
-
-        // If not enough space on right, move to left
-        if (leftPos + submenuWidth > windowWidth) {
-            leftPos = offset.left - submenuWidth - 10;
-        }
-
-        // Apply styles
+        const submenuWidth = 372;
+        const topPos = offset.top + $target.outerHeight() - 45;
+        const leftPos = offset.left + $target.outerWidth() - 650;
         $submenu.css({
-            'width': '390px',
+            'width': submenuWidth + 'px',
             'position': 'absolute',
-            'top': offset.top,
-            'left': leftPos,
+            'top': topPos + 'px',
+            'left': leftPos + 'px',
             'display': 'block',
-            'z-index': 9999, // Ensures it's above everything
             'background': '#fff',
-            'border': '1px solid #ccc',
-            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-            'padding': '5px'
+            'border-radius':'8px',
+            // 'padding': '5px',
+            // 'z-index': 9999
         });
 
         // Hide on outside click
@@ -997,8 +983,9 @@
         e.event.stopPropagation();
 
         if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
-            $("#popupWarningMessage").text("No records to print");
-            $("#warningPopup").dxPopup("instance").show();
+            showToastModal('warning', 'Warning!', 'No records to print');
+            // $("#popupWarningMessage").text("No records to print");
+            // $("#warningPopup").dxPopup("instance").show();
             return;
         }
 
