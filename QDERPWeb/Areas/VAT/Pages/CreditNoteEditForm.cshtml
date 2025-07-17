@@ -3324,8 +3324,7 @@
 						    $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
 							// dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
 							 $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
-							 $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
-						     //$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
+						
 								dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
 								dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
 
@@ -3359,8 +3358,6 @@
 							$.ajax({
 								type: "GET",
 								  url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
-
-								//url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvNo)}`,
 									dataType: 'json',
 								success: function (response) {
 										console.log("AmendGrid",response)
@@ -7681,8 +7678,8 @@ $(document).ready(function () {
 							}
 						}
 					});
-
-					
 				}
+
+
 </script>
 
