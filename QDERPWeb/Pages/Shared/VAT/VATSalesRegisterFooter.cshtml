@@ -732,41 +732,79 @@
         }
         function showSubmenu8(e) {
             e.event.stopPropagation();
-            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            hideAllSubmenus(); // Hide others first
+
             var $submenu = $('#submenuContainer8');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
-            var submenuWidth = $submenu.outerWidth();
 
-            // Calculate left-side positioning
-                var leftPos = offset.left - submenuWidth - 533;
+            // Always position to the right of the button
+            const submenuWidth = 273;
+            const topPos = offset.top + $target.outerHeight() + 5;
+            const leftPos = offset.left + $target.outerWidth() + 10;
 
-            // Prevent submenu from going off-screen on the left
-            if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
-            }
-
-            // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': submenuWidth + 'px',
                 'position': 'absolute',
-                'top': offset.top,
-                'left': leftPos,
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
                 'display': 'block',
                 'background': '#fff',
-                'border': '1px solid #ccc',
-                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-                'padding': '5px'
+                'border-radius':'8px',
+                'padding': '5px',
+                'z-index': 9999
             });
 
-            // Click outside to close
-            $(document).on("click", function (event) {
-                if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu8").on("click.submenu8", function (event) {
+                if (!$(event.target).closest('#submenuContainer8, .dx-item-content').length) {
                     $submenu.hide();
-                    $(document).off("click");
+                    $(document).off("click.submenu8");
                 }
             });
-        }
+    }
+       
+
+    // function showSubmenu8(e) {
+    //     e.event.stopPropagation();
+    //     hideAllSubmenus(); // Hide all submenus before showing the selected one
+    //     var $submenu = $('#submenuContainer8');
+    //     var $target = $(e.event.target).closest('.dx-item-content');
+    //     var offset = $target.offset();
+    //     var submenuWidth = $submenu.outerWidth();
+
+    //     // Calculate left-side positioning
+    //         var leftPos = offset.left - submenuWidth - 533;
+
+    //     // Prevent submenu from going off-screen on the left
+    //     if (leftPos < 0) {
+    //         leftPos = offset.left + $target.outerWidth() + 350; // Move it to the right if not enough space
+    //     }
+
+    //     // Position submenu
+    //     $submenu.css({
+    //         'width': 250,
+    //         'position': 'absolute',
+    //         'top': offset.top,
+    //         'left': leftPos,
+    //         'display': 'block',
+    //         'background': '#fff',
+    //         'border': '1px solid #ccc',
+    //         'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+    //         'padding': '5px'
+    //     });
+
+    //     // Click outside to close
+    //     $(document).on("click", function (event) {
+    //         if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+    //             $submenu.hide();
+    //             $(document).off("click");
+    //         }
+    //     });
+    // }
 
 
             function showSubmenu10(e) {
@@ -808,45 +846,78 @@
             }
 
 
-            function showSubmenu9(e) {
+        //     function showSubmenu9(e) {
+        //     e.event.stopPropagation();
+        //     hideAllSubmenus(); // Hide all submenus before showing the selected one
+        //     var $submenu = $('#submenuContainer9');
+        //     var $target = $(e.event.target).closest('.dx-item-content');
+        //     var offset = $target.offset();
+        //     var submenuWidth = $submenu.outerWidth();
 
+        //     // Calculate left-side positioning
+        //     var leftPos = offset.left - submenuWidth + 533;
+
+        //     // Prevent submenu from going off-screen on the left
+        //     if (leftPos < 0) {
+        //         leftPos = offset.left + $target.outerWidth() - 47; // Move it to the right if not enough space
+        //     }
+
+        //     // Position submenu
+        //     $submenu.css({
+        //         'width': 250,
+        //         'position': 'absolute',
+        //         'top': offset.top,
+        //         'left': leftPos,
+        //         'display': 'block',
+        //         'background': '#fff',
+        //        'border-radius':'8px',
+        //         'padding': '5px'
+        //     });
+
+        //     // Click outside to close
+        //     $(document).on("click", function (event) {
+        //         if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
+        //             $submenu.hide();
+        //             $(document).off("click");
+        //         }
+        //     });
+        // }
+         function showSubmenu9(e) {
             e.event.stopPropagation();
-            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            hideAllSubmenus(); // Hide others first
+
             var $submenu = $('#submenuContainer9');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
-            var submenuWidth = $submenu.outerWidth();
 
-            // Calculate left-side positioning
-            var leftPos = offset.left - submenuWidth + 533;
+            // Always position to the right of the button
+            const submenuWidth = 180;
+            const topPos = offset.top + $target.outerHeight() + 5;
+            const leftPos = offset.left + $target.outerWidth()  - 47;
 
-            // Prevent submenu from going off-screen on the left
-            if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
-            }
-
-            // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': submenuWidth + 'px',
                 'position': 'absolute',
-                'top': offset.top,
-                'left': leftPos,
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
                 'display': 'block',
                 'background': '#fff',
-                'border': '1px solid #ccc',
-                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-                'padding': '5px'
+                'border-radius':'8px',
+                'padding': '5px',
+                'z-index': 9999
             });
 
-            // Click outside to close
-            $(document).on("click", function (event) {
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu").on("click.submenu", function (event) {
                 if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
                     $submenu.hide();
-                    $(document).off("click");
+                    $(document).off("click.submenu");
                 }
             });
-        }
-
+    }
         function showSubmenu6(e) {
             e.event.stopPropagation();
             hideAllSubmenus(); // Hide all submenus before showing the selected one

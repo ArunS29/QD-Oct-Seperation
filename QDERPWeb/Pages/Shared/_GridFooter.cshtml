@@ -5,6 +5,54 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
+    /* Container for each item */
+    .custom-dropdown-item {
+        display: flex;
+        align-items: flex-start;
+        padding: 0px 0px;
+        position: relative;
+        /* border-left: 4px solid transparent; */
+        transition: background 0.2s;
+    }
+
+        .custom-dropdown-item:hover {
+            background: var(--background-color); /* subtle hover */
+        }
+
+        /* Colored bar on the left */
+        .custom-dropdown-item .side-bar {
+            width: 4px;
+            height: 11%;
+            margin-right: 30px;
+            /* background-color: red; */
+            position: fixed;
+            z-index: 1000;
+            border-radius: 0% 50% 50% 0%;
+            transition: width 0.2s ease;
+        }
+
+        .custom-dropdown-item:hover .side-bar {
+            width: 8px;
+        }
+        /* Text content */
+        .custom-dropdown-item .item-content {
+            display: flex;
+            /* flex-direction: column; */
+            margin-left:10px;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .custom-dropdown-item .item-title {
+            font-weight: bold;
+            color: #000;
+        }
+
+        .custom-dropdown-item .item-description {
+            font-size: 12px;
+            color: #888;
+        }
+
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -94,6 +142,11 @@
         display: none; /* Keep it hidden until needed */
     }
 
+    .context-menu-item1 {
+        height: 300px;
+        overflow-y: scroll;
+        overflow-x: hidden;
+    }
 </style>
 
 <div class="dx-fieldset horizontal-container">
@@ -357,24 +410,53 @@
                 .ID("ddReports")
                 .Icon("doc")
                 .Text(new JS("formatMessage('Report')"))
-                .ElementAttr(new { style = "display: none;" })
                 .DropDownOptions(options => options.Width(320))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Account Statements')")).Icon("file").OnClick("showSubmenu4");
-                    items.Add().Text(new JS("formatMessage('Receivable Statements')")).Icon("file").OnClick("showSubmenu5");
-                    items.Add().Text(new JS("formatMessage('Payable Statements')")).Icon("file").OnClick("showSubmenu6");
-                    items.Add().Text(new JS("formatMessage('Cost Reports')")).Icon("file").OnClick("showSubmenu7");
-                    items.Add().Text(new JS("formatMessage('Bank Reconciliation')")).Icon("product");
-                    items.Add().Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')")).Icon("product");
-                    items.Add().Text(new JS("formatMessage('Ledger to Salary Payable Mapping')")).Icon("product");
+                    items.Add().Text("Account Statements")
+                    .Icon("home") // use DevExtreme icon name
+                    .Option("color", "#4285F4") // Blue
+                    .OnClick("showSubmenu4");
+
+                    items.Add().Text("Receivable Statements")
+                    .Icon("money")
+                    .Option("color", "#34A853") // Green
+                    .OnClick("showSubmenu5");
+
+                    items.Add().Text("Payable Statements")
+                    .Icon("cart")
+                    .Option("color", "#EA4335") // Red
+                    .OnClick("showSubmenu6");
+
+                    items.Add().Text("Cost Reports")
+                    .Icon("chart")
+                    .Option("color", "#FBBC05") // Yellow
+                    .OnClick("showSubmenu7");
+
+                    items.Add().Text("Bank Reconciliation")
+                    .Icon("product")
+                    .Option("color", "#AB47BC"); // Purple
+
+                    items.Add().Text("Ledger to Receivable/Payable Mapping")
+                    .Icon("product")
+                    .Option("color", "#00ACC1"); // Teal
+
+                    items.Add().Text("Ledger to Salary Payable Mapping")
+                    .Icon("product")
+                    .Option("color", "#FF7043"); // Orange
                 })
-                            .ItemTemplate(@<text>
-                        <div class="<%- text.replace(/\s+/g, '-').toLowerCase() %> submenu-item">
-                            <i class="dx-icon dx-icon-<%- icon %>"></i>
-                            <span><%- text %></span>
-                        </div>
-                    </text>)
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                        <div class="item-description">Lorem Ipsum of the Component</div>
+                    </div>
+                </div>
+            </div>
+        </text>)
                 .OnItemClick("addReportsButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -725,43 +807,91 @@
         window.location.href = `/${tenantName}/Finance/AccountGroupsOrdering`;
 
     }
+    // function showSubmenu4(e) {
+    //     e.event.stopPropagation();
+    //     hideAllSubmenus();
+
+    //     var $submenu = $('#submenuContainer4');
+    //     var $target = $(e.event.target).closest('.dx-item-content');
+    //     if (!$target.length) return;
+
+    //     var offset = $target.offset();
+    //     var targetWidth = $target.outerWidth();
+    //     var windowWidth = $(window).width();
+
+    //     $submenu.css({
+    //         visibility: 'hidden',
+    //         display: 'block',
+    //         position: 'absolute',
+    //         left: '-9999px',
+    //         top: '-9999px'
+    //     });
+
+    //     var submenuWidth = $submenu.outerWidth();
+
+    //     var leftPos = offset.left + targetWidth + 10;
+    //     if (leftPos + submenuWidth > windowWidth) {
+    //         leftPos = offset.left - submenuWidth - 10;
+    //     }
+
+    //     $submenu.css({
+    //         'width': '470px',
+    //         'position': 'absolute',
+    //         'top': offset.top,
+    //         'left': leftPos,
+    //         'display': 'block',
+    //         'visibility': 'visible',
+    //         'z-index': 9999,
+    //         'background': '#fff',
+    //         'border': '1px solid #ccc',
+    //         'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+    //         'padding': '5px'
+    //     });
+
+    //     $(document).off("click.submenu").on("click.submenu", function (event) {
+    //         if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+    //             $submenu.hide();
+    //             $(document).off("click.submenu");
+    //         }
+    //     });
+    // }
     function showSubmenu4(e) {
-        e.event.stopPropagation();
-        hideAllSubmenus(); // Hide all submenus before showing the selected one
-        var $submenu = $('#submenuContainer4');
-        var $target = $(e.event.target).closest('.dx-item-content');
-        var offset = $target.offset();
-        var submenuWidth = $submenu.outerWidth();
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide others first
 
-        // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth +620;
+            var $submenu = $('#submenuContainer4');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
 
-        // Prevent submenu from going off-screen on the left
-        if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5;
-        }
+            // Always position to the right of the button
+            const submenuWidth = 350;
+            const topPos = offset.top + $target.outerHeight() - 45;
+            const leftPos = offset.left + $target.outerWidth() - 670;
 
-        // Position submenu
-        $submenu.css({
-            'width': 470,
-            'position': 'absolute',
-            'top': offset.top,
-            'left': leftPos,
-            'display': 'block',
-            'background': '#fff',
-            'border': '1px solid #ccc',
-            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-            'padding': '5px'
-        });
+            $submenu.css({
+                'width': submenuWidth + 'px',
+                'position': 'absolute',
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
+                'display': 'block',
+                'background': '#fff',
+               'border-radius':'8px',
+                // 'padding': '5px',
+                'z-index': 9999
+            });
 
-        // Click outside to close
-        $(document).on("click", function (event) {
-            if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
-                $submenu.hide();
-                $(document).off("click");
-            }
-        });
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu").on("click.submenu", function (event) {
+                if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click.submenu");
+                }
+            });
     }
+
         // function dataGridSelectionChanged(e) {
         //     const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
         //     const ddbInstance = $("#accountDropDownBox").dxDropDownBox("instance");
@@ -805,138 +935,146 @@
         currentAccGroup = accgroup || "";
     }
 
-    function showSubmenu5(e) {
+     function showSubmenu5(e) {
         e.event.stopPropagation();
 
-        // If accgroup is not valid, show message and return
-           if (!currentAccGroup.toUpperCase().includes("SUNDRY DEBTORS")) {
-        $("#popupWarningMessage").text("No records to print");
-        $("#warningPopup").dxPopup("instance").show();
-        return;
-    }
-
-
-        hideAllSubmenus(); // Hide all submenus before showing the selected one
-
-        var $submenu = $('#submenuContainer5');
-        var $target = $(e.event.target).closest('.dx-item-content');
-        var offset = $target.offset();
-        var submenuWidth = $submenu.outerWidth();
-
-        // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth + 620;
-
-        // Prevent submenu from going off-screen on the left
-        if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5;
-        }
-
-        $submenu.css({
-            'width': 390,
-            'position': 'absolute',
-            'top': offset.top,
-            'left': leftPos,
-            'display': 'block',
-            'background': '#fff',
-            'border': '1px solid #ccc',
-            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-            'padding': '5px'
-        });
-
-        $(document).on("click", function (event) {
-            if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
-                $submenu.hide();
-                $(document).off("click");
-            }
-        });
-    }
-
-         function updateReceivableStatement(accgroup) {
-        currentAccGroup = accgroup || "";
-    }
-
-    function showSubmenu6(e) {
-        e.event.stopPropagation();
-
-        // Check if currentAccGroup includes "SUNDRY CREDITORS" (case insensitive)
-        if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
-            // Show warning popup
+        // Check accgroup validity
+        if (!currentAccGroup.toUpperCase().includes("SUNDRY DEBTORS")) {
             $("#popupWarningMessage").text("No records to print");
             $("#warningPopup").dxPopup("instance").show();
             return;
         }
 
-        // Hide other submenus before showing this one
-        hideAllSubmenus();
+        hideAllSubmenus(); // Hide all submenus
 
-        var $submenu = $('#submenuContainer6');
+        var $submenu = $('#submenuContainer5');
         var $target = $(e.event.target).closest('.dx-item-content');
+
+        if (!$target.length) return;
+
         var offset = $target.offset();
         var submenuWidth = $submenu.outerWidth();
+        var targetWidth = $target.outerWidth();
+        var windowWidth = $(window).width();
 
-        // Calculate left position so submenu doesn't go off-screen
-        var leftPos = offset.left - submenuWidth + 620;
-        if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5;
+        // Default position: right of button
+        var leftPos = offset.left + targetWidth + 10;
+
+        // If not enough space on right, move to left
+        if (leftPos + submenuWidth > windowWidth) {
+            leftPos = offset.left - submenuWidth - 10;
         }
 
-        // Style and display submenu
+        // Apply styles
         $submenu.css({
-            'width': 370,
+            'width': '390px',
             'position': 'absolute',
             'top': offset.top,
             'left': leftPos,
             'display': 'block',
+            'z-index': 9999, // Ensures it's above everything
             'background': '#fff',
             'border': '1px solid #ccc',
             'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
             'padding': '5px'
         });
 
-        // Click outside to close submenu
-        $(document).on("click", function (event) {
-            if (!$(event.target).closest('#submenuContainer6, .dx-item-content').length) {
+        // Hide on outside click
+        $(document).off("click.submenu5").on("click.submenu5", function (event) {
+            if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
                 $submenu.hide();
-                $(document).off("click");
+                $(document).off("click.submenu5");
             }
         });
     }
 
 
-    function showSubmenu7(e) {
+         function updateReceivableStatement(accgroup) {
+        currentAccGroup = accgroup || "";
+    }
+
+       function showSubmenu6(e) {
         e.event.stopPropagation();
-        hideAllSubmenus(); // Hide all submenus before showing the selected one
-        var $submenu = $('#submenuContainer7');
-        var $target = $(e.event.target).closest('.dx-item-content');
-        var offset = $target.offset();
-        var submenuWidth = $submenu.outerWidth();
 
-        // Calculate left-side positioning
-        var leftPos = offset.left - submenuWidth + 620;
-
-        // Prevent submenu from going off-screen on the left
-        if (leftPos < 0) {
-            leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
+        if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
+            $("#popupWarningMessage").text("No records to print");
+            $("#warningPopup").dxPopup("instance").show();
+            return;
         }
 
-        // Position submenu
+        hideAllSubmenus(); // Hide others
+
+        const $submenu = $('#submenuContainer6');
+        const $target = $(e.event.target).closest('.dx-item-content');
+        if (!$target.length) return;
+
+        const offset = $target.offset();
+        const submenuWidth = $submenu.outerWidth();
+        const targetWidth = $target.outerWidth();
+        const windowWidth = $(window).width();
+
+        let leftPos = offset.left + targetWidth + 10;
+        if (leftPos + submenuWidth > windowWidth) {
+            leftPos = offset.left - submenuWidth - 10;
+        }
+
         $submenu.css({
-            'width': 370,
+            'width': '370px',
             'position': 'absolute',
             'top': offset.top,
             'left': leftPos,
             'display': 'block',
+            'z-index': 9999,
             'background': '#fff',
             'border': '1px solid #ccc',
             'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
             'padding': '5px'
         });
 
-        // Click outside to close
-        $(document).on("click", function (event) {
+        $(document).off("click.submenu6").on("click.submenu6", function (event) {
+            if (!$(event.target).closest('#submenuContainer6, .dx-item-content').length) {
+                $submenu.hide();
+                $(document).off("click.submenu6");
+            }
+        });
+    }
+
+    function showSubmenu7(e) {
+        e.event.stopPropagation();
+
+        hideAllSubmenus();
+
+        const $submenu = $('#submenuContainer7');
+        const $target = $(e.event.target).closest('.dx-item-content');
+        if (!$target.length) return;
+
+        const offset = $target.offset();
+        const submenuWidth = $submenu.outerWidth();
+        const targetWidth = $target.outerWidth();
+        const windowWidth = $(window).width();
+
+        let leftPos = offset.left + targetWidth + 10;
+        if (leftPos + submenuWidth > windowWidth) {
+            leftPos = offset.left - submenuWidth - 10;
+        }
+
+        $submenu.css({
+            'width': '370px',
+            'position': 'absolute',
+            'top': offset.top,
+            'left': leftPos,
+            'display': 'block',
+            'z-index': 9999,
+            'background': '#fff',
+            'border': '1px solid #ccc',
+            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+            'padding': '5px'
+        });
+
+        $(document).off("click.submenu7").on("click.submenu7", function (event) {
             if (!$(event.target).closest('#submenuContainer7, .dx-item-content').length) {
                 $submenu.hide();
-                $(document).off("click");
+                $(document).off("click.submenu7");
             }
         });
     }
@@ -947,6 +1085,8 @@
         $('#submenuContainer5').hide();
         $('#submenuContainer6').hide();
         $('#submenuContainer7').hide();
+        $('#submenuContainer8').hide();
+        $('#submenuContainer9').hide();
     }
     function addExpenseButton_click(e) {
         switch (e.itemData.text) {
@@ -985,5 +1125,5 @@
     function onCreateNewClick() {
         window.location.href = `/${tenantName}/Finance/JournalEntryEdit`;
     }
-            
+   
 </script>

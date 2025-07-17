@@ -14,7 +14,6 @@
 		width: 100%;
 		height: 100%;
 		background: rgba(0, 0, 0, 0.5); /* Transparent background */
-
 		z-index: 1000;
 	}
 
@@ -125,8 +124,6 @@
 					@(Html.DevExtreme().Button()
 						.Icon("plus")
 						.Width(45))
-					
-				
 			</td>
 			<td>
 					@(Html.DevExtreme().TextBox()
@@ -270,6 +267,7 @@
 							.Columns(columns =>
 							{
 								columns.Add().DataField("GsgroupName");
+								columns.Add().DataField("GsgroupCode").Visible(false);
 
 							})
 							)
@@ -279,77 +277,102 @@
 
 <script>
 
-	async function uploadItemsToMaterialRequests() {
+function uploadItemsToMaterialRequests() {
     debugger;
 
-    // Step 1: Validate Stock Group
-    const stockGroupId = $("#StockGroup").dxDropDownBox("instance").option("value");
-    if (!stockGroupId) {
-        DevExpress.ui.notify("Please Select Stock Group before Uploading...", "error", 3000);
-        return;
-    }
-
-    // Step 2: Get selected GSGroupId (you may rename based on your actual control)
-    const selectedGSGroupId = $("#txtGSGroup").dxSelectBox("instance").option("value");
-    if (!selectedGSGroupId) {
-        DevExpress.ui.notify("Please select a valid GS Group.", "error", 3000);
-        return;
-    }
-
-    // Step 3: Fetch GSGroupCode from server
-    let GSGroupCode = null;
-    try {
-        GSGroupCode = await $.get(`/api/InventoryUpload/GetGSGroupCode?gsgroupId=${selectedGSGroupId}`);
-    } catch (err) {
-        const message = err?.responseText || "Failed to get GSGroupCode.";
-        DevExpress.ui.notify(message, "error", 3000);
-        console.error("GSGroupCode fetch error:", err);
-        return;
-    }
-
-    // Step 4: Get items from the DataGrid
-    const grid = $("#Datagrid").dxDataGrid("instance");
-    const items = grid?.getDataSource().items() ?? [];
-    if (items.length === 0) {
-        DevExpress.ui.notify("No items to upload.", "error", 3000);
-        return;
-    }
-
-    // Step 5: Get Request No from textbox
+    const selectedGSGroupId = $("#StockGroup").dxDropDownBox("instance").option("value");
     const requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+    const grid = $("#Datagrid").dxDataGrid("instance");
+    const dataSource = grid?.getDataSource();
+    const items = dataSource?.items() ?? [];
+
+    if (!selectedGSGroupId) {
+        DevExpress.ui.notify("Please select a Stock Group.", "error", 3000);
+        return;
+    }
+
     if (!requestNo) {
         DevExpress.ui.notify("Request No is required.", "error", 3000);
         return;
     }
 
-    // Step 6: Call UploadStock API
-    try {
-        const result = await $.ajax({
-            url: "/api/InventoryUpload/UploadStock",
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify({
+    if (items.length === 0) {
+        DevExpress.ui.notify("No items to upload.", "error", 3000);
+        return;
+    }
+
+    console.log("🔍 Selected GSGroupId:", selectedGSGroupId);
+    console.log("📋 Raw Items from Grid:", items);
+
+    $.ajax({
+        url: `/api/InventoryUpload/GetGSGroupCode?gsgroupId=${selectedGSGroupId}`,
+        method: "GET",
+        success: function (GSGroupCode) {
+            console.log("✅ Received GSGroupCode:", GSGroupCode);
+
+            if (!GSGroupCode) {
+                DevExpress.ui.notify("GSGroupCode not found.", "error", 3000);
+                return;
+            }
+
+            const cleanedItems = items.map(item => ({
+                GSDescription: item.GSDescription,
+                GsdescriptionAr: item.GsdescriptionAr,
+                GsuomDesc: item.GsuomDesc || item.GSUoM,
+                RequestQty: item.RequestQty,
+                UnitPrice: item.UnitPrice,
+                PlanNo: item.PlanNo,
+                Manufacturer: item.Manufacturer,
+                DeliveryPeriod: item.DeliveryPeriod,
+                Remarks: item.Remarks,
+                ItemSize: item.ItemSize,
+                ItemPartNo: item.ItemPartNo,
+                ItemBrand: item.ItemBrand,
+                ItemColor: item.ItemColor,
+                ItemDimension: item.ItemDimension,
+                ItemThickness: item.ItemThickness
+            }));
+
+            const requestBody = {
                 GSGroupCode: GSGroupCode,
                 RequestNo: requestNo,
-                Items: items
-            })
-        });
+                Items: cleanedItems
+            };
 
-        if (result && result.success) {
-            DevExpress.ui.notify("Stock List has been Updated Successfully.", "success", 3000);
-            grid.refresh();
+            console.log("📦 Final Payload to UploadStock:", requestBody);
 
-            // Step 7: Redirect after 1 second
-            setTimeout(() => {
-                window.location.href = `/Utility/AddNewClientRequest?requestNo=${encodeURIComponent(requestNo)}`;
-            }, 1000);
-        } else {
-            DevExpress.ui.notify(result.message || "Upload failed.", "error", 3000);
+            $.ajax({
+                url: "/api/InventoryUpload/UploadStock",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(requestBody),
+                success: function (result) {
+                    if (result.success) {
+                        DevExpress.ui.notify("Stock uploaded and GSCode generated successfully ✅", "success", 3000);
+                        grid.refresh();
+
+                        const tenantName = window.location.pathname.split("/")[1];
+                        setTimeout(() => {
+                            window.location.href = `/${tenantName}/IMS/AddNewClientRequest?requestNo=${encodeURIComponent(requestNo)}`;
+                        }, 1000);
+                    } else {
+                        DevExpress.ui.notify(result.message || "Upload failed", "error", 3000);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("❌ UploadStock error:", xhr);
+                    DevExpress.ui.notify("Upload failed: " + (xhr.responseText || "Unknown error"), "error", 3000);
+                }
+            });
+        },
+        error: function (xhr) {
+            console.error("❌ GetGSGroupCode error:", xhr);
+            DevExpress.ui.notify("Failed to get GSGroupCode: " + (xhr.responseText || "Unknown error"), "error", 3000);
         }
-    } catch (error) {
-        DevExpress.ui.notify("Upload failed: " + (error.responseText || error.statusText), "error", 3000);
-    }
+    });
 }
+
+
 			$(document).ready(function () {
 			// Get requestNo from query string
 			const params = new URLSearchParams(window.location.search);
