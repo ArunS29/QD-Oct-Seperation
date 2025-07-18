@@ -896,7 +896,7 @@ buttons.Add()
 
 
         </div>
- <div  id="mainFooter"  >
+ <div  id="mainFooter" >
     @await Html.PartialAsync("_Formfooter")
 </div>
       </div>
@@ -1768,6 +1768,8 @@ function addVoucherEntry() {
 
                 // Call the remaining logic using the retrieved voucher number
                 continueVoucherEntryWithVoucherNo(voucherNo);
+                 isVoucherSaved = true; // Mark Updated step as done
+                 updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.dialog.alert("Error retrieving voucher number: " + error, "Error");
@@ -4255,45 +4257,56 @@ function showMainFooter() {
     }
     let isVoucherSaved = false;
 
-    function getWorkflowStatusFromFields() {
-        const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
-        const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+   function getWorkflowStatusFromFields() {
+    const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
+    const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
 
-        if (approved) return 2;
-        if (verified) return 1;
-        if (isVoucherSaved) return 0;
+    if (approved) return 3; // Final state
+    if (verified) return 2;
+    if (isVoucherSaved) return 1;
 
-        return -1;
-    }
+    return 0;
+}
 
-   function updateWorkflowVisual(status) {
+
+ function updateWorkflowVisual(status) {
     const steps = [
-        { id: "step-update", label: "Updated" },
-        { id: "step-verify", label: "Verified" },
-        { id: "step-approve", label: "Approved" }
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
     ];
 
     steps.forEach((step, index) => {
-        const element = document.getElementById(step.id);
-        const statusMsg = element.querySelector(".step-status-msg");
-        element.classList.remove("completed", "current", "upcoming");
+        const el = document.getElementById(step.id);
+        const statusMsg = el.querySelector(".step-status-msg");
+        const icon = el.querySelector("i");
+
+        el.classList.remove("completed", "current", "upcoming", "done");
+        icon.className = step.icon;
 
         if (index < status) {
-            element.classList.add("completed");
-            if (statusMsg) statusMsg.textContent = "Done";
-        } else if (index === status) {
-            element.classList.add("current");
-            if (statusMsg) statusMsg.textContent = "In Progress";
+            el.classList.add("completed");
+            statusMsg.textContent = "Done";
+            icon.className = "fas fa-check-circle";
+        } else if (index === status && status < 3) {
+            el.classList.add("current");
+            statusMsg.textContent = "In Progress";
+            icon.className = "fas fa-spinner fa-spin";
         } else {
-            element.classList.add("upcoming");
-            if (statusMsg) statusMsg.textContent = "Pending";
+            el.classList.add("upcoming");
+            statusMsg.textContent = "Pending";
+        }
+
+        // Final Approved state
+        if (status === 3 && index === 2) {
+            el.classList.add("completed");
+            statusMsg.textContent = "Done";
+            icon.className = "fas fa-check-circle";
         }
     });
+}
 
-    // Optional: hide the old status box if you’re not using it anymore
-    const statusBox = document.getElementById("statusBox");
-    if (statusBox) statusBox.style.display = "none";
-   }
+
 
 
     function syncWorkflowFromFields() {
@@ -4310,8 +4323,95 @@ function showMainFooter() {
         setTimeout(() => {
             attachWorkflowWatchers();
             syncWorkflowFromFields();
+             // bindWorkflowPopovers(); 
+             initWorkflowTippyPopovers();
+
         }, 300);
     });
+
+// function bindWorkflowPopovers() {
+//     const verifiedBy = $("#VerifiedBytext").dxTextBox("instance").option("value") || "N/A";
+//     const verifiedOn = $("#VerifiedDate").dxDateBox("instance")?.option("value") || "N/A";
+//     const approvedBy = $("#ApprovedBytext").dxTextBox("instance").option("value") || "N/A";
+//     const approvedOn = $("#ApprovedDate").dxDateBox("instance")?.option("value") || "N/A";
+
+//     $("#verifiedByName").text(verifiedBy);
+//     $("#verifiedOn").text(formatDate(verifiedOn));
+//     $("#approvedByName").text(approvedBy);
+//     $("#approvedOn").text(formatDate(approvedOn));
+
+//     attachPopoverEvents("#circle-verify", "#verifyPopover");
+//     attachPopoverEvents("#circle-approve", "#approvePopover");
+// }
+
+// function formatDate(date) {
+//     if (!date) return "N/A";
+//     const d = new Date(date);
+//     return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+// }
+
+// function attachPopoverEvents(targetSelector, popoverSelector) {
+//     const $target = $(targetSelector);
+//     const $popover = $(popoverSelector);
+
+//     $target.on("mouseenter", function (e) {
+//         const offset = $target.offset();
+//         $popover.css({
+//             top: offset.top - $popover.outerHeight() - 10,
+//             left: offset.left,
+//             display: "block"
+//         });
+//     });
+
+//     $target.on("mouseleave", function () {
+//         $(popoverSelector).hide();
+//     });
+// }
+function formatDate(date) {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+}
+
+function initWorkflowTippyPopovers() {
+    // 🧼 Clean up any old tippy instances
+    tippy.hideAll();
+    document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+
+    const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
+    const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+    const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
+    const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
+
+    console.log("🧪 Tooltip data:", {
+        verifiedBy, verifiedOn, approvedBy, approvedOn
+    });
+
+    // 🟩 Verified Popover
+    tippy('#circle-verify', {
+        content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+
+    // 🟩 Approved Popover
+    tippy('#circle-approve', {
+        content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+}
+
 
 
 </script>

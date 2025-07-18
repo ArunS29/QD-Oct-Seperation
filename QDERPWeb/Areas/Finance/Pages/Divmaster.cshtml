@@ -8,87 +8,74 @@
 <link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
 
-
 <style type="text/css">
-    /* Card container styling */
+    .mainContainer {
+    background-color: white;
+     margin-top: 0px!important; 
+    margin-left: 0px!important; 
+    width: 97%;
+    height: 100vh;
+    /* overflow: hidden; */
+    /* padding: 20px; */
+}
     .card-container {
-        background-color: white /* Set background color for the card */
-        padding: 20px; /* Add some padding inside the card */
-        border-radius: 8px; /* Rounded corners */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+        background-color: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
-        /* Label text color blue */
         .card-container label {
-            color: blue; /* Set label text color to blue */
+            color: blue;
         }
 
-    /* Style for the textboxes */
     .dx-datagrid .dx-row {
-        border-bottom: 1px solid #ccc; /* Border between rows */
+        border-bottom: 1px solid #ccc;
     }
 
-    /* Grid Column Header Text Color */
     .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
-        color: #2d5799; /* Set header text color */
+        color: #2d5799;
     }
 
-    /* Grid Column Header Background Color */
     .dx-datagrid-headers .dx-header-row {
-        background-color: white; /* Set background color for column headers */
-    }
-
-    /* Button customization */
-    .dx-button-add {
-        background-color: #f5f8fb !important; /* Set background color to #cfddee */
-        color: red !important; /* Set text color to red */
-        border: 1px solid #b0c4de; /* Light border around the button */
-    }
-
-        .dx-button-add .dx-icon {
-            color: green !important; /* Set icon color to green */
-        }
-
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-    }
-
-    .dx-selectbox .dx-texteditor-input {
-        text-align: center; /* Centers the text inside the input */
-    }
-
-    .backgroundcolor {
         background-color: white;
     }
 
-    .button-alignment-down {
-        margin-bottom: 10px;
+    .dx-button-add {
+        background-color: #f5f8fb !important;
+        color: red !important;
+        border: 1px solid #b0c4de;
     }
 
-    /* Style for the Save and Refresh buttons */
+        .dx-button-add .dx-icon {
+            color: green !important;
+        }
+
+    .dx-selectbox .dx-texteditor-input {
+        text-align: center;
+    }
+
+    .horizontal-container {
+        display: flex;
+        gap: 10px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px 0;
+        flex-wrap: wrap;
+    }
+
     .action-buttons-container {
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        flex-wrap: wrap;
     }
 
         .action-buttons-container .dx-button {
-            margin-right: 10px; /* Space between buttons */
+            margin: 5px;
         }
 
-    .container {
-        display: none !important;
-    }
-
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
+    .container, .frame, .footerContainer, .playIcon {
         display: none !important;
     }
 
@@ -102,82 +89,94 @@
         width: 100%;
     }
 
-    .playIcon {
-        display: none;
-    }
-
     #goToTopBtn {
         z-index: 100;
     }
+
+    @@media (max-width: 768px) {
+        .dx-textbox, .dx-button
+
+    {
+        width: 100% !important;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    }
 </style>
 
-<div class="title">
-    <div class="header-container">
-        <div id="BranchMaster" class="no-border-title"></div>
-    </div>
-</div>
-<div class="row g-3 align-items-end ">
-    <div class="form-group col-lg-3 col-md-4 col-sm-6">
 
-        @(
-            Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Type a New Branch & Add to the Existing List')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .ID("txtbranchName")
-            .Value(null)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired()
-                .Message(new JS("formatMessage('Branch Name is required')"));
-            })
-            )
-      
-
-    </div>
-
- 
-        <div class="form-group col-lg-3 col-md-4 col-sm-6">
-            @(
-                Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Branch In Arabic')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("txtarabName")
-                .Value(null)
-                .Width("60%")
-                )
-            @(
-                Html.DevExtreme().Button()
-                .ID("convertToArabic1")
-                .Width(75)
-                .Height(33)
-                .Icon("fas fa-language") // Ensure Font Awesome class is correct
-                .ElementAttr(new { @class = "input-button" })
-                .OnClick("function() { convertToArabic(); }")
-                )
+        <div class="dx-card-header minimal-header">
+            <div class="card-title-icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <h3 class="card-title-text">Branch Master</h3>
         </div>
-  
-    <br />
-    <div class="col-md-4">
-        <div class="form-group">
+
+<div class="card-container">
+    <div class="row g-3">
+        <!-- Branch Name -->
+        <div class="form-group col-lg-4 col-md-6 col-sm-12">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Type a New Branch & Add to the Existing List')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("txtbranchName")
+                .Value(null)
+                .ValidationRules(rules => {
+                    rules.AddRequired().Message(new JS("formatMessage('Branch Name is required')"));
+                })
+            )
+        </div>
+
+        <!-- Arabic Name and Button -->
+        <div class="form-group col-lg-4 col-md-6 col-sm-12">
+            <div class="d-flex align-items-end gap-2">
+                <div style="flex-grow: 1;">
+                    @(Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Branch In Arabic')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtarabName")
+                        .Value(null)
+                        .Width("100%")
+                    )
+                </div>
+                <div>
+                    @(Html.DevExtreme().Button()
+                        .ID("convertToArabic1")
+                        .Width(45)
+                        .Height(33)
+                        .Icon("fas fa-language")
+                        .ElementAttr(new { @class = "input-button" })
+                        .OnClick("function() { convertToArabic(); }")
+                    )
+                </div>
+            </div>
+        </div>
+
+        <!-- ADD Button -->
+        <div class="form-group col-lg-4 col-md-6 col-sm-12 d-flex align-items-end">
             @(Html.DevExtreme().Button()
                 .ID("btnadd")
                 .Text(new JS("formatMessage('ADD')"))
                 .Height(40)
-                .Width(178)
+                .Width("100%")
                 .Icon("plus")
                 .OnClick("function() { adddivmaster(); }")
                 .ElementAttr(new { @class = "dx-button-add" })
-                )
+            )
         </div>
-
-
     </div>
 
-    <div id="gridContainer"></div>
-
-
-    <div id="gridContainer"></div>
+    <!-- Grid Container -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div id="gridContainer" class="w-100"></div>
+        </div>
+    </div>
 </div>
+
 
 <script type="text/javascript">
      
@@ -469,7 +468,7 @@
                 rowRenderingMode: "virtual", // Optimizes row rendering
                 useNative: true // Use native scrolling for better performance
             },
-            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            height: "80%", // Set a fixed height for the grid (this helps in showing vertical scrollbar)
             width: "100%" // Make grid responsive and take full width of the container
         });
     });

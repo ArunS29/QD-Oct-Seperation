@@ -9,9 +9,19 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
 
 <style type="text/css">
+    .mainContainer {
+        background-color: white;
+        margin-top: 0px !important;
+        margin-left: 0px !important;
+        width: 97%;
+        height: 100vh;
+        /* overflow: hidden; */
+        /* padding: 20px; */
+    }
     .card-container {
         background-color: white;
         padding: 20px;
+        padding-top:0px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -42,41 +52,21 @@
             color: green !important;
         }
 
-    .horizontal-container {
-        display: flex;
-        gap: 10px;
-        justify-content: start;
-        align-items: center;
-        margin: 15px;
-    }
-
-    .backgroundcolor {
-        background-color: white
-    }
-
-    .button-alignment-down {
-        margin-bottom: 10px;
-    }
-
     .action-buttons-container {
         display: flex;
         justify-content: center;
         margin-top: 20px;
+        flex-wrap: wrap;
     }
 
         .action-buttons-container .dx-button {
-            margin-right: 10px;
+            margin: 5px;
         }
 
-    .container {
-        display: none !important;
-    }
-
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
+    .container,
+    .frame,
+    .footerContainer,
+    .playIcon {
         display: none !important;
     }
 
@@ -90,62 +80,81 @@
         width: 100%;
     }
 
-    .playIcon {
-        display: none;
-    }
-
     #goToTopBtn {
         z-index: 100;
     }
+
+    /* Responsive tweaks */
+    @@media (max-width: 768px) {
+        .dx-textbox, .dx-button
+
+    {
+        width: 100% !important;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    }
 </style>
+
 <link rel="stylesheet" href="~/css/Site.css" />
-<div class="title">
-    <div class="header-container">
-        <div id="LedgerSubGroupMaster" class="no-border-title"></div>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Ledger Sub Group</h3>
+</div>
+
+<div class="card-container">
+    <div class="row g-3 align-items-end">
+        <!-- Sub Group Name -->
+        <div class="form-group col-lg-5 col-md-5 col-sm-12">
+            @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Enter New Sub Group & Add to the Existing List')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtSubGroupName")
+                        .Value(null)
+                        )
+        </div>
+
+        <!-- Sub Group Name (Arabic) -->
+        <div class="form-group col-lg-5 col-md-5 col-sm-12">
+            @(
+                        Html.DevExtreme().TextBox()
+                        .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("txtSubGroupNameAr")
+                        .Value(null)
+                        )
+        </div>
+
+        <!-- Add Button -->
+        <div class="form-group col-lg-2 col-md-2 col-sm-12 d-flex">
+            @(
+                        Html.DevExtreme().Button()
+                        .ID("btnAdd")
+                        .Text(new JS("formatMessage('ADD')"))
+                        .Height(40)
+                        .Width("100%")
+                        .Icon("plus")
+                        .OnClick("function() { addLedgerSubGroup(); }")
+                        .ElementAttr(new { @class = "dx-button-add w-100" })
+                        )
+        </div>
+    </div>
+
+
+    <!-- Grid -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div id="gridContainer" class="w-100"></div>
+        </div>
     </div>
 </div>
 
-<div style="padding:2em;">
-<div class="content-container-top">
-    <div class="form-group">
-        @(
-            Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Enter New Sub Group & Add to the Existing List')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .ID("txtSubGroupName")
-            .Value(null)
-            )
-    </div>
-</div>
-
-<div class="col-md-8">
-    <div class="form-group">
-        @(
-            Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .ID("txtSubGroupNameAr")
-            .Value(null)
-            )
-    </div>
-</div>
-<div class="col-md-4">
-    <div class="form-group">
-        @(Html.DevExtreme().Button()
-            .ID("btnAdd")
-            .Text(new JS("formatMessage('ADD')"))
-            .Height(70)
-            .Width(178)
-            .Icon("plus")
-            .OnClick("function() { addLedgerSubGroup(); }")
-            .ElementAttr(new { @class = "dx-button-add" })
-            )
-    </div>
-</div>
-<div class="clear"></div>
-<br />
-<div id="gridContainer"></div>
-</div>
 <script type="text/javascript">
 
     $(function () {
@@ -415,7 +424,7 @@
                 rowRenderingMode: "virtual",
                 useNative: true
             },
-            height: 400,
+            height: "70%",
             width: "100%"
         });
     });

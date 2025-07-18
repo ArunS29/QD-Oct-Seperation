@@ -281,7 +281,9 @@
     .dx-fieldset{
         margin:0px !important;
     }
-
+    .dx-popup-title.dx-toolbar{
+        background-color:  var(--title-background-color) !important;
+    }
         </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -3918,29 +3920,27 @@ function syncSupVATNumbers(e) {
         }
     }
 
-    function redirecttoledgersubgroup() {
+  function redirecttoledgersubgroup() {
+    const url = `/${tenantName}/Finance/LedgerSubGroupMaster`;
 
-        // const modal = document.getElementById("ledgerAccountMasterModal");
-        // const iframe = document.getElementById("ledgerAccountMasterIframe");
+    const modalOverlay = document.createElement("div");
+    modalOverlay.classList.add("modal-overlay");
+    modalOverlay.innerHTML = `
+        <div class="custom-sub-modal">
+            <iframe src="${url}" style="width:100%; height:500px; border:none; border-radius: 12px;"></iframe>
+        </div>
+    `;
+    document.body.appendChild(modalOverlay);
 
-        // iframe.src = `/${tenantName}/Finance/LedgerSubGroupMaster`;
+    // Close the modal when clicking outside the iframe
+    modalOverlay.addEventListener("click", function (event) {
+        if (event.target === modalOverlay) {
+            modalOverlay.remove();
+            refreshaccountledgerSelectBox();
+        }
+    });
+}
 
-        // modal.style.display = "block";
-
-        // const closeBtn = modal.querySelector(".close");
-        // closeBtn.onclick = () => {
-        //     modal.style.display = "none";
-        //     refreshaccountledgerSelectBox();
-        // };
-            url = `/${tenantName}/Finance/LedgerSubGroupMaster`;
-        openModal(url,"");
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-                refreshaccountledgerSelectBox();
-            }
-        };
-    }
 
     function refreshLedgerSubGroupSelectBox() {
         const ledgersubgroupSelectBox = $("#ddlSubgroup").dxSelectBox("instance"); // Ensure ID matches Razor
@@ -3965,29 +3965,27 @@ function syncSupVATNumbers(e) {
         }
     }
 
-    function redirecttosalespersonmaster() {
+ function redirecttosalespersonmaster() {
+    const url = `/${tenantName}/Finance/SalesPersonMaster`;
 
-        // const modal = document.getElementById("ledgerAccountMasterModal");
-        // const iframe = document.getElementById("ledgerAccountMasterIframe");
+    const modalOverlay = document.createElement("div");
+    modalOverlay.classList.add("modal-overlay");
+    modalOverlay.innerHTML = `
+        <div class="custom-sub-modal">
+            <iframe src="${url}" style="width:100%; height:500px; border:none; border-radius: 12px;"></iframe>
+        </div>
+    `;
+    document.body.appendChild(modalOverlay);
 
-        // iframe.src = `/${tenantName}/Finance/SalesPersonMaster`;
+    // Close the modal when clicking outside the iframe
+    modalOverlay.addEventListener("click", function (event) {
+        if (event.target === modalOverlay) {
+            modalOverlay.remove();
+            refreshaccountledgerSelectBox();
+        }
+    });
+}
 
-        // modal.style.display = "block";
-
-        // const closeBtn = modal.querySelector(".close");
-        // closeBtn.onclick = () => {
-        //     modal.style.display = "none";
-        //     refreshaccountledgerSelectBox();
-        // };
-        url = `/${tenantName}/Finance/SalesPersonMaster`;
-        openModal(url,"");
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-                refreshaccountledgerSelectBox();
-            }
-        };
-    }
 
     function refreshsalespersonSelectBox() {
         const ledgersubgroupSelectBox = $("#ddlSales").dxSelectBox("instance"); // Ensure ID matches Razor

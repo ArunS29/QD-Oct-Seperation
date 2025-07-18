@@ -9,56 +9,65 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
 
 <style type="text/css">
-    /* Card container styling */
-    .card-container {
-        background-color: white; /* Set background color for the card */
-        padding: 20px; /* Add some padding inside the card */
-        border-radius: 8px; /* Rounded corners */
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
+    .mainContainer {
+        background-color: white;
+        margin-top: 0px !important;
+        margin-left: 0px !important;
+        width: 97%;
+        height: 100vh;
+        /* overflow: hidden; */
+        /* padding: 20px; */
     }
 
-        /* Label text color blue */
+    .card-container {
+        background-color: white;
+        padding: 20px;
+        padding-top: 0px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
         .card-container label {
-            color: blue; /* Set label text color to blue */
+            color: blue;
         }
 
-    .dx-selectbox .dx-texteditor-input {
-        text-align: center; /* Centers the text inside the input */
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
     }
 
-    .button-alignment-down {
-        margin-bottom: 10px;
+    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
+        color: #2d5799;
     }
 
-    /* Centering the Action Buttons (Save and Refresh) */
+    .dx-datagrid-headers .dx-header-row {
+        background-color: #e7f2fe;
+    }
+
+    .dx-button-add {
+        background-color: #f5f8fb !important;
+        color: red !important;
+        border: 1px solid #b0c4de;
+    }
+
+        .dx-button-add .dx-icon {
+            color: green !important;
+        }
+
     .action-buttons-container {
         display: flex;
         justify-content: center;
-        align-items: center; /* Ensures button is vertically centered */
         margin-top: 20px;
+        flex-wrap: wrap;
     }
 
-    .form-group {
-        margin-bottom: 15px;
-    }
+        .action-buttons-container .dx-button {
+            margin: 5px;
+        }
 
-    /* Center the Add Button in its container */
-    .add-button-container {
-        display: flex;
-        justify-content: center; /* Center the button horizontally */
-        align-items: center; /* Center the button vertically */
-        margin-top: 20px;
-    }
-
-    .container {
-        display: none !important;
-    }
-
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
+    .container,
+    .frame,
+    .footerContainer,
+    .playIcon {
         display: none !important;
     }
 
@@ -72,183 +81,176 @@
         width: 100%;
     }
 
-    .playIcon {
-        display: none;
+    #goToTopBtn {
+        z-index: 100;
     }
 
-    #goToTopBtn{
-        z-index:100;
-    }
-
- </style>
-
-<div class="title">
-    <div class="header-container">
-        <div id="SalesPersonMaster" class="no-border-title"></div>
-    </div>
-</div>
-<div style="padding:2em;">
-
-<div class="content-container-top" >
-    <div class="col-md-12">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
-                .ID("txtSalesPersonName")
-                .Label(new JS("formatMessage('Type a new SalesPerson/ Project Manager & Add to the Existing List')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .Value(null)
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('Sales Person Name Cannot be Empty')"));
-                })
-                )
-        </div>
-    </div>
-    <div class="col-md-12">
-    <div class="form-group" style="display:flex;">
-            <div class="col-md-6" style="padding: 0px 10px 0px 0px;">
-
-            @(
-                Html.DevExtreme().DropDownBox()
-                .Label(new JS("formatMessage('User Code')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("DDlUserId") // Set the ID for the SelectBox
-                .DataSource(d => d.WebApi()
-                .Controller("Master")
-                .LoadAction("GetUserddl")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("UserId")  // Ensure this matches the key field returned by the API
-                )
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('User Code is required')"));
-                })
-                .Placeholder(new JS("formatMessage('Please Select UserCode')"))
-                .ShowClearButton(true)
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(true)
-                .ValueChangeEvent("input")
-                .HoverStateEnabled(true)
-                .ValueExpr("UserId")
-                .DisplayExpr("UserId")
-                .OnInput("dropDownBoxOnInput")
-                .OnOpened("onOpened")
-                .TabIndex(1)
-                .OnKeyDown("onKeyDown")
-                .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
-                )
-        </div>
-         <div class="col-md-6" style="padding: 0px 0px 0px 10px;">
-        @(
-            Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Email Address')"))
-            .LabelMode(EditorLabelMode.Outside)
-            .ID("txtEmailAddress")
-            .OnChange("validateEmail")
-            .Value(null)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired()
-
-                .Message(new JS("formatMessage('Email Address Cannot be Empty')"));
-            })
-            )
-        </div>
-        </div>
-        </div>
-    <div class="col-md-4">
-
-        @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
-        {
-            @(
-                Html.DevExtreme().DataGrid()
-                .ID("clientname-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("Master")
-                .LoadAction("GetUserddl")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("UserId")  // Ensure this matches the key field returned by the API
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true))
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                .OnSelectionChanged("dataGridSelectionChanged")
-                .OnInitialized("dataGridInitialized")
-                .HeaderFilter(p => p.Visible(true))
-                .ShowBorders(true)
-                .HoverStateEnabled(true)
-                .Paging(p => p.PageSize(15))
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(345)
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("UserId").Caption(new JS("formatMessage('User Id')"));  // Ensure this matches the data field returned by the API
-                    columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')")).Alignment(HorizontalAlignment.Center);
-                })
-                )
+    /* Responsive tweaks */
+    @@media (max-width: 768px) {
+        .dx-textbox, .dx-button {
+            width: 100% !important;
         }
 
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+ </style>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
     </div>
+    <h3 class="card-title-text">Sales Person Master</h3>
 </div>
+<div class="container-fluid">
 
-<div class="row g-6" >
-    <div class="col-md-6">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Contact Number')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("txtSalesPersonContactNo")
-                //.OnChange("validateContactNumber")
-                .Value(null)
 
-                )
+    <div class="row gx-3 gy-3">
+        <!-- Row 1: SalesPerson Name, User Code, Email Address -->
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .ID("txtSalesPersonName")
+                                .Label(new JS("formatMessage('Type a new SalesPerson/ Project Manager & Add to the Existing List')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('Sales Person Name Cannot be Empty')"));
+                                })
+                                )
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().DropDownBox()
+                                .Label(new JS("formatMessage('User Code')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("DDlUserId")
+                                .DataSource(d => d.WebApi().Controller("Master").LoadAction("GetUserddl").LoadMode(DataSourceLoadMode.Raw).Key("UserId"))
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('User Code is required')"));
+                                })
+                                .Placeholder(new JS("formatMessage('Please Select UserCode')"))
+                                .ShowClearButton(true)
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(true)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("UserId")
+                                .DisplayExpr("UserId")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .OnKeyDown("onKeyDown")
+                                .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+                                )
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Email Address')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("txtEmailAddress")
+                                .OnChange("validateEmail")
+                                .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('Email Address Cannot be Empty')"));
+                                })
+                                )
+            </div>
+        </div>
+
+        <!-- DataGrid inside the DropDownBox (template) -->
+        <div >
+            @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
+            {
+                @(
+                            Html.DevExtreme().DataGrid()
+                            .ID("clientname-datagrid")
+                            .DataSource(d => d.WebApi().Controller("Master").LoadAction("GetUserddl").LoadMode(DataSourceLoadMode.Raw).Key("UserId"))
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                            .Selection(sl => sl.Mode(SelectionMode.Single))
+                            .OnSelectionChanged("dataGridSelectionChanged")
+                            .OnInitialized("dataGridInitialized")
+                            .HeaderFilter(p => p.Visible(true))
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("UserId").Caption(new JS("formatMessage('User Id')"));
+                                columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')")).Alignment(HorizontalAlignment.Center);
+                            })
+                            )
+                        }
+        </div>
+
+        <!-- Row 2: Contact No, Code, Add Button -->
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Contact Number')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("txtSalesPersonContactNo")
+                                .Value(null)
+                                )
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('SalesPerson/ Project Manager Code')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("txtSalesPersonCode")
+                                .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('Sales Person Code Cannot be Empty')"));
+                                })
+                                )
+            </div>
+            
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().Button()
+                                .ID("btnAddSalesPerson")
+                                .Text(new JS("formatMessage('ADD')"))
+                                .Height(50)
+
+                                .Icon("plus")
+                                .OnClick("function() { addSalesPerson(); }")
+                                .ElementAttr(new { @class = "dx-button-add" })
+                                )
+            </div>
+        </div>
+       
+
+        <div class="col-12 mt-4">
+            <div id="gridContainer"></div>
         </div>
     </div>
-    <!-- Add SalesPerson Code input field -->
-    <div class="col-md-6">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('SalesPerson/ Project Manager Code')"))
-                .LabelMode(EditorLabelMode.Outside)
-                .ID("txtSalesPersonCode")
-                .Value(null)
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('Sales Person Code Cannot be Empty')"));
-                })
-                )
-        </div>
-    </div>
+
 </div>
 
-<!-- Add Button Container -->
-<div class="add-button-container">
-    <div class="form-group">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddSalesPerson")
-            .Text(new JS("formatMessage('ADD')"))
-            .Height(70)
-            .Width(178)
-            .Icon("plus")
-            .OnClick("function() { addSalesPerson(); }")
-            .ElementAttr(new { @class = "dx-button-add" })
-            )
-    </div>
-</div>
-<div class="clear"></div>
-<br />
-<div id="gridContainer"></div>
-</div>
 
 <script type="text/javascript">
             $(function () {
@@ -502,7 +504,7 @@
                     confirmButtonText: 'OK'
                 });
             },
-            height: 400,
+            height: "70%",
             width: "100%"
         });
     });
