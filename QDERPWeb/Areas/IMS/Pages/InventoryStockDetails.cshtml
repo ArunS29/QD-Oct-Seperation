@@ -1050,6 +1050,7 @@
                     </table>
                 </div>
                 <table style="margin-left: 13px;">
+                   
                     <tr>
 
                         <td>
@@ -1059,7 +1060,7 @@
                     .Text(new JS("formatMessage('Print')"))
                     .Icon("print")
                     .Hint("Click to print")
-                    .OnClick("function() { exportDataGridToPDF('stockCardGrid'); }")
+                            .OnClick("function() { exportDataGridToPDF('stockCardGrid','Stock Control'); }")
                     .ElementAttr(new { @class = "bold-button" }) 
                     )
 
@@ -1075,8 +1076,14 @@
                         </td>
                     </tr>
                 </table>
-                <div class="dx-field ledgerResult" style="margin-bottom: 100px">
+                @* <div class="dx-field ledgerResult" style="margin-bottom: 100px"> *@
+                @* <!-- Page Title --> *@
+                @* <h2 style="margin-left: 13px; font-weight: bold;">Stock Control</h2> *@
+
+                <!-- Spacer (optional) -->
+                <div style="height: 20px;"></div>
                     <table style="width:100%; margin-top: 15px;">
+                   
                         <tr>
                             <td>
                             @(Html.DevExtreme().DataGrid()
