@@ -476,72 +476,118 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             public string StoreName { get; set; }
             public string CostAllocationUnitId { get; set; }
         }
+        //[HttpPost]
+        //public IActionResult AddStore([FromBody] StoreMasterInputModel model)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrWhiteSpace(model.StoreId) || string.IsNullOrWhiteSpace(model.StoreName) || string.IsNullOrWhiteSpace(model.CostAllocationUnitId))
+        //        {
+        //            return BadRequest(new { message = "All fields are required." });
+        //        }
+
+        //        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            return Unauthorized(new { message = "Invalid tenant." });
+        //        }
+
+        //        var newStore = new Tbl60001storeMaster
+        //        {
+        //            StoreId = model.StoreId,
+        //            StoreName = model.StoreName,
+        //            CostAllocationUnitId = model.CostAllocationUnitId,
+        //            LedgerNo = null
+        //        };
+
+        //        dbContext.Tbl60001storeMasters.Add(newStore);
+        //        dbContext.SaveChanges();
+
+        //        return Ok(new { message = "Store saved successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "AddStore failed");
+        //        return StatusCode(500, new { message = "An unexpected error occurred. Please try again later.", detailed = ex.Message });
+        //    }
+        //}
+        //public class StoreUpdateDto
+        //{
+        //    public string Key { get; set; }
+        //    public string Values { get; set; } // Will be a JSON string
+        //}
+
+        //[HttpPut]
+        //public IActionResult UpdateStore([FromForm] StoreUpdateDto updateDto)
+        //{
+        //    try
+        //    {
+        //        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //            return Unauthorized(new { message = "Invalid tenant." });
+
+        //        var key = updateDto.Key;
+        //        var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(updateDto.Values);
+
+        //        var existingStore = dbContext.Tbl60001storeMasters.FirstOrDefault(s => s.StoreId == key);
+        //        if (existingStore == null)
+        //            return NotFound(new { message = "Store not found." });
+
+        //        var jsonValues = JsonConvert.SerializeObject(values);
+        //        JsonConvert.PopulateObject(jsonValues, existingStore);
+
+        //        dbContext.SaveChanges();
+        //        return Ok(new { message = "Store updated successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "UpdateStore failed");
+        //        return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
+        //    }
+        //}
         [HttpPost]
-        public IActionResult AddStore([FromBody] StoreMasterInputModel model)
+        public async Task<IActionResult> SaveOrUpdateStore([FromBody] Tbl60001storeMaster model)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                if (string.IsNullOrWhiteSpace(model.StoreId) || string.IsNullOrWhiteSpace(model.StoreName) || string.IsNullOrWhiteSpace(model.CostAllocationUnitId))
+                try
                 {
-                    return BadRequest(new { message = "All fields are required." });
+                    bool isDuplicate = await dbContext.Tbl60001storeMasters
+               .AnyAsync(x => x.StoreName == model.StoreName && x.StoreId != model.StoreId);
+
+                    if (isDuplicate)
+                    {
+                        return BadRequest(new { success = false, message = "This Store Name already exists." });
+                    }
+
+                    var existingRecord = await dbContext.Tbl60001storeMasters
+                        .FirstOrDefaultAsync(x => x.StoreId == model.StoreId);
+
+                    if (existingRecord != null)
+                    {
+                        existingRecord.StoreId = model.StoreId;
+                        existingRecord.StoreName = model.StoreName;
+                        existingRecord.CostAllocationUnitId = model.CostAllocationUnitId;
+
+                        await dbContext.SaveChangesAsync();
+
+                        return Ok(new { success = true, message = "Updated successfully", id = model.StoreId });
+                    }
+                    else
+                    {
+                        // ➕ ADD logic (no auto-ID generation here)
+                        dbContext.Tbl60001storeMasters.Add(model);
+                        await dbContext.SaveChangesAsync();
+
+                        return Ok(new { success = true, message = "Saved successfully", id = model.StoreId });
+                    }
                 }
-
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                catch (Exception ex)
                 {
-                    return Unauthorized(new { message = "Invalid tenant." });
+                    _logger.LogError($"Error in SaveOrUpdateStore: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
                 }
-
-                var newStore = new Tbl60001storeMaster
-                {
-                    StoreId = model.StoreId,
-                    StoreName = model.StoreName,
-                    CostAllocationUnitId = model.CostAllocationUnitId,
-                    LedgerNo = null
-                };
-
-                dbContext.Tbl60001storeMasters.Add(newStore);
-                dbContext.SaveChanges();
-
-                return Ok(new { message = "Store saved successfully." });
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "AddStore failed");
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later.", detailed = ex.Message });
-            }
-        }
-        public class StoreUpdateDto
-        {
-            public string Key { get; set; }
-            public string Values { get; set; } // Will be a JSON string
-        }
 
-        [HttpPut]
-        public IActionResult UpdateStore([FromForm] StoreUpdateDto updateDto)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { message = "Invalid tenant." });
-
-                var key = updateDto.Key;
-                var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(updateDto.Values);
-
-                var existingStore = dbContext.Tbl60001storeMasters.FirstOrDefault(s => s.StoreId == key);
-                if (existingStore == null)
-                    return NotFound(new { message = "Store not found." });
-
-                var jsonValues = JsonConvert.SerializeObject(values);
-                JsonConvert.PopulateObject(jsonValues, existingStore);
-
-                dbContext.SaveChanges();
-                return Ok(new { message = "Store updated successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "UpdateStore failed");
-                return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
-            }
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
 
 
@@ -1831,7 +1877,31 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpDelete]
+        public IActionResult Delete1(string key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl60001storeMasters.FirstOrDefault(x => x.StoreId == key);
+                    if (record == null)
+                        return NotFound();
 
+
+                    dbContext.Tbl60001storeMasters.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete: {ex}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
 
     }
 }
