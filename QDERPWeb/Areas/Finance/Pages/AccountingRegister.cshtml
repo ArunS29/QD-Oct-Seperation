@@ -650,7 +650,7 @@
 			.Visible(true);
 
 
-					columns.AddFor(m => m.DrAmount)
+					columns.AddFor(m => m.ConvertedDrAmount)
 					.Caption(new JS("formatMessage('Debit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -660,12 +660,12 @@
 								 		</text>)
 					.CellTemplate(@<text>
 						   			<div class="debit-pill">
-						   				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+						   				<%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 						   			</div>
 						   		</text>)
 					.Visible(true);
 
-					columns.AddFor(m => m.CrAmount)
+					columns.AddFor(m => m.ConvertedCrAmount)
 					.Caption(new JS("formatMessage('Credit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -675,11 +675,11 @@
 								 		</text>)
 					.CellTemplate(@<text>
 						   			<div class="credit-pill">
-						   				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+						   				<%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 						   			</div>
 						   		</text>)
 					.Visible(true);
-					columns.AddFor(m => m.ConvertedCrAmount)
+					columns.AddFor(m => m.CrAmount)
 					.Caption("Trans Credit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
@@ -709,14 +709,14 @@
 						})();
 					</script>
 
-					<%- data.ConvertedCrAmount != null
-					? data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+					<%- data.CrAmount != null
+					? data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 					: "0.00"
 					%>
 				</div>
 			</text>)
 					.Visible(false);
-					columns.AddFor(m => m.ConvertedDrAmount)
+					columns.AddFor(m => m.DrAmount)
 					.Caption("Trans Debit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
@@ -745,8 +745,8 @@
 						})();
 					</script>
 
-					<%- data.ConvertedDrAmount != null
-					? data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+					<%- data.DrAmount != null
+					? data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 					: "0.00"
 					%>
 				</div>
