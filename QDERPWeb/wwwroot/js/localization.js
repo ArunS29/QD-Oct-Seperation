@@ -3640,11 +3640,13 @@ var dictionary = {
         "Country of Origin": "Country of Origin",
         "Min Selling Price": "Min Selling Price",
         "Max Selling Price": "Max Selling Price",
-        "Cost Center":"Cost Center",
+        "Cost Center": "Cost Center",
+        "Add New Proforma Invoice Edit":"Add New Proforma Invoice Edit",
         
  
     },
     ar: {
+        "Add New Proforma Invoice Edit":"هذا هو النموذج الجديد في تحرير الصوت.",
         "ReceiptChildSlNo": "Receipt Child Sl No - رقم تسلسل استلام الفرع",
         "Transactions": "Transaction Description - وصف المعاملة",
         "OpeningBalanceQty": "Opening Balance Qty - كمية الرصيد الافتتاحي",
@@ -6617,6 +6619,7 @@ var dictionary = {
         "Type new Job Order Status Master && Add to the Existing List:": ":أدخل حالة أمر العمل الجديدة وأضفها إلى القائمة الحالية"
     },
     zh: {
+        "Add New Proforma Invoice Edit": "添加新的形式发票编辑",
         "Registers": "登记簿",
         "Transactions": "交易",
         "Cash Payment Voucher": "现金付款凭证",
@@ -9429,8 +9432,10 @@ var dictionary = {
 
 
 
+
     },
     hi: {
+        "Add New Proforma Invoice Edit":"यह वॉयस एडिट में एक नया प्रोफार्मा है।",
         "Registers": "रजिस्टर",
         "Transactions": "लेन-देन",
         "Cash Payment Voucher": "नकद भुगतान वाउचर",
@@ -12395,6 +12400,7 @@ var dictionary = {
         "Tax Summary Report – Debit Notes": "कर सारांश रिपोर्ट - डेबिट नोट्स"
     },
     ur: {
+        "Add New Proforma Invoice Edit": "نیا پروفارما انوائس ایڈٹ شامل کریں",
         "Registers": "رجسٹرز",
         "Transactions": "لین دین",
         "Cash Payment Voucher": "نقد ادائیگی ووچر",
@@ -15448,6 +15454,7 @@ var dictionary = {
     },
 
     ko: {
+        "Add New Proforma Invoice Edit": "새 견적 송장 편집 추가",
         "Registers": "등록부",
         "Transactions": "거래",
         "Cash Payment Voucher": "현금 지출 전표",
