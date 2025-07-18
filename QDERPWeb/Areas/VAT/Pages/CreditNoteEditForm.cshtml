@@ -414,6 +414,15 @@
 		<div id="CreditNoteEditForm" class="no-border-title"></div>
 	</div>
 </div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="CreditNoteEditForm" class="titleText no-border-title"></div>
+	</div>
+</div>
+
 <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice">
 		<i class="dx-icon-plus"></i> Add Line Item
@@ -5216,10 +5225,9 @@ openModal(url, title);
 					$("#CreditNoteEditForm").dxTextBox({
 						text: formatMessage("New e-Invoice Credit Note"),
 						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textcolor-heading");
 							}
-
 					});
 				});
 				$(function () {

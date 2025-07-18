@@ -365,6 +365,11 @@
 		width: 100%;
 	}
 
+	.custom-hover-button.add-hover:hover {
+		background-color: #e6f7ff;
+		border-color: #91d5ff;
+	}
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -374,6 +379,15 @@
 		<div id="ProformaInvoiceEditForm" class="no-border-title"></div>
 	</div>
 </div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="ProformaInvoiceEditForm" class="titleText no-border-title"></div>
+	</div>
+</div>
+
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
 		<div class="horizontal-container">
@@ -408,7 +422,7 @@
 															)
 							</td>
 							<td>
-								<div style="display: flex; align-items: end; gap:3px">
+								<div style="display: flex; align-items: end; gap:3px;">
 									<div style="flex-grow: 1;">
 										@(Html.DevExtreme().DropDownBox()
 																				.Label(new JS("formatMessage('Client Name:')"))
@@ -430,29 +444,38 @@
 																				.ValueExpr("AccountId")
 																				.DisplayExpr("AccountHead")
 																				.LabelMode(EditorLabelMode.Floating)
-																	            .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
-																			
+																				.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+																				.Buttons(buttons =>
+																				{
+										  										// ➕ Add button inside the input
+																					buttons.Add()
+																					.Name("addClient")
+																					.Location(TextEditorButtonLocation.After)
+																					.Widget(w => w.Button()
+																					.Type(ButtonType.Default)
+																					.Icon("plus")
+																					.Hint("Add Client")
+																					.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																					.OnClick("showLedgerAccountPopup")); 
+																					// Or your create function
+
+																					// ✏️ Edit button inside the input
+																					buttons.Add()
+																					.Name("editClient")
+																					.Location(TextEditorButtonLocation.After)
+																					.Widget(w => w.Button()
+																					.Type(ButtonType.Default)
+																					.Icon("edit")
+																					.Hint("Edit Client")
+																					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+																					.OnClick("onEditClientClick"));
+																					buttons.Add()
+																					.Name("dropDown");
+																				})
 																				)
 									</div>
-
-									@(Html.DevExtreme().Button()
-																			.ID("AddDebit")
-																			.Icon("plus")
-																			.Hint("Add Description")
-																			.Width(40)
-																			 .ElementAttr("style","margin-top:15px;")
-																		.OnClick("showLedgerAccountPopup")
-																			)
-
-									@(Html.DevExtreme().Button()
-																			.ID("EditDebit")
-																			.Icon("edit")
-																			.Hint("Edit Description")
-																		.OnClick("showLedgerAccountPopup")
-																			 .ElementAttr("style","margin-top:15px;").Width(40)
-																		.OnClick("onEditClientClick") // 👈 Attach handler
-																			)
 								</div>
+
 								@(Html.DevExtreme().Popup()
 																.ID("ledgerAccountPopup")
 																.Width("80%")
@@ -805,209 +828,192 @@
 				<div class="card-container">
 					<!-- Left Card: Foreign Currency Billing -->
 					
-					<table style="width:40%; font-size:14px; margin:5px;" cellpadding="5">
-							<tr>
+					<table style="width:100%; font-size:12px; margin:5px;" cellpadding="2">
+						@* 	<tr>
 								<th>Foreign Currency Billing</th>
-							</tr>
-							
-							<tr>
-								<td>
-									<div style="display: flex; align-items: end; gap: 5px;">
-										@(Html.DevExtreme().DropDownBox()
-																				.Label(new JS("formatMessage('Currency')"))
-																				.DataSource(d => d.WebApi()
-																				.Controller("VATModule")
-																				.LoadAction("GetTaxCurrency")
-																				.LoadMode(DataSourceLoadMode.Raw)
-																				.Key("CurrencyExchangeId"))
-																				.LabelMode(EditorLabelMode.Floating)
-																				.ID("ddlGoodsGroup4")
-																				.ShowClearButton(true)
-																				.Value("Saudi Arabian Riyals")
-																				.AcceptCustomValue(true)
-																				.OpenOnFieldClick(false)
-																				.ValueChangeEvent("input")
-																				.HoverStateEnabled(true)
-																				.ValueExpr("CurrencyExchangeId")
-																				.DisplayExpr("CurrencyName")
-																				.OnInput("dropDownBoxOnInput")
-																				.OnOpened("onOpened")
-																				.TabIndex(1)
-																				.DropDownOptions(o => o.Width(1000))
-																				@* .Disabled(true) *@
-																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-																				.Width("90%"))
+							</tr> *@
+
+						<tr>
+							<!-- Currency Dropdown -->
+							<td style="width: 30%;">
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('Currency')"))
+																.DataSource(d => d.WebApi()
+																.Controller("VATModule")
+																.LoadAction("GetTaxCurrency")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("CurrencyExchangeId"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddlGoodsGroup4")
+																.ShowClearButton(true)
+																.Value("Saudi Arabian Riyals")
+																.AcceptCustomValue(true)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.ValueExpr("CurrencyExchangeId")
+																.DisplayExpr("CurrencyName")
+																.OnInput("dropDownBoxOnInput")
+																.OnOpened("onOpened")
+																.TabIndex(1)
+																.DropDownOptions(o => o.Width(1000))
+																.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+																.Width("100%")
+																.Buttons(buttons =>
+																{
+																	buttons.Add()
+																	.Name("btnAddAccount")
+																	.Location(TextEditorButtonLocation.After)
+																	.Widget(w => w.Button()
+																	.Type(ButtonType.Default)
+																	.Icon("plus")
+																	.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																	.OnClick("onEditCurrencyClick"));
+																	buttons.Add().Name("dropDown");
+																}))
+								   							</td>
+
+							<!-- Less: Advance Section -->
+							<td>
+								<div style="display: flex; align-items: center; gap: 10px;">
+									@(Html.DevExtreme().TextBox()
+																		.ID("LessAdvance")
+																		.Value("Less: Advance")
+																		.Width(180))
+
+									<div style="display: flex; align-items: center; gap: 5px; width: 180px;">
+										@(Html.DevExtreme().NumberBox()
+																				.ID("currencyexchangerate3")
+																				.Min(1)
+																				.Step(1)
+																				.ShowSpinButtons(true)
+																				.Width("100%"))
+
 										@(Html.DevExtreme().Button()
-																				.ID("EditClient1")
-																				.Icon("edit")
-																				.Hint("Edit Description")
-																				.Width(60)
-																				)
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate")
-																			.Label(new JS("formatMessage('Currency Exchange Rate:')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Value(1)
-																			.Width("87%")
-                                     )
-								</td>
-							</tr>
-						</table>
-					
-					<!-- Right Card: Deductions -->
-					
-						<table width="1000px" style="font-size:14px; margin:5px;" cellpadding="2">
-							<tr>
-								<th>Deductions:Advance / Retention</th>
-							</tr>
-							<tr>
-
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("LessAdvance")
-																			.Value("Less: Advance")
-																			.Width("90%")) <!-- Added Width -->
-								</td>
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate3")
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Width("90%")) <!-- Fixed pixel size -->
-
-								</td>
-								<td>
-									@* <span class="input-group-prepend" style="width: 0px;"> *@
-									@(
-																			Html.DevExtreme().Button()
-																			.ID("convertToArabic1")
-																			.Height(0)
-																			.Width("65%")
-																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
-																			.ElementAttr(new { @class = "input-button" })
-																			.OnClick("function() { AdvanceconvertToArabic(); }")
-																			)
-									@* </span> *@
-								</td>
-								<td>
-									@(
-																			Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("LessAdvanceAr")
-																			.Value("اقب المسبق")
-																			.Width("100%")
-																			.RtlEnabled(true)
-																			)
-
-								</td>
-
-							</tr>							
-
-							<tr>
-
-								<td >
-									@(Html.DevExtreme().TextBox()
-																			.ID("LessRetention")
-																			.Value("Less: Retention")
-																			.Width("90%")) <!-- Added Width -->
-								</td>
-
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate5")
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Width("90%"))
-								</td>
-								<td>
-									<span class="input-group-prepend" style="margin-right: 10px;">
-										@(
-																				Html.DevExtreme().Button()
-																				.ID("convertToArabic3")
-																				.Width("65%")
-																				.Icon("fas fa-language") // Ensure Font Awesome class is correct
+																				.ID("convertToArabic1")
+																				.Width(79)
+																				.Icon("fas fa-language")
 																				.ElementAttr(new { @class = "input-button" })
-																				.OnClick("function() { RetentionconvertToArabic(); }")
-																				)
-									</span>
-								</td>
-								<td>
-									@(
-																			Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("LessAdvanceAr2")
-																			.Value("احتفاظ أقل")
-																			.Width("100%")
-																			.RtlEnabled(true)
-																			)
-
-								</td>
-
-							</tr>
-							<tr>
-								<td colspan="2">
-									@(Html.DevExtreme().CheckBox()
-																			.Text(new JS("formatMessage('Verified By')"))
-																			.ID("VerifiedBy")
-																			.Value(null) // Default value
-																			)
+																				.OnClick("function() { AdvanceconvertToArabic(); }"))
+																							 									</div>
 
 									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Verified By')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("VerifiedBytext")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("95%")
-																			)
+																		.ID("LessAdvanceAr")
+																		.Label(new JS("formatMessage('')"))
+																		.LabelMode(EditorLabelMode.Floating)
+																		.Value("اقب المسبق")
+																		.RtlEnabled(true)
+																		.Width(200))
+												   								</div>
+												   							</td>
+
+							<!-- Verified By and On -->
+							<td style="width: 35%;">
+								<div style="display: flex; align-items: center; gap: 10px;">
+									<div style="display: flex; align-items: center; gap: 10px; width: 50%;">
+										
+										@(Html.DevExtreme().TextBox()
+																				.ID("VerifiedBytext")
+																				.Label(new JS("formatMessage('Verified By')"))
+																				.LabelMode(EditorLabelMode.Floating)
+																				.Disabled(true)
+																				.Width("100%"))
+													   									</div>
+
+									<div style="flex-grow: 1;">
+										@(Html.DevExtreme().TextBox()
+																				.Label(new JS("formatMessage('Verified On')"))
+																				.LabelMode(EditorLabelMode.Floating)
+																				.ID("VerifiedOnDate")
+																				.Disabled(true)
+																				.Width("100%"))
+													   									</div>
+													   								</div>
+													   							</td>
+													   						</tr>
+
+						<tr>
+							<!-- Currency Exchange Rate -->
+							<td style="width: 30%;">
+								@(Html.DevExtreme().NumberBox()
+																.ID("currencyexchangerate")
+																.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.Min(1)
+																.Step(1)
+																.ShowSpinButtons(true)
+																.Value(1)
+																.Width("100%"))
+											   							</td>
+
+							<!-- Less: Retention -->
+							<td>
+								<div style="display: flex; align-items: center; gap: 10px;">
+								@(Html.DevExtreme().TextBox()
+																.ID("LessRetention")
+																.Value("Less: Retention")
+																.Width(180))
+											   							
+
+							<!-- Retention Amount -->
+							<div style="display: flex; align-items: center; gap: 5px; width: 180px;">
+								@(Html.DevExtreme().NumberBox()
+																.ID("currencyexchangerate5")
+																.Min(1)
+																.Step(1)
+																.ShowSpinButtons(true)
+																.Width("100%"))
+											   								
+
+							<!-- Retention Convert to Arabic Button -->
+						
+								@(Html.DevExtreme().Button()
+																.ID("convertToArabic3")
+																.Width(79)
+																.Icon("fas fa-language")
+																.ElementAttr(new { @class = "input-button" })
+																.OnClick("function() { RetentionconvertToArabic(); }"))
+																					   						</div>	
+																					   						
+
+							<!-- Arabic Text -->
+							
+								@(Html.DevExtreme().TextBox()
+																.ID("LessAdvanceAr2")
+																.Label(new JS("formatMessage('')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.Value("احتفاظ أقل")
+																.RtlEnabled(true)
+																.Width(200))
+											   				</div>	</td>
+											   							
+
+							<!-- Approved By -->
+							<td style="width: 35%;">
+								<div style="display: flex; align-items: center; gap: 10px;">
+									<div style="display: flex; align-items: center; gap: 10px; width: 50%;">
+								
+									@(Html.DevExtreme().TextBox()
+																		.Label(new JS("formatMessage('Approved By')"))
+																		.LabelMode(EditorLabelMode.Floating)
+																		.ID("ApprovedBytext")
+																		.Disabled(true)
+																		.Width("100%"))</div>
+													   									<div style="flex-grow: 1;">
 
 									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Verified On')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("VerifiedOnDate")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("95%")
-																			)
-								</td>
+																		.Label(new JS("formatMessage('Approved On')"))
+																		.LabelMode(EditorLabelMode.Floating)
+																		.ID("ApprovedOntext")
+																		.Disabled(true)
+																		.Width("100%"))
 
-								<td colspan="2">
+									</div>
+								</div>
+							</td>
+						</tr>
 
-									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-																			.ID("ApprovedBy")
-																			.Value(null) // Default value
-																			)
-									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Approved By')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ApprovedBytext")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("100%")
-																			@* .Disabled(true) *@
-																			)
-									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Approved On')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ApprovedOntext")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("100%")
-																			)
-								</td>
-							</tr>
+							
 					</table>
 				
 				</div>
@@ -1037,41 +1043,46 @@
 				.ContentTemplate(new TemplateName("BranchAndDivisionTemplate"))
             )
         </td>
-		<td style="display: flex; align-items: end;">
-            @(Html.DevExtreme().DropDownBox()
-                .Label(new JS("formatMessage('Sales Person/Co-Ordinator:')"))
-                .ID("ddlSalesPerson")
-                .DataSource(d => d.WebApi()
-                    .Controller("VATModule")
-					.LoadAction("GetSalesPerson")
-                    .LoadMode(DataSourceLoadMode.Raw)
-				    .Key("SalesPersonCode"))
-                .AcceptCustomValue(true)
-                .OpenOnFieldClick(false)
-                .ValueChangeEvent("input")
-                .HoverStateEnabled(true)
-				.Width("100%")
-				.ValueExpr("SalesPersonCode")
-                .DisplayExpr("SalesPersonName")
-                .LabelMode(EditorLabelMode.Floating)
-				.ContentTemplate(new TemplateName("SalesPersonTemplate"))
+							<td style="display: flex; align-items: end; width: 100%;">
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('Sales Person/Co-Ordinator:')"))
+																.ID("ddlSalesPerson")
+																.DataSource(d => d.WebApi()
+																.Controller("VATModule")
+																.LoadAction("GetSalesPerson")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("SalesPersonCode"))
+																.AcceptCustomValue(true)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.Width("100%")
+																.ValueExpr("SalesPersonCode")
+																.DisplayExpr("SalesPersonName")
+																.LabelMode(EditorLabelMode.Floating)
+																.ContentTemplate(new TemplateName("SalesPersonTemplate"))
+																.Buttons(buttons =>
+																{
+																	buttons.Add()
+																	.Name("addSalesPerson")
+																	.Location(TextEditorButtonLocation.After)
+																	.Widget(w => w.Button()
+																	.Type(ButtonType.Default)
+																	.Icon("plus")
+																	.Hint("Add Sales Person")
+																	.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																	.OnClick("onAddSalesPersonClick")); // 👈 Your JS function here
+																	buttons.Add()
+																	.Name("dropDown");
+																})
+																)
+							</td>
 
-            )
-       
-     
-            @(Html.DevExtreme().Button()
-                .ID("AddSalesPerson")
-                .Icon("plus")
-                .Hint("Add Description")
-                .Width(60)
-               @*  .ElementAttr("style", "margin-bottom:6px;")  *@
-            )
-        </td>
    
         
    
         <!-- DateBox -->
-        <td style="width: 50%;">
+        <td>
             @(Html.DevExtreme().DateBox()
                 .Label(new JS("formatMessage('Invoice Submitted On')"))
                 .ID("InvoiceSubmittesOn")
@@ -1082,7 +1093,7 @@
         </td>
 
         <!-- CheckBox + TextBox in Flex Layout -->
-        <td style="width: 50%;">
+        <td>
             <div style="display: flex; align-items: flex-end; gap: 10px;">
                 @(Html.DevExtreme().CheckBox()
                     .Text(new JS("formatMessage('')"))
@@ -1142,6 +1153,8 @@
 																			.Icon("plus")
 																			.ElementAttr(new { @class = "custom-hover-button add-hover" })
 																			.OnClick("navigateToLedgerAccountForm"));
+																			buttons.Add()
+																			.Name("dropDown");
 																		})
 																		)
 								</div>
@@ -1180,6 +1193,8 @@
 																			.Icon("plus")
 																			.ElementAttr(new { @class = "custom-hover-button add-hover" })
 																			.OnClick("navigateToLedgerAccountForm"));
+																			buttons.Add()
+																			.Name("dropDown");
 																		})
 																		)
 								</div>
@@ -1219,6 +1234,8 @@
 																			.Hint("Add New Signatory")
 																			.ElementAttr(new { @class = "custom-hover-button add-hover" })
 																			.OnClick("navigateToLedgerAccountForm"));
+																			buttons.Add()
+																			.Name("dropDown");
 																		})
 																		)
 								</div>
@@ -1493,7 +1510,7 @@
 						)
 		</div>
 
-		<div class="Head" style="margin-left: 15px;">
+		<div class="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATProformaInvoiceEditFooter.cshtml")
 		</div>
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
@@ -4652,7 +4669,7 @@
 						text: formatMessage("Proforma Invoice Edit Form"),
 						readOnly: true,
 									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
+									$(e.element).addClass("dx-textcolor-heading");
 							}
 
 					});
@@ -5862,20 +5879,22 @@
 
         // Proceed with edit logic (e.g., open modal or navigate)
         console.log("Client selected: ", clientId);
+		 showLedgerAccountPopup();
+		 showLedgerAccountEditPopup();
         // yourEditFunction(clientId); // call your edit method here
     }
-			 function onEditClientClick() {
-		var clientId = $("#ddlClientNameAr").dxDropDownBox("option", "value");
+		// 	 function onEditClientClick() {
+		// var clientId = $("#ddlClientNameAr").dxDropDownBox("option", "value");
 
-        if (!clientId) {
-            DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
-            return;
-        }
+  //       if (!clientId) {
+  //           DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
+  //           return;
+  //       }
 
-        // Proceed with edit logic (e.g., open modal or navigate)
-        console.log("Client selected: ", clientId);
-        // yourEditFunction(clientId); // call your edit method here
-    }
+  //       // Proceed with edit logic (e.g., open modal or navigate)
+  //       console.log("Client selected: ", clientId);
+  //       // yourEditFunction(clientId); // call your edit method here
+  //   }
 
 			 $("#btnSaveAndClose").on("click", function (e) {
 
@@ -7051,6 +7070,34 @@
 			// Correct URL to your LedgerAccount view
 				$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
 		}
-
+			function onEditCurrencyClick() {
+		const url = `/${tenantName}/VAT/EditCurrency`; // Replace with your actual route
+		const title = "Edit Currency";
+		openModal(url, title, function () {
+			const ddl = $("#ddlGoodsGroup4").dxDropDownBox("instance");
+			if (ddl) {
+				ddl.getDataSource().reload();
+			}
+		});
+	}
+		function onAddSalesPersonClick() {
+		const url = `/${tenantName}/VAT/AddSalesPerson`; // update to your actual route
+		const title = "Add Sales Person";
+		openModal(url, title, function () {
+			const dropdown = $("#ddlSalesPerson").dxDropDownBox("instance");
+			if (dropdown) {
+				dropdown.getDataSource().reload();
+				dropdown.option("value", null); // optional: clear selected value after add
+			}
+		});
+	}
+	function onVerifiedByCheckChanged(e) {
+		const isChecked = e.value;
+		const textBox = $("#VerifiedBytext").dxTextBox("instance");
+		textBox.option("disabled", !isChecked);
+		if (!isChecked) {
+			textBox.option("value", "");
+		}
+	}
 </script>
 

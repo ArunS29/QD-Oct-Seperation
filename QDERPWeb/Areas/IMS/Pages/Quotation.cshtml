@@ -326,7 +326,7 @@
 			});
 			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
 
 
 
@@ -335,13 +335,73 @@
 
 			columns.Add().Caption(new JS("formatMessage('Quoted Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		let value = Math.abs(e.value);
+		return value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		let value = Math.abs(e.value);
+		return value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
+    function(e) {
+        if (e.value === null || e.value === undefined) {
+            return '';
+        }
+        let value = Math.abs(e.value);
+       return value.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+    }
+");
 
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
+    function(e) {
+        if (e.value === null || e.value === undefined) {
+            return '';
+        }
+		let value = Math.abs(e.value);
+
+		return value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+    }
+");
+
+
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
+    function(e) {
+        if (e.value === null || e.value === undefined) {
+            return '';
+        }
+        let value = Math.abs(e.value);
+		return value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+    }
+");
 
 			});
 			
@@ -391,7 +451,8 @@
 				items.Add().Column("QuoteNo")
 			.SummaryType(SummaryType.Count)
 			.DisplayFormat("No of Quotation: {0}");
-				items.Add().Column("NoOfItems")
+				
+			items.Add().Column("NoOfItems")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"
 		function(e) {
@@ -399,7 +460,7 @@
 		return '';
 		}
 		return e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
+		minimumFractionDigits: 0,
 		maximumFractionDigits: 2
 		});
 		}
@@ -467,6 +528,35 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+
+
+			 $(function () {
+				const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#frmdateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#frmdateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
+			 $(function () {
+				const dateBox = $("#todateBox").dxDateBox("instance");
+
+				// When focus/typing starts, change to dd-MM-yyyy
+				$("#todateBox").on("focusin", function () {
+					dateBox.option("displayFormat", "dd-MM-yyyy");
+				});
+
+				// When focus/typing ends, change back to dd-MMM-yyyy
+				$("#todateBox").on("focusout", function () {
+					dateBox.option("displayFormat", "dd-MMM-yyyy");
+				});
+			});
+
 		 $(function () {
 	$("#Quotation").dxTextBox({
 	text: formatMessage("Quotation"),
@@ -618,7 +708,7 @@
 						data: JSON.stringify(quoteNo),
 						success: function (response) {
 							DevExpress.ui.notify(response.message, "success", 2000);
-							$("#dataGrid").dxDataGrid("instance").refresh();
+								  ddBtnShowRecords_click('range');
 						},
 						error: function (xhr) {
 							let msg = xhr.responseJSON?.message || "Duplication failed.";
@@ -648,7 +738,7 @@
 					}
 				},
 				{
-		text: "Unlock the Quotation",  // ? Corrected closing quote
+		text: "Unlock the Quotation", 
 		icon: "unlock",
 		onItemClick: function () {
 			const QuoteNo = e.row.data.QuoteNo;
@@ -657,11 +747,11 @@
 				url: "/api/Quotation/UnlockQuotation",
 				type: "POST",
 				contentType: "application/json",
-				data: JSON.stringify({ QuoteNo: QuoteNo }), // ? sending request data
+				data: JSON.stringify({ QuoteNo: QuoteNo }),
 				success: function (response) {
 					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
 					if (response.success) {
-						ddBtnShowRecords_click('range'); // ? refresh or reload the grid
+						ddBtnShowRecords_click('range'); 
 					}
 				},
 				error: function (xhr) {
@@ -689,13 +779,13 @@
 				if (!result) return;
 
 				$.ajax({
-					url: "/api/Quotation/ReviseQuotation",  // 🔁 Your new API
+					url: "/api/Quotation/ReviseQuotation",  
 					type: "POST",
 					contentType: "application/json",
 					data: JSON.stringify(quoteNo),
 					success: function (response) {
 						DevExpress.ui.notify(response.message, "success", 2000);
-						$("#dataGrid").dxDataGrid("instance").refresh();
+							  ddBtnShowRecords_click('range');
 
 						if (response.newQuoteNo) {
 							const tenantName = window.tenantName || "defaultTenant";
@@ -780,7 +870,7 @@
 			success: function (response) {
 				if (response.success) {
 					DevExpress.ui.notify(response.message, 'success', 2000);
-					$("#dataGrid").dxDataGrid("instance").refresh();
+						  ddBtnShowRecords_click('range');
 				} else {
 					DevExpress.ui.notify(response.message, 'error', 3000);
 				}
