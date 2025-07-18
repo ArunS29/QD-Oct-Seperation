@@ -3602,7 +3602,263 @@ var dictionary = {
         "Country of Origin": "Country of Origin",
         "Min Selling Price": "Min Selling Price",
         "Max Selling Price": "Max Selling Price",
-        "Cost Center":"Cost Center",
+        "Cost Center": "Cost Center",
+       
+        "Type a New Property Group & Add to the Existing List:": "Type a New Property Group & Add to the Existing List:",
+        "Property Group Code": "Property Group Code",
+        "Equipment/Assets": "Equipment/Assets",
+
+        "Current Status": "Current Status",
+
+        "Property No": "Property No",
+
+        "Description": "Description",
+
+        "Serial No": "Serial No",
+
+        "Plate No": "Plate No",
+
+        "Model": "Model",
+
+        "Capacity": "Capacity",
+
+        "Property Classification": "Property Classification",
+
+        "Group": "Group",
+
+        "Category": "Category",
+
+        "Property Type": "Property Type",
+
+        "Mobilization Details": "Mobilization Details",
+
+        "Mobilized To": "Mobilized To",
+
+        "Mobilized On": "Mobilized On",
+
+        "client Rate Per Hour": "client Rate Per Hour",
+
+        "Hired Details": "Hired Details",
+
+        "Supplier PONo": "Supplier PONo",
+
+        "Supplier Ref No": "Supplier Ref No",
+
+        "Hired On": "Hired On",
+
+        "Supplier Name": "Supplier Name",
+
+        "Hiring Rate/Hour": "Hiring Rate/Hour",
+
+        "Hiring Rate/Month": "Hiring Rate/Month",
+
+        "Operator Details": "Operator Details",
+
+        "Equipment Operator ID": "Equipment Operator ID",
+
+        "Equipment Operator Name": "Equipment Operator Name",
+
+        "Operator Work Start Date": "Operator Work Start Date",
+
+        "Hide the columns Details": "Hide the columns Details",
+
+        "PropertyCategory": "PropertyCategory",
+
+        "Specifications": "Specifications",
+
+        "Brand": "Brand",
+
+        "DoorNo": "DoorNo",
+
+        "Color": "Color",
+
+        "Year": "Year",
+
+        "Ownership": "Ownership",
+
+        "PurchaseDate": "PurchaseDate",
+
+        "PurchasedAs": "PurchasedAs",
+
+        "BuyingRatePerDay": "BuyingRatePerDay",
+
+        "SellingRatePerHour": "SellingRatePerHour",
+
+        "SellingRatePerDay": "SellingRatePerDay",
+
+        "SellingRatePerMonth": "SellingRatePerMonth",
+
+        "PropertyCondition": "PropertyCondition",
+
+        "IsFinanced": "IsFinanced",
+
+        "FinancedFrom": "FinancedFrom",
+
+        "ValueOfProperty": "ValueOfProperty",
+
+        "InitialDownPayment": "InitialDownPayment",
+
+        "InitialDocCharges": "InitialDocCharges",
+
+        "MonthlyInstallment": "MonthlyInstallment",
+
+        "NoOfInstallments": "NoOfInstallments",
+
+        "InstallmentStartDate": "InstallmentStartDate",
+
+        "InstallmentEndDate": "InstallmentEndDate",
+
+        "FinalInstallment": "FinalInstallment",
+
+        "DepreciationMethod": "DepreciationMethod",
+
+        "LifeSpanOfProperty": "LifeSpanOfProperty",
+
+        "ScrapValueOfProperty": "ScrapValueOfProperty",
+
+        "CreatedBy": "CreatedBy",
+
+        "CreatedOn": "CreatedOn",
+
+        "ModifiedBy": "ModifiedBy",
+
+        "ModifiedOn": "ModifiedOn",
+
+        "IsDiscontinued": "IsDiscontinued",
+
+        "DiscontinuedOn": "DiscontinuedOn",
+
+        "DiscontinuedRemarks": "DiscontinuedRemarks",
+
+        "PropertyDescription": "PropertyDescription",
+
+        "ModelType": "ModelType",
+
+        "Weight": "Weight",
+
+        "LxWxH": "LxWxH",
+
+        "PlatformHeight": "PlatformHeight",
+
+        "OperatingCapacity": "OperatingCapacity",
+
+        "OperatingWeight": "OperatingWeight",
+
+        "AddlSpec1": "AddlSpec1",
+
+        "AddlSpec2": "AddlSpec2",
+
+        "AddlSpec3": "AddlSpec3",
+
+        "AddlField1": "AddlField1",
+
+        "AddlField2": "AddlField2",
+
+        "AddlField3": "AddlField3",
+
+        "PurchasedFrom": "PurchasedFrom",
+
+        "PurchasedAs2": "PurchasedAs2",
+
+        "PropertyCondition2": "PropertyCondition2",
+
+        "HiringMode": "HiringMode",
+
+        "HiredFrom": "HiredFrom",
+
+        "IsOperatorIncluded": "IsOperatorIncluded",
+
+        "OperatorCode": "OperatorCode",
+
+        "OperatorRate": "OperatorRate",
+
+        "IsReturned": "IsReturned",
+
+        "ReturnedOn": "ReturnedOn",
+
+        "ReturnedRemarks": "ReturnedRemarks",
+
+        "FinancingCompanyName": "FinancingCompanyName",
+
+        "OperatorName": "OperatorName",
+
+        "PropertySuppliedBy": "PropertySuppliedBy",
+
+        "PropertyGroupId": "PropertyGroupId",
+
+        "Operator": "Operator",
+
+        "PropertyGroupCode": "PropertyGroupCode",
+
+        "FinancedBy2": "FinancedBy2",
+
+        "PropertyTypeId": "PropertyTypeId",
+
+        "OperatorContactMobile": "OperatorContactMobile",
+
+        "OperatorContactMobile2": "OperatorContactMobile2",
+
+        "OperatorNationalId": "OperatorNationalId",
+
+        "EngineNo": "EngineNo",
+
+        "AlternatorNo": "AlternatorNo",
+
+        "KvaorKw": "KvaorKw",
+
+        "Location": "Location",
+
+        "IsBreakDown": "IsBreakDown",
+
+        "ClientSite": "ClientSite",
+
+        "OwnershipText": "OwnershipText",
+
+        "SupplierCode": "SupplierCode",
+
+        "IsNeededTimesheet": "IsNeededTimesheet",
+
+        "PropertyRemarks": "PropertyRemarks",
+
+        "PropertyCertification": "PropertyCertification",
+
+        "PropertyPwas": "PropertyPwas",
+
+        "PropertyAttachment": "PropertyAttachment",
+
+        "BuyingOtratePerHour": "BuyingOtratePerHour",
+
+        "BuyingRatePerWeek": "BuyingRatePerWeek",
+
+        "GatePassNo": "GatePassNo",
+
+        "ProjectMasterCode": "ProjectMasterCode",
+
+        "ProjectDescription": "ProjectDescription",
+
+        "SupplierAccountLedgerNo": "SupplierAccountLedgerNo",
+
+        "ClientOvertimeRatePerHour": "ClientOvertimeRatePerHour",
+
+        "UnitRate": "UnitRate",
+
+        "DeliveryNoteMobilizationRate": "DeliveryNoteMobilizationRate",
+
+        "DeliveryNoteDemobilizationRate": "DeliveryNoteDemobilizationRate",
+
+        "ClientUnitMethod": "ClientUnitMethod",
+
+        "SupplierMobRate": "SupplierMobRate",
+
+        "SupplierDemobRate": "SupplierDemobRate",
+
+        "AgreementHours": "AgreementHours",
+
+        "CordinatorName": "CordinatorName"
+
+
+       
+
         
  
     },
