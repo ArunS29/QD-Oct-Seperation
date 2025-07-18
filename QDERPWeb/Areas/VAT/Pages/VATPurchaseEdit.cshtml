@@ -5723,7 +5723,7 @@
 		// }
 
 
-						function onEditorPreparing(e) {
+	function onEditorPreparing(e) {
 		if (e.parentType === "dataRow" &&
 			(e.dataField === "QuantityInvoiced" ||
 				 e.dataField === "UnitRate" ||
@@ -7528,7 +7528,33 @@
 			});
 		});
 
-		
+
+				function addPreviewVoucher() {
+	
+			let voucherId =$("#InvoiceNo").dxTextBox("instance").option("value");
+
+		$.ajax({
+			url: '/api/VATModule/CheckIfPosted',
+			type: 'POST',
+			data: { voucherId: voucherId },
+			success: function(response) {
+				if (response.success) {
+			
+				} else {
+					// Show error message if IsPosted is false
+				
+							DevExpress.ui.dialog.alert(
+											response.message,
+										"Not printed"
+									)
+				}
+			},
+			error: function() {
+				alert('An error occurred while checking the voucher status.');
+			}
+		});
+	}
+
 	
 
 
