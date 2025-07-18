@@ -1,150 +1,120 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<style type="text/css">
-    
-    /* Button Styling */
-    .dx-button {
-        background-color: #909ead00 !important;
-        border: 1px solid #d6e4f0 !important;
-        border-radius: 4px !important;
-        padding: 6px 12px !important; /* Reduced button padding */
-        font-size: 14px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-        transition: all 0.2s ease-in-out !important;
-        height: 39px !important; /* Fixed height */
-    }
-
-        /* Hover Effect for Button */
-        .dx-button:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-            border-color: #86b7fe !important; /* Highlight border */
-        }
-
-    .dx-icon {
-        font-size: 20px !important; /* Adjust size if needed */
-        color: gray !important; /* Adjust color if needed */
-    }
-
-    .dx-button-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .dx-dropdownbutton .dx-button-content {
-        padding: 0 !important;
-    }
-
-    /* .modalTitle{ */
-    /*     display:none; */
-    /* } */
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
-    }
-
-    .button-alignment-down {
-        margin-top: 23px;
-    }
-
-    .button-group {
-        margin-left: 1px !important;
-    }
-
-    
-    /* Custom styles for context menu */
-    .context-menu {
-        display: none;
-        position: absolute;
-        background-color: white;
-        border: 1px solid #ccc;
-        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
-        z-index: 1000;
-    }
-
-    .context-menu-item {
-        padding: 0px, 15px,10px 15px;
-        cursor: pointer;
-    }
-
-    .ledgerResult {
-        margin: 15px !important;
-    }
-
-    #rowHeightMenu {
-        position: absolute;
-        top: 100px; /* Adjust positioning as per your design */
-        left: 300px; /* Adjust positioning as per your design */
-        display: none; /* Keep it hidden until needed */
-    }
-
-
-    .modal-content {
-        position: absolute;
-        top: 40%;
-        left: 50%;
-        transform: translate(-50%, -50%);
-        width: 90%;
-        height: 90%;
-        max-height: 800px;
-        background: white;
-        border-radius: 8px;
-        padding: 0;
-        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
-        overflow: hidden; /* Prevents content overflow */
-    }
-
-    .update-button {
-        font-weight: bold;
-        padding: 10px 20px;
-        background-color: #e0e7f0;
-        border-radius: 6px;
-    }
-
-
-    .btn-containerIvoiceEdit .dx-button {
-        width: 40px !important; /* Small width for just the icon */
-        transition: width 0.3s ease-in-out;
-        overflow: hidden;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        text-align: center;
-    }
-
-    /* On hover, expand the button */
-    .btn-containerIvoiceEdit:hover .dx-button {
-        width: 200px !important;
-    }
-
-    .btn-container:hover #btnAddNewPayment.dx-button {
-        width: 240px !important;
-    }
-
-    /* Keep the icon always visible */
-    .btn-containerIvoiceEdit .dx-button .dx-icon {
-        display: inline-block !important;
-    }
-
-    /* Initially hide text */
-    .btn-containerIvoiceEdit .dx-button .dx-button-text {
-        display: none;
-    }
-
-    /* Show text on hover */
-    .btn-containerIvoiceEdit:hover .dx-button .dx-button-text {
-        display: inline-block;
-        margin-left: 8px; /* optional spacing between icon and text */
-    }
-
-    .multiline-button .dx-button-text {
-        white-space: normal;
-    }
-</style>
-
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
+
+
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Update')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                )
+
+    </div>
+
+    <div class="btn-containers">
+
+        @(Html.DevExtreme().Button()
+                .ID("btnSaveAndClose")
+                .Text(new JS("formatMessage('Save and Close')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                )
+    </div>
+    <div class="btn-containers">
+
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                                   // .OnClick("onBackButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnAttach")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("link")
+                              //.OnClick("onAttachButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnPrint3")
+                .Text(new JS("formatMessage('Print')")) // Using string directly
+                .Icon("print")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .DropDownOptions(options => options.Width(230))
+                .ShowArrowIcon(false)
+                .Items(items =>
+                {
+                    items.Add().Text("Preview DebitNote Invoice").Icon("print");
+                })
+                .OnItemClick("handleDebitReportPrinting")
+                )
+
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnDelete")
+                .Text(new JS("formatMessage('Delete')"))
+                .Icon("close")
+                               //  .OnClick("onDeleteButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
+                )
+    </div>
+
+
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Verify')"))
+                .Icon("check")
+                               // .OnClick("onVerifyButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-verify" })
+                )
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Approve')"))
+                .Icon("exportselected")
+                                        //   .OnClick("onApproveButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-approve" })
+                )
+    </div>
+
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnAddNew")
+                .Text(new JS("formatMessage('Add New Item')"))
+                .Icon("plus")
+                              // .OnClick("addNewRow") // Attach function
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+
+
+
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnPostToLedgers")
+                .Text(new JS("formatMessage('Post to Ledgers')"))
+                .Icon("check")
+                               //.OnClick("onAttachButtonClick")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
+    </div>
+
+
+
 
     <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
@@ -170,116 +140,9 @@
             )
     </div>
 
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnSave")
-            .Text(new JS("formatMessage('Update')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                                                         // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
-            )
+  
+   
 
-    </div>
-
-    <div class="btn-containers">
-
-        @(Html.DevExtreme().Button()
-            .ID("btnSaveAndClose")
-            .Text(new JS("formatMessage('Save and Close')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNew")
-            .Text(new JS("formatMessage('Add New Item')"))
-            .Icon("plus")
-            // .OnClick("addNewRow") // Attach function
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("btnPrint3")
-            .Text(new JS("formatMessage('Print')")) // Using string directly
-            .Icon("print")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            .DropDownOptions(options => options.Width(230))
-            .ShowArrowIcon(false)
-            .Items(items =>
-            {
-                items.Add().Text("Preview DebitNote Invoice").Icon("print");
-            })
-            .OnItemClick("handleDebitReportPrinting")
-            )
-
-    </div>
-
-        <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnDelete")
-            .Text(new JS("formatMessage('Delete')"))
-            .Icon("close")
-            //  .OnClick("onDeleteButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-containers">
-
-        @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            // .OnClick("onBackButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnVerify")
-            .Text(new JS("formatMessage('Verify')"))
-            .Icon("check")
-            // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnApprove")
-            .Text(new JS("formatMessage('Approve')"))
-            .Icon("exportselected")
-            //   .OnClick("onApproveButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnAttach")
-            .Text(new JS("formatMessage('Attach')"))
-            .Icon("link")
-            //.OnClick("onAttachButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnPostToLedgers")
-            .Text(new JS("formatMessage('Post to Ledgers')"))
-            .Icon("check")
-            //.OnClick("onAttachButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
 
     <!-- Hidden anchor for submenu positioning -->
     <div id="additionalFormatsTrigger" style="position:absolute; width:1px; height:1px;"></div>
