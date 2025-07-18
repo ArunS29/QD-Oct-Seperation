@@ -5,6 +5,46 @@
 }
 
 <style>
+  .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.45);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1050;
+}
+
+.custom-sub-modal {
+    background-color: #fff;
+    border-radius: 12px;
+    overflow: hidden;
+    width: 85vw;
+    height: 80vh;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.custom-sub-modal iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+
+    .footer-fixed {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1000;
+        background-color: #fff;
+        border-top: 1px solid #ddd;
+    }
     *{
         font-size: 12px !important;
     }
@@ -273,7 +313,7 @@
                                                 .TabIndex(2))
                     </div>
 
-                    <div class="form-group col-lg-4 col-md-4 col-sm-6">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-6">
                         @(Html.DevExtreme().DropDownBox()
                                                 .ID("ddlAccountGroup")
                                                 .Label(new JS("formatMessage('Account Group')"))
@@ -300,16 +340,7 @@
                                                 .OnValueChanged("ddlAccountGroupValueChanged")
                                                 .ContentTemplate(new TemplateName("AccountGroupContentTemplate")))
                     </div>
-                    <div class="form-group col-lg-2 col-md-1 col-sm-6">
-                    @(Html.DevExtreme().Button()
-                                        .ID("btnSave")
-                                        .Icon("save")
-                                        .Text(new JS("formatMessage('Save')"))
-                                        .StylingMode(ButtonStylingMode.Contained)
-                                        .Type(ButtonType.Normal)
-                                        .ElementAttr("class", "btn-save-custom px-4 py-2")
-                                        .OnClick("onsaveLedgerAccountClick"))
-                                        </div>
+                  
                 </div>
 
                 <!-- 🔹 Row 2 -->
@@ -325,7 +356,7 @@
                         <i class="fas fa-language arabic-icon-inside"
                            onclick="convertToArabic()"></i>
                     </div>
-                    <div class="form-group col-lg-4 col-md-4 col-sm-12">
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
                         @(Html.DevExtreme().TextBox()
                                                 .ID("txtAccountHead")
                                                 .Label(new JS("formatMessage('Account Head Name')"))
@@ -334,18 +365,7 @@
                                                 .ValidationRules(v => v.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
                                                 .OnFocusOut("txtAccountHeadFocusOut"))
                     </div>
-                    <div class="form-group col-lg-2 col-md-1 col-sm-6">
-                      
-
-                        @(Html.DevExtreme().Button()
-                                                .ID("btnCLose")
-                                                .Icon("close")
-                                                .Text(new JS("formatMessage('Close')"))
-                                                .StylingMode(ButtonStylingMode.Contained)
-                                                .Type(ButtonType.Normal)
-                                                .ElementAttr("class", "btn-close-custom px-4 py-2")
-                                                .OnClick("PageClose"))
-                    </div>
+                  
                 </div>
             </div>
 
@@ -383,21 +403,23 @@
         <!-- Tab Content -->
         <div class="" style="background-color:white;height:60%;">
             <div id="tab-content-1" class="tab-content" style="display: none;">
-                <div class="container-fluid p-3 rounded border shadow-sm">
+                <div class="container-fluid p-4 rounded shadow-sm border bg-white">
                     <!-- Opening Balance Section -->
-                    <div class="row g-2 align-items-center mb-2">
-                        <div class="col-md-2 fw-bold">Opening Balance</div>
+                    <div class="row g-3 align-items-end mb-4">
                         <div class="col-md-2">
                             @(Html.DevExtreme().NumberBox()
                                                         .ID("txtOpeningBalance")
                                                         .Value(0)
                                                         .Min(0.00)
+                                                        .Label(new JS("formatMessage('Opening Balance')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
                                                         .Format(f => f.Type("fixedPoint").Precision(2))
                                                         .Width("100%")
                                                         .Step(1)
                                                         .ShowSpinButtons(true)
                                                         .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }))
                         </div>
+
                         <div class="col-md-3">
                             @(Html.DevExtreme().DropDownBox()
                                                         .DataSource(d => d.WebApi()
@@ -424,6 +446,7 @@
                                                         .OnValueChanged("DrCrValueChanged")
                                                         .ContentTemplate(new TemplateName("DrCrContentTemplate")))
                         </div>
+
                         <div class="col-md-2">
                             @(Html.DevExtreme().Button()
                                                         .ID("btnPost")
@@ -432,6 +455,7 @@
                                                         .Width("100%")
                                                         .OnClick("onPostButtonClick"))
                         </div>
+
                         <div class="col-md-3">
                             @(Html.DevExtreme().Button()
                                                         .ID("btnOpeningBills")
@@ -443,435 +467,440 @@
                     </div>
 
                     <!-- Default Entry Section -->
-                    <div class="row g-2 align-items-center mb-2">
-                        <div class="col-md-6">
-                            @(Html.DevExtreme().CheckBox()
-                                                        .ID("chkDefaultEntry")
-                                                        .Text(new JS("formatMessage('Choose if you want this to be Default Entry in vouchers')"))
-                                                        .Value(false)
-                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
-                        </div>
-                        <div class="col-md-2 fw-bold">Voucher Abbr</div>
-                        <div class="col-md-4">
-                            @(Html.DevExtreme().TextBox()
-                                                        .ID("txtVoucherNoAbbr")
-                                                        .InputAttr("aria-label", "Text")
-                                                        .Width("100%")
-                                                        .MaxLength(3))
+                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                @(Html.DevExtreme().CheckBox()
+                                                                .ID("chkDefaultEntry")
+                                                                .Text(new JS("formatMessage('Choose if you want this to be Default Entry in vouchers')"))
+                                                                .Value(false)
+                                                                .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                            </div>
+
+                           
+                            <div class="col-md-4">
+                                @(Html.DevExtreme().TextBox()
+                                                                .Label("Voucher Abbr")
+                                                                .LabelMode(EditorLabelMode.Floating)
+                                                                .ID("txtVoucherNoAbbr")
+                                                                .InputAttr("aria-label", "Text")
+                                                                .Width("100%")
+                                                                .MaxLength(3))
+                            </div>
                         </div>
                     </div>
 
                     <!-- Maintain Bill Entry Section -->
-                    <div class="row g-2 align-items-center mb-2">
-                        <div class="col-md-6">
-                            @(Html.DevExtreme().CheckBox()
-                                                        .ID("chkMaintainBillEntry")
-                                                        .Text(new JS("formatMessage('Choose if you want to Maintain Billwise Details')"))
-                                                        .Value(false)
-                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
-                        </div>
-                        <div class="col-md-2 fw-bold">No. of Days</div>
-                        <div class="col-md-4">
-                            @(Html.DevExtreme().NumberBox()
-                                                        .ID("txtNoDays")
-                                                        .Value(0)
-                                                        .Min(0)
-                                                        .Step(1)
-                                                        .ShowSpinButtons(true)
-                                                        .Format("fixedpoint")
-                                                        .InputAttr(new { style = "text-align: left; color: black; font-weight:bold;" }))
+                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                        <div class="row g-3 align-items-center">
+                            <div class="col-md-8">
+                                @(Html.DevExtreme().CheckBox()
+                                                                .ID("chkMaintainBillEntry")
+                                                                .Text(new JS("formatMessage('Choose if you want to Maintain Billwise Details')"))
+                                                                .Value(false)
+                                                                .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                            </div>
+
+                            
+                            <div class="col-md-4">
+                                @(Html.DevExtreme().NumberBox()
+                                                                .Label("No Of Days")
+                                                                .LabelMode(EditorLabelMode.Floating)
+                                                                .ID("txtNoDays")
+                                                                .Value(0)
+                                                                .Min(0)
+                                                                .Step(1)
+                                                                .ShowSpinButtons(true)
+                                                                .Format("fixedpoint")
+                                                                .InputAttr(new { style = "text-align: left; color: black; font-weight:bold;" }))
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Employee DB Entry -->
-                    <div class="row mb-2">
-                        <div class="col">
-                            @(Html.DevExtreme().CheckBox()
-                                                        .ID("chkEmployeeDBEntry")
-                                                        .Text(new JS("formatMessage('Choose if you want this account to link with Employee Database')"))
-                                                        .Value(false)
-                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                    <!-- Linkage Checkboxes Group -->
+                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                        <div class="row mb-2">
+                            <div class="col">
+                                @(Html.DevExtreme().CheckBox()
+                                                                .ID("chkEmployeeDBEntry")
+                                                                .Text(new JS("formatMessage('Choose if you want this account to link with Employee Database')"))
+                                                                .Value(false)
+                                                                .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                            </div>
+                        </div>
+
+                        <div class="row mb-2">
+                            <div class="col">
+                                @(Html.DevExtreme().CheckBox()
+                                                                .ID("chkPropertyDBEntry")
+                                                                .Text(new JS("formatMessage('Choose if you want this account to link with Property Database')"))
+                                                                .Value(false)
+                                                                .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col">
+                                @(Html.DevExtreme().CheckBox()
+                                                                .ID("chkLoanAccountEntry")
+                                                                .Text(new JS("formatMessage('Choose if you want this account to link with Employees Salary Advance')"))
+                                                                .Value(false)
+                                                                .ElementAttr("style", "font-style:italic;font-weight:bold;"))
+                            </div>
                         </div>
                     </div>
 
-                    <!-- Property DB Entry -->
-                    <div class="row mb-2">
-                        <div class="col">
-                            @(Html.DevExtreme().CheckBox()
-                                                        .ID("chkPropertyDBEntry")
-                                                        .Text(new JS("formatMessage('Choose if you want this account to link with Property Database')"))
-                                                        .Value(false)
-                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
-                        </div>
-                    </div>
-
-                    <!-- Loan Account Entry -->
-                    <div class="row mb-2">
-                        <div class="col">
-                            @(Html.DevExtreme().CheckBox()
-                                                        .ID("chkLoanAccountEntry")
-                                                        .Text(new JS("formatMessage('Choose if you want this account to link with Employees Salary Advance')"))
-                                                        .Value(false)
-                                                        .ElementAttr("style", "font-style:italic;font-weight:bold;"))
-                        </div>
-                    </div>
-
-                    <!-- Ledger Active Switch -->
-                    <div class="row g-2 align-items-center mb-1">
-                        <div  id="LedgerActive" class="col-md-2 fw-bold"></div>
+                    <!-- Ledger Active -->
+                    <div class="row g-3 align-items-center mb-3">
+                        <div class="col-md-2 fw-bold" id="LedgerActive"></div>
                         <div class="col-md-2">
                             @(Html.DevExtreme().Switch()
                                                         .ID("schLedgerActive")
-                                                        .Value(false)  // Set initial state to "on"
-                                                        .SwitchedOffText("No") // Text to display when the toggle is on
-                                                        .SwitchedOnText("Yes") // Text to display when the toggle is off
-                                                        .Width(100) // Width of the toggle switch
-                                                        )
+                                                        .Value(false) // Set initial state to "on"
+                                                        .SwitchedOffText("No") // Text to display when the toggle is off
+                                                        .SwitchedOnText("Yes") // Text to display when the toggle is on
+                                                        .Width(100)) 
                         </div>
                     </div>
+
                 </div>
             </div>
+
+
 
 
 
 
             <div id="tab-content-2" class="tab-content" style="display: none;">
-                <div>
-                    <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
-                        <tr>
-                            <td>
-                                <div id="branch" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox()
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("AccountLedgerMaster")
-                                    .LoadAction("getAccountBranch")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("BranchCode")
-                                    )
-                                    .ID("ddlbranch")
-                                    .ShowClearButton(true)
-                                    .AcceptCustomValue(true)
-                                    .OpenOnFieldClick(false)
-                                    .ValueChangeEvent("input")
-                                    .HoverStateEnabled(true)
-                                    .ValueExpr("BranchCode")
-                                    .DisplayExpr("BranchName")
-                                    .OnInput("ddlbranchOnInput")
-                                    .OnOpened("ddlbranchonOpened")
-                                    .Width("100%")
-                                    .DropDownOptions(o => o
-                                    .Width("100%")
-                                    )
-                                    .OnKeyDown("ddlbranchonKeyDown")
-                                    .OnValueChanged("ddlbranchValueChanged")
-                                    .ContentTemplate(new TemplateName("BranchContentTemplate"))
-                                    )
+                <div class="container-fluid">
+                    <div class="row g-3 align-items-end">
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().DropDownBox()
+                                                         .Label("Branch")
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getAccountBranch").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+                                                        .ID("ddlbranch")
+                                                        .ShowClearButton(true)
+                                                        .AcceptCustomValue(true)
+                                                        .OpenOnFieldClick(false)
+                                                        .ValueChangeEvent("input")
+                                                        .HoverStateEnabled(true)
+                                                        .ValueExpr("BranchCode")
+                                                        .DisplayExpr("BranchName")
+                                                        .OnInput("ddlbranchOnInput")
+                                                        .OnOpened("ddlbranchonOpened")
+                                                        .Width("100%")
+                                                        .DropDownOptions(o => o.Width("100%"))
+                                                        .OnKeyDown("ddlbranchonKeyDown")
+                                                        .OnValueChanged("ddlbranchValueChanged")
+                                                        .ContentTemplate(new TemplateName("BranchContentTemplate"))
+                                                        .Buttons(buttons => {
+                                                        // Built-in clear button
+                                                        buttons.Add()
+                                                        .Name("clear");
 
+                                                        buttons.Add()
+                                                        .Name("btnAddDivision")
+                                                        .Location(TextEditorButtonLocation.After)
+                                                        .Widget(w => w.Button()
+                                                        .Type(ButtonType.Default)
+                                                        .Icon("plus")
+                                                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                        .OnClick("redirectToBranchMaster"));
 
-                            </td>
-                            <td>
+   
+                                                        buttons.Add()
+                                                        .Name("dropDown");
+                                                    })
+                                                        )
+                            @* <div class="buttons mt-1">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnAddDivision")
-                                    .Icon("plus")
-                                    .ElementAttr("class", "button-group")
-                                    .OnClick("redirectToBranchMaster")
-                                    )
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div id="Subgroup" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox()
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("AccountLedgerMaster")
-                                    .LoadAction("getSubGroup")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("LedgerSubGroupCode")
-                                    )
-                                    .ID("ddlSubgroup")
-                                    .ShowClearButton(true)
-                                    .AcceptCustomValue(true)
-                                    .OpenOnFieldClick(false)
-                                    .ValueChangeEvent("input")
-                                    .HoverStateEnabled(true)
-                                    .ValueExpr("LedgerSubGroupCode")
-                                    .DisplayExpr("SubGroupName")
-                                    .OnInput("ddlsubGroupOnInput")
-                                    .OnOpened("ddlsubGrouponOpened")
-                                    .Width("100%")
-                                    .TabIndex(4)
-                                    .DropDownOptions(o => o
-                                    .Width("100%")
-                                    )
-                                    .OnKeyDown("ddlsubGrouponKeyDown")
-                                    .OnValueChanged("ddlsubGroupValueChanged")
-                                    .ContentTemplate(new TemplateName("SubGroupContentTemplate"))
-                                    )
+                                                                .ID("btnAddDivision")
+                                                                .Icon("plus")
+                                                                .ElementAttr("class", "btn-sm")
+                                                                .OnClick("redirectToBranchMaster"))
+                            </div> *@
+                        </div>
 
-                            </td>
-                            <td>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().DropDownBox()
+                                                        .Label(new JS("formatMessage('Sub Group')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getSubGroup").LoadMode(DataSourceLoadMode.Raw).Key("LedgerSubGroupCode"))
+                                                        .ID("ddlSubgroup")
+                                                        .ShowClearButton(true)
+                                                        .AcceptCustomValue(true)
+                                                        .OpenOnFieldClick(false)
+                                                        .ValueChangeEvent("input")
+                                                        .HoverStateEnabled(true)
+                                                        .ValueExpr("LedgerSubGroupCode")
+                                                        .DisplayExpr("SubGroupName")
+                                                        .OnInput("ddlsubGroupOnInput")
+                                                        .OnOpened("ddlsubGrouponOpened")
+                                                        .Width("100%")
+                                                        .DropDownOptions(o => o.Width("100%"))
+                                                        .OnKeyDown("ddlsubGrouponKeyDown")
+                                                        .OnValueChanged("ddlsubGroupValueChanged")
+                                                        .ContentTemplate(new TemplateName("SubGroupContentTemplate"))
+                                                         .Buttons(buttons => {
+					                                    // Built-in clear button
+					                                    buttons.Add()
+					                                    .Name("clear");
+
+					                                    buttons.Add()
+					                                    .Name("btnAddSubgroup")
+					                                    .Location(TextEditorButtonLocation.After)
+					                                    .Widget(w => w.Button()
+					                                    .Type(ButtonType.Default)
+					                                    .Icon("plus")
+					                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+					                                    .OnClick("redirecttoledgersubgroup"));
+
+					                                   
+					                                    buttons.Add()
+					                                    .Name("dropDown");
+				                                    }))
+                            @* <div class="buttons mt-1">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnAddSubgroup")
-                                    .Icon("plus")
-                                    .ElementAttr("class", "button-group")
-                                    .OnClick("redirecttoledgersubgroup")
-                                    )
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div id="Sales" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().DropDownBox()
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("AccountLedgerMaster")
-                                    .LoadAction("getSalesPersonList")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("SalesPersonCode")
-                                    )
-                                    .ID("ddlSales")
-                                    .ShowClearButton(true)
-                                    .AcceptCustomValue(true)
-                                    .OpenOnFieldClick(false)
-                                    .ValueChangeEvent("input")
-                                    .HoverStateEnabled(true)
-                                    .ValueExpr("SalesPersonCode")
-                                    .DisplayExpr("SalesPersonName")
-                                    .OnInput("ddlSalesOnInput")
-                                    .OnOpened("ddlSalesonOpened")
-                                    .Width("100%")
-                                    .TabIndex(4)
-                                    .DropDownOptions(o => o
-                                    .Width("100%")
-                                    )
-                                    .OnKeyDown("ddlSalesonKeyDown")
-                                    .OnValueChanged("ddlSalesValueChanged")
-                                    .ContentTemplate(new TemplateName("SalesContentTemplate"))
-                                    )
-                            </td>
-                            <td>
+                                                                .ID("btnAddSubgroup")
+                                                                .Icon("plus")
+                                                                .ElementAttr("class", "btn-sm")
+                                                                .OnClick("redirecttoledgersubgroup"))
+                            </div> *@
+                        </div>
+
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().DropDownBox()
+                                                        .Label(new JS("formatMessage('Sales Person')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getSalesPersonList").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonCode"))
+                                                        .ID("ddlSales")
+                                                        .ShowClearButton(true)
+                                                        .AcceptCustomValue(true)
+                                                        .OpenOnFieldClick(false)
+                                                        .ValueChangeEvent("input")
+                                                        .HoverStateEnabled(true)
+                                                        .ValueExpr("SalesPersonCode")
+                                                        .DisplayExpr("SalesPersonName")
+                                                        .OnInput("ddlSalesOnInput")
+                                                        .OnOpened("ddlSalesonOpened")
+                                                        .Width("100%")
+                                                        .DropDownOptions(o => o.Width("100%"))
+                                                        .OnKeyDown("ddlSalesonKeyDown")
+                                                        .OnValueChanged("ddlSalesValueChanged")
+                                                        .ContentTemplate(new TemplateName("SalesContentTemplate"))
+                                                        .Buttons(buttons => {
+					                                    // Built-in clear button
+					                                    buttons.Add()
+					                                    .Name("clear");
+
+					                                    buttons.Add()
+					                                    .Name("btnAddSalesperson")
+					                                    .Location(TextEditorButtonLocation.After)
+					                                    .Widget(w => w.Button()
+					                                    .Type(ButtonType.Default)
+					                                    .Icon("plus")
+					                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+					                                    .OnClick("redirecttosalespersonmaster"));
+
+					                                   
+					                                    buttons.Add()
+					                                    .Name("dropDown");
+				                                    })
+                                                        )
+                            @* <div class="buttons mt-1">
                                 @(Html.DevExtreme().Button()
-                                    .ID("btnAddSalesperson")
-                                    .Icon("plus")
-                                    .ElementAttr("class", "button-group")
-                                    .OnClick("redirecttosalespersonmaster")
-                                    )
-                            </td>
-                        </tr>
+                                                                .ID("btnAddSalesperson")
+                                                                .Icon("plus")
+                                                                .ElementAttr("class", "btn-sm")
+                                                                .OnClick("redirecttosalespersonmaster"))
+                            </div> *@
+                        </div>
 
-                        <tr>
-                            <td>
-                                <div id="ContactPerson" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtContactPerson")
-                                    .InputAttr("aria-label", "Text")// Dynamic value
-                                    .Width("100%")
-                                    )
-                            </td>
-                        </tr>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().TextBox()
+                                                        .Label(new JS("formatMessage('Contact Person')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .ID("txtContactPerson")
+                                                        .InputAttr("aria-label", "Text")
+                                                        .Width("100%"))
+                        </div>
 
-                        <tr>
-                            <td>
-                                <div id="PersonTitle" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtPersonTitle")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().TextBox()
+                                                        .Label(new JS("formatMessage('Person Title')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .ID("txtPersonTitle")
+                                                        .InputAttr("aria-label", "Text")
+                                                        .Width("100%"))
+                        </div>
 
-                        </tr>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().TextBox()
+                                                        .Label(new JS("formatMessage('Email')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .ID("txtEmail")
+                                                        .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
+                                                        .InputAttr("aria-label", "Text")
+                                                        .Width("100%"))
+                        </div>
 
-                        <tr>
-                            <td>
-                                <div id="Email" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtEmail")
-                                    .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
-                                    .InputAttr("aria-label", "Text")// Dynamic value
-                                    .Width("100%")
-                                    )
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <div id="MobileNo" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtPersonMobile")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                        </tr>
+                        <div class="col-md-4">
+                            @(Html.DevExtreme().TextBox()
+                                                        .Label("Mobile No")
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .ID("txtPersonMobile")
+                                                        .InputAttr("aria-label", "Text")
+                                                        .Width("100%"))
+                        </div>
 
-                        <tr>
-                            <td>
-                                <div id="Remarks" class="no-border-input"></div>
-                            </td>
-                            <td colspan="2">
-                                @(Html.DevExtreme().TextBox()
-                                    @*  .Label(new JS("formatMessage('Remarks')")).LabelMode(EditorLabelMode.Floating) *@
-                                    .ID("txtRemarks")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                        </tr>
-                    </table>
+                        <div class="col-md-8">
+                            @(Html.DevExtreme().TextBox()
+                                                        .Label(new JS("formatMessage('Remarks')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .ID("txtRemarks")
+                                                        .InputAttr("aria-label", "Text")
+                                                        .Width("100%"))
+                        </div>
+                    </div>
                 </div>
             </div>
 
             <div id="tab-content-3" class="tab-content" style="display: none;">
-                <div class="background">
-                    <table width="100%" style="font-size:14px; margin-top:10px;margin-bottom:10px;" cellpadding="5">
-                        <tr>
-                            <td style="width: 15%;">
-                                <div id="BankAccountName" class="no-border-input"></div>
-                            </td>
-                            <td style="width: 35%;">
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankAccountName")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                            <td style="width: 17%;">
-                                <div id="ConvertAccountName" class="no-border-input"></div>
-                            </td>
-                            <td colspan="3" style="display: flex; align-items: center;gap: 5px;">
-                                @(Html.DevExtreme().Button()
-                                    .ID("btnConvertAccountName")
-                                    .Width(75)
-                                    .Height(32)
-                                    .Icon("fas fa-language") // Add an icon
-                                    .ElementAttr(new { @class = "convert-button" })
-                                    .OnClick("convertAccountNameToArabic") // Define the function
-                                    )
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankAccountNameAr")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    .RtlEnabled(true)
+            <div class="background">
+                <div class="container-fluid">
+                    <div class="row g-3 align-items-center mb-1">
+                        <div class="col-md-6">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankAccountName")
+                                .Label(new JS("formatMessage('Bank Account Name')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                            )
+                        </div>
+                        <div class="col-md-1">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertAccountName")
+                                .Width(75)
+                                .Height(32)
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "convert-button" })
+                                .OnClick("convertAccountNameToArabic")
+                            )
+                        </div>
+                        <div class="col-md-5">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankAccountNameAr")
+                                .Label("Bank Account Name (AR)")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                                .RtlEnabled(true)
+                            )
+                        </div>
+                    </div>
 
-                                    )
-                            </td>
-                        </tr>
+                    <div class="row g-3 align-items-center mb-1">
+                        <div class="col-md-6">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankName")
+                                .Label(new JS("formatMessage('Bank Name')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                            )
+                        </div>
+                        <div class="col-md-1">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertBankName")
+                                .Width(75)
+                                .Height(32)
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "convert-button" })
+                                .OnClick("convertBankNameToArabic")
+                            )
+                        </div>
+                        <div class="col-md-5">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankNameAr")
+                                 .Label("Bank  Name (AR)")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                                .RtlEnabled(true)
+                            )
+                        </div>
+                    </div>
 
-                        <tr>
-                            <td>
-                                <div id="BankName" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankName")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                            <td>
-                                <div id="ConvertBankName" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
-                                @(Html.DevExtreme().Button()
-                                    .ID("btnConvertBankName")
-                                    .Width(75)
-                                    .Height(32)
-                                    .Icon("fas fa-language")
-                                    .ElementAttr(new { @class = "convert-button" })
-                                    .OnClick("convertBankNameToArabic")
-                                    )
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankNameAr")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("calc(100% - 50px)")
-                                    .RtlEnabled(true)
-                                    )
-                            </td>
-                        </tr>
+                    <div class="row g-3 align-items-center mb-1">
+                        <div class="col-md-6">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankBranch")
+                                .Label(new JS("formatMessage('Bank Branch')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                            )
+                        </div>
+                        <div class="col-md-1">
+                            @(Html.DevExtreme().Button()
+                                .ID("btnConvertBankBranch")
+                                .Width(75)
+                                .Height(32)
+                                .Icon("fas fa-language")
+                                .ElementAttr(new { @class = "convert-button" })
+                                .OnClick("convertBankBranchToArabic")
+                            )
+                        </div>
+                        <div class="col-md-5">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankBranchAr")
+                                 .Label("Bank Branch (AR)")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                                .RtlEnabled(true)
+                            )
+                        </div>
+                    </div>
 
-                        <tr>
-                            <td>
-                                <div id="BankBranch" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankBranch")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                            <td>
-                                <div id="ConvertBankBranch" class="no-border-input"></div>
-                            </td>
-                            <td style="display: flex; align-items: center;gap: 5px;">
-                                @(Html.DevExtreme().Button()
-                                    .ID("btnConvertBankBranch")
-                                    .Width(75)
-                                    .Height(32)
-                                    .Icon("fas fa-language")
-                                    .ElementAttr(new { @class = "convert-button" })
-                                    .OnClick("convertBankBranchToArabic")
-                                    )
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankBranchAr")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("calc(100% - 50px)")
-                                    .RtlEnabled(true)
-                                    )
-                            </td>
-                        </tr>
+                    <div class="row g-3 align-items-center mb-1">
+                        <div class="col-md-12">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankAccountNo")
+                                .Label(new JS("formatMessage('Bank Account No')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                            )
+                        </div>
+                    </div>
 
-                        <tr>
-                            <td>
-                                <div id="BankAccountNo" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankAccountNo")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <div id="BankIBAN" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtBankIBAN")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                            <td>
-                                <div id="SwiftCode" class="no-border-input"></div>
-                            </td>
-                            <td>
-                                @(Html.DevExtreme().TextBox()
-                                    .ID("txtSwiftCode")
-                                    .InputAttr("aria-label", "Text")
-                                    .Width("100%")
-                                    )
-                            </td>
-                        </tr>
-                    </table>
+                    <div class="row g-3 align-items-center mb-1">
+                        <div class="col-md-3">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtBankIBAN")
+                                .Label(new JS("formatMessage('Bank IBAN')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                            )
+                        </div>
+                        <div class="col-md-3">
+                            @(Html.DevExtreme().TextBox()
+                                .ID("txtSwiftCode")
+                                .Label("SWIFT Code")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .InputAttr("aria-label", "Text")
+                                .Width("100%")
+                            )
+                        </div>
+                    </div>
                 </div>
             </div>
+        </div>
+
 
             <div id="tab-content-4" class="tab-content" style="display: none;">
                 <div class="background">
@@ -2142,39 +2171,31 @@
         </div>
 
         <!-- Card 5: CreatedOn Details -->
-      <div class="" style="width: 100%; max-width: 1200px;">
-        <div class="form-group-row1"
-             style="display: flex; gap: 20px; align-items: center; justify-content: space-evenly; width: 100%;">
-             
-            <div style="display: flex; align-items: center; gap: 5px;">
-                <strong id="CreatedBy1">Created By:</strong>
-                <div class="col-md-4"> 
-                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("180%").ReadOnly(true)
-                </div>
+        <div class="footer-fixed d-flex justify-content-between align-items-center px-4 py-2 shadow bg-white">
+            <div>
+                @(Html.DevExtreme().Button()
+                                .ID("btnCLose")
+                                .Icon("close")
+                                .Text(new JS("formatMessage('Close')"))
+                                .StylingMode(ButtonStylingMode.Contained)
+                                .Type(ButtonType.Normal)
+                                .ElementAttr("class", "btn-close-custom px-4 py-2")
+                                .OnClick("PageClose"))
             </div>
 
-            <div style="display: flex; align-items: center; gap: 5px;">
-                <strong id="CreatedOn1">Created On:</strong>
-                <div class="col-md-4">
-                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("180%").ReadOnly(true)
-                </div>
+            <div>
+                @(Html.DevExtreme().Button()
+                                .ID("btnSave")
+                                .Icon("save")
+                                .Text(new JS("formatMessage('Save')"))
+                                .StylingMode(ButtonStylingMode.Contained)
+                                .Type(ButtonType.Normal)
+                                .ElementAttr("class", "btn-save-custom px-4 py-2")
+                                .OnClick("onsaveLedgerAccountClick"))
             </div>
+        </div>
 
-            <div style="display: flex; align-items: center; gap: 5px;">
-                <strong id="ModifiedBy1">Modified By:</strong>
-                <div class="col-md-4">
-                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("180%").ReadOnly(true)
-                </div>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 5px;">
-                <strong id="ModifiedOn1">Modified On:</strong>
-                <div class="col-md-3">
-                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("240%").ReadOnly(true)
-                </div>
-            </div>
-
-    </div>
+        
 </div>
 
        
@@ -3186,25 +3207,25 @@ function syncSupVATNumbers(e) {
         if(IsPurchaseEdit=='true')
         { 
              disableTabs(["tab-content-3", "tab-content-7"]);
-    var accountGroupTextBox = $("#ddlAccountGroup").dxTextBox("instance");
+        var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
     // Set the value
-    accountGroupTextBox.option("value", "SUNDRY CREDITORS");
+    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
 
     // Disable the textbox
-    accountGroupTextBox.option("disabled", true);
+        accountGroupDropDownBox.option("disabled", true);
                  
         }
         if(IsB2CEdit=='true')
         {
-    var accountGroupTextBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+        var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
     // Set the value
-    accountGroupTextBox.option("value", "SUNDRY CREDITORS");
+    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
 
     // Disable the textbox
-    accountGroupTextBox.option("disabled", true);      
-        }
+        accountGroupDropDownBox.option("disabled", true);
+            }
 
         // alert(IsCharOfAccounts);
         // Check if IsCharOfAccounts is 'true' (string comparison)
@@ -3771,7 +3792,7 @@ function syncSupVATNumbers(e) {
 
 
         // Check if the parameter IsCharOfAccounts is 'true'
-        if (!isedit && IsCharOfAccounts !== 'true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
+                if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
             // Reset validator if it exists
             var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
             if (AccountHeadNameValidator) {
@@ -3853,29 +3874,26 @@ function syncSupVATNumbers(e) {
     });
 
 
-    function redirectToBranchMaster() {
+  function redirectToBranchMaster() {
+    const url = `/${tenantName}/Finance/Divmaster`;
 
-        // const modal = document.getElementById("ledgerAccountMasterModal");
-        // const iframe = document.getElementById("ledgerAccountMasterIframe");
+    const modalOverlay = document.createElement("div");
+    modalOverlay.classList.add("modal-overlay");
+    modalOverlay.innerHTML = `
+        <div class="custom-sub-modal">
+            <iframe src="${url}" style="width:100%; height:500px; border:none; border-radius: 12px;"></iframe>
+        </div>
+    `;
+    document.body.appendChild(modalOverlay);
 
-        // iframe.src = `/${tenantName}/Finance/Divmaster`;
-
-        // modal.style.display = "block";
-
-        // const closeBtn = modal.querySelector(".close");
-        // closeBtn.onclick = () => {
-        //     modal.style.display = "none";
-        //     refreshaccountledgerSelectBox();
-        // };
-        url = `/${tenantName}/Finance/Divmaster`;
-        openModal(url,"");
-        window.onclick = (event) => {
-            if (event.target === modal) {
-                modal.style.display = "none";
-                refreshaccountledgerSelectBox();
-            }
-        };
-    }
+    // Dismiss logic
+    modalOverlay.addEventListener("click", function (event) {
+        if (event.target === modalOverlay) {
+            modalOverlay.remove();
+            refreshaccountledgerSelectBox();
+        }
+    });
+}
 
     function refreshBranchmasterSelectBox() {
         const assetBranchSelectBox = $("#ddlassetlocation").dxSelectBox("instance"); // Ensure ID matches Razor

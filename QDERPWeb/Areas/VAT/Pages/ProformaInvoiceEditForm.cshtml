@@ -207,6 +207,11 @@
 			color: #555;
 		}
 
+	.custom-hover-button.add-hover:hover {
+		background-color: #e6f7ff;
+		border-color: #91d5ff;
+	}
+
 	.dx-dropdownbox .dx-dropdownbox-wrapper .dx-dropdownbox-header {
 		display: none;
 	}
@@ -395,14 +400,14 @@
 					<!-- First Card (Left Side) -->
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
-							<td style="width: 50%;">
+							<td>
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Proforma Invoice No')"))
 															.ID("InvoiceNo")
 															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
-							<td style="width: 50%;">
+							<td>
 								<div style="display: flex; align-items: end; gap:3px">
 									<div style="flex-grow: 1;">
 										@(Html.DevExtreme().DropDownBox()
@@ -426,7 +431,7 @@
 																				.DisplayExpr("AccountHead")
 																				.LabelMode(EditorLabelMode.Floating)
 																	            .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
-
+																			
 																				)
 									</div>
 
@@ -436,21 +441,77 @@
 																			.Hint("Add Description")
 																			.Width(40)
 																			 .ElementAttr("style","margin-top:15px;")
+																		.OnClick("showLedgerAccountPopup")
 																			)
 
 									@(Html.DevExtreme().Button()
 																			.ID("EditDebit")
 																			.Icon("edit")
 																			.Hint("Edit Description")
+																		.OnClick("showLedgerAccountPopup")
 																			 .ElementAttr("style","margin-top:15px;").Width(40)
-
+																		.OnClick("onEditClientClick") // 👈 Attach handler
 																			)
 								</div>
-							</td>
-						</tr>
+								@(Html.DevExtreme().Popup()
+																.ID("ledgerAccountPopup")
+																.Width("80%")
+																.Height("85%")
+																.Title("Add Ledger Account")
+																.ShowTitle(true)
+																.CloseOnOutsideClick(true)
+																.Visible(false)
+																.ResizeEnabled(true)
+																.ContentTemplate(@<text>
+												  									<div id="popupContent" class="background" style="width:100%; height:100%;">
+												  										<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+												  									</div>
+												  								</text>)
+																)
 
-						<tr>
-							<td style="width: 50%;">
+								<!-- Edit Popup -->
+								@(Html.DevExtreme().Popup()
+																.ID("ledgerEditAccountPopup")
+																.Width("80%")
+																.Height("85%")
+																.Title(new JS("formatMessage('Edit Ledger Account')"))
+																.ShowTitle(true)
+																.CloseOnOutsideClick(true)
+																.Visible(false)
+																.ResizeEnabled(true)
+																.ContentTemplate(@<text>
+												  									<div id="popupContent" style="width:100%; height:100%;">
+												  										<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+												  									</div>
+												  								</text>)
+																)
+							</td>
+							<td>
+							
+
+									@(Html.DevExtreme().DropDownBox()
+																		.Label(new JS("formatMessage('Client Name in Arabic:')"))
+																		.DataSource(d => d.WebApi()
+																		.Controller("VATModule")
+																		.LoadAction("GetProformaClientName")
+																		.LoadMode(DataSourceLoadMode.Raw)
+																		.Key("AccountId"))
+																		.LabelMode(EditorLabelMode.Floating)
+																		.ID("ddlClientNameAr")
+																		.ShowClearButton(true)
+																		.AcceptCustomValue(true)
+																		.OpenOnFieldClick(false)
+																		.ValueChangeEvent("input")
+																		.HoverStateEnabled(true)
+																		.ValueExpr("AccountHeadArabic")
+																		.DisplayExpr("AccountId")
+																		.Width("100%")
+																		.TabIndex(4)
+																		.DropDownOptions(o => o.Width(1000))
+																		.ContentTemplate(new TemplateName("ClientNameArContentTemplate"))
+																		)
+							</td>
+							<td>
 								@(Html.DevExtreme().DateBox()
 																.Label(new JS("formatMessage('Performa Invoice Date:')"))
 																.ID("InvoiceIssuedDateTime")
@@ -461,186 +522,135 @@
 																)
 
 							</td>
-							<td style="width: 50%;">
+							<td>
 								@(Html.DevExtreme().DateBox()
-															.Label(new JS("formatMessage('Supply Date')"))
-															.ID("SupplyDate")
-															.Type(DateBoxType.Date)
-															.DisplayFormat("dd-MMM-yyyy")
-															.Value(DateTime.Now)
-															.LabelMode(EditorLabelMode.Floating)
-															)
+																.Label(new JS("formatMessage('Supply Date')"))
+																.ID("SupplyDate")
+																.Type(DateBoxType.Date)
+																.DisplayFormat("dd-MMM-yyyy")
+																.Value(DateTime.Now)
+																.LabelMode(EditorLabelMode.Floating)
+																)
 							</td>
+							
 						</tr>
 
 						<tr>
-							<td style="width: 33%;">
+							<td>
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('Invoice Type')"))
+																.DataSource(d => d.WebApi()
+																.Controller("VATModule")
+																.LoadAction("GetTaxCategory")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("TaxCategoryId"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddlCategoryId")
+																.ShowClearButton(true)
+																.AcceptCustomValue(true)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.ValueExpr("TaxCategoryId")
+																.DisplayExpr("TaxCategory")
+																.Width("100%")
+																.TabIndex(1)
+																.DropDownOptions(o => o.Width(1000))
+																.OnKeyDown("onKeyDown")
+																.ContentTemplate(new TemplateName("TaxCategoryContentTemplate"))
+																)
+							</td>
+
+							<td>
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('Invoice Type (Arabic)')"))
+															.DataSource(d => d.WebApi()
+															.Controller("VATModule")
+																.LoadAction("GetTaxCategory")
+															.LoadMode(DataSourceLoadMode.Raw)
+															.Key("TaxCategoryId"))
+															.LabelMode(EditorLabelMode.Floating)
+															.ID("ddlInvTypeAr")
+															.ShowClearButton(true)
+															.AcceptCustomValue(true)
+															.OpenOnFieldClick(false)
+															.ValueChangeEvent("input")
+															.HoverStateEnabled(true)
+																.ValueExpr("TaxCategoryId")
+																.DisplayExpr("TaxCategory")
+															.Width("100%")
+															.TabIndex(1)
+															.DropDownOptions(o => o.Width(1000))
+															.OnKeyDown("onKeyDown")
+															.ContentTemplate(new TemplateName("InvoiceTypeArCategoryContentTemplate"))
+															)
+							</td>
+							<td>
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('VAT Invoice Sub Type')"))
+																.ID("VATInvoiceSubType")
+																.DataSource(d => d.WebApi()
+																.Controller("VATModule")
+																.LoadAction("GetVATInvoiceSubType")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("InvoiceSubTypeCode"))
+																.AcceptCustomValue(true)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.Value("Tax Invoice")
+																.ValueExpr("InvoiceSubTypeCode")
+																.DisplayExpr("InvoiceSubType")
+																.LabelMode(EditorLabelMode.Floating)
+																.Disabled(false)
+																.ContentTemplate(new TemplateName("VATInvoiceSubTypeContentTemplate"))
+																)
+							</td>
+							<td>
+								@(Html.DevExtreme().TextBox()
+																.Label(new JS("formatMessage('SES Reference:')"))
+																.ID("SESReference")
+																.LabelMode(EditorLabelMode.Floating)
+																	 								//.Disabled(true)
+																)
+							</td>
+							
+							<td>
+								@(Html.DevExtreme().DateBox()
+																.Label(new JS("formatMessage('PO Date')"))
+																.ID("PODate")
+																.Type(DateBoxType.Date)
+																.DisplayFormat("dd-MMM-yyyy")
+															  								@* .Value(DateTime.Now) *@
+																.LabelMode(EditorLabelMode.Floating)
+																)
+							</td>
+							
+						</tr>
+
+						<tr>
+							<td>
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('PO No')"))
 															.ID("PONo")
 															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
-
-							<td style="width: 33%;">
-								@(Html.DevExtreme().DateBox()
-															.Label(new JS("formatMessage('PO Date')"))
-															.ID("PODate")
-															.Type(DateBoxType.Date)
-															.DisplayFormat("dd-MMM-yyyy")
-															@* .Value(DateTime.Now) *@
-															.LabelMode(EditorLabelMode.Floating)
-															)
-							</td>
-
-							
-						</tr>
-
-					
-						<tr>
-							<td style="width: 50%;">
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('VAT Invoice Sub Type')"))
-															.ID("VATInvoiceSubType")
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetVATInvoiceSubType")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("InvoiceSubTypeCode"))
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.Value("Tax Invoice")
-															.ValueExpr("InvoiceSubTypeCode")
-															.DisplayExpr("InvoiceSubType")
-															.LabelMode(EditorLabelMode.Floating)
-															.Disabled(false)
-															 .ContentTemplate(new TemplateName("VATInvoiceSubTypeContentTemplate"))
-															)
-							</td>
-						
-
-					
-							<td style="width: 50%;">
+							<td>
 								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Payment Terms')"))
-															.ID("PaymentTerms")
-															.LabelMode(EditorLabelMode.Floating)
-															)
+																.Label(new JS("formatMessage('Payment Terms')"))
+																.ID("PaymentTerms")
+																.LabelMode(EditorLabelMode.Floating)
+																)
 							</td>
-
-						</tr>
-					</table>
-
-
-					<!-- Second Card (Right Side) -->
-
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-						<tr>
-							<td colspan="2">
-								<div style="display: flex; align-items: end; gap:3px">
-									
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Client Name in Arabic:')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetProformaClientName")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("AccountId"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ddlClientNameAr")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("AccountHeadArabic")
-																			.DisplayExpr("AccountId")
-																			.Width("100%")
-																			.TabIndex(4)
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("ClientNameArContentTemplate"))
-																			)
-																			@(Html.DevExtreme().Button()
-																			.ID("AddDebit1")
-																			.Icon("plus")
-																			.Hint("Add Description")
-																			.Width(50)
-																			 .ElementAttr("style","margin-top:15px;")
-																			)
-									@(Html.DevExtreme().Button()
-																			.ID("EditDebit1")
-																			.Icon("edit")
-																			.Hint("Edit Description")
-																			.Width(50)
-																			 .ElementAttr("style","margin-top:15px;")
-																			)
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td style="width: 50%;">
-								@(Html.DevExtreme().DropDownBox()
-															.Label(new JS("formatMessage('Invoice Type')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("GetTaxCategory")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("TaxCategoryId"))
-															.LabelMode(EditorLabelMode.Floating)
-															.ID("ddlCategoryId")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("TaxCategoryId")
-															.DisplayExpr("TaxCategory")
-															.Width("100%")
-															.TabIndex(1)
-															.DropDownOptions(o => o.Width(1000))
-															.OnKeyDown("onKeyDown")
-															.ContentTemplate(new TemplateName("TaxCategoryContentTemplate"))
-															)
-							</td>
-
-							<td style="width: 50%;">
-								@(Html.DevExtreme().DropDownBox()
-																.Label(new JS("formatMessage('Invoice Type (Arabic)')"))
-															.DataSource(d => d.WebApi()
-															.Controller("VATModule")
-															.LoadAction("")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("BuyerIdtypeName"))
-															.LabelMode(EditorLabelMode.Floating)
-															.ID("InvoiceTypeAr")
-															.ShowClearButton(true)
-															.AcceptCustomValue(true)
-															.OpenOnFieldClick(false)
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("BuyerIdtypeName")
-															.DisplayExpr("BuyerIdtypeName")
-															.Width("100%")
-															.TabIndex(1)
-															.DropDownOptions(o => o.Width(1000))
-															.OnKeyDown("onKeyDown")
-															.ContentTemplate(new TemplateName("ClientNameContent"))
-															)
-							</td>
-						</tr>
-
-						<tr>
-							<td style="width: 50%;">
+							<td>
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Quotation No')"))
 															.ID("QuotationNo")
 															.LabelMode(EditorLabelMode.Floating)
 															)
 							</td>
-							<td style="width: 50%;">
+							<td>
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Project/Dept/PR/Contract No:')"))
 															.ID("ProjectDeptContractNo")
@@ -648,26 +658,17 @@
 															//.Disabled(true)
 															)
 							</td>
+							<td>
+								@(Html.DevExtreme().TextBox()
+																.Label(new JS("formatMessage('Delivery Notes:')"))
+																.ID("DeliveryNotes")
+																.LabelMode(EditorLabelMode.Floating)
+																	 								//.Disabled(true)
+																)
+							</td>
 						</tr>
 
-						<tr>
-							<td style="width: 50%;">
-								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Delivery Notes:')"))
-															.ID("DeliveryNotes")
-															.LabelMode(EditorLabelMode.Floating)
-															//.Disabled(true)
-															)
-							</td>
-							<td style="width: 50%;">
-								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('SES Reference:')"))
-															.ID("SESReference")
-															.LabelMode(EditorLabelMode.Floating)
-															//.Disabled(true)
-															)
-							</td>
-						</tr>
+						
 					</table>
 
 
@@ -1068,10 +1069,7 @@
         </td>
    
         
-    </tr>
-
-    <!-- Row 3: Date and Submitted By with CheckBox -->
-    <tr>
+   
         <!-- DateBox -->
         <td style="width: 50%;">
             @(Html.DevExtreme().DateBox()
@@ -1114,91 +1112,119 @@
 							<td>
 								<div style="display: flex; align-items: center; gap: 4px;">
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Prepared By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ddlGoodsGroup9")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("PreparedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
+																		.Label(new JS("formatMessage('Prepared By')"))
+																		.DataSource(d => d.WebApi()
+																		.Controller("VATModule")
+																		.LoadAction("GetAllSignatories")
+																		.LoadMode(DataSourceLoadMode.Raw)
+																		.Key("SignatoryID"))
+																		.LabelMode(EditorLabelMode.Floating)
+																		.ID("ddlGoodsGroup9")
+																		.ShowClearButton(true)
+																		.AcceptCustomValue(true)
+																		.OpenOnFieldClick(false)
+																		.ValueChangeEvent("input")
+																		.HoverStateEnabled(true)
+																		.ValueExpr("SignatoryID")
+																		.DisplayExpr("SignatoryName")
+																		.OnInput("dropDownBoxOnInput")
+																		.OnOpened("onOpened")
+																		.DropDownOptions(o => o.Width(1000))
+																		.ContentTemplate(new TemplateName("PreparedByTemplate"))
+																		.Width("100%")
+																		.Buttons(buttons =>
+																		{
+																			buttons.Add()
+																			.Name("btnAddAccount")
+																			.Location(TextEditorButtonLocation.After)
+																			.Widget(w => w.Button()
+																			.Type(ButtonType.Default)
+																			.Icon("plus")
+																			.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																			.OnClick("navigateToLedgerAccountForm"));
+																		})
+																		)
 								</div>
 							</td>
+
 							<td>
 								<div style="display: flex; align-items: center; gap: 4px;">
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Checked By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ddlGoodsGroup10")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("CheckedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
+																		.Label(new JS("formatMessage('Checked By')"))
+																		.DataSource(d => d.WebApi()
+																		.Controller("VATModule")
+																		.LoadAction("GetAllSignatories")
+																		.LoadMode(DataSourceLoadMode.Raw)
+																		.Key("SignatoryID"))
+																		.LabelMode(EditorLabelMode.Floating)
+																		.ID("ddlGoodsGroup10")
+																		.ShowClearButton(true)
+																		.AcceptCustomValue(true)
+																		.OpenOnFieldClick(false)
+																		.ValueChangeEvent("input")
+																		.HoverStateEnabled(true)
+																		.ValueExpr("SignatoryID")
+																		.DisplayExpr("SignatoryName")
+																		.OnInput("dropDownBoxOnInput")
+																		.OnOpened("onOpened")
+																		.DropDownOptions(o => o.Width(1000))
+																		.ContentTemplate(new TemplateName("CheckedByTemplate"))
+																		.Width("100%")
+																		.Buttons(buttons =>
+																		{
+																			buttons.Add()
+																			.Name("btnAddAccount")
+																			.Location(TextEditorButtonLocation.After)
+																			.Widget(w => w.Button()
+																			.Type(ButtonType.Default)
+																			.Icon("plus")
+																			.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																			.OnClick("navigateToLedgerAccountForm"));
+																		})
+																		)
 								</div>
 							</td>
+
 							<td>
 								<div style="display: flex; align-items: center; gap: 4px;">
 									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Approved By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ddlGoodsGroup11")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("ApprovedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
+																		.Label(new JS("formatMessage('Approved By')"))
+																		.DataSource(d => d.WebApi()
+																		.Controller("VATModule")
+																		.LoadAction("GetAllSignatories")
+																		.LoadMode(DataSourceLoadMode.Raw)
+																		.Key("SignatoryID"))
+																		.LabelMode(EditorLabelMode.Floating)
+																		.ID("ddlGoodsGroup11")
+																		.ShowClearButton(true)
+																		.AcceptCustomValue(true)
+																		.OpenOnFieldClick(false)
+																		.ValueChangeEvent("input")
+																		.HoverStateEnabled(true)
+																		.ValueExpr("SignatoryID")
+																		.DisplayExpr("SignatoryName")
+																		.OnInput("dropDownBoxOnInput")
+																		.OnOpened("onOpened")
+																		.DropDownOptions(o => o.Width(1000))
+																		.ContentTemplate(new TemplateName("ApprovedByTemplate"))
+																		.Width("100%")
+																		.Buttons(buttons =>
+																		{
+																			buttons.Add()
+																			.Name("btnAddAccount")
+																			.Location(TextEditorButtonLocation.After)
+																			.Widget(w => w.Button()
+																			.Type(ButtonType.Default)
+																			.Icon("plus")
+																			.Hint("Add New Signatory")
+																			.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																			.OnClick("navigateToLedgerAccountForm"));
+																		})
+																		)
 								</div>
 							</td>
 						</tr>
+
 
 
 
@@ -2484,6 +2510,41 @@
 						)
 }
 
+
+@using (Html.DevExtreme().NamedTemplate("InvoiceTypeArCategoryContentTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+						.ID("InvTypeAr-datagrid")
+						.DataSource(d => d.WebApi()
+						.Controller("VATModule")
+						.LoadAction("GetTaxCategory")
+						.LoadMode(DataSourceLoadMode.Raw)
+							.Key("TaxCategoryId")
+						)
+						.WordWrapEnabled(true)
+						.ShowBorders(true)
+						.ShowColumnHeaders(true)
+						.FilterRow(f => f.Visible(true))
+						.SearchPanel(sp => sp.HighlightSearchText(true))
+						.Selection(sl => sl.Mode(SelectionMode.Single))
+						.HeaderFilter(p => p.Visible(false))
+						.ShowBorders(true)
+						.HoverStateEnabled(true)
+						.Paging(p => p.PageSize(15))
+						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+						.Height(200)
+						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+						.Columns(columns =>
+						{
+								columns.Add().DataField("TaxCategoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center);
+								columns.Add().DataField("TaxCategoryAr").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center);
+						})
+								.OnSelectionChanged("dataCategoryIDArGridSelectionChanged")
+						.OnInitialized("dataGridInitialized")
+						)
+}
+
+
 @using (Html.DevExtreme().NamedTemplate("BranchAndDivisionTemplate"))
 {
 	@(Html.DevExtreme().DataGrid()
@@ -2533,14 +2594,20 @@
 				e.rowElement.css("background-color", "#ffcccc"); // light red
 			}
 		}
+	function navigateToLedgerAccountForm() {
+		const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
+		const title = "Add Signatory";
+		openModal(url, title, function () {
+			["ddlGoodsGroup9", "ddlGoodsGroup10", "ddlGoodsGroup11"].forEach(id => {
+				const dropDown = $("#" + id).dxDropDownBox("instance");
+				if (dropDown) {
+					dropDown.getDataSource().reload();
+					dropDown.option("value", null);
+				}
+			});
+		});
+	}
 
-
-		function navigateToLedgerAccountForm() {
-		// make sure this is available in the view
-			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-			const title = "";
-			openModal(url, title); // opens in modal instead of new window
-		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null;
@@ -5785,7 +5852,30 @@
 				}
 
 			 });
+			 function onEditClientClick() {
+        var clientId = $("#ddclientname").dxDropDownBox("option", "value");
 
+        if (!clientId) {
+            DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
+            return;
+        }
+
+        // Proceed with edit logic (e.g., open modal or navigate)
+        console.log("Client selected: ", clientId);
+        // yourEditFunction(clientId); // call your edit method here
+    }
+			 function onEditClientClick() {
+		var clientId = $("#ddlClientNameAr").dxDropDownBox("option", "value");
+
+        if (!clientId) {
+            DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
+            return;
+        }
+
+        // Proceed with edit logic (e.g., open modal or navigate)
+        console.log("Client selected: ", clientId);
+        // yourEditFunction(clientId); // call your edit method here
+    }
 
 			 $("#btnSaveAndClose").on("click", function (e) {
 
@@ -6464,7 +6554,7 @@
 
 				  function dataCategoryIDGridSelectionChanged(e) {
 						const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-							const ddbInstance = $("#ddlCategoryId").dxDropDownBox("instance");
+							const ddbInstance = $("#ddlInvTypeAr").dxDropDownBox("instance");
 
 						if (selectedKey) {
 							ddbInstance.option("value", selectedKey);
@@ -6472,7 +6562,7 @@
 						}
 					  if(IsCurrent!="true")
 						{
-							var selectedRowData = $("#category-datagrid").dxDataGrid("instance").getSelectedRowsData();
+							var selectedRowData = $("#InvTypeAr-datagrid").dxDataGrid("instance").getSelectedRowsData();
 						  if (selectedRowData.length > 0) {
 										
 
@@ -6483,6 +6573,29 @@
 						}
 
 					}
+
+					  function dataCategoryIDArGridSelectionChanged(e) {
+						const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+							const ddbInstance = $("#ddlCategoryId").dxDropDownBox("instance");
+
+						if (selectedKey) {
+							ddbInstance.option("value", selectedKey);
+								ddbInstance.close();
+						}
+					  if(IsCurrent!="true")
+						{
+							var selectedRowData = $("#category-datagrid").dxDataGrid("instance").getSelectedRowsData();
+						  if (selectedRowData.length > 0) {
+
+
+									} else {
+										DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+										return;
+									}
+						}
+
+					}
+
 
 			 //english text convert to arabic
 
@@ -6929,6 +7042,15 @@
 
 
 					}
+			function showLedgerAccountPopup() {
+			var popup = $("#ledgerAccountPopup").dxPopup("instance");
+			popup.show();
+			let IsB2CEdit=true;
+			// alert("1")
+			// debugger;
+			// Correct URL to your LedgerAccount view
+				$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
+		}
 
 </script>
 
