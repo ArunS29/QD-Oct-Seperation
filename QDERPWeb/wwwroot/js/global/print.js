@@ -1,4 +1,4 @@
-﻿function exportDataGridToPDF(gridId) {
+﻿function exportDataGridToPDF(gridId, title = "") {
     var grid = $("#" + gridId).dxDataGrid("instance");
 
     if (!grid) {
@@ -22,8 +22,11 @@
 
         });
 
-        doc.setFontSize(9); // Default font
+        doc.setFontSize(22);       // Bigger font for title
+        doc.setFont("helvetica", "bold");
+        doc.text(title, 30, 10); // Custom title passed in
 
+        doc.setFontSize(9); // Default font
         var columnStyles = {};
         columns.forEach((col, index) => {
             columnStyles[index] = { cellWidth: "wrap", minCellWidth: 20 };

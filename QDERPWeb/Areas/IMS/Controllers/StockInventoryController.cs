@@ -1655,7 +1655,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.Transactions,
                         i.Gscode,
                         i.Gsdescrpition,
-                        i.UnitRateMethod,
+                        i.UnitDesc,
                         i.StockReceivedQty,
                         i.GsgroupName,
                         i.TransactionTotal,

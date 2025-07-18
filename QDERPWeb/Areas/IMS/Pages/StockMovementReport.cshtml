@@ -217,9 +217,9 @@
 				subColumns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Document No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TransactionDate).Caption(new JS("formatMessage('Transaction Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
 				subColumns.AddFor(m => m.Transactions).Caption(new JS("formatMessage('Transaction Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("Item code").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption("Item code").Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
 				subColumns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('Stock Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitRateMethod).Caption(new JS("formatMessage('Unit')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.StockReceivedQty).Caption(new JS("formatMessage('Quantity')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitPrice).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.TransactionTotal).Caption("Transaction Total").Alignment(HorizontalAlignment.Center).Visible(true);
