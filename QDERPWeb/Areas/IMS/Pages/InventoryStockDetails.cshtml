@@ -60,6 +60,12 @@
     .columnheader {
         text-align: center;
     }
+    /* Remove the extra blue focus border from DevExtreme search panel input */
+    .dx-datagrid-search-panel input:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
 
     .tab-content {
         display: none;
@@ -1066,13 +1072,16 @@
 
                         </td>
                         <td>
-                        @(Html.DevExtreme().DropDownButton()
-                            .Text(new JS("formatMessage('View Stock Movement Report')"))
-                            .Icon("cart") 
-                            .Width(300)
-                            .DisplayExpr("text")
-                            .OnButtonClick("ViewStockMovementNavigation")
-                            )
+                      
+                        @(Html.DevExtreme().Button()
+                                                .ID("BtnViewStockMovementReport")
+                                                .Text(new JS("formatMessage('View Stock Movement Report')"))
+                                                .Icon("cart")
+                                                .Width(300)
+                                               // .Hint("Click to print")
+                                                .OnClick("ViewStockMovementNavigation")
+                                                .ElementAttr(new { @class = "bold-button" })
+                                                )
                         </td>
                     </tr>
                 </table>
@@ -2051,6 +2060,14 @@
                                     height: 300,
                                     selection: { mode: "single" },
                                     selectedRowKeys: e.component.option("value") ? [e.component.option("value")] : [],
+                                            filterRow: { visible: false },
+                headerFilter: { visible: true },
+                                             searchPanel: {
+                    visible: true,
+                    highlightCaseSensitive: true,
+                    width: 300,
+                    placeholder: "Search..."
+                },
                                     onSelectionChanged: function (selectedItems) {
                                         const selected = selectedItems.selectedRowsData[0];
                                         if (selected) {

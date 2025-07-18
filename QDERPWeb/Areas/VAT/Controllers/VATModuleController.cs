@@ -1206,8 +1206,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 // Check if the UnitType and UnitDesc already exists
                 bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
                     u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
-                    u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
-                    u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
+                    u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower());
+                  //  u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
 
                 if (exists)
                 {
