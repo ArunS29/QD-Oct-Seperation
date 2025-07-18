@@ -1664,7 +1664,6 @@
             // 
             // xrLabel11
             // 
-            this.xrLabel11.AutoWidth = false;
             this.xrLabel11.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel11.Borders = DevExpress.XtraPrinting.BorderSide.Right;
             this.xrLabel11.CanGrow = false;
