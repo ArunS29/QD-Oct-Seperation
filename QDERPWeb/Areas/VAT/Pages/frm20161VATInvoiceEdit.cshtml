@@ -508,6 +508,15 @@
 		<div id="InvoiceEdit" class="no-border-title" style="width: 433px;"></div>
 	</div>
 </div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="InvoiceEdit" class="titleText no-border-title"></div>
+	</div>
+</div>
+
 
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
@@ -2374,7 +2383,7 @@
 						)
 		</div>
 		<div id="ExcemptioncodePopover"></div>
-		<div class="Head" style="margin-left: 15px;">
+		<div class="footer-fixed" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
 
@@ -5888,8 +5897,9 @@
 					$("#InvoiceEdit").dxTextBox({
 						text: formatMessage("New Standard Tax Invoice(B2B)"),
 						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
+						width:450,
+							onContentReady: function(e) {
+							$(e.element).addClass("dx-textcolor-heading");
 							}
 
 					});
