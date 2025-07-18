@@ -52,8 +52,8 @@
     .form-row {
         display: flex;
         gap: 10px;
-        padding: 10px;
-        margin-bottom: 15px;
+		margin-bottom: 20px;
+		padding:5px;
         width: 100%;
     }
 
@@ -257,7 +257,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(220)
                 .Items(item =>
                 {
                     item.Add()
@@ -297,62 +297,77 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-6" style="display:flex; align-items:end;">
-                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-						.AcceptCustomValue(true)
-                        .Label(new JS("formatMessage('Client Name:')"))
-                        .DataSource(d => d.WebApi()
-                        .Controller("AddNewClientRequest")
-						.LoadAction("GetClientDetails")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("ClientCode")    
-                        )
-                        .LabelMode(EditorLabelMode.Floating)
-                        .ID("GetProjectDropDown")
-                        .OpenOnFieldClick(false)//
-                        .ValueChangeEvent("input")
-                        .HoverStateEnabled(true)
-                        .ValueExpr("ClientCode")
-                        .DisplayExpr("ClientName")
-                        .OnInput("dropDownBoxOnInput")
-                        .OnOpened("onOpened")
-                        .TabIndex(1)
-                        .Width("100%")
-                        .OnKeyDown("onKeyDown")
-                        //.OnValueChanged("dropDownBoxValueChanged")
-                        .ContentTemplate(new TemplateName("GetClientContentTemplate"))
-							.ValidationRules(rules =>
-						{
-						rules.AddRequired()
-						.Message(new JS("formatMessage('Client Name should be entered')"));
-						})
-                        )
+              <div class="col-md-6" style="display:flex; align-items:flex-end;">
+    @(Html.DevExtreme().DropDownBox()
+        .AcceptCustomValue(true)
+        .Label(new JS("formatMessage('Client Name:')"))
+        .DataSource(d => d.WebApi()
+            .Controller("AddNewClientRequest")
+            .LoadAction("GetClientDetails")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("ClientCode")
+        )
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("GetProjectDropDown")
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .ValueExpr("ClientCode")
+        .DisplayExpr("ClientName")
+        .OnInput("dropDownBoxOnInput")
+        .OnOpened("onOpened")
+        .TabIndex(1)
+        .Width("100%")
+        .OnKeyDown("onKeyDown")
+        //.OnValueChanged("dropDownBoxValueChanged")
+        .ContentTemplate(new TemplateName("GetClientContentTemplate"))
+        .ValidationRules(rules =>
+        {
+            rules.AddRequired()
+                .Message(new JS("formatMessage('Client Name should be entered')"));
+        })
+       .Buttons(buttons =>
+		{
+			// Clear button
+			buttons.Add()
+				.Name("clear");
 
-                        @(Html.DevExtreme().Button()
-                        .ID("AddClient")
-                        .Icon("plus")
-                        .Hint("Add Client")
-                        .Width(35)
-                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                       .OnClick("AddNewClient")
-                        )
-						 @(Html.DevExtreme().Button()
-        .ID("btnEditClient")
-        .Icon("edit")
-        .ElementAttr("class", "button-alignment-up button-group")
-        .OnClick(@"function() {
-            var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
-            var selectedValue = dropDownBox.option('value');
-            if (!selectedValue) {
-                DevExpress.ui.notify('Please select a client.', 'warning', 2000);
-                return;
-            }
-            var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
-            openModal(url, '');
-        }")
-    )
-                    </div>
+			// Drop-down toggle button (must be 'dropDown')
+			buttons.Add()
+				.Name("dropDown");
 
+			// Add new client button
+			buttons.Add()
+				.Name("addLedger")
+				.Location(TextEditorButtonLocation.After)
+				.Widget(w => w.Button()
+					.Type(ButtonType.Default)
+					.Icon("plus")
+					.ElementAttr(new { @class = "custom-hover-button add-hover" })
+					.OnClick("AddNewClient")
+				);
+
+			// Edit client button
+			buttons.Add()
+				.Name("editLedger")
+				.Location(TextEditorButtonLocation.After)
+				.Widget(w => w.Button()
+					.Type(ButtonType.Default)
+					.Icon("edit")
+					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+					.OnClick(@"function() {
+						var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+						var selectedValue = dropDownBox.option('value');
+						if (!selectedValue) {
+							DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+							return;
+						}
+						var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+						openModal(url, '');
+					}")
+				);
+		}))
+</div>
                     <!-- Row 2 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -380,15 +395,20 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-					
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("btnAddSalesperson")
-                        .Icon("plus")
-                        .ElementAttr("class", "button-alignment-down button-group")
-                        .OnClick("redirecttosalespersonmaster")
-                        )
-
+						.Buttons(buttons =>
+						{
+							 buttons.Add()
+							 .Name("btnAddAccount")
+							 .Location(TextEditorButtonLocation.After)
+							 .Widget(w => w.Button()
+							 .Type(ButtonType.Default)
+							 .Icon("plus")
+							 .ElementAttr(new { @class = "custom-hover-button add-hover" })
+							 .OnClick("redirecttosalespersonmaster"));
+							 buttons.Add()
+							 .Name("dropDown");
+						}))
+                    
                     </div>
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
@@ -404,16 +424,17 @@
 						.Label(new JS("formatMessage('Client Ref. Name / Attention To:')"))
                         .LabelMode(EditorLabelMode.Floating) 
                         .Width("100%")
-
-                        )
-
-				@(Html.DevExtreme().Button()
-						.ID("btnClientContact")
-						.Icon("plus")
-						.ElementAttr("class", "button-alignment-up button-group")
-						.OnClick("onClientContactClick")
-)
-
+						   .Buttons(buttons =>
+					   {
+						   buttons.Add()
+						   .Name("btnClientContact")
+						   .Location(TextEditorButtonLocation.After)
+						   .Widget(w => w.Button()
+						   .Type(ButtonType.Default)
+						   .Icon("plus")
+						   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+						.OnClick("onClientContactClick"));
+					   }))
                     </div>
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
@@ -458,15 +479,19 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddModeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddModeReq")
-                        )
+						.Buttons(buttons =>
+							{
+								 buttons.Add()
+								 .Name("AddModeReq")
+								 .Location(TextEditorButtonLocation.After)
+								 .Widget(w => w.Button()
+								 .Type(ButtonType.Default)
+								 .Icon("plus")
+								 .ElementAttr(new { @class = "custom-hover-button add-hover" })
+								 .OnClick("AddModeReq"));
+								 buttons.Add()
+								 .Name("dropDown");
+							}))
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -492,15 +517,20 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddTypeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddTypeReq")
-                        )
+						.Buttons(buttons =>
+							{
+								 buttons.Add()
+								 .Name("AddTypeReq")
+								 .Location(TextEditorButtonLocation.After)
+								 .Widget(w => w.Button()
+								 .Type(ButtonType.Default)
+								 .Icon("plus")
+								 .ElementAttr(new { @class = "custom-hover-button add-hover" })
+								 .OnClick("AddTypeReq"));
+								 buttons.Add()
+								 .Name("dropDown");
+							}))
+                      
                     </div>
 
                     <div class="col-md-3">
@@ -543,70 +573,128 @@
         </text>);
 
 				item.Add().Title(new JS("formatMessage('Quote Text')")).Icon("detailslayout").Text("Quote Text").Template(@<text>
-            <div class="dx-card layout-container">
                 <!-- Subject -->
                 <div class="form-row">
                     <div class="form-column">
-                        <div class="field-header">
-							<label id="Subject1" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid" onclick="saveField('ReportSubject', 'Subject' ,'Subject')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
-                        @(Html.DevExtreme().TextBox()
-                        .ID("Subject")
-                        .Width("100%")
-                        )
+                          @(Html.DevExtreme().TextBox()
+							.ID("Subject")
+							.Label(new JS("formatMessage('Subject:')"))
+							.LabelMode(EditorLabelMode.Floating)
+							.Width("100%")
+							.Buttons(buttons =>
+							{
+							
+								buttons.Add().Name("clear");
+								
+								buttons.Add()
+									.Name("setDefault")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("upload")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										.OnClick("function() { saveField('ReportSubject', 'Subject' ,'Subject'); }")
+									);
+
+								// Font button with icon
+								buttons.Add()
+									.Name("fontButton")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("fa fa-font") // FontAwesome class
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										@* .OnClick("function() { /* your font button logic */ }") *@
+									);
+							})
+						)                    
+
                     </div>
 
                     <!-- Po Summary -->
                     <div class="form-column">
-                        <div class="field-header">
-							<label for="QuoteSummary" id="QuoteSummary1" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid"  onclick="saveField('ReportSummary', 'QuoteSummary','Quote summary')">Set Default</button>
-                                <button class="btn-outline" onclick=""><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                        <div style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextArea()
                         .ID("QuoteSummary")
-                        .Height(80)
+						.Label(new JS("formatMessage('Quote Summary:')"))
+						.LabelMode(EditorLabelMode.Floating)
+                       .ElementAttr("style", "height: 80% !important;")
                         .Width("100%")
-                        )
+						) 
+						 @(Html.DevExtreme().Button()
+                        .ID("AddSupplier")
+                        .Icon("upload")
+                        .OnClick("function() { saveField('ReportSummary', 'QuoteSummary','Quote summary'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("EditSupplier")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
+					 </div>
                     </div>
                 </div>
 
                 <!-- Po Introduction -->
                 <div class="form-row">
                     <div class="form-column">
-                        <div class="field-header">
-							<label for="QuoteIntro" id="QuoteIntro1" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid"  onclick="saveField('ReportIntroduction', 'QuoteIntro','Quote Introduction')" >Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                       
                         @(Html.DevExtreme().TextBox()
                         .ID("QuoteIntro")
+						.Label(new JS("formatMessage('Project:')"))
+						.LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
+                        .Buttons(buttons =>
+						{
+						
+							buttons.Add().Name("clear");
+							
+							buttons.Add()
+								.Name("setDefault")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+									.Type(ButtonType.Default)
+									.Icon("upload")
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									.OnClick("function() { saveField('ReportIntroduction', 'QuoteIntro','Quote Introduction'); }")
+								);
+
+							// Font button with icon
+							buttons.Add()
+								.Name("fontButton")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+									.Type(ButtonType.Default)
+									.Icon("fa fa-font") // FontAwesome class
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									@* .OnClick("function() { /* your font button logic */ }") *@
+								);
+						})
+
                         )
                     </div>
 
                     <!-- Po Summary -->
                     <div class="form-column">
-                        <div class="field-header">
-                            <label for="QuoteThanks" id="QuoteThanks1" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid"  onclick="saveField('ReportThanksNote','QuoteThanks','Quote Thanks')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                        <div style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextArea()
                         .ID("QuoteThanks")
+						.Label(new JS("formatMessage('Quote Thanks:')"))
+						.LabelMode(EditorLabelMode.Floating)
                         .Height(80)
                         .Width("100%")
-                        )
+						) 
+						 @(Html.DevExtreme().Button()
+                        .ID("Addreset")
+                        .Icon("upload")
+                        .OnClick("function() { saveField('ReportThanksNote','QuoteThanks','Quote Thanks'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("tnxreset")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
+					 </div>
                     </div>
                 </div>
         </text>);
@@ -713,7 +801,7 @@
 
                             </div>
 
-                            <div class="row mt-3">
+                            <div style="display: flex;justify-content: space-between;flex-direction: row-reverse;">
                                 <div class="col-md-6">
 									@(Html.DevExtreme().TextBox()
 									.ID("txtTransportationScope")
@@ -738,6 +826,18 @@
 									.Width("100%")
 )
  </div>
+								 <!-- Remarks TextArea -->
+								<div class="row">
+									<div class="col-12">
+										@(Html.DevExtreme().TextArea()
+										.ID("Remarks")
+										.Label(new JS("formatMessage('Remarks:')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.Width("100%")
+										.Height(80)
+										)
+									</div>
+								</div>
                             </div>
                         </div>
                     </div>
@@ -809,30 +909,20 @@
                                     .OnKeyDown("onKeyDown")
                                     //.OnValueChanged("dropDownBoxValueChanged")
                                     .ContentTemplate(new TemplateName("GetQuotationStatusContentTemplate"))
-                                    )
-                                </div>
-                                <div class="col-2 d-flex justify-content-start">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddQuoteStatus")
-                                    .Icon("plus")
-                                    .Hint("Add Description")
-                                    .Width(40)
-                                    .ElementAttr("style", "margin-top:18px;")
-                                    .OnClick("AddQuoteStatus")
-                                    )
-                                </div>
-                            </div>
-
-                            <!-- Remarks TextArea -->
-                            <div class="row">
-                                <div class="col-12">
-                                    @(Html.DevExtreme().TextArea()
-                                    .ID("Remarks")
-									.Label(new JS("formatMessage('Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("100%")
-                                    .Height(80)
-                                    )
+									.Buttons(buttons =>
+										{
+											 buttons.Add()
+											 .Name("AddQuoteStatus")
+											 .Location(TextEditorButtonLocation.After)
+											 .Widget(w => w.Button()
+											 .Type(ButtonType.Default)
+											 .Icon("plus")
+											 .ElementAttr(new { @class = "custom-hover-button add-hover" })
+											 .OnClick("AddQuoteStatus"));
+											 buttons.Add()
+											 .Name("dropDown");
+										}))
+                                    
                                 </div>
                             </div>
                         </div>
@@ -1169,15 +1259,15 @@
 	.Caption(new JS("formatMessage('Total')"))
 	.Width(200);
 				columns.Add().DataField("TaxSlabCode")
-	.Caption(new JS("formatMessage('TaxSlabCode')"))
-	.Width(200)
-	.Visible(false);
+			.Caption(new JS("formatMessage('TaxSlabCode')"))
+			.Width(200)
+			.Visible(false);
 			})
 		.Selection(selection => selection.Mode(SelectionMode.Single))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
-		.Height(600)
+		.Height("45vh")
 		.ColumnAutoWidth(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -6520,31 +6610,12 @@ onClick: function (e) {
 			text: formatMessage("Add New Quotation"),
 			readOnly: true,
 			onContentReady: function (e) {
-				$(e.element).addClass("dx-textbox-heading");
+				$(e.element).addClass("dx-textcolor-heading");
 			}
 		});
 	});
 
-		  $(function () {
-								$("#QuoteThanks1").text(
-									 formatMessage("Quote Thanks:"));
-					});
-
-	$(function () {
-							$("#QuoteIntro1").text(
-								 formatMessage("Quote Introduction:"));
-				});
-
-	$(function () {
-							$("#QuoteSummary1").text(
-								 formatMessage("Quote Summary:"));
-				});
-
-	$(function () {
-							$("#Subject1").text(
-								 formatMessage("Subject:"));
-				});
-
+ 
 	// 	 $(function() {
 	//   const tenantName = window.tenantName || "defaultTenant";
 	//   const dd = $("#btnPrint").dxDropDownButton("instance");
