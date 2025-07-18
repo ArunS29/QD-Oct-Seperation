@@ -2299,32 +2299,30 @@
 
 							// âœ… Edit icon with navigation
 
-							$("<div>").dxButton({
+$("<div>").dxButton({
+    icon: "edit",
+    hint: "Edit item",
+    onClick: function () {
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        
+        // Get the selected row via cellInfo or directly use grid methods
+        const visibleRows = grid.getVisibleRows();
+        
+        // You are inside the cell template, so this might be useful:
+        const rowIndex = cellInfo.rowIndex; // <- works in editCellTemplate context
+        const rowData = grid.cellValue(rowIndex, "GSCode"); // Get just the GScode
+        
+        if (!rowData) {
+            DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+            return;
+        }
 
-								icon: "edit",
-
-								hint: "Edit item",
-
-onClick: function (e) {
-    const rowData = e.row?.data;
-	console.log("row",rowData);
-
-    if (!rowData || !rowData.GSCode) {
-        DevExpress.ui.notify("Item Code (GScode) is missing in this row", "warning", 2000);
-        return;
-    }
-
-    const gsCode = rowData.GSCode;
-    const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(gsCode)}`;
-    window.open(url, "_blank");
-},
-
-
-								width: 60,
-
-								height: 30
-
-							}).appendTo($container);
+        const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+        window.open(url, "_blank");
+    },
+    width: 60,
+    height: 30
+}).appendTo($container);
 
 						});
 

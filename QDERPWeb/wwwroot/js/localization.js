@@ -1,7 +1,7 @@
 ﻿
 var dictionary = {
     "en": {
-
+        "Document Types":"Document Types",
         "Receive":"Receive",
         "Stock Availability":"Stock Availability",
         "Upload":"Upload",
@@ -3593,7 +3593,12 @@ var dictionary = {
         "Tax Report (Revenue Classified) in Arabic": "Tax Report (Revenue Classified) in Arabic",
         "Stock Inventory Report": "Stock Inventory Report",
         "COGS Posting":"COGS Posting",
-
+        "QtyReceived": "Qty Received",
+        "UnitCodeOfConversion": "Unit Code of Conversion",
+        "UnitsConverted": "Units Converted",
+        "StockReceivedUnitPrice": "Stock Received Unit Price",
+        "StoreCode": "Store Code",
+        "UnitDesc": "Unit Description",
   "Description (AR)": "Description (AR)",
         "Stock Group (AR)": "Stock Group (AR)",
         "Detailed Description": "Detailed Description",
@@ -3686,7 +3691,12 @@ var dictionary = {
         "Country of Origin": "بلد المنشأ",
         "Min Selling Price": "أقل سعر بيع",
         "Max Selling Price": "أقصى سعر بيع",
-
+        "QtyReceived": "الكمية المستلمة",
+        "UnitCodeOfConversion": "رمز وحدة التحويل",
+        "UnitsConverted": "الوحدات المحولة",
+        "StockReceivedUnitPrice": "سعر الوحدة المستلمة",
+        "StoreCode": "رمز المخزن",
+        "UnitDesc": "وصف الوحدة",
         "Registers": "السجلات",
         "Transactions": "المعاملات",
         "Cash Payment Voucher": "قسيمة دفع نقدي",
@@ -3824,6 +3834,7 @@ var dictionary = {
         "Credit Transaction": "معاملة دائنة",
         "Closing Balance": "الرصيد الختامي",
         "Depreciated Percentage": "نسبة الإهلاك",
+        "Document Types": "أنواع المستندات",
         "Depreciation Amount": "قيمة الإهلاك",
         "Accumulated Adjusted": "الإجمالي المعدل",
         "Book Value As On Date": "القيمة الدفترية حتى التاريخ",
