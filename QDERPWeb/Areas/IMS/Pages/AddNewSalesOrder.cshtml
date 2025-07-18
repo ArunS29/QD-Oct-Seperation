@@ -709,7 +709,7 @@
     </div>
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
-        .ElementAttr("style", "height: 370px !important;")
+        .Height("65vh")
         .DataSource(new JS("window.itemGridDataSource"))
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
@@ -1526,7 +1526,7 @@
         text: formatMessage("Sales Order Details"),
             readOnly: true,
             onContentReady: function (e) {
-            $(e.element).addClass("dx-textbox-heading");
+            $(e.element).addClass("dx-textcolor-heading");
             }
             });
         });

@@ -811,7 +811,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height(600)
+									.Height("65vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -3046,16 +3046,15 @@
 					$("#DefaultEntry").dxTextBox({
 						text: formatMessage("Default For Entry:"),
 						readOnly: true
-
 					});
 				});
 				$(function () {
 					$("#ProformaInvoiceEditForm").dxTextBox({
 						text: formatMessage("Proforma Invoice Edit Form"),
 						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
-							}
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textcolor-heading");
+						}
 
 					});
 				});

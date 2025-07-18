@@ -1016,7 +1016,7 @@
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
         .DataSource(new JS("window.itemGridDataSource"))
-        .Height("600px")
+        .Height("65vh")
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -1122,7 +1122,7 @@
     text: formatMessage("Purchase Order"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass("dx-textbox-heading");
+                $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });

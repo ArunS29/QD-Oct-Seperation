@@ -770,7 +770,7 @@
     </div>
     @(Html.DevExtreme().DataGrid()
             .ID("itemGrid")
-            .Height("600px")
+            .Height("65vh")
             .DataSource(new JS("[]")) // using global JS array
             .KeyExpr("ItemCode")
             .Selection(s => s
@@ -1067,7 +1067,7 @@
     text: formatMessage("Add New Delivery to Client"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass("dx-textbox-heading");
+            $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });

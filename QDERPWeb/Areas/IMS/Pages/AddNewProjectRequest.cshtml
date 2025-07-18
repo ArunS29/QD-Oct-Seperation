@@ -313,18 +313,19 @@
                         .Disabled(true)
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetClientContentTemplate"))
-                        )
-
-                        @(Html.DevExtreme().Button()
-                        .ID("AddClient")
+                        .Buttons(buttons =>
+                        {
+                            buttons.Add()
+                        .Name("btnAddAccount")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
                         .Icon("plus")
-                        .Hint("Add Client")
-                        .Width(35)
-                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                        .OnClick("redirecttoClientLeadmaster")
-                        .Disabled(true)
-                        )
-
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("redirecttoClientLeadmaster"));
+                            buttons.Add()
+                        .Name("dropDown");
+                        }))
                     </div>
 
                     <!-- Row 2 -->
@@ -352,14 +353,19 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("btnAddSalesperson")
-                        .Icon("plus")
-                        .ElementAttr("class", "button-alignment-down button-group")
-                        .OnClick("redirecttosalespersonmaster")
-                        )
-
+                                                    .Buttons(buttons =>
+                                                    {
+                                                        buttons.Add()
+                                                    .Name("btnAddSalesperson")
+                                                    .Location(TextEditorButtonLocation.After)
+                                                    .Widget(w => w.Button()
+                                                    .Type(ButtonType.Default)
+                                                    .Icon("plus")
+                                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                    .OnClick("redirecttosalespersonmaster"));
+                                                        buttons.Add()
+                                                    .Name("dropDown");
+                                                    }))
                     </div>
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
@@ -421,15 +427,19 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddModeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddModeReq")
-                        )
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                            .Name("AddModeReq")
+                            .Location(TextEditorButtonLocation.After)
+                            .Widget(w => w.Button()
+                            .Type(ButtonType.Default)
+                            .Icon("plus")
+                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                            .OnClick("AddModeReq"));
+                                buttons.Add()
+                            .Name("dropDown");
+                            }))
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
@@ -455,15 +465,19 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddTypeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddTypeReq")
-                        )
+                                                    .Buttons(buttons =>
+                                                    {
+                                                        buttons.Add()
+                                                    .Name("btnAddAccount")
+                                                    .Location(TextEditorButtonLocation.After)
+                                                    .Widget(w => w.Button()
+                                                    .Type(ButtonType.Default)
+                                                    .Icon("plus")
+                                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                    .OnClick("AddTypeReq"));
+                                                        buttons.Add()
+                                                    .Name("dropDown");
+                                                    }))
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
@@ -588,16 +602,19 @@
                                     .DropDownOptions(o => o.Width(1000))
                                     .ContentTemplate(new TemplateName("PreparedByTemplate"))
                                     .Width("100%")
-                                    )
-
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddPreparedBy")
+                                    .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                    .Name("AddPreparedBy")
+                                    .Location(TextEditorButtonLocation.After)
+                                    .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
                                     .Icon("plus")
-                                    .Hint("Add Sales Person")
-                                    .Width(40)
-                                    .ElementAttr("style", "margin-top:25px;")
-                                    .OnClick("AddPreparedBy")
-                                    )
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("AddPreparedBy"));
+                                        buttons.Add()
+                                    .Name("dropDown");
+                                    }))
                                 </td>
                             </tr>
 
@@ -730,7 +747,7 @@
     </div>
     @(Html.DevExtreme().DataGrid()
             .ID("itemGrid")
-            .Height("600px")
+            .Height("65vh")
             .DataSource(new JS("[]")) // using global JS array
             .KeyExpr("ItemCode")
             .Selection(s => s
@@ -1027,7 +1044,7 @@
     text: formatMessage("Add New Delivery to Client"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass("dx-textbox-heading");
+          $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });
