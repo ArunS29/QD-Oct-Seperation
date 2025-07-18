@@ -44,5 +44,7 @@ namespace QD.ERP.Web.DAL.Entities
         public string CurrencyName { get; set; }
         public string TransactionCurrencySymbol { get; set; }
 
+        public string TransactionCurrencyImage { get; set; } 
+
     }
 }

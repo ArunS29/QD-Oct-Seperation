@@ -152,7 +152,7 @@
 		<div id="storeInventoryReport" class="no-border-input"></div>
 	</div>
 </div>
-<div class="dx-field ledgerResult">
+@* <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65315storeStockBalanceMaster>()
 		.ID("dataGrid")
 		.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetStockData"))
@@ -169,7 +169,95 @@
 			columns.Add().Caption("Stock Details").Columns(detail =>
 			{
 				detail.AddFor(m => m.StoreName).Caption("Store Name");
-				detail.AddFor(m => m.StoreCode).Caption("Stock Code");
+				detail.AddFor(m => m.StoreCode).Caption("Stock Code").GroupIndex(0);
+				detail.AddFor(m => m.Gsdescrpition).Caption("Stock Description");
+			});
+
+			// Opening Balance Band
+			columns.Add().Caption("Opening Balance").Columns(open =>
+			{
+				open.AddFor(m => m.TotalOpeningBal).Caption("Opening Bal. (Qty)");
+			});
+
+			// Inventory Stock Qty Band
+			columns.Add().Caption("Inventory Stock Qty").Columns(invQty =>
+			{
+				invQty.Add().Caption("Stock Receipts (Qty)").Columns(receipts =>
+			{
+				receipts.AddFor(m => m.TotalReceivedFromSuppliers).Caption("From Suppliers (Qty)");
+				receipts.AddFor(m => m.TotalReceivedFromStores).Caption("From Store (Qty)");
+				receipts.AddFor(m => m.TotalReceipts).Caption("Total Receipts (Qty)");
+			});
+
+				invQty.Add().Caption("Stock Issues").Columns(issues =>
+			{
+				issues.AddFor(m => m.TotalIssuedToClient).Caption("To Client (Qty)");
+				issues.AddFor(m => m.TotalConsumed).Caption("Consumed (Qty)");
+				issues.AddFor(m => m.TotalStoreTransfered).Caption("Transferred (Qty)");
+				issues.AddFor(m => m.TotalIssues).Caption("Total Issues (Qty)");
+			});
+
+				invQty.AddFor(m => m.BalanceInStock).Caption("Closing Balance (Qty)");
+			});
+
+			// Inventory Stock Value (Amount) Band
+			columns.Add().Caption("Inventory Stock Values (Amount)").Columns(val =>
+			{
+				val.AddFor(m => m.AmountOpeningBal).Caption("Opening Bal. (Amt)");
+
+				val.Add().Caption("Stock Receipts (Amount)").Columns(receiptAmt =>
+			{
+				receiptAmt.AddFor(m => m.AmountReceived).Caption("From Suppliers (Amt)");
+				receiptAmt.AddFor(m => m.AmountReceivedFromStore).Caption("From Store (Amt)");
+				receiptAmt.AddFor(m => m.AmountTotalReceipts).Caption("Total Receipts (Amt)");
+			});
+
+				val.Add().Caption("Stock Issues (Amount)").Columns(issueAmt =>
+			{
+				issueAmt.AddFor(m => m.AmountIssuedToClient).Caption("To Client (Amt)");
+				issueAmt.AddFor(m => m.AmountConsumed).Caption("Consumed (Amt)");
+				issueAmt.AddFor(m => m.AmountIssuedToStore).Caption("Transferred (Amt)");
+				issueAmt.AddFor(m => m.AmountTotalIssues).Caption("Total Issues (Amt)");
+			});
+
+				val.AddFor(m => m.TransactionTotal).Caption("Closing Balance (Amt)");
+			});
+
+
+		})
+		)
+
+
+
+
+
+
+</div> *@
+
+
+
+<div class="dx-field ledgerResult">
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65315storeStockBalanceMaster>()
+		.ID("dataGrid")
+		.DataSource(d => d.Mvc().Controller("StockInventory").LoadAction("GetStockData"))
+		.ColumnChooser(columnChooser => columnChooser
+		.Enabled(false)
+		.Title(new JS("formatMessage('Show/Hide Column')"))
+		.Mode(GridColumnChooserMode.DragAndDrop)
+		)
+		.ShowBorders(true)
+		.ShowColumnLines(true)
+		.ShowRowLines(true)
+		.ColumnAutoWidth(true)
+		.WordWrapEnabled(true)
+		.Height(700)
+		.Columns(columns =>
+		{
+			// Stock Details Band
+			columns.Add().Caption("Stock Details").Columns(detail =>
+			{
+				detail.AddFor(m => m.StoreName).Caption("Store Name");
+				detail.AddFor(m => m.StoreCode).Caption("Stock Code").GroupIndex(0);
 				detail.AddFor(m => m.Gsdescrpition).Caption("Stock Description");
 			});
 
@@ -223,14 +311,336 @@
 				val.AddFor(m => m.TransactionTotal).Caption("Closing Balance (Amt)");
 			});
 		})
+		.Summary(summary =>
+		{
+
+	
+			summary.GroupItems(items =>
+			{
+				items.Add().Column("TotalOpeningBal")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+
+				items.Add().Column("TotalReceivedFromSuppliers")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("TotalReceivedFromStores")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("TotalReceipts")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("TotalIssuedToClient")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("TotalConsumed")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("TotalStoreTransfered")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("TotalIssues")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("BalanceInStock")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("AmountOpeningBal")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("AmountReceived")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("AmountReceivedFromStore")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("AmountTotalReceipts")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("AmountIssuedToClient")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+
+	");
+				items.Add().Column("AmountConsumed")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("AmountIssuedToStore")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("AmountTotalIssues")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+				items.Add().Column("TransactionTotal")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+	function(e) {
+	if (!e || e.value == null || isNaN(e.value)) {
+	return '';
+	}
+	return e.value.toLocaleString(undefined, {
+	minimumFractionDigits: 2,
+	maximumFractionDigits: 2
+	});
+	}
+	");
+
+			});
+		
+
+
+				summary.TotalItems(totalItems =>
+	    {
+			@* 	totalItems.Add().Column("AccountHead").SummaryType(SummaryType.Count)
+			.DisplayFormat(new JS("formatMessage('Count: {0}')")); *@
+
+				totalItems.Add().Column("TotalOpeningBal").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalReceivedFromSuppliers").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalReceivedFromStores").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalReceipts").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalIssuedToClient").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalConsumed").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalStoreTransfered").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("TotalIssues").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("BalanceInStock").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountOpeningBal").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountReceived").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountReceivedFromStore").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountTotalReceipts").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountIssuedToClient").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountConsumed").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountIssuedToStore").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+				totalItems.Add().Column("AmountTotalIssues").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+
+				totalItems.Add().Column("TransactionTotal").SummaryType(SummaryType.Sum)
+	.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+			});
+
+		})
 		)
-
-
-
-
-
-
 </div>
+
 <div id="invoiceErrorPopup"></div>
 
 <script>

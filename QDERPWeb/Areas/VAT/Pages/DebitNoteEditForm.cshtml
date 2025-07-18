@@ -363,6 +363,15 @@
 		<div id="DebitNoteEditForm" class="no-border-title"></div>
 	</div>
 </div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="DebitNoteEditForm" class="titleText no-border-title"></div>
+	</div>
+</div>
+
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
 		<div class="horizontal-container" style="width:100%;">
@@ -1074,7 +1083,7 @@
 									)
 		</div>
 
-		<div class="Head" style="margin-left: 15px;">
+		<div class="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATDebitNoteEditFooter.cshtml")
 		</div>
 
@@ -1816,7 +1825,7 @@
 						text: formatMessage("New e-Invoice Debit Note"),
 						readOnly: true,
 									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
+									$(e.element).addClass("dx-textcolor-heading");
 							}
 
 					});

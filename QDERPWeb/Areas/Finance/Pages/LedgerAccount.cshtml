@@ -3209,25 +3209,25 @@ function syncSupVATNumbers(e) {
         if(IsPurchaseEdit=='true')
         { 
              disableTabs(["tab-content-3", "tab-content-7"]);
-    var accountGroupTextBox = $("#ddlAccountGroup").dxTextBox("instance");
+        var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
     // Set the value
-    accountGroupTextBox.option("value", "SUNDRY CREDITORS");
+    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
 
     // Disable the textbox
-    accountGroupTextBox.option("disabled", true);
+        accountGroupDropDownBox.option("disabled", true);
                  
         }
         if(IsB2CEdit=='true')
         {
-    var accountGroupTextBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+        var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
     // Set the value
-    accountGroupTextBox.option("value", "SUNDRY CREDITORS");
+    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
 
     // Disable the textbox
-    accountGroupTextBox.option("disabled", true);      
-        }
+        accountGroupDropDownBox.option("disabled", true);
+            }
 
         // alert(IsCharOfAccounts);
         // Check if IsCharOfAccounts is 'true' (string comparison)
@@ -3794,7 +3794,7 @@ function syncSupVATNumbers(e) {
 
 
         // Check if the parameter IsCharOfAccounts is 'true'
-        if (!isedit && IsCharOfAccounts !== 'true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
+                if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
             // Reset validator if it exists
             var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
             if (AccountHeadNameValidator) {

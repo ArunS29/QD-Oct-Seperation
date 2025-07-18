@@ -833,7 +833,7 @@
 					.Visible(true);
 
 						/* Debit */
-						columns.AddFor(m => m.ConvertedDrAmount)
+						columns.AddFor(m => m.DrAmount)
 					.Caption(new JS("formatMessage('Debit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -843,13 +843,13 @@
 		</text>)
 				.CellTemplate(@<text>
 			<div class="debit-pill">
-				<%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
 					.Visible(true);
 
 						/* Credit */
-						columns.AddFor(m => m.ConvertedCrAmount)
+						columns.AddFor(m => m.CrAmount)
 					.Caption(new JS("formatMessage('Credit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -859,29 +859,82 @@
 		</text>)
 				.CellTemplate(@<text>
 			<div class="credit-pill">
-				<%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
 					.Visible(true);
-						columns.AddFor(m => m.CrAmount)
+						columns.AddFor(m => m.ConvertedCrAmount)
 					.Caption("Trans Credit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div class="credit-pill">
-				<span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-				<%- data.CrAmount != null ? data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-			</div>
-		</text>)
+						<div class="credit-pill">
+							<span id="currencySpan_<%- data.VoucherEntryNo %>" style="color: black; font-weight: bold;"></span>
+							<script>
+								(function() {
+									debugger;
+									const spanId = "currencySpan_<%- data.VoucherEntryNo %>";
+									const span = document.getElementById(spanId);
+									if (!span) return;
+
+									let html = "";
+									const symbol = "<%= data.TransactionCurrencySymbol %>";
+									const svg = `<%= data.TransactionCurrencyImage %>`;
+
+									if (symbol && symbol.trim() !== "null") {
+										html = symbol;
+									} else if (svg && svg.trim() !== "null") {
+										const modifiedSvg = svg.replace(/<svg\b([^>]*)>/, '<svg width="12" height="12" $1>');
+										html = '<div style="width: 15px; height: 27px; display: inline-block; vertical-align: middle;">' + modifiedSvg + '</div>';
+									}
+
+									span.innerHTML = html;
+									 injectHeaderSVG();
+								   injectCurrencyToCards();
+								})();
+							</script>
+
+							<%- data.ConvertedCrAmount != null 
+									? data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
+									: "0.00" 
+							%>
+						</div>
+					</text>)
 					.Visible(false);
-						columns.AddFor(m => m.DrAmount)
+						columns.AddFor(m => m.ConvertedDrAmount)
 					.Caption("Trans Debit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div class="debit-pill">
-				<span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-				<%- data.DrAmount != null ? data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-			</div>
-		</text>)
+						<div class="debit-pill">
+							<span id="currencydebit_<%- data.VoucherEntryNo %>" style="color: black; font-weight: bold;"></span>
+							<script>
+								(function() {
+									const spanId = "currencydebit_<%- data.VoucherEntryNo %>";
+									const span = document.getElementById(spanId);
+									if (!span) return;
+
+									let html = "";
+									const symbol = "<%= data.TransactionCurrencySymbol %>";
+									const svg = `<%= data.TransactionCurrencyImage %>`;
+
+									if (symbol && symbol.trim() !== "null") {
+										html = symbol;
+									} else if (svg && svg.trim() !== "null") {
+										const modifiedSvg = svg.replace(/<svg\b([^>]*)>/, '<svg width="12" height="12" $1>');
+										html = '<div style="width: 15px; height: 27px; display: inline-block; vertical-align: middle;">' + modifiedSvg + '</div>';
+									}
+
+									span.innerHTML = html;
+									 injectHeaderSVG();
+									 injectCurrencyToCards();
+								})();
+							</script>
+
+							<%- data.ConvertedDrAmount != null 
+									? data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
+									: "0.00" 
+							%>
+						</div>
+					</text>)
 					.Visible(false);
 
 						columns.AddFor(m => m.ConvertedAmount)
@@ -1730,8 +1783,7 @@
 					data.forEach(item => {
 						item.GroupCurrencyName = item.CurrencyName ?? "(Opening Balance)"; // flag to detect non-grouped
 					});
-				   injectHeaderSVG();
-				   injectCurrencyToCards();
+				  
 
 				// Bind the data to the DataGrid
 				const dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1746,7 +1798,8 @@
 					const firstRow = dataSource[0];
 					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
 				}
-
+				 injectHeaderSVG();
+				   injectCurrencyToCards();
 				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
 				// loadPanel.hide();
 			},

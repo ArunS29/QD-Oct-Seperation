@@ -249,9 +249,17 @@
 
 
 <meta charset="UTF-8">
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="EditJobOrderDetails" class="no-border-title"></div>
+    </div>
+</div> *@
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="EditJobOrderDetails" class="titleText no-border-title"></div>
     </div>
 </div>
 <div class="form-container1">
@@ -1343,7 +1351,7 @@
             .Paging(p => p.PageSize(15))
             .FilterRow(f => f.Visible(true))//
             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-            .Height(345)
+            .Height("65vh")
             .Selection(s => s.Mode(SelectionMode.Single))
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
@@ -1443,7 +1451,7 @@
                 text: formatMessage("Edit Job Order Details"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass("dx-textbox-heading");
+                    $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });

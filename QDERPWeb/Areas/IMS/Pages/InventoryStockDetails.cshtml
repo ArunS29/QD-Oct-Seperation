@@ -60,6 +60,12 @@
     .columnheader {
         text-align: center;
     }
+    /* Remove the extra blue focus border from DevExtreme search panel input */
+    .dx-datagrid-search-panel input:focus {
+        outline: none !important;
+        box-shadow: none !important;
+    }
+
 
     .tab-content {
         display: none;
@@ -761,14 +767,13 @@
                                                 .ReadOnly(true)
                                                 .Height(40)
                                                 .Width("100%"))
-                    </div>
-
+                    </div>      
                     <!-- Entered On -->
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                                 .ID("EnteredOn")
                                                 .Value(enteredOn)
-                                                .Label(new JS("formatMessage('Entered On')"))
+                                                .Label(new JS("formatMessage('Entered On : ')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ReadOnly(true)
                                                 .Height(40)
@@ -1051,6 +1056,7 @@
                     </table>
                 </div>
                 <table style="margin-left: 13px;">
+                   
                     <tr>
 
                         <td>
@@ -1060,24 +1066,33 @@
                     .Text(new JS("formatMessage('Print')"))
                     .Icon("print")
                     .Hint("Click to print")
-                    .OnClick("function() { exportDataGridToPDF('stockCardGrid'); }")
+                            .OnClick("function() { exportDataGridToPDF('stockCardGrid','Stock Control'); }")
                     .ElementAttr(new { @class = "bold-button" }) 
                     )
 
                         </td>
                         <td>
-                        @(Html.DevExtreme().DropDownButton()
-                            .Text(new JS("formatMessage('View Stock Movement Report')"))
-                            .Icon("cart") 
-                            .Width(300)
-                            .DisplayExpr("text")
-                            .OnButtonClick("ViewStockMovementNavigation")
-                            )
+                      
+                        @(Html.DevExtreme().Button()
+                                                .ID("BtnViewStockMovementReport")
+                                                .Text(new JS("formatMessage('View Stock Movement Report')"))
+                                                .Icon("cart")
+                                                .Width(300)
+                                               // .Hint("Click to print")
+                                                .OnClick("ViewStockMovementNavigation")
+                                                .ElementAttr(new { @class = "bold-button" })
+                                                )
                         </td>
                     </tr>
                 </table>
-                <div class="dx-field ledgerResult" style="margin-bottom: 100px">
+                @* <div class="dx-field ledgerResult" style="margin-bottom: 100px"> *@
+                @* <!-- Page Title --> *@
+                @* <h2 style="margin-left: 13px; font-weight: bold;">Stock Control</h2> *@
+
+                <!-- Spacer (optional) -->
+                <div style="height: 20px;"></div>
                     <table style="width:100%; margin-top: 15px;">
+                   
                         <tr>
                             <td>
                             @(Html.DevExtreme().DataGrid()
@@ -2045,6 +2060,14 @@
                                     height: 300,
                                     selection: { mode: "single" },
                                     selectedRowKeys: e.component.option("value") ? [e.component.option("value")] : [],
+                                            filterRow: { visible: false },
+                headerFilter: { visible: true },
+                                             searchPanel: {
+                    visible: true,
+                    highlightCaseSensitive: true,
+                    width: 300,
+                    placeholder: "Search..."
+                },
                                     onSelectionChanged: function (selectedItems) {
                                         const selected = selectedItems.selectedRowsData[0];
                                         if (selected) {
@@ -2550,9 +2573,10 @@
 
 
 
-        <div class="Footer">
+        <div class="footer-fixed">
         @await Html.PartialAsync("~/Pages/Shared/IMS/StockEditFooter.cshtml")
         </div>
+
         </div>
 <script>
 

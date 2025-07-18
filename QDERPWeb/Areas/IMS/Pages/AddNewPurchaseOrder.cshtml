@@ -1,6 +1,5 @@
 ﻿@page
 @using DevExtreme.AspNet.Mvc
-
 @model QD.ERP.Web.Areas.IMS.Pages.AddNewPurchaseOrderModel
 @{
 }
@@ -255,7 +254,18 @@
     /*     display: none !important; */
     /* } */
 
-     .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnSave,#btnSaveAndClose,#btnPrint4,#btnDelete,#btnAddNew,#btnAttach,#btnSubmit,#btnVerify,#btnApprove)) { 
+    .footer-fixed .btn-container:not(:has(
+    #btnSave,
+    #btnSaveAndClose, 
+    #btnBack,
+    #btnAttach,
+    #btnPrint4,
+    #btnDelete,
+    #btnVerify,
+    #btnApprove ,
+    #btnSubmit,
+    #btnAddNew,
+    #ddButtonLayout )) {
         display: none !important 
      } 
 
@@ -277,10 +287,13 @@
        z-index: 100; 
      } 
 </style>
-<meta charset="UTF-8">
-<div class="title">
-    <div class="header-container">
-        <div id="PurchaseOrder" class="no-border-title"></div>
+
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="PurchaseOrder" class="titleText no-border-title"></div>
     </div>
 </div>
 <div class="form-container1">
@@ -1003,7 +1016,7 @@
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
         .DataSource(new JS("window.itemGridDataSource"))
-        .Height("600px")
+        .Height("65vh")
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -1076,14 +1089,12 @@
             )
 }
 
-<div class="form-container">
-    <div class="Head">
-        <div class="limited-footer">
+
+        <div class="footer-fixed">
             @await Html.PartialAsync("/Pages/Shared/InventoryModuleFooter.cshtml")
         </div>
-    </div>
 
-</div>
+
 <script>
     //     function openEntityModal(entity) {
     //     const url = `/${tenantName}/IMS/${entity}`;
@@ -1111,7 +1122,7 @@
     text: formatMessage("Purchase Order"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass("dx-textbox-heading");
+                $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });

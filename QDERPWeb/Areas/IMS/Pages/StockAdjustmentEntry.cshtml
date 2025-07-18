@@ -241,9 +241,17 @@
     }
 </style>
 <meta charset="UTF-8">
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="StockAdjustmentEntry" class="no-border-title"></div>
+    </div>
+</div> *@
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="StockAdjustmentEntry" class="titleText no-border-title"></div>
     </div>
 </div>
 <div class="form-container1">
@@ -403,7 +411,7 @@
     </div>
     @(Html.DevExtreme().DataGrid()
             .ID("itemGrid")
-            .Height("600px")
+            .Height("65vh")
             .DataSource(new JS("[]")) // using global JS array
             .KeyExpr("ItemCode")
             .Selection(s => s
@@ -456,7 +464,7 @@
         text: formatMessage("Stock Adjustment Entry"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass("dx-textbox-heading");
+        $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });

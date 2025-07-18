@@ -94,6 +94,54 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
+        public async Task<IActionResult> GetCurrencyListWithRates(int baseCurrencyId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+            var baseCurrencyCode = await dbContext.Tbl20169CurrencyExchanges
+                .Where(c => c.CurrencyExchangeId == baseCurrencyId)
+                .Select(c => c.CurrencyMasterCode)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrWhiteSpace(baseCurrencyCode))
+                return BadRequest("Invalid base currency.");
+
+            var dbCurrencies = await dbContext.Tbl20169CurrencyExchanges
+                .Select(c => new
+                {
+                    c.CurrencyExchangeId,
+                    c.CurrencyName,
+                    c.CurrencyCode,
+                    c.CurrencyMasterCode,
+                    c.CurrencyPoints
+                }).ToListAsync();
+
+            var service = new CurrencyRateService();
+            var liveRates = await service.GetExchangeRatesAsync(baseCurrencyCode);
+
+            var merged = dbCurrencies.Select(c =>
+            {
+                var match = liveRates.FirstOrDefault(r => r.TargetCurrency == c.CurrencyMasterCode);
+                return new
+                {
+                    c.CurrencyExchangeId,
+                    c.CurrencyName,
+                    c.CurrencyCode,
+                    c.CurrencyMasterCode,
+                    c.CurrencyPoints,
+                    ExchangeRate = match?.ExchangeRate ?? 0
+                };
+            });
+
+            return Json(merged);
+        }
+
+
+
+
+        [HttpGet]
         public async Task<IActionResult> GetCurrencyList(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

@@ -183,10 +183,19 @@
     }
 </style>
 <meta charset="UTF-8">
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="RequestForQuotation" class="no-border-title"></div>
     </div>
+</div> *@
+
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="RequestForQuotation" class="titleText no-border-title"></div>
+	</div>
 </div>
 <div class="form-container1">
     <div class="form-container">
@@ -802,7 +811,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height(600)
+									.Height("65vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -816,8 +825,9 @@
 									//.OnEditorPreparing("onEditorPreparing")
 									)
 		</div>
+		<div class="footer-fixed" >
 	@await Html.PartialAsync("/Pages/Shared/IMS/RFQFormFooter.cshtml")
-
+	</div>
 		@using (Html.DevExtreme().NamedTemplate("GetSupplierContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -3036,16 +3046,15 @@
 					$("#DefaultEntry").dxTextBox({
 						text: formatMessage("Default For Entry:"),
 						readOnly: true
-
 					});
 				});
 				$(function () {
 					$("#ProformaInvoiceEditForm").dxTextBox({
 						text: formatMessage("Proforma Invoice Edit Form"),
 						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
-							}
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textcolor-heading");
+						}
 
 					});
 				});

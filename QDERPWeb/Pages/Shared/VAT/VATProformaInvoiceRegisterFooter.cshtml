@@ -282,9 +282,9 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNew1")
-            .Text(new JS("formatMessage('Add New')"))
+            .Text(new JS("formatMessage('Add New Proforma Invoice Edit')"))
             .Icon("plus")
-            // .OnClick("addNewRow") // Attach function
+            .OnClick("addNewProforma")
             .ElementAttr(new { @class = "bold-button" })
             // Apply custom CSS class
             )
@@ -308,7 +308,10 @@
                     var url = `/${tenantName}/VAT/VATInvoiceWithDetails`;
                 window.location.href = url; // Navigate to the page
             }
-
+            function addNewProforma(){
+                 var url = `/${tenantName}/VAT/ProformaInvoiceEditForm`;
+                window.location.href = url; // Navigate to the page
+            }
         function navigateToLoss() {
             var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
             var url = `/${tenantName}/VAT/InvoiceProfitorLossSummary?invoiceNo=${invoiceNo}`;

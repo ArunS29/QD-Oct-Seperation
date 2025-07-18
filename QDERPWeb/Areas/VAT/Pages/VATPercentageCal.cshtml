@@ -59,7 +59,7 @@
             .LabelMode(EditorLabelMode.Floating)
             .ID("totalAmount")
             .Min(0)
-            .Format("#,##0.00")
+            @* .Format("#,##0.00") *@
             .Value(0)
             )
     </div>
@@ -72,7 +72,7 @@
                 .LabelMode(EditorLabelMode.Floating)
                 .ID("discount")
                 .Min(0)
-                .Format("#,##0.00")
+              @*   .Format("#,##0.00") *@
                 .Value(0)
                 )
         </div>
@@ -103,7 +103,7 @@
 </div>
 <script>
 
-       alert("1")
+
      $("#totalAmount").dxNumberBox("instance").option("value",@ViewBag.Amount);
 
     function setDiscount(percent) {
