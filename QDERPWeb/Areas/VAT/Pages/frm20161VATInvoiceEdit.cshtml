@@ -496,7 +496,19 @@
 		.context-menu-itemInvoice:hover {
 			background: #f0f0f0;
 		}
-	
+
+	#loader {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 9999;
+		font-size: 18px;
+		background-color: rgba(255,255,255,0.8);
+		padding: 20px;
+		border-radius: 8px;
+	}
+
 </style>
 
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
@@ -2386,6 +2398,10 @@
 		<div class="footer-fixed" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
 		</div>
+		<div id="loader" style="display: none;">
+			@* <span>Loading...</span> <!-- Or use a spinner icon --> *@
+			<i class="fa fa-spinner fa-spin" style="font-size: 24px;"></i>
+		</div>
 
 
 	@using (Html.DevExtreme().NamedTemplate("countrycode"))
@@ -3478,7 +3494,7 @@
 
 			// Proceed with edit logic (e.g., open modal or navigate)
 			console.log("Client selected: ", clientId);
-			 showLedgerAccountPopup();
+			showLedgerAccountEditPopup();
 			// yourEditFunction(clientId); // call your edit method here
 		}
 	
@@ -4968,24 +4984,32 @@
 
 
 			// Fetch dropdown data (same API can be used if needed)
-		 function getDropdownData() {
-			return $.ajax({
-				url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-				method: "GET",
-				dataType: "json"
-			}).then(function(response) {
-				console.log("GsData",response)
-				return response.map(item => ({
-					GSCode: item.Gscode,
-					GSDescrpition: item.Gsdescrpition,
-					GsdescriptionAr:item.GsdescriptionAr,
-					ItemPartNo: item.ItemPartNo,
-					CostPrice: item.CostPrice,
-					GSSellingRate: item.GssellingRate,
-					ReorderQty:item.ReorderQty
-				}));
-			});
-		}
+				function getDropdownData() {
+		// Show loader before AJAX call
+		$("#loader").show();
+
+		return $.ajax({
+			url: "/api/VATModule/GetGoodsAndServices", // API endpoint
+			method: "GET",
+			dataType: "json"
+		}).then(function(response) {
+			console.log("GsData", response);
+			return response.map(item => ({
+				GSCode: item.Gscode,
+				GSDescrpition: item.Gsdescrpition,
+				GsdescriptionAr: item.GsdescriptionAr,
+				ItemPartNo: item.ItemPartNo,
+				CostPrice: item.CostPrice,
+				GSSellingRate: item.GssellingRate,
+				ReorderQty: item.ReorderQty
+			}));
+		}).always(function () {
+			// Hide loader after AJAX call finishes (success or error)
+			$("#loader").hide();
+		});
+	}
+
+		
 		function getUnitRateMethods() {
 			return $.ajax({
 				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -5218,7 +5242,7 @@
 									 IsClientCode=true;
 									 onClientCodeChanged(accheadid);
 										console.log("ClientData",selectedRowData[0])
-								  let  accheadname = selectedRowData[0].AccountHead;
+								  let  accheadname = selectedRowData[0].BillingName;
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										 ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;

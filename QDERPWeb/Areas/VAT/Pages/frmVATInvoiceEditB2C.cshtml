@@ -611,7 +611,7 @@
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("AccountId"))
 																.LabelMode(EditorLabelMode.Floating)
-																.Value("L00508")
+																.Value("")
 																.ID("ddclientcode")
 																.ValidationRules(rules =>
 																{
@@ -5227,7 +5227,7 @@
 										 onClientCodeChanged(accheadid);
 									 IsClientCode=true;
 										console.log("ClientData",selectedRowData[0])
-								  let  accheadname = selectedRowData[0].AccountHead;
+								  let  accheadname = selectedRowData[0].BillingName;
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										 ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;
