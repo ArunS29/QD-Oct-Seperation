@@ -833,7 +833,7 @@
 					.Visible(true);
 
 						/* Debit */
-						columns.AddFor(m => m.ConvertedDrAmount)
+						columns.AddFor(m => m.DrAmount)
 					.Caption(new JS("formatMessage('Debit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -843,13 +843,13 @@
 		</text>)
 				.CellTemplate(@<text>
 			<div class="debit-pill">
-				<%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
 					.Visible(true);
 
 						/* Credit */
-						columns.AddFor(m => m.ConvertedCrAmount)
+						columns.AddFor(m => m.CrAmount)
 					.Caption(new JS("formatMessage('Credit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -859,29 +859,82 @@
 		</text>)
 				.CellTemplate(@<text>
 			<div class="credit-pill">
-				<%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 			</div>
 		</text>)
 					.Visible(true);
-						columns.AddFor(m => m.CrAmount)
+						columns.AddFor(m => m.ConvertedCrAmount)
 					.Caption("Trans Credit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div class="credit-pill">
-				<span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-				<%- data.CrAmount != null ? data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-			</div>
-		</text>)
+						<div class="credit-pill">
+							<span id="currencySpan_<%- data.VoucherEntryNo %>" style="color: black; font-weight: bold;"></span>
+							<script>
+								(function() {
+									debugger;
+									const spanId = "currencySpan_<%- data.VoucherEntryNo %>";
+									const span = document.getElementById(spanId);
+									if (!span) return;
+
+									let html = "";
+									const symbol = "<%= data.TransactionCurrencySymbol %>";
+									const svg = `<%= data.TransactionCurrencyImage %>`;
+
+									if (symbol && symbol.trim() !== "null") {
+										html = symbol;
+									} else if (svg && svg.trim() !== "null") {
+										const modifiedSvg = svg.replace(/<svg\b([^>]*)>/, '<svg width="12" height="12" $1>');
+										html = '<div style="width: 15px; height: 27px; display: inline-block; vertical-align: middle;">' + modifiedSvg + '</div>';
+									}
+
+									span.innerHTML = html;
+									 injectHeaderSVG();
+								   injectCurrencyToCards();
+								})();
+							</script>
+
+							<%- data.ConvertedCrAmount != null 
+									? data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
+									: "0.00" 
+							%>
+						</div>
+					</text>)
 					.Visible(false);
-						columns.AddFor(m => m.DrAmount)
+						columns.AddFor(m => m.ConvertedDrAmount)
 					.Caption("Trans Debit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
-			<div class="debit-pill">
-				<span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-				<%- data.DrAmount != null ? data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-			</div>
-		</text>)
+						<div class="debit-pill">
+							<span id="currencydebit_<%- data.VoucherEntryNo %>" style="color: black; font-weight: bold;"></span>
+							<script>
+								(function() {
+									const spanId = "currencydebit_<%- data.VoucherEntryNo %>";
+									const span = document.getElementById(spanId);
+									if (!span) return;
+
+									let html = "";
+									const symbol = "<%= data.TransactionCurrencySymbol %>";
+									const svg = `<%= data.TransactionCurrencyImage %>`;
+
+									if (symbol && symbol.trim() !== "null") {
+										html = symbol;
+									} else if (svg && svg.trim() !== "null") {
+										const modifiedSvg = svg.replace(/<svg\b([^>]*)>/, '<svg width="12" height="12" $1>');
+										html = '<div style="width: 15px; height: 27px; display: inline-block; vertical-align: middle;">' + modifiedSvg + '</div>';
+									}
+
+									span.innerHTML = html;
+									 injectHeaderSVG();
+									 injectCurrencyToCards();
+								})();
+							</script>
+
+							<%- data.ConvertedDrAmount != null 
+									? data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) 
+									: "0.00" 
+							%>
+						</div>
+					</text>)
 					.Visible(false);
 
 						columns.AddFor(m => m.ConvertedAmount)
@@ -1730,7 +1783,7 @@
 					data.forEach(item => {
 						item.GroupCurrencyName = item.CurrencyName ?? "(Opening Balance)"; // flag to detect non-grouped
 					});
-				   injectHeaderSVG();
+				  
 
 				// Bind the data to the DataGrid
 				const dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -1745,7 +1798,8 @@
 					const firstRow = dataSource[0];
 					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
 				}
-
+				 injectHeaderSVG();
+				   injectCurrencyToCards();
 				// DevExpress.ui.notify("Data fetched successfully", "success", 2000);
 				// loadPanel.hide();
 			},
@@ -1987,6 +2041,7 @@
 							console.log("Last Row Balance: ", lastRowBalance);
 						}
 						injectHeaderSVG();
+						injectCurrencyToCards();
 					}
 				}
 			}
@@ -1997,61 +2052,70 @@
 			if (e.name === "columns" || e.name === "visible") {
 				// Columns changed, so re-inject SVG
 				injectHeaderSVG(); // slight delay to wait for DOM re-render
+				injectCurrencyToCards();
 			}
 		}
 		function injectHeaderSVG() {
-			let gridElement = $('#dataGrid');
-			let dataGrid = gridElement.dxDataGrid("instance");
-			if (!dataGrid) return;
-
-			let dataSource = dataGrid.option("dataSource");
-			if (!dataSource || dataSource.length === 0) return;
-
-			let svgIcon = dataSource[0].CurrencyImage;
-			if (!svgIcon) return;
-
-			svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
-
-			gridElement.find(".dx-header-row td").each(function () {
+			$.ajax({
+				url: '/api/AccountingLedgers/GetCurrencyIcon',
+				type: 'GET',
+				success: function (response) {
 					debugger;
-				const $cell = $(this);
-				const dataField = $cell.attr("data-field");  // 👈 This is key
+					let svgIcon = response.Icon;
+					if (!svgIcon) return;
 
-					const $debitHeader = $(".debit-header");
-					const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
-					$debitHeader.data("original-text", debitText); // Save original once
+					// Set default width/height for SVG if needed
+					if (svgIcon.startsWith("<svg")) {
+						svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+					} else {
+						// If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+						svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+					}
 
-					$debitHeader.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${debitText}</span>
-						</div>
-					`);
-					debugger;
-					// 👉 Credit
-					const $creditHeader = $(".credit-header");
-					const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
-					$creditHeader.data("original-text", creditText);
+					let $grid = $('#dataGrid');
+					let gridInstance = $grid.dxDataGrid("instance");
+					if (!gridInstance) return;
 
-					$creditHeader.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${creditText}</span>
-						</div>
-					`);
+					$grid.find(".dx-header-row td").each(function () {
+						const $cell = $(this);
 
-					const $balanceHeader = $(".balance-header");
+						const $debitHeader = $(".debit-header");
+						const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+						$debitHeader.data("original-text", debitText);
+						$debitHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+								<span style="font-weight: bold;">${debitText}</span>
+							</div>
+						`);
+
+						const $creditHeader = $(".credit-header");
+						const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+						$creditHeader.data("original-text", creditText);
+						$creditHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+								<span style="font-weight: bold;">${creditText}</span>
+							</div>
+						`);
+
+						const $balanceHeader = $(".balance-header");
 						const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
 						$balanceHeader.data("original-text", balanceText);
-
 						$balanceHeader.html(`
 							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
 								${svgIcon}
 								<span style="font-weight: bold;">${balanceText}</span>
 							</div>
 						`);
+					});
+				},
+				error: function (xhr) {
+					console.error("Failed to load currency icon:", xhr.responseText);
+				}
 			});
 		}
+
 
 
 
@@ -2408,5 +2472,42 @@ function dropDownBoxValueChanged(e) {
     // Toggle clear button based on value
     dropDownBox.option("showClearButton", hasValue);
 }
+	function injectCurrencyToCards() {
+		$.ajax({
+			url: "/api/AccountingLedgers/GetCurrencyIcon",
+			method: "GET",
+			success: function (response) {
+				debugger;
+				if (!response || !response.Icon) return;
+
+				const icon = response.Icon.trim();
+
+				// Inject into Balance
+				$('#cardBalance .value-slider span').each(function () {
+					$(this).html(icon + $(this).text().trim().replace(icon, ''));
+				});
+
+				// Inject into Debit
+				$('#cardDebit .value-slider span').each(function () {
+					$(this).html(icon + $(this).text().trim().replace(icon, ''));
+				});
+
+				// Inject into Credit
+				$('#cardCredit .value-slider span').each(function () {
+					$(this).html(icon + $(this).text().trim().replace(icon, ''));
+				});
+			},
+			error: function (err) {
+				console.error("Failed to load currency icon:", err);
+			}
+		});
+	}
+
+	// Call this on document ready or after cards are rendered
+	$(document).ready(function () {
+		injectCurrencyToCards();
+		injectHeaderSVG();
+	});
+
 
 </script>

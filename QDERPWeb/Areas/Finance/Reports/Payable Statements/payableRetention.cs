@@ -150,7 +150,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = $"SELECT TOP 1 CurrencyImage, CurrencySymbol FROM {tenant.schemaname}.tbl901companyDetails";
+
+                    string sql = $@"
+                        SELECT c.CurrencyImage, c.CurrencySymbol
+                        FROM {tenant.schemaname}.tbl901CompanyDetails AS c
+                        INNER JOIN dbo.fn_GetDefaultCompanyDetails() AS f
+                            ON c.CompanyId = f.CompanyId";
+
                     using (var command = new SqlCommand(sql, connection))
                     {
                         using (var reader = command.ExecuteReader())
@@ -196,7 +202,8 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15", "xrPictureBox16", "xrPictureBox17", "xrPictureBox18", "xrPictureBox19", "xrPictureBox20", "xrPictureBox21", "xrPictureBox22" };
+                string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15", "xrPictureBox16", "xrPictureBox17", "xrPictureBox18", "xrPictureBox19", "xrPictureBox20", "xrPictureBox21", "xrPictureBox22" ,
+                "xrPictureBox23","xrPictureBox24","xrPictureBox25","xrPictureBox26"};
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -206,6 +213,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                         pictureBox.Sizing = ImageSizeMode.Normal;
                     }
                 }
+                AlignCurrencyWithAmount(bitmap);
             }
             catch
             {
@@ -230,5 +238,79 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 currencyLabel.Text = "";
             }
         }
+        private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
+        {
+            var fixedPictureBoxes = new[] { "xrPictureBox23", "xrPictureBox24", "xrPictureBox25","xrPictureBox26", };
+            foreach (var name in fixedPictureBoxes)
+            {
+                if (FindControl(name, true) is XRPictureBox picBox)
+                {
+                    picBox.Image = bitmap;
+                    picBox.Sizing = ImageSizeMode.StretchImage;
+                    picBox.WidthF = iconSize;
+                    picBox.HeightF = iconSize;
+                }
+            }
+            var pairs = new[]
+            {
+
+
+    new { Label = "xrLabel5",  Picture = "xrPictureBox22" },
+    new { Label = "xrLabel6",  Picture = "xrPictureBox20" },
+    new { Label = "xrLabel9",  Picture = "xrPictureBox18" },
+    new { Label = "xrLabel10",  Picture = "xrPictureBox6" },
+    new { Label = "xrLabel11",  Picture = "xrPictureBox7" },
+    new { Label = "xrLabel22",  Picture = "xrPictureBox8" },
+    new { Label = "xrLabel12",  Picture = "xrPictureBox9" },
+    new { Label = "xrLabel21",  Picture = "xrPictureBox21" },
+    new { Label = "xrLabel27",  Picture = "xrPictureBox17" },
+    new { Label = "xrLabel19",  Picture = "xrPictureBox19" },
+    new { Label = "xrLabel20",  Picture = "xrPictureBox5" },
+    new { Label = "xrLabel23",  Picture = "xrPictureBox4" },
+    new { Label = "xrLabel25",  Picture = "xrPictureBox2" },
+    new { Label = "xrLabel26",  Picture = "xrPictureBox3" },
+};
+
+            foreach (var p in pairs)
+            {
+                var label = FindControl(p.Label, true) as XRLabel;
+                var pictureBox = FindControl(p.Picture, true) as XRPictureBox;
+
+                if (label == null || pictureBox == null)
+                    continue;
+
+                pictureBox.Image = bitmap;
+                pictureBox.Sizing = ImageSizeMode.StretchImage;
+
+                label.BeforePrint += (s, e) =>
+                {
+                    var lbl = (XRLabel)s;
+
+                    using (var g = Graphics.FromImage(new Bitmap(1, 1)))
+                    using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
+                    {
+                        float iconHeight = lbl.Font.Size + 0.2f;// Match icon to font height
+                        float iconWidth = iconHeight;            // Keep square
+
+                        pictureBox.WidthF = iconWidth;
+                        pictureBox.HeightF = iconHeight;
+
+                        float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
+
+                        var format = StringFormat.GenericTypographic;
+                        format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+                        float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
+                        float spaceWidth = g.MeasureString(" ", sysFont).Width;
+
+                        float rightEdge = lbl.LocationF.X + lbl.WidthF;
+                        float posX = rightEdge - textWidth - iconWidth - 5f - spaceWidth;
+
+                        pictureBox.LocationF = new PointF(posX, posY);
+                    }
+                };
+            }
+        }
+
     }
 }

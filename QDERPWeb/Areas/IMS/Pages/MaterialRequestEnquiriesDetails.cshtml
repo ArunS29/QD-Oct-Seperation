@@ -261,10 +261,7 @@
 	</div>
 </div>
 
-
-
-
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
@@ -293,7 +290,6 @@
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
 		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
 		.TabIndex(4)
 		.DropDownOptions(options => options.Width(230))
 		.Items(items =>

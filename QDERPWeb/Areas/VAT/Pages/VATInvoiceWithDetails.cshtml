@@ -38,13 +38,7 @@
 		height: 100%;
 	}
 
-	.dx-datagrid-headers {
-		border: 1px solid #686868 !important;
-		width: 100%; /* Adjust to fit the container */
-		overflow-x: auto; /* Enable horizontal scrolling */
-		white-space: nowrap; /* Prevent wrapping of headings */
-		overflow-y: hidden;
-	}
+	
 	.ledgerResult {
 		overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
 		width: 100%;
@@ -475,7 +469,7 @@
 
 		$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
-			if (!$(this).find("#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel,#ddButtonLayout").length) {
+			if (!$(this).find("#InvoiceDetailsddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel").length) {
 				$(this).remove();
 			}
 		});

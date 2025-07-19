@@ -357,15 +357,17 @@
 	.content-container-top {
 		width: 100%;
 	}
-
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
-<div class="title">
-	<div class="header-container">
-		<div id="StoreRequestMasterForm" class="no-border-title"></div>
-	</div>
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="StoreRequestMasterForm" class="titleText no-border-title"></div>
+    </div>
 </div>
 <div class="containerLedgerAccount">
 	<div class="content-container-top">
@@ -1415,7 +1417,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height(600)
+						.Height("65vh")
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -1429,9 +1431,9 @@
 						.OnEditorPreparing("onEditorPreparing")
 						)
 		</div>
-
-@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter.cshtml")
-
+		<div class="footer-fixed">
+			@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter.cshtml")
+		</div>
 		@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -6904,7 +6906,7 @@ $("#btnBack").on("click", function (e) {
 			text: formatMessage("Store Request"),
 			readOnly: true,
 			onContentReady: function (e) {
-				$(e.element).addClass("dx-textbox-heading");
+				$(e.element).addClass("dx-textcolor-heading");
 			}
 		});
 	});

@@ -234,7 +234,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						dict["UnitDesc"] = unitDesc;
 
 						dict["GsDescription"] = gsDescription;
-                        dict["GScode"] = gridDetails.Gscode;
+                       
+                        dict["GSCode"] = gridDetails.Gscode;
 
                         resultWithDetails.Add(item);
 					}
@@ -304,6 +305,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					existingMaster.VerifiedSignatory = VM.VerifiedSignatory.HasValue ? (byte?)VM.VerifiedSignatory.Value : null;
 					existingMaster.ApprovedSignatory = VM.ApprovedSignatory.HasValue ? (byte?)VM.ApprovedSignatory.Value : null;
 					existingMaster.RevisionNo = VM.RevisionNo;
+					existingMaster.QuoteValidity = VM.QuoteValidity;
 				}
 				else
 				{
@@ -342,7 +344,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     QuoteSignatory=Convert.ToByte(VM.QuoteSignatory),
     VerifiedSignatory=Convert.ToByte(VM.VerifiedSignatory),
     ApprovedSignatory= Convert.ToByte(VM.ApprovedSignatory),
-	RevisionNo=VM.RevisionNo
+	RevisionNo=VM.RevisionNo,
+	QuoteValidity=VM.QuoteValidity,
 
 					};
 

@@ -142,11 +142,6 @@
 		margin-top: 10px;
 	}
 
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
-		text-align: center;
-	}
-
 	.custom-submenu {
 		display: none;
 		position: absolute;
@@ -214,6 +209,18 @@
 
 	.has-submenu:hover .submenu {
 		display: block;
+	}
+
+	#dataGrid .Invoice-pill {
+		display: inline-block;
+		padding: 2px 10px;
+		border-radius: 14px;
+		font-weight: 600;
+		font-variant-numeric: tabular-nums;
+	}
+	#dataGrid .Invoice-pill {
+		background: rgba(255, 193, 7, 0.15); /* Light yellow background */
+		color: #ffc107; /* Bootstrap yellow */
 	}
 </style>
 <div class="content-container-top">
@@ -430,10 +437,9 @@
 
 
 				subColumns.AddFor(m => m.TotalInvoiceAmount)
-			.Caption("Invoiced Amount (SAR)")
+			.Caption("Invoiced Amount")
 			.EncodeHtml(false) // Required to render HTML content
 			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
 			.CustomizeText(@"
 		function(e) {
 		if (e.value != null) {
@@ -445,9 +451,13 @@
 		}
 		return '';
 		}
-		");
-
-
+				")
+					.HeaderCellTemplate(@<text>
+								 			<div class="Invoice-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>);
+		
 			});
 
 
@@ -874,9 +884,11 @@
 		) *@
 
 		.OnCellPrepared("invoiceStatusCellPrepared")
-
-
+	    .OnOptionChanged("handleGridOptionChanged")
 		)
+
+
+
 
 </div>
 <div id="invoiceErrorPopup"></div>
@@ -1605,6 +1617,49 @@
 
 		});
 	});
+
+
+
+	function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
+		}
+	}
+	
+
+		function injectHeaderSVG() {
+		debugger;
+		let gridElement = $('#dataGrid');
+		let dataGrid = gridElement.dxDataGrid("instance");
+		if (!dataGrid) return;
+
+		let dataSource = dataGrid.option("dataSource");
+		if (!dataSource || dataSource.length === 0) return;
+
+		let svgIcon = dataSource[0].CurrencyImage;
+		if (!svgIcon) return;
+
+		svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+		gridElement.find(".dx-header-row td").each(function () {
+	
+			const $cell = $(this);
+			const dataField = $cell.attr("data-field");  // 👈 This is key
+
+				const $debitHeader = $(".Invoice-header");
+				const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+				$debitHeader.data("original-text", debitText); // Save original once
+
+				$debitHeader.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+						<span style="font-weight: bold;">${debitText}</span>
+					</div>
+				`);
+
+		});
+	}
 
 </script>
 

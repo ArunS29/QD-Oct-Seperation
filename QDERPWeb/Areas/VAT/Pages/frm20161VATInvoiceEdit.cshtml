@@ -5,11 +5,6 @@
 @{
 } *@
 <style>
-	.dx-datagrid-headers .center-header {
-		text-align: center !important;
-	}
-
-	
 	.titleCard-toggle1 {
 		display: none;
 	}
@@ -66,10 +61,6 @@
 		position: relative;
 		width: 100%;
 	}
-	.dx-datagrid-headers .center-header {
-		text-align: center !important;
-	}
-
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -281,10 +272,6 @@
 	.dx-fieldset {
 		margin: 3px 3px !important;
 		padding: 0px;
-	}
-
-	.dx-datagrid-headers th {
-		text-align: center; /* Centers the text */
 	}
 
 	.columnheader {
@@ -509,7 +496,19 @@
 		.context-menu-itemInvoice:hover {
 			background: #f0f0f0;
 		}
-	
+
+	#loader {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 9999;
+		font-size: 18px;
+		background-color: rgba(255,255,255,0.8);
+		padding: 20px;
+		border-radius: 8px;
+	}
+
 </style>
 
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
@@ -521,6 +520,15 @@
 		<div id="InvoiceEdit" class="no-border-title" style="width: 433px;"></div>
 	</div>
 </div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="InvoiceEdit" class="titleText no-border-title"></div>
+	</div>
+</div>
+
 
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
@@ -565,7 +573,7 @@
 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Floating).Width(210))</td>
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Floating).Width(250))</td>
 							<td>
-								<div style="display: flex; align-items: end;">
+								
 									@(Html.DevExtreme().DropDownBox()
 																		.Label(new JS("formatMessage('Client Code')"))
 																		.DataSource(d => d.WebApi().Controller("VATModule")
@@ -590,30 +598,37 @@
 																		.OnClosed("onDropDownBoxClosed")
 																		.OnOpened("onOpened")
 																		.TabIndex(4)
-																		.Width("70%")
+																		.Width("100%")
 																		.DropDownOptions(o => o.Width(1000))
 																		.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
+
+																		// 👇 Add Buttons Inside DropDownBox
+																		.Buttons(buttons =>
+																		{
+																			buttons.Add()
+																			.Name("editButton")
+																			.Location(TextEditorButtonLocation.After)
+																			.Widget(w => w.Button()
+																			.Icon("edit")
+																			.Hint("Edit Description")
+																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																			.OnClick("onEditClientClick"));
+																			
+
+																			buttons.Add()
+																			.Name("addButton")
+																			.Location(TextEditorButtonLocation.After)
+																			.Widget(w => w.Button()
+																			.Icon("plus")
+																			.Hint("Add Description")
+																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																			.OnClick("showLedgerAccountPopup"));
+																			buttons.Add().Name("dropDown");
+																		})
 																		)
 
-									@(Html.DevExtreme().Button()
-														
-									.ID("AddClient")
-																		.Icon("plus")
-																		.Hint("Add Description")
-																	
-																		.ElementAttr("style", "display: flex;width: 35px; justify-content: center; align-items: center;")
-																		.OnClick("showLedgerAccountPopup")
-																		)
 
-									@(Html.DevExtreme().Button()
-																		.ID("EditClient")
-																		.Icon("edit")
-																		.Hint("Edit Description")
-																	
-																		.ElementAttr("style", "display: flex; width: 35px; justify-content: center; align-items: center;")
-																		.OnClick("showLedgerAccountEditPopup")
-																		)
-								</div>
+								
 
 								<!-- Add Popup -->
 								@(Html.DevExtreme().Popup()
@@ -651,44 +666,48 @@
 							</td>
 
 							<td>
-								<div style="display: flex; align-items: end;">
-									@(Html.DevExtreme().DropDownBox()
-																		.Label(new JS("formatMessage('Client Name')"))
-																		.DataSource(d => d.WebApi().Controller("VATModule")
-																		.LoadAction("GetClientCode")
-																		.LoadMode(DataSourceLoadMode.Raw)
-																		.Key("ClientName"))
-																		.LabelMode(EditorLabelMode.Floating)
-																		.ID("ddclientname")
-																		.ValidationRules(rules =>
-																		{
-																			rules.AddRequired()
-																			.Message(new JS("formatMessage('Client Name should be entered')"));
-																		})
-																		.ShowClearButton(true)
-																		.AcceptCustomValue(true)
-																		.OpenOnFieldClick(false)
-																		.ValueChangeEvent("input")
-																		.HoverStateEnabled(true)
-																		.Value(null)
-																		.ValueExpr("AccountId")
-																		.DisplayExpr("AccountHead")
-																		.TabIndex(1)
-																		.Width("70%")
-																		.DropDownOptions(o => o.Width(1000))
-																		.OnKeyDown("onKeyDown")
-																		.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
-																		)
-
-									@(Html.DevExtreme().Button()
-																		.ID("btnLink")
-																		.Text(new JS("formatMessage('Link')"))
-																		.Icon("link")
-																		.StylingMode(ButtonStylingMode.Text)
-																		.Type(ButtonType.Normal)
-																		)
-								</div>
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('Client Name')"))
+																.DataSource(d => d.WebApi().Controller("VATModule")
+																.LoadAction("GetClientCode")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("ClientName"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddclientname")
+																.ValidationRules(rules =>
+																{
+																	rules.AddRequired()
+																	.Message(new JS("formatMessage('Client Name should be entered')"));
+																})
+																.ShowClearButton(true)
+																.AcceptCustomValue(true)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.Value(null)
+																.ValueExpr("AccountId")
+																.DisplayExpr("AccountHead")
+																.TabIndex(1)
+																.Width("100%")
+																.DropDownOptions(o => o.Width(1000))
+																.OnKeyDown("onKeyDown")
+																.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+																.Buttons(b =>
+																{
+																	b.Add()
+																	.Name("linkButton")
+																	.Location(TextEditorButtonLocation.After)
+																	.Widget(w => w.Button()
+																	.Icon("link")
+																	.Hint("Link")
+																	.StylingMode(ButtonStylingMode.Text)
+																	.Type(ButtonType.Normal));
+																	b.Add().Name("dropDown");
+																	@* .OnClick("onClientLinkClick")); *@ // Your JS handler function
+																})
+																)
 							</td>
+
 
 
 							<td>
@@ -729,7 +748,19 @@
 																			
 																			)
 								</td>
-								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Supply Date')")).ID("SupplyDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).LabelMode(EditorLabelMode.Floating).Width(250))</td>
+							<td>
+    @(Html.DevExtreme().DateBox()
+        .Label(new JS("formatMessage('Supply Date')"))
+        .ID("SupplyDate")
+        .Type(DateBoxType.Date)
+        .DisplayFormat("dd-MMM-yyyy")
+        .Value(DateTime.Now)
+        .LabelMode(EditorLabelMode.Floating)
+        .Width(250)
+        .ShowClearButton(true) // Clear button added
+    )
+</td>
+
 
 							<td>
 								@(Html.DevExtreme().DropDownBox()
@@ -1084,40 +1115,38 @@
 						</tr>
 					<tr>
 						<td colspan="2">
-							<div style="display: flex; align-items: flex-end;">
-								<div style="flex: 1;">
-									@(Html.DevExtreme().TextArea()
-																			.Label(new JS("formatMessage('Invoice Notes')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("txtInvoiceNotes")
-																			.Value("")
-																			.Width("100%")
-																			.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-																			)
-								</div>
+							<div style="position: relative; width: 100%;">
+								@(Html.DevExtreme().TextArea()
+																.Label(new JS("formatMessage('Invoice Notes')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("txtInvoiceNotes")
+																.Value("")
+																.Width("100%")
+																.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+																)
 
-								<div style="width: 55px;">
+								<!-- Button container positioned inside the textarea -->
+								<div style="position: absolute; bottom: 0px; right: 1px; display: flex;">
 									@(Html.DevExtreme().Button()
-																			.ID("btnSetDefault")
-																			.Icon("save")
-																			.Hint("Set as default")
-																			.Type(ButtonType.Default)
-																			.StylingMode(ButtonStylingMode.Contained)
-																			.OnClick("onSetDefaultClick")
-																			)
-								</div>
-								<div style="width: 55px;">
+																		.ID("btnSetDefault")
+																		.Icon("save")
+																		.Hint("Set as default")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("onSetDefaultClick")
+																		)
 									@(Html.DevExtreme().Button()
-																			.ID("btnClearNotes")
-																			.Icon("clear") // You can use "close" or "clearsquare" if available
-																			.Hint("Clear notes")
-																			.Type(ButtonType.Default)
-																			.StylingMode(ButtonStylingMode.Contained)
-																			.OnClick("function() { $('#txtInvoiceNotes').dxTextArea('instance').option('value', ''); }")
-																			)
+																		.ID("btnClearNotes")
+																		.Icon("clear")
+																		.Hint("Clear notes")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("function() { $('#txtInvoiceNotes').dxTextArea('instance').option('value', ''); }")
+																		)
 								</div>
 							</div>
 						</td>
+
 
 
 
@@ -1279,200 +1308,231 @@
 			<div id="tab-content-4" class="tab-content">
 				<div class="card-container">
 					
-						<table style="width:60%; font-size:14px; margin:5px;" cellpadding="5">
-							<tr>
+						<table style="width:100%; font-size:14px; margin:5px;" cellpadding="5">
+							@* <tr>
 								<th>Foreign Currency Billing</th>
-							</tr>
+							</tr> *@
 							<tr>
-								<td>
-									<div style="display: flex; align-items: end; gap: 10px;">
-										@(Html.DevExtreme().DropDownBox()
-																				.Label(new JS("formatMessage('Invoice Currency')"))
-																				.DataSource(d => d.WebApi()
-																				.Controller("VATModule")
-																				.LoadAction("GetInvoiceCurrency")
-																				.LoadMode(DataSourceLoadMode.Raw)
-																				.Key("CurrencyExchangeId"))
-																				.LabelMode(EditorLabelMode.Floating)
-																				.ID("ddlGoodsGroup3")
-																				.ShowClearButton(true)
-																				.Value("Saudi Arabian Riyals")
-																				.AcceptCustomValue(true)
-																				.OpenOnFieldClick(false)
-																				.ValueChangeEvent("input")
-																				.HoverStateEnabled(true)
-																				.ValueExpr("CurrencyExchangeId")
-																				.DisplayExpr("CurrencyName")
-																				.OnInput("dropDownBoxOnInput")
-																				.OnOpened("onOpened")
-																				.TabIndex(1)
-																				.DropDownOptions(o => o.Width(1000))
-																				.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
-																				.Width("95%"))
-										@(Html.DevExtreme().Button()
-																				.ID("EditClient2")
-																				.Icon("edit")
-																				.Hint("Edit Description")
-																				.Width(60)
-																			    .OnClick("CurrencyClick") 
-																				)
-									</div>
-								</td>
-							</tr>
+							<td style="width: 30%;">
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('Invoice Currency')"))
+																.DataSource(d => d.WebApi()
+																.Controller("VATModule")
+																.LoadAction("GetInvoiceCurrency")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("CurrencyExchangeId"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddlGoodsGroup3")
+																.ShowClearButton(true)
+																.Value("Saudi Arabian Riyals")
+																.AcceptCustomValue(true)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.ValueExpr("CurrencyExchangeId")
+																.DisplayExpr("CurrencyName")
+																.OnInput("dropDownBoxOnInput")
+																.OnOpened("onOpened")
+																.TabIndex(1)
+																.DropDownOptions(o => o.Width(1000))
+																.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
+																.Width("100%")
+																.Buttons(buttons =>
+																{
+																	buttons.Add()
+																	.Name("btnAddInvoiceCurrency")
+																	.Location(TextEditorButtonLocation.After)
+																	.Widget(w => w.Button()
+																	.Type(ButtonType.Default)
+																	.Icon("edit") // Use "plus" or any other if needed
+																	.Hint("Edit Description")
+																	.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																	.OnClick("CurrencyClick")); // 👈 your existing handler
+
+																	buttons.Add().Name("dropDown");
+																}))
+								   							</td>
+
+							
+
+							<td>
+								@(Html.DevExtreme().TextBox()
+																.ID("LessAdvance")
+																.Value("Less: Advance")
+																.Width("100%")) <!-- Added Width -->
+											  							</td>
+											  							<td>
+								@(Html.DevExtreme().NumberBox()
+																.ID("currencyexchangerate3")
+																.Min(1)
+																.Step(1)
+																.ShowSpinButtons(true)
+																.Width("90%")) <!-- Fixed pixel size -->
+
+							</td>
+							<td>
+								@* <span class="input-group-prepend" style="width: 0px;"> *@
+								@(
+																Html.DevExtreme().Button()
+																.ID("convertToArabic1")
+																.Height(0)
+																.Icon("fas fa-language") // Ensure Font Awesome class is correct
+																.ElementAttr(new { @class = "input-button" })
+																.OnClick("function() { AdvanceconvertToArabic(); }")
+																)
+								@* </span> *@
+							</td>
+							<td>
+								@(
+																Html.DevExtreme().TextBox()
+																.Label(new JS("formatMessage('')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("LessAdvanceAr")
+																.Value("اقب المسبق")
+																.Width("100%")
+																.RtlEnabled(true)
+																)
+
+							</td>
+							<td colspan="2">
+								@(Html.DevExtreme().TextBox()
+																.Label(new JS("formatMessage('Verified By')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("VerifiedBytext")
+																.Value(null) // Default value
+																.Disabled(true)
+																.Width("100%")
+																)
+
+
+							</td>
+
+						</tr>
+
 							<tr>
-								<td>
-									<div style="display: flex; align-items: end; gap: 10px;">
-										@(Html.DevExtreme().DropDownBox()
-																				.Label(new JS("formatMessage('Tax Currency')"))
-																				.DataSource(d => d.WebApi()
-																				.Controller("VATModule")
-																				.LoadAction("GetTaxCurrency")
-																				.LoadMode(DataSourceLoadMode.Raw)
-																				.Key("CurrencyExchangeId"))
-																				.LabelMode(EditorLabelMode.Floating)
-																				.ID("ddlGoodsGroup4")
-																				.Disabled(true)
-																				.ShowClearButton(true)
-																				.Value("Saudi Arabian Riyals")
-																				.AcceptCustomValue(true)
-																				.OpenOnFieldClick(false)
-																				.ValueChangeEvent("input")
-																				.HoverStateEnabled(true)
-																				.ValueExpr("CurrencyExchangeId")
-																				.DisplayExpr("CurrencyName")
-																				.OnInput("dropDownBoxOnInput")
-																				.OnOpened("onOpened")
-																				.TabIndex(1)
-																				.DropDownOptions(o => o.Width(1000))
-																				@* .Disabled(true) *@
-																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-																				.Width("95%"))
-										@(Html.DevExtreme().Button()	
-																				.ID("EditClient1")
-																				.Icon("edit")
-																				.Disabled(true)
-																				.Hint("Edit Description")
-																				.Width(60)
-																		        .Disabled(true)
-																			.OnClick("CurrencySClick")
-																			)
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate")
-																			.Label(new JS("formatMessage('Currency Exchange Rate:')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Value(1)
-																			.Width("87%")
-                                     )
-								</td>
-							</tr>
-						</table>
+							
+							<td style="width: 30%;">
+								@(Html.DevExtreme().DropDownBox()
+																.Label(new JS("formatMessage('Tax Currency')"))
+																.DataSource(d => d.WebApi()
+																.Controller("VATModule")
+																.LoadAction("GetTaxCurrency")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("CurrencyExchangeId"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddlGoodsGroup4")
+																.ShowClearButton(true)
+																.Value("Saudi Arabian Riyals")
+																.AcceptCustomValue(true)
+																.OpenOnFieldClick(false)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.ValueExpr("CurrencyExchangeId")
+																.DisplayExpr("CurrencyName")
+																.OnInput("dropDownBoxOnInput")
+																.OnOpened("onOpened")
+																.TabIndex(1)
+																.Disabled(true) // Entire DropDownBox is disabled
+																.DropDownOptions(o => o.Width(1000))
+																.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+																.Width("100%")
+																.Buttons(buttons =>
+																{
+																	buttons.Add()
+																	.Name("btnEditTaxCurrency")
+																	.Location(TextEditorButtonLocation.After)
+																	.Widget(w => w.Button()
+																	.Type(ButtonType.Default)
+																	.Icon("edit")
+																	.Disabled(true) // Button is also disabled
+																	.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																	.OnClick("CurrencySClick"));
+
+																	buttons.Add().Name("dropDown");
+																}))
+								   							</td>
+								   						
+
+							<td>
+								@(Html.DevExtreme().TextBox()
+																.ID("LessOtherDeductions")
+																.Value("Less: Other Deductions")
+																.Width("100%")) <!-- Added Width -->
+											  							</td>
+
+							<td>
+								@(Html.DevExtreme().NumberBox()
+																.ID("currencyexchangerate4")
+																.Min(1)
+																.Step(1)
+																.ShowSpinButtons(true)
+																.Width("90%"))
+											  							</td>
+											  							<td>
+											  								<span class="input-group-prepend" style="margin-right: 10px;">
+									@(
+																		Html.DevExtreme().Button()
+																		.ID("convertToArabic2")
+																		.Height(30)
+																		.Icon("fas fa-language") // Ensure Font Awesome class is correct
+																		.ElementAttr(new { @class = "input-button" })
+																		.OnClick("function() { OtherDeductionsconvertToArabic(); }")
+																		)
+								</span>
+							</td>
+							<td>
+								@(
+																Html.DevExtreme().TextBox()
+																.Label(new JS("formatMessage('')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("LessAdvanceAr1")
+																.Value("ناقص قيمة الخصومات الأخرى")
+																.Width("100%")
+																.RtlEnabled(true)
+																)
+
+							</td>
+							<td colspan="2">
+							@(Html.DevExtreme().TextBox()
+														.Label(new JS("formatMessage('Verified On')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("VerifiedOnDate")
+														.Value(null) // Default value
+														.Disabled(true)
+														.Width("100%")
+														)
+							</td>
+
+						</tr>
+
+															  
+							
+						@* </table>
 					
-					<table width="100%" style="font-size:14px; margin:5px;" cellpadding="2">
-							<tr>
+					<table width="100%" style="font-size:14px; margin:5px;" cellpadding="2"> *@
+							@* <tr>
 								<th>Deductions:Advance / Retention</th>
-							</tr>
+							</tr> *@
+							
+							
 							<tr>
-
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("LessAdvance")
-																			.Value("Less: Advance")
-																			.Width("90%")) <!-- Added Width -->
-								</td>
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate3")
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Width("90%")) <!-- Fixed pixel size -->
-
-								</td>
-								<td>
-									@* <span class="input-group-prepend" style="width: 0px;"> *@
-									@(
-																			Html.DevExtreme().Button()
-																			.ID("convertToArabic1")
-																			.Height(0)
-																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
-																			.ElementAttr(new { @class = "input-button" })
-																			.OnClick("function() { AdvanceconvertToArabic(); }")
-																			)
-									@* </span> *@
-								</td>
-								<td>
-									@(
-																			Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("LessAdvanceAr")
-																			.Value("اقب المسبق")
-																			.Width("100%")
-																			.RtlEnabled(true)
-																			)
-
-								</td>
-
-							</tr>
-
-							<tr>
-
-								<td >
-									@(Html.DevExtreme().TextBox()
-																			.ID("LessOtherDeductions")
-																			.Value("Less: Other Deductions")
-																			.Width("90%")) <!-- Added Width -->
-								</td>
-
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate4")
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Width("90%"))
-								</td>
-								<td>
-									<span class="input-group-prepend" style="margin-right: 10px;">
-										@(
-																				Html.DevExtreme().Button()
-																				.ID("convertToArabic2")
-																				.Height(30)
-																				.Icon("fas fa-language") // Ensure Font Awesome class is correct
-																				.ElementAttr(new { @class = "input-button" })
-																				.OnClick("function() { OtherDeductionsconvertToArabic(); }")
-																				)
-									</span>
-								</td>
-								<td>
-									@(
-																			Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("LessAdvanceAr1")
-																			.Value("ناقص قيمة الخصومات الأخرى")
-																			.Width("100%")
-																			.RtlEnabled(true)
-																			)
-
-								</td>
-							</tr>
-
-							<tr>
-
+							<td>
+								@(Html.DevExtreme().NumberBox()
+																.ID("currencyexchangerate")
+																.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.Min(1)
+																.Step(1)
+																.ShowSpinButtons(true)
+																.Value(1)
+																.Width("100%")
+																)
+							</td>
 								<td >
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessRetention")
 																			.Value("Less: Retention")
-																			.Width("90%")) <!-- Added Width -->
+																			.Width("100%")) <!-- Added Width -->
 								</td>
 
 								<td>
@@ -1508,60 +1568,31 @@
 
 								</td>
 
-							</tr>
-							<tr>
-							<td colspan="2">
-									@(Html.DevExtreme().CheckBox()
-																			.Text(new JS("formatMessage('Verified By')"))
-																			.ID("VerifiedBy")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			)
+							<td>
 
-									@(Html.DevExtreme().TextBox()
-																			//.Label(new JS("formatMessage('Verified By')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("VerifiedBytext")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("100%")
-																			)
 
-									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Verified On')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("VerifiedOnDate")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("100%")
-																			)
-								</td>
+								@(Html.DevExtreme().TextBox()
+																.Label(new JS("formatMessage('Approved By')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ApprovedBytext")
+																.Value(null) // Default value
+																.Disabled(true)
+																.Width("100%")
+											   								@* .Disabled(true) *@
+																)
+																</td>
+																<td>
 
-								<td colspan="2">
-
-									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-																			.ID("ApprovedBy")
-																			.Value(null) // Default value
-															.Disabled(true)
-																			)
-									@(Html.DevExtreme().TextBox()
-																			//.Label(new JS("formatMessage('Approved By')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ApprovedBytext")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("100%")
-																			@* .Disabled(true) *@
-																			)
-									@(Html.DevExtreme().TextBox()
-																			.Label(new JS("formatMessage('Approved On')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ApprovedOntext")
-																			.Value(null) // Default value
-																			.Disabled(true)
-																			.Width("100%")
-																			)
-								</td>
+								@(Html.DevExtreme().TextBox()
+																.Label(new JS("formatMessage('Approved On')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ApprovedOntext")
+																.Value(null) // Default value
+																.Disabled(true)
+																.Width("100%")
+																)
+							</td>
+							
 							</tr>
 					</table>
 				</div>
@@ -1601,9 +1632,7 @@
 																.LoadAction("GetCompanyBranch")
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("CompanyId")
-
 																)
-
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup7")
 																.ShowClearButton(true)
@@ -1615,7 +1644,7 @@
 																.DisplayExpr("CompanyId")
 																.OnInput("dropDownBoxOnInput")
 																.OnOpened("onOpened")
-													  								//.Width(650)
+																.Value(1)               //.Width(650)
 																.TabIndex(1)
 																.DropDownOptions(o => o
 																.Width(1000)
@@ -1641,6 +1670,7 @@
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("SellerOtherIdtype")
 																)
+																.Disabled(true)
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("ddlGoodsGroup8")
 																.ShowClearButton(true)
@@ -1668,34 +1698,40 @@
 							<!-- Row 2: Credit Note Submitted On, Sales Person -->
 						<tr>
 							<td>
-								<div style="display: flex; align-items: flex-end; gap: 4px; width: 100%;">
-									
-																@(Html.DevExtreme().DropDownBox()
-																					.Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
-																					.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetSalesPerson").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonCode"))
-																					.LabelMode(EditorLabelMode.Floating)
-																					.ID("ddlSalesPerson")
-																					.ShowClearButton(true)
-																					.AcceptCustomValue(true)
-																					.OpenOnFieldClick(false)
-																					.ValueExpr("SalesPersonCode")
-																					.DisplayExpr("SalesPersonName")
-																					.OnInput("dropDownBoxOnInput")
-																					.OnOpened("onOpened")
-																					.DropDownOptions(o => o.Width(1000))
-																					.ContentTemplate(new TemplateName("SalesPersonTemplate"))
-																					.Width("100%")
-																					)
-															@(Html.DevExtreme().Button()
-																				.ID("AddSalesPersonButton")
-																				.Icon("plus")
-																				.Hint("Add Sales Person")
-																				.Width(40)
-																				.ElementAttr("style", "display: flex; justify-content: center; align-items:bottom;")
-																			.OnClick("onAddSalesPersonClick")
-																			)
-								</div>
-							</td>
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Sales Person/Co-ordinator')"))
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetSalesPerson")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("SalesPersonCode"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("ddlSalesPerson")
+        .ShowClearButton(true)
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ValueExpr("SalesPersonCode")
+        .DisplayExpr("SalesPersonName")
+        .OnInput("dropDownBoxOnInput")
+        .OnOpened("onOpened")
+        .DropDownOptions(o => o.Width(1000))
+        .ContentTemplate(new TemplateName("SalesPersonTemplate"))
+        .Width("100%")
+        .Buttons(buttons => {
+            buttons.Add().Name("dropDown"); // Default dropdown icon
+            buttons.Add()
+                .Name("addSalesPerson")
+                .Location(TextEditorButtonLocation.After)
+                .Widget(w => w.Button()
+                    .Type(ButtonType.Default)
+                    .Icon("plus")
+                    .Hint("Add Sales Person")
+                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                    .OnClick("onAddSalesPersonClick"));
+        })
+    )
+</td>
+
 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Floating).Width("100%"))</td>
 							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Floating).Width("100%"))</td>
 							
@@ -1711,15 +1747,15 @@
 							</td>
 
 								<td>
-									<div style="display: flex; align-items: flex-end; gap: 10px;">
-									@(
+									@* <div style="display: flex; align-items: flex-end; gap: 10px;"> *@
+									@* @(
 																			Html.DevExtreme().CheckBox()
 																		.Text(new JS("formatMessage('')"))
 																			.ID("SubmittedBy")
 																			.Value(null)
 																			.ElementAttr("style", "padding-bottom:40px;")
 																			.OnValueChanged("function(e) { onClientCodeChanged(accheadid); }") // replace currentAccHeadId with actual variable
-																			)
+																			) *@
 
 										@(Html.DevExtreme().TextBox()
 																		.Label(new JS("formatMessage('Invoice Submitted By')"))
@@ -1729,7 +1765,7 @@
 																				.Value(null)
 																				// .Disabled(true)
 																				)
-									</div>
+									@* </div> *@
 
 								</td>
 
@@ -1922,92 +1958,118 @@
 
 						<tr>
 							<td>
-								<div style="display: flex; align-items: center; gap: 4px;">
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Prepared By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ddlGoodsGroup9")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("PreparedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
-								</div>
-							</td>
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Prepared By')"))
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetAllSignatories")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("SignatoryID"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("ddlGoodsGroup9")
+        .ShowClearButton(true)
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .ValueExpr("SignatoryID")
+        .DisplayExpr("SignatoryName")
+        .OnInput("dropDownBoxOnInput")
+        .OnOpened("onOpened")
+        .DropDownOptions(o => o.Width(1000))
+        .ContentTemplate(new TemplateName("PreparedByTemplate"))
+        .Width("100%")
+        .Buttons(buttons => {
+            buttons.Add().Name("dropDown"); // Default dropdown icon
+            buttons.Add()
+                .Name("addPreparedBy")
+                .Location(TextEditorButtonLocation.After)
+                .Widget(w => w.Button()
+                    .Type(ButtonType.Default)
+                    .Icon("plus")
+                    .Hint("Add Prepared By")
+                    .OnClick("navigateToLedgerAccountForm") // JS function you already have
+                );
+        })
+    )
+</td>
+
 							<td>
-								<div style="display: flex; align-items: center; gap: 4px;">
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Checked By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ddlGoodsGroup10")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("CheckedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
-								</div>
-							</td>
-							<td>
-								<div style="display: flex; align-items: center; gap: 4px;">
-									@(Html.DevExtreme().DropDownBox()
-																			.Label(new JS("formatMessage('Approved By')"))
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetAllSignatories")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("ddlGoodsGroup11")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.HoverStateEnabled(true)
-																			.ValueExpr("SignatoryID")
-																			.DisplayExpr("SignatoryName")
-																			.OnInput("dropDownBoxOnInput")
-																			.OnOpened("onOpened")
-																			.DropDownOptions(o => o.Width(1000))
-																			.ContentTemplate(new TemplateName("ApprovedByTemplate"))
-																			.Width("100%")
-																			)
-									<button type="button" class="icon-btn" onclick="navigateToLedgerAccountForm()">
-										<i class="fa fa-plus"></i>
-									</button>
-								</div>
-							</td>
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Checked By')"))
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetAllSignatories")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("SignatoryID"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("ddlGoodsGroup10")
+        .ShowClearButton(true)
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .ValueExpr("SignatoryID")
+        .DisplayExpr("SignatoryName")
+        .OnInput("dropDownBoxOnInput")
+        .OnOpened("onOpened")
+        .DropDownOptions(o => o.Width(1000))
+        .ContentTemplate(new TemplateName("CheckedByTemplate"))
+        .Width("100%")
+        .Buttons(buttons =>
+        {
+            buttons.Add().Name("dropDown"); // Standard dropdown arrow
+            buttons.Add()
+                .Name("addCheckedBy")
+                .Location(TextEditorButtonLocation.After)
+                .Widget(w => w.Button()
+                    .Type(ButtonType.Default)
+                    .Icon("plus") // You can change to any DevExtreme icon
+                    .Hint("Add Checked By")
+                    .OnClick("navigateToLedgerAccountForm") // 👈 Your existing JS function
+                );
+        })
+    )
+</td>
+
+						<td>
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Approved By')"))
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetAllSignatories")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("SignatoryID"))
+        .LabelMode(EditorLabelMode.Floating)
+        .ID("ddlGoodsGroup11")
+        .ShowClearButton(true)
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .ValueExpr("SignatoryID")
+        .DisplayExpr("SignatoryName")
+        .OnInput("dropDownBoxOnInput")
+        .OnOpened("onOpened")
+        .DropDownOptions(o => o.Width(1000))
+        .ContentTemplate(new TemplateName("ApprovedByTemplate"))
+        .Width("100%")
+        .Buttons(buttons =>
+        {
+            buttons.Add().Name("dropDown"); // Default drop arrow
+            buttons.Add()
+                .Name("addApprovedBy")
+                .Location(TextEditorButtonLocation.After)
+                .Widget(w => w.Button()
+                    .Type(ButtonType.Default)
+                    .Icon("plus")
+                    .Hint("Add Approved By")
+                    .OnClick("navigateToLedgerAccountForm") // 👈 Same function reused
+                );
+        })
+    )
+</td>
+
 						</tr>
 
 
@@ -2106,6 +2168,7 @@
 							.DataField("Description")
 							.Caption("Description")
 							.Width(500)
+							.EditorOptions(new { placeholder = "Enter or select description" })
 							.AllowEditing(true)
 							//.EditorOptions(new { placeholder = "Enter item code" })
 							.CellTemplate(@<text>
@@ -2192,7 +2255,7 @@
 				)
 			</text>)
 						.CellTemplate(@<text>
-				<%- data.DescriptionDetailsText ? data.DescriptionDetailsText : "No Selection" %>
+				<%- data.UnitRateMethod ? data.UnitRateMethod : "No Selection" %>
 			</text>);
 
 
@@ -2303,8 +2366,14 @@
 								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum)
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
-								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum)
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
+
+							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
+								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
@@ -2312,10 +2381,10 @@
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
-							totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum)
+								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum)
+								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum).DisplayFormat("{0:0.##}")
 
 							.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
@@ -2326,8 +2395,12 @@
 						)
 		</div>
 		<div id="ExcemptioncodePopover"></div>
-		<div class="Head" style="margin-left: 15px;">
+		<div class="footer-fixed" style="margin-left: 15px;">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
+		</div>
+		<div id="loader" style="display: none;">
+			@* <span>Loading...</span> <!-- Or use a spinner icon --> *@
+			<i class="fa fa-spinner fa-spin" style="font-size: 24px;"></i>
 		</div>
 
 
@@ -2618,7 +2691,7 @@
 			let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 			if (rowIndex !== -1) {
 			grid.cellValue(rowIndex, "DescriptionDetails", selectedItem.UnitCode);
-			grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+				grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
 			}
 
 			component.close();
@@ -3410,6 +3483,20 @@
 <script>
 
 
+		function onEditClientClick() {
+				var clientId = $("#ddclientcode").dxDropDownBox("option", "value");
+
+			if (!clientId) {
+				DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
+				return;
+			}
+
+
+			// Proceed with edit logic (e.g., open modal or navigate)
+			console.log("Client selected: ", clientId);
+			showLedgerAccountEditPopup();
+			// yourEditFunction(clientId); // call your edit method here
+		}
 	
 			 function dataGridSelectionabc(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
@@ -3483,8 +3570,10 @@
 							ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
 							$('#InvoiceDate').dxDateBox("instance")?.option("value", account.InvoiceDate);
 							$('#InvoiceIssuedDateTime').dxDateBox("instance")?.option("value", account.InvoiceDateWtTime);
-
-
+							$("#SupplyDate").dxDateBox("instance").option("value",account.InvoiceDeliveryDate);
+						     $("#InvoiceDueDate").dxDateBox("instance").option("value",account.InvoiceDueDate);
+								$("#EffectiveDate").dxDateBox("instance").option("value",account.InvoiceEffectiveDate);
+							
 							$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
 							$('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
 							$('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
@@ -3853,7 +3942,7 @@
                                             let grid = $("#B2BdataGrid").dxDataGrid("instance");
                                             let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                             if (rowIndex !== -1) {
-                                                grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
 													UnitCode=selectedItem.UnitCode;
                                             }
                                             e.component.close();
@@ -3879,7 +3968,7 @@
             },
 				{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
             { dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-            { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
+				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,allowEditing: false },
             { dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 					{
 		dataField: "DiscountDetails",
@@ -3898,9 +3987,8 @@
 				}
 			}).appendTo(container);
 		}
-	}
-	,
-            { dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
+	},
+				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,allowEditing: false },
             {
     dataField: "VATPercentage",
     caption: formatMessage('VAT%'),
@@ -3996,8 +4084,8 @@
     }
 },
             { dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
-            { dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
-            { dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
+				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,allowEditing: false },
+				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150,allowEditing: false},
             { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
         ],
         editing: {
@@ -4017,38 +4105,48 @@
 					rowIx=rowIndex;
 						debugger;
 					let newValue = args.value;
+					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 
-					// Get existing values or updated ones
-						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-						let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
-					let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+	                if (qty <= 0) {
 
-					// VAT rate handling
-					let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
-					let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+					DevExpress.ui.dialog.alert(
+						"Quantity cannot be zero or negative.",
+						"Quantity Error"
+						)
+                 	}
+					else
+					{
+							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
+						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
 
-					// Calculate amount
-					let amount = qty * unitPrice;
-					let discountedAmount = amount - discount;
+						// VAT rate handling
+						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+						let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
 
-					// Ensure discountedAmount doesn't go negative
-					if (discountedAmount < 0) discountedAmount = 0;
+						// Calculate amount
+						let amount = qty * unitPrice;
+						let discountedAmount = amount - discount;
 
-					let vatValue = discountedAmount * vatRate;
-					let totalValue = discountedAmount + vatValue;
+						// Ensure discountedAmount doesn't go negative
+						if (discountedAmount < 0) discountedAmount = 0;
 
-					// Update grid cells
-					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-					grid.cellValue(rowIndex, "Unit Price",unitPrice);
-					grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-					grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
-					grid.cellValue(rowIndex, "Discount",discount);
-					grid.cellValue(rowIndex, "Qty", qty);
-					grid.cellValue(rowIndex, "VAT%", vatRateStr);
+						let vatValue = discountedAmount * vatRate;
+						let totalValue = discountedAmount + vatValue;
 
-						applyDiscount(amount.toFixed(2));
-				
+						// Update grid cells
+						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+						grid.cellValue(rowIndex, "Unit Price",unitPrice);
+						grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+						grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
+						grid.cellValue(rowIndex, "Discount",discount);
+						grid.cellValue(rowIndex, "Qty", qty);
+						grid.cellValue(rowIndex, "VAT%", vatRateStr);
+
+							applyDiscount(amount.toFixed(2));
+
+							//applyDiscount(rowIndex);
+					}
 			};
 		}
 	}
@@ -4497,7 +4595,7 @@
 
 												if (rowIndex !== -1) {
 
-													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+														grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
 													UnitCode=selectedItem.UnitCode;
 
 												}
@@ -4548,7 +4646,7 @@
 
 				{ dataField: "UnitRate", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150 },
 
-					{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 } },
+						{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
 					{ dataField: "Discount", caption: formatMessage('Discount'), cssClass: "center-header",width: 150 },
 
@@ -4566,14 +4664,14 @@
 				stylingMode: "text",
 				width: 60,
 				onClick: function (e) {
+				  
 					onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
 				}
 			}).appendTo(container);
 		}
-	}
-	,
+	},
 
-						{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
+				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
 				//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -4659,9 +4757,9 @@
 
 
 
-					{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150 },
+						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150,allowEditing: false },
 
-					{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 } },
+						{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
 					{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -4886,24 +4984,32 @@
 
 
 			// Fetch dropdown data (same API can be used if needed)
-		 function getDropdownData() {
-			return $.ajax({
-				url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-				method: "GET",
-				dataType: "json"
-			}).then(function(response) {
-				console.log("GsData",response)
-				return response.map(item => ({
-					GSCode: item.Gscode,
-					GSDescrpition: item.Gsdescrpition,
-					GsdescriptionAr:item.GsdescriptionAr,
-					ItemPartNo: item.ItemPartNo,
-					CostPrice: item.CostPrice,
-					GSSellingRate: item.GssellingRate,
-					ReorderQty:item.ReorderQty
-				}));
-			});
-		}
+				function getDropdownData() {
+		// Show loader before AJAX call
+		$("#loader").show();
+
+		return $.ajax({
+			url: "/api/VATModule/GetGoodsAndServices", // API endpoint
+			method: "GET",
+			dataType: "json"
+		}).then(function(response) {
+			console.log("GsData", response);
+			return response.map(item => ({
+				GSCode: item.Gscode,
+				GSDescrpition: item.Gsdescrpition,
+				GsdescriptionAr: item.GsdescriptionAr,
+				ItemPartNo: item.ItemPartNo,
+				CostPrice: item.CostPrice,
+				GSSellingRate: item.GssellingRate,
+				ReorderQty: item.ReorderQty
+			}));
+		}).always(function () {
+			// Hide loader after AJAX call finishes (success or error)
+			$("#loader").hide();
+		});
+	}
+
+		
 		function getUnitRateMethods() {
 			return $.ajax({
 				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -5026,7 +5132,7 @@
 				PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value") || null,
 				QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value") || null,
 				DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value") || null,
-				InvoiceDueDate: $("#PODate").dxDateBox("instance").option("value") || null,
+					InvoiceDueDate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
 				ClientGrnreferenceNo: $("#ClientGRNReference").dxTextBox("instance").option("value") || null,
 				AddedBy: $("#SubmittedBytext").dxTextBox("instance").option("value") || null,
 				AddedOn: $("#ddlinvoicesubmittedon").dxDateBox("instance").option("value") || null,
@@ -5136,7 +5242,7 @@
 									 IsClientCode=true;
 									 onClientCodeChanged(accheadid);
 										console.log("ClientData",selectedRowData[0])
-								  let  accheadname = selectedRowData[0].AccountHead;
+								  let  accheadname = selectedRowData[0].BillingName;
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										 ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;
@@ -5815,8 +5921,9 @@
 					$("#InvoiceEdit").dxTextBox({
 						text: formatMessage("New Standard Tax Invoice(B2B)"),
 						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
+						width:450,
+							onContentReady: function(e) {
+							$(e.element).addClass("dx-textcolor-heading");
 							}
 
 					});
@@ -6862,10 +6969,19 @@
 					debugger;
 				let newValue = args.value;
 
+						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 
-				// Get existing values or updated ones
-					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
-						let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
+						if (qty <= 0) {
+
+						DevExpress.ui.dialog.alert(
+							"Quantity cannot be zero or negative.",
+							"Quantity Error"
+							)
+						}
+						else
+						{
+				
+				let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
 				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
 
 				// VAT rate handling
@@ -6894,11 +7010,73 @@
 
 			  // Store value for use in popover
                window.currentAmount = amount.toFixed(2);
+			   }
 
 			};
 		}
 	}
 
+
+			function onEditorPreparing(e) {
+			if (e.parentType === "dataRow" &&
+					(e.dataField === "QuantityInvoiced" ||
+					 e.dataField === "UnitRate" ||
+				// e.dataField === "VATPercentage" ||
+				 e.dataField === "Discount")) {
+
+				e.editorOptions.onValueChanged = function (args) {
+					let grid = $("#B2BdataGrid").dxDataGrid("instance");
+					let rowIndex = e.row.rowIndex;
+							rowIx=rowIndex;
+						debugger;
+					let newValue = args.value;
+
+							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
+
+							if (qty <= 0) {
+
+							DevExpress.ui.dialog.alert(
+								"Quantity cannot be zero or negative.",
+								"Quantity Error"
+								)
+							}
+							else
+							{
+
+					let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
+					let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+
+					// VAT rate handling
+					let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+					let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
+
+					// Calculate amount
+					let amount = qty * unitPrice;
+					let discountedAmount = amount - discount;
+
+					// Ensure discountedAmount doesn't go negative
+					if (discountedAmount < 0) discountedAmount = 0;
+
+					let vatValue = discountedAmount * vatRate;
+					let totalValue = discountedAmount + vatValue;
+
+					// Update grid cells
+					grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
+					grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+					grid.cellValue(rowIndex, "Unit Price",unitPrice);
+					grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+					grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
+					grid.cellValue(rowIndex, "Discount",discount);
+					grid.cellValue(rowIndex, "Qty", qty);
+					grid.cellValue(rowIndex, "VAT%", vatRateStr);
+
+				  // Store value for use in popover
+				   window.currentAmount = amount.toFixed(2);
+				   }
+
+				};
+			}
+		}
 	   
 
 
@@ -6972,7 +7150,7 @@
 			PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
 			QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
 			DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
-			InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
+				InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
 			ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
@@ -7187,7 +7365,7 @@
 			PaymentTerms: $("#PaymentTerms").dxTextBox("instance").option("value")|| null,
 			QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
 			DeliveryNoteNos: $("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
-			InvoiceDueDate:$("#PODate").dxDateBox("instance").option("value")|| null,
+			InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
 			ClientGrnreferenceNo:$("#ClientGRNReference").dxTextBox("instance").option("value")|| null,
 			AddedBy:$("#SubmittedBytext").dxTextBox("instance").option("value")|| null,
 			AddedOn:$("#ddlinvoicesubmittedon").dxDateBox("instance").option("value")|| null,
@@ -8576,7 +8754,7 @@
 			// Set disabled flag on specific items
 			items.forEach(function (item) {
 					if (item.text === "Print Simplified TAX Invoice" ) {
-					item.disabled = true;
+					item.disabled = false;
 				}
 			});
 
@@ -8584,19 +8762,53 @@
 		});
 
 
-				function applyDiscount() {
-				//debugger;
-		let grid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 			function applyDiscount() {
+	// 			//debugger;
+	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
+	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+	// 	const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+
+	// 	const finalAmount = total - discount;
+
+	// 	// Set value to FinalAmount column (or any appropriate column)
+	// 			grid.cellValue(rowIx, "Discount", discount);
+	// 	        grid.cellValue(rowIx, "LineTotal", finalAmount);
+
+	// }
+
+
+		function applyDiscount() {
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		debugger;
+		// Get values from UI
 		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 		const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-		const finalAmount = total - discount;
 
-		// Set value to FinalAmount column (or any appropriate column)
-				grid.cellValue(rowIx, "Discount", discount);
+		// Get required values from grid for the specific row
+		const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
+		const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
+		let vatRateStr = grid.cellValue(rowIx, "VAT%") || "0%";
+		let vatRate = parseFloat(vatRateStr.toString().replace("%", "")) / 100;
 
-		DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
+		// Calculate the raw amount
+		let amount = qty * unitPrice;
+
+		// Apply discount, ensure it doesn't go negative
+		let discountedAmount = amount - discount;
+		if (discountedAmount < 0) discountedAmount = 0;
+
+		// VAT and total calculations
+		let vatValue = discountedAmount * vatRate;
+		let totalValue = discountedAmount + vatValue;
+
+		// Update the grid values
+			grid.cellValue(rowIx, "Discount", discount);
+			grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
+		grid.cellValue(rowIx, "LineTotal", totalValue);
+
 	}
+
 
 		$(document).ready(function () {
 				console.log('Start permission handling');
@@ -8851,6 +9063,80 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 				}
 			});
 
+
+	//Invoice Details
+		const clientNameBox = $("#ddclientname").dxDropDownBox("instance");
+		if (clientNameBox) {
+			clientNameBox.option("disabled", true);
+		}
+
+		const clientCodeBox = $("#ddclientcode").dxDropDownBox("instance");
+		if (clientCodeBox) {
+			clientCodeBox.option("disabled", true);
+		}
+
+		const addressDetailsBox = $("#ClientAddressDetails").dxDropDownBox("instance");
+		if (addressDetailsBox) {
+			addressDetailsBox.option("disabled", true);
+		}
+
+		const invoiceTransactionsBox = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+		if (invoiceTransactionsBox) {
+			invoiceTransactionsBox.option("disabled", true);
+		}
+
+		const paymentMeansBox = $("#ddpaymentmeans").dxDropDownBox("instance");
+		if (paymentMeansBox) {
+			paymentMeansBox.option("disabled", true);
+		}
+
+		const supplyDateBox = $("#SupplyDate").dxDateBox("instance");
+		if (supplyDateBox) {
+			supplyDateBox.option("disabled", true);
+		}
+
+		//Other Details
+			const InvoiceDueDateBox = $("#InvoiceDueDate").dxDateBox("instance");
+			if (InvoiceDueDateBox) {
+				InvoiceDueDateBox.option("disabled", true);
+			}
+
+					const EffectiveDateBox = $("#EffectiveDate").dxDateBox("instance");
+			if (EffectiveDateBox) {
+				EffectiveDateBox.option("disabled", true);
+			}
+
+			//Purchase order details
+			const OurSalesOrderNoBox = $("#OurSalesOrderNo").dxDropDownBox("instance");
+			if (OurSalesOrderNoBox) {
+					OurSalesOrderNoBox.option("disabled", true);
+			}
+
+								const PODateBox = $("#PODate").dxDateBox("instance");
+				if (PODateBox) {
+							PODateBox.option("disabled", true);
+				}
+						const ddlGoodsGroup3Box = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+			if (ddlGoodsGroup3Box) {
+						ddlGoodsGroup3Box.option("disabled", true);
+			}
+
+								const CurrencyExchangeRateBox = $("#currencyexchangerate").dxNumberBox("instance");
+				if (CurrencyExchangeRateBox) {
+								CurrencyExchangeRateBox.option("disabled", true);
+				}
+
+						const ddlGoodsGroup7Box = $("#ddlGoodsGroup7").dxDropDownBox("instance");
+				if (ddlGoodsGroup7Box) {
+							ddlGoodsGroup7Box.option("disabled", true);
+				}
+
+				const ddlGoodsGroup8Box = $("#ddlGoodsGroup8").dxDropDownBox("instance");
+				if (ddlGoodsGroup8Box) {
+							ddlGoodsGroup8Box.option("disabled", true);
+				}
+			
+
 			// Disable DataGrid Editing and Deleting
 			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 			if (dataGrid) {
@@ -8901,7 +9187,19 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 		}
 
 
-		
+		function navigateToLedgerAccountForm() {
+		const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
+		const title = "Add Signatory";
+		openModal(url, title, function () {
+			["ddlGoodsGroup9", "ddlGoodsGroup10", "ddlGoodsGroup11"].forEach(id => {
+				const dropDown = $("#" + id).dxDropDownBox("instance");
+				if (dropDown) {
+					dropDown.getDataSource().reload();
+					dropDown.option("value", null);
+				}
+			});
+		});
+	}
 	 $(function () {
 				const dateBox = $("#SupplyDate").dxDateBox("instance");
 
@@ -9011,9 +9309,41 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 							}
 						}
 					});
-
-					
 				}
+
+	let companyBranchList = [];
+
+	$(async function () {
+		// Fetch company list from API
+			await $.get("/api/VATModule/GetDefalutCompanyBranch", function (data) {
+			companyBranchList = data;
+
+			if (companyBranchList.length > 0) {
+				// You can replace '0' with a specific ID using .find()
+				const defaultCompany = companyBranchList[0]; // or: companyBranchList.find(c => c.CompanyId === 1);
+
+				const dropDown = $("#ddlGoodsGroup7").dxDropDownBox("instance");
+
+				// Set default selected value in DropDownBox
+				dropDown.option("value", defaultCompany.CompanyId);
+
+				// Fill other company fields
+				fillCompanyFields(defaultCompany);
+			}
+		});
+	});
+
+
+
+	// Populate all related fields based on selected company
+	function fillCompanyFields(company) {
+		$("#OurGroupVATNo").dxTextBox("instance").option("value", company.SellerGroupVatnumber);
+		$("#OurVATNo").dxTextBox("instance").option("value", company.CompanyVatno);
+		$("#OtherID1").dxTextBox("instance").option("value", company.SellerOtherSellerId);
+		$("#ddlGoodsGroup8").dxDropDownBox("instance").option("value", company.SellerOtherIdtype);
+		$("#OurCompanyRegisteredName").dxTextBox("instance").option("value", company.CompanyName);
+		$("#OurCompanyNameinArabic").dxTextBox("instance").option("value", company.CompanyNameAr);
+	}
 
 
 </script>

@@ -221,10 +221,7 @@
                         .DataSource(d => d.WebApi()
                         .Controller("StockInventory")
                         .LoadAction("GetCostCenters"))
-                        .ValidationRules(rules =>
-                        {
-                            rules.AddRequired().Message("Cost Center is required");
-                        })
+                       
                         )
                     <div class="add-button-wrap">
                         @(Html.DevExtreme().Button()
@@ -242,7 +239,7 @@
         <br />
 
         <!-- Data Grid -->
-        <div>
+   @*      <div>
             @(Html.DevExtreme().DataGrid()
                 .ID("storeGrid")
                 .Height(300)
@@ -261,44 +258,135 @@
                 )
 
              
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(true);
-                    columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center);
-                    columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center);
-                })
-                .Editing(editing => editing
-                .Mode(GridEditMode.Row)
-                .AllowUpdating(true)
-                .AllowAdding(false)
-                .AllowDeleting(false)
-                .UseIcons(true)
-                )
+        .Columns(columns =>
+        {
+            columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(true);
+            columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+            columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+        })
+        .Editing(editing => editing
+        .Mode(GridEditMode.Row)
+        .AllowUpdating(true)
+        .AllowAdding(false)
+        .AllowDeleting(false)
+        .UseIcons(true)
+        )
 
-                )
+        )
+
+
+        </div> *@
+        <div class="dx-field ledgerResult">
+            @(Html.DevExtreme().DataGrid()
+                        .ID("storeGrid")
+                        .KeyExpr("StoreId")
+                        .RemoteOperations(false)
+                        .DataSource(d => d.WebApi()
+                        .Controller("StockInventory")
+                        .LoadAction("GetAllStores")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        )
+                        .Editing(editing => editing
+                        .Mode(GridEditMode.Batch)
+                        .AllowUpdating(true)
+                        .AllowDeleting(true)
+                        .UseIcons(true)
+                        )
+                        .Toolbar(toolbar =>
+                        {
+                            toolbar.Items(items =>
+                            {
+                                items.Add()
+                            .Name("saveButton")
+                            .Location(ToolbarItemLocation.After)
+                            .Visible(false);
+
+                                items.Add()
+                            .Name("revertButton")
+                            .Location(ToolbarItemLocation.After)
+                            .Visible(false);
+                            });
+                        })
+
+
+                        .OnRowUpdating("onProjectUpdating")                       // Handles saving
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("StoreId").Caption("Store ID");
+                            columns.Add().DataField("StoreName").Caption("Store Name");
+
+                            columns.Add().DataField("CostAllocationUnitId").Caption("Cost Center for Consumption").Width(200)
+                            .Lookup(lookup => lookup
+                            .DataSource(d => d.WebApi()
+                            .Controller("StoreCode")
+                            .LoadAction("GetCostCenter")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CostAllocationUnitId")
+                            )
+                            .ValueExpr("CostAllocationUnitId")    // This must match your model's field if it's storing the ID
+                            .DisplayExpr("CostAllocationUnit")
+                            );
+                               // Add delete button column
+                            columns.Add()
+                            .Type(GridCommandColumnType.Buttons)
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                            .Name(GridColumnButtonName.Delete)
+                            .Icon("trash") // Use a trash icon
+                            .Hint("Delete Row") // Tooltip
+                           .OnClick("onDeleteButtonClicks");
+                            });
+
+                        })
+                        .Height(500)
+                        .ColumnAutoWidth(true)
+                        .AllowColumnReordering(true)
+                        .AllowColumnResizing(true)
+                        .ColumnFixing(f => f.Enabled(true))
+                        .Paging(p => p.Enabled(true))
+                        .Scrolling(s => s
+                        .Mode(GridScrollingMode.Virtual)
+                        .RowRenderingMode(GridRowRenderingMode.Virtual)
+                        .PreloadEnabled(true)
+                        .ScrollByContent(true)
+                        )
+                        .ShowBorders(true)
+                        .ShowRowLines(true)
+                        .Width("100%")
+                        )
 
 
         </div>
 
+
         <br />
-        <div style="display:flex; gap:1%;">
-            <div class="action-buttons">
-                @(Html.DevExtreme().Button()
-                    .Text(new JS("formatMessage('Back')"))
-                    .Icon("arrowleft")
-                    .OnClick("Goback")
-                    .Width(120)
-                    .Type(ButtonType.Default))
-            </div>
+        <div class="limited-footer">
+            @await Html.PartialAsync("InventoryModuleFooter")
+        </div>
        
 
     </div>
 </div>
 
 <script>
-    function Goback() {
-		window.parent.closeModal();
-	}
+    $(document).ready(function () {
+
+        $(".limited-footer .btn-container").each(function () {
+
+            if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                $(this).remove();
+
+            }
+
+        });
+
+    });
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
     $(function () {
         // Set the header title text box (readonly)
         $("#StockDetailsItemStore").dxTextBox({
@@ -311,28 +399,26 @@
     });
 
         function onAddStoreClick() {
-        // Trigger DevExtreme validation for each field
+       
         var isStoreIdValid = $("#StoreId").dxValidator("instance").validate().isValid;
         var isStoreNameValid = $("#StoreName").dxValidator("instance").validate().isValid;
-        var isCostCenterValid = $("#CostCenter").dxValidator("instance").validate().isValid;
+       
 
-        // If any field is invalid, DevExtreme will show the required message under the field
-        if (!isStoreIdValid || !isStoreNameValid || !isCostCenterValid) {
+       
+        if (!isStoreIdValid || !isStoreNameValid) {
                  DevExpress.ui.notify('Please fill all required fields correctly.', 'error', 3000);
             return;
         }
 
-        var storeId = $("#StoreId").dxTextBox("instance").option("value");
-        var storeName = $("#StoreName").dxTextBox("instance").option("value");
-        var costCenter = $("#CostCenter").dxSelectBox("instance").option("value");
+
 
         var storeData = {
-            StoreId: storeId,
-            StoreName: storeName,
-            CostAllocationUnitId: costCenter
+                StoreId: $("#StoreId").dxTextBox("instance").option("value"),
+                StoreName: $("#StoreName").dxTextBox("instance").option("value"),
+                CostAllocationUnitId: $("#CostCenter").dxSelectBox("instance").option("value"),
         };
         $.ajax({
-            url: '/api/StockInventory/AddStore',
+                url: '/api/StockInventory/SaveOrUpdateStore',
             type: 'POST',
             data: JSON.stringify(storeData),
             contentType: 'application/json',
@@ -351,12 +437,41 @@
         $("#CostCenter").dxValidator("instance").reset();
     },
 
-            error: function (err) {
-                DevExpress.ui.notify("Failed to add store.", "error", 3000);
-            }
+            error: function (xhr) {
+        const res = xhr.responseJSON;
+        const message = res && res.message ? res.message : "Failed to save store.";
+        DevExpress.ui.notify(message, "error", 3000);
+    }
         });
     }
-    $(function() {
+        $("#btnUpdate").on("click", function () {
+                  const grid = $("#storeGrid").dxDataGrid("instance");
+              grid.saveEditData(); // 🔥 only triggers on manual click
+          });
+          function onProjectUpdating(e) {
+
+              const data = {
+                          StoreId: e.newData.StoreId ?? e.oldData.StoreId,
+                              StoreName: e.newData.StoreName ?? e.oldData.StoreName,
+                              CostAllocationUnitId: e.newData.CostAllocationUnitId ?? e.oldData.CostAllocationUnitId
+                 };
+
+              e.cancel = true;
+
+              return $.ajax({
+                          url: '/api/StockInventory/SaveOrUpdateStore',
+                  method: "POST",
+                  contentType: "application/json",
+                  data: JSON.stringify(data),
+                  success: function () {
+                      DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
+                          $("#storeGrid").dxDataGrid("instance").refresh();
+                  },
+                  error: function () {
+                      DevExpress.ui.notify("Failed to save.", "error", 1500);
+                  }
+              });
+          }  $(function() {
         var grid = $("#storeGrid").dxDataGrid("instance");
         if(grid) {
             grid.option("onRowUpdated", function(e) {
@@ -364,4 +479,27 @@
             });
         }
     });
+        function onDeleteButtonClicks(e) {
+            e.event.preventDefault(); // prevent default delete
+
+                var grid = $("#storeGrid").dxDataGrid("instance");
+            var key = e.row.data.StoreId; // get the ID of the row
+
+
+            if (confirm("Are you sure you want to delete this row?")) {
+                $.ajax({
+                    url: '/api/StockInventory/Delete1?key=' + key,
+                    type: 'DELETE',
+                    success: function () {
+                        // Refresh the grid after delete
+                        grid.refresh();
+                        DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Delete failed", "error", 2000);
+                    }
+                });
+            }
+        }
+
 </script>

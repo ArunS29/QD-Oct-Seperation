@@ -190,7 +190,7 @@
 
 		@await Html.PartialAsync("/Pages/Shared/IMS/SaleorderFooter.cshtml")
 
-<div class="dx-fieldset horizontal-container">
+<div class="horizontal-container" style="padding: 5px;">
 	@(Html.DevExtreme().DateBox()
 					.ID("frmdateBox")
 					.Label(new JS("formatMessage('Start Date')"))
@@ -219,7 +219,7 @@
 					.Text(new JS("formatMessage('Show Records')"))
 					.Icon("smalliconslayout")
 					.Width(180)
-					.ElementAttr("class", "button-alignment-down")
+					.ElementAttr("class", "button-alignment-up")
 					.TabIndex(4)
 					.DropDownOptions(options => options.Width(230))
 					.Items(items =>
@@ -238,7 +238,7 @@
 					)
 
 </div>
-<div class="dx-field ledgerResult">
+<div class="ledgerResult">
 	@(
 		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60204salesOrderViewMaster>()
 					.ID("dataGrid")
@@ -277,7 +277,7 @@
 
 	});
 		})
-		.Height(680) // Fixed height for the grid
+		.ElementAttr("style", "height: 444px !important;")
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)

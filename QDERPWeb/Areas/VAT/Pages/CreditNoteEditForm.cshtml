@@ -8,10 +8,6 @@
 	#B2BdataGrid {
 	height: 325px !important;
 }
-	.dx-datagrid-headers .center-header {
-		text-align: center !important;
-	}
-
     .titleCard-toggle1{
         display:none;
     }
@@ -182,10 +178,6 @@
 	.dx-fieldset {
 	margin: 3px 3px !important;
 	padding: 0px;
-	}
-
-	.dx-datagrid-headers th {
-	text-align: center; /* Centers the text */
 	}
 
 	.columnheader {
@@ -422,6 +414,15 @@
 		<div id="CreditNoteEditForm" class="no-border-title"></div>
 	</div>
 </div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="CreditNoteEditForm" class="titleText no-border-title"></div>
+	</div>
+</div>
+
 <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice">
 		<i class="dx-icon-plus"></i> Add Line Item
@@ -2004,7 +2005,7 @@
 		</div>
 
 	
-<div class="Head"  style="margin-left: 15px;">
+<div class="footer-fixed">
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATCreditNoteEditFooter.cshtml")
 </div>
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
@@ -3332,8 +3333,7 @@
 						    $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
 							// dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
 							 $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
-							 $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
-						     //$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
+						
 								dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
 								dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
 
@@ -3367,8 +3367,6 @@
 							$.ajax({
 								type: "GET",
 								  url: `/api/VATModule/GetGridCreditNoteDetails?CreditNoteNo=${encodeURIComponent(CreditNoteNo)}`,
-
-								//url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvNo)}`,
 									dataType: 'json',
 								success: function (response) {
 										console.log("AmendGrid",response)
@@ -5227,10 +5225,9 @@ openModal(url, title);
 					$("#CreditNoteEditForm").dxTextBox({
 						text: formatMessage("New e-Invoice Credit Note"),
 						readOnly: true,
-									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
+						onContentReady: function(e) {
+						$(e.element).addClass("dx-textcolor-heading");
 							}
-
 					});
 				});
 				$(function () {
@@ -7689,8 +7686,8 @@ $(document).ready(function () {
 							}
 						}
 					});
-
-					
 				}
+
+
 </script>
 

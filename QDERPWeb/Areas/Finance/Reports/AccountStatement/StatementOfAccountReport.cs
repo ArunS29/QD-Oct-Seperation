@@ -1,15 +1,12 @@
 using System;
 using System.Drawing;
-using System.IO;
-using System.Linq;
-using System.Collections.Generic;
 using DevExpress.XtraReports.UI;
-using DevExpress.XtraPrinting;
-using DevExpress.Utils.Svg;
-using DevExpress.XtraPrinting.Drawing;
 using DevExpress.DataAccess.Sql;
 using DevExpress.DataAccess.ConnectionParameters;
 using QD.ERP.Web.Service;
+using DevExpress.XtraPrinting;
+using Svg;
+using System.Text;
 
 namespace QD.ERP.Web.Reports
 {
@@ -18,108 +15,121 @@ namespace QD.ERP.Web.Reports
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 
         public StatementOfAccountReport(
-            string accountId, DateTime frmDate, DateTime toDate,
-            string tenantName, string company_Name, string company_address,
-            Image logoImage, string Company_Name_Ar, string company_address_arb,string username,
+            string accountId,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string company_Name,
+            string company_address,
+            Image logoImage,
+            string Company_Name_Ar,
+            string company_address_arb,
+            string username,
             TenantDbContextHelper tenantDbContextHelper)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb,username);
-            ConfigureSqlDataSource(accountId, frmDate, toDate);
+
+            SetReportParameters(accountId, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, username);
+
+            try
+            {
+                sqlDataSource1.Fill();
+                LoadCurrencyImage(accountId, frmDate, toDate);
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error loading data: " + ex.Message, ex);
+            }
         }
 
         public StatementOfAccountReport()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
         }
 
-        private void AddReportParameter(string paramName, Type paramType, object paramValue)
+        private void SetReportParameters(
+            string accountId,
+            DateTime frmDate,
+            DateTime toDate,
+            string tenantName,
+            string companyName,
+            string companyAddress,
+            Image logoImage,
+            string companyNameAr,
+            string companyAddressArb,
+            string username)
         {
-            if (Parameters[paramName] == null)
+            accountId ??= "";
+            frmDate = frmDate == DateTime.MinValue ? DateTime.Today : frmDate;
+            toDate = toDate == DateTime.MinValue ? DateTime.Today : toDate;
+
+            AddOrUpdateParameter("AccountID", accountId, typeof(string), false);
+            AddOrUpdateParameter("StartDate", frmDate, typeof(DateTime), false);
+            AddOrUpdateParameter("EndDate", toDate, typeof(DateTime), false);
+            AddOrUpdateParameter("TenantName", tenantName ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyName", companyName ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyAddress", companyAddress ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
+            AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
+            AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+
+            if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
+                tenantLabel.Text = tenantName;
+
+            if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
+                userLabel.Text = username;
+
+            if (FindControl("xrLabelCompanyName", true) is XRLabel companyLabel)
+                companyLabel.Text = companyName;
+
+            if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
+                addressLabel.Text = companyAddress;
+
+            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+                logoPictureBox.Image = logoImage;
+
+            if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
+                companyNameArLabel.Text = companyNameAr;
+
+            if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
+                addressArbLabel.Text = companyAddressArb;
+
+            ConfigureSqlDataSource(accountId, frmDate, toDate);
+        }
+
+        private void AddOrUpdateParameter(string paramName, object paramValue, Type paramType, bool visible)
+        {
+            var parameter = Parameters[paramName];
+            if (parameter == null)
             {
-                Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter()
+                Parameters.Add(new DevExpress.XtraReports.Parameters.Parameter
                 {
                     Name = paramName,
                     Type = paramType,
                     Value = paramValue,
-                    Visible = false
+                    Visible = visible
                 });
             }
             else
             {
-                Parameters[paramName].Value = paramValue;
-                Parameters[paramName].Visible = false;
+                parameter.Value = paramValue;
+                parameter.Visible = visible;
             }
-        }
-
-        private void SetReportParameters(string accountId, DateTime frmDate, DateTime toDate,
-                                         string tenantName, string company_Name, string company_address,
-                                         Image logoImage, string Company_Name_Ar, string company_address_arb,string username)
-        {
-            AddReportParameter("AccountID", typeof(string), accountId ?? "");
-            AddReportParameter("StartDate", typeof(DateTime), frmDate == DateTime.MinValue ? DateTime.Today : frmDate);
-            AddReportParameter("EndDate", typeof(DateTime), toDate == DateTime.MinValue ? DateTime.Today : toDate);
-
-            AddReportParameter("TenantName", typeof(string), tenantName ?? "");
-            AddReportParameter("UserName", typeof(string), username ?? "");
-            AddReportParameter("CompanyName", typeof(string), company_Name ?? "");
-            AddReportParameter("CompanyAddress", typeof(string), company_address ?? "");
-            AddReportParameter("CompanyNameAr", typeof(string), Company_Name_Ar ?? "");
-            AddReportParameter("CompanyAddressArb", typeof(string), company_address_arb ?? "");
-
-            Console.WriteLine($"Company Logo: {(logoImage != null ? "Exists" : "Not Provided")}");
-
-            AssignLabelText("xrLabelTenantName", tenantName);
-            AssignLabelText("xrLabelUserName", username);
-
-            AssignLabelText("xrLabelCompanyAddress", company_address);
-            AssignLabelText("xrLabelCompanyNameAr", Company_Name_Ar);
-            AssignLabelText("xrLabelCompanyAddressArb", company_address_arb);
-
-            if (this.FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
-            {
-                logoPictureBox.Image = logoImage;
-            }
-
-            ApplyIconFormatting();
         }
 
         private void ConfigureSqlDataSource(string accountId, DateTime frmDate, DateTime toDate)
         {
-            AddSqlQueryParameters(accountId, frmDate, toDate);
-        }
+            sqlDataSource1.Queries.Clear();
 
-        private void AddSqlQueryParameters(string accountId, DateTime frmDate, DateTime toDate)
-        {
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource1.Queries.Clear();
+                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
 
+                // Use schema from tenant, or default to dbo
                 string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
                 string fullStoredProcName = $"{schemaName}.StProAccountLedger";
-
-                var queryParameter1 = new QueryParameter
-                {
-                    Name = "@ParamAccountNo",
-                    Type = typeof(string),
-                    ValueInfo = accountId ?? "L00567"
-                };
-
-                var queryParameter2 = new QueryParameter
-                {
-                    Name = "@StartDate",
-                    Type = typeof(DateTime),
-                    ValueInfo = (frmDate == DateTime.MinValue ? DateTime.Today : frmDate).ToString("yyyy-MM-dd")
-                };
-
-                var queryParameter3 = new QueryParameter
-                {
-                    Name = "@EndDate",
-                    Type = typeof(DateTime),
-                    ValueInfo = (toDate == DateTime.MinValue ? DateTime.Today : toDate).ToString("yyyy-MM-dd")
-                };
 
                 var storedProcQuery = new StoredProcQuery
                 {
@@ -127,98 +137,210 @@ namespace QD.ERP.Web.Reports
                     StoredProcName = fullStoredProcName
                 };
 
-                storedProcQuery.Parameters.AddRange(new[] { queryParameter1, queryParameter2, queryParameter3 });
+                storedProcQuery.Parameters.AddRange(new[]
+                {
+            new QueryParameter("@ParamAccountNo", typeof(string), accountId),
+            new QueryParameter("@StartDate", typeof(DateTime), frmDate),
+            new QueryParameter("@EndDate", typeof(DateTime), toDate)
+        });
 
                 sqlDataSource1.Queries.Add(storedProcQuery);
                 sqlDataSource1.Name = "sqlDataSource1";
+            }
+            else
+            {
+                throw new Exception("Unable to get tenant context. Please check session and cache.");
+            }
+        }
+        private void LoadCurrencyImage(string accountId, DateTime frmDate, DateTime toDate)
+        {
+            if (string.IsNullOrEmpty(accountId))
+            {
+                SetCurrencyImageNull();
+                return;
+            }
 
-                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+            try
+            {
+                if (_tenantDbContextHelper == null || !_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
 
+                string connectionString = tenant.ConnectionString;
+                string svgText = null;
+
+                using (var connection = new System.Data.SqlClient.SqlConnection(connectionString))
+                {
+                    connection.Open();
+                    using (var command = new System.Data.SqlClient.SqlCommand($"{tenant.schemaname}.StProAccountLedger", connection))
+                    {
+                        command.CommandType = System.Data.CommandType.StoredProcedure;
+                        command.Parameters.AddWithValue("@ParamAccountNo", accountId);
+                        command.Parameters.AddWithValue("@StartDate", frmDate);
+                        command.Parameters.AddWithValue("@EndDate", toDate);
+
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read() && !reader.IsDBNull(reader.GetOrdinal("CurrencyImage")))
+                            {
+                                svgText = reader["CurrencyImage"]?.ToString()?.Trim().TrimStart('\uFEFF');
+                            }
+                        }
+                    }
+                }
+
+                if (string.IsNullOrWhiteSpace(svgText))
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
+
+                Bitmap bitmap = null;
                 try
                 {
-                    sqlDataSource1.Fill();
+                    using (var stream = new MemoryStream(Encoding.UTF8.GetBytes(svgText)))
+                    {
+                        SvgDocument svgDoc = SvgDocument.Open<SvgDocument>(stream);
+                        bitmap = svgDoc.Draw();
+                    }
                 }
-                catch (Exception ex)
+                catch
                 {
-                    throw new Exception("Failed to fill data source: " + ex.Message, ex);
+                    bitmap = null;
                 }
+
+                if (bitmap == null)
+                {
+                    SetCurrencyImageNull();
+                    return;
+                }
+
+                if (FindControl("xrPictureBox2", true) is XRPictureBox pictureBoxDr)
+                {
+                    pictureBoxDr.Image = bitmap;
+                    pictureBoxDr.Sizing = ImageSizeMode.Normal;
+                }
+
+                if (FindControl("xrPictureBox3", true) is XRPictureBox pictureBoxCr)
+                {
+                    pictureBoxCr.Image = bitmap;
+                    pictureBoxCr.Sizing = ImageSizeMode.Normal;
+                }
+
+                //if (FindControl("xrPictureBox4", true) is XRPictureBox pictureBox4)
+                //{
+                //    pictureBox4.Image = bitmap;
+                //    pictureBox4.Sizing = ImageSizeMode.Normal;
+                //}
+
+                //if (FindControl("xrPictureBox5", true) is XRPictureBox pictureBox5)
+                //{
+                //    pictureBox5.Image = bitmap;
+                //    pictureBox5.Sizing = ImageSizeMode.Normal;
+                //}
+
+                //if (FindControl("xrPictureBox6", true) is XRPictureBox pictureBox6)
+                //{
+                //    pictureBox6.Image = bitmap;
+                //    pictureBox6.Sizing = ImageSizeMode.Normal;
+                //}
+
+                // NEW: Align bitmap next to currency fields dynamically
+                AlignCurrencyWithAmount(bitmap);
             }
-            else
+            catch
             {
-                throw new Exception("Unable to get tenant context. Please check session and cache.");
+                SetCurrencyImageNull();
             }
         }
 
-
-        private CustomStringConnectionParameters GetConnectionParameters()
+        private void SetCurrencyImageNull()
         {
-            if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+            string[] pictureBoxNames =
             {
-                if (!string.IsNullOrWhiteSpace(tenant.ConnectionString))
-                {
-                    return new CustomStringConnectionParameters(tenant.ConnectionString);
-                }
-                else
-                {
-                    throw new Exception("Tenant connection string is empty.");
-                }
-            }
-            else
+        "xrPictureBox4", "xrPictureBox5", "xrPictureBox6",
+        "xrPictureBox7", "xrPictureBox8", "xrPictureBox2", "xrPictureBox3"
+    };
+
+            foreach (string name in pictureBoxNames)
             {
-                throw new Exception("Unable to get tenant context. Please check session and cache.");
+                if (FindControl(name, true) is XRPictureBox pictureBox)
+                {
+                    pictureBox.Image = null;
+                    pictureBox.ImageSource = null;
+                }
             }
         }
 
-        private void AssignLabelText(string controlName, string text)
+        // NEW: This method aligns the currency icon next to the matching labels
+        private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            if (this.FindControl(controlName, true) is XRLabel label)
+            var fixedPictureBoxes = new[] { "xrPictureBox2", "xrPictureBox3" };
+            foreach (var name in fixedPictureBoxes)
             {
-                label.Text = text ?? "";
-            }
-        }
-
-        private void ApplyIconFormatting()
-        {
-            List<XRLabel> labelsToModify = new List<XRLabel>();
-
-            foreach (XRControl control in this.AllControls<XRControl>())
-            {
-                if (control is XRLabel label && label.Tag != null && label.Tag.ToString().ToLower() == "showicon")
+                if (FindControl(name, true) is XRPictureBox picBox)
                 {
-                    labelsToModify.Add(label);
+                    picBox.Image = bitmap;
+                    picBox.Sizing = ImageSizeMode.StretchImage;
+                    picBox.WidthF = iconSize;
+                    picBox.HeightF = iconSize;
                 }
             }
+            var pairs = new[]
+   {
+    new { Label = "xrLabel7", Picture = "xrPictureBox4" },
+    new { Label = "xrLabel8", Picture = "xrPictureBox5" },
+    new { Label = "xrLabel11", Picture = "xrPictureBox8" },
+                    new { Label = "xrLabel15", Picture = "xrPictureBox6" },
 
-            foreach (var label in labelsToModify)
+                                    new { Label = "xrLabel18", Picture = "xrPictureBox7" },
+
+
+
+
+};
+
+            foreach (var p in pairs)
             {
-                AddSvgImageNextToLabel(label);
+                var label = FindControl(p.Label, true) as XRLabel;
+                var pictureBox = FindControl(p.Picture, true) as XRPictureBox;
+
+                if (label == null || pictureBox == null)
+                    continue;
+
+                pictureBox.Image = bitmap;
+                pictureBox.Sizing = ImageSizeMode.StretchImage;
+
+                label.BeforePrint += (s, e) =>
+                {
+                    var lbl = (XRLabel)s;
+
+                    using (var g = Graphics.FromImage(new Bitmap(1, 1)))
+                    using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
+                    {
+                        float iconHeight = lbl.Font.Size + 0.2f;// Match icon to font height
+                        float iconWidth = iconHeight;            // Keep square
+
+                        pictureBox.WidthF = iconWidth;
+                        pictureBox.HeightF = iconHeight;
+
+                        float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
+
+                        var format = StringFormat.GenericTypographic;
+                        format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+                        float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
+                        float spaceWidth = g.MeasureString(" ", sysFont).Width;
+
+                        float rightEdge = lbl.LocationF.X + lbl.WidthF;
+                        float posX = rightEdge - textWidth - iconWidth - 5f - spaceWidth;
+
+                        pictureBox.LocationF = new PointF(posX, posY);
+                    }
+                };
             }
-        }
-
-        private void AddSvgImageNextToLabel(XRLabel label)
-        {
-            string webRootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
-            string filePath = Path.Combine(webRootPath, "images", "sar 1.svg");
-
-            SvgImage svg = SvgImage.FromFile(filePath);
-            if (svg == null) return;
-
-            float iconWidth = 15;
-            float iconHeight = 15;
-            float posX = label.LocationF.X - iconWidth - 5;
-            float posY = label.LocationF.Y + (label.HeightF - iconHeight) / 2;
-
-            XRPictureBox iconImage = new XRPictureBox
-            {
-                ImageSource = new ImageSource(svg),
-                Sizing = ImageSizeMode.StretchImage,
-                WidthF = iconWidth,
-                HeightF = iconHeight,
-                LocationF = new PointF(posX, posY),
-                Borders = BorderSide.None
-            };
-
-            label.Parent.Controls.Add(iconImage);
         }
     }
 }

@@ -1,0 +1,246 @@
+﻿@page
+@model QD.ERP.Web.Areas.VAT.Pages.DocumentPurchaseAttachmentModel
+@{
+}
+<style>
+       .dx-fieldset {
+        margin-bottom: 20px;
+    }
+    .dx-datagrid {
+    margin-top: 15px;
+    height: 450px;
+    }
+    .dx-field-container{
+        width:  500px ! important;
+    }
+
+    .dx-field label {
+        width: 200px;
+        font-weight: bold;
+        color: #333;
+        text-align: right;
+        padding-right: 10px;
+    }
+
+    .dx-field {
+        display: flex;
+        align-items: center;
+       margin: 5px;
+       /*  width: 400px ! important ; */
+      /*   height: 100px ! important ; */
+
+    }
+
+
+
+    .dx-fieldset .dx-field-container {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+        /* margin-top: 12px; */
+      
+    }
+
+/*     .dx-editor-outlined    {
+        margin-top: 24px;
+        width: 520px !important; */
+    }
+    .dx-field-container div {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
+        display: none !important;
+    }
+
+    .dx-datagrid {
+        margin-top: 15px;
+    }
+
+    .dx-button {
+        margin-top: 10px;
+        height: 38px;
+        display: flex;
+        align-items: center;
+    }
+    .plus{
+        width:40px;
+    }
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+        background-color: aliceblue;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+    }
+</style>
+<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="8">
+    <tr>
+       
+        <td style="width: 250px;">
+            @(Html.DevExtreme().TextBox()
+            .Label(new JS("formatMessage('Document No:')"))
+                .ID("txtDocumentTitle")
+                .LabelMode(EditorLabelMode.Static)
+            )
+        </td>
+
+       
+      <td style="width: 250px;">
+    <div style="display: flex; gap: 6px; align-items: center;">
+        @(Html.DevExtreme().SelectBox()
+            .ID("ddlDocumentType")
+         @*    .DataSource(new[] { "Invoice", "Purchase Order", "Contract", "Others" }) *@
+            .Placeholder("Select Type")
+            .Label(new JS("formatMessage('Type of Document Attached:')"))
+            .LabelMode(EditorLabelMode.Static)
+        )
+
+        @(Html.DevExtreme().Button()
+            .ID("AddClient")
+            .Icon("plus")
+            .Hint("Add Description")
+            .Width(35)
+            @* .OnClick("showLedgerAccountPopup") *@
+        )
+    </div>
+</td>
+<td style="width: 250px;">
+        @(Html.DevExtreme().DateBox()
+            .ID("docExpiryDate")
+            .Label(new JS("formatMessage('Document Expiry Date:')"))
+            .LabelMode(EditorLabelMode.Static)
+            .Type(DateBoxType.Date)
+            .DisplayFormat("dd-MMM-yyyy")
+            .Value(DateTime.Now)
+        )
+    </td>
+
+    <!-- Hijri Expiry Date Text (static label only) -->
+    <td style="width: 250px;">
+    @(Html.DevExtreme().TextBox()
+        .ID("txtHijriExpiryDate")
+        .Label("Expiry Date: (Hijri) (date–Month–Year)")
+        .LabelMode(EditorLabelMode.Static)
+        .Placeholder("dd-MM-yyyy") // You can customize placeholder format
+        .Value("")
+        .ShowClearButton(true)
+    )
+</td>
+
+
+    <!-- Notification Date -->
+    <td style="width: 250px;">
+        @(Html.DevExtreme().DateBox()
+            .ID("notifyDate")
+            .Label(new JS("formatMessage('Notification Date:')"))
+            .LabelMode(EditorLabelMode.Static)
+            .Type(DateBoxType.Date)
+            .Width(250)
+            .DisplayFormat("dd-MMM-yyyy")
+            .Value(DateTime.Now)
+        )
+    </td>
+
+    <!-- Add Button -->
+    <td>
+     @(Html.DevExtreme().Button()
+                                        .ID("btnAddDoc")
+                                        .Icon("plus")
+                                        .Text(new JS("formatMessage('Add')"))
+                                        .Width(150)
+                                        .StylingMode(ButtonStylingMode.Contained)
+                                        .Type(ButtonType.Normal)
+                                      @*   .ElementAttr("class", "btn-save-custom px-4 py-2") *@
+                                        .OnClick("onAddDoc"))
+</td>
+
+    </tr>
+
+    <tr>
+        <td>
+            @(Html.DevExtreme().TextBox()
+                .ID("txtReferenceNo")
+                .Label(new JS("formatMessage('Reference No:')"))
+                .Value("PUR-23-000010")
+                .LabelMode(EditorLabelMode.Static)
+            )
+        </td>
+      
+   
+    <td>
+        @(Html.DevExtreme().TextArea()
+            .ID("txtRemarks")
+            .Label(new JS("formatMessage('Remarks / Notes')"))
+            .LabelMode(EditorLabelMode.Static)
+            @* .MinHeight(80)
+            .MaxLength(500)
+            .Height(100) *@
+        )
+    </td>
+    <td>
+            @(Html.DevExtreme().Button()
+                .ID("btnAttachDoc")
+                .Icon("attach")
+                .Width(250)
+                .Text(new JS("formatMessage('Attach a Document')"))
+                .StylingMode(ButtonStylingMode.Contained)
+                .Type(ButtonType.Normal)
+                .OnClick("onAttachFile")
+            )
+        </td>
+</tr>
+
+<!-- Info Note Row -->
+@* <tr>
+    <td colspan="4" style="font-size: 12px; color: #555;">
+        <em>* A Notification will be issued to corresponding user at this date.</em>
+    </td>
+</tr> *@
+
+</table>
+
+<!-- Hidden file input -->
+<input type="file" id="fileUploadSingle" style="display: none;" />
+@(Html.DevExtreme().DataGrid()
+    .ID("gridDocuments")
+    .ShowBorders(true)
+    .Paging(p => p.PageSize(10))
+    .Columns(columns => {
+        columns.Add().Caption("Doc No").DataField("DocNo").Width(80);
+        columns.Add().Caption("Document Type").DataField("DocType");
+        columns.Add().Caption("Document Ref No").DataField("RefNo");
+        columns.Add().Caption("Document Remarks").DataField("Remarks");
+        columns.Add().Caption("Expiry On").DataField("ExpiryDate").DataType(GridColumnDataType.Date);
+        columns.Add().Caption("Expiry Alert").DataField("AlertDate").DataType(GridColumnDataType.Date);
+        columns.Add().Caption("Notify On").DataField("NotifyDate").DataType(GridColumnDataType.Date);
+    })
+    .DataSource(new object[] { }) // Replace with real data later
+)
+<script>
+
+  function onAttachFile() {
+            document.getElementById("fileUploadSingle").click();
+        }
+
+        function onAddDoc() {
+            DevExpress.ui.notify("Document added (simulate saving)", "success", 2000);
+            // Here you can push new row to the grid datasource
+        }
+</script>

@@ -1,68 +1,5 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
-        text-align: center !important;
-    }
-
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-        text-align: center !important;
-    }
-    /* Button Styling */
-    .dx-button {
-        background-color: #909ead00 !important;
-        border: 1px solid #d6e4f0 !important;
-        border-radius: 4px !important;
-        padding: 6px 12px !important; /* Reduced button padding */
-        font-size: 14px !important;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
-        transition: all 0.2s ease-in-out !important;
-        height: 39px !important; /* Fixed height */
-    }
-
-        /* Hover Effect for Button */
-        .dx-button:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-            border-color: #86b7fe !important; /* Highlight border */
-        }
-
-    .dx-icon {
-        font-size: 20px !important; /* Adjust size if needed */
-        color: gray !important; /* Adjust color if needed */
-    }
-
-    .dx-button-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .dx-dropdownbutton .dx-button-content {
-        padding: 0 !important;
-    }
-
-    /* .modalTitle{ */
-    /*     display:none; */
-    /* } */
-    .horizontal-container {
-        display: flex;
-        gap: 10px; /* Adds spacing between buttons */
-        justify-content: start; /* Aligns buttons to the left */
-        align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
-    }
-
-    .button-alignment-down {
-        margin-top: 23px;
-    }
-
-    .button-group {
-        margin-left: 1px !important;
-    }
-
-    .dx-datagrid .dx-row {
-        margin-bottom: 50px;
-    }
     /* Custom styles for context menu */
     .context-menu {
         display: none;
@@ -305,54 +242,7 @@
 
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:3px">
 
-    <div class="btn-containers">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-
-                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
-
-               // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
-
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
-
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveDown")
-            .Text(new JS("formatMessage('Move Down')"))
-            .Type(ButtonType.Normal)
-            .Width(40)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("arrowdown") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveUp")
-            .Text(new JS("formatMessage('Move Up')"))
-            .Type(ButtonType.Normal)
-            .Width(40)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("arrowup") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
-
+   
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
@@ -360,7 +250,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
             )
 
@@ -377,19 +267,30 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
             )
     </div>
     <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddNew")
-            .Text(new JS("formatMessage('Add New Item')"))
 
-            .Icon("plus")
-            // .OnClick("addNewRow") // Attach function
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                                   // .OnClick("onBackButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
     </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnAttach")
+                .Text(new JS("formatMessage('Attach')"))
+                .Width(120)
+                .Icon("link")
+                              //.OnClick("onAttachButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+  
  
 
     <div class="btn-containers">
@@ -397,6 +298,7 @@
             .ID("btnPrint1")
             .Text(new JS("formatMessage('Print')"))
             .Icon("print")
+            .Width(120)
             .ElementAttr(new { @class = "bold-button" })
             .DropDownOptions(options => options.Width(230))
             .ShowArrowIcon(false)
@@ -418,29 +320,13 @@
             .OnItemClick("addPrintButton_click")
             )
     </div>
-    
-   
-
-
-    <div class="btn-containers">
-
-        @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            // .OnClick("onBackButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-   
-  
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnVerify")
             .Text(new JS("formatMessage('Verify')"))
             .Icon("check")
             // .OnClick("onVerifyButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "dx-button-custom btn-verify" })
 
             )
     </div>
@@ -450,19 +336,19 @@
             .Text(new JS("formatMessage('Approve')"))
             .Icon("exportselected")
             //   .OnClick("onApproveButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .ElementAttr(new { @class = "dx-button-custom btn-approve" })
             )
     </div>
-  
+
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
-            .ID("btnAttach")
-            .Text(new JS("formatMessage('Attach')"))
-            .Width(40)
-            .Icon("link")
-            //.OnClick("onAttachButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
+                .ID("btnAddNew")
+                .Text(new JS("formatMessage('Add New Item')"))
+
+                .Icon("plus")
+                              // .OnClick("addNewRow") // Attach function
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                )
     </div>
 
     <div class="btn-containers">
@@ -482,6 +368,53 @@
             //.OnClick("onAttachButtonClick")
             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
             )
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width("100%")
+                .Text(new JS("formatMessage('Layout')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+
+                    // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
+
+                    // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
+
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
+
+
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnMoveDown")
+                .Text(new JS("formatMessage('Move Down')"))
+                .Type(ButtonType.Normal)
+                .Width(40)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("arrowdown") // Change the icon to an up/down arrow option
+                .ElementAttr(new { @class = "bold-button" })
+                )
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+                .ID("btnMoveUp")
+                .Text(new JS("formatMessage('Move Up')"))
+                .Type(ButtonType.Normal)
+                .Width(40)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("arrowup") // Change the icon to an up/down arrow option
+                .ElementAttr(new { @class = "bold-button" })
+                )
     </div>
 
     <!-- Hidden anchor for submenu positioning -->

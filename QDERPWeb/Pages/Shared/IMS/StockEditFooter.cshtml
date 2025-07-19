@@ -1,7 +1,4 @@
-﻿
-
-
-<style type="text/css">
+﻿<style type="text/css">
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
     }
@@ -74,6 +71,49 @@
 <div class="dx-fieldset horizontal-container mt-2">
    
     <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnSave")
+            .Text(new JS("formatMessage('Save')"))
+            .Icon("save")
+            .Hint("Click to save")
+           .ElementAttr(new { @class = "dx-button-custom btn-save" })
+            .OnClick("onSaveClicked") // Bind JS function here
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnSaveAndClose")
+            .Icon("save")
+            .Text(new JS("formatMessage('Save And Close')"))
+            .Hint("Save and Close")
+            .Width(180)
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+            .OnClick("onSaveAndCloseClicked") // Save and go back
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnBack")
+            .Text(new JS("formatMessage('Back')"))
+            .Icon("arrowleft")
+            .Hint("Click to go back")
+            .Width(150)
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                .OnClick("onBackButtonClick")
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnDelete")
+            .Icon("trash")
+            .Text(new JS("formatMessage('Delete')"))
+            .Hint("Delete")
+            .Width(150)
+                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
+            .OnClick("onDeleteClick")  // <-- Call JS function here
+            )
+    </div>
+    <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
@@ -145,58 +185,6 @@
             .ShowArrowIcon(false)
     )
 </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSave")
-            .Text(new JS("formatMessage('Save')"))
-            .Icon("save")
-            .Hint("Click to save")
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onSaveClicked") // Bind JS function here
-            )
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSaveAndClose")
-            .Icon("save")
-            .Text(new JS("formatMessage('Save And Close')"))
-            .Hint("Save and Close")
-            .Width(180)
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onSaveAndCloseClicked") // Save and go back
-            )
-    </div>
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnDelete")
-            .Icon("trash")
-            .Text(new JS("formatMessage('Delete')"))
-            .Hint("Delete")
-            .Width(150)
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onDeleteClick")  // <-- Call JS function here
-            )
-    </div>
-
-
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            .Hint("Click to go back")
-            .Width(150)
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("onBackButtonClick")
-            )
-    </div>
-
-
-
-
-
 </div>
 <script type="text/javascript">
 
@@ -407,10 +395,10 @@
  
 
     function ChangeRowHeight(newHeight) {
-        // Update the row height
-        $("#dataGrid .dx-data-row").css("height", newHeight + "px");
-        closeSubmenu();
+    $("#PurchaseGrid .dx-data-row, #stockCardGrid .dx-data-row, #invoiceGrid .dx-data-row, #quotationGrid .dx-data-row, #PurchaseOrderGrid .dx-data-row, #ItemDeliversGrid .dx-data-row, #ItemReceivedGrid .dx-data-row, #UnitConversionGrid .dx-data-row, #documentGrid .dx-data-row")
+    .css("height", newHeight + "px");
     }
+
     function showSubmenu(e) {
         e.event.stopPropagation();
         var $submenu = $('#submenuContainer');

@@ -228,7 +228,6 @@
         }
 
         * {
-            /* font-family: var(--Font-family-Base, 'Inter', sans-serif); /* Font family */ */ font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif !important;
             font-size: var(--Font-size-300, 12px); /* Font size */
             font-style: normal; /* Font style */
             font-weight: 500; /* Font weight */
@@ -238,22 +237,22 @@
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-list-item-selected {
-            background-color: var(--title-background-color);
+            background-color: var(--background-color);
             color: #fff;
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused.dx-list-item-selected {
-            background-color: var(--title-background-color);
+            background-color: var(--background-color);
             color: #fff;
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
-            background-color: var(--title-background-color);
+            background-color: var(--background-color);
             color: #fff;
         }
 
         :root {
-            font-family: 'Manrope', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            font-family: 'Arial';
             --highlight-color: var(--hover-bg-color);
             --text-color: #525252;
             --hover-bg-color: var(--hover-bg-color);
@@ -335,6 +334,14 @@
         }
 
         .color-btn {
+            width: 24px;
+            height: 24px;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .color-btn1 {
             width: 24px;
             height: 24px;
             border: none;
@@ -681,7 +688,7 @@
             display: flex;
             align-items: center;
             padding: 10px 10px;
-            gap: 16px;
+            /* gap: 16px; */
             cursor: pointer;
             transition: background-color 0.3s ease;
             border-bottom: 1px solid #ddd;
@@ -807,7 +814,7 @@
             right: 2%;
             width: 300px;
             background-color: white;
-            z-index: 9999;
+            z-index: 999;
             border-radius: 8px;
             padding: 10px;
             border:1px solid #ddd;
@@ -1330,6 +1337,8 @@
             padding-bottom: 15px;
             padding-left: 10px;
         }
+
+      
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1339,6 +1348,17 @@
 </head>
 <body>
     <!-- Modal Structure -->
+    <!-- Toast Modal -->
+    <div id="toastModal" style="display: block; position: fixed; top: 20px; right: 20px; z-index: 9999;">
+        <div id="toastModalContent" class="toast toast-success">
+            <div class="toast-icon" id="toastIcon">✔️</div>
+            <div class="toast-content">
+                <strong id="toastTitle">Success</strong><br>
+                <span id="toastMessage">This is a toast modal message</span>
+            </div>
+            <div class="toast-close" onclick="hideToastModal()">&times;</div>
+        </div>
+    </div>
 
     <div id="customModal" class="modal">
         <div class="modal-content">
@@ -1563,82 +1583,153 @@
 
         <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccounts" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccounts"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (With Narration)')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountsWithNarration" class="no-border-input"></span>
+                
+                <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts (With Narration)')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccountsWithNarration"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format)')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountsExportFormat" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleClick('AccountDetails')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccountsWithDetails"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format2)')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountsExportFormat2" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format)')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccountsExportFormat"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('AccountDetails')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountsWithDetails" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Account Export Format(Landscape)')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccountExportFormatLandscape"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountOrderByVoucherNoWithNarration" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format2)')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccountsExportFormat2"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Account Ledger - Statement of Account Export Format(Landscape)')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountExportFormatLandscape" class="no-border-input"></span>
+
+                
+
+                <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccountOrderByVoucherNoWithoutNarration"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('AccountOrderByVoucherNo')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="StatementOfAccountOrderByVoucherNo" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('AccountOrderByVoucherNo')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="StatementOfAccountOrderByVoucherNo"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('AccountDebtors')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="AccountDebtors" class="no-border-input"></span>
+                
+
+
+                <div class="custom-dropdown-item" onclick="handleClick('AccountDebtors')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="AccountDebtors"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('AccountConfirmationLetter')">
-                    <i class="fa fa-th-list"></i>
-                    <span id="AccountConfirmationLetter" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('AccountConfirmationLetter')">
+                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-th-list"></i>
+                        <div class="item-title no-border-input" id="AccountConfirmationLetter"></div>
+                    </div>
                 </div>
             </div>
         </div>
 
         <div id="submenuContainer5" class="context-menu" style="display:none; width:300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleClick('BillsReceivableAll')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsReceivableAll" class="no-border-input"></span>
+                
+                <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableAll')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsReceivableAll"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableByAccount')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsReceivableByAccount" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableByAccount')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsReceivableByAccount"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableAgeingToday')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsReceivableAgeingToday" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableAgeingToday')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsReceivableAgeingToday"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Report4')">
-                    <i class="fa fa-file"></i>
-                    <span id="Report4" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('Report4')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="Report4"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableRentation')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsReceivableRentation" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableRentation')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsReceivableRentation"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivablelandscapeformat')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsReceivablelandscapeformat" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('BillsReceivablelandscapeformat')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsReceivablelandscapeformat"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableLedgerBalance')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsReceivableLedgerBalance" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableLedgerBalance')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsReceivableLedgerBalance"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsReceivableFormat')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsReceivableFormat" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableFormat')">
+                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsReceivableFormat"></div>
+                    </div>
                 </div>
 
             </div>
@@ -1647,82 +1738,134 @@
 
         <div id="submenuContainer6" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleClick('rpt201BillsPayable')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesWithReferenceNo" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleClick('rpt201BillsPayable')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesWithReferenceNo"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('rpt201BillsPayableWithVchNo')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesWithVoucherNo" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('rpt201BillsPayableWithVchNo')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesWithVoucherNo"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('AgeingToday')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesAgeingasonToday" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('AgeingToday')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesAgeingasonToday"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('EndDate')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesAgeingasonEndDate" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('EndDate')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesAgeingasonEndDate"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('payableRetention')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesWithRetention" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('payableRetention')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesWithRetention"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Payablelandscape')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesLandscapeFormat" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('Payablelandscape')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesLandscapeFormat"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('Balance')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesAgeingasperLedgerBalance" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('Balance')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesAgeingasperLedgerBalance"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleClick('BillsPayablePaid')">
-                    <i class="fa fa-file"></i>
-                    <span id="BillsPayablesAllIncludingPaid" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleClick('BillsPayablePaid')">
+                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="BillsPayablesAllIncludingPaid"></div>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="submenuContainer7" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleCstReportClick('CostAllocationReport')">
-                    <i class="fa fa-file"></i>
-                    <span id="CostAllocationReportDetailed" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleCstReportClick('CostAllocationReport')">
+                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="CostAllocationReportDetailed"></div>
+                    </div>
                 </div>
 
-                <div class="submenu-item" onclick="handleCstReportClick('CostAllocationDetailedReport')">
-                    <i class="fa fa-file"></i>
-                    <span id="CostAllocationReportSummary" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleCstReportClick('CostAllocationDetailedReport')">
+                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="CostAllocationReportSummary"></div>
+                    </div>
                 </div>
 
-                <div class="submenu-item" onclick="handleCstReportClick('EmpReport')">
-                    <i class="fa fa-file"></i>
-                    <span id="EmployeeAllocationReportDetailed" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleCstReportClick('EmpReport')">
+                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="EmployeeAllocationReportDetailed"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleCstReportClick('EmpSummaryReport')">
-                    <i class="fa fa-file"></i>
-                    <span id="EmployeeAllocationReportSummary" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleCstReportClick('EmpSummaryReport')">
+                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="EmployeeAllocationReportSummary"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleCstReportClick('PropertAllocationReport')">
-                    <i class="fa fa-file"></i>
-                    <span id="PropertyCostAllocationReportDetailed" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleCstReportClick('PropertAllocationReport')">
+                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="PropertyCostAllocationReportDetailed"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleCstReportClick('EmpSummaryReport')">
-                    <i class="fa fa-file"></i>
-                    <span id="PropertyCostAllocationReportSummary" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleCstReportClick('EmpSummaryReport')">
+                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="PropertyCostAllocationReportSummary"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div id="submenuContainer8" class="context-menu" style="display: none; width: 300px;">
+        <div id="submenuContainer8" class="context-menu" style="display: none;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleVATClick('TaxSummaryReport')">
-                    <span class="no-border-input">Tax Summary Report</span>
+                    <span id="TaxSummaryReport" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleVATClick('TaxVATReport')">
-                    <span class="no-border-input">Tax Report (Revenue Classified)</span>
+                    <span id="TaxVATReport" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleVATClick('TaxReportRevenueInArabic')">
-                    <span class="no-border-input">Tax Report (Revenue Classified) in Arabic</span>
+                    <span id="TaxReportRevenueInArabic" class="no-border-input"></span>
                 </div>
             </div>
         </div>
@@ -1774,10 +1917,10 @@
         <div id="submenuContainer9" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="stockInventoryReport()">
-                    <span class="no-border-input">Stock Inventory Report</span>
+                    <span id="stockInventoryReport" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="cogsposting()">
-                    <span class="no-border-input">COGS Posting</span>
+                    <span id="cogsposting" class="no-border-input"></span>
                 </div>
 
 
@@ -1818,6 +1961,10 @@
             <div class="popup-content">
                 <!-- Add settings content here -->
                 <p id="settingMessage1"></p>
+                <button class="color-btn1" style="background: green;" onclick="showToastModal('success', 'Success!', 'Data saved successfully')"></button>
+                <button class="color-btn1" style="background: red;" onclick="showToastModal('error', 'Oops!', 'Something went wrong')"></button>
+                <button class="color-btn1" style="background: orange;" onclick="showToastModal('warning', 'Warning!', 'Check your input')"></button>
+                <button class="color-btn1" style="background: blue;" onclick="showToastModal('info', 'FYI', 'Here is some info')"></button>
                 <div class="switcher-section">
                     <h3 id="settingMessage2"></h3>
                     <button class="color-btn" style="background: #FFDDC1;" onclick="applyTheme('light-orange')"></button>
@@ -2203,8 +2350,6 @@
                         width:400,
                         readOnly: true
                     });
-
-
                 });
                 $(function () {
                     $("#StatementOfAccounts").dxTextBox({
@@ -2233,7 +2378,7 @@
                         readOnly: true
                     });
                     $("#StatementOfAccountOrderByVoucherNoWithoutNarration").dxTextBox({
-                        text: formatMessage("Statement of Account Order By VocuherNo (Without Narration)"),
+                        text: formatMessage("Statement of Account Order By VocuherNo (W/O Narration)"),
                         width:410,
                         readOnly: true
                     });
@@ -2383,6 +2528,40 @@
 
                     });
                 });
+
+                 $(function () {
+                   $("#TaxSummaryReport").dxTextBox({
+                   text: formatMessage("Tax Summary Report"),
+                   width:400,
+                   readOnly: true
+                 });
+       
+                  $("#TaxVATReport").dxTextBox({
+                  text: formatMessage("Tax Report (Revenue Classified)"),
+                  width:400,
+                  readOnly: true
+                 });
+       
+                  $("#TaxReportRevenueInArabic").dxTextBox({
+                  text: formatMessage("Tax Report (Revenue Classified) in Arabic"),
+                  width:400,
+                  readOnly: true
+                 });
+               });
+                $(function () {
+                   $("#stockInventoryReport").dxTextBox({
+                   text: formatMessage("Stock Inventory Report"),
+                   width:400,
+                   readOnly: true
+                 });
+                   $("#cogsposting").dxTextBox({
+                   text: formatMessage("COGS Posting"),
+                   width:400,
+                   readOnly: true
+                 });
+               });
+
+
                 $(function () {
                     $("#Short").dxTextBox({
                         text: formatMessage("Short"),
@@ -3929,6 +4108,7 @@
 
 
                 function handleVATClick(selectedText) {
+                       $('#submenuContainer8').hide();
                     console.log("handleVATClick triggered with:", selectedText);
 
                     try {
@@ -4161,6 +4341,15 @@
                     highlightCaseSensitive: false
                 });
             }
+        });
+
+                $(function () {
+            $(".dx-datebox").each(function () {
+                var instance = $(this).dxDateBox("instance");
+                if (instance) {
+                    instance.option("showClearButton", true);
+                }
+            });
         });
 
     </script>

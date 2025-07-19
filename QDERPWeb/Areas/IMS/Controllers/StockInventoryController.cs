@@ -30,45 +30,45 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             _configuration = configuration;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, string filterType = null)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                try
-                {
-                    var query = dbContext.Qry60001inventoryStockViews.Select(i => new
-                    {
-                        i.Gscode,
-                        i.Gsdescrpition,
-                        i.GsgroupName,
-                        i.ItemPartNo,
-                        i.ClosingBalance,
-                        i.TotalReceived,
-                        i.TotalIssues,
-                        i.GssellingRate,
-                        i.UnitType,
-                        i.ReorderLevel,
-                        i.ReorderQty,
-                        i.CostPrice,
-                        i.IsDiscontinued
+        //[HttpGet]
+        //public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, string filterType = null)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+        //            var query = dbContext.Qry60001inventoryStockViews.Select(i => new
+        //            {
+        //                i.Gscode,
+        //                i.Gsdescrpition,
+        //                i.GsgroupName,
+        //                i.ItemPartNo,
+        //                i.ClosingBalance,
+        //                i.TotalReceived,
+        //                i.TotalIssues,
+        //                i.GssellingRate,
+        //                i.UnitType,
+        //                i.ReorderLevel,
+        //                i.ReorderQty,
+        //                i.CostPrice,
+        //                i.IsDiscontinued
 
-                    });
+        //            });
 
 
 
-                    var result = await DataSourceLoader.LoadAsync(query, loadOptions);
-                    return Json(result);
-                }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in Get: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
-                }
-            }
+        //            var result = await DataSourceLoader.LoadAsync(query, loadOptions);
+        //            return Json(result);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError($"Error in Get: {ex.Message}");
+        //            return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
+        //        }
+        //    }
 
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
-        }
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //}
         [HttpGet]
         public IActionResult GetStockGroups(DataSourceLoadOptions loadOptions)
         {
@@ -476,72 +476,118 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             public string StoreName { get; set; }
             public string CostAllocationUnitId { get; set; }
         }
+        //[HttpPost]
+        //public IActionResult AddStore([FromBody] StoreMasterInputModel model)
+        //{
+        //    try
+        //    {
+        //        if (string.IsNullOrWhiteSpace(model.StoreId) || string.IsNullOrWhiteSpace(model.StoreName) || string.IsNullOrWhiteSpace(model.CostAllocationUnitId))
+        //        {
+        //            return BadRequest(new { message = "All fields are required." });
+        //        }
+
+        //        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            return Unauthorized(new { message = "Invalid tenant." });
+        //        }
+
+        //        var newStore = new Tbl60001storeMaster
+        //        {
+        //            StoreId = model.StoreId,
+        //            StoreName = model.StoreName,
+        //            CostAllocationUnitId = model.CostAllocationUnitId,
+        //            LedgerNo = null
+        //        };
+
+        //        dbContext.Tbl60001storeMasters.Add(newStore);
+        //        dbContext.SaveChanges();
+
+        //        return Ok(new { message = "Store saved successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "AddStore failed");
+        //        return StatusCode(500, new { message = "An unexpected error occurred. Please try again later.", detailed = ex.Message });
+        //    }
+        //}
+        //public class StoreUpdateDto
+        //{
+        //    public string Key { get; set; }
+        //    public string Values { get; set; } // Will be a JSON string
+        //}
+
+        //[HttpPut]
+        //public IActionResult UpdateStore([FromForm] StoreUpdateDto updateDto)
+        //{
+        //    try
+        //    {
+        //        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //            return Unauthorized(new { message = "Invalid tenant." });
+
+        //        var key = updateDto.Key;
+        //        var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(updateDto.Values);
+
+        //        var existingStore = dbContext.Tbl60001storeMasters.FirstOrDefault(s => s.StoreId == key);
+        //        if (existingStore == null)
+        //            return NotFound(new { message = "Store not found." });
+
+        //        var jsonValues = JsonConvert.SerializeObject(values);
+        //        JsonConvert.PopulateObject(jsonValues, existingStore);
+
+        //        dbContext.SaveChanges();
+        //        return Ok(new { message = "Store updated successfully." });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        _logger.LogError(ex, "UpdateStore failed");
+        //        return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
+        //    }
+        //}
         [HttpPost]
-        public IActionResult AddStore([FromBody] StoreMasterInputModel model)
+        public async Task<IActionResult> SaveOrUpdateStore([FromBody] Tbl60001storeMaster model)
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                if (string.IsNullOrWhiteSpace(model.StoreId) || string.IsNullOrWhiteSpace(model.StoreName) || string.IsNullOrWhiteSpace(model.CostAllocationUnitId))
+                try
                 {
-                    return BadRequest(new { message = "All fields are required." });
+                    bool isDuplicate = await dbContext.Tbl60001storeMasters
+               .AnyAsync(x => x.StoreName == model.StoreName && x.StoreId != model.StoreId);
+
+                    if (isDuplicate)
+                    {
+                        return BadRequest(new { success = false, message = "This Store Name already exists." });
+                    }
+
+                    var existingRecord = await dbContext.Tbl60001storeMasters
+                        .FirstOrDefaultAsync(x => x.StoreId == model.StoreId);
+
+                    if (existingRecord != null)
+                    {
+                        existingRecord.StoreId = model.StoreId;
+                        existingRecord.StoreName = model.StoreName;
+                        existingRecord.CostAllocationUnitId = model.CostAllocationUnitId;
+
+                        await dbContext.SaveChangesAsync();
+
+                        return Ok(new { success = true, message = "Updated successfully", id = model.StoreId });
+                    }
+                    else
+                    {
+                        // ➕ ADD logic (no auto-ID generation here)
+                        dbContext.Tbl60001storeMasters.Add(model);
+                        await dbContext.SaveChangesAsync();
+
+                        return Ok(new { success = true, message = "Saved successfully", id = model.StoreId });
+                    }
                 }
-
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                catch (Exception ex)
                 {
-                    return Unauthorized(new { message = "Invalid tenant." });
+                    _logger.LogError($"Error in SaveOrUpdateStore: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
                 }
-
-                var newStore = new Tbl60001storeMaster
-                {
-                    StoreId = model.StoreId,
-                    StoreName = model.StoreName,
-                    CostAllocationUnitId = model.CostAllocationUnitId,
-                    LedgerNo = null
-                };
-
-                dbContext.Tbl60001storeMasters.Add(newStore);
-                dbContext.SaveChanges();
-
-                return Ok(new { message = "Store saved successfully." });
             }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "AddStore failed");
-                return StatusCode(500, new { message = "An unexpected error occurred. Please try again later.", detailed = ex.Message });
-            }
-        }
-        public class StoreUpdateDto
-        {
-            public string Key { get; set; }
-            public string Values { get; set; } // Will be a JSON string
-        }
 
-        [HttpPut]
-        public IActionResult UpdateStore([FromForm] StoreUpdateDto updateDto)
-        {
-            try
-            {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { message = "Invalid tenant." });
-
-                var key = updateDto.Key;
-                var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(updateDto.Values);
-
-                var existingStore = dbContext.Tbl60001storeMasters.FirstOrDefault(s => s.StoreId == key);
-                if (existingStore == null)
-                    return NotFound(new { message = "Store not found." });
-
-                var jsonValues = JsonConvert.SerializeObject(values);
-                JsonConvert.PopulateObject(jsonValues, existingStore);
-
-                dbContext.SaveChanges();
-                return Ok(new { message = "Store updated successfully." });
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "UpdateStore failed");
-                return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
-            }
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
 
 
@@ -1655,7 +1701,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.Transactions,
                         i.Gscode,
                         i.Gsdescrpition,
-                        i.UnitRateMethod,
+                        i.UnitDesc,
                         i.StockReceivedQty,
                         i.GsgroupName,
                         i.TransactionTotal,
@@ -1709,6 +1755,216 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
             }
         }
-        
+        [HttpDelete]
+        public IActionResult DeleteStock(int key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl20165GoodsAndServicesGroups.FirstOrDefault(x => x.GsgroupId == key);
+                    if (record == null)
+                        return NotFound();
+
+                    dbContext.Tbl20165GoodsAndServicesGroups.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+        }
+        [HttpGet] 
+        public async Task<IActionResult> GetInventoryMasterGroup()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var CostCenter = await dbContext.Tbl60008inventoryMasterGroups
+                       .Select(i => new
+                       {
+                           i.InventoryMasterGroupId,
+                           i.InventoryMasterGroup
+                         
+                       })
+                        .ToListAsync();
+
+                    return Json(CostCenter); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetStockGroupNames(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry60001inventoryStockViews
+                        .Where(i => !string.IsNullOrEmpty(i.GsgroupName))
+                        .GroupBy(i => new { i.GsgroupId, i.GsgroupName })
+                        .Select(g => new
+                        {
+                            g.Key.GsgroupId,
+                            g.Key.GsgroupName
+                        });
+
+                    return Json(await DataSourceLoader.LoadAsync(query, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetStockGroupNames: {ex.Message}");
+                    return StatusCode(500, new { message = "Error loading stock group names", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInventory(DataSourceLoadOptions loadOptions, int? gsgroupId = null)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var query = dbContext.Qry60001inventoryStockViews.AsQueryable();
+
+                    if (gsgroupId.HasValue)
+                    {
+                        query = query.Where(i => i.GsgroupId == gsgroupId);
+                    }
+
+                    var result = await DataSourceLoader.LoadAsync(query.Select(i => new
+                    {
+                        i.Gscode,
+                        i.Gsdescrpition,
+                        i.GsgroupName,
+                        i.ItemPartNo,
+                        i.ClosingBalance,
+                        i.TotalReceived,
+                        i.TotalIssues,
+                        i.GssellingRate,
+                        i.UnitType,
+                        i.ReorderLevel,
+                        i.ReorderQty,
+                        i.CostPrice,
+                        i.IsDiscontinued
+                    }), loadOptions);
+
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetInventory: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while processing the request.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpDelete]
+        public IActionResult Delete1(string key)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var record = dbContext.Tbl60001storeMasters.FirstOrDefault(x => x.StoreId == key);
+                    if (record == null)
+                        return NotFound();
+
+
+                    dbContext.Tbl60001storeMasters.Remove(record);
+                    dbContext.SaveChanges();
+                    return Ok();
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in Delete: {ex}");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public IActionResult GetStockMasterGroups(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Tbl60008inventoryMasterGroups
+                        .Select(x => new
+                        {
+                            x.InventoryMasterGroupId,
+                            x.InventoryMasterGroup
+                           
+                        });
+
+                    return Json(DataSourceLoader.Load(query, loadOptions));
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateStockGroup([FromBody] Tbl20165GoodsAndServicesGroup model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existingRecord = await dbContext.Tbl20165GoodsAndServicesGroups
+                        .FirstOrDefaultAsync(x => x.GsgroupId == model.GsgroupId);
+
+                    if (existingRecord == null)
+                        return NotFound(new { success = false, message = "Stock Group not found." });
+
+                    // ✅ Update fields
+                    existingRecord.GsgroupCode = model.GsgroupCode;
+                    existingRecord.Gscategory = model.Gscategory;
+                    existingRecord.InventoryMasterGroupId = model.InventoryMasterGroupId;
+                    existingRecord.GsgroupInventoryLedger = model.GsgroupInventoryLedger;
+                    existingRecord.GsgroupExpenseLedger = model.GsgroupExpenseLedger;
+                    existingRecord.IsServicesGroup = model.IsServicesGroup;
+                    existingRecord.GsgroupName = model.GsgroupName;
+                    existingRecord.GsgroupNameAr = model.GsgroupNameAr;
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateStockGroup: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
+        }
+
     }
 }

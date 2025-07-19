@@ -239,12 +239,15 @@
 
 	
 </style>
-<meta charset="UTF-8">
-<div class="title">
-	<div class="header-container">
-		<div id="MaterialReceipts" class="no-border-input"></div>
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="MaterialReceipts" class="titleText no-border-title"></div>
 	</div>
 </div>
+
 <div class="form-container">
 	<div class="form-container">
 		<!-- Tab Menu -->
@@ -827,7 +830,7 @@
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
-		.Height(600)
+		.Height("65vh")
 		.ColumnAutoWidth(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -1145,8 +1148,9 @@
 																})
 																)
 }
+<div class="footer-fixed">
 @await Html.PartialAsync("/Pages/Shared/IMS/MaterialReceiptFormFooter.cshtml")
-
+</div>
 <script>
 
 	function onOpened(e) {
@@ -5926,7 +5930,7 @@ $("#btnBack").on("click", function (e) {
 	text: formatMessage("Material Receipts"),
 		readOnly: true,
 		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
+			$(e.element).addClass("dx-textcolor-heading");
 		}
 		});
 	});

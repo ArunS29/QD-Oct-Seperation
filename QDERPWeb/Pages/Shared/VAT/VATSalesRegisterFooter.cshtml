@@ -1,12 +1,6 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
-    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
-        text-align: center !important;
-    }
-
-    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-        text-align: center !important;
-    }
+    
     /* Button Styling */
     .dx-button {
         background-color: #909ead00 !important;
@@ -60,9 +54,7 @@
         margin-left: 1px !important;
     }
 
-    .dx-datagrid .dx-row {
-        margin-bottom: 50px;
-    }
+    
     /* Custom styles for context menu */
     .context-menu {
         display: none;
@@ -88,88 +80,6 @@
         left: 300px; /* Adjust positioning as per your design */
         display: none; /* Keep it hidden until needed */
     }
-
-
-    .btn-container {
-        display: inline-block;
-        position: relative;
-        overflow: hidden;
-    }
-
-        /* Initially hide the button text and set a fixed small width */
-        .btn-container .dx-button {
-            width: 40px !important; /* Small width for icons */
-            transition: width 0.3s ease-in-out;
-        }
-
-
-        /* Show full text when hovered */
-        .btn-container:hover .dx-button {
-            width: 200px !important; /* Expand to fit text */
-        }
-
-        /* Initially hide text */
-        .btn-container .dx-button .dx-button-text {
-            display: none;
-        }
-
-        /* Show text on hover */
-        .btn-container:hover .dx-button .dx-button-text {
-            display: inline-block;
-        }
-
-        /* Ensure dropdown button behaves similarly */
-        .btn-container .dx-dropdownbutton {
-            width: 55px !important;
-            transition: width 0.3s ease-in-out;
-        }
-
-        .btn-container:hover .dx-dropdownbutton {
-            width: 180px !important; /* Adjust as needed */
-        }
-
-        .btn-container .dx-dropdownbutton .dx-button-text {
-            display: none;
-        }
-
-        .btn-container:hover .dx-dropdownbutton .dx-button-text {
-            display: inline-block;
-        }
-
-
-        .btn-container .dx-button {
-            width: 40px !important; /* Small width for just the icon */
-            transition: width 0.3s ease-in-out;
-            overflow: hidden;
-            padding-left: 0 !important;
-            padding-right: 0 !important;
-            text-align: center;
-        }
-
-        /* On hover, expand the button */
-
-        .btn-container:hover .dx-button {
-            width: 200px !important;
-        }
-
-        /* Keep the icon always visible */
-
-        .btn-container .dx-button .dx-icon {
-            display: inline-block !important;
-        }
-
-        /* Initially hide text */
-
-        .btn-container .dx-button .dx-button-text {
-            display: none;
-        }
-
-    /* Show text on hover */
-    .btn-containerIvoiceEdit:hover .dx-button .dx-button-text {
-        display: inline-block;
-        margin-left: 8px; /* optional spacing between icon and text */
-    }
-
 
     .modal-content {
         position: absolute;
@@ -239,7 +149,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonLayout")
             .Icon("smalliconslayout")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Layout')"))
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
@@ -262,7 +172,7 @@
         @(Html.DevExtreme().DropDownButton()
     .ID("rowHeightProperties")
     .Icon("") // fallback to standard icon if "rowproperties" not working
-    .Width(50)
+    .Width("100%")
     .Text(new JS("formatMessage('Set Row Height')"))
     .DropDownOptions(options => options.Width(230))
     .Items(items =>
@@ -314,56 +224,13 @@
     .ShowArrowIcon(false)
 )
     </div>
-   @*  <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-           
-            .Text(new JS("formatMessage('Layout')"))
-           
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            { *@
-                @* items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu"); *@
-               @*  items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div> *@
-   
-@*     <div class="btn-containerIvoiceEdit">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-
-                // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div> *@
-
- 
-
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnPrint")
             .Icon("print")
             .Text(new JS("formatMessage('Print')"))
             .ElementAttr(new { style = "display: none;" })
-            .Width(50)
+            .Width("100%")
             .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
             )
     </div>
@@ -375,7 +242,7 @@
             .Icon("search")
             .Text(new JS("formatMessage('Search')"))
             .ElementAttr(new { style = "display: none;" })
-            .Width(50)
+            .Width("100%")
             .OnClick("toggleFilterRow")
             )
     </div>
@@ -385,7 +252,7 @@
         @(Html.DevExtreme().Button()
             .ID("btntoggleGroupPanel")
             .Icon("hierarchy")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Group')"))
             .ElementAttr(new { style = "display: none;" })
             .OnClick("toggleGroupPanel")
@@ -396,7 +263,7 @@
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
             .Icon("columnchooser")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Column Chooser')"))
             .ElementAttr(new { style = "display: none;" })
             .OnClick("showColumnChooser")
@@ -442,7 +309,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReports")
             .Icon("mergecells")
-            .Width(50)
+            .Width("100%")
             .Text(new JS("formatMessage('Report')"))
             .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(230))
@@ -819,41 +686,79 @@
         }
         function showSubmenu8(e) {
             e.event.stopPropagation();
-            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            hideAllSubmenus(); // Hide others first
+
             var $submenu = $('#submenuContainer8');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
-            var submenuWidth = $submenu.outerWidth();
 
-            // Calculate left-side positioning
-                var leftPos = offset.left - submenuWidth - 533;
+            // Always position to the right of the button
+            const submenuWidth = 273;
+            const topPos = offset.top + $target.outerHeight() + 5;
+            const leftPos = offset.left + $target.outerWidth() + 10;
 
-            // Prevent submenu from going off-screen on the left
-            if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
-            }
-
-            // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': submenuWidth + 'px',
                 'position': 'absolute',
-                'top': offset.top,
-                'left': leftPos,
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
                 'display': 'block',
                 'background': '#fff',
-                'border': '1px solid #ccc',
-                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-                'padding': '5px'
+                'border-radius':'8px',
+                'padding': '5px',
+                'z-index': 9999
             });
 
-            // Click outside to close
-            $(document).on("click", function (event) {
-                if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu8").on("click.submenu8", function (event) {
+                if (!$(event.target).closest('#submenuContainer8, .dx-item-content').length) {
                     $submenu.hide();
-                    $(document).off("click");
+                    $(document).off("click.submenu8");
                 }
             });
-        }
+    }
+       
+
+    // function showSubmenu8(e) {
+    //     e.event.stopPropagation();
+    //     hideAllSubmenus(); // Hide all submenus before showing the selected one
+    //     var $submenu = $('#submenuContainer8');
+    //     var $target = $(e.event.target).closest('.dx-item-content');
+    //     var offset = $target.offset();
+    //     var submenuWidth = $submenu.outerWidth();
+
+    //     // Calculate left-side positioning
+    //         var leftPos = offset.left - submenuWidth - 533;
+
+    //     // Prevent submenu from going off-screen on the left
+    //     if (leftPos < 0) {
+    //         leftPos = offset.left + $target.outerWidth() + 350; // Move it to the right if not enough space
+    //     }
+
+    //     // Position submenu
+    //     $submenu.css({
+    //         'width': 250,
+    //         'position': 'absolute',
+    //         'top': offset.top,
+    //         'left': leftPos,
+    //         'display': 'block',
+    //         'background': '#fff',
+    //         'border': '1px solid #ccc',
+    //         'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+    //         'padding': '5px'
+    //     });
+
+    //     // Click outside to close
+    //     $(document).on("click", function (event) {
+    //         if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+    //             $submenu.hide();
+    //             $(document).off("click");
+    //         }
+    //     });
+    // }
 
 
             function showSubmenu10(e) {
@@ -895,44 +800,78 @@
             }
 
 
-            function showSubmenu9(e) {
+        //     function showSubmenu9(e) {
+        //     e.event.stopPropagation();
+        //     hideAllSubmenus(); // Hide all submenus before showing the selected one
+        //     var $submenu = $('#submenuContainer9');
+        //     var $target = $(e.event.target).closest('.dx-item-content');
+        //     var offset = $target.offset();
+        //     var submenuWidth = $submenu.outerWidth();
+
+        //     // Calculate left-side positioning
+        //     var leftPos = offset.left - submenuWidth + 533;
+
+        //     // Prevent submenu from going off-screen on the left
+        //     if (leftPos < 0) {
+        //         leftPos = offset.left + $target.outerWidth() - 47; // Move it to the right if not enough space
+        //     }
+
+        //     // Position submenu
+        //     $submenu.css({
+        //         'width': 250,
+        //         'position': 'absolute',
+        //         'top': offset.top,
+        //         'left': leftPos,
+        //         'display': 'block',
+        //         'background': '#fff',
+        //        'border-radius':'8px',
+        //         'padding': '5px'
+        //     });
+
+        //     // Click outside to close
+        //     $(document).on("click", function (event) {
+        //         if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
+        //             $submenu.hide();
+        //             $(document).off("click");
+        //         }
+        //     });
+        // }
+         function showSubmenu9(e) {
             e.event.stopPropagation();
-            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            hideAllSubmenus(); // Hide others first
+
             var $submenu = $('#submenuContainer9');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
-            var submenuWidth = $submenu.outerWidth();
 
-            // Calculate left-side positioning
-            var leftPos = offset.left - submenuWidth + 533;
+            // Always position to the right of the button
+            const submenuWidth = 180;
+            const topPos = offset.top + $target.outerHeight() + 5;
+            const leftPos = offset.left + $target.outerWidth()  - 47;
 
-            // Prevent submenu from going off-screen on the left
-            if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
-            }
-
-            // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': submenuWidth + 'px',
                 'position': 'absolute',
-                'top': offset.top,
-                'left': leftPos,
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
                 'display': 'block',
                 'background': '#fff',
-                'border': '1px solid #ccc',
-                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-                'padding': '5px'
+                'border-radius':'8px',
+                'padding': '5px',
+                'z-index': 9999
             });
 
-            // Click outside to close
-            $(document).on("click", function (event) {
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu").on("click.submenu", function (event) {
                 if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
                     $submenu.hide();
-                    $(document).off("click");
+                    $(document).off("click.submenu");
                 }
             });
-        }
-
+    }
         function showSubmenu6(e) {
             e.event.stopPropagation();
             hideAllSubmenus(); // Hide all submenus before showing the selected one

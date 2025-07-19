@@ -38,5 +38,6 @@ namespace QD.ERP.Web.DAL.Entities
         public decimal? ConvertedAmount { get; set; }
         public string TransactionCurrencyName { get; set; }
         public string TransactionCurrencySymbol { get; set; }
+        public string TransactionCurrencyImage { get; set; }
     }
 }

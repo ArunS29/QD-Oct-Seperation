@@ -256,18 +256,22 @@
                         .ValidationRules(rules =>
                         {
                             rules.AddRequired().Message("Document Type is required.");
-                        }))
-                    @(Html.DevExtreme().Button()
-                        .ID("btnAdd")
-                        .Icon("plus")
-                        .Type(ButtonType.Success)
-                        .Width(65)
-                        .ElementAttr("style", "color:black;")
-                        .OnClick("onAddDocType"))
+                        })
+                         .Buttons(buttons =>
+                             {
+                                 buttons.Add()
+                                 .Name("btnAddAccount")
+                                 .Location(TextEditorButtonLocation.After)
+                                 .Widget(w => w.Button()
+                                 .Type(ButtonType.Default)
+                                 .Icon("plus")
+                                 .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                 .OnClick("onAddDocType"));
+                                 buttons.Add()
+                                 .Name("dropDown");
+                             }))
                 </div>
-
             </div>
-
             <div class="form-row">
                 <div>
                     @(Html.DevExtreme().TextBox()
@@ -276,7 +280,6 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                 </div>
-
                 <div>
                     @(Html.DevExtreme().TextBox()
                         .ID("Remarks")
@@ -339,7 +342,7 @@
                     .Text("Add")
                     .Icon("fas fa-plus")
                     .Type(ButtonType.Success)
-                    .Width("100%")
+                    .Width("30%")
                     .OnClick("onSaveDocument"))
             </div>
         </div>
