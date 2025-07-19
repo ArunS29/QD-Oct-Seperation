@@ -1,7 +1,5 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:5px">
-
-
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:10px">
 
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
@@ -42,6 +40,7 @@
                 .ID("btnPrint22")
                 .Text(new JS("formatMessage('Print Invoice')"))
                 .Icon("print")
+                .Width(132)
                 .ElementAttr(new { @class = "bold-button" })
                 .DropDownOptions(options => options.Width(345))
                 .ShowArrowIcon(false)

@@ -171,7 +171,8 @@
 
     <!-- Pivot Grid (Will Always Appear Below Filters) -->
     <div class="mua" style="width: 95%;">
-    <div id="pivotGridContainer" style="width: 100%;height:140px;"></div>
+        <div class="ledgerResult" id="pivotGridContainer" style="width: 100%;height:140px;"></div>
+
     </div>
 
 </div>
@@ -179,7 +180,19 @@
 
 
 <script type="text/javascript">
+     let pivotData = [];
+    let slectedaccount;
 
+    function onCostCenterSelected(e) {
+        const selectedData = e.selectedRowsData[0];
+        const dropDownBox = $("#requestedBy").dxDropDownBox("instance");
+
+        if (selectedData) {
+            slectedaccount = selectedData.CostAllocationUnit;
+            dropDownBox.option("value", selectedData.CostAllocationUnit);
+            dropDownBox.close();
+        }
+    }
       $(function () {
         $("#loadPanel").dxLoadPanel({
             shadingColor: "rgba(0,0,0,0.4)",
