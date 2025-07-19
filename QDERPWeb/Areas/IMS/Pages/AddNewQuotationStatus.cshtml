@@ -59,9 +59,7 @@
         background-color: #fff;
     }
 
-    .limited-footer .btn-container:not(:has(#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnVerify,#btnApprove,#btnAttach,#btnPostToLedgers,#btnPostTag)) {
-        display: none !important;
-    }
+    
 
 
     .grid{
@@ -192,7 +190,7 @@
 
 
     <div class="footer-fixed">
-        @await Html.PartialAsync("VATModuleFooter")
+    @await Html.PartialAsync("InventoryModuleFooter")
     </div>
     <script>
 
@@ -214,6 +212,7 @@
             window.history.back();
         });
 
+        
           $(function () {
                 $("#DatabaseSignatories").dxTextBox({
                     text: formatMessage("Database "),
