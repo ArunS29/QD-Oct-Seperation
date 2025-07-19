@@ -9,7 +9,7 @@
         width:100%;
     }
     .containerLedgerAccount {
-        margin: 10px;
+        /* margin: 10px; */
         padding: 0;
         background-color: transparent;
         width:100%;
@@ -134,15 +134,15 @@
     .vat-table {
         width: 100%;
         border-collapse: collapse;
-        font-family: 'Segoe UI', sans-serif;
+        /* font-family: 'Segoe UI', sans-serif; */
         font-size: 14px;
         margin-bottom: 30px;
     }
 
     .vat-table th,
     .vat-table td {
-        border: 1px solid #ccc;
-        padding: 8px;
+            border: 1px solid var(--title-background-color);
+        padding: 3px;
         text-align: center;
     }
 
@@ -556,10 +556,6 @@
         text-align: right;
     }
 
-    .dx-fieldset.horizontal-container {
-        margin-top: 20px;
-    }
-
     .numberbox-with-icon {
         position: relative;
         display: inline-block;
@@ -663,6 +659,11 @@
             items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
         })
         )
+    <div>
+
+        @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
+
+    </div>
 </div>
 
 <div class="containerLedgerAccount">
@@ -683,7 +684,7 @@
         <div>
 
             <!-- Right Forms -->
-            <div id="vatOnSalesForm" style="padding: 0px 20px;display: flex;width: 90%;">
+        <div id="vatOnSalesForm" style="padding: 0px 20px;display: flex;width: 100%;">
                 <table class="vat-table">
                   
                         <thead>
@@ -790,7 +791,7 @@
 
 
                 <!-- VAT on Purchase Form -->
-            <div id="vatOnPurchaseForm" style="display: none;padding: 0px 20px;width: 90%;">
+        <div id="vatOnPurchaseForm" style="display: none;padding: 0px 20px;width: 100%;">
                 <table class="vat-table" style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr>
@@ -911,11 +912,7 @@
     </div>
 
 
-    <div class="Head" style="margin-left: 15px;">
 
-                @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
-        
-    </div>
 
 @* </div> *@
 
