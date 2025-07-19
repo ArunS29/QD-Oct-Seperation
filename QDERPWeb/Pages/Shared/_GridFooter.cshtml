@@ -859,7 +859,6 @@
     function showSubmenu4(e) {
             e.event.stopPropagation();
             hideAllSubmenus(); // Hide others first
-
             var $submenu = $('#submenuContainer4');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
@@ -867,7 +866,7 @@
             // Always position to the right of the button
             const submenuWidth = 372;
             const topPos = offset.top + $target.outerHeight() - 45;
-            const leftPos = offset.left + $target.outerWidth() - 610;
+            const leftPos = offset.left + $target.outerWidth() - 700;
 
             $submenu.css({
                 'width': submenuWidth + 'px',
