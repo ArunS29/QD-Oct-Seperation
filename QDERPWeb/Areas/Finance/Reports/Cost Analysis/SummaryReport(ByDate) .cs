@@ -169,7 +169,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-                    string sql = $"SELECT TOP 1 CurrencyImage, CurrencySymbol FROM {tenant.schemaname}.tbl901companyDetails";
+
+                    string sql = $@"
+            SELECT c.CurrencyImage, c.CurrencySymbol
+            FROM {tenant.schemaname}.tbl901CompanyDetails AS c
+            INNER JOIN dbo.fn_GetDefaultCompanyDetails() AS f
+                ON c.CompanyId = f.CompanyId";
+
                     using (var command = new SqlCommand(sql, connection))
                     {
                         using (var reader = command.ExecuteReader())
@@ -182,6 +188,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                         }
                     }
                 }
+
 
                 // Set currency symbol to label
                 if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel && !string.IsNullOrEmpty(currencySymbol))
@@ -225,6 +232,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                         pictureBox.Sizing = ImageSizeMode.Normal;
                     }
                 }
+                AlignCurrencyWithAmount(bitmap);
             }
             catch
             {
@@ -251,25 +259,30 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
         }
 
 
-        private void AlignCurrencyWithAmount(Bitmap bitmap)
+        private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
+            var fixedPictureBoxes = new[] { "xrPictureBox2", "xrPictureBox3" };
+            foreach (var name in fixedPictureBoxes)
+            {
+                if (FindControl(name, true) is XRPictureBox picBox)
+                {
+                    picBox.Image = bitmap;
+                    picBox.Sizing = ImageSizeMode.StretchImage;
+                    picBox.WidthF = iconSize;
+                    picBox.HeightF = iconSize;
+                }
+            }
             var pairs = new[]
             {
-          new { Label = "xrLabe31", Picture = "xrPictureBox4" },
-          new { Label = "xrLabel32", Picture = "xrPictureBox5" },
-          new { Label = "xrLabel25", Picture = "xrPictureBox6" },
-          new { Label = "xrLabel26", Picture = "xrPictureBox7" },
-
-           new { Label = "xrLabel15", Picture = "xrPictureBox8" },
-
-             new { Label = "xrLabel6", Picture = "xrPictureBox9" },
-
-           new { Label = "xrLabel4", Picture = "xrPictureBox10" },
-           new { Label = "xrLabel23", Picture = "xrPictureBox12" },
-           new { Label = "xrLabel6", Picture = "xrPictureBox2" },
 
 
-    };
+    //new { Label = "xrLabel7",  Picture = "xrPictureBox3" },
+    //new { Label = "xrLabel5",  Picture = "xrPictureBox2" },
+    //new { Label = "xrLabel6",  Picture = "xrPictureBox4" },
+    new { Label = "xrLabel31",  Picture = "xrPictureBox10" },
+    new { Label = "xrLabel32",  Picture = "xrPictureBox11" },
+    new { Label = "xrLabel30",  Picture = "xrPictureBox12" },
+};
 
             foreach (var p in pairs)
             {
@@ -286,31 +299,27 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 {
                     var lbl = (XRLabel)s;
 
-                    float iconWidth = 10f;
-                    float iconHeight = 10f;
-
-                    pictureBox.WidthF = iconWidth;
-                    pictureBox.HeightF = iconHeight;
-
-                    // Center the icon vertically with respect to the label
-                    float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
-
-                    // Convert DXFont to System.Drawing.Font manually
                     using (var g = Graphics.FromImage(new Bitmap(1, 1)))
+                    using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
                     {
-                        using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
-                        {
-                            var format = StringFormat.GenericTypographic;
-                            format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+                        float iconHeight = lbl.Font.Size + 0.2f;// Match icon to font height
+                        float iconWidth = iconHeight;            // Keep square
 
-                            float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
+                        pictureBox.WidthF = iconWidth;
+                        pictureBox.HeightF = iconHeight;
 
-                            // Align image to left of text with 5 units padding
-                            float rightEdge = lbl.LocationF.X + lbl.WidthF;
-                            float posX = rightEdge - textWidth - iconWidth - 8f; // Adjusted spacing for visual gap
+                        float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
 
-                            pictureBox.LocationF = new PointF(posX, posY);
-                        }
+                        var format = StringFormat.GenericTypographic;
+                        format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+                        float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
+                        float spaceWidth = g.MeasureString(" ", sysFont).Width;
+
+                        float rightEdge = lbl.LocationF.X + lbl.WidthF;
+                        float posX = rightEdge - textWidth - iconWidth - 5f - spaceWidth;
+
+                        pictureBox.LocationF = new PointF(posX, posY);
                     }
                 };
             }
