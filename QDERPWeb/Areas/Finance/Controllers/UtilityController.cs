@@ -100,6 +100,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
+
             var baseCurrencyCode = await dbContext.Tbl20169CurrencyExchanges
                 .Where(c => c.CurrencyExchangeId == baseCurrencyId)
                 .Select(c => c.CurrencyMasterCode)
@@ -118,12 +119,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     c.CurrencyPoints
                 }).ToListAsync();
 
+            var allTargetCodes = dbCurrencies.Select(x => x.CurrencyMasterCode).ToList();
+
             var service = new CurrencyRateService();
-            var liveRates = await service.GetExchangeRatesAsync(baseCurrencyCode);
+            var invertedRates = await service.GetInvertedExchangeRatesAsync(baseCurrencyCode, allTargetCodes);
 
             var merged = dbCurrencies.Select(c =>
             {
-                var match = liveRates.FirstOrDefault(r => r.TargetCurrency == c.CurrencyMasterCode);
+                var rate = invertedRates.FirstOrDefault(r => r.TargetCurrency == c.CurrencyMasterCode);
                 return new
                 {
                     c.CurrencyExchangeId,
@@ -131,12 +134,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     c.CurrencyCode,
                     c.CurrencyMasterCode,
                     c.CurrencyPoints,
-                    ExchangeRate = match?.ExchangeRate ?? 0
+                    ExchangeRate = rate?.ExchangeRate ?? 0
                 };
             });
 
             return Json(merged);
         }
+
 
 
 
