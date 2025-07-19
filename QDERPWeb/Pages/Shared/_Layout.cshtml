@@ -1872,18 +1872,18 @@
         <div id="submenuContainer10" class="context-menu" style="display: none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="submenu-item" onclick="handleVATClick('TaxSummaryReport')">
-                    <span class="no-border-input">01-Sales Summary Report</span>
+                    <span id="TaxSummaryReport1" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleVATClick('CreditSummary')">
-                    <span class="no-border-input">02-Credit Note Summary Report</span>
+                    <span id="CreditSummary" class="no-border-input"></span>
                 </div>
 
                 <div class="submenu-item" onclick="handleVATClick('VATPurchasesAndExpReport')">
-                    <span class="no-border-input">03-Purchases Summary Report</span>
+                    <span id="VATPurchasesAndExpReport" class="no-border-input"></span>
                 </div>
                 <div class="submenu-item" onclick="handleVATClick('DebitNoteSummary')">
-                    <span class="no-border-input">04-DebitNote Summary Report</span>
+                    <span id="DebitNoteSummary" class="no-border-input"></span>
                 </div>
             </div>
         </div>
@@ -2548,6 +2548,29 @@
                   readOnly: true
                  });
                });
+
+                 $(function () {
+                   $("#TaxSummaryReport1").dxTextBox({
+                   text: formatMessage("01-Sales Summary Report"),
+                   width:400,
+                   readOnly: true
+                 });
+                   $("#CreditSummary").dxTextBox({
+                   text: formatMessage("02-Credit Note Summary Report"),
+                   width:400,
+                   readOnly: true
+                 });
+                   $("#VATPurchasesAndExpReport").dxTextBox({
+                   text: formatMessage("03-Purchases Summary Report"),
+                   width:400,
+                   readOnly: true
+                 });
+                   $("#DebitNoteSummary").dxTextBox({
+                   text: formatMessage("04-DebitNote Summary Report"),
+                   width:400,
+                   readOnly: true
+                 });
+                 });
                 $(function () {
                    $("#stockInventoryReport").dxTextBox({
                    text: formatMessage("Stock Inventory Report"),
@@ -2643,7 +2666,7 @@
                 });
 
                 var authToken = '@authToken';
-                var tenantName = '@tenantName';
+                tenantName = '@tenantName';
                 var userName = '@userName';
                 var userId = '@userId';
 
@@ -4148,7 +4171,8 @@
 
                         // Extract tenant name from URL
                         let pathParts = window.location.pathname.split('/');
-                        let tenantName = pathParts[1] || "defaultTenant";
+                        
+                        tenantName = pathParts[1] || "defaultTenant";
 
                         // Mapping report names to actual report IDs
                         const reportMappings = {
