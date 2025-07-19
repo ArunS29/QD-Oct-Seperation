@@ -189,7 +189,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
             if (!string.IsNullOrEmpty(currencyInfo.Symbol))
             {
-                foreach (string labelName in new[] { "xrLabel6", "xrLabel17", "xrLabel18", "xrLabel19" })
+                foreach (string labelName in new[] { "xrLabel16", "xrLabel6", "xrLabel18", "xrLabel19" })
                 {
                     if (FindControl(labelName, true) is XRLabel label)
                         label.Text = currencyInfo.Symbol;
@@ -211,45 +211,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                                     SvgDocument svgDoc = SvgDocument.Open<SvgDocument>(stream);
                                     Bitmap bitmap = svgDoc.Draw();
 
-                                    float iconWidth = 10f;
-                                    float iconHeight = 10f;
-
+                                    // Set the image and a fixed icon size
                                     pictureBox.Image = bitmap;
-                                    pictureBox.Sizing = ImageSizeMode.StretchImage;
-                                    pictureBox.SizeF = new SizeF(iconWidth, iconHeight);
-
-                                    // Hook to BeforePrint to position the icon dynamically
-                                    pictureBox.BeforePrint += (s, e) =>
-                                    {
-                                        XRLabel lbl = pictureBox.Name switch
-                                        {
-                                            "xrPictureBox2" => (FindControl("xrLabel15", true) as XRLabel),
-                                            "xrPictureBox3" => (FindControl("xrLabel17", true) as XRLabel),
-                                            "xrPictureBox4" => (FindControl("xrLabel21", true) as XRLabel),
-                                            "xrPictureBox5" => (FindControl("xrLabel22", true) as XRLabel),
-                                            _ => null
-                                        };
-
-                                        if (lbl != null)
-                                        {
-                                            float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
-
-                                            // Use GDI+ to measure text width (same as in your label alignment logic)
-                                            using (var g = Graphics.FromImage(new Bitmap(1, 1)))
-                                            using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
-                                            {
-                                                var format = StringFormat.GenericTypographic;
-                                                format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
-
-                                                float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
-
-                                                // Align icon just before the actual text starts, with small padding
-                                                float posX = lbl.LocationF.X -2f; // 2f = tight icon-to-text padding
-                                                pictureBox.LocationF = new PointF(posX, posY);
-
-                                            }
-                                        }
-                                    };
+                                    pictureBox.Sizing = ImageSizeMode.ZoomImage;
+                                    pictureBox.SizeF = new SizeF(10f, 10f); // adjust if needed
                                 }
                             }
                             catch (Exception ex)
@@ -260,6 +225,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                     }
                 }
             }
+
 
 
 
