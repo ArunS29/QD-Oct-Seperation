@@ -126,7 +126,7 @@
             this.crossTab1.ColumnDefinitions.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition[] {
             crossTabColumnDefinition1,
             new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(102.8333F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(2F),
+            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(2.000001F),
             new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(124.1666F)});
             crossTabColumnField1.FieldName = "MonthCode";
             crossTabColumnField2.FieldName = "MonthAndYear";
@@ -156,7 +156,7 @@
             // 
             // xrCrossTabCell1
             // 
-            this.xrCrossTabCell1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.xrCrossTabCell1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.xrCrossTabCell1.ColumnIndex = 0;
             this.xrCrossTabCell1.Name = "xrCrossTabCell1";
             this.xrCrossTabCell1.RowIndex = 0;
@@ -219,14 +219,14 @@
             // 
             // xrCrossTabCell9
             // 
-            this.xrCrossTabCell9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.xrCrossTabCell9.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.xrCrossTabCell9.ColumnIndex = 0;
             this.xrCrossTabCell9.Name = "xrCrossTabCell9";
             this.xrCrossTabCell9.RowIndex = 2;
             // 
             // xrCrossTabCell10
             // 
-            this.xrCrossTabCell10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(224)))), ((int)(((byte)(224)))), ((int)(((byte)(224)))));
+            this.xrCrossTabCell10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(240)))), ((int)(((byte)(240)))), ((int)(((byte)(240)))));
             this.xrCrossTabCell10.ColumnIndex = 0;
             this.xrCrossTabCell10.Name = "xrCrossTabCell10";
             this.xrCrossTabCell10.RowIndex = 3;
@@ -458,7 +458,7 @@
             this.xrLabel3.SizeF = new System.Drawing.SizeF(1594F, 23.00002F);
             this.xrLabel3.StylePriority.UseFont = false;
             this.xrLabel3.StylePriority.UseTextAlignment = false;
-            this.xrLabel3.Text = "Bills Payable  Summary Report";
+            this.xrLabel3.Text = "Bills Receivable  Summary Report";
             this.xrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             // 
             // xrPictureBox2
