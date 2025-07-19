@@ -374,7 +374,7 @@ buttons.Add()
 								.ValueExpr("CurrencyExchangeId")
 								.DisplayExpr("CurrencyName")
 								.OnInput("dropDownBoxOnInput")
-								.OnOpened("onOpened")
+								.OnOpened("loadCurrencyGridOnOpen")
 							
 								.TabIndex(13)
 								.DropDownOptions(o => o.Width(700))
@@ -2530,20 +2530,28 @@ buttons.Add()
 		}
 	}
 	function onCurrencySelectionChanged(e) {
-		const selectedKey = e.selectedRowKeys[0];
-		const dropDown = $("#ddCurrency").dxDropDownBox("instance");
-
-		if (selectedKey) {
-			dropDown.option("value", selectedKey); // This should bind the selected CurrencyID to the DropDownBox
-			if (dropDown.option("opened")) {
-				dropDown.close();
-			}
-
 			const selectedRow = e.selectedRowsData[0];
-			console.log("Selected Currency:", selectedRow.CurrencyName);
-		} else {
-			DevExpress.ui.notify("Please select a currency", "warning", 2000);
-		}
+
+			const dropDown = $("#ddCurrency").dxDropDownBox("instance");
+
+			if (selectedRow) {
+				 dropDown.option("value", selectedRow.CurrencyExchangeId); // Set DropDownBox value
+
+   
+
+			// ✅ Set ExchangeRate in NumberBox
+			if (selectedRow && selectedRow.ExchangeRate !== undefined) {
+				$("#txtCurrencyRate").dxNumberBox("instance").option("value", selectedRow.ExchangeRate);
+			}
+				if (dropDown.option("opened")) {
+					dropDown.close();
+				}
+
+
+					console.log("Selected Currency:", selectedRow.CurrencyExchangeId);
+			} else {
+				// DevExpress.ui.notify("Please select a currency", "warning", 2000);
+			}
 	}
 
 		$("#btnSaveAndClose").on("click", function (e) {
@@ -3625,6 +3633,25 @@ buttons.Add()
             grid.getDataSource().reload();
         }
     }
+	function loadCurrencyGridOnOpen(e) {
+			debugger;
+			const dropDown = e.component;
+			const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
+
+			if (!baseCurrencyId) return;
+
+			const grid = $("#currency-datagrid").dxDataGrid("instance");
+			if (!grid) return;
+
+			DevExpress.data.AspNet.createStore({
+				key: "CurrencyExchangeId",
+				loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
+			}).load().done(data => {
+				grid.option("dataSource", data);
+				dropDown.option("dataSource", data);
+			});
+	}
+
 	
 </script>
 
