@@ -14,7 +14,7 @@
 
     .form-row {
         display: flex;
-        gap:15px;
+        gap: 15px;
         align-items: end;
     }
 
@@ -32,9 +32,9 @@
     .dx-datagrid-headers .dx-toolbar {
         padding-right: 0 !important;
     }
+
     .form-row .form-row-btn {
         margin: 2px;
-        
         width: 340px;
         padding: 0px;
     }
@@ -42,16 +42,18 @@
     .rtl-textbox input {
         text-align: right;
     }
-        .form-row input,
-        .form-row .dx-textbox,
-        .form-row .dx-selectbox {
-            flex: 1;
-        }
+
+    .form-row input,
+    .form-row .dx-textbox,
+    .form-row .dx-selectbox {
+        flex: 1;
+    }
 
     .dx-fileuploader-input-wrapper .dx-button {
         float: left;
         margin-top: -10px;
     }
+
     .image-upload-row {
         align-items: center;
         gap: 10px;
@@ -65,10 +67,10 @@
     .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
         display: none !important;
     }
-    
-  
-    .grid{
-        padding:20px;
+
+
+    .grid {
+        padding: 20px;
     }
 
     .container {
@@ -103,57 +105,57 @@
         <div id="QuotationTypeofRequest" class="no-border-input"></div>
     </div>
 </div>
-    <div class="form-row" style="padding:20px;">
-        <div class="col-md-6">
+<div class="form-row" style="padding:20px;">
+    <div class="col-md-6">
         @(Html.DevExtreme().TextBox()
-            .ID("txtTypeOfRequest")
-            .Label(new JS("formatMessage('Type new Quotation Type of Request & Add to the Existing List:')"))
+            .ID("txtPropertyGroup")
+            .Label(new JS("formatMessage('Type a New Property Group & Add to the Existing List:')"))
             .LabelMode(EditorLabelMode.Floating)
             .ValidationRules(rules =>
             {
-                rules.AddRequired().Message("Type of Request is required");
+                rules.AddRequired().Message("Property Group is required");
             })
             )
 
-     </div>
- </div>
-
-    <div class="form-row" style="padding:20px;">
-       <div class="col-md-6">
-        @(Html.DevExtreme().TextBox()
-            .ID("txtTermsCategory")
-            .Label(new JS("formatMessage('Terms Category:')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired().Message("Signatory Name is required");
-            })
-            )
-            </div>
-         <div class="col-md-2">
-            @(Html.DevExtreme().Button()
-                .ID("btnAddSalesPerson")
-                .Text(new JS("formatMessage('ADD')"))
-                .Icon("plus")
-                .OnClick("function() { addSignatoryToGrid(); }")
-                .ElementAttr(new { @class = "dx-button-add" })
-                )
-        </div>
     </div>
+</div>
 
-   
+<div class="form-row" style="padding:20px;">
+    <div class="col-md-6">
+        @(Html.DevExtreme().TextBox()
+            .ID("txtProGroupCode")
+            .Label(new JS("formatMessage('Property Group Code')"))
+            .LabelMode(EditorLabelMode.Floating)
+            .ValidationRules(rules =>
+            {
+                rules.AddRequired().Message("Property Group Code is required");
+            })
+            )
+    </div>
+    <div class="col-md-2">
+        @(Html.DevExtreme().Button()
+            .ID("btnAddSalesPerson")
+            .Text(new JS("formatMessage('ADD')"))
+            .Icon("plus")
+            .OnClick("function() { addSignatoryToGrid(); }")
+            .ElementAttr(new { @class = "dx-button-add" })
+            )
+    </div>
+</div>
+
+
 
 
 <div class="dx-field ledgerResult">
     @(Html.DevExtreme().DataGrid()
-            .ID("TypeOfRequestGrid")
-            .KeyExpr("TypeOfRequestId")
-            .RemoteOperations(false)
-            .DataSource(d => d.WebApi()
-        .Controller("QuotationTypeOfRequest")
-        .LoadAction("GetTypeofRequest")
-            .LoadMode(DataSourceLoadMode.Raw)
-            )
+        .ID("TypeOfRequestGrid")
+        .KeyExpr("PropertyGroupId")
+        .RemoteOperations(false)
+        .DataSource(d => d.WebApi()
+        .Controller("PropertyGroup")
+        .LoadAction("GetPropertyGroup")
+        .LoadMode(DataSourceLoadMode.Raw)
+        )
         .Editing(editing => editing
         .Mode(GridEditMode.Batch)
         .AllowUpdating(true)
@@ -163,12 +165,12 @@
         {
             toolbar.Items(items => { }); // hide default toolbar
         })
-        .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
-            .Columns(columns =>
-            {
-            columns.Add().DataField("TypeOfRequestId").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
-            columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')")).Width(200);
-            columns.Add().DataField("TermsCategory").Caption(new JS("formatMessage('Terms Category')")).Width(200);
+        .OnRowUpdating("onPropertyGroupUpdating")
+        .Columns(columns =>
+        {
+            columns.Add().DataField("PropertyGroupId").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
+            columns.Add().DataField("PropertyGroup").Caption(new JS("formatMessage('Property Group')")).Width(200);
+            columns.Add().DataField("PropertyGroupCode").Caption(new JS("formatMessage('Code')")).Width(200);
             // Add delete button column
             columns.Add()
             .Type(GridCommandColumnType.Buttons)
@@ -203,9 +205,9 @@
 
 
 <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
+    @await Html.PartialAsync("InventoryModuleFooter")
 </div>
- <script>
+<script>
 
     $(document).ready(function () {
 
@@ -229,7 +231,7 @@
             $("#DatabaseSignatories").dxTextBox({
                 text: formatMessage("Database "),
                 readOnly: true,
-                           
+
 
             });
         });
@@ -271,29 +273,23 @@
     //img
     let businessCard1Base64 = "";
     function addSignatoryToGrid() {
-        // Validate fields using the Validator components
-        // const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
-        // const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
 
-        // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
-        //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
-        //     return;
-        // }
 
         const data = {
-            TypeOfRequest: $("#txtTypeOfRequest").dxTextBox("instance").option("value"),
-            TermsCategory: $("#txtTermsCategory").dxTextBox("instance").option("value")
-                         
-           
+            PropertyGroup: $("#txtPropertyGroup").dxTextBox("instance").option("value"),
+            PropertyGroupCode: $("#txtProGroupCode").dxTextBox("instance").option("value")
+
+
         };
 
         $.ajax({
-                url: '/api/QuotationTypeOfRequest/SaveOrUpdateSignatory',
+               url: '/api/PropertyGroup/SaveOrUpdatePropertyGroup',
+            //url: '/api/QuotationTypeOfRequest/SaveOrUpdateSignatory',
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
             success: function () {
-                DevExpress.ui.notify("Quotation Type Of Request saved successfully!", "success", 2000);
+                DevExpress.ui.notify("Property Group saved successfully!", "success", 2000);
                 $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
             },
             error: function () {
@@ -309,17 +305,17 @@
     });
 
 
-    function onSignatoryUpdating(e) {
+    function onPropertyGroupUpdating(e) {
         const data = {
-            TypeOfRequestId: e.oldData.TypeOfRequestId,
-            TypeOfRequest: e.newData.TypeOfRequest ?? e.oldData.TypeOfRequest,
-            TermsCategory: e.newData.TermsCategory ?? e.oldData.TermsCategory
+            PropertyGroupId: e.oldData.PropertyGroupId,
+            PropertyGroup: e.newData.PropertyGroup ?? e.oldData.PropertyGroup,
+            PropertyGroupCode: e.newData.PropertyGroupCode ?? e.oldData.PropertyGroupCode
         };
 
         e.cancel = true; // prevents grid from doing its own update
 
         return $.ajax({
-            url: '/api/QuotationTypeOfRequest/SaveOrUpdateSignatory',
+            url: '/api/PropertyGroup/SaveOrUpdatePropertyGroup',
             method: "POST",
             contentType: "application/json",
             data: JSON.stringify(data),
@@ -337,11 +333,12 @@
         e.event.preventDefault(); // prevent default delete
 
         var grid = $("#TypeOfRequestGrid").dxDataGrid("instance");
-        var key = e.row.data.TypeOfRequestId; // get the ID of the row
+        var key = e.row.data.PropertyGroupId; // get the ID of the row
 
         if (confirm("Are you sure you want to delete this row?")) {
             $.ajax({
-                url: '/api/QuotationTypeOfRequest/Delete?key=' + key,
+                   url: '/api/PropertyGroup/Delete?key=' + key,
+               // url: '/api/QuotationTypeOfRequest/Delete?key=' + key,
                 type: 'DELETE',
                 success: function () {
                     // Refresh the grid after delete
@@ -354,8 +351,8 @@
             });
         }
     }
-    
 
 
 
-    </script>
+
+</script>
