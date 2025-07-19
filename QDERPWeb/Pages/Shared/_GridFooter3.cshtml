@@ -228,24 +228,35 @@
                 .DropDownOptions(options => options.Width(350))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Receivables Reports')")).Icon("textdocument");
-                    items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Icon("textdocument");
-                    items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").OnClick("showSubmenu1");
-                    items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Receivables Reports')")).Option("color", "#4285F4").Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Receivables Reports with Effective Date')")).Option("color", "#34A853").Icon("textdocument");
+                    items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").Option("color", "#EA4335").OnClick("showSubmenu1");
+                    items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Option("color", "#FBBC05").Icon("textdocument");
 
-                    items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").OnClick("ReportsByClient");
-                    items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").OnClick("ReportsByClient");
-                    items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").Option("color", "#AB47BC").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").Option("color", "#34A853").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").Option("color", "#00ACC1").OnClick("ReportsByClient");
 
 
 
-                    items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Icon("event");
+                    items.Add().Text(new JS("formatMessage('Invoice Collection Report')")).Option("color", "#EA4335").Icon("event");
                     items.Add().Text(new JS("formatMessage('Receivables with unmapped Vouchers')"))
-                        .Icon("optionsgear")
+                    .Icon("optionsgear").Option("color", "#AB47BC")
                         .OnClick("function() { Mapping('Receivables with unmapped Vouchers'); }");
                 })
         .ShowArrowIcon(true)
-        .OnItemClick("handleReportsClick") 
+                .OnItemClick("handleReportsClick")
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
         )
       
 </div>

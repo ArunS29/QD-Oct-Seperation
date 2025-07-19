@@ -916,3 +916,49 @@ dx-item-content dx-list-item-content:hover{
         transform: translateX(100%);
     }
 }
+.custom-dropdown-item {
+    display: flex;
+    align-items: flex-start;
+    padding: 0px 0px;
+    position: relative;
+    /* border-left: 4px solid transparent; */
+    transition: background 0.2s;
+}
+
+    .custom-dropdown-item:hover {
+        background: var(--background-color); /* subtle hover */
+    }
+
+    /* Colored bar on the left */
+    .custom-dropdown-item .side-bar {
+        width: 4px;
+        height: 11%;
+        margin-right: 30px;
+        /* background-color: red; */
+        position: fixed;
+        z-index: 1000;
+        border-radius: 0% 50% 50% 0%;
+        transition: width 0.2s ease;
+    }
+
+    .custom-dropdown-item:hover .side-bar {
+        width: 8px;
+    }
+    /* Text content */
+    .custom-dropdown-item .item-content {
+        display: flex;
+        /* flex-direction: column; */
+        margin-left: 10px;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .custom-dropdown-item .item-title {
+        font-weight: bold;
+        color: #000;
+    }
+
+    .custom-dropdown-item .item-description {
+        font-size: 12px;
+        color: #888;
+    }

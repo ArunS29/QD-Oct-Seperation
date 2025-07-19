@@ -69,7 +69,7 @@
         font-size: 14px !important;
         box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
         transition: all 0.2s ease-in-out !important;
-        /* height: 39px !important; /* Fixed height */ */
+        /* height: 39px !important; /* Fixed height */ 
     }
 
         /* Hover Effect for Button */
@@ -363,9 +363,20 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Icon("money");
-                    items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Icon("product");
+                        items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Option("color", "#34A853").Icon("money");
+                        items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Option("color", "#FBBC05").Icon("product");
                 })
+                    .ItemTemplate(@<text>
+                                       <div class="custom-dropdown-item">
+                                           <div style="background-color:<%- color %>; height:40%" class="side-bar"></div>
+                                           <div class="item-content">
+                                               <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                                               <div>
+                                                   <div class="item-title"><%- text %></div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </text>)
                 .OnItemClick("addRecipitsButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -380,9 +391,20 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Add Cash Payment')")).Icon("money");
-                    items.Add().Text(new JS("formatMessage('Add Bank Payment')")).Icon("product");
+                        items.Add().Text(new JS("formatMessage('Add Cash Payment')")).Option("color", "#FBBC05").Icon("money");
+                        items.Add().Text(new JS("formatMessage('Add Bank Payment')")).Option("color", "#AB47BC").Icon("product");
                 })
+                    .ItemTemplate(@<text>
+                                       <div class="custom-dropdown-item">
+                                           <div style="background-color:<%- color %>; height:40%" class="side-bar"></div>
+                                           <div class="item-content">
+                                               <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                                               <div>
+                                                   <div class="item-title"><%- text %></div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </text>)
                 .OnItemClick("addPaymentButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -397,10 +419,21 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Icon("add");
-                    items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Icon("add");
-                    items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Icon("add");
+                        items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Option("color", "#4285F4").Icon("add");
+                        items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Option("color", "#34A853").Icon("add");
+                        items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Option("color", "#EA4335").Icon("add");
                 })
+                    .ItemTemplate(@<text>
+                                       <div class="custom-dropdown-item">
+                                             <div style="background-color:<%- color %>; height:30%" class="side-bar"></div>
+                                           <div class="item-content">
+                                               <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                                               <div>
+                                                   <div class="item-title"><%- text %></div>
+                                               </div>
+                                           </div>
+                                       </div>
+                                   </text>)
                 .OnItemClick("otherVoucherButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -448,7 +481,7 @@
                 })
                 .ItemTemplate(@<text>
             <div class="custom-dropdown-item" >
-                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                  <div style="background-color:<%- color %>;" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -981,7 +1014,7 @@
 
        function showSubmenu6(e) {
         e.event.stopPropagation();
-
+        debugger;
         if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
             showToastModal('warning', 'Warning!', 'No records to print');
             // $("#popupWarningMessage").text("No records to print");
@@ -1026,38 +1059,36 @@
         });
     }
 
-    function showSubmenu7(e) {
+      function showSubmenu7(e) {
         e.event.stopPropagation();
 
-        hideAllSubmenus();
+        hideAllSubmenus(); // Hide others first
 
-        const $submenu = $('#submenuContainer7');
-        const $target = $(e.event.target).closest('.dx-item-content');
-        if (!$target.length) return;
+        var $submenu = $('#submenuContainer7');
+        var $target = $(e.event.target).closest('.dx-item-content');
+        var offset = $target.offset();
 
-        const offset = $target.offset();
-        const submenuWidth = $submenu.outerWidth();
-        const targetWidth = $target.outerWidth();
-        const windowWidth = $(window).width();
-
-        let leftPos = offset.left + targetWidth + 10;
-        if (leftPos + submenuWidth > windowWidth) {
-            leftPos = offset.left - submenuWidth - 10;
-        }
+        // Fixed width and position offsets like showSubmenu4
+        const submenuWidth = 372;
+        const topPos = offset.top + $target.outerHeight() - 45;
+        const leftPos = offset.left + $target.outerWidth() - 700;
 
         $submenu.css({
-            'width': '370px',
+            'width': submenuWidth + 'px',
             'position': 'absolute',
-            'top': offset.top,
-            'left': leftPos,
+            'top': topPos + 'px',
+            'left': leftPos + 'px',
             'display': 'block',
-            'z-index': 9999,
             'background': '#fff',
-            'border': '1px solid #ccc',
-            'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-            'padding': '5px'
+            'border-radius': '8px',
+            // 'padding': '5px',
+            // 'z-index': 9999
         });
 
+        // Optional fade animation (disabled for now)
+        // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+        // Close on outside click
         $(document).off("click.submenu7").on("click.submenu7", function (event) {
             if (!$(event.target).closest('#submenuContainer7, .dx-item-content').length) {
                 $submenu.hide();

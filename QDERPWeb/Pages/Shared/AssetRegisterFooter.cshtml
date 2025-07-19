@@ -156,15 +156,28 @@
             .DropDownOptions(options => options.Width(485))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Preview Register')")).Icon("file");
-                items.Add().Text(new JS("formatMessage('Preview Register (Order By VoucherNo)')")).Icon("file");
-                items.Add().Text(new JS("formatMessage('Preview Register (With Line Entry Narration)')")).Icon("file");
-                items.Add().Text(new JS("formatMessage('Preview Register (With Line Entry Narration Order by VoucherNo)')")).Icon("file");
-                items.Add().Text(new JS("formatMessage('Preview Register (With Voucher Narration)')")).Icon("product");
-                items.Add().Text(new JS("formatMessage('Preview Register (With Voucher Narration - Order by Voucher No)')")).Icon("product");
+                    items.Add().Text(new JS("formatMessage('Preview Register')")).Option("color", "#4285F4").Icon("file");
+                    items.Add().Text(new JS("formatMessage('Preview Register (Order By VoucherNo)')")).Option("color", "#34A853").Icon("file");
+                    items.Add().Text(new JS("formatMessage('Preview Register (With Line Entry Narration)')")).Option("color", "#EA4335").Icon("file");
+                    items.Add().Text(new JS("formatMessage('Preview Register (With Line Entry Narration Order by VoucherNo)')")).Option("color", "#FBBC05").Icon("file");
+                    items.Add().Text(new JS("formatMessage('Preview Register (With Voucher Narration)')")).Option("color", "#AB47BC").Icon("product");
+                    items.Add().Text(new JS("formatMessage('Preview Register (With Voucher Narration - Order by Voucher No)')")).Option("color", "#00ACC1").Icon("product");
             })
             .ShowArrowIcon(false)
-            .OnItemClick("handleReportClick") 
+                .OnItemClick("handleReportClick")
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                        <div class="item-description">Lorem Ipsum of the Component</div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+
         )
     </div>
 
@@ -188,10 +201,22 @@
             .DropDownOptions(options => options.Width(300))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Detailed Transaction Report')")).Icon("product");
+                    items.Add().Text(new JS("formatMessage('Detailed Transaction Report')")).Option("color", "#EA4335").Icon("product");
             })
             .OnItemClick("addReportsButton_click")
             .ShowArrowIcon(false)
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;height: 30px;" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+
             )
     </div>
 </div>
