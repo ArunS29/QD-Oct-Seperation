@@ -12,10 +12,6 @@
 	.Head {
 		margin-bottom: 10px;
 	}
-
-	#B2BdataGrid {
-		height: 325px !important;
-	}
 	.form-wrapper {
 		border-radius: 6px;
 		width: 97%;
@@ -2147,9 +2143,9 @@
 
 
 		<div class="dx-field ledgerResult">
-			@(
-							Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
+			@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
+							.Height("45vh")
 							.RemoteOperations(false)
 							.Columns(columns =>
 							{
@@ -2343,7 +2339,6 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height(100)
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))

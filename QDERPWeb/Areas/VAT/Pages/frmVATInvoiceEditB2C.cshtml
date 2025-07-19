@@ -13,9 +13,6 @@
 		margin-bottom: 10px;
 	}
 
-	#B2BdataGrid {
-		height: 325px !important;
-	}
 	.form-wrapper {
 		border-radius: 6px;
 		width: 97%;
@@ -2305,7 +2302,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height(250)
+									.Height("45vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -2320,7 +2317,6 @@
 									.Summary(summary =>
 
 									{
-
 										summary.TotalItems(totalItems =>
 
 										{
