@@ -216,12 +216,23 @@
             .DropDownOptions(options => options.Width(320))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Bills Payable')")).Icon("search");
-                items.Add().Text(new JS("formatMessage('Payable Summary')")).Icon("search");
-                items.Add().Text(new JS("formatMessage('Report by Supplier')")).Icon("search").OnClick("ReportsByClient");
-                items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Icon("smalliconslayout").OnClick("function() { Mapping('Bills Payable with Unmapped Vouchers'); }");
+                    items.Add().Text(new JS("formatMessage('Bills Payable')")).Option("color", "#4285F4").Icon("search");
+                    items.Add().Text(new JS("formatMessage('Payable Summary')")).Option("color", "#34A853").Icon("search");
+                    items.Add().Text(new JS("formatMessage('Report by Supplier')")).Option("color", "#EA4335").Icon("search").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Bills Payable with Unmapped Vouchers')")).Option("color", "#FBBC05").Icon("smalliconslayout").OnClick("function() { Mapping('Bills Payable with Unmapped Vouchers'); }");
             })
             .OnItemClick("handleReportClick")
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>; height:35px;" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
             )
     </div>
     

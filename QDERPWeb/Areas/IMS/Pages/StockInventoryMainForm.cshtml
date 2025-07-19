@@ -100,10 +100,6 @@
         h2 {
             font-size: 22px;
         }
-
-        #dataGrid {
-            padding: 10px;
-        }
     }
 </style>
 <div class="title">
@@ -517,8 +513,7 @@
     .GroupPanel(gp => gp.Visible(true)) 
     .ShowBorders(true)
     .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
-
-    .Height("100%")
+    .Height("60vh")
     .Width("100%")
         .Summary(s => s // Add this Summary configuration
         .TotalItems(totalItems =>
