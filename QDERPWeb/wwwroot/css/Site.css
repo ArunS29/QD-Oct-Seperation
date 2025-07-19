@@ -238,6 +238,11 @@ body {
     font-weight: bold;
     color: white;
 }
+.dx-textcolor-heading .dx-texteditor-input {
+    color: var(--title-background-color) !important;
+    font-size: 24px !important;
+    font-weight: bold;
+}
 
 .dx-textbox-heading10 .dx-texteditor-input {
     font-size: 24px !important;

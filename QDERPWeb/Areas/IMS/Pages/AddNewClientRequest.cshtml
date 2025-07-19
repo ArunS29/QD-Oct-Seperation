@@ -284,7 +284,6 @@
 	.card-container {
 		display: flex;
 		justify-content: space-between;
-		gap: 20px;
 	}
 
 	.card {
@@ -303,16 +302,6 @@
 		box-shadow: 2px 2px 10px rgba(0, 0, 0, 0.1);
 		background: #fff;
 	}
-
-	.card-container {
-		display: flex;
-		justify-content: space-between;
-		gap: 20px;
-		padding: 20px;
-	}
-
-	
-
 	.playIcon {
 		display: none;
 	}
@@ -374,7 +363,7 @@
 
 
 
-			<div id="tab-content-1" class="tab-content" style="padding:20px;">
+			<div id="tab-content-1" class="tab-content" style="height: 200px;">
 
 				<table style="width:100%;">
 					<tr style="display:flex; gap: 10px; align-items:end; width:100%;">
@@ -724,7 +713,7 @@
 
 
 
-			<div id="tab-content-2" class="tab-content">
+			<div id="tab-content-2" class="tab-content" style="height: 200px;">
 
 				<div class="card-container">
 
@@ -834,13 +823,13 @@
 
 			</div>
 
-			<div id="tab-content-3" class="tab-content">
+			<div id="tab-content-3" class="tab-content" style="height: 200px;">
 				<div class="row" >
 					<!-- Card 1: 8 columns -->
 					<div class="col-6">
 
 
-						<div class="row" style="font-size:14px;padding:20px;">
+						<div class="row" style="font-size:14px;">
 							<div class="col-12">
 								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
 																.Label(new JS("formatMessage('Company Branch/Division:')"))
@@ -1054,29 +1043,19 @@
 							<div class="col-12">
 
 								@(Html.DevExtreme().TextBox()
-																.Label(new JS("formatMessage('Client Project Details:')"))
-																.LabelMode(EditorLabelMode.Floating)
-																.ID("txtClientProject")
+										.Label(new JS("formatMessage('Client Project Details:')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.ID("txtClientProject")
 
-																)
+										)
 							</div>
-
-
-
-
 						</div>
-
-
 					</div>
-
-
 				</div>
-
-
 			</div>
 
 
-			<div id="tab-content-4" class="tab-content" style="padding:20px;">
+			<div id="tab-content-4" class="tab-content" style="height: 200px;">
 
 
 				<div class="row">
@@ -1413,7 +1392,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height(600)
+						.Height("45vh")
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -1427,7 +1406,7 @@
 						.OnEditorPreparing("onEditorPreparing")
 						)
 		</div>
-		<div id="materialRequestFooter" class="footer-fixed">
+		<div class="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFormFooter.cshtml")
 		</div>
 
@@ -1453,7 +1432,7 @@
 					.Paging(p => p.PageSize(15))
 					.FilterRow(f => f.Visible(false))
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(345)
+					.Height("65vh")
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(235))
@@ -7587,7 +7566,7 @@ $("#btnAddNew").on("click", function (e) {
 		text: formatMessage("Client Request"),
 			readOnly: true,
 			onContentReady: function (e) {
-			$(e.element).addClass("dx-textbox-heading");
+				$(e.element).addClass("dx-textcolor-heading");
 			}
 			});
 		});

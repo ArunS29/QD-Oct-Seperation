@@ -1428,7 +1428,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height(600)
+						.Height("65vh")
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -7097,7 +7097,7 @@
 	text: formatMessage("Project Request Master"),
 		readOnly: true,
 		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
+		$(e.element).addClass("dx-textcolor-heading");
 		}
 		});
 	});

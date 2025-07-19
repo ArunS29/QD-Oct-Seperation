@@ -98,6 +98,9 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     string[] acceptedFormats = { "MM/dd/yyyy", "yyyy-MM-dd" };
 
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault();
+
                     if (!DateTime.TryParseExact(frmDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
                         return BadRequest("Invalid from date format. Use MM/dd/yyyy or yyyy-MM-dd.");
 
@@ -131,11 +134,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     foreach (var item in pagedResults)
                     {
-                        decimal total = item.TotalInvoiceAmount ?? 0;
-                        decimal rate = item.ExchangeRate ?? 1;
-                        decimal? currencyRate = total * rate;
+                        //decimal total = item.TotalInvoiceAmount ?? 0;
+                        //decimal rate = item.ExchangeRate ?? 1;
+                        //decimal? currencyRate = total * rate;
 
-                        item.TotalInvoiceAmount = currencyRate; // If you are overwriting with converted amount
+                        item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
                     }
 
 
@@ -1206,8 +1209,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 // Check if the UnitType and UnitDesc already exists
                 bool exists = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
                     u.UnitType.Trim().ToLower() == unitType.Trim().ToLower() &&
-                    u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower() &&
-                    u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
+                    u.UnitDesc.Trim().ToLower() == unitDesc.Trim().ToLower());
+                  //  u.UnitDescAr.Trim().ToLower() == unitDescAr.Trim().ToLower());
 
                 if (exists)
                 {
@@ -3569,13 +3572,26 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var companyNameShort = HttpContext.Session.GetString("TenantName");
-                    if (string.IsNullOrEmpty(companyNameShort))
+
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
                     {
-                        return BadRequest("Company name not found in session.");
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
                     }
+
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+
+
                     var company = dbContext.Tbl901CompanyDetails
-                       .FirstOrDefault(c => c.CompanyNameShort.Contains(companyNameShort));
+                   .FirstOrDefault(c => c.CompanyId == companyId);
 
 
                     if (company == null)
@@ -5089,6 +5105,45 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 return StatusCode(500, new { message = ex.Message, success = false });
             }
         }
+
+        [HttpPost]
+        public IActionResult CheckIfPosted(string voucherId)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var voucher = dbContext.Tbl20166VatpurchaseMasters.FirstOrDefault(v => v.PurchaseVoucherNo == voucherId);
+
+                    if (voucher == null)
+                    {
+                        return Json(new { success = false, message = "Voucher not found." });
+                    }
+
+                    if (voucher.IsPosted != true)
+                    {
+                        return Json(new
+                        {
+                            success = false,
+                            message = "This VAT Purchase Bill is not yet posted to your ledgers. Please post the voucher and try printing the voucher."
+                        });
+                    }
+
+                    return Json(new { success = true });
+                }
+                else
+                {
+                    return Json(new { success = false, message = "Tenant context not available." });
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if you have logging set up
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+
 
 
 

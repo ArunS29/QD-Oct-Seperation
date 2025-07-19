@@ -518,6 +518,14 @@
 		<div id="VATPurchaseEdit" class="no-border-title"></div>
 	</div>
 </div> *@
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="VATPurchaseEdit" class="titleText no-border-title"></div>
+	</div>
+</div>
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
 		<i class="dx-icon-plus"></i> Add Line Item
@@ -1655,7 +1663,7 @@
 		</div>
 
 
-		<div class="Head" style="margin-left: 15px;">
+		<div class="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATPurhaseInvoiceEditFooter.cshtml")
 		</div>
 
@@ -4658,7 +4666,7 @@
 						width:310,
 						readOnly: true,
 									onContentReady: function(e) {
-									$(e.element).addClass("dx-textbox-heading");
+									$(e.element).addClass("dx-textcolor-heading");
 							}
 
 					});
@@ -5715,7 +5723,7 @@
 		// }
 
 
-						function onEditorPreparing(e) {
+	function onEditorPreparing(e) {
 		if (e.parentType === "dataRow" &&
 			(e.dataField === "QuantityInvoiced" ||
 				 e.dataField === "UnitRate" ||
@@ -7520,7 +7528,33 @@
 			});
 		});
 
-		
+
+				function addPreviewVoucher() {
+	
+			let voucherId =$("#InvoiceNo").dxTextBox("instance").option("value");
+
+		$.ajax({
+			url: '/api/VATModule/CheckIfPosted',
+			type: 'POST',
+			data: { voucherId: voucherId },
+			success: function(response) {
+				if (response.success) {
+			
+				} else {
+					// Show error message if IsPosted is false
+				
+							DevExpress.ui.dialog.alert(
+											response.message,
+										"Not printed"
+									)
+				}
+			},
+			error: function() {
+				alert('An error occurred while checking the voucher status.');
+			}
+		});
+	}
+
 	
 
 
