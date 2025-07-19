@@ -328,9 +328,9 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnAddNew1")
-            .Text(new JS("formatMessage('Add New')"))
+                .Text(new JS("formatMessage('Add New VAT Purchase Bill')"))
             .Icon("plus")
-            // .OnClick("addNewRow") // Attach function
+             .OnClick("addNewRow") // Attach function
             .ElementAttr(new { @class = "bold-button" })
             // Apply custom CSS class
             )
@@ -352,6 +352,11 @@
              function navigateToInvoiceEdit() {
                // Replace with the actual tenant name dynamically
                     var url = `/${tenantName}/VAT/VATInvoiceWithDetails`;
+                window.location.href = url; // Navigate to the page
+            }
+             function addNewRow() {
+               // Replace with the actual tenant name dynamically
+                    var url = `/${tenantName}/VAT/VATPurchaseEdit`;
                 window.location.href = url; // Navigate to the page
             }
 

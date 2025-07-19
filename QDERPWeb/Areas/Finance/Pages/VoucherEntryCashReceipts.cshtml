@@ -287,7 +287,7 @@ buttons.Add()
                                                 .ValueExpr("CurrencyExchangeId")
                                                 .DisplayExpr("CurrencyName")
                                                 .OnInput("dropDownBoxOnInput")
-                                                .OnOpened("onOpened")
+                                                .OnOpened("loadCurrencyGridOnOpen")
                                                 //.OnInitialized("onBaseCurrencyInit")
                                                 .TabIndex(9)
                                                 .DropDownOptions(o => o.Width(700))
@@ -2287,27 +2287,30 @@ function addVoucherEntry() {
             // Triggered when a key is pressed in the DropDownBox
             console.log("Key down in currency dropdown:", e.event.key);
         }
-        function onCurrencySelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
+       function onCurrencySelectionChanged(e) {
+            const selectedRow = e.selectedRowsData[0];
+
             const dropDown = $("#ddCurrency").dxDropDownBox("instance");
 
-            if (selectedKey) {
-                dropDown.option("value", selectedKey); // Set DropDownBox value
+            if (selectedRow) {
+                 dropDown.option("value", selectedRow.CurrencyExchangeId); // Set DropDownBox value
 
-             const selectedRow = e.selectedRowsData[0];
+   
 
-             // ✅ Set ExchangeRate in NumberBox
-             if (selectedRow && selectedRow.ExchangeRate !== undefined) {
-                 $("#txtCurrencyRate").dxNumberBox("instance").option("value", selectedRow.ExchangeRate);
-             }// This should bind the selected CurrencyID to the DropDownBox
-             if (dropDown.option("opened")) {
-                 dropDown.close();
-             }
-                console.log("Selected Currency:", selectedRow.CurrencyName);
-            } else {
-                DevExpress.ui.notify("Please select a currency", "warning", 2000);
+            // ✅ Set ExchangeRate in NumberBox
+            if (selectedRow && selectedRow.ExchangeRate !== undefined) {
+                $("#txtCurrencyRate").dxNumberBox("instance").option("value", selectedRow.ExchangeRate);
             }
-        }
+                if (dropDown.option("opened")) {
+                    dropDown.close();
+                }
+
+
+                    console.log("Selected Currency:", selectedRow.CurrencyExchangeId);
+            } else {
+                // DevExpress.ui.notify("Please select a currency", "warning", 2000);
+            }
+       }
         function gridData_valueChanged(e) {
             var $dataGrid = $("#dataGrid");
 
@@ -3525,6 +3528,24 @@ function onBaseCurrencyInit(e) {
             const title = "Transaction Documents";
             openModal(url, title);
         }
-        
+        function loadCurrencyGridOnOpen(e) {
+            debugger;
+            const dropDown = e.component;
+            const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
+
+            if (!baseCurrencyId) return;
+
+            const grid = $("#currency-datagrid").dxDataGrid("instance");
+            if (!grid) return;
+
+            DevExpress.data.AspNet.createStore({
+                key: "CurrencyExchangeId",
+                loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
+            }).load().done(data => {
+                grid.option("dataSource", data);
+                dropDown.option("dataSource", data);
+            });
+        }
+
 
 </script>

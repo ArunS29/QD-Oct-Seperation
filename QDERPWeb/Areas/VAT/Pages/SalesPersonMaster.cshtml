@@ -87,44 +87,32 @@
         <div id="SalesPersonMaster" class="no-border-title"></div>
     </div>
 </div>
-<div style="padding:2em;">
-
-<div class="content-container-top" >
-    <div class="col-md-12">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
+<table style="width: 100%; padding: 2em;">
+    <tr>
+        <td>
+            @(Html.DevExtreme().TextBox()
                 .ID("txtSalesPersonName")
                 .Label(new JS("formatMessage('Type a new SalesPerson/ Project Manager & Add to the Existing List')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .Value(null)
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('Sales Person Name Cannot be Empty')"));
+                .ValidationRules(rules => {
+                    rules.AddRequired().Message(new JS("formatMessage('Sales Person Name Cannot be Empty')"));
                 })
-                )
-        </div>
-    </div>
-    <div class="col-md-12">
-    <div class="form-group" style="display:flex;">
-            <div class="col-md-6" style="padding: 0px 10px 0px 0px;">
-
-            @(
-                Html.DevExtreme().DropDownBox()
+            )
+        </td>
+   
+        <td style="padding-right: 10px;">
+            @(Html.DevExtreme().DropDownBox()
                 .Label(new JS("formatMessage('User Code')"))
                 .LabelMode(EditorLabelMode.Floating)
-                .ID("DDlUserId") // Set the ID for the SelectBox
+                .ID("DDlUserId")
                 .DataSource(d => d.WebApi()
-                .Controller("Master")
-                .LoadAction("GetUserddl")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("UserId")  // Ensure this matches the key field returned by the API
-                )
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('User Code is required')"));
+                    .Controller("Master")
+                    .LoadAction("GetUserddl")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("UserId"))
+                .ValidationRules(rules => {
+                    rules.AddRequired().Message(new JS("formatMessage('User Code is required')"));
                 })
                 .Placeholder(new JS("formatMessage('Please Select UserCode')"))
                 .ShowClearButton(true)
@@ -139,116 +127,100 @@
                 .TabIndex(1)
                 .OnKeyDown("onKeyDown")
                 .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
-                )
-        </div>
-         <div class="col-md-6" style="padding: 0px 0px 0px 10px;">
-        @(
-            Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Email Address')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .ID("txtEmailAddress")
-            .OnChange("validateEmail")
-            .Value(null)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired()
-
-                .Message(new JS("formatMessage('Email Address Cannot be Empty')"));
-            })
             )
-        </div>
-        </div>
-        </div>
-    <div class="col-md-4">
+        </td>
 
-        @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
-        {
-            @(
-                Html.DevExtreme().DataGrid()
-                .ID("clientname-datagrid")
-                .DataSource(d => d.WebApi()
-                .Controller("Master")
-                .LoadAction("GetUserddl")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("UserId")  // Ensure this matches the key field returned by the API
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true))
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                .OnSelectionChanged("dataGridSelectionChanged")
-                .OnInitialized("dataGridInitialized")
-                .HeaderFilter(p => p.Visible(true))
-                .ShowBorders(true)
-                .HoverStateEnabled(true)
-                .Paging(p => p.PageSize(15))
-                .FilterRow(f => f.Visible(true))
-                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(345)
-                .Selection(s => s.Mode(SelectionMode.Single))
-                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                .Columns(columns =>
-                {
-                    columns.Add().DataField("UserId").Caption(new JS("formatMessage('User Id')"));  // Ensure this matches the data field returned by the API
-                    columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')")).Alignment(HorizontalAlignment.Center);
+        <td style="padding-left: 10px;">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Email Address')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("txtEmailAddress")
+                .OnChange("validateEmail")
+                .Value(null)
+                .ValidationRules(rules => {
+                    rules.AddRequired().Message(new JS("formatMessage('Email Address Cannot be Empty')"));
                 })
-                )
-        }
+            )
+        </td>
+    </tr>
 
-    </div>
-</div>
-
-<div class="row g-6" >
-    <div class="col-md-6">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
+    <tr>
+        <td style="padding-right: 10px;">
+            @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Contact Number')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ID("txtSalesPersonContactNo")
-                //.OnChange("validateContactNumber")
                 .Value(null)
+            )
+        </td>
 
-                )
-        </div>
-    </div>
-    <!-- Add SalesPerson Code input field -->
-    <div class="col-md-6">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
+        <td style="padding-left: 10px;">
+            @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('SalesPerson/ Project Manager Code')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ID("txtSalesPersonCode")
                 .Value(null)
-                .ValidationRules(rules =>
-                {
-                    rules.AddRequired()
-                    .Message(new JS("formatMessage('Sales Person Code Cannot be Empty')"));
+                .ValidationRules(rules => {
+                    rules.AddRequired().Message(new JS("formatMessage('Sales Person Code Cannot be Empty')"));
                 })
-                )
-        </div>
-    </div>
-</div>
-
-<!-- Add Button Container -->
-<div class="add-button-container">
-    <div class="form-group">
-        @(Html.DevExtreme().Button()
-            .ID("btnAddSalesPerson")
-            .Text(new JS("formatMessage('ADD')"))
-            .Height(70)
-            .Width(178)
-            .Icon("plus")
-            .OnClick("function() { addSalesPerson(); }")
-            .ElementAttr(new { @class = "dx-button-add" })
             )
-    </div>
-</div>
+        </td>
+    
+        <td colspan="2" style="text-align: center; padding-top: 1.5em;">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddSalesPerson")
+                .Text(new JS("formatMessage('ADD')"))
+                .Height(70)
+                .Width(178)
+                .Icon("plus")
+                .OnClick("function() { addSalesPerson(); }")
+                .ElementAttr(new { @class = "dx-button-add" })
+            )
+        </td>
+    </tr>
+</table>
+
 <div class="clear"></div>
 <br />
 <div id="gridContainer"></div>
 </div>
+    <div>
+
+        @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
+        {
+            @(
+                    Html.DevExtreme().DataGrid()
+                    .ID("clientname-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("Master")
+                    .LoadAction("GetUserddl")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("UserId")  // Ensure this matches the key field returned by the API
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged")
+                    .OnInitialized("dataGridInitialized")
+                    .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(true))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("UserId").Caption(new JS("formatMessage('User Id')"));  // Ensure this matches the data field returned by the API
+                        columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')")).Alignment(HorizontalAlignment.Center);
+                    })
+                    )
+                }
+
+    </div>
 
 <script type="text/javascript">
             $(function () {

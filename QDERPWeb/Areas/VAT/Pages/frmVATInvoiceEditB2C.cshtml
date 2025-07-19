@@ -13,9 +13,6 @@
 		margin-bottom: 10px;
 	}
 
-	#B2BdataGrid {
-		height: 325px !important;
-	}
 	.form-wrapper {
 		border-radius: 6px;
 		width: 97%;
@@ -611,7 +608,7 @@
 																.LoadMode(DataSourceLoadMode.Raw)
 																.Key("AccountId"))
 																.LabelMode(EditorLabelMode.Floating)
-																.Value("L00508")
+																.Value("")
 																.ID("ddclientcode")
 																.ValidationRules(rules =>
 																{
@@ -2305,7 +2302,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height(250)
+									.Height("45vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -2320,7 +2317,6 @@
 									.Summary(summary =>
 
 									{
-
 										summary.TotalItems(totalItems =>
 
 										{
@@ -5227,7 +5223,7 @@
 										 onClientCodeChanged(accheadid);
 									 IsClientCode=true;
 										console.log("ClientData",selectedRowData[0])
-								  let  accheadname = selectedRowData[0].AccountHead;
+								  let  accheadname = selectedRowData[0].BillingName;
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										 ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;

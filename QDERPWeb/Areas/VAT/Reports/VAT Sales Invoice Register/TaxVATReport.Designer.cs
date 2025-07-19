@@ -1398,7 +1398,7 @@
             this.xrLabel3,
             this.xrLabel2,
             this.xrLabel1});
-            this.ReportFooter.HeightF = 121.4999F;
+            this.ReportFooter.HeightF = 83.66663F;
             this.ReportFooter.Name = "ReportFooter";
             // 
             // xrLabel19
@@ -2486,11 +2486,11 @@
             this.xrLabel22.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyAddress]")});
             this.xrLabel22.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
-            this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(0F, 23.00001F);
+            this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(154.1667F, 23.00001F);
             this.xrLabel22.Multiline = true;
             this.xrLabel22.Name = "xrLabel22";
             this.xrLabel22.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel22.SizeF = new System.Drawing.SizeF(1400F, 23F);
+            this.xrLabel22.SizeF = new System.Drawing.SizeF(1245.833F, 23F);
             this.xrLabel22.StylePriority.UseFont = false;
             this.xrLabel22.StylePriority.UseTextAlignment = false;
             this.xrLabel22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
@@ -2558,7 +2558,7 @@
                     "hh:mm tt}\', Now())\n")});
             this.xrLabel36.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel36.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(1016.895F, 12.33317F);
+            this.xrLabel36.LocationFloat = new DevExpress.Utils.PointFloat(1047.146F, 12.33317F);
             this.xrLabel36.Name = "xrLabel36";
             this.xrLabel36.SizeF = new System.Drawing.SizeF(342.8535F, 20.66685F);
             this.xrLabel36.StylePriority.UseBorderColor = false;

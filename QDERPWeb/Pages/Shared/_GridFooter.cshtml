@@ -185,6 +185,7 @@
 
 
             </text>).OnClick("openLayoutClick");
+
                     items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
                                                                                                <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
@@ -858,7 +859,6 @@
     function showSubmenu4(e) {
             e.event.stopPropagation();
             hideAllSubmenus(); // Hide others first
-
             var $submenu = $('#submenuContainer4');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
@@ -866,7 +866,7 @@
             // Always position to the right of the button
             const submenuWidth = 372;
             const topPos = offset.top + $target.outerHeight() - 45;
-            const leftPos = offset.left + $target.outerWidth() - 610;
+            const leftPos = offset.left + $target.outerWidth() - 700;
 
             $submenu.css({
                 'width': submenuWidth + 'px',

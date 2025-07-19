@@ -16,6 +16,10 @@ using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report;
 using QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.Detailed_Report;
 using QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register;
+using QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister;
+using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.Web.Areas.VAT.Reports.VATDebitNote;
+using QD.ERP.Web.Areas.VAT.Reports.VATReturns;
 
 namespace QD.ERP.Web.Pages
 {
@@ -207,7 +211,29 @@ namespace QD.ERP.Web.Pages
                     case "TaxSummaryReport":
                         Report = new TaxSummaryReport(frmDate.Value,toDate.Value,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
-                      
+
+                    case "TaxVATReport":
+                        Report = new TaxVATReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "TaxReportRevenueInArabic":
+                        Report = new TaxReportRevenueInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "CreditSummary":
+                        Report = new CreditSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "DebitNoteSummary":
+                        Report = new DebitNoteSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "VATPurchasesAndExpReport":
+                        Report = new VATPurchasesAndExpReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "TaxSummaryReportPurchaseInArabic":
+                        Report = new TaxSummaryReportPurchaseInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                    case "VATReturnsform":
+                        Report = new VATReturnsform(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        break;
+                  
                     default:
                         return NotFound("Cost Analysis Report not found.");
                 }

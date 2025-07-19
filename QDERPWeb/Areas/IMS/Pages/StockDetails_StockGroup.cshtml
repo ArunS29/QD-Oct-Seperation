@@ -199,7 +199,7 @@
                     .Label(new JS("formatMessage('Category')"))
                     )
             </td>
-            <td>
+    @*         <td>
                 @(Html.DevExtreme().SelectBox()
                     .ID("InventoryMasterGroups")
                     .SearchEnabled(true)
@@ -219,16 +219,44 @@
                         .Message(new JS("formatMessage('Master Groups  should be entered')"));
                     })
                     )
+            </td> *@
+
+            <td>
+            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                .Label(new JS("formatMessage('Inventory Master Groups')"))
+                        .DataSource(d => d.WebApi()
+                         .Controller("StockInventory")
+                         .LoadAction("GetInventoryMasterGroups")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                         .Key("InventoryMasterGroupId")
+                        )
+                        .LabelMode(EditorLabelMode.Floating)
+                         .ID("InventoryMasterGroups")
+                        .Width(400)
+                        .OpenOnFieldClick(false)//
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("InventoryMasterGroupId")
+                         .DisplayExpr("InventoryMasterGroup")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .Width("100%")
+                        .OnKeyDown("onKeyDown")
+                                                //.OnValueChanged("dropDownBoxValueChanged")
+                        .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired()
+                                    .Message(new JS("formatMessage('Master Groups  should be entered')"));
+                        })
+                                )
             </td>
-
-
-
-
 
         </tr>
         <tr class="flex-row" style="width:100%;">
             <td>
-                @(Html.DevExtreme().SelectBox()
+                @* @(Html.DevExtreme().SelectBox()
                     .ID("InventoryLedgerAccount")
                      .SearchEnabled(true)
                     .LabelMode(EditorLabelMode.Floating)
@@ -240,12 +268,37 @@
                     .DisplayExpr("DisplayText") 
                     .ValueExpr("AccountId")   
                     .Width(370)
-                    )
+                    ) *@
+                @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                .Label(new JS("formatMessage('Inventory Ledger Account')"))
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetInventoryLedgerAccounts")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("AccountId")
+                                )
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("InventoryLedgerAccount")
+                                .Width(400)
+                                .OpenOnFieldClick(false)//
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("AccountId")
+                                .DisplayExpr("DisplayText")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .Width("100%")
+                                .OnKeyDown("onKeyDown")
+                                                        //.OnValueChanged("dropDownBoxValueChanged")
+                                .ContentTemplate(new TemplateName("GetProjectContentTemplate1"))
+                               
+                                )
             </td>
 
 
             <td>
-                @(Html.DevExtreme().SelectBox()
+             @*    @(Html.DevExtreme().SelectBox()
                     .ID("CostLedgerAccount")
                     .LabelMode(EditorLabelMode.Floating)
                                 .SearchEnabled(true)
@@ -256,7 +309,32 @@
                     )
                     .DisplayExpr("DisplayText") // Shows "AccountHead | AccountGroup"
                     .ValueExpr("AccountId")     // Submits AccountId
-                    )
+                    ) *@
+                @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                .Label(new JS("formatMessage('Cost Ledger Account')"))
+                                .DataSource(d => d.WebApi()
+                                .Controller("StockInventory")
+                                .LoadAction("GetCostLedgerAccounts")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("AccountId")
+                                )
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("CostLedgerAccount")
+                                .Width(400)
+                                .OpenOnFieldClick(false)//
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("AccountId")
+                                .DisplayExpr("DisplayText")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .Width("100%")
+                                .OnKeyDown("onKeyDown")
+                                                        //.OnValueChanged("dropDownBoxValueChanged")
+                                .ContentTemplate(new TemplateName("GetProjectContentTemplate2"))
+
+                                )
             </td>
 
             <td style="padding: 10px; margin-top: 20px;">
@@ -298,7 +376,7 @@
     <table style="width:100%; margin-top: 15px;">
         <tr>
             <td>
-                @(Html.DevExtreme().DataGrid<Tbl20165GoodsAndServicesGroup>()
+            @*    @(Html.DevExtreme().DataGrid<Tbl20165GoodsAndServicesGroup>()
                     .ID("dataGrid")
                     .DataSource(ds => ds.Mvc()
                     .Controller("StockInventory")
@@ -316,12 +394,7 @@
                         editing.UseIcons(true);
                            
                     })
-                                .Editing(editing => editing
-                                .Mode(GridEditMode.Batch)
-                               
-                                .AllowDeleting(true)
-                                )
-                    .Columns(columns =>
+                                .Columns(columns =>
                     {
                         columns.AddFor(m => m.GsgroupId)
                         .Caption(new JS("formatMessage('Code')"))
@@ -345,9 +418,7 @@
                         .Caption(new JS("formatMessage('Category')"))
                         .Alignment(HorizontalAlignment.Center);
 
-                @*         columns.AddFor(m => m.InventoryMasterGroupId)
-                        .Caption(new JS("formatMessage('Inventory Master Groups')"))
-                        .Alignment(HorizontalAlignment.Center); *@
+              
 
                                     columns.AddFor(m => m.InventoryMasterGroupId)
                                     .Caption(new JS("formatMessage('Inventory Master Groups')"))
@@ -380,17 +451,6 @@
                 }).appendTo(container);
                 }"));
                                 
-                                             // Add delete button column
-                                    columns.Add()
-                                    .Type(GridCommandColumnType.Buttons)
-                                    .Buttons(buttons =>
-                                    {
-                                        buttons.Add()
-                                    .Name(GridColumnButtonName.Delete)
-                                    .Icon("trash") // Use a trash icon
-                                    .Hint("Delete Row") // Tooltip
-                                    .OnClick("onDeleteButtonClick");
-                                    });
                     })
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -402,15 +462,318 @@
                     .ColumnFixing(fixing => fixing.Enabled(true))
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
                     .ShowBorders(true)
-                    )
+                    )  *@
+
+               @(Html.DevExtreme().DataGrid()
+                                .ID("dataGrid")
+                                        .KeyExpr("GsgroupId")
+                                .RemoteOperations(false)
+                                .DataSource(d => d.WebApi()
+                                        .Controller("StockInventory")
+                                        .LoadAction("GoodsServicesData")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                )
+                                .Editing(editing => editing
+                                .Mode(GridEditMode.Batch)
+                                .AllowUpdating(true)
+                                .AllowDeleting(true)
+                                .UseIcons(true)
+                                )
+                                .Toolbar(toolbar =>
+                                {
+                                    toolbar.Items(items =>
+                                    {
+                                        items.Add()
+                                    .Name("saveButton")
+                                    .Location(ToolbarItemLocation.After)
+                                    .Visible(false);
+
+                                        items.Add()
+                                    .Name("revertButton")
+                                    .Location(ToolbarItemLocation.After)
+                                    .Visible(false);
+                                    });
+                                })
+
+
+                              .OnRowUpdating("onProjectUpdating")                       // Handles saving
+                                .Columns(columns =>
+                                {
+                                    columns.Add().DataField("GsgroupId").Caption("Code").Visible(false).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+
+                                    columns.Add().DataField("GsgroupCode").Caption("Code").Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("GsgroupName").Caption("GS Group").Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("GsgroupNameAr").Caption("GS Group (In Arabic)").Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("Gscategory").Caption("Category").Alignment(HorizontalAlignment.Center);
+
+
+                                    columns.Add().DataField("InventoryMasterGroupId").Caption("Inventory Master Groups").Width(200)
+                                    .Lookup(lookup => lookup
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("StockInventory")
+                                    .LoadAction("GetInventoryMasterGroups")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("InventoryMasterGroupId")
+                                    )
+                                    .ValueExpr("InventoryMasterGroupId")    // This must match your model's field if it's storing the ID
+                                    .DisplayExpr("InventoryMasterGroup")
+                                    );
+                                   
+                                columns.Add().DataField("IsServicesGroup").Caption("Is Services?")
+                                    .Alignment(HorizontalAlignment.Center)
+                                    .DataType(GridColumnDataType.Boolean)
+                                    .CellTemplate(new JS(
+                                    @"function(container, options) {
+                                var data = options.data;
+                                $('<input>', {
+                                type: 'checkbox',
+                                checked: data.IsServicesGroup,
+                                change: function(e) {
+                                onIsServicesChanged(data.GsgroupId, e.target.checked);
+                                }
+                                }).appendTo(container);
+                                }"));
+
+
+
+                                   
+
+
+                                       // Add delete button column
+                                    columns.Add()
+                                    .Type(GridCommandColumnType.Buttons)
+                                    .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                    .Name(GridColumnButtonName.Delete)
+                                    .Icon("trash") // Use a trash icon
+                                    .Hint("Delete Row")// Tooltip
+                                    .OnClick("onDeleteButtonClicks");
+                                    });
+
+                                })
+                                .Height(500)
+                                .ColumnAutoWidth(true)
+                                .AllowColumnReordering(true)
+                                .AllowColumnResizing(true)
+                                .ColumnFixing(f => f.Enabled(true))
+                                .Paging(p => p.Enabled(true))
+                                .Scrolling(s => s
+                                .Mode(GridScrollingMode.Virtual)
+                                .RowRenderingMode(GridRowRenderingMode.Virtual)
+                                .PreloadEnabled(true)
+                                .ScrollByContent(true)
+                                )
+                                .ShowBorders(true)
+                                .ShowRowLines(true)
+                                .Width("100%")
+                                ) 
 
             </td>
         </tr>
     </table>
+    <div class="limited-footer">
+        @await Html.PartialAsync("InventoryModuleFooter")
+    </div>
+
+
+    @using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetProject-datagrid")
+            .DataSource(d => d.WebApi()
+            .Controller("StockInventory")
+            .LoadAction("GetInventoryMasterGroups")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("InventoryMasterGroupId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+                               @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged")
+            .OnInitialized("dataGridInitialized")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(235))
+            .Columns(columns =>
+            {
+              
+                columns.Add().Caption(new JS("formatMessage('ID')")).DataField("InventoryMasterGroupId");
+                columns.Add().Caption(new JS("formatMessage('Group')")).DataField("InventoryMasterGroup");
+
+            })
+            )
+        }
+    @using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate1"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetProject-datagrid1")
+            .DataSource(d => d.WebApi()
+            .Controller("StockInventory")
+            .LoadAction("GetInventoryLedgerAccounts")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged1")
+            .OnInitialized("dataGridInitialized1")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(235))
+            .Columns(columns =>
+            {
+            
+                columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId");
+                columns.Add().Caption(new JS("formatMessage('Inventory Ledger')")).DataField("DisplayText");
+
+            })
+            )
+        }
+    @using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate2"))
+    {
+        @(Html.DevExtreme().DataGrid()
+            .ID("GetProject-datagrid2")
+            .DataSource(d => d.WebApi()
+            .Controller("StockInventory")
+            .LoadAction("GetCostLedgerAccounts")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("AccountId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged2")
+            .OnInitialized("dataGridInitialized2")
+            .HeaderFilter(p => p.Visible(true))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            .FilterRow(f => f.Visible(false))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .SearchPanel(sp => sp.Visible(false).HighlightSearchText(true).Width(235))
+            .Columns(columns =>
+            {
+
+                columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId");
+                columns.Add().Caption(new JS("formatMessage('Inventory Ledger')")).DataField("DisplayText");
+
+            })
+            )
+        }
 </div>
 
 
 <script>
+      $(document).ready(function () {
+
+        $(".limited-footer .btn-container").each(function () {
+
+            if (!$(this).find("#btnUpdate,#btnBack").length) {
+
+                $(this).remove();
+
+            }
+
+        });
+
+    });
+
+    $(document).on("click", "#btnBack", function () {
+        window.history.back();
+    });
+
+     function onOpened(e) {
+            setTimeout(() => {
+                e.component.focus();
+            });
+        }
+
+        function onKeyDown(e) {
+            const ddbInstance = e.component;
+            if (e.event.keyCode !== 40) return;
+            if (!ddbInstance.option("opened")) {
+                ddbInstance.open();
+            } else {
+                let focusedIndex = dataGrid.option("focusedRowIndex");
+                let visibleRows = dataGrid.getVisibleRows().length - 1;
+                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+                dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+            }
+        }
+
+        function dropDownBoxOnInput(e) {
+            const ddbInstance = e.component;
+            if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+            const text = ddbInstance.option("text");
+            if (dataGrid) {
+                dataGrid.option("searchPanel.text", text);
+            }
+        }
+
+        function dataGridSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#InventoryMasterGroups").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+            }
+        }
+        function dataGridInitialized1(e) {
+            dataGrid = e.component;
+        }
+            function dataGridSelectionChanged1(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#InventoryLedgerAccount").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+            }
+        }
+        function dataGridInitialized(e) {
+            dataGrid = e.component;
+        }
+         function dataGridSelectionChanged2(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#InventoryLedgerAccoCostLedgerAccountunt").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+            }
+        }
+        function dataGridInitialized2(e) {
+            dataGrid = e.component;
+        }
     function printReport() {
         alert("Print report clicked");
     }
@@ -442,53 +805,41 @@
     }
     $(function () {
         $("#btnAdd").dxButton("instance").option("onClick", function () {
-            // Get validator instances for each field
+    
             var groupCodeValidator = $("#GroupCode").dxValidator("instance");
-           // var categoryValidator = $("#Category").dxValidator("instance");
             var inventoryGroupValidator = $("#InventoryMasterGroups").dxValidator("instance");
-           // var inventoryLedgerValidator = $("#InventoryLedgerAccount").dxValidator("instance");
-         //   var costLedgerValidator = $("#CostLedgerAccount").dxValidator("instance");
             var gsgroupNameValidator = $("#NewStockServicesGroups").dxValidator("instance");
-        //    var gsgroupNameArValidator = $("#StockServicesGroups").dxValidator("instance");
+      
 
-            // Validate all fields
             var groupCodeValid = groupCodeValidator.validate().isValid;
-          //  var categoryValid = categoryValidator.validate().isValid;
             var inventoryGroupValid = inventoryGroupValidator.validate().isValid;
-         //   var inventoryLedgerValid = inventoryLedgerValidator.validate().isValid;
-          //  var costLedgerValid = costLedgerValidator.validate().isValid;
             var gsgroupNameValid = gsgroupNameValidator.validate().isValid;
-          //  var gsgroupNameArValid = gsgroupNameArValidator.validate().isValid;
+         
 
-            // Check if all fields are valid
             if (
                 groupCodeValid &&
-              //categoryValid &&
                 inventoryGroupValid &&
-            //  inventoryLedgerValid &&
-           //   costLedgerValid &&
                 gsgroupNameValid 
-            //  gsgroupNameArValid
             ) {
-                // If all valid, collect values and send ajax
-                const groupCode = $("#GroupCode").dxTextBox("instance").option("value");
-             //   const category = $("#Category").dxTextBox("instance").option("value");
-                const inventoryGroupId = $("#InventoryMasterGroups").dxSelectBox("instance").option("value");
-             //   const inventoryLedger = $("#InventoryLedgerAccount").dxSelectBox("instance").option("value");
-              //  const costLedger = $("#CostLedgerAccount").dxSelectBox("instance").option("value");
-              //  const isServiceGroup = $("#ServicesGroup").dxCheckBox("instance").option("value");
-                const gsgroupName = $("#NewStockServicesGroups").dxTextArea("instance").option("value");
-            //    const gsgroupNameAr = $("#StockServicesGroups").dxTextArea("instance").option("value");
+                
+             //    const groupCode = $("#GroupCode").dxTextBox("instance").option("value");
+             //  const category = $("#Category").dxTextBox("instance").option("value");
+             //    const inventoryGroupId = $("#InventoryMasterGroups").dxDropDownBox("instance").option("value");
+             // const inventoryLedger = $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value");
+             //   const costLedger = $("#CostLedgerAccount").dxDropDownBox("instance").option("value");
+             //   const isServiceGroup = $("#ServicesGroup").dxCheckBox("instance").option("value");
+             //    const gsgroupName = $("#NewStockServicesGroups").dxTextArea("instance").option("value");
+             // const gsgroupNameAr = $("#StockServicesGroups").dxTextArea("instance").option("value");
 
                 const data = {
-                    GsgroupCode: groupCode,
-                    Gscategory: category,
-                    InventoryMasterGroupId: inventoryGroupId,
-                    GsgroupInventoryLedger: inventoryLedger,
-                    GsgroupExpenseLedger: costLedger,
-                    IsServicesGroup: isServiceGroup,
-                    GsgroupName: gsgroupName,
-                    GsgroupNameAr: gsgroupNameAr
+                    GsgroupCode: $("#GroupCode").dxTextBox("instance").option("value"),
+                    Gscategory: $("#Category").dxTextBox("instance").option("value"),
+                    InventoryMasterGroupId:  $("#InventoryMasterGroups").dxDropDownBox("instance").option("value"),
+                    GsgroupInventoryLedger: $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value"),
+                    GsgroupExpenseLedger:  $("#CostLedgerAccount").dxDropDownBox("instance").option("value"),
+                    IsServicesGroup: $("#ServicesGroup").dxCheckBox("instance").option("value"),
+                    GsgroupName:  $("#StockServicesGroups").dxTextArea("instance").option("value"),
+                    GsgroupNameAr:  $("#StockServicesGroups").dxTextArea("instance").option("value")
                 };
 
                 $.ajax({
@@ -519,7 +870,43 @@
             }
         });
     });
-      function onDeleteButtonClick(e) {
+     $("#btnUpdate").on("click", function () {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        grid.saveEditData(); // 🔥 only triggers on manual click
+    });
+    function onProjectUpdating(e) {
+
+        const data = {
+            GsgroupId: e.oldData.GsgroupId,
+             GsgroupCode: e.newData.GsgroupCode ?? e.oldData.GsgroupCode,
+            Gscategory: e.newData.Gscategory ?? e.oldData.Gscategory,
+            InventoryMasterGroupId: e.newData.InventoryMasterGroupId ?? e.oldData.InventoryMasterGroupId,
+            GsgroupInventoryLedger: e.newData.GsgroupInventoryLedger ?? e.oldData.GsgroupInventoryLedger,
+               GsgroupExpenseLedger: e.newData.GsgroupExpenseLedger ?? e.oldData.GsgroupExpenseLedger,
+                  IsServicesGroup: e.newData.IsServicesGroup ?? e.oldData.IsServicesGroup,
+                     GsgroupName: e.newData.GsgroupName ?? e.oldData.GsgroupName,
+                     GsgroupNameAr: e.newData.GsgroupNameAr ?? e.oldData.GsgroupNameAr
+
+
+           };
+
+        e.cancel = true;
+
+        return $.ajax({
+            url: '/api/StockInventory/UpdateStockGroup',
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
+                $("#dataGrid").dxDataGrid("instance").refresh();
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to save.", "error", 1500);
+            }
+        });
+    }
+      function onDeleteButtonClicks(e) {
         e.event.preventDefault(); // prevent default delete
 
         var grid = $("#dataGrid").dxDataGrid("instance");
