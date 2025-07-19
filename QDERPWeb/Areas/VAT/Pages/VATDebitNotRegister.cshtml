@@ -1172,24 +1172,24 @@
 			}
 		});
 	});
-	$(document).ready(function () {
-    $('#btnAddNew1').on('click', function (e) {
-        e.stopPropagation(); // prevent click from bubbling up
-        $('#submenu').toggle(); // toggle visibility
-        const offset = $(this).offset();
-        $('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
-    });
+// 	$(document).ready(function () {
+//     $('#btnAddNew1').on('click', function (e) {
+//         e.stopPropagation(); prevent click from bubbling up
+//         $('#submenu').toggle(); toggle visibility
+//         const offset = $(this).offset();
+//         $('#submenu').css({ top: offset.top + $(this).outerHeight(), left: offset.left });
+//     });
 
-    // Hide submenu when clicking outside
-    $(document).on('click', function () {
-        $('#submenu').hide();
-    });
-	$(document).on('click', '#addCreditNote', function (e) {
-    e.stopPropagation();
-			const url = `/${tenantName}/VAT/DebitNoteEditForm`;
-    window.location.href = url;
-});
-});
+//     Hide submenu when clicking outside
+//     $(document).on('click', function () {
+//         $('#submenu').hide();
+//     });
+// 	$(document).on('click', '#addCreditNote', function (e) {
+//     e.stopPropagation();
+// 			const url = `/${tenantName}/VAT/DebitNoteEditForm`;
+//     window.location.href = url;
+// });
+// });
 
 		$(document).ready(function () {
 							console.log('Start permission handling');

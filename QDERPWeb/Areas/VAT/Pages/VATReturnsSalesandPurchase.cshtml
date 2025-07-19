@@ -162,7 +162,7 @@
     }
 
 
-    .dashboard {
+    .title {
         display: flex;
         gap: 20px;
         align-items: center;
@@ -590,9 +590,9 @@
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-<div class="content-container-top">
-<div class=" title dashboard" style="display: flex; align-items: center;margin-top: 10px;width:55%">
-@* <input id="formId" value="frm201LedgerAccount1" type="hidden" /> *@
+@* <div class="content-container-top"> *@
+<div class="title" style="display: flex; align-items: center;margin-top: 10px;width:55%">
+<input id="formId" value="frm201LedgerAccount1" type="hidden" />
 
 	
 
@@ -917,61 +917,12 @@
         
     </div>
 
-</div>
+@* </div> *@
 
 
 
 <script>
 
-
-    // function animateInvoiceCount(target) {
-    //   let i = 0;
-    //   const el = document.getElementById("invoiceCount");
-    //   el.classList.remove('bounce');
-
-    //   const timer = setInterval(() => {
-    //     if (i >= target) {
-    //       el.innerText = target;
-    //       el.classList.add('bounce');
-    //       clearInterval(timer);
-    //     } else {
-    //       el.innerText = i++;
-    //     }
-    //   }, 30);
-    // }
-
-    // // Animate to 40
-    // animateInvoiceCount(40);
-
-
-    function countUpTurnover(targetStr) {
-      const el = document.getElementById("turnover");
-      const target = parseFloat(targetStr);
-      let current = 0.0;
-
-      const interval = setInterval(() => {
-        current += 0.5;
-        if (current >= target) {
-          el.textContent = targetStr + " K";
-          clearInterval(interval);
-        } else {
-          el.textContent = current.toFixed(1) + " K";
-        }
-      }, 30);
-    }
-
-    // Animate to 46.2 K
-    countUpTurnover("46.2");
-
-      const card = document.getElementById('mainCard');
-    const counts = [8, 15, 5];
-    const countEls = [
-      document.getElementById("count0"),
-      document.getElementById("count1"),
-      document.getElementById("count2"),
-    ];
-    const tabs = document.querySelectorAll(".tab-text");
-    const contents = document.querySelectorAll(".tab-content");
 
     function animateCount(el, target) {
       let i = 0;
