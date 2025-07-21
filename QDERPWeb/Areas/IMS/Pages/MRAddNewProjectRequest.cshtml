@@ -1428,7 +1428,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height("65vh")
+						.Height("45vh")
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -3656,7 +3656,30 @@
 
 					},
 
-					{ dataField: "Descriptions", caption: "...", width: 50 },
+											{
+					dataField: "Descriptions",
+					caption: "...",
+					   cssClass: "center-header",
+					width: 90,
+					allowEditing: true,
+							cellTemplate: function (container, options) {
+							$("<div>").dxButton({
+								icon: "user", // Built-in DevExtreme icon
+								hint: "Edit IMS Details Description",
+								stylingMode: "text",
+								width: 60,
+								onClick: function () {
+									// Save context
+									window.currentDescriptionCell = options;
+
+										// Open modal
+										let url = `/${tenantName}/IMS/DetailsDescriptionMR`;
+									let title = "VAT Details Description";
+									openModal(url, title);
+								}
+							}).appendTo(container);
+						}
+						},
 
 					{
 
