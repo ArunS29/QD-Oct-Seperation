@@ -1,0 +1,87 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.PaymentAdviceModel
+@{
+}
+<div style="background-color: #e6eff9; border: 1px solid #c4d8e2; padding: 10px;">
+    <div style="display: flex; gap: 30px;">
+        <!-- Left Form Panel -->
+        <div style="width: 400px;">
+            <div class="dx-field">
+                <div class="dx-field-label">Payment Mode:</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().SelectBox()
+                                    .ID("paymentMode")
+                                    .DataSource(new[] { "Bank Transfer", "Cheque", "Cash" })
+                                    .Value("Bank Transfer")
+                                    .Placeholder("Select Mode")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+
+            <div class="dx-field">
+                <div class="dx-field-label">Instrument Details:</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TextBox()
+                                    .ID("instrumentDetails")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+
+            <div class="dx-field">
+                <div class="dx-field-label">Instrument Date:</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().DateBox()
+                                    .ID("instrumentDate")
+                                    .Value(DateTime.Now)
+                                    .DisplayFormat("dd-MMM-yyyy")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+
+            <div class="dx-field">
+                <div class="dx-field-label">Transferred to : (Bank Name)</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TextBox()
+                                    .ID("bankName")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+
+            <div class="dx-field">
+                <div class="dx-field-label">Transferred to : (Bank Account No:)</div>
+                <div class="dx-field-value">
+                    @(Html.DevExtreme().TextBox()
+                                    .ID("bankAccount")
+                                    .Width("100%")
+                                    )
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Buttons Panel -->
+        <div style="margin-top: 30px;">
+            @(Html.DevExtreme().Button()
+                    .ID("btnPrintAdvice")
+                    .Text("Print Payment Advice")
+                    .Type(ButtonType.Default)
+                    .Icon("print")
+                    .Width(250)
+                    @* .OnClick("printPaymentAdvice") *@
+                    )
+            <br /><br />
+            @(Html.DevExtreme().Button()
+                    .ID("btnClose")
+                    .Text("Close")
+                    .Type(ButtonType.Normal)
+                    .Icon("close")
+                    .Width(250)
+                    .StylingMode(ButtonStylingMode.Contained)
+                    @* .OnClick("closeAdvicePopup") *@
+                    )
+        </div>
+    </div>
+</div>

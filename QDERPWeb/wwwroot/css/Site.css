@@ -687,7 +687,7 @@ body.dark-mode {
     color:white;
 }
 .dx-tab.dx-tab-selected .dx-icon, .dx-tab.dx-tab-selected .dx-tab-text:hover {
-    color: black;
+    color: white;
 }
 .dx-tab.dx-tab-selected {
     background-color: var(--title-background-color) !important;
@@ -699,8 +699,8 @@ body.dark-mode {
 }
 
     .dx-tab:hover {
-        background-color: var(--background-color) !important;
-        color: black !important;
+        background-color: var(--title-background-color) !important;
+        color: white !important;
         border-color: var(--title-background-color) !important;
     }
 
