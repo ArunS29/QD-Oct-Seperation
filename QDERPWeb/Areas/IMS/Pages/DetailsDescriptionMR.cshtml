@@ -1,0 +1,149 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.DetailsDescriptionMRModel
+@{
+}
+<style>
+
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    .playIcon {
+        display: none;
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70%;
+        max-width: 1400px;
+        height: 90%;
+        max-height: 470px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+
+</style>
+
+<div style="padding: 10px; border-radius: 5px;">
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+        <label style="font-weight: bold;">Detailed Description / Specification:</label>
+        <div>
+            @(Html.DevExtreme().Button()
+                        .ID("btnUseDetailedDescription")
+                        .Text("Use Detailed Description")
+                        .Icon("info")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .ElementAttr("style", "margin-right: 10px;"))
+            @(Html.DevExtreme().Button()
+                        .ID("btnUseItemDesc")
+                        .Text("Use Item Desc.")
+                        .Icon("info")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Contained))
+        </div>
+    </div>
+
+    <!-- TextArea -->
+    <div style="margin-top: 10px;">
+        @(Html.DevExtreme().TextArea()
+                .ID("DetailedDescription")
+                .Height(100)
+                .Label("Detailed Description / Specification")
+                .LabelMode(EditorLabelMode.Floating)
+                .ElementAttr("style", "width: 100%;"))
+    </div>
+
+    <!-- 3 Column Row: Purpose / Priority / Expected Date -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("PurposeOfRequest")
+                .Label("Purpose of Request")
+                .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().SelectBox()
+                .ID("PriorityOfRequest")
+                .Items(new[] { "Low", "Medium", "High" })
+                .Label("Priority of Request")
+                .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().DateBox()
+                .ID("ExpectedDate")
+                .Type(DateBoxType.Date)
+                .Label("Expected Date")
+                .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <!-- Remarks -->
+    <div style="margin-top: 15px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("Remarks")
+                .Label("Remarks")
+                .LabelMode(EditorLabelMode.Floating)
+                .ElementAttr("style", "width: 100%;"))
+    </div>
+
+    <!-- Size / Manufacturer / Brand -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("Size")
+                .Label("Size")
+                .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().TextBox()
+                .ID("Manufacturer")
+                .Label("Manufacturer")
+                .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().TextBox()
+                .ID("Brand")
+                .Label("Brand")
+                .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <!-- Part No / Delivery Period / Plan No -->
+    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("PartNo")
+                .Label("Part No")
+                .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().TextBox()
+                .ID("DeliveryPeriod")
+                .Label("Delivery Period")
+                .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().TextBox()
+                .ID("PlanNo")
+                .Label("Plan No")
+                .LabelMode(EditorLabelMode.Floating))
+    </div>
+</div>
