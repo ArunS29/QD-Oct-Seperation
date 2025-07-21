@@ -164,10 +164,10 @@
             // 
             this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(674.4946F, 0F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(97.7478F, 23F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(106.9145F, 23F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
+            this.pageInfo2.TextFormatString = "Page No:{0} of {1}";
             // 
             // ReportHeader
             // 
@@ -191,7 +191,7 @@
             this.xrLabel34.StylePriority.UseBorderColor = false;
             this.xrLabel34.StylePriority.UseFont = false;
             this.xrLabel34.StylePriority.UseTextAlignment = false;
-            this.xrLabel34.Text = "as on";
+            this.xrLabel34.Text = "as on[?EndDate!dd-MMM-yyyy](as per Ledger)";
             this.xrLabel34.TextAlignment = DevExpress.XtraPrinting.TextAlignment.BottomCenter;
             // 
             // xrLabel40
@@ -237,7 +237,7 @@
             // 
             this.xrLabel4.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel4.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel4.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.xrLabel4.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(12)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.xrLabel4.LocationFloat = new DevExpress.Utils.PointFloat(9.999949F, 56.83334F);
             this.xrLabel4.Multiline = true;
             this.xrLabel4.Name = "xrLabel4";
@@ -344,7 +344,7 @@
             // 
             // xrLabel36
             // 
-            this.xrLabel36.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel36.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel36.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel36.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -371,7 +371,7 @@
             // 
             // xrLabel37
             // 
-            this.xrLabel37.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel37.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel37.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel37.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -396,7 +396,7 @@
             // 
             // xrLabel38
             // 
-            this.xrLabel38.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel38.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel38.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel38.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -421,7 +421,7 @@
             // 
             // xrLabel39
             // 
-            this.xrLabel39.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel39.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel39.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel39.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -446,7 +446,7 @@
             // 
             // xrLabel41
             // 
-            this.xrLabel41.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel41.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel41.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel41.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -472,7 +472,7 @@
             // 
             // xrLabel42
             // 
-            this.xrLabel42.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel42.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel42.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel42.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -497,7 +497,7 @@
             // 
             // xrLabel43
             // 
-            this.xrLabel43.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel43.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel43.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel43.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -522,7 +522,7 @@
             // 
             // xrLabel44
             // 
-            this.xrLabel44.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel44.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel44.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel44.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -548,7 +548,7 @@
             // 
             // xrLabel45
             // 
-            this.xrLabel45.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel45.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel45.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel45.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -574,7 +574,7 @@
             // 
             // xrLabel46
             // 
-            this.xrLabel46.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel46.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel46.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel46.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -600,7 +600,7 @@
             // 
             // xrLabel47
             // 
-            this.xrLabel47.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel47.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel47.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel47.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -626,7 +626,7 @@
             // 
             // xrLabel48
             // 
-            this.xrLabel48.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel48.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel48.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel48.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -652,7 +652,7 @@
             // 
             // xrLabel49
             // 
-            this.xrLabel49.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel49.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel49.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel49.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -678,11 +678,13 @@
             // 
             // xrLabel50
             // 
-            this.xrLabel50.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel50.AutoWidth = true;
+            this.xrLabel50.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel50.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel50.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel50.BorderWidth = 1F;
+            this.xrLabel50.CanGrow = false;
             this.xrLabel50.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel50.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.xrLabel50.LocationFloat = new DevExpress.Utils.PointFloat(1327.4F, 0F);
@@ -1239,7 +1241,7 @@
             // 
             // xrLabel17
             // 
-            this.xrLabel17.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel17.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel17.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel17.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1259,7 +1261,7 @@
             // 
             // xrLabel16
             // 
-            this.xrLabel16.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel16.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel16.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel16.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel16.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1286,7 +1288,7 @@
             // 
             // xrLabel15
             // 
-            this.xrLabel15.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel15.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel15.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel15.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel15.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1313,7 +1315,7 @@
             // 
             // xrLabel14
             // 
-            this.xrLabel14.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel14.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel14.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel14.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel14.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1340,7 +1342,7 @@
             // 
             // xrLabel11
             // 
-            this.xrLabel11.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel11.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel11.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel11.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel11.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1367,7 +1369,7 @@
             // 
             // xrLabel12
             // 
-            this.xrLabel12.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel12.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel12.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel12.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel12.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1394,7 +1396,7 @@
             // 
             // xrLabel13
             // 
-            this.xrLabel13.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel13.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel13.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel13.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel13.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1421,7 +1423,7 @@
             // 
             // xrLabel8
             // 
-            this.xrLabel8.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel8.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel8.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel8.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel8.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1448,7 +1450,7 @@
             // 
             // xrLabel9
             // 
-            this.xrLabel9.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel9.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel9.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel9.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel9.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1475,7 +1477,7 @@
             // 
             // xrLabel10
             // 
-            this.xrLabel10.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel10.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel10.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel10.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel10.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1502,7 +1504,7 @@
             // 
             // xrLabel6
             // 
-            this.xrLabel6.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel6.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel6.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel6.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel6.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Top | DevExpress.XtraPrinting.BorderSide.Right) 
@@ -1529,7 +1531,7 @@
             // 
             // xrLabel7
             // 
-            this.xrLabel7.BackColor = System.Drawing.Color.LightSteelBlue;
+            this.xrLabel7.BackColor = System.Drawing.Color.LightBlue;
             this.xrLabel7.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel7.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Solid;
             this.xrLabel7.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
@@ -1611,11 +1613,11 @@
             // 
             this.xrLabel18.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel18.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'Reported By: \' + [Parameters.UserName] + \' on \' + FormatString(\'{0:dd MMMM yyyy " +
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'Reported By: \' + [Parameters.UserName] + \' on \' + FormatString(\'{0:dd-MMMM-yyyy " +
                     "hh:mm tt}\', Now())\n")});
             this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel18.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(1024.063F, 0F);
+            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(1029.396F, 0F);
             this.xrLabel18.Name = "xrLabel18";
             this.xrLabel18.SizeF = new System.Drawing.SizeF(411.9371F, 20.66685F);
             this.xrLabel18.StylePriority.UseBorderColor = false;

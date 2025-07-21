@@ -558,6 +558,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         return BadRequest(new { success = false, message = "This Store Name already exists." });
                     }
 
+
                     var existingRecord = await dbContext.Tbl60001storeMasters
                         .FirstOrDefaultAsync(x => x.StoreId == model.StoreId);
 
@@ -1901,6 +1902,69 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 _logger.LogError($"Error in Delete: {ex}");
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
+        }
+        [HttpGet]
+        public IActionResult GetStockMasterGroups(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = dbContext.Tbl60008inventoryMasterGroups
+                        .Select(x => new
+                        {
+                            x.InventoryMasterGroupId,
+                            x.InventoryMasterGroup
+                           
+                        });
+
+                    return Json(DataSourceLoader.Load(query, loadOptions));
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateStockGroup([FromBody] Tbl20165GoodsAndServicesGroup model)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existingRecord = await dbContext.Tbl20165GoodsAndServicesGroups
+                        .FirstOrDefaultAsync(x => x.GsgroupId == model.GsgroupId);
+
+                    if (existingRecord == null)
+                        return NotFound(new { success = false, message = "Stock Group not found." });
+
+                    // ✅ Update fields
+                    existingRecord.GsgroupCode = model.GsgroupCode;
+                    existingRecord.Gscategory = model.Gscategory;
+                    existingRecord.InventoryMasterGroupId = model.InventoryMasterGroupId;
+                    existingRecord.GsgroupInventoryLedger = model.GsgroupInventoryLedger;
+                    existingRecord.GsgroupExpenseLedger = model.GsgroupExpenseLedger;
+                    existingRecord.IsServicesGroup = model.IsServicesGroup;
+                    existingRecord.GsgroupName = model.GsgroupName;
+                    existingRecord.GsgroupNameAr = model.GsgroupNameAr;
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Updated successfully" });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateStockGroup: {ex}");
+                    return StatusCode(500, new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
 
     }

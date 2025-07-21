@@ -160,7 +160,7 @@
 <input type="file" id="fileUploadSingle" style="display: none;" />
 <input type="file" id="fileUploadMultiple" multiple style="display: none;" />
 
-<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:18px">
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:10px">
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
                 .ID("btnSave")
@@ -218,25 +218,26 @@
 
     <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
-                .ID("btnPrint2")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .ElementAttr(new { @class = "bold-button" })
-                .DropDownOptions(options => options.Width(230))
-                .ShowArrowIcon(false)
-                .Items(items =>
-                {
-                    items.Add().Text("Preview Voucher").Icon("print");
-                    items.Add().Text("Preview VAT Purchase Bill").Icon("file");
-                    items.Add().Text("Edit Voucher").Icon("folder");
-                    items.Add().Text("UploadItems Form Excel").Icon("edit");
+            .ID("btnPrint2")
+            .Width(132)
+            .Text(new JS("formatMessage('Print')"))
+            .Icon("print")
+            .ElementAttr(new { @class = "bold-button" })
+            .DropDownOptions(options => options.Width(230))
+            .ShowArrowIcon(false)
+            .Items(items =>
+            {
+                items.Add().Text("Preview Voucher").Icon("print").OnClick("addPreviewVoucher");
+                items.Add().Text("Preview VAT Purchase Bill").Icon("file");
+                items.Add().Text("Edit Voucher").Icon("folder");
+                items.Add().Text("UploadItems Form Excel").Icon("edit");
 
                 })
                 .OnItemClick("addPrintButton_click")
 
                 )
     </div>
-    <div class="btn-containers">
+   @*  <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
                 .ID("btnPrint2")
                 .Text(new JS("formatMessage('Print')"))
@@ -255,7 +256,7 @@
                 .OnItemClick("addPrintButton_click")
 
                 )
-    </div>
+    </div> *@
 
     <div class="btn-containers">
         @(Html.DevExtreme().Button()

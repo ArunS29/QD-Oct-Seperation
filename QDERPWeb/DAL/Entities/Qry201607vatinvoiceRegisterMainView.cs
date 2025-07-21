@@ -366,4 +366,8 @@ public partial class Qry201607vatinvoiceRegisterMainView
     public string InvoiceType { get; set; }
 
     public string CurrencyMasterCode { get; set; }
+    public decimal? ConvertedTotalInvoiceAmount { get; set; }
+    public string CurrencyImage { get; set; }
+    public string CurrencySymbole { get; set; }
+
 }
