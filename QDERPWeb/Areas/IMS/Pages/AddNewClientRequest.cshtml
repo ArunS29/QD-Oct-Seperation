@@ -324,6 +324,7 @@
 	.content-container-top {
 		width: 100%;
 	}
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -3712,7 +3713,30 @@
 
 					},
 
-					{ dataField: "Descriptions", caption: "...", width: 50 },
+						{
+			dataField: "Descriptions",
+			caption: "...",
+			   cssClass: "center-header",
+			width: 90,
+			allowEditing: true,
+					cellTemplate: function (container, options) {
+					$("<div>").dxButton({
+						icon: "user", // Built-in DevExtreme icon
+						hint: "Edit IMS Details Description",
+						stylingMode: "text",
+						width: 60,
+						onClick: function () {
+							// Save context
+							window.currentDescriptionCell = options;
+
+								// Open modal
+								let url = `/${tenantName}/IMS/DetailsDescriptionMR`;
+							let title = "VAT Details Description";
+							openModal(url, title);
+						}
+					}).appendTo(container);
+				}
+				},
 
 					{
 
