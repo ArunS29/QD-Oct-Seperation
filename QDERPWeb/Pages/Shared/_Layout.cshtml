@@ -19,6 +19,7 @@
     string escapedJson = "{}"; // Initialize early to make available later
     string escapedJson1 = "{}"; // Initialize early to make available later
     string equipmentJson = "{}"; // Initialize early to make available later
+    string escapedJson2 = "{}"; // Initialize early to make available later
     List<string> userModules = new List<string>();
     string encryptedTenantName = EncryptionHelper.Encrypt(tenantName); // Encrypt tenantName
 
@@ -51,6 +52,9 @@
                 var inventoryMenuAccess = await UserAccessService.GetInventoryMenuAccessAsync(parsedUserId);
                 var json1 = System.Text.Json.JsonSerializer.Serialize(inventoryMenuAccess);
                 escapedJson1 = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json1);
+                var vatMenuAccess = await UserAccessService.GetVatMenuAccessAsync(parsedUserId);
+                var json2 = System.Text.Json.JsonSerializer.Serialize(vatMenuAccess);
+                escapedJson2 = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json2);
                 var equipmentMenuAccess = await UserAccessService.GetEquipmentMenuAccessAsync(parsedUserId);
                 var json3 = System.Text.Json.JsonSerializer.Serialize(equipmentMenuAccess);
                 equipmentJson = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json3);
@@ -3185,35 +3189,49 @@
 
                     function showVATModuleSubmenu() {
                         const sidebar2 = document.getElementById('sidebar2');
-                        sidebar2.innerHTML = `
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
-                                            <i class="fas fa-sort-numeric-up"></i>
-                                            <div class="text">${formatMessage("Sales Invoice Register")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
-                                            <i class="fas fa-file-invoice "></i>
-                                            <div class="text">${formatMessage("Credit Note Register")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
-                                            <i class="fas fa-sort-numeric-down"></i>
-                                            <div class="text">${formatMessage("Purchase Invoice Register")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
-                                            <i class="fas fa-book"></i>
-                                            <div class="text">${formatMessage("Debit Note Register")}</div>
-                                        </a>
-                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATReturnsSalesandPurchase">
-                                            <i class="fas fa-percentage"></i>
-                                            <div class="text">${formatMessage("VAT Returns")}</div>
-                                        </a>
-                                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATInvoiceReporting">
-                                            <i class="fas fa-chart-pie"></i>
-                                            <div class="text">${formatMessage("Sales Reporting")}</div>
-                                        </a>
-                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
-                                            <i class="fas fa-align-justify"></i>
-                                            <div class="text">${formatMessage("Proforma Invoices")}</div>
-                                        </a>`;
+
+                        const vatMenuItems = [
+                            { key: "Sales Invoice Register", icon: "fas fa-book", href: `/${tenantName}/VAT/SalesRegisterVAT`, label: "Sales Invoice Register" },
+                            { key: "Credit Note Register", icon: "fas fa-book", href: `/${tenantName}/VAT/VATCreditNotRegister`, label: "Credit Note Register" },
+                            { key: "Purchase Invoice Register", icon: "fas fa-book", href: `/${tenantName}/VAT/VATPurchaseMasterView`, label: "Purchase Invoice Register" },
+                            { key: "Debit Note Register", icon: "fas fa-book", href: `/${tenantName}/VAT/VATDebitNotRegister`, label: "Debit Note Register" },
+                            { key: "VAT Returns", icon: "fas fa-book", href: `/${tenantName}/VAT/VATReturnsSalesandPurchase`, label: "VAT Returns" },
+                            { key: "Sales Reporting", icon: "fas fa-book", href: `/${tenantName}/VAT/VATInvoiceReporting`, label: "Sales Reporting" },
+                            { key: "Proforma Invoices", icon: "fas fa-book", href: `/${tenantName}/VAT/ProformaInvoiceMasterView`, label: "Proforma Invoices" }
+                        ];
+
+                        // Access config from backend
+                        const access = (vatMenuAccess1 || []).reduce((acc, x) => {
+                            acc[x.ItemDescription] = x;
+                            return acc;
+                        }, {});
+
+                        // Filter and map with access
+                        const filteredMenuItems = vatMenuItems
+                            .filter(item => {
+                                const menuConfig = access[item.key];
+                                return menuConfig ? menuConfig.ItemVisible : false;
+                            })
+                            .map(item => {
+                                const menuConfig = access[item.key];
+                                return {
+                                    ...item,
+                                    enabled: menuConfig ? menuConfig.ItemEnabled : false
+                                };
+                            });
+
+                        // Build HTML
+                        let html = filteredMenuItems.map(item => `
+                            <a class="submenu-item${!item.enabled ? ' disabled' : ''}"
+                                ${item.enabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
+                                href="${item.enabled ? item.href : '#'}"
+                                style="${!item.enabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                                <i class="${item.icon}"></i>
+                                <div class="text">${formatMessage(item.label)}</div>
+                            </a>
+                        `).join('');
+
+                        sidebar2.innerHTML = html;
                     }
 
             function showEquipmentRentalSubmenu() {
@@ -4282,6 +4300,7 @@
             }
         };
         inventoryMenuAccess1 = JSON.parse("@Html.Raw(escapedJson1)");
+        vatMenuAccess1 = JSON.parse("@Html.Raw(escapedJson2)");
         equipmentRentalMenuAccess = JSON.parse("@Html.Raw(equipmentJson)");
         window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");
 
