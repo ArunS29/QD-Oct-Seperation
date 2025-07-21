@@ -588,29 +588,42 @@
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(3)
 		.ElementAttr("class", "dynamicFormatDateBox"))
-	@(Html.DevExtreme().DropDownButton()
-		.ID("ddBtnShowRecords")
-		.Text(new JS("formatMessage('Show Records')"))
-		.Icon("smalliconslayout")
-		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
-		.DropDownOptions(options => options.Width(230))
-		.TabIndex(4)
-		.Items(items =>
-		{
-			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-			items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 
-		})
-		)
+		@(Html.DevExtreme().DropDownButton()
+				.ID("ddBtnShowRecords")
+				.Text(new JS("formatMessage('Show Records')"))
+				.Icon("smalliconslayout")
+				.Width(250)
+				.SplitButton(true) // This enables main-button vs arrow split behavior
+				.ElementAttr(new { @class = "button-alignment-down", style = "margin-top: 5px;" })
+				.TabIndex(4)
+				.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+					   			<div class="custom-dropdown-item">
+					   				<div style="background-color:<%- color %>;" class="side-bar"></div>
+					   				<div class="item-content">
+					   					<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+					   					<div>
+					   						<div class="item-title"><%- text %></div>
+					   					</div>
+					   				</div>
+					   			</div>
+					   		</text>)
+				)
 </div>
 <!-- Result Grid -->
 <div class="dx-field ledgerResult" style="height:70%;">
@@ -650,7 +663,7 @@
 			.Visible(true);
 
 
-					columns.AddFor(m => m.DrAmount)
+					columns.AddFor(m => m.ConvertedDrAmount)
 					.Caption(new JS("formatMessage('Debit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -660,12 +673,12 @@
 								 		</text>)
 					.CellTemplate(@<text>
 						   			<div class="debit-pill">
-						   				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+						   				<%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 						   			</div>
 						   		</text>)
 					.Visible(true);
 
-					columns.AddFor(m => m.CrAmount)
+					columns.AddFor(m => m.ConvertedCrAmount)
 					.Caption(new JS("formatMessage('Credit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -675,11 +688,11 @@
 								 		</text>)
 					.CellTemplate(@<text>
 						   			<div class="credit-pill">
-						   				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+						   				<%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 						   			</div>
 						   		</text>)
 					.Visible(true);
-					columns.AddFor(m => m.ConvertedCrAmount)
+					columns.AddFor(m => m.CrAmount)
 					.Caption("Trans Credit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
@@ -709,14 +722,14 @@
 						})();
 					</script>
 
-					<%- data.ConvertedCrAmount != null
-					? data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+					<%- data.CrAmount != null
+					? data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 					: "0.00"
 					%>
 				</div>
 			</text>)
 					.Visible(false);
-					columns.AddFor(m => m.ConvertedDrAmount)
+					columns.AddFor(m => m.DrAmount)
 					.Caption("Trans Debit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
@@ -745,8 +758,8 @@
 						})();
 					</script>
 
-					<%- data.ConvertedDrAmount != null
-					? data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+					<%- data.DrAmount != null
+					? data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 					: "0.00"
 					%>
 				</div>

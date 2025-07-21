@@ -9,7 +9,7 @@
         width:100%;
     }
     .containerLedgerAccount {
-        margin: 10px;
+        /* margin: 10px; */
         padding: 0;
         background-color: transparent;
         width:100%;
@@ -134,15 +134,15 @@
     .vat-table {
         width: 100%;
         border-collapse: collapse;
-        font-family: 'Segoe UI', sans-serif;
+        /* font-family: 'Segoe UI', sans-serif; */
         font-size: 14px;
         margin-bottom: 30px;
     }
 
     .vat-table th,
     .vat-table td {
-        border: 1px solid #ccc;
-        padding: 8px;
+            border: 1px solid var(--title-background-color);
+        padding: 3px;
         text-align: center;
     }
 
@@ -162,7 +162,7 @@
     }
 
 
-    .dashboard {
+    .title {
         display: flex;
         gap: 20px;
         align-items: center;
@@ -556,10 +556,6 @@
         text-align: right;
     }
 
-    .dx-fieldset.horizontal-container {
-        margin-top: 20px;
-    }
-
     .numberbox-with-icon {
         position: relative;
         display: inline-block;
@@ -590,9 +586,9 @@
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-<div class="content-container-top">
-<div class=" title dashboard" style="display: flex; align-items: center;margin-top: 10px;width:55%">
-@* <input id="formId" value="frm201LedgerAccount1" type="hidden" /> *@
+@* <div class="content-container-top"> *@
+<div class="title" style="display: flex; align-items: center;margin-top: 10px;width:55%">
+<input id="formId" value="frm201LedgerAccount1" type="hidden" />
 
 	
 
@@ -663,6 +659,11 @@
             items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
         })
         )
+    <div>
+
+        @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
+
+    </div>
 </div>
 
 <div class="containerLedgerAccount">
@@ -683,7 +684,7 @@
         <div>
 
             <!-- Right Forms -->
-            <div id="vatOnSalesForm" style="padding: 0px 20px;display: flex;width: 90%;">
+        <div id="vatOnSalesForm" style="padding: 0px 20px;display: flex;width: 100%;">
                 <table class="vat-table">
                   
                         <thead>
@@ -790,7 +791,7 @@
 
 
                 <!-- VAT on Purchase Form -->
-            <div id="vatOnPurchaseForm" style="display: none;padding: 0px 20px;width: 90%;">
+        <div id="vatOnPurchaseForm" style="display: none;padding: 0px 20px;width: 100%;">
                 <table class="vat-table" style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr>
@@ -911,67 +912,14 @@
     </div>
 
 
-    <div class="Head" style="margin-left: 15px;">
 
-                @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
-        
-    </div>
 
-</div>
+@* </div> *@
 
 
 
 <script>
 
-
-    // function animateInvoiceCount(target) {
-    //   let i = 0;
-    //   const el = document.getElementById("invoiceCount");
-    //   el.classList.remove('bounce');
-
-    //   const timer = setInterval(() => {
-    //     if (i >= target) {
-    //       el.innerText = target;
-    //       el.classList.add('bounce');
-    //       clearInterval(timer);
-    //     } else {
-    //       el.innerText = i++;
-    //     }
-    //   }, 30);
-    // }
-
-    // // Animate to 40
-    // animateInvoiceCount(40);
-
-
-    function countUpTurnover(targetStr) {
-      const el = document.getElementById("turnover");
-      const target = parseFloat(targetStr);
-      let current = 0.0;
-
-      const interval = setInterval(() => {
-        current += 0.5;
-        if (current >= target) {
-          el.textContent = targetStr + " K";
-          clearInterval(interval);
-        } else {
-          el.textContent = current.toFixed(1) + " K";
-        }
-      }, 30);
-    }
-
-    // Animate to 46.2 K
-    countUpTurnover("46.2");
-
-      const card = document.getElementById('mainCard');
-    const counts = [8, 15, 5];
-    const countEls = [
-      document.getElementById("count0"),
-      document.getElementById("count1"),
-      document.getElementById("count2"),
-    ];
-    const tabs = document.querySelectorAll(".tab-text");
-    const contents = document.querySelectorAll(".tab-content");
 
     function animateCount(el, target) {
       let i = 0;

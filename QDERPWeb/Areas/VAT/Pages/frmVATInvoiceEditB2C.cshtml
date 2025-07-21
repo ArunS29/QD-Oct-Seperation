@@ -13,9 +13,6 @@
 		margin-bottom: 10px;
 	}
 
-	#B2BdataGrid {
-		height: 325px !important;
-	}
 	.form-wrapper {
 		border-radius: 6px;
 		width: 97%;
@@ -2305,7 +2302,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height(250)
+									.Height("45vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -2320,7 +2317,6 @@
 									.Summary(summary =>
 
 									{
-
 										summary.TotalItems(totalItems =>
 
 										{
@@ -3515,7 +3511,53 @@
 
 <script>
 
+	let companyBranchList = [];
 
+	$(async function () {
+		// Fetch company list from API
+			await $.get("/api/VATModule/GetDefalutCompanyBranch", function (data) {
+			companyBranchList = data;
+
+			if (companyBranchList.length > 0) {
+				// You can replace '0' with a specific ID using .find()
+				const defaultCompany = companyBranchList[0]; // or: companyBranchList.find(c => c.CompanyId === 1);
+
+				const dropDown = $("#ddlGoodsGroup7").dxDropDownBox("instance");
+
+				// Set default selected value in DropDownBox
+				dropDown.option("value", defaultCompany.CompanyId);
+
+				// Fill other company fields
+				fillCompanyFields(defaultCompany);
+			}
+		});
+	});
+
+
+
+	// Populate all related fields based on selected company
+	function fillCompanyFields(company) {
+		$("#OurGroupVATNo").dxTextBox("instance").option("value", company.SellerGroupVatnumber);
+		$("#OurVATNo").dxTextBox("instance").option("value", company.CompanyVatno);
+		$("#OtherID1").dxTextBox("instance").option("value", company.SellerOtherSellerId);
+		$("#ddlGoodsGroup8").dxDropDownBox("instance").option("value", company.SellerOtherIdtype);
+		$("#OurCompanyRegisteredName").dxTextBox("instance").option("value", company.CompanyName);
+		$("#OurCompanyNameinArabic").dxTextBox("instance").option("value", company.CompanyNameAr);
+
+		$("#OurStreetName").dxTextBox("instance").option("value", company.SellerAddressStreet);
+		$("#OurStreetNameArabic").dxTextBox("instance").option("value", company.SellerAddressStreetAr);
+		$("#OurAdditionalAddress").dxTextBox("instance").option("value", company.SellerAdditionalStreet);
+		$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", company.SellerAdditionalStreetAr);
+		$("#OurBuildingNumber").dxTextBox("instance").option("value", company.SellerBuildingNumber);
+		$("#OurClientCity").dxTextBox("instance").option("value", company.SellerCity);
+		$("#OurClientCityArabic").dxTextBox("instance").option("value", company.SellerCityAr);
+		$("#OurAdditionalNumber").dxTextBox("instance").option("value", company.SellerAdditionalNumber);
+		$("#OurProvince").dxTextBox("instance").option("value", company.SellerProvince);
+		$("#OurProvinceArabic").dxTextBox("instance").option("value", company.SellerProvinceAr);
+		$("#OurPostalCode").dxTextBox("instance").option("value", company.SellerPostalCode);
+		$("#OurDistrict").dxTextBox("instance").option("value", company.SellerNeighborhood);
+		$("#OurDistrictArabic").dxTextBox("instance").option("value", company.SellerNeighborhoodAr);
+	}
 
 			 function dataGridSelectionabc(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any

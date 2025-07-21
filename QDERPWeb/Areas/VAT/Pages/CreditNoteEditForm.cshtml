@@ -5,9 +5,6 @@
 }
 
 <style>
-	#B2BdataGrid {
-	height: 325px !important;
-}
     .titleCard-toggle1{
         display:none;
     }
@@ -892,7 +889,7 @@
 			</div>
 
 
-			<div id="tab-content-2" class="tab-content" style="padding:1em;">
+			<div id="tab-content-2" class="tab-content">
 
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>
@@ -1963,7 +1960,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height(250)
+									.Height("45vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))

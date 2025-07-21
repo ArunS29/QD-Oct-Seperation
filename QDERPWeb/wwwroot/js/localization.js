@@ -3641,11 +3641,272 @@ var dictionary = {
         "Min Selling Price": "Min Selling Price",
         "Max Selling Price": "Max Selling Price",
         "Cost Center": "Cost Center",
+       
+        "Type a New Property Group & Add to the Existing List:": "Type a New Property Group & Add to the Existing List:",
+        "Property Group Code": "Property Group Code",
+        "Equipment/Assets": "Equipment/Assets",
+
+        "Current Status": "Current Status",
+
+        "Property No": "Property No",
+
+        "Description": "Description",
+
+        "Serial No": "Serial No",
+
+        "Plate No": "Plate No",
+
+        "Model": "Model",
+
+        "Capacity": "Capacity",
+
+        "Property Classification": "Property Classification",
+
+        "Group": "Group",
+
+        "Category": "Category",
+
+        "Property Type": "Property Type",
+
+        "Mobilization Details": "Mobilization Details",
+
+        "Mobilized To": "Mobilized To",
+
+        "Mobilized On": "Mobilized On",
+
+        "client Rate Per Hour": "client Rate Per Hour",
+
+        "Hired Details": "Hired Details",
+
+        "Supplier PONo": "Supplier PONo",
+
+        "Supplier Ref No": "Supplier Ref No",
+
+        "Hired On": "Hired On",
+
+        "Supplier Name": "Supplier Name",
+
+        "Hiring Rate/Hour": "Hiring Rate/Hour",
+
+        "Hiring Rate/Month": "Hiring Rate/Month",
+
+        "Operator Details": "Operator Details",
+
+        "Equipment Operator ID": "Equipment Operator ID",
+
+        "Equipment Operator Name": "Equipment Operator Name",
+
+        "Operator Work Start Date": "Operator Work Start Date",
+
+        "Hide the columns Details": "Hide the columns Details",
+
+        "PropertyCategory": "PropertyCategory",
+
+        "Specifications": "Specifications",
+
+        "Brand": "Brand",
+
+        "DoorNo": "DoorNo",
+
+        "Color": "Color",
+
+        "Year": "Year",
+
+        "Ownership": "Ownership",
+
+        "PurchaseDate": "PurchaseDate",
+
+        "PurchasedAs": "PurchasedAs",
+
+        "BuyingRatePerDay": "BuyingRatePerDay",
+
+        "SellingRatePerHour": "SellingRatePerHour",
+
+        "SellingRatePerDay": "SellingRatePerDay",
+
+        "SellingRatePerMonth": "SellingRatePerMonth",
+
+        "PropertyCondition": "PropertyCondition",
+
+        "IsFinanced": "IsFinanced",
+
+        "FinancedFrom": "FinancedFrom",
+
+        "ValueOfProperty": "ValueOfProperty",
+
+        "InitialDownPayment": "InitialDownPayment",
+
+        "InitialDocCharges": "InitialDocCharges",
+
+        "MonthlyInstallment": "MonthlyInstallment",
+
+        "NoOfInstallments": "NoOfInstallments",
+
+        "InstallmentStartDate": "InstallmentStartDate",
+
+        "InstallmentEndDate": "InstallmentEndDate",
+
+        "FinalInstallment": "FinalInstallment",
+
+        "DepreciationMethod": "DepreciationMethod",
+
+        "LifeSpanOfProperty": "LifeSpanOfProperty",
+
+        "ScrapValueOfProperty": "ScrapValueOfProperty",
+
+        "CreatedBy": "CreatedBy",
+
+        "CreatedOn": "CreatedOn",
+
+        "ModifiedBy": "ModifiedBy",
+
+        "ModifiedOn": "ModifiedOn",
+
+        "IsDiscontinued": "IsDiscontinued",
+
+        "DiscontinuedOn": "DiscontinuedOn",
+
+        "DiscontinuedRemarks": "DiscontinuedRemarks",
+
+        "PropertyDescription": "PropertyDescription",
+
+        "ModelType": "ModelType",
+
+        "Weight": "Weight",
+
+        "LxWxH": "LxWxH",
+
+        "PlatformHeight": "PlatformHeight",
+
+        "OperatingCapacity": "OperatingCapacity",
+
+        "OperatingWeight": "OperatingWeight",
+
+        "AddlSpec1": "AddlSpec1",
+
+        "AddlSpec2": "AddlSpec2",
+
+        "AddlSpec3": "AddlSpec3",
+
+        "AddlField1": "AddlField1",
+
+        "AddlField2": "AddlField2",
+
+        "AddlField3": "AddlField3",
+
+        "PurchasedFrom": "PurchasedFrom",
+
+        "PurchasedAs2": "PurchasedAs2",
+
+        "PropertyCondition2": "PropertyCondition2",
+
+        "HiringMode": "HiringMode",
+
+        "HiredFrom": "HiredFrom",
+
+        "IsOperatorIncluded": "IsOperatorIncluded",
+
+        "OperatorCode": "OperatorCode",
+
+        "OperatorRate": "OperatorRate",
+
+        "IsReturned": "IsReturned",
+
+        "ReturnedOn": "ReturnedOn",
+
+        "ReturnedRemarks": "ReturnedRemarks",
+
+        "FinancingCompanyName": "FinancingCompanyName",
+
+        "OperatorName": "OperatorName",
+
+        "PropertySuppliedBy": "PropertySuppliedBy",
+
+        "PropertyGroupId": "PropertyGroupId",
+
+        "Operator": "Operator",
+
+        "PropertyGroupCode": "PropertyGroupCode",
+
+        "FinancedBy2": "FinancedBy2",
+
+        "PropertyTypeId": "PropertyTypeId",
+
+        "OperatorContactMobile": "OperatorContactMobile",
+
+        "OperatorContactMobile2": "OperatorContactMobile2",
+
+        "OperatorNationalId": "OperatorNationalId",
+
+        "EngineNo": "EngineNo",
+
+        "AlternatorNo": "AlternatorNo",
+
+        "KvaorKw": "KvaorKw",
+
+        "Location": "Location",
+
+        "IsBreakDown": "IsBreakDown",
+
+        "ClientSite": "ClientSite",
+
+        "OwnershipText": "OwnershipText",
+
+        "SupplierCode": "SupplierCode",
+
+        "IsNeededTimesheet": "IsNeededTimesheet",
+
+        "PropertyRemarks": "PropertyRemarks",
+
+        "PropertyCertification": "PropertyCertification",
+
+        "PropertyPwas": "PropertyPwas",
+
+        "PropertyAttachment": "PropertyAttachment",
+
+        "BuyingOtratePerHour": "BuyingOtratePerHour",
+
+        "BuyingRatePerWeek": "BuyingRatePerWeek",
+
+        "GatePassNo": "GatePassNo",
+
+        "ProjectMasterCode": "ProjectMasterCode",
+
+        "ProjectDescription": "ProjectDescription",
+
+        "SupplierAccountLedgerNo": "SupplierAccountLedgerNo",
+
+        "ClientOvertimeRatePerHour": "ClientOvertimeRatePerHour",
+
+        "UnitRate": "UnitRate",
+
+        "DeliveryNoteMobilizationRate": "DeliveryNoteMobilizationRate",
+
+        "DeliveryNoteDemobilizationRate": "DeliveryNoteDemobilizationRate",
+
+        "ClientUnitMethod": "ClientUnitMethod",
+
+        "SupplierMobRate": "SupplierMobRate",
+
+        "SupplierDemobRate": "SupplierDemobRate",
+
+        "AgreementHours": "AgreementHours",
+
+        "CordinatorName": "CordinatorName",    
+
         "Add New Proforma Invoice Edit":"Add New Proforma Invoice Edit",
+        "Add New Proforma Invoice Edit": "Add New Proforma Invoice Edit",
+        "Add New Debit Note Register": "Add New Debit Note Register",
+        "01-Sales Summary Report": "01-Sales Summary Report",
+        "02-Credit Note Summary Report": "02-Credit Note Summary Report",
+        "03-Purchases Summary Report": "03-Purchases Summary Report",
+        "04-DebitNote Summary Report": "04-DebitNote Summary Report",
+
         
  
     },
     ar: {
+        "Add New Debit Note Register": "إضافة سجل إشعار الخصم الجديد",
         "Add New Proforma Invoice Edit":"هذا هو النموذج الجديد في تحرير الصوت.",
         "ReceiptChildSlNo": "Receipt Child Sl No - رقم تسلسل استلام الفرع",
         "Transactions": "Transaction Description - وصف المعاملة",
@@ -6619,6 +6880,7 @@ var dictionary = {
         "Type new Job Order Status Master && Add to the Existing List:": ":أدخل حالة أمر العمل الجديدة وأضفها إلى القائمة الحالية"
     },
     zh: {
+        "Add New Debit Note Register": "添加新的借项单登记",
         "Add New Proforma Invoice Edit": "添加新的形式发票编辑",
         "Registers": "登记簿",
         "Transactions": "交易",
@@ -9435,6 +9697,7 @@ var dictionary = {
 
     },
     hi: {
+        "Add New Debit Note Register": "नया डेबिट नोट रजिस्टर जोड़ें",
         "Add New Proforma Invoice Edit":"यह वॉयस एडिट में एक नया प्रोफार्मा है।",
         "Registers": "रजिस्टर",
         "Transactions": "लेन-देन",
@@ -12400,6 +12663,7 @@ var dictionary = {
         "Tax Summary Report – Debit Notes": "कर सारांश रिपोर्ट - डेबिट नोट्स"
     },
     ur: {
+        "Add New Debit Note Register": "نیا ڈیبٹ نوٹ رجسٹر شامل کریں",
         "Add New Proforma Invoice Edit": "نیا پروفارما انوائس ایڈٹ شامل کریں",
         "Registers": "رجسٹرز",
         "Transactions": "لین دین",
@@ -15454,6 +15718,7 @@ var dictionary = {
     },
 
     ko: {
+        "Add New Debit Note Register": "새 직불 노트 등록 추가",
         "Add New Proforma Invoice Edit": "새 견적 송장 편집 추가",
         "Registers": "등록부",
         "Transactions": "거래",

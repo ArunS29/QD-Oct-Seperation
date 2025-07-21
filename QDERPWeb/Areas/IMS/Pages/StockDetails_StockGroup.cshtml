@@ -762,7 +762,7 @@
         }
          function dataGridSelectionChanged2(e) {
             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-            const ddbInstance = $("#InventoryLedgerAccoCostLedgerAccountunt").dxDropDownBox("instance");
+            const ddbInstance = $("#CostLedgerAccount").dxDropDownBox("instance");
 
             if (selectedKey) {
                 ddbInstance.option("value", selectedKey);
@@ -838,7 +838,7 @@
                     GsgroupInventoryLedger: $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value"),
                     GsgroupExpenseLedger:  $("#CostLedgerAccount").dxDropDownBox("instance").option("value"),
                     IsServicesGroup: $("#ServicesGroup").dxCheckBox("instance").option("value"),
-                    GsgroupName:  $("#StockServicesGroups").dxTextArea("instance").option("value"),
+                    GsgroupName:  $("#NewStockServicesGroups").dxTextArea("instance").option("value"),
                     GsgroupNameAr:  $("#StockServicesGroups").dxTextArea("instance").option("value")
                 };
 
@@ -850,6 +850,16 @@
                     success: function () {
                         DevExpress.ui.notify('Saved successfully', 'success', 2000);
                         $("#dataGrid").dxDataGrid("instance").refresh();
+
+                    $("#GroupCode").dxTextBox("instance").option("value","");
+                    $("#Category").dxTextBox("instance").option("value","");
+                    $("#InventoryMasterGroups").dxDropDownBox("instance").option("value","");
+                    $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value","");
+                     $("#CostLedgerAccount").dxDropDownBox("instance").option("value","");
+                    $("#ServicesGroup").dxCheckBox("instance").option("value","");
+                    $("#NewStockServicesGroups").dxTextArea("instance").option("value","");
+                    $("#StockServicesGroups").dxTextArea("instance").option("value","");
+
                     },
                          error: function (xhr) {
             let message = "Save failed";

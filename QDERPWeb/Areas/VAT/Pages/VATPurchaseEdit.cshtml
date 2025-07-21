@@ -12,9 +12,6 @@
 		display: none;
 	}
 
-	#B2BdataGrid {
-		height: 325px !important;
-	}
 	.toggle-switch {
 		position: relative;
 		display: inline-block;
@@ -1647,7 +1644,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height(250)
+									.Height("45vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -3158,7 +3155,7 @@
 						let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
 						if (selectedItem) {
 							cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-							debugger;
+						
 							let grid = $("#B2BdataGrid").dxDataGrid("instance");
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
@@ -3254,7 +3251,7 @@
 
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
 						let rowIndex = e.row.rowIndex;
-							debugger;
+						
 						let newValue = args.value;
 
 						// Get existing values or updated ones
@@ -5733,7 +5730,7 @@
 			e.editorOptions.onValueChanged = function (args) {
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
-					debugger;
+					
 				let newValue = args.value;
 
 				// Get existing values or updated ones
@@ -5772,7 +5769,7 @@
 					function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
-						debugger;
+				
 
 						// Get existing values or updated ones
 							let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -5817,7 +5814,7 @@
 			{
 	     	// Create JSON object for master invoice
 				let PurchaseVoucherNo = $('#InvoiceNo').dxTextBox("instance").option("value");
-				debugger;
+		
 			var InvoiceMaster = {
 					// First Card (Left side)
 					
@@ -5900,7 +5897,7 @@
 				data: JSON.stringify(InvoiceMaster),
 				success: function (response) {
 					//Send AJAX request to update the invoice child details after master is updated
-					debugger;
+					
 					$.ajax({
 						type: "POST",
 						url: `/api/VoucherMaster/UpdatePurchaseChildDetails`,
@@ -5970,7 +5967,7 @@
 				{
 				// Create JSON object for master invoice
 					let PurchaseVoucherNo = $('#InvoiceNo').dxTextBox("instance").option("value");
-					debugger;
+			
 				var InvoiceMaster = {
 						// First Card (Left side)
 
@@ -6053,7 +6050,7 @@
 					data: JSON.stringify(InvoiceMaster),
 					success: function (response) {
 						//Send AJAX request to update the invoice child details after master is updated
-						debugger;
+					
 						$.ajax({
 							type: "POST",
 							url: `/api/VoucherMaster/UpdatePurchaseChildDetails`,
@@ -6798,7 +6795,7 @@
 
 			 function onVoucherDateChanged(e) {
 		console.log("Selected Date:", e.value);
-		debugger;
+	
 		var InvoiceDate = $("#InvoiceDate").dxDateBox("instance");
 		InvoiceDate.option("onValueChanged", function (e) {
 			let InvoiceDateval = e.value; // Get Date from DevExtreme DateBox
@@ -7006,7 +7003,7 @@
 			type: 'GET',
 			data: { accountID: accheadid },
 			success: function (result) {
-				debugger;
+			
 				// 1. Pick the first record regardless of the shape returned
 				const details = Array.isArray(result)
 					? result[0]
@@ -7058,7 +7055,7 @@
 			type: 'GET',
 			data: { accountID: accheadid },
 			success: function (result) {
-				debugger;
+		
 
 				// Handle API response structure properly
 				const details = Array.isArray(result)
@@ -7223,7 +7220,7 @@
 	});
 	
 	$(function () {
-		debugger;
+
     const urlParams = new URLSearchParams(window.location.search);
     const receiptNo = urlParams.get("receiptNo");
     const poNo = urlParams.get("poNo");
@@ -7437,7 +7434,7 @@
 														url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
 														dataType: 'json',
 														success: function (data) {
-															debugger;
+														
 															const newRowData = data.map((item, index) => ({
 																SNo: index + 1,
 																...item

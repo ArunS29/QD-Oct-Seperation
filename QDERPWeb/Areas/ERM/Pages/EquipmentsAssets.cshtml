@@ -1,316 +1,370 @@
 ﻿@page
-@using DevExtreme.AspNet.Mvc
-@using QD.ERP.Web.DAL.Entities;
+@using QD.ERP.Web.DAL.Entities
+@* @model QD.ERP.Web.Areas.IMS.Pages.SuppliersModel *@
+@{
 
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-<script src="~/js/global/print.js"></script>
+}
 
+@{
+    ViewData["Title"] = "Suppliers";
 
+}
+<link rel="stylesheet" href="~/css/animationCard.css" />
 <style>
-    .custom-toolbar {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 20px;
-        align-items: flex-end;
-        margin-bottom: 25px;
-        background-color: #ffffff;
+    .header-box {
+        background-color: #3c8dbc;
+        color: white;
         padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    }
-
-    .toolbar-item {
-        min-width: 260px;
-        flex: 1;
-    }
-
-    .dx-field-label,
-    .dx-texteditor-label {
-        font-weight: 600 !important;
-        font-size: 14px;
-        color: #34495e;
-        margin-bottom: 5px;
-    }
-
-    .dx-texteditor,
-    .dx-dropdownbutton {
-        border-radius: 8px !important;
-    }
-
-    .dx-dropdownbutton {
-        background-color: #e6f0ff !important;
-    }
-
-    .dx-button {
-        font-weight: 500;
-        border-radius: 8px !important;
-        transition: background-color 0.3s ease;
-    }
-
-    .dx-button:hover {
-        background-color: #d0e2ff !important;
-    }
-
-    .button-alignment-down {
-        margin-top: 8px;
-    }
-
-    .limited-footer {
-        margin-top: 20px;
-        padding: 15px;
-        background-color: #ffffff;
-        border-top: 1px solid #e0e0e0;
-        border-radius: 0 0 12px 12px;
-    }
-
-    .context-menuInvoice {
-        position: absolute;
-        background: #fff;
-        border-radius: 8px;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
-        width: 200px;
-        display: none;
-        flex-direction: column;
-        padding: 5px 0;
-        z-index: 1000;
-    }
-
-    .context-menu-itemInvoice {
-        display: flex;
+        font-size: 20px;
+        font-weight: bold;
+        /* display: flex; */
         align-items: center;
-        padding: 10px 15px;
-        font-size: 14px;
-        cursor: pointer;
-        transition: background 0.2s ease-in-out;
-        color: #333;
+        border-radius: 4px 4px 0 0;
+        width: 300px;
+        height: 200px;
+        margin-left: 15px;
     }
 
-        .context-menu-itemInvoice i {
+        .header-box i {
             margin-right: 10px;
-            font-size: 16px;
-            color: #007bff;
+            font-size: 24px;
         }
 
-        .context-menu-itemInvoice:hover {
-            background: #f0f0f0;
+        .header-box h5 {
+            margin-top: 40px;
         }
 
-        .context-menu-itemInvoice:not(:last-child) {
-            border-bottom: 1px solid #e0e0e0;
-        }
 
-    /* Responsive Tweaks */
-    @@media screen and (max-width: 768px) {
-        .toolbar-item {
-            min-width: 100%;
-        }
 
-        h2 {
-            font-size: 22px;
-        }
+    .toolbar-buttons {
+        /* position: fixed; */
+        bottom: 20px; /* Distance from bottom */
+        left: 20px; /* Distance from left */
+        display: flex;
+        gap: 10px; /* Space between buttons */
+        /* z-index: 9999; /* Make sure it's on top */ */
+        /* background-color: white; /* Optional: background */ */ padding: 10px; /* Optional: inner spacing */
+        border-radius: 6px;
+        margin-top: 10px;
+        /* box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); */
+    }
 
-        #dataGrid {
-            padding: 10px;
-        }
+    .mainContainer {
+        width: 96%;
+        overflow-x: hidden;
     }
 </style>
-
-<div class="container-fluid"></div>
 <div class="title">
-    <div class="header-container">
-        <div id="EquipmentsAssets" class="no-border-title"></div>
+    <input id="formId" value="frm201LedgerView" type="hidden" />
+
+    <div class="card blue shine compact">
+        <h2 class="title-slide">Quotation</h2>
+        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+        <h6 class="fade-in">QuickDice ERP Solutions</h6>
+
+    </div>
+
+    <div id="mainCard" class="card today-bg">
+        <div class="tabs">
+            <div class="tab-text active" onclick="switchTab(0)">Today</div>
+            <div class="tab-text" onclick="switchTab(1)">Week</div>
+            <div class="tab-text" onclick="switchTab(2)">Month</div>
+        </div>
+
+        <div class="tab-content active">
+            <h4>&#128276; Pending Verifications</h4>
+            <div class="count" id="count0">0</div>
+            @* <div class="trend">🔺 12% more than yesterday</div> *@
+            @* <div class="message">You're getting things moving!</div> *@
+        </div>
+
+        <div class="tab-content">
+            <h4>&#9989; Vouchers Verified</h4>
+            <div class="count" id="count1">0</div>
+            @* <div class="trend">🔼 25% higher than last week</div> *@
+            @* <div class="message">Awesome pace — keep it up!</div> *@
+        </div>
+
+        <div class="tab-content">
+            <h4>&#128229; New Vouchers</h4>
+            <div class="count" id="count2">0</div>
+            @* <div class="trend">🔽 10% drop this month</div> *@
+            @* <div class="message">Fewer vouchers — time to catch up?</div> *@
+        </div>
+    </div>
+    <div class="card purple sparkle">
+        <p>&#10024;</p>
+        <h4>No of Items</h4>
+        <h1 id="turnover">0</h1>
+        <h3>for this period</h3>
     </div>
 </div>
+<!-- Client Header Box -->
+@* <div class="title">
+    <div class="header-container">
+        <div id="ClientLeads" class="no-border-input"></div>
+    </div>
+</div> *@
 <div class="Footer">
     @await Html.PartialAsync("/Pages/Shared/ERM/StockInventoryFooter.cshtml")
 </div>
-<div class="context-menuInvoice" id="contextMenu">
-    <div class="context-menu-itemInvoice" onclick="viewRecord()">
-        <i class="dx-icon-search"></i> View
-    </div>
-    <div class="context-menu-itemInvoice" onclick="editRecord()">
-        <i class="dx-icon-edit"></i> Edit
-    </div>
-    <div class="context-menu-itemInvoice" onclick="deleteRecord()">
-        <i class="dx-icon-trash"></i> Delete
-    </div>
-</div>
-    <div class="dx-field ledgerResult" >
-      @(Html.DevExtreme().DataGrid<Qry60001inventoryStockView>()
-    .ID("dataGrid")
-    .DataSource(ds => ds.Mvc()
-        .Controller("ERStockInventory")
-        .LoadAction("GetInventory"))
-    .RemoteOperations(false)
-    .Columns(columns =>
-    {
-        columns.AddFor(m => m.Gscode)
-                .Caption(new JS("formatMessage('Stock Code')"))
-            .Width(120);
-        columns.AddFor(m => m.Gsdescrpition)
-                .Caption(new JS("formatMessage('Description')"))
-            .Width(280);
-        columns.AddFor(m => m.GsgroupName)
-                .Caption(new JS("formatMessage('Stock Group')"))
-            .Width(180)
-            .GroupIndex(0);
-        columns.AddFor(m => m.ItemPartNo)
-                .Caption(new JS("formatMessage('Item Part No')"))
-            .Width(150);
-        columns.AddFor(m => m.UnitType)
-                .Caption(new JS("formatMessage('Unit')"))
-            .Width(100);
-        columns.AddFor(m => m.GssellingRate)
-                .Caption(new JS("formatMessage('Selling Price')"))
-            .Format("fixedPoint")
-            .Alignment(HorizontalAlignment.Right)
-            .Width(120);
-        columns.AddFor(m => m.CostPrice)
-                .Caption(new JS("formatMessage('Cost Price')"))
-            .Format("fixedPoint")
-            .Alignment(HorizontalAlignment.Right)
-            .Width(120);
-        columns.AddFor(m => m.OpeningBalance)
-                .Caption(new JS("formatMessage('Opening Balance')"))
-            .Format("fixedPoint")
-            .Alignment(HorizontalAlignment.Right)
-            .Width(120);
-        columns.AddFor(m => m.TotalReceived)
-                .Caption(new JS("formatMessage('Received')"))
-            .Format("fixedPoint")
-            .Alignment(HorizontalAlignment.Right)
-            .Width(120);
-        columns.AddFor(m => m.TotalIssues)
-                .Caption(new JS("formatMessage('Issues')"))
-            .Format("fixedPoint")
-            .Alignment(HorizontalAlignment.Right)
-            .Width(120);
-        columns.AddFor(m => m.ClosingBalance)
-                .Caption(new JS("formatMessage('Closing Balance')"))
-            .Format("fixedPoint")
-            .Alignment(HorizontalAlignment.Right)
-            .Width(120);
-        columns.AddFor(m => m.MaxQty)
-                .Caption(new JS("formatMessage('Inventory Value (FIFO)')"))
-            .Format("fixedPoint")
-            .Alignment(HorizontalAlignment.Right)
-            .Width(150);
-        columns.AddFor(m => m.IsDiscontinued)
-            .Caption(new JS("formatMessage('IsDiscontinued')"))
-            .Visible(false)
-            .Width(150);
-    })
-    .Paging(p => p.PageSize(20))
-    .AllowColumnReordering(true)
-    .AllowColumnResizing(true)
-    .ColumnAutoWidth(false)
-    .WordWrapEnabled(true)
-    .FilterRow(f => f.Visible(false))
-    .Grouping(g => g.AutoExpandAll(true))
-    .GroupPanel(gp => gp.Visible(false))
-    .ShowBorders(true)
-    
-    .Height("100%")
-    .Width("100%")
-)
+<div>
+    @(
+        Html.DevExtreme().DataGrid<Qry40102PropertyMasterView2>()
+        .ID("dataGrid")
+        .DataSource(ds => ds.Mvc()
+        .Controller("EquipmentAssets")
+        .LoadAction("Get"))
+        .KeyExpr("SupplierCode")
+        .ElementAttr("class", "datagrid")
+        .OnContextMenuPreparing("onAssetsGridContextMenu")
+        .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
+        .AllowColumnReordering(true)
+        .ColumnAutoWidth(true)
+        .WordWrapEnabled(true)
+        .AllowColumnResizing(true)
+        .ColumnFixing(fixing => fixing.Enabled(true))
+        .HeaderFilter(filter => filter.Visible(false))
+        .Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+        .Pager(pager =>
+        {
+            pager.ShowPageSizeSelector(true);
+            pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+            pager.ShowNavigationButtons(true);
+            pager.Visible(true);
+        })
 
-    </div>
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+        .ShowRowLines(true)
+        .FilterRow(filterRow => filterRow.Visible(false))
+        .GroupPanel(groupPanel => groupPanel.Visible(false))
+        .ShowBorders(true)
+
+        .ColumnResizingMode(ColumnResizingMode.Widget) // Optional: can be "Widget" or "NextColumn"
+        .ColumnChooser(chooser => chooser
+        .Enabled(false)
+        .Mode(GridColumnChooserMode.Select) // You can also use "DragAndDrop"
+        )
+        .HeaderFilter(filter => filter.Visible(false))
+        .FilterRow(filterRow => filterRow.Visible(false).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
+
+        .Pager(pager =>
+        {
+            pager.ShowPageSizeSelector(true);
+            pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+            pager.ShowNavigationButtons(true);
+            pager.Visible(true);
+        })
+        .Columns(columns =>
+        {
+            columns.Add().Caption(new JS("formatMessage('Equipment/Assets')")).Columns(subColumns =>
+            {
+                subColumns.AddFor(m => m.CurrentStatus).Caption(new JS("formatMessage('Current Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                subColumns.AddFor(m => m.PropertyNo).Caption(new JS("formatMessage('Property No')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.PropertyDescription).Caption(new JS("formatMessage('Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                subColumns.AddFor(m => m.ChassisNo).Caption(new JS("formatMessage('Serial No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                subColumns.AddFor(m => m.PlateNo).Caption(new JS("formatMessage('Plate No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                subColumns.AddFor(m => m.Model).Caption(new JS("formatMessage('Model')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                subColumns.AddFor(m => m.Capacity).Caption(new JS("formatMessage('Capacity')")).Alignment(HorizontalAlignment.Center).Visible(true);
+            });
+            columns.Add().Caption(new JS("formatMessage('Property Classification')")).Columns(subColumns =>
+            {
+                subColumns.AddFor(m => m.PropertyGroupCode).Caption(new JS("formatMessage('Group')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyCategoryName).Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyType).Caption(new JS("formatMessage('Property Type')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+            });
+            columns.Add().Caption(new JS("formatMessage('Mobilization Details')")).Columns(subColumns =>
+            {
+                subColumns.AddFor(m => m.MobilizedTo).Caption(new JS("formatMessage('Mobilized To')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                //datetime
+                subColumns.AddFor(m => m.MobilizedOn).Caption(new JS("formatMessage('Mobilized On')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.ClientRatePerHour).Caption(new JS("formatMessage('client Rate Per Hour')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+            });
+            columns.Add().Caption(new JS("formatMessage('Hired Details')")).Columns(subColumns =>
+            {
+                subColumns.AddFor(m => m.SupplierPono).Caption(new JS("formatMessage('Supplier PONo')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+
+                subColumns.AddFor(m => m.SupplierRefNo).Caption(new JS("formatMessage('Supplier Ref No')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.HiredOn).Caption(new JS("formatMessage('Hired On')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.BuyingRatePerHour).Caption(new JS("formatMessage('Hiring Rate/Hour')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.BuyingRatePerMonth).Caption(new JS("formatMessage('Hiring Rate/Month')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+            });
+            columns.Add().Caption(new JS("formatMessage('Operator Details')")).Columns(subColumns =>
+            {
+                subColumns.AddFor(m => m.EquipmentOperatorId).Caption(new JS("formatMessage('Equipment Operator ID')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.EquipmentOperatorName).Caption(new JS("formatMessage('Equipment Operator Name')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorWorkStartDate).Caption(new JS("formatMessage('Operator Work Start Date')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
+
+            });
+            columns.Add().Caption(new JS("formatMessage('Hide the columns Details')")).Columns(subColumns =>
+            {
+                subColumns.AddFor(m => m.PropertyCategory).Caption(new JS("formatMessage('PropertyCategory')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.Specifications).Caption(new JS("formatMessage('Specifications')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.Brand).Caption(new JS("formatMessage('Brand')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.DoorNo).Caption(new JS("formatMessage('DoorNo')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+
+                subColumns.AddFor(m => m.Color).Caption(new JS("formatMessage('Color')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.Year).Caption(new JS("formatMessage('Year')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.Ownership).Caption(new JS("formatMessage('Ownership')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PurchaseDate).Caption(new JS("formatMessage('PurchaseDate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.PurchasedAs).Caption(new JS("formatMessage('PurchasedAs')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.BuyingRatePerDay).Caption(new JS("formatMessage('BuyingRatePerDay')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.SellingRatePerHour).Caption(new JS("formatMessage('SellingRatePerHour')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.SellingRatePerDay).Caption(new JS("formatMessage('SellingRatePerDay')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.SellingRatePerMonth).Caption(new JS("formatMessage('SellingRatePerMonth')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyCondition).Caption(new JS("formatMessage('PropertyCondition')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.IsFinanced).Caption(new JS("formatMessage('IsFinanced')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.FinancedFrom).Caption(new JS("formatMessage('FinancedFrom')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ValueOfProperty).Caption(new JS("formatMessage('ValueOfProperty')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.InitialDownPayment).Caption(new JS("formatMessage('InitialDownPayment')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.InitialDocCharges).Caption(new JS("formatMessage('InitialDocCharges')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.MonthlyInstallment).Caption(new JS("formatMessage('MonthlyInstallment')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.NoOfInstallments).Caption(new JS("formatMessage('NoOfInstallments')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.InstallmentStartDate).Caption(new JS("formatMessage('InstallmentStartDate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.InstallmentEndDate).Caption(new JS("formatMessage('InstallmentEndDate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.FinalInstallment).Caption(new JS("formatMessage('FinalInstallment')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.DepreciationMethod).Caption(new JS("formatMessage('DepreciationMethod')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.LifeSpanOfProperty).Caption(new JS("formatMessage('LifeSpanOfProperty')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.ScrapValueOfProperty).Caption(new JS("formatMessage('ScrapValueOfProperty')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.CreatedBy).Caption(new JS("formatMessage('CreatedBy')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.CreatedOn).Caption(new JS("formatMessage('CreatedOn')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.ModifiedBy).Caption(new JS("formatMessage('ModifiedBy')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ModifiedOn).Caption(new JS("formatMessage('ModifiedOn')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.IsDiscontinued).Caption(new JS("formatMessage('IsDiscontinued')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                //subColumns.AddFor(m => m.PropertyCategoryName).Caption(new JS("formatMessage('PropertyCategoryName')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.DiscontinuedOn).Caption(new JS("formatMessage('DiscontinuedOn')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+                subColumns.AddFor(m => m.DiscontinuedRemarks).Caption(new JS("formatMessage('DiscontinuedRemarks')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyDescription).Caption(new JS("formatMessage('PropertyDescription')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ModelType).Caption(new JS("formatMessage('ModelType')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+
+
+                subColumns.AddFor(m => m.Weight).Caption(new JS("formatMessage('Weight')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.LxWxH).Caption(new JS("formatMessage('LxWxH')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PlatformHeight).Caption(new JS("formatMessage('PlatformHeight')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatingCapacity).Caption(new JS("formatMessage('OperatingCapacity')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatingWeight).Caption(new JS("formatMessage('OperatingWeight')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.AddlSpec1).Caption(new JS("formatMessage('AddlSpec1')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.AddlSpec2).Caption(new JS("formatMessage('AddlSpec2')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.AddlSpec3).Caption(new JS("formatMessage('AddlSpec3')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.AddlField1).Caption(new JS("formatMessage('AddlField1')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.AddlField2).Caption(new JS("formatMessage('AddlField2')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.AddlField3).Caption(new JS("formatMessage('AddlField3')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PurchasedFrom).Caption(new JS("formatMessage('PurchasedFrom')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PurchasedAs2).Caption(new JS("formatMessage('PurchasedAs2')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyCondition2).Caption(new JS("formatMessage('PropertyCondition2')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.HiringMode).Caption(new JS("formatMessage('HiringMode')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.HiredFrom).Caption(new JS("formatMessage('HiredFrom')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.IsOperatorIncluded).Caption(new JS("formatMessage('IsOperatorIncluded')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorCode).Caption(new JS("formatMessage('OperatorCode')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorRate).Caption(new JS("formatMessage('OperatorRate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+
+
+                subColumns.AddFor(m => m.IsReturned).Caption(new JS("formatMessage('IsReturned')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorRate).Caption(new JS("formatMessage('OperatorRate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ReturnedOn).Caption(new JS("formatMessage('ReturnedOn')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true).Format("dd-MMM-yyyy");
+
+                subColumns.AddFor(m => m.ReturnedRemarks).Caption(new JS("formatMessage('ReturnedRemarks')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.FinancingCompanyName).Caption(new JS("formatMessage('FinancingCompanyName')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorName).Caption(new JS("formatMessage('OperatorName')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertySuppliedBy).Caption(new JS("formatMessage('PropertySuppliedBy')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyGroupId).Caption(new JS("formatMessage('PropertyGroupId')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.Operator).Caption(new JS("formatMessage('Operator')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyGroupCode).Caption(new JS("formatMessage('PropertyGroupCode')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.FinancedBy2).Caption(new JS("formatMessage('FinancedBy2')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyTypeId).Caption(new JS("formatMessage('PropertyTypeId')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorContactMobile).Caption(new JS("formatMessage('OperatorContactMobile')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorContactMobile2).Caption(new JS("formatMessage('OperatorContactMobile2')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OperatorNationalId).Caption(new JS("formatMessage('OperatorNationalId')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.EngineNo).Caption(new JS("formatMessage('EngineNo')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.AlternatorNo).Caption(new JS("formatMessage('AlternatorNo')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.KvaorKw).Caption(new JS("formatMessage('KvaorKw')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.Location).Caption(new JS("formatMessage('Location')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.IsBreakDown).Caption(new JS("formatMessage('IsBreakDown')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ClientSite).Caption(new JS("formatMessage('ClientSite')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.OwnershipText).Caption(new JS("formatMessage('OwnershipText')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.SupplierCode).Caption(new JS("formatMessage('SupplierCode')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+
+                subColumns.AddFor(m => m.IsNeededTimesheet).Caption(new JS("formatMessage('IsNeededTimesheet')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyRemarks).Caption(new JS("formatMessage('PropertyRemarks')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyCertification).Caption(new JS("formatMessage('PropertyCertification')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyPwas).Caption(new JS("formatMessage('PropertyPwas')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.PropertyAttachment).Caption(new JS("formatMessage('PropertyAttachment')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.BuyingOtratePerHour).Caption(new JS("formatMessage('BuyingOtratePerHour')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.BuyingRatePerWeek).Caption(new JS("formatMessage('BuyingRatePerWeek')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+                subColumns.AddFor(m => m.GatePassNo).Caption(new JS("formatMessage('GatePassNo')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('ProjectMasterCode')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('ProjectDescription')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.SupplierAccountLedgerNo).Caption(new JS("formatMessage('SupplierAccountLedgerNo')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ClientOvertimeRatePerHour).Caption(new JS("formatMessage('ClientOvertimeRatePerHour')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.UnitRate).Caption(new JS("formatMessage('UnitRate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.DeliveryNoteMobilizationRate).Caption(new JS("formatMessage('DeliveryNoteMobilizationRate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.DeliveryNoteDemobilizationRate).Caption(new JS("formatMessage('DeliveryNoteDemobilizationRate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.ClientUnitMethod).Caption(new JS("formatMessage('ClientUnitMethod')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.SupplierMobRate).Caption(new JS("formatMessage('SupplierMobRate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.SupplierDemobRate).Caption(new JS("formatMessage('SupplierDemobRate')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.AgreementHours).Caption(new JS("formatMessage('AgreementHours')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+                subColumns.AddFor(m => m.CordinatorName).Caption(new JS("formatMessage('CordinatorName')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
+
+            });
+
+        })
+
+        )
+
+</div>
+
+<!-- Bottom Toolbar -->
+
 
 <script>
-    let selectedRowData = null;
 
-    $(function () {
-        const contextMenu = $("#contextMenu");
+               function onAssetsGridContextMenu
+               (e) {
+        if (e.target === "content" && e.row) {
+            const supplierCode = e.row.data.SupplierCode;
+            const tenantName = window.tenantName || "defaultTenant"; // Dynamic tenant logic
 
-        $(document).on("click", function () {
-            contextMenu.hide();
-        });
-
-       $("#dataGrid").customizeGridContextMenu();
-          $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-        e.preventDefault();
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const rowIndex = $(this).index();
-        selectedRowData = dataGrid.getVisibleRows()[rowIndex].data;
-
-        $("#contextMenu").css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
-    });
-
-    });
-    function viewRecord() {
-        if (selectedRowData) {
-            const code = selectedRowData.Gscode;
-            window.location.href = `/${tenantName}/ERM/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=view`;
-        }
-    }
-
-    function editRecord() {
-        if (selectedRowData) {
-            const code = selectedRowData.Gscode;
-            window.location.href = `/${tenantName}/ERM/InventoryStockDetails?code=${encodeURIComponent(code)}&mode=edit`;
-        }
-    }
-
-
-          function deleteRecord() {
-        if (!selectedRowData) {
-            DevExpress.ui.notify("Please select a row to delete.", "warning", 2000);
-            return;
-        }
-
-        const code = selectedRowData.Gscode;
-
-        DevExpress.ui.dialog.confirm(
-            `Are you sure you want to delete stock item: <b>${code}</b>?`,
-            "Confirm Deletion"
-        ).done(function (dialogResult) {
-            if (dialogResult) {
-                $.ajax({
-                    url: "/api/ERStockInventory/DeleteStockItem",
-                    method: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(code),
-                    success: function (result) {
-                        const messageType = result.success ? "Success" : "Error";
-                        const messageColor = result.success ? "green" : "red";
-
-                        DevExpress.ui.dialog.alert(
-                            `<div style="color: ${messageColor}; font-weight: bold;">
-                                ${result.message}
-                            </div>`,
-                            messageType
-                        );
-
-                        if (result.success) {
-                            const grid = $("#dataGrid").dxDataGrid("instance");
-                            grid.refresh();
-                        }
-                    },
-                    error: function (xhr) {
-                        DevExpress.ui.notify("Error deleting stock item", "error", 2000);
-                        console.error(xhr);
+            e.items = [
+                {
+                    text: "Edit Supplier",
+                    icon: "edit",
+                    onItemClick: function () {
+                        const url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
+                        const title = `Edit Supplier - ${supplierCode}`;
+                        openModal(url, title);
                     }
-                });
-            }
-        });
-    }
-    $(function () {
-        $("#EquipmentsAssets").dxTextBox({
-            text: formatMessage("Equipments Assets"),
-                readOnly: true,
-                onContentReady: function (e) {
-                    $(e.element).addClass("dx-textbox-heading");
+                },
+                {
+                    text: "Delete Supplier",
+                    icon: "trash",
+                    onItemClick: function () {
+                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this supplier?", "Confirm Delete")
+                            .done(function (dialogResult) {
+                                if (dialogResult) {
+                                    deleteSupplier(supplierCode);
+                                }
+                            });
+                    }
                 }
-            });
-        });
-
-
-    
+            ];
+        }
+    }
 
 </script>
-
-
-
-
 
 

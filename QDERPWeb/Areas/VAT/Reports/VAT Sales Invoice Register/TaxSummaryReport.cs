@@ -81,7 +81,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = companyAddress;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox2", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)

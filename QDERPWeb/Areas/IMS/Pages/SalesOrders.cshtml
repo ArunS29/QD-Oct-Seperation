@@ -277,9 +277,10 @@
 
 	});
 		})
-		.ElementAttr("style", "height: 444px !important;")
+		//.ElementAttr("style", "height: 444px !important;")
 		.ColumnAutoWidth(true)
 		.Width("98%")
+		.Height("60vh")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))

@@ -17,7 +17,7 @@ namespace QD.ERP.Web.Service
     public class CurrencyRateService
     {
         private readonly HttpClient _httpClient;
-
+         
         public CurrencyRateService()
         {
             _httpClient = new HttpClient
@@ -26,7 +26,7 @@ namespace QD.ERP.Web.Service
             };
         }
 
-        public async Task<List<CurrencyRateDto>> GetExchangeRatesAsync(string baseCurrency)
+        public async Task<List<CurrencyRateDto>> GetInvertedExchangeRatesAsync(string baseCurrency, List<string> targetCurrencies)
         {
             var response = await _httpClient.GetAsync($"latest/{baseCurrency}");
             response.EnsureSuccessStatusCode();
@@ -35,19 +35,23 @@ namespace QD.ERP.Web.Service
             var json = JsonDocument.Parse(content);
 
             if (json.RootElement.GetProperty("result").GetString() != "success")
-                return new List<CurrencyRateDto>(); // or throw exception
+                return new List<CurrencyRateDto>();
 
             var rates = json.RootElement.GetProperty("rates");
 
-            var list = rates.EnumerateObject().Select(rate => new CurrencyRateDto
+            // USD to INR = 83 → You want INR to USD → 1 / 83
+            return targetCurrencies.Select(code =>
             {
-                BaseCurrency = baseCurrency,
-                TargetCurrency = rate.Name,
-                ExchangeRate = rate.Value.GetDecimal()
+                decimal rate = rates.GetProperty(code).GetDecimal(); // e.g., INR=83
+                return new CurrencyRateDto
+                {
+                    BaseCurrency = baseCurrency,
+                    TargetCurrency = code,
+                    ExchangeRate = rate != 0 ? 1 / rate : 0
+                };
             }).ToList();
-
-            return list;
         }
+
     }
 
 

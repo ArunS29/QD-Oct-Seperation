@@ -115,22 +115,16 @@
             this.GroupFooter1 = new DevExpress.XtraReports.UI.GroupFooterBand();
             this.xrLine3 = new DevExpress.XtraReports.UI.XRLine();
             this.GroupFooter2 = new DevExpress.XtraReports.UI.GroupFooterBand();
-            this.xrPictureBox10 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel4 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLine4 = new DevExpress.XtraReports.UI.XRLine();
             this.xrTable3 = new DevExpress.XtraReports.UI.XRTable();
             this.xrTableRow3 = new DevExpress.XtraReports.UI.XRTableRow();
             this.xrTableCell4 = new DevExpress.XtraReports.UI.XRTableCell();
-            this.xrPictureBox5 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox4 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel31 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel32 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel33 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel34 = new DevExpress.XtraReports.UI.XRLabel();
             this.GroupFooter3 = new DevExpress.XtraReports.UI.GroupFooterBand();
-            this.xrPictureBox12 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox7 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox6 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel21 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel23 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel24 = new DevExpress.XtraReports.UI.XRLabel();
@@ -168,9 +162,6 @@
             this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
             this.GroupFooter4 = new DevExpress.XtraReports.UI.GroupFooterBand();
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
-            this.xrPictureBox11 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox9 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox8 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel35 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel17 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel16 = new DevExpress.XtraReports.UI.XRLabel();
@@ -418,7 +409,6 @@
             // GroupFooter2
             // 
             this.GroupFooter2.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox10,
             this.xrLabel4,
             this.xrLine4,
             this.xrTable3,
@@ -428,13 +418,6 @@
             this.GroupFooter2.Level = 1;
             this.GroupFooter2.Name = "GroupFooter2";
             this.GroupFooter2.StylePriority.UseFont = false;
-            // 
-            // xrPictureBox10
-            // 
-            this.xrPictureBox10.LocationFloat = new DevExpress.Utils.PointFloat(768.6936F, 42.16505F);
-            this.xrPictureBox10.Name = "xrPictureBox10";
-            this.xrPictureBox10.SizeF = new System.Drawing.SizeF(25.8064F, 21.58486F);
-            this.xrPictureBox10.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrLabel4
             // 
@@ -489,8 +472,6 @@
             this.xrTableCell4.BorderColor = System.Drawing.Color.Black;
             this.xrTableCell4.Borders = DevExpress.XtraPrinting.BorderSide.Bottom;
             this.xrTableCell4.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox5,
-            this.xrPictureBox4,
             this.xrLabel31,
             this.xrLabel32,
             this.xrLabel33});
@@ -502,24 +483,6 @@
             this.xrTableCell4.StylePriority.UseBorders = false;
             this.xrTableCell4.StylePriority.UseForeColor = false;
             this.xrTableCell4.Weight = 0.05738559086048399D;
-            // 
-            // xrPictureBox5
-            // 
-            this.xrPictureBox5.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(775.3591F, 5.541585F);
-            this.xrPictureBox5.Name = "xrPictureBox5";
-            this.xrPictureBox5.SizeF = new System.Drawing.SizeF(21.66663F, 18.83334F);
-            this.xrPictureBox5.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox5.StylePriority.UseBorders = false;
-            // 
-            // xrPictureBox4
-            // 
-            this.xrPictureBox4.Borders = DevExpress.XtraPrinting.BorderSide.None;
-            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(627.7886F, 5.54157F);
-            this.xrPictureBox4.Name = "xrPictureBox4";
-            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(22.5F, 19.16667F);
-            this.xrPictureBox4.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox4.StylePriority.UseBorders = false;
             // 
             // xrLabel31
             // 
@@ -607,9 +570,6 @@
             // GroupFooter3
             // 
             this.GroupFooter3.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox12,
-            this.xrPictureBox7,
-            this.xrPictureBox6,
             this.xrLine3,
             this.xrLabel21,
             this.xrLabel23,
@@ -620,27 +580,6 @@
             this.GroupFooter3.HeightF = 99.8026F;
             this.GroupFooter3.Level = 2;
             this.GroupFooter3.Name = "GroupFooter3";
-            // 
-            // xrPictureBox12
-            // 
-            this.xrPictureBox12.LocationFloat = new DevExpress.Utils.PointFloat(768.6936F, 64.07142F);
-            this.xrPictureBox12.Name = "xrPictureBox12";
-            this.xrPictureBox12.SizeF = new System.Drawing.SizeF(25.8064F, 19.1776F);
-            this.xrPictureBox12.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            // 
-            // xrPictureBox7
-            // 
-            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(668.4974F, 24.33235F);
-            this.xrPictureBox7.Name = "xrPictureBox7";
-            this.xrPictureBox7.SizeF = new System.Drawing.SizeF(22.5F, 18.83334F);
-            this.xrPictureBox7.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            // 
-            // xrPictureBox6
-            // 
-            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(816.0678F, 24.33234F);
-            this.xrPictureBox6.Name = "xrPictureBox6";
-            this.xrPictureBox6.SizeF = new System.Drawing.SizeF(23.33331F, 18.83334F);
-            this.xrPictureBox6.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrLabel21
             // 
@@ -816,14 +755,14 @@
             // 
             // xrPictureBox3
             // 
-            this.xrPictureBox3.LocationFloat = new DevExpress.Utils.PointFloat(813.0678F, 5.499992F);
+            this.xrPictureBox3.LocationFloat = new DevExpress.Utils.PointFloat(861.4011F, 5.499979F);
             this.xrPictureBox3.Name = "xrPictureBox3";
             this.xrPictureBox3.SizeF = new System.Drawing.SizeF(24.66663F, 15.83333F);
             this.xrPictureBox3.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrPictureBox2
             // 
-            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(668.4974F, 4.500005F);
+            this.xrPictureBox2.LocationFloat = new DevExpress.Utils.PointFloat(708.631F, 3.833313F);
             this.xrPictureBox2.Name = "xrPictureBox2";
             this.xrPictureBox2.SizeF = new System.Drawing.SizeF(22.5F, 17.5F);
             this.xrPictureBox2.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
@@ -1091,12 +1030,12 @@
             this.xrPageInfo1.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.xrPageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(402.2286F, 0F);
             this.xrPageInfo1.Name = "xrPageInfo1";
-            this.xrPageInfo1.SizeF = new System.Drawing.SizeF(78.12494F, 23F);
+            this.xrPageInfo1.SizeF = new System.Drawing.SizeF(87.50009F, 23F);
             this.xrPageInfo1.StyleName = "PageInfo";
             this.xrPageInfo1.StylePriority.UseFont = false;
             this.xrPageInfo1.StylePriority.UseForeColor = false;
             this.xrPageInfo1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrPageInfo1.TextFormatString = "Page {0} of {1}";
+            this.xrPageInfo1.TextFormatString = "Page No:{0} of {1}";
             // 
             // xrLabel3
             // 
@@ -1113,7 +1052,7 @@
             this.xrLabel3.StylePriority.UseFont = false;
             this.xrLabel3.StylePriority.UseForeColor = false;
             this.xrLabel3.StylePriority.UseTextAlignment = false;
-            this.xrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            this.xrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
             // 
             // GroupHeader2
             // 
@@ -1238,9 +1177,6 @@
             // ReportFooter
             // 
             this.ReportFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox11,
-            this.xrPictureBox9,
-            this.xrPictureBox8,
             this.xrLabel35,
             this.xrLabel17,
             this.xrLabel16,
@@ -1250,27 +1186,6 @@
             this.xrLine2});
             this.ReportFooter.HeightF = 83.45591F;
             this.ReportFooter.Name = "ReportFooter";
-            // 
-            // xrPictureBox11
-            // 
-            this.xrPictureBox11.LocationFloat = new DevExpress.Utils.PointFloat(768.6935F, 40.7917F);
-            this.xrPictureBox11.Name = "xrPictureBox11";
-            this.xrPictureBox11.SizeF = new System.Drawing.SizeF(25.80646F, 22.99999F);
-            this.xrPictureBox11.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            // 
-            // xrPictureBox9
-            // 
-            this.xrPictureBox9.LocationFloat = new DevExpress.Utils.PointFloat(668.4974F, 6.999969F);
-            this.xrPictureBox9.Name = "xrPictureBox9";
-            this.xrPictureBox9.SizeF = new System.Drawing.SizeF(22.50012F, 18.83334F);
-            this.xrPictureBox9.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            // 
-            // xrPictureBox8
-            // 
-            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(816.0679F, 6.999987F);
-            this.xrPictureBox8.Name = "xrPictureBox8";
-            this.xrPictureBox8.SizeF = new System.Drawing.SizeF(23.33331F, 18.83334F);
-            this.xrPictureBox8.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrLabel35
             // 
@@ -1534,16 +1449,7 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel6;
         private DevExpress.XtraReports.UI.XRLine xrLine2;
         private DevExpress.XtraReports.UI.XRLabel xrLabel4;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox5;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox4;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox3;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox2;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox7;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox6;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox9;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox8;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox10;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox12;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox11;
     }
 }
