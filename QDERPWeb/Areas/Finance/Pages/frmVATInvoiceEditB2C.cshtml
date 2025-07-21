@@ -252,7 +252,7 @@
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("PaymentMeansTypeCode")
                     )
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("ddpaymentmeans")
 
                     .ShowClearButton(true)
@@ -335,7 +335,7 @@
                     <td>
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')")).ID("ClientCode")
                                                             .DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
-                                                                 .LabelMode(EditorLabelMode.Outside)
+                                                                 .LabelMode(EditorLabelMode.Floating)
                                                                  .ID("ddclientcode")
                                             .ShowClearButton(true)
                                             .AcceptCustomValue(true)
@@ -357,7 +357,7 @@
                     <td>
                                     @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')")).ID("ClientName")
                                                         .DataSource(d => d.WebApi().Controller("ClientMaster").LoadAction("getClientNames").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
-                                                        .LabelMode(EditorLabelMode.Outside)
+                                                        .LabelMode(EditorLabelMode.Floating)
                                                                    .ID("ddclientname")
           .ShowClearButton(true)
          .AcceptCustomValue(true)
@@ -432,7 +432,7 @@
                                 @(
                                             Html.DevExtreme().TextArea()
                                             .Label(new JS("formatMessage('Invoice Notes')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                             .ID("txtInvoiceNotes")
                                             .Value("")
                                             .Height(40)
@@ -448,7 +448,7 @@
                                 @(
                                             Html.DevExtreme().TextArea()
                                             .Label(new JS("formatMessage('Notes in Arabic')"))
-                                            .LabelMode(EditorLabelMode.Outside)
+                                            .LabelMode(EditorLabelMode.Floating)
                                             .ID("txtNotesinArabic")
                                             .Value("")
                                             .Height(40)
@@ -526,7 +526,7 @@
                                 @(
                                                             Html.DevExtreme().NumberBox()
                                                             .Label(new JS("formatMessage('Currency Exchange Rate')"))
-                                                            .LabelMode(EditorLabelMode.Outside)
+                                                            .LabelMode(EditorLabelMode.Floating)
                                                             .ID("txtCurrencyExchangeRate")
                                                             .Value(null)
                                                             .Width(180)// HTML attribute to allow decimal input
@@ -548,7 +548,7 @@
                               <td>  @(
                                                               Html.DevExtreme().NumberBox()
                                                               .Label(new JS("formatMessage('')"))
-                                                              .LabelMode(EditorLabelMode.Outside)
+                                                              .LabelMode(EditorLabelMode.Floating)
                                                                   .ID("numLessAdvance")
                                                               .Value(null)
                                                               .Width(180)// HTML attribute to allow decimal input
@@ -570,7 +570,7 @@
                                 @(
                                                 Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("AccountGroup1")
                                                 .Value(null)
                                                 .Width(250)
@@ -588,7 +588,7 @@
                               <td>  @(
                                                               Html.DevExtreme().NumberBox()
                                                               .Label(new JS("formatMessage('')"))
-                                                              .LabelMode(EditorLabelMode.Outside)
+                                                              .LabelMode(EditorLabelMode.Floating)
                                                                   .ID("numLessOtherDeductions")
                                                               .Value(null)
                                                               .Width(180)// HTML attribute to allow decimal input
@@ -610,7 +610,7 @@
                                 @(
                                                     Html.DevExtreme().TextBox()
                                                     .Label(new JS("formatMessage('')"))
-                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .LabelMode(EditorLabelMode.Floating)
                                                     .ID("AccountGroup2")
                                                     .Value(null)
                                                     .Width(250)
@@ -626,7 +626,7 @@
                               <td>  @(
                                                               Html.DevExtreme().NumberBox()
                                                               .Label(new JS("formatMessage('')"))
-                                                              .LabelMode(EditorLabelMode.Outside)
+                                                              .LabelMode(EditorLabelMode.Floating)
                                                                   .ID("numLessRetention")
                                                               .Value(null)
                                                               .Width(180)// HTML attribute to allow decimal input
@@ -648,7 +648,7 @@
                                 @(
                                                         Html.DevExtreme().TextBox()
                                                         .Label(new JS("formatMessage('')"))
-                                                        .LabelMode(EditorLabelMode.Outside)
+                                                        .LabelMode(EditorLabelMode.Floating)
                                                         .ID("AccountGroup3")
                                                         .Value(null)
                                                         .Width(250)
@@ -668,7 +668,7 @@
                                                        )
                                 @(Html.DevExtreme().TextBox()
                                                     .Label(new JS("formatMessage('Verified By')"))
-                                                    .LabelMode(EditorLabelMode.Outside)
+                                                    .LabelMode(EditorLabelMode.Floating)
                                                     .ID("VerifiedBytext")
                                                     .Value(null) // Default value
                                                           .Disabled(true)
@@ -676,7 +676,7 @@
 
                                 @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Verified On')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("VerifiedOnDate")
                                                 .Value(null) // Default value
                                                   .Disabled(true)
@@ -691,14 +691,14 @@
                                              )
                                 @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Approved By')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ApprovedBytext")
                                                 .Value(null) // Default value
                                                      .Disabled(true)
                                                 )
                                 @(Html.DevExtreme().TextBox()
                                           .Label(new JS("formatMessage('Approved On')"))
-                                          .LabelMode(EditorLabelMode.Outside)
+                                          .LabelMode(EditorLabelMode.Floating)
                                           .ID("ApprovedOntext")
                                           .Value(null) // Default value
                                                .Disabled(true)
@@ -729,7 +729,7 @@
                                              )
                                 @(Html.DevExtreme().TextBox()
                                                   .Label(new JS("formatMessage('Invoice Submitted By')"))
-                                                  .LabelMode(EditorLabelMode.Outside)
+                                                  .LabelMode(EditorLabelMode.Floating)
                                                       .ID("SubmittedBytext")
                                                   .Value(null) // Default value
                                                .Disabled(true)
@@ -880,7 +880,7 @@
                 .Key("AccountId")
                 )
 
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("accountDropDownBoxEdit")
                 .ShowClearButton(true)
                 .AcceptCustomValue(true)

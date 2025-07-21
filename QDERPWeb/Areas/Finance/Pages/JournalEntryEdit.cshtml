@@ -156,7 +156,7 @@
 
                         .OnInput("dropDownBoxOnInput")
                         .OnOpened("onOpened")
-                        .Width(740)
+                        .Width(670)
                         .TabIndex(1)
                         .DropDownOptions(o => o.Width(1000))
                         .OnKeyDown("onKeyDown")
@@ -194,13 +194,7 @@
                             .Columns(columns =>
                             {
                                 columns.Add().DataField("CostAllocationUnitId");
-                                columns.Add().DataField("CostAllocationUnit")
-
-
-
-                            .Alignment(HorizontalAlignment.Center);
-
-
+                                columns.Add().DataField("CostAllocationUnit").Alignment(HorizontalAlignment.Left);
                             })
 
                             )
@@ -384,12 +378,7 @@
     <div class="row g-3 align-items-end">
         <!-- Submitted -->
         <div class="col-md-2 col-sm-6">
-            @(Html.DevExtreme().CheckBox()
-                        .ID("SubmittedBy")
-                        .Text(new JS("formatMessage('Submitted By')"))
-                        .ReadOnly(true)
-                        )
-            @(Html.DevExtreme().TextBox()
+                       @(Html.DevExtreme().TextBox()
                         .ID("SubmittedBytext")
                         .LabelMode(EditorLabelMode.Floating)
                         .Disabled(true)
@@ -408,12 +397,7 @@
 
         <!-- Verified -->
         <div class="col-md-2 col-sm-6">
-            @(Html.DevExtreme().CheckBox()
-                        .ID("VerifiedBy")
-                        .Text(new JS("formatMessage('Verified By')"))
-                        .ReadOnly(true)
-                        )
-            @(Html.DevExtreme().TextBox()
+                        @(Html.DevExtreme().TextBox()
                         .ID("VerifiedBytext")
                         .LabelMode(EditorLabelMode.Floating)
                         .Disabled(true)
@@ -432,12 +416,7 @@
 
         <!-- Approved -->
         <div class="col-md-2 col-sm-6">
-            @(Html.DevExtreme().CheckBox()
-                        .ID("ApprovedBy")
-                        .Text(new JS("formatMessage('Approved By')"))
-                        .ReadOnly(true)
-                        )
-            @(Html.DevExtreme().TextBox()
+                        @(Html.DevExtreme().TextBox()
                         .ID("ApprovedBytext")
                         .LabelMode(EditorLabelMode.Floating)
                         .Disabled(true)
@@ -456,12 +435,7 @@
 
         <!-- Posted -->
         <div class="col-md-2 col-sm-6">
-            @(Html.DevExtreme().CheckBox()
-                        .ID("PostedBy")
-                        .Text(new JS("formatMessage('Posted By')"))
-                        .ReadOnly(true)
-                        )
-            @(Html.DevExtreme().TextBox()
+                        @(Html.DevExtreme().TextBox()
                         .ID("PostedBytext")
                         .LabelMode(EditorLabelMode.Floating)
                         .Disabled(true)

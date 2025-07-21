@@ -35,7 +35,6 @@
         padding: 2px;
         box-sizing: border-box;
         border-radius: 2px;
-        border: 1px solid #ccc;
         color: black;
     }
 
@@ -182,20 +181,31 @@
     .dx-overlay-wrapper {
         z-index: 1050 !important; /* Or higher if necessary */
     }
+
+    .titleCard-toggle1 {
+        display: none;
+    }
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
-        <div id="ExpensesClaimRequest" class="no-border-title"></div>
+        <div id="PettyCashRequest" class="no-border-title"></div>
+    </div>
+</div> *@
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="PettyCashRequest" class="titleText no-border-title"></div>
     </div>
 </div>
-
 <div class="content-container">
-    <div class="row w-100 align-items-center" style="margin-top: 8px;">
+    <div class="horizontal-container row w-100 align-items-center" style="margin-top: 8px;">
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().TextBox()
                         .Label("Claim Reference No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("VoucherNo")
                         .Value("")
                         .ReadOnly(true)
@@ -206,7 +216,7 @@
             @(Html.DevExtreme().DateBox()
                         .Label("Claim Date:")
                         .ID("claimerdate")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
@@ -216,7 +226,7 @@
             @(Html.DevExtreme().DateBox()
                         .Label("Effective Date:")
                         .ID("claimerEffectiveDate")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
@@ -225,7 +235,7 @@
         <div class="form-group col-md-4 col-sm-6">
             @(Html.DevExtreme().TextArea()
                         .Label("Claim Remarks:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("txtEntryNarration")
                         .Value("Petty Cash Request for the month of ")
 
@@ -235,7 +245,7 @@
         </div>
     </div>
 
-    <div class="row w-100 align-items-center" style="margin-top: 8px;">
+    <div class="horizontal-container row w-100 align-items-center" style="margin-top: 8px;">
         <div class="form-group col-md-4 col-sm-6">
             @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi()
@@ -245,7 +255,7 @@
                         .Key("CostAllocationUnitId")
                         )
                         .Label("Claimed for Project/Jobs:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("accountDropDownBox")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
@@ -270,7 +280,7 @@
                         Html.DevExtreme().SelectBox()
                         .Label("Priority:")
                         .ID("Priorityclaim")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Critical", "High", "Medium", "Low" })
                         .Value(null)
                         )
@@ -355,7 +365,7 @@
                                     .LoadAction("GetEditAccountHead")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("AccountId"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("accountDropDownBoxEdit")
                                     .ShowClearButton(false)
                                     .AcceptCustomValue(true)
@@ -396,7 +406,7 @@
                                     .LoadAction("GetEditCostCenter")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("CostAllocationUnitId"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("CostDropDownBoxEdit")
                                     .ShowClearButton(false)
                                     .AcceptCustomValue(true)
@@ -2115,5 +2125,13 @@
 
             openModal(url, title);
         }
-
+        $(function () {
+        $("#PettyCashRequest").dxTextBox({
+        text: formatMessage("Petty Cash Request"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textcolor-heading");
+            }
+            });
+        });
 </script>

@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <label>User Name:</label>
                         @(Html.DevExtreme().TextBox()
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("UserName")
                         .OnChange("validateEmail")
                         .Value(null)
@@ -68,7 +68,7 @@
                         .Placeholder("Select Department")
                         //.AcceptCustomValue(false)
                         //.Label("Department")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .DropDownOptions(d => d.Width("100%"))
                         .ContentTemplate(new TemplateName("DepartmentContentTemplate"))
@@ -83,7 +83,7 @@
                         <label>Company Branch :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetCompanies").LoadMode(DataSourceLoadMode.Raw).Key("CompanyID"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddCompany")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select a company.");
@@ -114,7 +114,7 @@
                         <label>Company Division :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetBranches").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddBranch")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select a Division.");
@@ -142,7 +142,7 @@
                         <label>User Level :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetUserLevels").LoadMode(DataSourceLoadMode.Raw).Key("UserLevelID"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddUserLevel")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select a user level.");
@@ -170,7 +170,7 @@
                         <label>Employee File Access Group :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetEmployeeGroups").LoadMode(DataSourceLoadMode.Raw).Key("EmpGroupID"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddEmployeeGroup")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Please select an employee group.");
@@ -210,7 +210,7 @@
                         .ShowClearButton(true)
                         .Placeholder("Select Inventory Group")
                         .AcceptCustomValue(false)
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .DropDownOptions(d => d.Width("100%"))
                         .ContentTemplate(new TemplateName("InventoryGroupContentTemplate"))
@@ -225,7 +225,7 @@
                         <label>Petty Cash Account(Finance Module) :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetFilteredAccountHead").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddFilteredAccountHead")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Ledger Account should be entered.");
@@ -264,7 +264,7 @@
                         .ValidationRules(rules => {
                         rules.AddRequired().Message(new JS("formatMessage('User Level should be selected')"));
                         })
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ShowClearButton(true)
                         .AcceptCustomValue(false)
                         .ValueExpr("HruserLevelId")
@@ -280,7 +280,7 @@
                         <label>Inventory Sales Person Access :</label>
                         @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi().Controller("utility").LoadAction("GetSalesPersonAccessLevels").LoadMode(DataSourceLoadMode.Raw).Key("SalesPersonID"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddSalesPerson")
                         .ValidationRules(rules => {
                         rules.AddRequired().Message("Ledger Account should be entered.");
@@ -316,7 +316,7 @@
                             .ValidationRules(rules => {
                             rules.AddRequired().Message("Project Group is required");
                             })
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("ddProjectGroup")
                             .ShowClearButton(true)
                             .AcceptCustomValue(false)

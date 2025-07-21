@@ -21,7 +21,7 @@
 .content-container {
     background-color: #909ead00;
     /* border-radius: 10px; */
-    padding: 15px;
+    /*padding: 15px;*/
 }
 
 .custom-context-menu {
@@ -240,7 +240,7 @@ body {
 }
 .dx-textcolor-heading .dx-texteditor-input {
     color: var(--title-background-color) !important;
-    font-size: 24px !important;
+    font-size: 22px !important;
     font-weight: bold;
 }
 

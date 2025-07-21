@@ -127,7 +127,7 @@
                     .DataSource(new[] { "Hourly", "Daily" })
                     .Value("Hourly")
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Unit of Measure: *"))
 
                
@@ -144,7 +144,7 @@
                     .ID("PackingUnit")
                     .Value(1)
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Packing Unit:"))
             </td>
 
@@ -152,7 +152,7 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("ItemSize")
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Item Size:"))
             </td>
          </tr>
@@ -161,7 +161,7 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("ItemThickness")
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Item Thickness:"))
             </td>
 
@@ -169,7 +169,7 @@
                 @(Html.DevExtreme().TextBox()
                     .ID("ItemDimension")
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Item Dimension:"))
             </td>
 
@@ -177,7 +177,7 @@
                 @(Html.DevExtreme().SelectBox()
                     .ID("ActualSize")
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Act. Size:"))
             </td>
 
@@ -195,7 +195,7 @@
                     .Value(0.00)
                     .Format("#,##0.00")
                     .Width("100p%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Opening Balance:"))
             </td>
 
@@ -204,7 +204,7 @@
                     .ID("CostPrice")
                     .Value(0)
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Cost Price:"))
             </td>
 
@@ -213,7 +213,7 @@
                     .ID("ExFactoryPrice")
                     .Value(0)
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Ex-Factory Price:"))
             </td>
         </tr>
@@ -223,7 +223,7 @@
                     .ID("SellingPrice")
                     .Value(0)
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Selling Price:"))
             </td>
 
@@ -232,7 +232,7 @@
                     .ID("MinSellingPrice")
                     .Value(0)
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Min Selling Price:"))
             </td>
 
@@ -241,7 +241,7 @@
                     .ID("MaxSellingPrice")
                     .Value(0)
                     .Width("100%")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .Label("Max Selling Price:"))
             </td>
         </tr>
@@ -277,21 +277,21 @@
                     .ID("ItemPartNo")
                     .Width("100%")
                     .Label("Item Part No:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("ItemHSCode")
                     .Width("100%")
                     .Label("Item HS Code:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                     .ID("Location01")
                     .Width("100%")
                     .Label("Location Identifier 01:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
         </tr>
         <tr>
@@ -301,7 +301,7 @@
                     .DataSource(new[] { "Red", "Blue", "Green" })
                     .Width("100%")
                     .Label("Item Color:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
       
 
@@ -310,7 +310,7 @@
                     .ID("Location02")
                     .Width("100%")
                     .Label("Location Identifier 02:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
@@ -318,7 +318,7 @@
                     .DataSource(new[] { "Brand A", "Brand B" })
                     .Width("100%")
                     .Label("Item Brand:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
         </tr>
         <tr>
@@ -327,7 +327,7 @@
                     .ID("Location03")
                     .Width("100%")
                     .Label("Location Identifier 03:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
             <td>
                 @(Html.DevExtreme().SelectBox()
@@ -335,7 +335,7 @@
                     .DataSource(new[] { "Maker 1", "Maker 2" })
                     .Width("100%")
                     .Label("Item Make / Manufacturer:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
     
 
@@ -345,7 +345,7 @@
                     .ID("CountryOfOrigin")
                     .Width("100%")
                     .Label("Country Of Origin:")
-                    .LabelMode(EditorLabelMode.Outside))
+                    .LabelMode(EditorLabelMode.Floating))
             </td>
             
         </tr>

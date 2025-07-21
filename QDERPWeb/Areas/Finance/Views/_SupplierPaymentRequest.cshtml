@@ -5,66 +5,90 @@
 }
 
 <style>
-    /* Custom Styling */
-    #gridContainer {
-        font-family: Arial, sans-serif;
-        background-color: #f9f9f9;
-        border: 1px solid #ddd;
-        border-radius: 5px;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .dx-popup-content{
+        padding:0px !important;
+    }
+#a1btnPrint .dx-icon {
+    color: green !important; /* Change to your desired color */
+}
+
+/* Search button icon color */
+#a1btnToggleSearch .dx-icon {
+    color: blue !important;
+}
+
+/* Group button icon color */
+#a1btntoggleGroupPanel .dx-icon {
+    color: orange !important;
+}
+
+/* Column chooser button icon color */
+#a1btnColumnChooser .dx-icon {
+    color: purple !important;
+}
+
+/* Dropdown button icon color */
+#a1ddButtonLayout .dx-icon {
+    color: crimson !important;
+}
+
+#a1btnToggleHeaderFilter .dx-icon {
+    color: #a148aaaa !important;
+}
+
+#a1btnRefresh .dx-icon {
+    color: #a100ff11 !important;
+}
+
+#a1btnToggleHeaderFilter,
+#a1btnPrint,
+#a1btnRefresh,
+#a1btnToggleSearch,
+#a1btntoggleGroupPanel,
+#a1btnColumnChooser,
+#a1ddButtonLayout,
+#a1rowHeightProperties {
+    display: inline-block;
+    width: 75px !important;
+    overflow: hidden;
+    transition: width 0.3s ease-in-out;
+}
+
+
+#a1btnToggleHeaderFilter:hover,
+#a1btnPrint:hover,
+#a1btnRefresh:hover,
+#a1btnToggleSearch:hover,
+#a1btntoggleGroupPanel:hover,
+#a1btnColumnChooser:hover,
+#a1ddButtonLayout:hover,
+#a1rowHeightProperties:hover {
+    width: 200px !important;
+}
+
+    /* Hide button text initially */
+    #a1btnToggleHeaderFilter .dx-button-text,
+    #a1btnRefresh .dx-button-text,
+    #a1btnPrint .dx-button-text,
+    #a1btnToggleSearch .dx-button-text,
+    #a1btntoggleGroupPanel .dx-button-text,
+    #a1btnColumnChooser .dx-button-text,
+    #a1ddButtonLayout .dx-button-text,
+    #a1rowHeightProperties .dx-button-text {
+        display: none;
     }
 
-    .dx-datagrid-headers {
-        background-color: #333;
-        color: white;
-        font-weight: bold;
-    }
-
-    .dx-datagrid-rowsview .dx-row:nth-child(even) {
-        background-color: #f5f5f5;
-    }
-
-    .dx-datagrid-rowsview .dx-row:hover {
-        background-color: #e0e0e0;
-    }
-
-    .dx-selection.dx-row {
-        background-color: #d3e9ff !important;
-    }
-
-    .button-container {
-        display: flex;
-        justify-content: space-between;
-        padding: 10px;
-        background-color: #333;
-        color: var(--background-color);
-    }
-
-        .button-container button {
-            background-color: #008CBA;
-            border: none;
-            color: white;
-            padding: 8px 16px;
-            font-size: 14px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-
-            .button-container button:hover {
-                background-color: #005f75;
-            }
-        
-    .limited-footer .btn-containerIvoiceEdit:not(:has(#btnToggleHeaderFilter,#btnColumnChooser, #ddButtonExpense, #ddButtonReceipts,#ddButtonPayment,#ddOtherVouchers,#ddReports)) {
-		display: none !important;
-	}
-    .dx-header-row{
-        color:black;
-    }
-
-    .dx-popup-content {
-        background-color: var(--background-color);
-        padding: 0px;
-    }
+/* Show button text on hover */
+#a1btnToggleHeaderFilter:hover .dx-button-text,
+#a1btnRefresh .dxe-button-text,
+#a1btnPrint:hover .dx-button-text,
+#a1btnToggleSearch:hover .dx-button-text,
+#a1btntoggleGroupPanel:hover .dx-button-text,
+#a1btnColumnChooser:hover .dx-button-text,
+#a1ddButtonLayout:hover .dx-button-text,
+#a1rowHeightProperties:hover .dx-button-text {
+    display: inline-block;
+}
 </style>
 
 
@@ -78,7 +102,7 @@
         .Key("AccountId")
         )
         .Label("Select the Supplier Name:")
-        .LabelMode(EditorLabelMode.Outside)
+        .LabelMode(EditorLabelMode.Floating)
         .ID("supplierDropDownBox")
         .ShowClearButton(true)
         .AcceptCustomValue(false)
@@ -98,10 +122,202 @@
         .ContentTemplate(new TemplateName("SupplierContentTemplate"))
         )
     </div>
+    <div class="container2">
+        <div class="dx-fieldset horizontal-container mt-2">
+
+            <div class="btn-container">
+                @(Html.DevExtreme().DropDownButton()
+                                .ID("a1ddButtonLayout")
+                                .Icon("smalliconslayout")
+                                .Width(50)
+                                .Text(new JS("formatMessage('Layout')"))
+
+                                .DropDownOptions(options => options.Width(230))
+                                .Items(items =>
+                                {
+                                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Template(@<text>
+                                                                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                                         <path fill="var(--title-background-color)" d="M6 10V7a6 6 0 1 1 12 0v3" />
+                                                                                                                         <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                                                         <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                                                     </svg>Set as Default Layout
+
+                    </text>).OnClick("setDefaultLayoutClick");
+                                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Template(@<text>
+                                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--title-background-color)" viewBox="0 0 16 16">
+                                                                                                                <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1l-3 3 3 3V5z" />
+                                                                                                            </svg>Reset Layout
+
+
+                    </text>).OnClick("resetLayoutClick");
+                                    items.Add().Text(new JS("formatMessage('Open Layout')")).Template(@<text>
+                                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                               <path fill="var(--title-background-color)" d="M17 10V7a5 5 0 0 0-10 0" />
+                                                                                                               <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                                               <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                                           </svg>Open Layout
+
+
+                                    </text>).OnClick("openLayoutClick");
+
+                                    items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
+                                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                               <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
+                                                                                                               <path fill="#444" d="M17 7H7V5h10v2zM9 14h6v5H9z" />
+                                                                                                           </svg>Save Layout
+
+
+                    </text>).OnClick("saveLayoutClick");
+                                })
+                                .ShowArrowIcon(false)
+                                )
+            </div>
+            <div class="btn-container">
+                @(Html.DevExtreme().DropDownButton()
+                                .ID("a1rowHeightProperties")
+                                .Icon("") // fallback to standard icon if "rowproperties" not working
+                                .Width(50)
+                                .Text(new JS("formatMessage('Set Row Height')"))
+                                .DropDownOptions(options => options.Width(230))
+                                .Items(items =>
+                                {
+                                items.Add()
+                                .Text("Short (1 Line)")
+                                .Template(@<text>
+                                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+                                               </svg> Short
+                                           </text>)
+                                .OnClick("function() { ChangeRowHeight('30'); }");
+
+                                items.Add()
+                                .Text("Medium (2 Lines)")
+                                .Template(@<text>
+                                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                                               </svg> Medium
+                                           </text>)
+                                .OnClick("function() { ChangeRowHeight('60'); }");
+
+                                items.Add()
+                                .Text("Tall (4 Lines)")
+                                .Template(@<text>
+                                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+                                               </svg> Tall
+                                           </text>)
+                                .OnClick("function() { ChangeRowHeight('90'); }");
+
+                                items.Add()
+                                .Text("Extra Tall (8 Lines)")
+                                .Template(@<text>
+                    <svg width="20" height="20" viewBox="0 0 20 20">
+                        @for (var i = 1; i <= 8; i++)
+                                        {
+                                            var y = 1 + (i - 1) * 2;
+                                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                                        }
+                    </svg> Extra Tall
+                </text>)
+                                .OnClick("function() { ChangeRowHeight('130'); }");
+                                })
+                                .ShowArrowIcon(false)
+                                )
+            </div>
+
+
+            <div class="btn-container">
+                @(Html.DevExtreme().Button()
+                                .ID("a1btnPrint")
+                                .Icon("print")
+                                .Text(new JS("formatMessage('Print')"))
+
+                                .Width(50)
+                                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
+                                )
+            </div>
+
+
+
+            <div class="btn-container">
+                @(Html.DevExtreme().Button()
+                                .ID("a1btnToggleSearch")
+                                .Icon("search")
+                                .Text(new JS("formatMessage('Search')"))
+
+                                .Width(50)
+                                .OnClick("toggleFilterRow")
+                                )
+            </div>
+
+
+
+            <div class="btn-container">
+                @(Html.DevExtreme().Button()
+                                .ID("a1btntoggleGroupPanel")
+                                .Icon("hierarchy")
+                                .Width(50)
+                                .Text(new JS("formatMessage('Group')"))
+
+                                .OnClick("toggleGroupPanel")
+
+                                )
+            </div>
+            <div class="btn-container">
+                @(Html.DevExtreme().Button()
+                                .ID("a1btnToggleHeaderFilter")
+
+                                .Text(new JS("formatMessage(' Filter')"))
+
+                @* .Icon("filter") *@
+                                .OnClick("toggleHeaderFilter")
+                                .Template(@<text>
+                    <div style="display: flex; justify-content: center; align-items: center;">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="20" height="20"
+                             viewBox="0 0 24 24"
+                             fill="none"
+                             stroke="none">
+                            <!-- Circle background -->
+                            <circle cx="12" cy="12" r="12" fill="var(--title-background-color)" />
+                            <!-- Filter funnel icon in white -->
+                            <polygon points="6 8 18 8 13 13 13 17 11 17 11 13 6 8" fill="#ffffff" />
+                        </svg>
+                    </div>
+                </text>)
+                                )
+
+            </div>
+
+            <div class="btn-container">
+                @(Html.DevExtreme().Button()
+                                .ID("a1btnColumnChooser")
+                                .Icon("columnchooser")
+                                .Width(50)
+                                .Text(new JS("formatMessage('Column Chooser')"))
+
+                                .OnClick("showColumnChooser")
+                                )
+            </div>
+            <div class="btn-container">
+                @(Html.DevExtreme().Button()
+                            .ID("btnaddsupplier")
+                            .Text("Create Payment Request")
+                            .Icon("plus")
+                            .OnClick("createpayment")
+                            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                            )
+            </div>
+        </div>
+    </div>
 	<div class="dx-field ledgerResult">
         @(
                 Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201SubLedgerPayablesMaster>()
-                            .ID("SupplierpaymentdataGrid")
+                            .ID("dataGrid")
                             .RemoteOperations(false)
                             .Columns(columns =>
                             {
@@ -167,7 +383,7 @@
 				.AllowColumnResizing(true)
 				.ColumnFixing(fixing => fixing.Enabled(true))
 				.HeaderFilter(filter => filter.Visible(true))
-				.Height(250)
+				.Height("47vh")
 				.ColumnAutoWidth(true)
 				.FilterRow(filterRow => filterRow.Visible(false))
 				.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -248,62 +464,7 @@
     }
     
 </div> 
-<div class="container2">
-    <div class="dx-fieldset horizontal-container mt-2">
 
-        @(Html.DevExtreme().DropDownButton()
-            .ID("supplierButtonLayout")
-            .Icon("smalliconslayout")
-            
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { @class = "bold-button" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-
-        @(Html.DevExtreme().Button()
-            .ID("supplierPrint")
-            .Icon("print")
-            .Text(new JS("formatMessage('Print')"))
-            .ElementAttr(new { @class = "bold-button" })
-            
-            )
-
-        @(Html.DevExtreme().Button()
-            .ID("supplierToggleSearch")
-            .Text(new JS("formatMessage('Search')"))
-            
-            .Icon("search")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            .OnClick("togglesupplierFilterRow")
-            )
-        
-       
-        @(Html.DevExtreme().Button()
-            .ID("suppliertoggleGroupPanel")
-            .Icon("hierarchy")
-            
-            .Text(new JS("formatMessage('Group')"))
-            .ElementAttr(new { @class = "bold-button" })
-            .OnClick("togglesupplierGroupPanel")
-            )
-        @(Html.DevExtreme().Button()
-            .ID("btnaddsupplier")
-            .Text("Create Payment Request")
-            .Icon("plus")
-            .OnClick("createpayment")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
-    </div>
-</div>
 <script>
     function dropDownBoxInput(e) {
         const ddbInstance = e.component;
@@ -356,7 +517,7 @@
         accountHead: supplieraccheadname
     },
     success: function (data) {
-        const targetGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        const targetGrid = $("#dataGrid").dxDataGrid("instance");
         targetGrid.option("dataSource", data);
     },
     error: function (err) {
@@ -386,7 +547,7 @@
     // Footer Filter row button click event
     function togglesupplierFilterRow() {
         
-        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var grid = $("#dataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
         grid.option("filterRow.visible", !currentVisibility);
@@ -420,165 +581,25 @@
     function closeSubmenu() {
         $("#submenuContainer").hide();
     }
-    // Handle the file selection
-    $("#loadLayoutInput").on("change", function (event) {
-        const dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        const file = event.target.files[0];
-
-        if (file) {
-            const reader = new FileReader();
-
-            reader.onload = function (e) {
-                try {
-
-                    const layout = JSON.parse(e.target.result);
-
-
-                    dataGrid.state(layout);
-                } catch (error) {
-                    console.error("Error parsing JSON:", error);
-                    alert("Failed to load layout. Please ensure the file is valid JSON.");
-                }
-            };
-
-
-            reader.readAsText(file);
-        }
-    });
-    function setDefaultLayoutClick(e) {
-        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2);
-        console.log(layoutJson);
-
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: layoutJson,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-    function resetLayoutClick(e) {
-        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: null,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                grid.state({});
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-
-
-    function loadGridState() {
-        var form = $('#formId').val();
-        // Call the API to get the grid state
-        $.ajax({
-            url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-            method: 'GET',
-            data: {
-                form: form
-            },
-            success: function (response) {
-                // Get the DataGrid instance
-                var dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-
-                // Load the state into the DataGrid
-                if (response) {
-                    try {
-                        // Parse the JSON string from the file
-                        const layout = JSON.parse(response);
-
-                        // Restore the grid state
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the JSON is valid.");
-                    }
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading grid state:", error);
-            }
-        });
-    }
-    function saveLayoutClick(e) {
-
-        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-        //console.log(layoutJson);
-        // Create a Blob from the JSON string
-        const blob = new Blob([layoutJson], { type: "application/json" });
-        // Create a URL for the Blob
-        const url = URL.createObjectURL(blob);
-        // Create a link element
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "grid-layout.json"; // Set the file name for download
-        // Append the link to the body (needed for Firefox)
-        document.body.appendChild(a);
-        // Programmatically click the link to trigger the download
-        a.click();
-        // Clean up by removing the link and revoking the Object URL
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        //DevExpress.ui.notify("Layout", "success", 600);
-    }
-    function openLayoutClick(e) {
-
-        // Create an input element dynamically
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "application/json";
-
-        // When a file is selected
-        input.addEventListener("change", function (event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    const layout = JSON.parse(e.target.result);
-                    const grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-                    grid.state(layout);
-                    //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                } catch (error) {
-                    DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                }
-            };
-
-            reader.readAsText(file);
-        });
-
-        // Trigger the file input click event
-        input.click();
-    }
-    function togglesupplierGroupPanel() {
-        var dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        var isVisible = dataGrid.option("groupPanel.visible");
-        dataGrid.option("groupPanel.visible", !isVisible);
-    }
     function createpayment() {
         window.location.href = `/${tenantName}/Finance/CreatePaymentRequest`;
     }
+    $(function () {
+        const svgIcon = `
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 399.58 279.97" width="20" height="20">
+            <defs>
+                <style>
+                        .cls-1 { fill: var(--title-background-color); }
+                    .cls-2 { fill: #a4abb8; }
+                </style>
+            </defs>
+            <g>
+                <path class="cls-1" d="M80.09,69.88v140h32.5c5.3,0,10.16,10.7,5.95,14.96l-52.43,52.56c-2.45,2.54-5.8,3.15-9.07,2.03L1.64,224.83c-4.4-3.99.95-14.96,5.95-14.96h32.5V69.88H7.59c-4.9,0-10.4-10.76-5.95-14.96L54.05,2.34c3.68-3.11,8.37-3.13,12.08,0l52.41,52.58c4.45,4.2-1.05,14.96-5.95,14.96h-32.5Z"/>
+                <path class="cls-2" d="M396.81,57.6c-1.35,1.36-5.16,2.32-7.17,2.33l-221.99-.12c-12.32.52-9.65-32.56-6.04-36.91,1.34-1.61,4.84-2.8,6.95-3.05l222.97.08c3.57.56,6.93,3.91,7.5,7.5.75,4.72.63,19.02.08,23.97-.18,1.66-1.2,5.09-2.31,6.2Z"/>
+                <path class="cls-2" d="M396.81,257.6c-1.35,1.36-5.16,2.32-7.17,2.33l-223-.11c-9.5-1.57-8.29-22.11-7.44-29.33.73-6.22,2.7-9.84,9.37-10.63l222.97.08c2.79.42,7,3.65,7.53,6.47.78,4.09.56,20.45.05,25-.18,1.66-1.2,5.09-2.31,6.2Z"/>
+                <path class="cls-2" d="M162.4,122.19c1.56-1.44,4.97-2.34,7.14-2.36l221.99.11c3.14.47,6.66,3.59,7.35,6.65.74,3.29.83,23.39.19,26.77-.76,4-6.65,6.8-10.44,6.56l-220.97-.1c-6.07-1.16-7.78-4.8-8.45-10.55s-1.2-23,3.2-27.08Z"/>
+            </g>
+        </svg>`;
+        $('#a1rowHeightProperties .dx-button-content').prepend(svgIcon);
+    });
 </script>

@@ -21,7 +21,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().TextBox()
                                         .Label(new JS("formatMessage('Cheque No')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("ChequeNo")
                                         .Value(null)
                                         .ValidationRules(rules =>
@@ -37,7 +37,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().TextBox()
                                         .Label(new JS("formatMessage('Voucher No')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("PopVoucherNo")
                                         .Value(null)
                                         .Disabled(true)
@@ -50,7 +50,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().DateBox()
                                         .Label(new JS("formatMessage('Cheque Date')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("ChequeDate")
                                         .InputAttr("aria-label", "Date")
                                         .Type(DateBoxType.Date)
@@ -64,7 +64,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().TextBox()
                                         .Label(new JS("formatMessage('Place of Issue')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("PlaceofIssue")
                                         .ValidationRules(rules =>
                                         {
@@ -84,7 +84,7 @@
                     <div class="d-flex gap-2 align-items-baseline">
                         @(Html.DevExtreme().TextBox()
                                                 .Label(new JS("formatMessage('Cheque Issued in favour of')"))
-                                                .LabelMode(EditorLabelMode.Outside)
+                                                .LabelMode(EditorLabelMode.Floating)
                                                 .ID("ChequeIssuedinfavourof")
                                                 .Width(650)
                                                 .ValidationRules(rules =>
@@ -110,7 +110,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().TextBox()
                                         .Label(new JS("formatMessage('AmountinWords')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("AmountinWords")
                                         .Value("No Riyals Only.")
                                         .ValidationRules(rules =>
@@ -125,7 +125,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().NumberBox()
                                         .Label(new JS("formatMessage('AmountinSAR')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("AmountinSAR")
                                         .Width(150)
                                         .Value(0)
@@ -146,7 +146,7 @@
                     @(Html.DevExtreme().SelectBox()
                                         .ID("txtbasecurrency")
                                         .Label("Base Currency")
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .DataSource(d => d.WebApi()
                                         .Controller("Utility")
                                         .LoadAction("GetCurrencyList")
@@ -166,7 +166,7 @@
                     @(Html.DevExtreme().SelectBox()
                                         .ID("txttxcurrency")
                                         .Label("Convertion Currency")
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .DataSource(d => d.WebApi()
                                         .Controller("Utility")
                                         .LoadAction("GetCurrencyList")
@@ -185,7 +185,7 @@
                 <div class="form-group">
                     @(Html.DevExtreme().TextBox()
                                         .Label("Convertion Rate")
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("txtchequeCurrencyRate")
                                         .Value("")
                                         .Placeholder("Enter convertion Rate")

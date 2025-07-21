@@ -86,7 +86,7 @@
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryName")
             .Label(new JS("formatMessage('Signatory Name')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ValidationRules(rules =>
             {
                 rules.AddRequired().Message("Signatory Name is required");
@@ -102,7 +102,7 @@
 
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Signatory Name(Arabic)')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("SignatoryNameArabic")
             .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
             )
@@ -112,7 +112,7 @@
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryPosition")
             .Label(new JS("formatMessage('Signatory Position')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ValidationRules(rules =>
             {
                 rules.AddRequired().Message("Signatory Name is required");
@@ -128,7 +128,7 @@
 
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Signatory Position(Arabic)')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("SignatoryPositionArabic")
             .ElementAttr(new { dir = "rtl", @class = "rtl-textbox" })
             )
@@ -138,13 +138,13 @@
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryContact")
             .Label(new JS("formatMessage('Signatory Contact No.')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             )
 
         @(Html.DevExtreme().TextBox()
             .ID("SignatoryEmail")
             .Label(new JS("formatMessage('Signatory Email')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             
             )
     </div>
@@ -155,7 +155,7 @@
     @(Html.DevExtreme().DropDownBox()
         .ID("SignatoryUserId")
         .Label(new JS("formatMessage('Signatory User ID:')"))
-        .LabelMode(EditorLabelMode.Outside)
+        .LabelMode(EditorLabelMode.Floating)
         .ShowClearButton(true)
         .OpenOnFieldClick(true)
         .AcceptCustomValue(false)

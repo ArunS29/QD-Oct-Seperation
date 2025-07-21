@@ -445,7 +445,7 @@
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Code')"))//.ID("ClientCode")
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("AccountId"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddclientcode")
 																			.ValidationRules(rules =>
 																			{
@@ -486,7 +486,7 @@
 								<td>
 									@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
 																			.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddclientname")
 																			.ValidationRules(rules =>
 																			{
@@ -615,7 +615,7 @@
 															.Key("IncomeLedger")
 															)
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup2")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -648,7 +648,7 @@
 															.LoadMode(DataSourceLoadMode.Raw)
 															.Key("CostAllocationUnitId")
 															)
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup1")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -681,7 +681,7 @@
 							<td>
 								@(Html.DevExtreme().TextArea()
 															.Label(new JS("formatMessage('Invoice Notes')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("txtInvoiceNotes")
 															.Value("")
 															.Height(40)
@@ -696,7 +696,7 @@
 							<td>
 								@(Html.DevExtreme().TextArea()
 															.Label(new JS("formatMessage('Notes in Arabic')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("txtNotesinArabic")
 															.Value("")
 															.Height(40)
@@ -774,7 +774,7 @@
 															.Key("CurrencyExchangeId")
 															)
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup3")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -808,7 +808,7 @@
 															.Key("CurrencyExchangeId")
 															)
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup4")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -834,7 +834,7 @@
 								@(
 															Html.DevExtreme().NumberBox()
 															.Label(new JS("formatMessage('Currency Exchange Rate')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("txtCurrencyExchangeRate")
 															.Value(null)
 															.Width(180)// HTML attribute to allow decimal input
@@ -857,7 +857,7 @@
 								@(
 															Html.DevExtreme().NumberBox()
 															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("numLessAdvance")
 															.Value(null)
 															.Width(180)// HTML attribute to allow decimal input
@@ -879,7 +879,7 @@
 								@(
 															Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("AccountGroup1")
 															.Value(null)
 															.Width(250)
@@ -898,7 +898,7 @@
 								@(
 															Html.DevExtreme().NumberBox()
 															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("numLessOtherDeductions")
 															.Value(null)
 															.Width(180)// HTML attribute to allow decimal input
@@ -920,7 +920,7 @@
 								@(
 															Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("AccountGroup2")
 															.Value(null)
 															.Width(250)
@@ -937,7 +937,7 @@
 								@(
 															Html.DevExtreme().NumberBox()
 															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("numLessRetention")
 															.Value(null)
 															.Width(180)// HTML attribute to allow decimal input
@@ -959,7 +959,7 @@
 								@(
 															Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("AccountGroup3")
 															.Value(null)
 															.Width(250)
@@ -979,7 +979,7 @@
 															)
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Verified By')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("VerifiedBytext")
 															.Value(null) // Default value
 															.Disabled(true)
@@ -987,7 +987,7 @@
 
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Verified On')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("VerifiedOnDate")
 															.Value(null) // Default value
 															.Disabled(true)
@@ -1002,14 +1002,14 @@
 															)
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Approved By')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ApprovedBytext")
 															.Value(null) // Default value
 															.Disabled(true)
 															)
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Approved On')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ApprovedOntext")
 															.Value(null) // Default value
 															.Disabled(true)
@@ -1036,7 +1036,7 @@
 															.Key("BranchCode")
 															)
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup5")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -1070,7 +1070,7 @@
 															.Key("SalesPersonCode")
 															)
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup6")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -1101,7 +1101,7 @@
 															)
 								@(Html.DevExtreme().TextBox()
 															.Label(new JS("formatMessage('Invoice Submitted By')"))
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("SubmittedBytext")
 															.Value(null) // Default value
 															.Disabled(true)
@@ -1128,7 +1128,7 @@
 															.Key("CompanyId")
 															)
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup7")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -1170,7 +1170,7 @@
 															.Key("SellerOtherIdtype")
 															)
 
-															.LabelMode(EditorLabelMode.Outside)
+															.LabelMode(EditorLabelMode.Floating)
 															.ID("ddlGoodsGroup8")
 															.ShowClearButton(true)
 															.AcceptCustomValue(true)
@@ -1217,7 +1217,7 @@
 																			.LoadAction("GetAllSignatories")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlGoodsGroup9")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1246,7 +1246,7 @@
 																			.LoadAction("GetAllSignatories")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlGoodsGroup10")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1275,7 +1275,7 @@
 																			.LoadAction("GetAllSignatories")
 																			.LoadMode(DataSourceLoadMode.Raw)
 																			.Key("SignatoryID"))
-																			.LabelMode(EditorLabelMode.Outside)
+																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ddlGoodsGroup11")
 																			.ShowClearButton(true)
 																			.AcceptCustomValue(true)
@@ -1423,7 +1423,7 @@
 					.LoadAction("GetGoodsAndServices")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("Gscode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("accountDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
@@ -1469,7 +1469,7 @@
 
 				.DisplayExpr("UnitDesc")
 				.Value(new JS("cellInfo.value"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.OpenOnFieldClick(true)
 				.ShowClearButton(true)
 				.Width(200)
@@ -1520,7 +1520,7 @@
 					.LoadAction("GetVatTaxSlabs")
 					.LoadMode(DataSourceLoadMode.Raw)
 					.Key("TaxSlabCode"))
-					.LabelMode(EditorLabelMode.Outside)
+					.LabelMode(EditorLabelMode.Floating)
 					.ID("TaxSlabDropDownBoxEdit")
 					.ShowClearButton(false)
 					.AcceptCustomValue(true)
