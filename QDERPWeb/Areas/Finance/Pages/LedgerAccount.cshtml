@@ -6224,6 +6224,27 @@ function syncSupVATNumbers(e) {
         textBox2Instance.option("value", arabicTranslation);
 
     }
+    $(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    if (urlParams.get('IsSupplier') === 'true') {
+        // From Add popup → select & disable 'Sundry Creditors'
+        const sundryCreditorId = 3; // Replace with correct ID
+        setTimeout(() => {
+            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+            if (group) group.option({ value: sundryCreditorId, disabled: true });
+        }, 300);
+    }
+
+    if (urlParams.get('IsPurchaseEdit') === 'true') {
+        // From Edit popup → just disable Account Group
+        setTimeout(() => {
+            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+            if (group) group.option("disabled", true);
+        }, 300);
+    }
+});
+
 
     // alert("two");
     // alert(getidfromCOA);

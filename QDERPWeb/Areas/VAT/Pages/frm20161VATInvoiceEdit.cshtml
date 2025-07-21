@@ -603,14 +603,7 @@
 																		// 👇 Add Buttons Inside DropDownBox
 																		.Buttons(buttons =>
 																		{
-																			buttons.Add()
-																			.Name("editButton")
-																			.Location(TextEditorButtonLocation.After)
-																			.Widget(w => w.Button()
-																			.Icon("edit")
-																			.Hint("Edit Description")
-																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-																			.OnClick("onEditClientClick"));
+																			
 																			
 
 																			buttons.Add()
@@ -619,9 +612,19 @@
 																			.Widget(w => w.Button()
 																			.Icon("plus")
 																			.Hint("Add Description")
-																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																				.ElementAttr(new { @class = "custom-hover-button add-hover" })
 																			.OnClick("showLedgerAccountPopup"));
-																			buttons.Add().Name("dropDown");
+																		
+
+																			buttons.Add()
+																			.Name("editButton")
+																			.Location(TextEditorButtonLocation.After)
+																			.Widget(w => w.Button()
+																			.Icon("edit")
+																			.Hint("Edit Description")
+																			.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																			.OnClick("onEditClientClick"));
+																				buttons.Add().Name("dropDown");
 																		})
 																		)
 
@@ -630,37 +633,39 @@
 
 								<!-- Add Popup -->
 								@(Html.DevExtreme().Popup()
-																.ID("ledgerAccountPopup")
-																.Width("80%")
-																.Height("85%")
-																.Title("Add Ledger Account")
-																.ShowTitle(true)
-																.CloseOnOutsideClick(true)
-																.Visible(false)
-																.ResizeEnabled(true)
-																.ContentTemplate(@<text>
-												  									<div id="popupContent" class="background" style="width:100%; height:100%;">
-												  										<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
-												  									</div>
-												  								</text>)
-																)
+    .ID("ledgerAccountPopup")
+    .Width("80%")
+    .Height("85%")
+    .Title(new JS("formtMessage('Add Ledger Account')"))
+    .ShowTitle(true)
+    .CloseOnOutsideClick(true)
+    .Visible(false)
+    .ResizeEnabled(true)
+    .ContentTemplate(@<text>
+        <div style="width:100%; height:100%;">
+            <iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+    </text>)
+)
+
 
 								<!-- Edit Popup -->
 								@(Html.DevExtreme().Popup()
-																.ID("ledgerEditAccountPopup")
-																.Width("80%")
-																.Height("85%")
-																.Title(new JS("formatMessage('Edit Ledger Account')"))
-																.ShowTitle(true)
-																.CloseOnOutsideClick(true)
-																.Visible(false)
-																.ResizeEnabled(true)
-																.ContentTemplate(@<text>
-												  									<div id="popupContent" style="width:100%; height:100%;">
-												  										<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
-												  									</div>
-												  								</text>)
-																)
+    .ID("ledgerEditAccountPopup")
+    .Width("80%")
+    .Height("85%")
+    .Title(new JS("formatMessage('Edit Ledger Account')"))
+    .ShowTitle(true)
+    .CloseOnOutsideClick(true)
+    .Visible(false)
+    .ResizeEnabled(true)
+    .ContentTemplate(@<text>
+        <div style="width:100%; height:100%;">
+            <iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+        </div>
+    </text>)
+)
+
 							</td>
 
 							<td>
