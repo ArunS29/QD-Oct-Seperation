@@ -433,7 +433,7 @@
                     "hh:mm tt}\', Now())\n")});
             this.xrLabel4.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel4.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel4.LocationFloat = new DevExpress.Utils.PointFloat(788.0629F, 4.333151F);
+            this.xrLabel4.LocationFloat = new DevExpress.Utils.PointFloat(790.0629F, 4.333151F);
             this.xrLabel4.Name = "xrLabel4";
             this.xrLabel4.SizeF = new System.Drawing.SizeF(411.9371F, 20.66685F);
             this.xrLabel4.StylePriority.UseBorderColor = false;
@@ -447,11 +447,11 @@
             this.pageInfo2.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
             this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(553.8021F, 9.332988F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(78.42609F, 13.66699F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(96.7594F, 13.66699F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.StylePriority.UseFont = false;
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
+            this.pageInfo2.TextFormatString = "Page No:{0} of {1}";
             // 
             // ReportHeader
             // 
@@ -2089,7 +2089,7 @@
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(23F, 23F, 25F, 50.57241F);
+            this.Margins = new DevExpress.Drawing.DXMargins(23F, 20F, 25F, 50.57241F);
             this.PageHeight = 850;
             this.PageWidth = 1250;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;
