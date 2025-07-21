@@ -6726,7 +6726,7 @@
 	});
 
 
-			function showLedgerAccountPopup() {
+				function showLedgerAccountPopup() {
 		console.log("Opening Add Supplier popup");
 
 		const tenantName = window.location.pathname.split('/')[1];
@@ -6746,85 +6746,6 @@
 	}
 
 
-
-
-	// 				$(document).ready(function () {
-	// 	const urlParams = new URLSearchParams(window.location.search);
-	// 	const isSupplier = urlParams.get('IsSupplier');
-
-	// 	if (isSupplier === 'true') {
-	// 		setTimeout(() => {
-	// 			const accountGroupDropDown = $("#ddlAccountGroup").dxDropDownBox("instance");
-
-	// 			const sundryCreditorId = 3; // Replace with actual ID from DB for "Sundry Creditors"
-
-	// 			accountGroupDropDown.option({
-	// 				value: sundryCreditorId,
-	// 				disabled: true
-	// 			});
-
-	// 			// Optional: If there's any dependent logic on value change
-	// 			accountGroupDropDown._createActionByOption("onValueChanged")({ value: sundryCreditorId });
-	// 		}, 300);
-	// 	}
-	// });
-
-
-	// 	function showLedgerAccountEditPopup(accheadid) {
-	// 	let IsPurchaseEdit = true;
-	// 	const tenantName = window.location.pathname.split('/')[1];
-
-	// 	const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsPurchaseEdit=${IsPurchaseEdit}`;
-
-	// 	var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
-	// 		console.log("Opening Edit Popup for ID: ", accheadid);
-	// 		popupInstance.option("onHidden", function () {
-	// 		// Optionally reload data or clear iframe
-	// 		// location.reload();
-	// 	});
-
-	// 	popupInstance.show();
-
-	// 	setTimeout(function () {
-	// 		var iframe = document.getElementById("ledgerEditAccountFrame");
-
-	// 		if (!iframe) {
-	// 			console.error("Error: ledgerEditAccountFrame not found!");
-	// 			return;
-	// 		}
-
-	// 		iframe.onload = function () {
-	// 			console.log("Edit iframe loaded successfully.");
-	// 		};
-
-	// 		iframe.src = url;
-	// 	}, 300);
-	// }
-	// 	$(document).ready(function () {
-	// 	const urlParams = new URLSearchParams(window.location.search);
-	// 	const isEdit = urlParams.get('IsPurchaseEdit');
-
-	// 	if (isEdit === 'true') {
-	// 		setTimeout(() => {
-	// 			const accountGroupDropDown = $("#ddlAccountGroup").dxDropDownBox("instance");
-
-	// 			if (accountGroupDropDown) {
-	// 				accountGroupDropDown.option("disabled", true);
-	// 			}
-	// 		}, 300);
-	// 	}
-	// });
-	// function onEditClientClick() {
-	// 	var clientId = $("#ddclientcode").dxDropDownBox("option", "value");
-
-	// 	if (!clientId) {
-	// 		DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Supplier");
-	// 		return;
-	// 	}
-
-	// 	// Save globally or pass to popup function
-	// 	showLedgerAccountEditPopup(clientId);
-	// }
 		function onEditClientClick() {
 		const clientId = $("#ddclientcode").dxDropDownBox("option", "value");
 
@@ -7615,17 +7536,7 @@
 			}
 		});
 	}
-		function onEditClientClick() {
-		var clientId = $("#ddclientcode").dxDropDownBox("option", "value");
-
-		if (!clientId) {
-			DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Client to edit");
-			return;
-		}
-
-		showLedgerAccountEditPopup(clientId);
-		console.log("Client selected for edit: ", clientId);
-	}
+		
 
 
 
