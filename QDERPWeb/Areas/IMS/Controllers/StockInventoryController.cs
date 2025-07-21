@@ -558,6 +558,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         return BadRequest(new { success = false, message = "This Store Name already exists." });
                     }
 
+
                     var existingRecord = await dbContext.Tbl60001storeMasters
                         .FirstOrDefaultAsync(x => x.StoreId == model.StoreId);
 

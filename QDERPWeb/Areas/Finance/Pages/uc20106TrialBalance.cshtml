@@ -128,13 +128,26 @@
                 .OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }")
                 .DropDownOptions(options => options.Width(230))
                 .Items(items => {
-                    items.Add().Text("Show Records").Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text("This Year Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text("This Month Till Date").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text("Last Year").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-                    items.Add().Text("Last Month").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                    items.Add().Text("This Week").Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                }))
+                    items.Add().Text("Show Records").Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+                    items.Add().Text("This Year Till Date").Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                    items.Add().Text("This Month Till Date").Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                    items.Add().Text("Last Year").Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                    items.Add().Text("Last Month").Icon("event").Option("color", "#AB47BC").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                    items.Add().Text("This Week").Icon("event").Option("color", "#00ACC1").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                })
+                    .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+
+                )
         </div>
 
         <!-- Effective Date & Toggle Chart (Grouped) -->
