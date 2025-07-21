@@ -1632,11 +1632,11 @@
             this.xrLabel47.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel47.BorderWidth = 2F;
-            this.xrLabel47.LocationFloat = new DevExpress.Utils.PointFloat(0F, 82.00027F);
+            this.xrLabel47.LocationFloat = new DevExpress.Utils.PointFloat(2.000516F, 82.00027F);
             this.xrLabel47.Multiline = true;
             this.xrLabel47.Name = "xrLabel47";
             this.xrLabel47.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel47.SizeF = new System.Drawing.SizeF(912.0001F, 22.99999F);
+            this.xrLabel47.SizeF = new System.Drawing.SizeF(909.9996F, 22.99999F);
             this.xrLabel47.StylePriority.UseBorderColor = false;
             this.xrLabel47.StylePriority.UseBorders = false;
             this.xrLabel47.StylePriority.UseBorderWidth = false;

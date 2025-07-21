@@ -1785,7 +1785,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new TrialBalanceReport(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
@@ -1840,7 +1840,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new TrialBalance_ExportFormat_(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
@@ -1895,7 +1895,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new TrialBalanceDrCr(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
@@ -2007,7 +2007,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new incomeStatements_Bymonth_(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }

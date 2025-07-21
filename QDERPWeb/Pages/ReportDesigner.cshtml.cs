@@ -206,17 +206,17 @@ namespace QD.ERP.Web.Pages
                 case "TrialBalanceReport":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalanceReport(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new TrialBalanceReport( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                 break;
                 case "TrialBalanceExportFormat":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalance_ExportFormat_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper );
+                    Report = new TrialBalance_ExportFormat_( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper );
                     break;
                 case "TrialBalanceDrCr":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalanceDrCr(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new TrialBalanceDrCr( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "IncomeStatements":
                     if (string.IsNullOrEmpty(accountGroup))
@@ -226,7 +226,7 @@ namespace QD.ERP.Web.Pages
                 case "incomeStatementsBymonth":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new incomeStatements_Bymonth_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
+                    Report = new incomeStatements_Bymonth_( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
                     break;
                 case "balnceSheet":
                     if (string.IsNullOrEmpty(accountGroup))

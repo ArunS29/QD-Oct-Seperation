@@ -1122,7 +1122,7 @@
             this.xrLabel17.Font = new DevExpress.Drawing.DXFont("Times New Roman", 11F);
             this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(0F, 77.66668F);
             this.xrLabel17.Name = "xrLabel17";
-            this.xrLabel17.SizeF = new System.Drawing.SizeF(870F, 27.66663F);
+            this.xrLabel17.SizeF = new System.Drawing.SizeF(870F, 37.78474F);
             this.xrLabel17.StylePriority.UseBorders = false;
             this.xrLabel17.StylePriority.UseFont = false;
             this.xrLabel17.StylePriority.UseTextAlignment = false;
