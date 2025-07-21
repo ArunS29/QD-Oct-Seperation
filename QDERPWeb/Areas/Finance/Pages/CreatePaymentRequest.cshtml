@@ -149,15 +149,7 @@
         z-index: 1000;
     }
 
-    /* ✅ Force borders for all cells in the grid */
-    #dataGrid .dx-row > td {
-        border: 1px solid #ddd !important;
-    }
-
-    /* ✅ Highlight empty row */
-    #dataGrid .dx-row.dx-data-row:last-child {
-        background-color: #f9f9f9; /* Light background to highlight empty row */
-    }
+   
     .displayFlex{
         display:flex;
     }
@@ -167,20 +159,26 @@
         background-color: #007BFF;
         border: 1px solid #007BFF; /* optional: add a border for visibility */
     }
+
+    .titleCard-toggle1 {
+        display: none;
+    }
 </style>
 
-<div class="title">
-    <div class="header-container">
-        <div id="ExpensesClaimRequest" class="no-border-title"></div>
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="PaymentRequest" class="titleText no-border-title"></div>
     </div>
 </div>
-
 <div class="content-container">
     <div class="dx-fieldset horizontal-container">
         <div class="form-group">
             @(Html.DevExtreme().TextBox()
                 .Label("Claim Reference No:")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("VoucherNo")
                 .Value("")
                 .ReadOnly(true)
@@ -191,7 +189,7 @@
             @(Html.DevExtreme().DateBox()
                 .Label("Claim Date:")
                 .ID("claimerdate")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
                 .Value(DateTime.Now)
@@ -201,7 +199,7 @@
             @(Html.DevExtreme().DateBox()
                 .Label("Effective Date:")
                 .ID("claimerEffectiveDate")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
                 .Value(DateTime.Now)
@@ -210,7 +208,7 @@
         <div class="form-group">
             @(Html.DevExtreme().TextArea()
                 .Label("Claim Remarks:")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("txtEntryNarration")
                 .Value("")
                 .Height(150)
@@ -231,7 +229,7 @@
                 .Key("CostAllocationUnitId")
                 )
                 .Label("Claimed for Project/Jobs:")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("accountDropDownBox")
                 .ShowClearButton(true)
                 .AcceptCustomValue(true)
@@ -256,7 +254,7 @@
                 Html.DevExtreme().SelectBox()
                 .Label("Priority:")
                 .ID("Priorityclaim")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .DataSource(new[] { "Critical", "High", "Medium", "Low" })
                 .Value(null)
                 )
@@ -346,7 +344,7 @@
                 .LoadAction("GetEditAccountHead")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("AccountId"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("accountDropDownBoxEdit")
                 .ShowClearButton(false)
                 .AcceptCustomValue(true)
@@ -387,7 +385,7 @@
                 .LoadAction("GetEditCostCenter")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("CostAllocationUnitId"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("CostDropDownBoxEdit")
                 .ShowClearButton(false)
                 .AcceptCustomValue(true)
@@ -508,7 +506,7 @@
                                 Html.DevExtreme().SelectBox()
                                 .Label("Type of Claim:")
                                 .ID("ClaimType")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .DataSource(new[] { "Expenses Claim Request" })
                                 .Value("Expenses Claim Request")
                                 .Disabled(true)
@@ -593,7 +591,7 @@
                     @(Html.DevExtreme().DropDownBox()
 
 
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("ddAccountHead")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
@@ -636,7 +634,7 @@
 
     </div>
     <input id="formId" value="ExpenseClaimEdit" type="hidden" />
-    <div>
+    <div class="footer-fixed">
         @await Html.PartialAsync("_ExpenseFooter")
     </div>
 </div>
@@ -1801,5 +1799,13 @@
 
         openModal(url, title);
     }
-
+    $(function () {
+        $("#PaymentRequest").dxTextBox({
+        text: formatMessage("Supplier Payment Request"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textcolor-heading");
+            }
+            });
+        });
 </script>

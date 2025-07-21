@@ -182,11 +182,23 @@
     .dx-overlay-wrapper {
         z-index: 1050 !important; /* Or higher if necessary */
     }
+
+    .titleCard-toggle1{
+        display:none;
+    }
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="ExpensesClaimRequest" class="no-border-title"></div>
+    </div>
+</div> *@
+<div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="ExpensesClaimRequest" class="titleText no-border-title"></div>
     </div>
 </div>
 
@@ -2146,5 +2158,14 @@
 
         openModal(url, title);
     }
+    $(function () {
+        $("#ExpensesClaimRequest").dxTextBox({
+        text: formatMessage("Expenses Claim Request"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textcolor-heading");
+            }
+            });
+        });
 
 </script>

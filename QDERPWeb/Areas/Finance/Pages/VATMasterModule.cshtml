@@ -104,7 +104,7 @@
                             
                             @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                             .ID("txtGoodsCode7").Width("69%"))
                         </td>
                     </tr>
@@ -112,7 +112,7 @@
                         <td>
                             @(Html.DevExtreme().TextArea()
                                 .Label(new JS("formatMessage('UoM Description:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                             .ID("txtDescription8").Width("95%").Height(60))
                         </td>
                         <td>
@@ -132,7 +132,7 @@
                                 <div style="flex: 1;">
                                     @(Html.DevExtreme().TextArea()
                                         .Label(new JS("formatMessage('UoM Description(in Arabic):')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("txtDescriptionArabic")
                                         .Width("100%")
                                         .InputAttr("dir", "rtl")

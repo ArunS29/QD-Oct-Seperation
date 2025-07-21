@@ -50,7 +50,7 @@
         <div class="col-md-1">
             @(Html.DevExtreme().SelectBox()
                 .Label(new JS("formatMessage('Dr/Cr')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("DrCr")
                 .Width(90)
                 .DataSource(new[] { "Dr", "Cr" })  
@@ -60,13 +60,13 @@
             @(Html.DevExtreme().SelectBox()
                 .ID("PropertyExpenses")
                 .Label(new JS("formatMessage('Expenses Ledger Account')"))
-                .LabelMode(EditorLabelMode.Outside))
+                .LabelMode(EditorLabelMode.Floating))
         </div>
         <div class="col-md-2">
              @(Html.DevExtreme().NumberBox()
             .ID("propertyAmount")
             .Label(new JS("formatMessage('Amount')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ShowSpinButtons(true)
             .Format("#,##0.00")
             .Min(0))
@@ -79,10 +79,10 @@
         </div>
         <div class="col-md-3">
             <div class="mb-2">
-                @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Approved On')")).LabelMode(EditorLabelMode.Outside).ID("propertyVoucherNo").Disabled(false))
+                @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Approved On')")).LabelMode(EditorLabelMode.Floating).ID("propertyVoucherNo").Disabled(false))
             </div>
             <div>
-                @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Approved By')")).LabelMode(EditorLabelMode.Outside).ID("propertyId").Disabled(false))
+                @(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Approved By')")).LabelMode(EditorLabelMode.Floating).ID("propertyId").Disabled(false))
             </div>
         </div>
 

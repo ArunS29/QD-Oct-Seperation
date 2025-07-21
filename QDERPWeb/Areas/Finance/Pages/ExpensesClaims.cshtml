@@ -460,7 +460,7 @@
             .Key("UserId")
             )
             
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("Claimer")
             .ShowClearButton(true)
             .AcceptCustomValue(true)
@@ -486,7 +486,7 @@
             .ID("startDate")
             .InputAttr("aria-label", "Date")
             .Label(new JS("formatMessage('Start Date')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -496,7 +496,7 @@
             .ID("endDate")
             .InputAttr("aria-label", "Date")
                 .Label(new JS("formatMessage('End Date')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(DateTime.Now)
@@ -508,7 +508,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)
             .Width(180)
-            .ElementAttr("class", "button-alignment-down button-alignment-left")
+            .ElementAttr("class", "button-alignment-left")
             .OnClick("getAllSubmissionJournal")
             )
 
@@ -517,7 +517,6 @@
             .Text(new JS("formatMessage('Show Records')"))
             .Icon("smalliconslayout")
             .Width(180)
-            .ElementAttr("class", "button-alignment-down")
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
@@ -534,7 +533,7 @@
             })
                 .ItemTemplate(@<text>
             <div class="custom-dropdown-item">
-                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div style="background-color:<%- color %>;height:8%;" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -623,7 +622,7 @@ columns.Add()
                 .LoadAction("GetCostAllocationUnits")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("CostAllocationUnitId"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("Costgriddropdown_{rowIndex}")
                 .ShowClearButton(false)
                 .AcceptCustomValue(true)
@@ -735,7 +734,7 @@ columns.Add()
         </text>).Visible(true).AllowEditing(false);
 
                 })
-            .Height("100%")
+            .Height("60vh")
             .Grouping(grouping => grouping.AutoExpandAll(true)) // Optional
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .Scrolling(scrolling => scrolling
@@ -1431,17 +1430,6 @@ columns.Add()
     function createpayment() {
         window.location.href = `/${tenantName}/Finance/CreatePaymentRequest`;
     }
-    function togglesupplierGroupPanel() {
-        var dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        var isVisible = dataGrid.option("groupPanel.visible");
-        dataGrid.option("groupPanel.visible", !isVisible);
-    }
-    function togglesupplierFilterRow() {
-
-        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
-        var currentVisibility = grid.option("filterRow.visible");
-
-        grid.option("filterRow.visible", !currentVisibility);
-    }
+    
    
 </script>
