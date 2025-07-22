@@ -129,9 +129,9 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
+        /* margin-top: 1em; */
         width: 100%;
-        padding: 20px;
+        /* padding: 20px; */
     }
 
     label {
@@ -141,217 +141,231 @@
     .playIcon {
         display: none;
     }
+
+    .mainContainer {
+        background-color: white;
+        margin-top: 0px;
+        margin-left: 0px; 
+        width: 97%;
+        height: 100vh;
+        overflow: hidden;
+        /* padding: 20px; */
+    }
+
+    .header-icon {
+        font-size: 1.5rem;
+        color: goldenrod;
+    }
+
+    .header-container {
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .dx-fieldset.horizontal-container {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 10px;
+    }
+
+    .dx-horizontal-container1 {
+        display: flex;
+        justify-content: space-between;
+        /* padding: 10px 20px; */
+        gap: 10px;
+    }
+
+    .label {
+        min-width: 160px;
+    }
+
+    .container5 {
+        padding: 20px;
+        /* max-width: 1200px; */
+        margin: auto;
+        background-color:white!important;
+    }
+
+    .card-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        background: #fff;
+        box-shadow: 0 -2px 10px rgba(0,0,0,0.1);
+        z-index: 1000;
+    }
+
+    .button-alignment-down {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .right-text {
+        text-align: right;
+    }
+
+    .no-border-input {
+        border: none;
+    }
 </style>
 <div>
     <div id="costAllocationPopup" style="display:none;">
-        <div style="margin-bottom:10px">
+        <div class="mb-2">
             @(Html.DevExtreme().Button()
-                .ID("btnSaveCostAllocation")
-                .Icon("save")
-                .Text(new JS("formatMessage('Save')"))
-                .OnClick("function() { saveCostAllocation(); }")
-                )
+                        .ID("btnSaveCostAllocation")
+                        .Icon("save")
+                        .Text(new JS("formatMessage('Save')"))
+                        .OnClick("function() { saveCostAllocation(); }"))
         </div>
     </div>
-        <div class="title">
-            <div class="header-container" style="gap:10px;padding:10px">
-                <i class="fas fa-pen-nib header-icon" style="font-size: 1.5rem; color: goldenrod;"></i>
+
+    @* <div class="title">
+        <div class="header-container">
+            
             <div id="CostCenters" class="no-border-title"></div>
-            </div>
         </div>
-        <div class="container5">
-            <div class="dx-fieldset horizontal-container ">
-        @* <div class="dx-fieldset horizontal-container "> *@
-            <label id="CostCenterCode" class="no-border-input" style="width: 185px;"></label>
-            @(Html.DevExtreme()
-                .TextBox()
-                .ID("CostAllocationUnitID")
-                .Value(null)
-                .Width("100%")
-                .MaxLength(50)
-               // .ValidationRules(value => value.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
-
-                )
+    </div> *@
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-pen-nib header-icon"></i>
         </div>
-
-        <div class="dx-fieldset horizontal-container ">
-            <label id="CostCenterUnit" class="no-border-input" style="width: 185px;"></label>
-            @(Html.DevExtreme()
-                .TextBox()
-                .ID("CostAllocationUnit")
-                .Value(null)
-                .Width("100%")
-                )
+        <h3 class="card-title-text">Cost Centre Master</h3>
+    </div>
+    <div class="container5">
+        <div class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().TextBox()
+                        .ID("CostAllocationUnitID")
+                        .Label("Cost Center Code")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Value(null)
+                        .Width("100%")
+                        .MaxLength(50))
         </div>
 
-        <div class="dx-fieldset horizontal-container ">
-            <label id="CostCenterGroup" class="no-border-input" style="width: 166px;"></label>
+        <div class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().TextBox()
+                        .ID("CostAllocationUnit")
+                        .Label("Cost Center Unit")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Value(null)
+                        .Width("100%"))
+        </div>
+
+        <div class="dx-fieldset horizontal-container">
             <div id="costCenterComboBox"></div>
         </div>
 
-        <div class="dx-fieldset horizontal-container ">
-            <label id="CostCenterMaster" class="no-border-input" style="width: 166px;"></label>
+        <div class="dx-fieldset horizontal-container">
             <div id="costCenterMaster1"></div>
         </div>
-        <div class="dx-fieldset horizontal-container ">
-            <label id="CostCenterRemarks" class="no-border-input" style="width: 185px;"></label>
-            @(Html.DevExtreme()
-                .TextBox()
-                .ID("CostUnitRemarks")
-                .Value(null)
-                .Width("100%")
-                .MaxLength(250)
-                )
+
+        <div class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().TextBox()
+                        .ID("CostUnitRemarks")
+                        .Label("Remarks")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Value(null)
+                        .Width("100%")
+                        .MaxLength(250))
         </div>
 
-        <div class="dx-fieldset horizontal-container ">
-            <label id="CostCenterIncharge1" class="no-border-input" style="width: 185px;">
-                
-            </label>
-            @(Html.DevExtreme().TextBox().ID("CostCenterIncharge").Value(null).Width("100%"))
-        </div>
-                @*  <div class="button-alignment-down">
-                <label for="UseSubmittedDate">Received Date</label>
-                @(Html.DevExtreme().CheckBox()
-                .ID("UseSubmittedDate")
-                )
-                </div> *@
-        <div style="display:flex;justify-content: end;margin-right: 30px;">
-            <a id="AddfromtheProject" class="right-text no-border-input" style="color: #0398fc; text-decoration: underline;"></a>
-        </div>
-        <div class="dx-fieldset horizontal-container ">
-            <label id="Project" class="no-border-input" style=" display: flex; justify-content: space-between; align-items: center;width: 155px;">
-                           
-
-                        </label>
-
-
-                        @(Html.DevExtreme().DropDownBox()
-                            .DataSource(d => d.WebApi()
-                            .Controller("CostCenterMaster")
-                            .LoadAction("GetProject")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("ProjectId")
-                            )
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("GetProjectDropDown")
-                            .Width(900)
-                            @*  .ShowClearButton(true)
-                        .AcceptCustomValue(true) *@
-                            .OpenOnFieldClick(false)//
-                            .ValueChangeEvent("input")
-                            .HoverStateEnabled(true)
-                            .ValueExpr("ProjectId")
-                            .DisplayExpr("ProjectDescription")
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            .TabIndex(1)
-                            .OnKeyDown("onKeyDown")
-                            //.OnValueChanged("dropDownBoxValueChanged")
-                            .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
-                            )
-
-
-                    </div>
-        <div class="dx-fieldset horizontal-container ">
-            <label id="DivisionBranch" class="no-border-input" style="width: 155px;"></label>
-                        @(Html.DevExtreme().DropDownBox()
-                            .DataSource(d => d.WebApi()
-                            .Controller("CostCenterMaster")
-                            .LoadAction("GetBranchCode")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("Branch")
-                            )
-                            .LabelMode(EditorLabelMode.Outside)
-                            .ID("GetBranchCodeDropDown")
-                            .Width(900)
-                            @*   .ShowClearButton(true)
-                        .AcceptCustomValue(true) *@
-                            .OpenOnFieldClick(true)//
-                            .ValueChangeEvent("input")
-                            .HoverStateEnabled(true)
-                            .ValueExpr("BranchCode")
-                            .DisplayExpr("BranchName")
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            .TabIndex(1)
-                            .OnKeyDown("onKeyDown")
-                            .ContentTemplate(new TemplateName("GetBranchCodeContentTemplate"))
-                            )
-                    </div>
-
-
-        <div class="dx-fieldset horizontal-container ">
-            <label id="Discontinued1" class="no-border-input" style="color:crimson;width: 155px;"></label>
-                        @(Html.DevExtreme().CheckBox()
-                            .ID("Discontinued")
-                            )
-                    </div>
-               
+        <div class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().TextBox()
+                        .ID("CostCenterIncharge")
+                        .Label("Incharge")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Value(null)
+                        .Width("100%"))
         </div>
 
+        <div class="dx-fieldset horizontal-container" style="align-items: flex-end; justify-content: space-between;">
+            @(Html.DevExtreme().DropDownBox()
+                        .ID("GetProjectDropDown")
+                        .Label("Project")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .DataSource(d => d.WebApi().Controller("CostCenterMaster").LoadAction("GetProject").LoadMode(DataSourceLoadMode.Raw).Key("ProjectId"))
+                        .Width(900)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("ProjectId")
+                        .DisplayExpr("ProjectDescription")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("GetProjectContentTemplate")))
+            <a id="AddfromtheProject" class="right-text no-border-input" style="color: #0398fc; text-decoration: underline; margin-left: auto;"></a>
+        </div>
 
+        <div class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().DropDownBox()
+                        .ID("GetBranchCodeDropDown")
+                        .Label("Division / Branch")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .DataSource(d => d.WebApi().Controller("CostCenterMaster").LoadAction("GetBranchCode").LoadMode(DataSourceLoadMode.Raw).Key("Branch"))
+                        .Width(900)
+                        .OpenOnFieldClick(true)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("BranchCode")
+                        .DisplayExpr("BranchName")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("GetBranchCodeContentTemplate")))
+            @(Html.DevExtreme().CheckBox()
+                        .ID("Discontinued")
+                        .Text("Discontinued")
+                        .ElementAttr("style", "color: crimson; margin-left: auto;"))
+        </div>
     </div>
 
-    <div class="container5" style="display:flex; margin-left:20%;">
-            <div class="col-md-1">
-            <label id="CreatedBy1" class="no-border-input"></label>
-            </div>
-    <div class="col-md-1">
-                @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(true))
-            </div>
-
-    <div class="col-md-1">
-            <label id="CreatedOn1" class="no-border-input"></label>
+    <div class="container5" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+        <div class="col-md-1">
+            <label id="CreatedBy1" class="label"></label>
+            @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(true))
         </div>
-    <div class="col-md-1">
+        <div class="col-md-1">
+            <label id="CreatedOn1" class="label"></label>
             @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(true))
         </div>
-    <div class="col-md-1">
-            <label id="ModifiedBy1" class="no-border-input"></label>
-        </div>
-    <div class="col-md-1">
+        <div class="col-md-1">
+            <label id="ModifiedBy1" class="label"></label>
             @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(true))
         </div>
-
-    <div class="col-md-1">
-            <label id="ModifiedOn1" class="no-border-input"></label>
-        </div>
-    <div class="col-md-1">
+        <div class="col-md-1">
+            <label id="ModifiedOn1" class="label"></label>
             @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(true))
         </div>
+    </div>
 </div>
 
-<br />
+<!-- Fixed Footer -->
 <div class="container1">
     <div class="card-footer">
-        <div class="dx-fieldset horizontal-container1 mt-2">
+        <div class="dx-horizontal-container1">
+            @(Html.DevExtreme().Button()
+                        .ID("btnSave")
+                        .Text(new JS("formatMessage('Save')"))
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .Icon("save"))
 
             @(Html.DevExtreme().Button()
-                .ID("btnSave")
-                .Text(new JS("formatMessage('Save')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                )
-            @* @(Html.DevExtreme().Button()
-            .ID("btnUpdate")
-            .Text("Update")
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("save")
-            )   *@
-            @(Html.DevExtreme().Button()
-                .ID("btnBack")
-                .Text(new JS("formatMessage('Back')"))
-                .Icon("arrowleft")
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .OnClick("navigateToHome")
-                )
+                        .ID("btnBack")
+                        .Text(new JS("formatMessage('Back')"))
+                        .Icon("arrowleft")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Outlined)
+                        .OnClick("navigateToHome"))
         </div>
     </div>
-
 </div>
 
 <!-- Drop Down Grid Template -->

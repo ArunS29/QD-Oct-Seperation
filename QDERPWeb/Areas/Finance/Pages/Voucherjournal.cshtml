@@ -15,6 +15,10 @@
     .titleCard-toggle1{
         display:none;
     }
+        .footer-fixed {
+        bottom: 37px !important;
+    }
+
 </style>
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
@@ -703,7 +707,7 @@ buttons.Add()
             </div>
 
             <!-- Row 3: VoucherType, Verified By, Approved By, Dates -->
-            <div class="form-group" style="display: flex;flex-wrap: wrap;gap: 10px;">
+            <div class="form-group" style="display: flex;flex-wrap: wrap;gap: 10px;display:none;">
                 <div style="flex: 1 1 200px; min-width: 180px;">
                     @(Html.DevExtreme().CheckBox()
                                         .Text(new JS("formatMessage('Verified By')"))
@@ -3382,5 +3386,169 @@ function loadCurrencyGridOnOpen(e) {
         dropDown.option("dataSource", data);
     });
 }
+	   let isVoucherSaved = false;
 
+   function getWorkflowStatusFromFields() {
+    const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
+    const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+
+    if (approved) return 3; // Final state
+    if (verified) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+ function updateWorkflowVisual(status) {
+    const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+    steps.forEach((step, index) => {
+        const el = document.getElementById(step.id);
+        const statusMsg = el.querySelector(".step-status-msg");
+        const icon = el.querySelector("i");
+
+        el.classList.remove("completed", "current", "upcoming", "done");
+        icon.className = step.icon;
+
+        if (index < status) {
+            el.classList.add("completed");
+            statusMsg.textContent = "Done";
+            icon.className = "fas fa-check-circle";
+        } else if (index === status && status < 3) {
+            el.classList.add("current");
+            statusMsg.textContent = "In Progress";
+            icon.className = "fas fa-spinner fa-spin";
+        } else {
+            el.classList.add("upcoming");
+            statusMsg.textContent = "Pending";
+        }
+
+        // Final Approved state
+        if (status === 3 && index === 2) {
+            el.classList.add("completed");
+            statusMsg.textContent = "Done";
+            icon.className = "fas fa-check-circle";
+        }
+    });
+}
+
+
+
+
+    function syncWorkflowFromFields() {
+        const status = getWorkflowStatusFromFields();
+        updateWorkflowVisual(status);
+    }
+
+    function attachWorkflowWatchers() {
+        $("#VerifiedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+        $("#ApprovedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+    }
+
+    $(function () {
+        setTimeout(() => {
+            attachWorkflowWatchers();
+            syncWorkflowFromFields();
+             // bindWorkflowPopovers(); 
+             initWorkflowTippyPopovers();
+
+        }, 300);
+    });
+
+
+// function bindWorkflowPopovers() {
+//     const verifiedBy = $("#VerifiedBytext").dxTextBox("instance").option("value") || "N/A";
+//     const verifiedOn = $("#VerifiedDate").dxDateBox("instance")?.option("value") || "N/A";
+//     const approvedBy = $("#ApprovedBytext").dxTextBox("instance").option("value") || "N/A";
+//     const approvedOn = $("#ApprovedDate").dxDateBox("instance")?.option("value") || "N/A";
+
+//     $("#verifiedByName").text(verifiedBy);
+//     $("#verifiedOn").text(formatDate(verifiedOn));
+//     $("#approvedByName").text(approvedBy);
+//     $("#approvedOn").text(formatDate(approvedOn));
+
+//     attachPopoverEvents("#circle-verify", "#verifyPopover");
+//     attachPopoverEvents("#circle-approve", "#approvePopover");
+// }
+
+// function formatDate(date) {
+//     if (!date) return "N/A";
+//     const d = new Date(date);
+//     return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+// }
+
+// function attachPopoverEvents(targetSelector, popoverSelector) {
+//     const $target = $(targetSelector);
+//     const $popover = $(popoverSelector);
+
+//     $target.on("mouseenter", function (e) {
+//         const offset = $target.offset();
+//         $popover.css({
+//             top: offset.top - $popover.outerHeight() - 10,
+//             left: offset.left,
+//             display: "block"
+//         });
+//     });
+
+//     $target.on("mouseleave", function () {
+//         $(popoverSelector).hide();
+//     });
+// }
+function formatDate(date) {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+}
+
+function initWorkflowTippyPopovers() {
+    // 🧼 Clean up any old tippy instances
+    tippy.hideAll();
+    document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+
+    const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
+    const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+    const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
+    const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
+
+    console.log("🧪 Tooltip data:", {
+        verifiedBy, verifiedOn, approvedBy, approvedOn
+    });
+
+    // 🟩 Verified Popover
+    tippy('#circle-verify', {
+        content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+
+    // 🟩 Approved Popover
+    tippy('#circle-approve', {
+        content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+}
+
+         function hideMainFooter() {
+    document.getElementById("mainFooter")?.classList.add("footer-hidden");
+}
+
+function showMainFooter() {
+    document.getElementById("mainFooter")?.classList.remove("footer-hidden");
+}
 </script>
