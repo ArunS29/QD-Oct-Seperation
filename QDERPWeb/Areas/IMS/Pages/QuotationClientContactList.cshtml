@@ -159,7 +159,6 @@
 
 	.client-info-panel {
 		padding: 10px;
-		margin-bottom: 10px;
 		display: flex;
 		gap: 10px;
 		align-items: center;
@@ -175,18 +174,14 @@
 			font-size: 13px;
 			margin-bottom: 3px;
 		}
-
-	.grid-container {
-		padding: 5px;
-	}
 </style>
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="ClientRequestMasterForm" class="no-border-title"></div>
 	</div>
-</div>
+</div> *@
 <!-- Top Panel: Client Code & Name -->
-<div class="client-info-panel" style="padding:20px;">
+<div class="client-info-panel" style="padding:10px;">
 	<div class="client-field">
 		@(Html.DevExtreme().TextBox()
 				.ID("txtClientCode")
@@ -213,15 +208,13 @@
 				</div>
 
 <!-- DataGrid: Contact Information -->
-<div class="grid-container" style="padding:20px;">
-	
-	
-	<div class="grid-container" style="padding:20px;">
+
+	<div class="grid-container" style="padding:10px;">
 		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl3010102clientContactList>()
 				.ID("ContactListdataGrid")
 				.RemoteOperations(false)
 				.KeyExpr("ClientContactSlNo")
-				.Height(300)
+				.Height("80vh")
 				.ShowBorders(true)
 				.ColumnAutoWidth(true)
 				.Columns(columns =>
@@ -238,7 +231,6 @@
 				}
 				) )
 	</div>
-</div>
 
 <script>
 	  $(document).ready(function () {

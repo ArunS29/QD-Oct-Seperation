@@ -565,29 +565,34 @@
 		.TabIndex(1)
 		)
 
+		@(Html.DevExtreme().DateBox()
+				.ID("frmdateBox")
+				.Label(new JS("formatMessage('Start Date')"))
+				.LabelMode(EditorLabelMode.Floating)
+				.InputAttr("aria-label", "Date")
+				.Type(DateBoxType.Date)
+				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
+				.DisplayFormat("dd-MMM-yyyy")
+				.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+				.ShowClearButton(true) // shows clear (X) button
+				.ElementAttr("class", "dynamicFormatDateBox")
+				.TabIndex(2)
+				)
 
-	@(Html.DevExtreme().DateBox()
-		.ID("frmdateBox")
-		.Label(new JS("formatMessage('Start Date')"))
-		.LabelMode(EditorLabelMode.Floating)
-		.InputAttr("aria-label", "Date")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
-		.DisplayFormat("dd-MMM-yyyy")
-		.TabIndex(2)
-		.ElementAttr("class", "dynamicFormatDateBox"))
 
-
-	@(Html.DevExtreme().DateBox()
-		.ID("todateBox")
-		.Label(new JS("formatMessage('End Date')"))
-		.LabelMode(EditorLabelMode.Floating)
-		.InputAttr("aria-label", "Time")
-		.Type(DateBoxType.Date)
-		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
-		.DisplayFormat("dd-MMM-yyyy")
-		.TabIndex(3)
-		.ElementAttr("class", "dynamicFormatDateBox"))
+		@(Html.DevExtreme().DateBox()
+				.ID("todateBox")
+				.Label(new JS("formatMessage('End Date')"))
+				.LabelMode(EditorLabelMode.Floating)
+				.InputAttr("aria-label", "Time")
+				.Type(DateBoxType.Date)
+				.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
+				.DisplayFormat("dd-MMM-yyyy")
+				.ApplyValueMode(EditorApplyValueMode.UseButtons)
+				.ShowClearButton(true)
+				.ElementAttr("class", "dynamicFormatDateBox")
+				.TabIndex(3)
+				)
 
 		@(Html.DevExtreme().DropDownButton()
 				.ID("ddBtnShowRecords")
@@ -614,7 +619,7 @@
 				})
 				.ItemTemplate(@<text>
 					   			<div class="custom-dropdown-item">
-					   				<div style="background-color:<%- color %>;" class="side-bar"></div>
+					   				<div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
 					   				<div class="item-content">
 					   					<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
 					   					<div>

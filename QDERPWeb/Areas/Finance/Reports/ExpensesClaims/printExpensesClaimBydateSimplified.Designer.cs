@@ -378,10 +378,10 @@
             // 
             this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(576.8816F, 10F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(90.83331F, 23F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(112.5F, 23F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
+            this.pageInfo2.TextFormatString = "Page No:{0} of {1}";
             // 
             // ReportHeader
             // 
@@ -398,7 +398,7 @@
             // 
             this.xrLabel24.BorderColor = System.Drawing.Color.Transparent;
             this.xrLabel24.Font = new DevExpress.Drawing.DXFont("Arial", 11F);
-            this.xrLabel24.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.xrLabel24.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.xrLabel24.LocationFloat = new DevExpress.Utils.PointFloat(38.4995F, 62.99998F);
             this.xrLabel24.Multiline = true;
             this.xrLabel24.Name = "xrLabel24";
@@ -448,7 +448,7 @@
             // label1
             // 
             this.label1.Font = new DevExpress.Drawing.DXFont("Cambria", 18F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.label1.ForeColor = System.Drawing.Color.DodgerBlue;
+            this.label1.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.label1.LocationFloat = new DevExpress.Utils.PointFloat(38.4995F, 0F);
             this.label1.Name = "label1";
             this.label1.SizeF = new System.Drawing.SizeF(464.833F, 34.19434F);

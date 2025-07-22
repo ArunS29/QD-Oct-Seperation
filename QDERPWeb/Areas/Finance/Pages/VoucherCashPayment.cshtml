@@ -27,7 +27,9 @@
     .titleCard-toggle1{
         display:none;
     }
-   
+   .footer-fixed{
+       bottom:37px!important;
+   }
 
 </style>
 
@@ -78,6 +80,9 @@
                             .OnValueChanged("onVoucherDateChanged")
                             .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                             .TabIndex(1)
+                            .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+			                .ShowClearButton(true) // shows clear (X) button
+ 
                             )
                     </div>
 
@@ -92,6 +97,9 @@
                             .Value(DateTime.Now)
                             .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                             .TabIndex(2)
+                            .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+			                .ShowClearButton(true) // shows clear (X) button
+ 
                             )
                     </div>
 
@@ -721,14 +729,14 @@ buttons.Add()
                     )
         </div>
       <div class="dx-card-body">
-        <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 10px; align-items: flex-end; position: relative; padding: 0 15px;">
+        <div class="form-container" style="display: flex; flex-wrap: wrap; gap: 4px; align-items: flex-end; position: relative; padding: 0 15px;">
 
             <!-- Top Row -->
             <!-- Single Row for Cheque No, Popup, Voucher Narration, Attachment -->
            <div class="row w-100 align-items-end g-2">
 
                     <!-- Cheque No and Button -->
-                    <div class="col-md-4 d-flex align-items-end">
+                    <div class="col-md-3 d-flex align-items-end">
                         <div class="flex-grow-1 me-2">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Cheque No/Reference No')"))
@@ -755,7 +763,7 @@ buttons.Add()
                 </div>
 
                 <!-- Voucher Narration: Wider -->
-                <div class="col-md-8">
+                <div class="col-md-9">
                         @(Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Voucher Narration')"))
                         .LabelMode(EditorLabelMode.Floating)
@@ -812,12 +820,12 @@ buttons.Add()
                         )
                 </div>
 
-                <div class="col-md-2">
+                <div class="col-md-6">
                     @(Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Remarks')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("Remarks")
-                                                .Width("650px")
+                                             
                         .Value(null)
                         .TabIndex(20)
                          .ElementAttr(new { @class = "light-theme-input" })
@@ -896,7 +904,7 @@ buttons.Add()
 
 
         </div>
- <div  id="mainFooter" >
+ <div  id="mainFooter"class="footer-fixed" >
     @await Html.PartialAsync("_Formfooter")
 </div>
       </div>
@@ -1745,7 +1753,7 @@ buttons.Add()
             }
 
 function addVoucherEntry() {
-    debugger;
+   
     var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
     var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
     var griddatacount = rowCount;
@@ -4329,24 +4337,7 @@ function showMainFooter() {
 
         }, 300);
     });
-    function loadCurrencyGridOnOpen(e) {
-    debugger;
-    const dropDown = e.component;
-    const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 
-    if (!baseCurrencyId) return;
-
-    const grid = $("#currency-datagrid").dxDataGrid("instance");
-    if (!grid) return;
-
-    DevExpress.data.AspNet.createStore({
-        key: "CurrencyExchangeId",
-        loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
-    }).load().done(data => {
-        grid.option("dataSource", data);
-        dropDown.option("dataSource", data);
-    });
-}
 
 // function bindWorkflowPopovers() {
 //     const verifiedBy = $("#VerifiedBytext").dxTextBox("instance").option("value") || "N/A";
@@ -4431,6 +4422,23 @@ function initWorkflowTippyPopovers() {
     });
 }
 
+    function loadCurrencyGridOnOpen(e) {
+    debugger;
+    const dropDown = e.component;
+    const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 
+    if (!baseCurrencyId) return;
+
+    const grid = $("#currency-datagrid").dxDataGrid("instance");
+    if (!grid) return;
+
+    DevExpress.data.AspNet.createStore({
+        key: "CurrencyExchangeId",
+        loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
+    }).load().done(data => {
+        grid.option("dataSource", data);
+        dropDown.option("dataSource", data);
+    });
+}
 
 </script>

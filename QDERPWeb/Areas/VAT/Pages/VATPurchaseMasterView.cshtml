@@ -277,20 +277,33 @@
 		.Width(180)
 		
 		.TabIndex(4)
-		.DropDownOptions(options => options.Width(230))
-		.Items(items =>
-		{
-			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-			items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-			items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-		})
+		.SplitButton(true)
+.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+				.DropDownOptions(options => options.Width(230))
+				.Items(items =>
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
 		)
 
 </div>
@@ -1361,7 +1374,7 @@
 						console.log('End permission handling');
 					});
 
-					 $(function () {
+	$(function () {
 		const dateBox = $("#frmdateBox").dxDateBox("instance");
 
 		// When focus/typing starts, change to dd-MM-yyyy
@@ -1387,6 +1400,65 @@
 			dateBox.option("displayFormat", "dd-MMM-yyyy");
 		});
 	});
+
+	// Cancel Amend - Posted in Invoice Debit note
+	function cancelInvoice() {
+		if (!invoiceNo) {
+			alert("InvoiceNo is required.");
+			return;
+		}
+		let IsAmend=true;
+
+		$.ajax({
+			url: `/api/VATModule/InsertAmendEInvoiceDebit?InvoiceNo=${encodeURIComponent(invoiceNo)}`,
+			type: 'POST',
+			success: function (response) {
+				DebitNoteNo=response.DebitNoteNo;
+					if (response.IsPosted == null) {
+		DevExpress.ui.dialog.alert(
+			"Invoice is not Posted. You must post the invoice before cancelling or amending the invoice.",
+			"Invoice is not Posted"
+		);
+	}
+	// else if (response.DebitInvoiceNo!=null && response.IsPosted === true)
+	// {
+	// 	DevExpress.ui.dialog.alert(
+	// 		"Invoice is already Issued with full Debit Note,Please review the Invoice & Debit Note Details.",
+	// 		"Invoice is already Debit Note Issued."
+	// 	);
+	// }
+		else if (response.IsPosted === true) {
+		DevExpress.ui.dialog.custom({
+			title: "Cancel/Amend Confirmation",
+			message: "You are about to Cancel/Amend this VAT Invoice.<br>This will create a new DEBIT NOTE for Invoice Amendment.<br>Click Yes if you would like to continue.",
+				buttons: [
+				{ text: "Yes", onClick: () => true },
+				{ text: "No", onClick: () => false }
+			],
+			showTitle: true
+		}).show().done(function (dialogResult) {
+			if (dialogResult) {
+				DevExpress.ui.dialog.alert(
+					"Debit Note has been added to the database.",
+					"Data Insertion Successful"
+				).done(function () {
+					window.location.href = `/${tenantName}/VAT/DebitNoteEditForm?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsAmend=${encodeURIComponent(IsAmend)}&DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`;
+				});
+			}
+		});
+	}
+				console.log("Clone success:", response);
+				// You can redirect to the Credit Note Edit page now
+
+			},
+			error: function (xhr) {
+				let message = xhr.responseJSON?.message || "Unknown error";
+				console.error("Clone error:", message);
+				alert("Error: " + message);
+			}
+		});
+	}
+
 
 
 </script>

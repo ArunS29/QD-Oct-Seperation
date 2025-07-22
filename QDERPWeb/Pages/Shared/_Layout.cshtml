@@ -19,6 +19,7 @@
     string escapedJson = "{}"; // Initialize early to make available later
     string escapedJson1 = "{}"; // Initialize early to make available later
     string equipmentJson = "{}"; // Initialize early to make available later
+    string escapedJson2 = "{}"; // Initialize early to make available later
     List<string> userModules = new List<string>();
     string encryptedTenantName = EncryptionHelper.Encrypt(tenantName); // Encrypt tenantName
 
@@ -51,6 +52,9 @@
                 var inventoryMenuAccess = await UserAccessService.GetInventoryMenuAccessAsync(parsedUserId);
                 var json1 = System.Text.Json.JsonSerializer.Serialize(inventoryMenuAccess);
                 escapedJson1 = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json1);
+                var vatMenuAccess = await UserAccessService.GetVatMenuAccessAsync(parsedUserId);
+                var json2 = System.Text.Json.JsonSerializer.Serialize(vatMenuAccess);
+                escapedJson2 = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json2);
                 var equipmentMenuAccess = await UserAccessService.GetEquipmentMenuAccessAsync(parsedUserId);
                 var json3 = System.Text.Json.JsonSerializer.Serialize(equipmentMenuAccess);
                 equipmentJson = System.Text.Encodings.Web.JavaScriptEncoder.Default.Encode(json3);
@@ -97,6 +101,10 @@
     <link href="~/css/devextreme/dx.light.css" rel="stylesheet" />
     <link rel="stylesheet" href="~/css/Site.css" />
     <link rel="stylesheet" href="~/css/Style.css" />
+
+    <link rel="stylesheet" href="~/css/chatbot.css" />
+    <script src="~/js/chatbot.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 
     <!-- Scripts -->
     <script src="~/js/vendor.js"></script>
@@ -238,17 +246,17 @@
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-list-item-selected {
             background-color: var(--background-color);
-            color: #fff;
+            color: #333;
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused.dx-list-item-selected {
             background-color: var(--background-color);
-            color: #fff;
+            color: #333;
         }
 
         .dx-list:not(.dx-list-select-decorator-enabled) .dx-list-item.dx-state-focused {
             background-color: var(--background-color);
-            color: #fff;
+            color: #333;
         }
 
         :root {
@@ -973,31 +981,6 @@
             display: block;
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 20px;
-            border: 1px solid #888;
-            border-radius: 10px;
-            width: 35%;
-            height: 75vh;
-            max-width: 1400px;
-            position: relative;
-        }
-
         .modal-header {
             background: var(--background-color);
             color: white;
@@ -1093,11 +1076,20 @@
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0, 0, 0, 0.5); /* Dark overlay */
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
         }
 
+
+        .modalTitle{
+            padding: 0px 15px;
+            color: var(--title-background-color);
+            margin-top: 10px;
+        }
+        
         /* Modal Content */
         .modal-content {
+            margin: 5% auto;
             position: absolute;
             top: 40%;
             left: 50%;
@@ -1116,12 +1108,13 @@
         /* Modal Header */
         .modal-header {
             display: flex;
-            justify-content: end;
+            justify-content: space-between;
             align-items: center;
             color: #000;
             padding: 10px 10px 0px 0px;
             font-size: 18px;
             font-weight: bold;
+            height: 40px;
         }
 
         /* Close Button */
@@ -1345,8 +1338,20 @@
     <link href="https://fonts.googleapis.com/css2?family=Lobster&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto+Slab:wght@700&display=swap" rel="stylesheet">
+
 </head>
 <body>
+    <!-- Floating Chatbot -->
+<div id="chatbot-container">
+    <div id="chatbot-inactive" onclick="toggleChat()">
+        <span><i class="fas fa-robot text-white"></i> <span id="chat_text" style="display: none;">Chat with us</span></span>
+            <i id="chat_close" style="display: none;" class="fas fa-times text-white"></i>
+        </div>
+    <div id="chatbot-box">
+        <div id="chatbot-messages"></div>
+        <input type="text" id="chatbot-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChat()" />
+    </div>
+</div>
     <!-- Modal Structure -->
     <!-- Toast Modal -->
     <div id="toastModal" style="display: block; position: fixed; top: 20px; right: 20px; z-index: 9999;">
@@ -1361,9 +1366,9 @@
     </div>
 
     <div id="customModal" class="modal">
-        <div class="modal-content">
+        <div id="modalContent" class="modal-content">
             <div class="modal-header">
-                <h2 id="modalTitle" class="modalTitle" style="display:none; ">Modal Title</h2>
+                <h2 id="modalTitle" class="modalTitle">Modal Title</h2>
                 <span class="close" onclick="closeModal()">&times;</span>
             </div>
             <iframe id="modalIframe" src="" frameborder="0"></iframe>
@@ -3185,35 +3190,49 @@
 
                     function showVATModuleSubmenu() {
                         const sidebar2 = document.getElementById('sidebar2');
-                        sidebar2.innerHTML = `
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/SalesRegisterVAT">
-                                            <i class="fas fa-sort-numeric-up"></i>
-                                            <div class="text">${formatMessage("Sales Invoice Register")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATCreditNotRegister">
-                                            <i class="fas fa-file-invoice "></i>
-                                            <div class="text">${formatMessage("Credit Note Register")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATPurchaseMasterView">
-                                            <i class="fas fa-sort-numeric-down"></i>
-                                            <div class="text">${formatMessage("Purchase Invoice Register")}</div>
-                                        </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATDebitNotRegister">
-                                            <i class="fas fa-book"></i>
-                                            <div class="text">${formatMessage("Debit Note Register")}</div>
-                                        </a>
-                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATReturnsSalesandPurchase">
-                                            <i class="fas fa-percentage"></i>
-                                            <div class="text">${formatMessage("VAT Returns")}</div>
-                                        </a>
-                                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/VATInvoiceReporting">
-                                            <i class="fas fa-chart-pie"></i>
-                                            <div class="text">${formatMessage("Sales Reporting")}</div>
-                                        </a>
-                                         <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/VAT/ProformaInvoiceMasterView">
-                                            <i class="fas fa-align-justify"></i>
-                                            <div class="text">${formatMessage("Proforma Invoices")}</div>
-                                        </a>`;
+
+                        const vatMenuItems = [
+                            { key: "Sales Invoice Register", icon: "fas fa-book", href: `/${tenantName}/VAT/SalesRegisterVAT`, label: "Sales Invoice Register" },
+                            { key: "Credit Note Register", icon: "fas fa-book", href: `/${tenantName}/VAT/VATCreditNotRegister`, label: "Credit Note Register" },
+                            { key: "Purchase Invoice Register", icon: "fas fa-book", href: `/${tenantName}/VAT/VATPurchaseMasterView`, label: "Purchase Invoice Register" },
+                            { key: "Debit Note Register", icon: "fas fa-book", href: `/${tenantName}/VAT/VATDebitNotRegister`, label: "Debit Note Register" },
+                            { key: "VAT Returns", icon: "fas fa-book", href: `/${tenantName}/VAT/VATReturnsSalesandPurchase`, label: "VAT Returns" },
+                            { key: "Sales Reporting", icon: "fas fa-book", href: `/${tenantName}/VAT/VATInvoiceReporting`, label: "Sales Reporting" },
+                            { key: "Proforma Invoices", icon: "fas fa-book", href: `/${tenantName}/VAT/ProformaInvoiceMasterView`, label: "Proforma Invoices" }
+                        ];
+
+                        // Access config from backend
+                        const access = (vatMenuAccess1 || []).reduce((acc, x) => {
+                            acc[x.ItemDescription] = x;
+                            return acc;
+                        }, {});
+
+                        // Filter and map with access
+                        const filteredMenuItems = vatMenuItems
+                            .filter(item => {
+                                const menuConfig = access[item.key];
+                                return menuConfig ? menuConfig.ItemVisible : false;
+                            })
+                            .map(item => {
+                                const menuConfig = access[item.key];
+                                return {
+                                    ...item,
+                                    enabled: menuConfig ? menuConfig.ItemEnabled : false
+                                };
+                            });
+
+                        // Build HTML
+                        let html = filteredMenuItems.map(item => `
+                            <a class="submenu-item${!item.enabled ? ' disabled' : ''}"
+                                ${item.enabled ? 'onclick="hideSidebars()"' : 'onclick="return false;"'}
+                                href="${item.enabled ? item.href : '#'}"
+                                style="${!item.enabled ? 'pointer-events:none;opacity:0.5;cursor:not-allowed;' : ''}">
+                                <i class="${item.icon}"></i>
+                                <div class="text">${formatMessage(item.label)}</div>
+                            </a>
+                        `).join('');
+
+                        sidebar2.innerHTML = html;
                     }
 
             function showEquipmentRentalSubmenu() {
@@ -4282,6 +4301,7 @@
             }
         };
         inventoryMenuAccess1 = JSON.parse("@Html.Raw(escapedJson1)");
+        vatMenuAccess1 = JSON.parse("@Html.Raw(escapedJson2)");
         equipmentRentalMenuAccess = JSON.parse("@Html.Raw(equipmentJson)");
         window.financeMenuAccess = JSON.parse("@Html.Raw(escapedJson)");
 

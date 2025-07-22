@@ -568,8 +568,8 @@
 					<!-- First Card (Left Side) -->
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Floating).Width(210))</td>
-							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Floating).Width(250))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice No')")).ID("InvoiceNo").Disabled(true).LabelMode(EditorLabelMode.Floating))</td>
+							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Date')")).ID("InvoiceDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").Value(DateTime.Now).Disabled(true).LabelMode(EditorLabelMode.Floating))</td>
 							<td>
 								
 									@(Html.DevExtreme().DropDownBox()
@@ -603,14 +603,7 @@
 																		// 👇 Add Buttons Inside DropDownBox
 																		.Buttons(buttons =>
 																		{
-																			buttons.Add()
-																			.Name("editButton")
-																			.Location(TextEditorButtonLocation.After)
-																			.Widget(w => w.Button()
-																			.Icon("edit")
-																			.Hint("Edit Description")
-																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-																			.OnClick("onEditClientClick"));
+																			
 																			
 
 																			buttons.Add()
@@ -619,9 +612,19 @@
 																			.Widget(w => w.Button()
 																			.Icon("plus")
 																			.Hint("Add Description")
-																			.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
+																				.ElementAttr(new { @class = "custom-hover-button add-hover" })
 																			.OnClick("showLedgerAccountPopup"));
-																			buttons.Add().Name("dropDown");
+																		
+
+																			buttons.Add()
+																			.Name("editButton")
+																			.Location(TextEditorButtonLocation.After)
+																			.Widget(w => w.Button()
+																			.Icon("edit")
+																			.Hint("Edit Description")
+																			.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+					 .OnClick("onEditClientClick"));
+																				buttons.Add().Name("dropDown");
 																		})
 																		)
 
@@ -629,38 +632,39 @@
 								
 
 								<!-- Add Popup -->
-								@(Html.DevExtreme().Popup()
-																.ID("ledgerAccountPopup")
-																.Width("80%")
-																.Height("85%")
-																.Title("Add Ledger Account")
-																.ShowTitle(true)
-																.CloseOnOutsideClick(true)
-																.Visible(false)
-																.ResizeEnabled(true)
-																.ContentTemplate(@<text>
-												  									<div id="popupContent" class="background" style="width:100%; height:100%;">
-												  										<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
-												  									</div>
-												  								</text>)
-																)
+									@(Html.DevExtreme().Popup()
+				.ID("ledgerAccountPopup")
+				.Width("80%")
+				.Height("85%")
+				.Title("Add Ledger Account")
+				.ShowTitle(true)
+				.CloseOnOutsideClick(true)
+				.Visible(false)
+				.ResizeEnabled(true)
+				.ContentTemplate(@<text>
+			<div id="popupContent" class="background" style="width:100%; height:100%;">
+				<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
+			</div>
+		</text>)
+				)
 
-								<!-- Edit Popup -->
-								@(Html.DevExtreme().Popup()
-																.ID("ledgerEditAccountPopup")
-																.Width("80%")
-																.Height("85%")
-																.Title(new JS("formatMessage('Edit Ledger Account')"))
-																.ShowTitle(true)
-																.CloseOnOutsideClick(true)
-																.Visible(false)
-																.ResizeEnabled(true)
-																.ContentTemplate(@<text>
-												  									<div id="popupContent" style="width:100%; height:100%;">
-												  										<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
-												  									</div>
-												  								</text>)
-																)
+
+		@(Html.DevExtreme().Popup()
+				.ID("ledgerEditAccountPopup")
+				.Width("80%")
+				.Height("85%")
+				.Title(new JS("formatMessage('Edit Ledger Account')"))
+				.ShowTitle(true)
+				.CloseOnOutsideClick(true)
+				.Visible(false)  // Hidden by default
+				.ResizeEnabled(true)
+				.ContentTemplate(@<text>
+			<div id="popupContent" style="width:100%; height:100%;">
+				<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+			</div>
+		</text>)
+				)
+
 							</td>
 
 							<td>
@@ -716,7 +720,6 @@
 															.MaxLength(15)
 															.Mask("300000000010000") // 15 digits
 															.MaskChar("_") // Optional: makes it more readable
-															.Width("100%")                     //.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
 							</td>
 							<td>
@@ -728,7 +731,6 @@
 															.MaxLength(15)
 															.Mask("300000000000003") // 15 digits
 															.MaskChar("_") // Optional: makes it more readable
-															.Width("100%")                         //.ShowClearButton(true) // Optional: adds a clear (X) button
 															)
 							</td>
 							</tr>
@@ -742,8 +744,6 @@
 																			.LabelMode(EditorLabelMode.Floating)
 																			.Value(DateTime.Now)
 																			.Disabled(true)
-																			.Width(210)
-																			
 																			)
 								</td>
 							<td>
@@ -754,7 +754,6 @@
         .DisplayFormat("dd-MMM-yyyy")
         .Value(DateTime.Now)
         .LabelMode(EditorLabelMode.Floating)
-        .Width(250)
         .ShowClearButton(true) // Clear button added
     )
 </td>
@@ -778,11 +777,10 @@
 															.TabIndex(1)
 															.DropDownOptions(o => o.Width(1000))
 															.OnKeyDown("onKeyDown")
-															.Width(240)
 															.ContentTemplate(new TemplateName("ClientNameContent"))
 															)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Floating).Width(205))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Floating))</td>
 							<td>
 								@(Html.DevExtreme().DropDownBox()
 															.ID("ClientAddressDetails")
@@ -961,7 +959,7 @@
 																.ValueExpr("InvoiceSubTypeCode") // Passes this value
 																.DisplayExpr("InvoiceSubType")   // Shows this to the user
 																.Disabled(true)
-																.Width(210)
+															
 																)
 
 								</td>
@@ -980,9 +978,8 @@
 																			.ValueExpr("PaymentMeansTypeCode")
 																			.DisplayExpr("PaymentMeansType")
 																			@*  .OnInput("dropDownBoxOnInput")
-                                                                                                                                                            .OnOpened("onOpened") *@
-																			.Width("100%")
-																			.Width(250)
+                                                                             .OnOpened("onOpened") *@
+																			
 																			.TabIndex(1)
 																			.DropDownOptions(o => o
 																			//.Width("100%") // Set the desired width for the dropdown content*@
@@ -1007,7 +1004,7 @@
 																			.ValueExpr("InvoiceType") // Ensure the value is mapped correctly
 																			.DisplayExpr("InvoiceType") // Set display value if needed
 																			.Disabled(true)
-																			.Width(240)
+																			
 																			)
 								</td>
 								<td>
@@ -1033,14 +1030,14 @@
 									new { ID = 5, Name = "Self Billed Tax Invoice" }
 									})
 																			.OnInitialized("onDropDownInitialized")
-																			.Width(210)
+																		
 																			)
 
 																			
 
 								</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Floating).Disabled(true).Width(230))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Floating).Disabled(true).Width(230))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Floating).Disabled(true))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Floating).Disabled(true))</td>
 							</tr>
 							<tr>
 								
@@ -3528,42 +3525,6 @@
 	}
 
 
-
-		function onEditClientClick() {
-				var clientId = $("#ddclientcode").dxDropDownBox("option", "value");
-
-			if (!clientId) {
-				DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
-				return;
-			}
-
-
-			// Proceed with edit logic (e.g., open modal or navigate)
-			console.log("Client selected: ", clientId);
-			showLedgerAccountEditPopup();
-			// yourEditFunction(clientId); // call your edit method here
-		}
-	
-			 function dataGridSelectionabc(e) {
-				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-				const ddbInstance = $("#CountryCodeNumeric").dxDropDownBox("instance");
-
-				if (selectedKey) {
-					ddbInstance.option("value", selectedKey);
-						ddbInstance.close();
-				}
-			  if(IsCurrent!="true")
-				{
-				var selectedRowData = $("#clientname").dxDataGrid("instance").getSelectedRowsData();
-				  if (selectedRowData.length > 0) {
-									
-							} else {
-								DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-								return;
-							}
-				}
-
-			}
 		  function onClientCodeRowPrepared(e) {
 			if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
 				e.rowElement.css("background-color", "#ffcccc"); // light red
@@ -8554,35 +8515,39 @@
 			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
 		}
 
-				function showLedgerAccountEditPopup() {
+				
+	function onEditClientClick() {
+		const clientId = $("#ddclientcode").dxDropDownBox("option", "value");
 
-
-						IsEdit = true;
-					const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsEdit=${IsEdit}`;
-			var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
-
-			// Add an event to refresh the page when the popup is closed
-			popupInstance.option("onHidden", function () {
-				//location.reload(); // Reloads the page after closing the popup
-			});
-
-			popupInstance.show();
-
-			setTimeout(function () {
-				var iframe = document.getElementById("ledgerEditAccountFrame");
-
-				if (!iframe) {
-					console.error("Error: ledgerEditAccountFrame not found!");
-					return;
-				}
-
-				iframe.onload = function () {
-					console.log("Iframe loaded successfully.");
-				};
-
-				iframe.src = url;
-			}, 300);
+		if (!clientId) {
+			DevExpress.ui.dialog.alert("Please select the client to edit.", "Select Supplier");
+			return;
 		}
+
+		showLedgerAccountEditPopup(clientId);
+	}
+
+	function showLedgerAccountEditPopup(accheadid) {
+		console.log("Opening Edit Supplier popup for ID:", accheadid);
+
+		const tenantName = window.location.pathname.split('/')[1];
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsPurchaseEdit=true`;
+
+		const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popup.show();
+
+		setTimeout(() => {
+			const iframe = document.getElementById("ledgerEditAccountFrame");
+			if (!iframe) {
+				console.error("Edit iframe not found!");
+				return;
+			}
+			iframe.src = url;
+		}, 300);
+	}
+
+
+
 
 
 		// 	 function onLinkClick() {

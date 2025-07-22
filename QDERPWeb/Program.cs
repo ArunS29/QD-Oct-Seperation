@@ -158,6 +158,11 @@ builder.Services.AddSingleton<ClientFilesStorageHelper>(provider =>
 });
 
 
+builder.Services.AddSingleton(new OpenAIChatService(
+    "https://applicationchatbot.cognitiveservices.azure.com/",
+    "gpt-4.1",
+    "6BdBUxBd1DoluRRPr3vutKBb6zgDMy0yE4f4tptXOGqLUH120UvoJQQJ99BGACYeBjFXJ3w3AAAAACOGczCL"
+));
 
 if (builder.Environment.IsDevelopment())
 {

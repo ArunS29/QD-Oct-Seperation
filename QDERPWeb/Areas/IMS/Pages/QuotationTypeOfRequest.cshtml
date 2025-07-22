@@ -98,12 +98,12 @@
     }
 
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="QuotationTypeofRequest" class="no-border-input"></div>
     </div>
-</div>
-    <div class="form-row" style="padding:20px;">
+</div> *@
+    <div class="form-row" style="padding:10px;">
         <div class="col-md-6">
         @(Html.DevExtreme().TextBox()
             .ID("txtTypeOfRequest")
@@ -118,7 +118,7 @@
      </div>
  </div>
 
-    <div class="form-row" style="padding:20px;">
+    <div class="form-row" style="padding:10px;">
        <div class="col-md-6">
         @(Html.DevExtreme().TextBox()
             .ID("txtTermsCategory")
@@ -161,7 +161,7 @@
         )
         .Toolbar(toolbar =>
         {
-            toolbar.Items(items => { }); // hide default toolbar
+            toolbar.Items(items => { }); 
         })
         .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
             .Columns(columns =>
@@ -169,7 +169,6 @@
             columns.Add().DataField("TypeOfRequestId").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
             columns.Add().DataField("TypeOfRequest").Caption(new JS("formatMessage('Type Of Request')")).Width(200);
             columns.Add().DataField("TermsCategory").Caption(new JS("formatMessage('Terms Category')")).Width(200);
-            // Add delete button column
             columns.Add()
             .Type(GridCommandColumnType.Buttons)
             .Buttons(buttons =>
@@ -181,7 +180,7 @@
             .OnClick("onDeleteButtonClick");
             });
         })
-        .Height(500)
+        .Height("65vh")
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)

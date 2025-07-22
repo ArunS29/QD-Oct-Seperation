@@ -50,10 +50,19 @@ namespace QD.ERP.Web.Pages
             ReportName = reportName;
             string username = HttpContext.Session.GetString("UserName") ?? "Default User";
             string tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+            var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+            // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+            if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+            {
+                // Handle invalid or missing ID (fallback or error handling)
+                defaultCompanyId = 0; // or return early / throw error
+            }
+            // Company Info
             
 
             ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
             string companyName = ERPCompany_details?.CompanyName ?? string.Empty;
             string companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -197,17 +206,17 @@ namespace QD.ERP.Web.Pages
                 case "TrialBalanceReport":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalanceReport(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new TrialBalanceReport( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                 break;
                 case "TrialBalanceExportFormat":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalance_ExportFormat_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper );
+                    Report = new TrialBalance_ExportFormat_( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper );
                     break;
                 case "TrialBalanceDrCr":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalanceDrCr(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new TrialBalanceDrCr( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "IncomeStatements":
                     if (string.IsNullOrEmpty(accountGroup))
@@ -217,7 +226,7 @@ namespace QD.ERP.Web.Pages
                 case "incomeStatementsBymonth":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new incomeStatements_Bymonth_(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
+                    Report = new incomeStatements_Bymonth_( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
                     break;
                 case "balnceSheet":
                     if (string.IsNullOrEmpty(accountGroup))

@@ -19,6 +19,7 @@ using QD.ERP.Web.Areas.VAT.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QRCoder;
+using static QD.ERP.Web.Service.UserAccessService;
 
 
 
@@ -85,6 +86,77 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
         //	return Unauthorized(new { message = "Invalid tenant.", success = false });
         //}
+        //[Area("VAT")]
+        //[Route("api/[controller]/[action]")]
+        //[ApiController]
+        //public class GoodsCombinedController : Controller
+        //{
+        //    private readonly TenantDbContextHelper _tenantDbContextHelper;
+        //    private readonly ILogger<GoodsCombinedController> _logger;
+
+        //    public GoodsCombinedController(ILogger<GoodsCombinedController> logger, TenantDbContextHelper tenantDbContextHelper)
+        //    {
+        //        _tenantDbContextHelper = tenantDbContextHelper;
+        //        _logger = logger;
+        //    }
+
+        //    [HttpGet]
+        //    public async Task<IActionResult> GetCombinedGoodsData(DateTime? fromDate, DateTime? toDate)
+        //    {
+        //        try
+        //        {
+        //            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //            {
+        //                // Default dates: current month if not passed
+        //                fromDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        //                toDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+        //                _logger.LogInformation($"Running SP and fetching combined goods data from {fromDate:yyyy-MM-dd} to {toDate:yyyy-MM-dd}");
+
+        //                // 1. Execute stored procedure
+        //                await dbContext.Database.ExecuteSqlRawAsync("EXEC sp20131InsertGoodsCombinedMaster @p0, @p1", fromDate, toDate);
+
+        //                // 2. Fetch filtered result from tbl20124GoodsCombinedMaster
+        //                var data = await dbContext.Tbl20124GoodsCombinedMasters
+        //                    .Where(x => x.DocumentDate >= fromDate && x.DocumentDate <= toDate)
+        //                    .OrderByDescending(x => x.DocumentDate)
+        //                    .Select(x => new
+        //                    {
+        //                        x.DocumentNo,
+        //                        x.DocumentDate,
+        //                        x.Gscode,
+        //                        x.UnitRateMethod,
+        //                        x.DocumentQty,
+        //                        x.DocumentLineUnitPrice,
+        //                        x.Discount,
+        //                        x.DocumentLineTotalAmount,
+        //                        x.TransactionType
+        //                    })
+        //                    .ToListAsync();
+
+        //                return Ok(new
+        //                {
+        //                    Message = "Data retrieved successfully.",
+        //                    FromDate = fromDate.Value.ToString("yyyy-MM-dd"),
+        //                    ToDate = toDate.Value.ToString("yyyy-MM-dd"),
+        //                    Data = data
+        //                });
+        //            }
+
+        //            return Unauthorized(new { Message = "Invalid tenant context." });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError($"Error in GetCombinedGoodsData: {ex.Message}");
+        //            return StatusCode(500, new
+        //            {
+        //                Message = "An error occurred while processing the request.",
+        //                Error = ex.Message
+        //            });
+        //        }
+        //    }
+        //}
+       
         public async Task<ActionResult> GetVatInvoices(
     string frmDate,
     string toDate,
@@ -2871,6 +2943,94 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         IsPosted = IsPosted,
                         CreditInvoiceNo = CreditInvoiceNo,
                         CreditNoteNo = CreditNoteNo
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        //eInvoice DebitNote - InsertAmend EInvoice 
+        public async Task<ActionResult> InsertAmendEInvoiceDebit(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string yearSuffix = DateTime.Now.ToString("yy"); // e.g., "25"
+                    string debitNoteAbbrv = "DBN"; // Hardcoded abbreviation
+
+                    // Get last credit note number
+                    var lastDebitNoteNumber = await dbContext.Tbl20172VatdebitNoteMasters
+                        .Where(cn => cn.DebitNoteNo.StartsWith($"{debitNoteAbbrv}-{yearSuffix}-"))
+                        .OrderByDescending(cn => cn.DebitNoteNo)
+                        .Select(cn => cn.DebitNoteNo)
+                        .FirstOrDefaultAsync();
+
+                    int newNumber = 1; // Default if no previous credit notes exist
+                    if (!string.IsNullOrEmpty(lastDebitNoteNumber))
+                    {
+                        var match = Regex.Match(lastDebitNoteNumber, @"-(\d+)$");
+                        if (match.Success)
+                        {
+                            newNumber = int.Parse(match.Groups[1].Value) + 1;
+                        }
+                    }
+
+                    // Generate new Credit Note number
+                    string newDebitNoteNumber = $"{debitNoteAbbrv}-{yearSuffix}-{newNumber:D5}";
+
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var invoice = await dbContext.Tbl20166VatpurchaseMasters
+                                                 .FirstOrDefaultAsync(i => i.PurchaseVoucherNo == InvoiceNo);
+
+                    if (invoice == null)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    // Extract values from the fetched invoice
+                    string DebitNoteNo = newDebitNoteNumber;
+                    DateTime InvoiceDate = invoice.PurchaseVoucherDate ?? DateTime.Now;
+                    string AddedBy = invoice.AddedBy ?? "System";
+                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+                    //string DebitNoteUUID = invoice.InvoiceUuid ?? Guid.NewGuid().ToString();
+                    //long? InvoiceCounterValue = invoice.InvoiceCounterValue ?? 0;
+                    var IsPosted = invoice.IsPosted;
+                    var DebitInvoiceNo = "";
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var debitNoteMaster = await dbContext.Tbl20172VatdebitNoteMasters
+    .Where(i => i.PurchaseVoucherNo == InvoiceNo)
+    .FirstOrDefaultAsync();
+
+                    if (debitNoteMaster == null && IsPosted == true)
+                    {
+                        debitNoteMaster = null;
+                        // Call the stored procedure (6 parameters only)
+                        var result = dbContext.Database.ExecuteSqlRaw(
+                            "EXEC sp201_85InsertDebiteNoteFromPurchase @p0, @p1, @p2, @p3",
+                            InvoiceNo, DebitNoteNo, AddedBy, AddedOn
+                        );
+                    }
+                    else
+                    {
+                        DebitInvoiceNo = debitNoteMaster.PurchaseVoucherNo;
+                    }
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Invoice Amended successfully.",
+                        VoucherVerifiedBy = User.Identity?.Name ?? "System",
+                        IsPosted = IsPosted,
+                        DebitInvoiceNo = DebitInvoiceNo,
+                        DebitNoteNo = DebitNoteNo
                     });
                 }
                 catch (Exception ex)

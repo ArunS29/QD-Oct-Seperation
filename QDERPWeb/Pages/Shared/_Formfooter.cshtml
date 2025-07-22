@@ -10,18 +10,18 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        padding: 16px 0;
+        /* padding: 16px 0; */
         background: #fff;
         border-radius: 12px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
         gap: 10px;
-        height:68px;
+        height:48px;
     }
 
     /* FIXED: Single full connector line behind steps */
     .workflow-line {
         position: absolute;
-        top: 32px;
+        top: 19px;
         /* right: 10px; */
         left: 25px;
         width: 97%;
@@ -59,7 +59,7 @@
     }
 
     .step-label {
-        margin-top: 6px;
+        /* margin-top: 6px; */
         font-weight: 500;
         font-size: 12px;
         color: #4b5563;
@@ -304,124 +304,141 @@
         white-space: nowrap;
     }
 
+    .dx-fieldset{
+        margin:0px!important;
+    }
+    .dx-button{
+        height:35px!important;
+    }
 </style>
 
 
-<div class="WorkFlow">
-    <div class="workflow-container">
-        <div class="workflow-line"></div>
+<div class="workflow-wrapper">
+    <!-- First row: Workflow -->
+    <div class="workflow-row">
+        <div class="WorkFlow">
+            <div class="workflow-container">
+                <div class="workflow-line"></div>
 
-        <div class="workflow-step" id="step-update">
-            <div class="step-circle"><i class="fas fa-user"></i></div>
-            <div class="step-label">Updated</div>
-            <div class="step-status-msg">In Progress</div>
+                <div class="workflow-step" id="step-update">
+                    <div class="step-circle"><i class="fas fa-user"></i></div>
+                    <div class="step-label">Updated</div>
+                    <div class="step-status-msg">In Progress</div>
+                </div>
+                <div class="workflow-step" id="step-verify">
+                    <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
+                    <div class="step-label">Verified</div>
+                    <div class="step-status-msg">Waiting</div>
+                </div>
+                <div class="workflow-step" id="step-approve">
+                    <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+                    <div class="step-label">Approved</div>
+                    <div class="step-status-msg">Pending</div>
+                </div>
+
+                <div id="verifyPopover" class="popover-box">
+                    Verified by: <span id="verifiedByName"></span><br>
+                    On: <span id="verifiedOn"></span>
+                </div>
+                <div id="approvePopover" class="popover-box">
+                    Approved by: <span id="approvedByName"></span><br>
+                    On: <span id="approvedOn"></span>
+                </div>
+            </div>
         </div>
-        <div class="workflow-step" id="step-verify">
-            <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
-            <div class="step-label">Verified</div>
-            <div class="step-status-msg">Waiting</div>
+    </div>
+
+    <!-- Second row: Footer with Buttons -->
+    <div class="footer-row">
+        <div class="dx-fieldset horizontal-container">
+            @(Html.DevExtreme().Button()
+                        .ID("btnSave")
+                        .Text("Save")
+                        .Icon("save")
+                        .Width(180)
+                        .Hint("Click to save")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnSaveAndClose")
+                        .Text("Save & Close")
+                        .Icon("save")
+                        .Width(180)
+                        .Hint("Click to save and close")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text(new JS("formatMessage('Back')"))
+                        .Icon("arrowleft")
+                        .Width(180)
+                        .Hint("Click to back")
+                        .OnClick("onBackButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-back" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnAttach")
+                        .Text(new JS("formatMessage('Attach')"))
+                        .Icon("link")
+                        .Hint("Click to attach")
+                        .Width(180)
+                        .OnClick("onAttachmentButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+
+            @(Html.DevExtreme().DropDownButton()
+                        .ID("btnPreview1")
+                        .Text(new JS("formatMessage('Preview')"))
+                        .Icon("fullscreen")
+                        .Hint("Click to Preview")
+                        .ElementAttr(new { @class = "dx-button-custom btn-preview" })
+                        .Width(180)
+                        .DropDownOptions(o => o.Width(220))
+                        .Items(items =>
+                        {
+                            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
+                            items.Add().Text("Preview Format 2").Icon("textdocument");
+                        })
+                        .OnItemClick("handlePreviewClick"))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnDelete")
+                        .Text("Delete")
+                        .Icon("close")
+                        .Width(180)
+                        .Hint("Click to delete")
+                        .OnClick("onDeleteButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnVerify")
+                        .Text(new JS("formatMessage('Verify')"))
+                        .Icon("check")
+                        .Hint("Click to Verify")
+                        .Width(180)
+                        .OnClick("onVerifyButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-verify" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnApprove")
+                        .Text(new JS("formatMessage('Approve')"))
+                        .Icon("exportselected")
+                        .Hint("Click to Approve")
+                        .Width(180)
+                        .OnClick("onApproveButtonClickWithAnimation")
+                        .ElementAttr(new { @class = "dx-button-custom btn-approve" }))
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnVoucherColumnChooser")
+                        .Text(new JS("formatMessage('Column Chooser')"))
+                        .Icon("columnchooser")
+                        .Hint("Click to column chooser")
+                        .Width(210)
+                        .OnClick("showColumnChooser")
+                        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
         </div>
-
-        <div class="workflow-step" id="step-approve">
-            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
-            <div class="step-label">Approved</div>
-            <div class="step-status-msg">Pending</div>
-        </div>
-
-        <div id="verifyPopover" class="popover-box">Verified by: <span id="verifiedByName"></span><br>On: <span id="verifiedOn"></span></div>
-        <div id="approvePopover" class="popover-box">Approved by: <span id="approvedByName"></span><br>On: <span id="approvedOn"></span></div>
-
     </div>
 </div>
-    <div class="dx-fieldset horizontal-container">
 
-        @(Html.DevExtreme().Button()
-                .ID("btnSave")
-                .Text("Save")
-                .Icon("save")
-                .Width(180)
-                .Hint("Click to save")
-                .ElementAttr(new { @class = "dx-button-custom btn-save" }))
-
-        @(Html.DevExtreme().Button()
-                .ID("btnSaveAndClose")
-                .Text("Save & Close")
-                .Icon("save")
-                .Width(180)
-                .Hint("Click to save and close")
-                .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
-
-        @(Html.DevExtreme().Button()
-                .ID("btnBack")
-                .Text(new JS("formatMessage('Back')"))
-                .Icon("arrowleft")
-                .Width(180)
-                .Hint("Click to back")
-                .OnClick("onBackButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-back" }))
-
-
-
-        @(Html.DevExtreme().Button()
-                .ID("btnAttach")
-                .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
-                .Hint("Click to attach")
-                .Width(180)
-                .OnClick("onAttachmentButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
-
-        @(Html.DevExtreme().DropDownButton()
-                .ID("btnPreview1")
-                .Text(new JS("formatMessage('Preview')"))
-                .Icon("fullscreen")
-                .Hint("Click to Preview")
-                .ElementAttr(new { @class = "dx-button-custom btn-preview" })
-                .Width(180)
-                .DropDownOptions(o => o.Width(220))
-                .Items(items =>
-                {
-                    items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
-                    items.Add().Text("Preview Format 2").Icon("textdocument");
-                })
-                .OnItemClick("handlePreviewClick"))
-        @(Html.DevExtreme().Button()
-                .ID("btnDelete")
-                .Text("Delete")
-                .Icon("close")
-                .Width(180)
-                .Hint("Click to delete")
-                .OnClick("onDeleteButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
-
-        @(Html.DevExtreme().Button()
-                .ID("btnVerify")
-                .Text(new JS("formatMessage('Verify')"))
-                .Icon("check")
-                .Hint("Click to Verify")
-                .Width(180)
-                .OnClick("onVerifyButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-verify" }))
-
-        @(Html.DevExtreme().Button()
-                .ID("btnApprove")
-                .Text(new JS("formatMessage('Approve')"))
-                .Icon("exportselected")
-                .Hint("Click to Approve")
-                .Width(180)
-                .OnClick("onApproveButtonClickWithAnimation")
-                .ElementAttr(new { @class = "dx-button-custom btn-approve" }))
-
-        @(Html.DevExtreme().Button()
-                .ID("btnVoucherColumnChooser")
-                .Text(new JS("formatMessage('Column Chooser')"))
-                .Icon("columnchooser")
-                .Hint("Click to column chooser")
-                .Width(210)
-                .OnClick("showColumnChooser")
-                .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
-    </div>
-</div>
 
 
 <script type="text/javascript">
@@ -524,6 +541,7 @@
         });
         // showColumnChooser();
         console.log('End permission handling');
+        
     });
 
 
@@ -1310,17 +1328,62 @@
     }
 
         function onAttachmentButtonClick() {
-                var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-                var voucherNo = voucherNoBox.option("value");
+            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            var voucherNo = voucherNoBox.option("value");
 
-                var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-                var voucherType = voucherTypeBox.option("value");
-                const isMaster = false;
-                console.log(voucherType)
-                const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
-                const title = "Transaction Documents";
-                openModal(url, title);
+            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+            var voucherType = voucherTypeBox.option("value");
+            const isMaster = false;
+            console.log(voucherType)
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const title = "Transaction Documents";
+            openModal(url, title);
+        }
+    function onAttachButtonReady(e) {
+        const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        const voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+
+        if (voucherNoBox && voucherTypeBox) {
+            const voucherNo = voucherNoBox.option("value");
+            const voucherType = voucherTypeBox.option("value");
+
+            if (voucherNo && voucherType) {
+                updateAttachButtonUI(voucherNo, voucherType);
             }
+        }
+    }
+
+
+   
+    async function updateAttachButtonUI(folderId, module) {
+       
+        const button = document.querySelector("#btnAttach .dx-button-content");
+        if (!button) return;
+
+        try {
+            const response = await fetch(`/api/Finance/GetDocumentCount?folderId=${encodeURIComponent(folderId)}&module=${encodeURIComponent(module)}`);
+            if (!response.ok) throw new Error("Error fetching count");
+
+            const count = await response.json();
+
+            // Update icon color
+            const icon = button.querySelector("i");
+            if (icon) {
+                icon.classList.remove("text-muted", "text-danger", "text-success");
+                icon.classList.add(count > 0 ? "text-success" : "text-danger");
+            }
+
+            // Update count
+            const countSpan = button.querySelector(".attach-count");
+            if (countSpan) {
+                countSpan.textContent = `(${count})`;
+                countSpan.classList.remove("text-muted", "text-danger", "text-success");
+                countSpan.classList.add(count > 0 ? "text-success" : "text-danger");
+            }
+        } catch (err) {
+            console.error("Attach count fetch failed", err);
+        }
+    }
 
  
 </script>

@@ -387,7 +387,7 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-			<div id="tab-content-1" class="tab-content">
+			<div id="tab-content-1" class="tab-content" style="height:200px;">
 				<table style="width:100%;">
 					<tr style="display:flex; gap: 10px; align-items:end; width:100%;">
 						<td colspan="3" style="width:100%;">
@@ -454,24 +454,35 @@
 														.Disabled(true)
 														//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetProjectContentTemplate"))
-														)
+														.Buttons(buttons =>
+ 															{
+ 																buttons.Add()
+ 																	.Name("clear");
 
-							@(Html.DevExtreme().Button()
-														.ID("AddDebits")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.Disabled(true)
-														.ElementAttr("style", "margin-top: 20px;")
-														)
+ 																buttons.Add()
+ 																	.Name("AddDebits")
+ 																	.Location(TextEditorButtonLocation.After)
+ 																	.Widget(w => w.Button()
+ 																		.Type(ButtonType.Default)
+ 																		.Icon("plus")
+ 																		.ElementAttr(new { @class = "custom-hover-button add-hover" })
+ 																		.Disabled(true)
+ 																	);
 
-							@(Html.DevExtreme().Button()
-														.ID("EditDebits")
-														.Icon("edit")
-														.Hint("Edit Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top: 20px;")
-														)
+ 																// Custom editLedger button
+ 																buttons.Add()
+ 																	.Name("EditDebits")
+ 																	.Location(TextEditorButtonLocation.After)
+ 																	.Widget(w => w.Button()
+ 																		.Type(ButtonType.Default)
+ 																		.Icon("edit")
+ 																		.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+ 																		.Disabled(true)
+ 																	);
+																		  buttons.Add()
+																		    .Name("dropDown");
+ 															})
+ 														)
 						</td>
 					</tr>
 					<tr style="display: flex; gap: 10px;align-items:end; width:100%;">
@@ -501,18 +512,19 @@
 														.OnKeyDown("onKeyDown")
 														//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetStoreCodeContentTemplate"))
-														)
-
-							@(Html.DevExtreme().Button()
-														.ID("AdStoreCode")
-														.Icon("plus")
-														.Hint("Add Store Code")
-														.Width(35)
-														.OnClick("AddStoreEdit")
-														.ElementAttr("style", "justify-content: center"))
-
-
-
+														.Buttons(buttons =>
+															   {
+																   buttons.Add()
+																   .Name("AdStoreCode")
+																   .Location(TextEditorButtonLocation.After)
+																   .Widget(w => w.Button()
+																   .Type(ButtonType.Default)
+																   .Icon("plus")
+																   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																	   .OnClick("AddStoreEdit"));
+																   buttons.Add()
+																   .Name("dropDown");
+															   }))
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -532,15 +544,19 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														.Disabled(true)
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddDep")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.Disabled(true)
-														)
+														.Buttons(buttons =>
+															   {
+																   buttons.Add()
+																   .Name("btndepts")
+																   .Location(TextEditorButtonLocation.After)
+																   .Widget(w => w.Button()
+																   .Type(ButtonType.Default)
+																   .Icon("plus")
+																   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																	   .Disabled(true));
+																   buttons.Add()
+																   .Name("dropDown");
+															   }))
 
 						</td>
 							<td colspan="2" style="width:100%; display:flex; align-items:end;">
@@ -549,14 +565,17 @@
 							.ID("txtContactName")
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
-							)
-							@(Html.DevExtreme().Button()
-							.ID("Addcontactname")
-							.Icon("plus")
-							.Width(40)
-							.ElementAttr("style", "margin-top:18px;")
-							.OnClick("AddContactName")
-							)
+								.Buttons(buttons =>
+									{
+										buttons.Add()
+										.Name("Addcontactname")
+										.Location(TextEditorButtonLocation.After)
+										.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+											.OnClick("AddContactName"));
+									}))
 						</td>
 
 
@@ -606,15 +625,19 @@
 														.OnKeyDown("onKeyDown")
 														//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddModeReq")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddModeReq")
-														)
+														.Buttons(buttons =>
+															   {
+																   buttons.Add()
+																   .Name("AddModeReq")
+																   .Location(TextEditorButtonLocation.After)
+																   .Widget(w => w.Button()
+																   .Type(ButtonType.Default)
+																   .Icon("plus")
+																   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																	  .OnClick("AddModeReq"));
+																   buttons.Add()
+																   .Name("dropDown");
+															   }))
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -642,15 +665,19 @@
 														.OnKeyDown("onKeyDown")
 														//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddTypeReq")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddTypeReq")
-														)
+														.Buttons(buttons =>
+														{	
+																buttons.Add()
+															   .Name("AddTypeReq")
+															   .Location(TextEditorButtonLocation.After)
+															   .Widget(w => w.Button()
+															   .Type(ButtonType.Default)
+															   .Icon("plus")
+															   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																.OnClick("AddTypeReq"));
+															   buttons.Add()
+															   .Name("dropDown");
+														}))
 						</td>
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -707,16 +734,19 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.Disabled(true)
 														.Width("100%")
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddProject")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddProject")
-														.Disabled(true)
-														)
+														.Buttons(buttons =>
+													   {
+														   buttons.Add()
+														   .Name("AddProject")
+														   .Location(TextEditorButtonLocation.After)
+														   .Widget(w => w.Button()
+														   .Type(ButtonType.Default)
+														   .Icon("plus")
+														   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																		   .Disabled(true));
+														   buttons.Add()
+														   .Name("dropDown");
+												   }))
 						</td>
 					</tr>
 				</table>
@@ -726,7 +756,7 @@
 
 
 
-			<div id="tab-content-2" class="tab-content">
+			<div id="tab-content-2" class="tab-content" style="height:200px;" >
 
 				<div class="card-container">
 
@@ -838,7 +868,7 @@
 
 			</div>
 
-			<div id="tab-content-3" class="tab-content">
+			<div id="tab-content-3" class="tab-content" style="height:200px;">
 				<div class="row">
 					<!-- Card 1: 8 columns -->
 					<div class="col-6">
@@ -981,36 +1011,49 @@
 																				@*  .ShowClearButton(true)
 										.AcceptCustomValue(true) *@
 																				.OpenOnFieldClick(false)//
-																				.ValueChangeEvent("input")
-																				.HoverStateEnabled(true)
-																				.ValueExpr("ProjectSubUnitCode")
-																				.DisplayExpr("ProjectSubUnitName")
-																				.OnInput("dropDownBoxOnInput")
-																				.OnOpened("onOpened")
-																				.TabIndex(1)
-																				.Width("100%")
-																				.OnKeyDown("onKeyDown")
-																				//.OnValueChanged("dropDownBoxValueChanged")
-																				.ContentTemplate(new TemplateName("GetRequesstingUnitContentTemplate"))
-																				)
+																					.ValueChangeEvent("input")
+																					.HoverStateEnabled(true)
+																					.ValueExpr("ProjectSubUnitCode")
+																					.DisplayExpr("ProjectSubUnitName")
+																					.OnInput("dropDownBoxOnInput")
+																					.OnOpened("onOpened")
+																					.TabIndex(1)
+																					.Width("100%")
+																					.OnKeyDown("onKeyDown")
+																					//.OnValueChanged("dropDownBoxValueChanged")
+																					.ContentTemplate(new TemplateName("GetRequesstingUnitContentTemplate"))
+																					.Buttons(buttons =>
+																						{
+																							// Built-in clear button
+																							buttons.Add()
+																								.Name("clear");
+
+																							// Custom addLedger button
+																							buttons.Add()
+																								.Name("AddReqUnit")
+																								.Location(TextEditorButtonLocation.After)
+																								.Widget(w => w.Button()
+																									.Type(ButtonType.Default)
+																									.Icon("plus")
+																									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																									.OnClick("AddReqUnit")
+																								);
+
+																							// Custom editLedger button
+																							buttons.Add()
+																								.Name("EditReqUnit")
+																								.Location(TextEditorButtonLocation.After)
+																								.Widget(w => w.Button()
+																									.Type(ButtonType.Default)
+																									.Icon("edit")
+																									.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+																									//.OnClick("showLedgerAccountEditPopup")
+																									);
+																								buttons.Add()
+																								.Name("dropDown");
+																									})
+ 																										)
 									</div>
-
-									@(Html.DevExtreme().Button()
-																			.ID("AddReqUnit")
-																			.Icon("plus")
-																			.Hint("Add Description")
-																			.Width(40)
-																			.ElementAttr("style", "margin-top:18px;")
-																			.OnClick("AddReqUnit")
-																			)
-
-									@(Html.DevExtreme().Button()
-																			.ID("EditReqUnit")
-																			.Icon("edit")
-																			.Hint("Edit Description")
-																			.Width(40)
-																			.ElementAttr("style", "margin-top:18px;")
-																			)
 								</div>
 							</div>
 
@@ -1080,7 +1123,7 @@
 			</div>
 
 
-			<div id="tab-content-4" class="tab-content">
+			<div id="tab-content-4" class="tab-content" style="height:200px;" >
 
 
 				<div class="row">
@@ -1111,19 +1154,23 @@
 													.OnKeyDown("onKeyDown")
 													//.OnValueChanged("dropDownBoxValueChanged")
 													.ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
-													)
+													   .Buttons(buttons =>
+														   {
+															   buttons.Add()
+															   .Name("AddPreparedBy")
+															   .Location(TextEditorButtonLocation.After)
+															   .Widget(w => w.Button()
+															   .Type(ButtonType.Default)
+															   .Icon("plus")
+															   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																   .OnClick("AddPreparedBy"));
+															   buttons.Add()
+															   .Name("dropDown");
+														   }))
+																	
 					</div>
 
-					<div class="col-1 d-flex align-items-start">
-						@(Html.DevExtreme().Button()
-													.ID("AddPreparedBy")
-													.Icon("plus")
-													.Hint("Add Sales Person")
-													.Width(40)
-													.ElementAttr("style", "margin-top:25px;")
-													.OnClick("AddPreparedBy")
-													)
-					</div>
+				
 
 					<div class="col-3">
 						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -1773,7 +1820,7 @@
 					.Columns(columns =>
 					{
 
-						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
@@ -6905,23 +6952,23 @@ $("#btnBack").on("click", function (e) {
 
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = "";
+		const title = "Signatories";
 		openModal(url, title);
 	}
 
 	function AddReqUnit() {
 		const url = `/${tenantName}/IMS/ProjectSubUnits`;
-		const title = "";
+		const title = "Project Sub Units";
 		openModal(url, title);
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "";
+		const title = "Quotation Mode Of Request";
 		openModal(url, title);
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "";
+		const title = "Quotation Type Of Request";
 		openModal(url, title);
 	}
 	$(function () {
@@ -6935,13 +6982,13 @@ $("#btnBack").on("click", function (e) {
 	});
 	 function AddContactName(){
 					const url = `/${tenantName}/IMS/ClientLeadMaster`;
-			 const title = "";
+			 const title = "Client Master";
 				  openModal(url, title);
 		  }
 
 	function AddStoreEdit() {
 		const url = `/${tenantName}/IMS/StoreEdit`;
-		const title = "";
+		const title = "Store";
 		openModal(url, title);
 	}
 	 $(function () {
