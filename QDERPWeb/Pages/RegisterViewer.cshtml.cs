@@ -59,19 +59,26 @@ namespace QD.ERP.Web.Pages
 
 			ReportName = reportName;
 
-
-			// **Fetch Tenant & Company Details**
-			var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-           
+            var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
             var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+            // Get the DefaultcompanyID from session
+            var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+            // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+            if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+            {
+                // Handle invalid or missing ID (fallback or error handling)
+                defaultCompanyId = 0; // or return early / throw error
+            }
+
+            // Now fetch the company details using DefaultcompanyID
             var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
             var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
             var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
             var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
             var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
-
 
             Image logoImage = null;
             if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
@@ -88,6 +95,7 @@ namespace QD.ERP.Web.Pages
                     Console.WriteLine("Error processing company logo: " + ex.Message);
                 }
             }
+
             //Account Register Reports
             if (!string.IsNullOrEmpty(voucherType) && frmDate.HasValue && toDate.HasValue)
             {

@@ -76,7 +76,9 @@
                                                 .Value(DateTime.Now)
                                                 .TabIndex(1)
                                                 .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
-
+                                                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+			                                    .ShowClearButton(true) // shows clear (X) button
+ 
                                                 )
                     </div>
                    <div class="form-group col-md-2 col-sm-6">
@@ -90,7 +92,9 @@
                                                 .Value(DateTime.Now)
                                                 .TabIndex(2)
                                                 .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
-
+                                                .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+			                                    .ShowClearButton(true) // shows clear (X) button
+ 
                                                 )
                     </div>
                     <div class="form-group col-md-7 col-sm-6">

@@ -126,7 +126,7 @@
             this.crossTab1.ColumnDefinitions.AddRange(new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition[] {
             crossTabColumnDefinition1,
             new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(102.8333F),
-            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(2.000001F),
+            new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(2.000002F),
             new DevExpress.XtraReports.UI.CrossTab.CrossTabColumnDefinition(124.1666F)});
             crossTabColumnField1.FieldName = "MonthCode";
             crossTabColumnField2.FieldName = "MonthAndYear";
@@ -312,7 +312,7 @@
             // 
             // TopMargin
             // 
-            this.TopMargin.HeightF = 25F;
+            this.TopMargin.HeightF = 13.33333F;
             this.TopMargin.Name = "TopMargin";
             // 
             // BottomMargin
@@ -416,7 +416,7 @@
             this.xrLabel2,
             this.xrLabel3,
             this.xrPictureBox2});
-            this.PageHeader.HeightF = 76.83337F;
+            this.PageHeader.HeightF = 92.66673F;
             this.PageHeader.Name = "PageHeader";
             // 
             // xrLabel1
@@ -441,7 +441,7 @@
             this.xrLabel2.Font = new DevExpress.Drawing.DXFont("Cambria", 14F);
             this.xrLabel2.LocationFloat = new DevExpress.Utils.PointFloat(10F, 28.00003F);
             this.xrLabel2.Name = "xrLabel2";
-            this.xrLabel2.SizeF = new System.Drawing.SizeF(1594F, 25.83332F);
+            this.xrLabel2.SizeF = new System.Drawing.SizeF(1594F, 35.83332F);
             this.xrLabel2.StylePriority.UseBorders = false;
             this.xrLabel2.StylePriority.UseFont = false;
             this.xrLabel2.StylePriority.UseTextAlignment = false;
@@ -451,11 +451,11 @@
             // xrLabel3
             // 
             this.xrLabel3.Font = new DevExpress.Drawing.DXFont("Cambria", 14F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(10F, 53.83336F);
+            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(10F, 63.83336F);
             this.xrLabel3.Multiline = true;
             this.xrLabel3.Name = "xrLabel3";
             this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel3.SizeF = new System.Drawing.SizeF(1594F, 23.00002F);
+            this.xrLabel3.SizeF = new System.Drawing.SizeF(1594F, 28.83336F);
             this.xrLabel3.StylePriority.UseFont = false;
             this.xrLabel3.StylePriority.UseTextAlignment = false;
             this.xrLabel3.Text = "Bills Receivable  Summary Report";
@@ -486,7 +486,7 @@
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
             this.HorizontalContentSplitting = DevExpress.XtraPrinting.HorizontalContentSplitting.Smart;
             this.Landscape = true;
-            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 25F, 107.5F);
+            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 13.33333F, 107.5F);
             this.PageHeight = 1169;
             this.PageWidth = 1654;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.A3;
