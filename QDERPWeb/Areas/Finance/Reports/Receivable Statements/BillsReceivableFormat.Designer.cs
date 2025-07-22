@@ -198,7 +198,7 @@
                     "hh:mm tt}\', Now())\n")});
             this.xrLabel6.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel6.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(456.5403F, 0F);
+            this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(465.1006F, 0F);
             this.xrLabel6.Name = "xrLabel6";
             this.xrLabel6.SizeF = new System.Drawing.SizeF(369.0596F, 22.07998F);
             this.xrLabel6.StylePriority.UseBorderColor = false;
@@ -218,7 +218,7 @@
             this.pageInfo2.StylePriority.UseBorders = false;
             this.pageInfo2.StylePriority.UseTextAlignment = false;
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
+            this.pageInfo2.TextFormatString = "Page N0:{0} of {1}";
             // 
             // ReportHeader
             // 

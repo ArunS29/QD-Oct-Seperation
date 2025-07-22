@@ -224,7 +224,8 @@ private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs
                 }
 
                 string[] pictureBoxNames = {"xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9",
-             "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15" };
+             "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15"  ,"xrPictureBox16", "xrPictureBox17", "xrPictureBox18", "xrPictureBox19"
+            , "xrPictureBox20", "xrPictureBox21", "xrPictureBox22"};
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -244,7 +245,8 @@ private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs
         private void SetCurrencyImageNull()
         {
             string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9"
-            , "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15"};
+            , "xrPictureBox10", "xrPictureBox11", "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15" ,"xrPictureBox16", "xrPictureBox17", "xrPictureBox18", "xrPictureBox19"
+            , "xrPictureBox20", "xrPictureBox21", "xrPictureBox22"};
 
 
             foreach (string name in pictureBoxNames)
@@ -286,6 +288,14 @@ private void BillsReceivableRentation_BeforePrint(object sender, CancelEventArgs
              new { Label = "xrLabel16",  Picture = "xrPictureBox13" },
              new { Label = "xrLabel17",  Picture = "xrPictureBox14" },
              new { Label = "xrLabel18",  Picture = "xrPictureBox15" },
+
+             new { Label = "xrLabel34",  Picture = "xrPictureBox16" },
+             new { Label = "xrLabel35",  Picture = "xrPictureBox17" },
+             new { Label = "xrLabel36",  Picture = "xrPictureBox18" },
+             new { Label = "xrLabel37",  Picture = "xrPictureBox19" },
+             new { Label = "xrLabel38",  Picture = "xrPictureBox20" },
+             new { Label = "xrLabel39",  Picture = "xrPictureBox21" },
+             new { Label = "xrLabel41",  Picture = "xrPictureBox22" },
              };
 
             foreach (var p in pairs)
