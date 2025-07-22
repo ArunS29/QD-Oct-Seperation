@@ -2955,6 +2955,94 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
+        //eInvoice DebitNote - InsertAmend EInvoice 
+        public async Task<ActionResult> InsertAmendEInvoiceDebit(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string yearSuffix = DateTime.Now.ToString("yy"); // e.g., "25"
+                    string debitNoteAbbrv = "DBN"; // Hardcoded abbreviation
+
+                    // Get last credit note number
+                    var lastDebitNoteNumber = await dbContext.Tbl20172VatdebitNoteMasters
+                        .Where(cn => cn.DebitNoteNo.StartsWith($"{debitNoteAbbrv}-{yearSuffix}-"))
+                        .OrderByDescending(cn => cn.DebitNoteNo)
+                        .Select(cn => cn.DebitNoteNo)
+                        .FirstOrDefaultAsync();
+
+                    int newNumber = 1; // Default if no previous credit notes exist
+                    if (!string.IsNullOrEmpty(lastDebitNoteNumber))
+                    {
+                        var match = Regex.Match(lastDebitNoteNumber, @"-(\d+)$");
+                        if (match.Success)
+                        {
+                            newNumber = int.Parse(match.Groups[1].Value) + 1;
+                        }
+                    }
+
+                    // Generate new Credit Note number
+                    string newDebitNoteNumber = $"{debitNoteAbbrv}-{yearSuffix}-{newNumber:D5}";
+
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var invoice = await dbContext.Tbl20166VatpurchaseMasters
+                                                 .FirstOrDefaultAsync(i => i.PurchaseVoucherNo == InvoiceNo);
+
+                    if (invoice == null)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    // Extract values from the fetched invoice
+                    string DebitNoteNo = newDebitNoteNumber;
+                    DateTime InvoiceDate = invoice.PurchaseVoucherDate ?? DateTime.Now;
+                    string AddedBy = invoice.AddedBy ?? "System";
+                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+                    //string DebitNoteUUID = invoice.InvoiceUuid ?? Guid.NewGuid().ToString();
+                    //long? InvoiceCounterValue = invoice.InvoiceCounterValue ?? 0;
+                    var IsPosted = invoice.IsPosted;
+                    var DebitInvoiceNo = "";
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var debitNoteMaster = await dbContext.Tbl20172VatdebitNoteMasters
+    .Where(i => i.PurchaseVoucherNo == InvoiceNo)
+    .FirstOrDefaultAsync();
+
+                    if (debitNoteMaster == null && IsPosted == true)
+                    {
+                        debitNoteMaster = null;
+                        // Call the stored procedure (6 parameters only)
+                        var result = dbContext.Database.ExecuteSqlRaw(
+                            "EXEC sp201_85InsertDebiteNoteFromPurchase @p0, @p1, @p2, @p3",
+                            InvoiceNo, DebitNoteNo, AddedBy, AddedOn
+                        );
+                    }
+                    else
+                    {
+                        DebitInvoiceNo = debitNoteMaster.PurchaseVoucherNo;
+                    }
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Invoice Amended successfully.",
+                        VoucherVerifiedBy = User.Identity?.Name ?? "System",
+                        IsPosted = IsPosted,
+                        DebitInvoiceNo = DebitInvoiceNo,
+                        DebitNoteNo = DebitNoteNo
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
 
         //[HttpPost]
         //public async Task<ActionResult> InsertAmendEInvoice(string InvoiceNo)

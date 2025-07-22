@@ -524,6 +524,7 @@
         });
         // showColumnChooser();
         console.log('End permission handling');
+        
     });
 
 
@@ -1310,17 +1311,62 @@
     }
 
         function onAttachmentButtonClick() {
-                var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-                var voucherNo = voucherNoBox.option("value");
+            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            var voucherNo = voucherNoBox.option("value");
 
-                var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-                var voucherType = voucherTypeBox.option("value");
-                const isMaster = false;
-                console.log(voucherType)
-                const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
-                const title = "Transaction Documents";
-                openModal(url, title);
+            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
+            var voucherType = voucherTypeBox.option("value");
+            const isMaster = false;
+            console.log(voucherType)
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const title = "Transaction Documents";
+            openModal(url, title);
+        }
+    function onAttachButtonReady(e) {
+        const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        const voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+
+        if (voucherNoBox && voucherTypeBox) {
+            const voucherNo = voucherNoBox.option("value");
+            const voucherType = voucherTypeBox.option("value");
+
+            if (voucherNo && voucherType) {
+                updateAttachButtonUI(voucherNo, voucherType);
             }
+        }
+    }
+
+
+   
+    async function updateAttachButtonUI(folderId, module) {
+       
+        const button = document.querySelector("#btnAttach .dx-button-content");
+        if (!button) return;
+
+        try {
+            const response = await fetch(`/api/Finance/GetDocumentCount?folderId=${encodeURIComponent(folderId)}&module=${encodeURIComponent(module)}`);
+            if (!response.ok) throw new Error("Error fetching count");
+
+            const count = await response.json();
+
+            // Update icon color
+            const icon = button.querySelector("i");
+            if (icon) {
+                icon.classList.remove("text-muted", "text-danger", "text-success");
+                icon.classList.add(count > 0 ? "text-success" : "text-danger");
+            }
+
+            // Update count
+            const countSpan = button.querySelector(".attach-count");
+            if (countSpan) {
+                countSpan.textContent = `(${count})`;
+                countSpan.classList.remove("text-muted", "text-danger", "text-success");
+                countSpan.classList.add(count > 0 ? "text-success" : "text-danger");
+            }
+        } catch (err) {
+            console.error("Attach count fetch failed", err);
+        }
+    }
 
  
 </script>

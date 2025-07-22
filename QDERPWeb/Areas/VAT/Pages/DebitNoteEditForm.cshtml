@@ -1828,15 +1828,18 @@
 				});
 		//View e-Invoice
 
-			$(document).ready(function () {
+		$(document).ready(function () {
 			var urlParams = new URLSearchParams(window.location.search);
-			var DebitNoteNo		 = urlParams.get('DebitNoteNo');
+			var InvNo = urlParams.get('InvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
+			IsAmend = urlParams.get('IsAmend');
+			var DebitNoteNo		 = urlParams.get('DebitNoteNo');
+			
 
-				IsCurrent=IsEditflag.toString();
+			IsCurrent = (IsEditflag || "").toString();
 
-				// console.log("Iseditflag",IsEditflag)
-				if (IsCurrent === "true") {
+			if (IsCurrent === "true") {
+
 				$.ajax({
 					url: `/api/VATModule/GetDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
 					type: 'GET',
@@ -1850,19 +1853,20 @@
 							console.log(account)
 
 							$('#DebitNoteNo').dxTextBox("instance")?.option("value", account.DebitNoteNo);
+							PaymentMeansdataGridSelectionChanged({ selectedRowKeys: [account.PaymentMeansTypeCode] });
 							$('#VATSupplierName').dxDropDownBox("instance")?.option("value", account.SupplierCode);
 
 							$('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.DebitNoteDate);
 							$('#VATPurchaseVoucherNo').dxDropDownBox("instance")?.option("value", account.PurchaseVoucherNo);
 							$('#SupplierInvoiceNo').dxTextBox("instance")?.option("value", account.SupplierBillNo);
 							
-							 $('#InvoiceDate').dxTextBox("instance")?.option("value", account.SupplierBillDate);
-							 $('#ddlSupplierNameArabic').dxDropDownBox("instance")?.option("value", account.SupplierNameAr);
-							 $('#txtReferenceNo').dxTextBox("instance")?.option("value", account.SupplierBillDate);
-							 $('#txtInvoicePeriod').dxTextBox("instance")?.option("value", account.SupplierBillDate);
-							 $("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value",account.ItemReturns);
-							 $("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
-		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
+							$('#InvoiceDate').dxDateBox("instance")?.option("value", account.SupplierBillDate);
+							//$('#ddlSupplierNameArabic').dxDropDownBox("instance")?.option("value", account.SupplierNameAr);
+						//	$("#txtReferenceNo").dxTextBox("instance").option("value", account.ReferenceNo);
+						//	$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
+						//	$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value",account.ItemReturns);
+							$("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
+							//PaymentMeansTypeCode: paymentmeanstypecode,
 			                $("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
 			                $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
 							$("#txtInvoiceNotes").dxTextArea("instance").option("value",account.DebitNoteRemarks);
@@ -1889,9 +1893,75 @@
 										console.log("DebitGrid",response)
 					
 										let rowData = response.map((item, index) => ({
-			SNo: index + 1,
-			...item
-		}));
+										SNo: index + 1,
+										...item
+									}));
+									// let rowData = response;
+
+									// ✅ Now safely initialize the grid here
+									initializeDataGrid(rowData);
+								},
+								error: function (xhr, status, error) {
+									console.error("Error fetching grid data:", error);
+								}
+							});
+						} else {
+							console.warn("No account details found in the response.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error fetching invoice details:", error);
+					}
+				});
+			}
+			else if(IsAmend ==="true")
+			{
+				$.ajax({
+					url: `/api/VATModule/GetDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
+					type: 'GET',
+					dataType: 'json',
+					success: function (response) {
+						console.log("DebitInvoiceDetails", response);
+
+						if (response && response.length > 0) {
+							var account = response[0];
+
+							console.log(account)
+
+							$('#DebitNoteNo').dxTextBox("instance")?.option("value", account.DebitNoteNo);
+							PaymentMeansdataGridSelectionChanged({ selectedRowKeys: [account.PaymentMeansTypeCode] });
+							$('#VATSupplierName').dxDropDownBox("instance")?.option("value", account.SupplierCode);
+
+							$('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.DebitNoteDate);
+							$('#VATPurchaseVoucherNo').dxDropDownBox("instance")?.option("value", account.PurchaseVoucherNo);
+							$('#SupplierInvoiceNo').dxTextBox("instance")?.option("value", account.SupplierBillNo);
+
+							$('#InvoiceDate').dxDateBox("instance")?.option("value", account.SupplierBillDate);
+							//$('#ddlSupplierNameArabic').dxDropDownBox("instance")?.option("value", account.SupplierNameAr);
+						//	$("#txtReferenceNo").dxTextBox("instance").option("value", account.ReferenceNo);
+						//	$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
+						//	$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value",account.ItemReturns);
+							$("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
+							//PaymentMeansTypeCode: paymentmeanstypecode,
+							$("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
+							$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
+							$("#txtInvoiceNotes").dxTextArea("instance").option("value",account.DebitNoteRemarks);
+							$("#txtNotesinArabic").dxTextArea("instance").option("value",account.DebitNoteRemarksAr);
+							$("#ddlDivision").dxDropDownBox("instance").option("value",account.BranchCode);
+							$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value",account.CompanyId);
+
+
+							$.ajax({
+								type: "GET",
+								url: `/api/VATModule/GetGridDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
+									dataType: 'json',
+								success: function (response) {
+										console.log("DebitGrid",response)
+
+										let rowData = response.map((item, index) => ({
+										SNo: index + 1,
+										...item
+									}));
 									// let rowData = response;
 
 									// ✅ Now safely initialize the grid here
@@ -1913,6 +1983,7 @@
 
 
 		});
+
 
 	// Move the DataGrid configuration into a function for cleanliness
 		function initializeDataGrid(rowData) {
@@ -4977,21 +5048,21 @@
 	 });
 
 
-	 $(document).ready(function () {
-		$.ajax({
-			url: "/api/VATModule/CreateNewInvoiceCounter",
-			type: 'POST',
-			success: function (data) {
-				console.log("Success:", data);
+	//  $(document).ready(function () {
+	// 	$.ajax({
+	// 		url: "/api/VATModule/CreateNewInvoiceCounter",
+	// 		type: 'POST',
+	// 		success: function (data) {
+	// 			console.log("Success:", data);
 
-			   $("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
-			},
-			error: function (xhr, status, error) {
-				console.error("Error loading Payment Accounts:", error);
-				DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-			}
-		});
-	});
+	// 		   $("#InvoiceCounterValue").dxTextBox("instance").option("value", data);
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			console.error("Error loading Payment Accounts:", error);
+	// 			DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+	// 		}
+	// 	});
+	// });
 
 
 
