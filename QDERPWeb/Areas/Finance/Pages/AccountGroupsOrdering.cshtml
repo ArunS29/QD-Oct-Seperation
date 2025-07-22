@@ -84,14 +84,20 @@
         display: none;
     }
 </style>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Account Groups Ordering</h3>
+</div>
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
 <div class="content-container-top">
-    <div class="Head">
-        <div class="header-container">
+    
+        <div class="footer-fixed">
             <div class="footer">@await Html.PartialAsync("ADOFooter")</div>
         </div>
-    </div>
-    <div id="AccountsGroupsOrdering" class="title no-border-input"></div>
+    
+    @* <div id="AccountsGroupsOrdering" class="title no-border-input"></div> *@
     @(
         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201207accountGroupOrdering>()
         .ID("dataGrid")
@@ -129,7 +135,7 @@
         .AllowColumnResizing(true)   // Enable column resizing
         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixings
         .HeaderFilter(filter => filter.Visible(true))
-        .Height(500)
+        .Height("75%")
         .ColumnAutoWidth(true)
         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Hide group panel
