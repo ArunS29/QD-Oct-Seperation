@@ -14,6 +14,7 @@
 		<Compile Remove="Areas\Finance\Pages\VATInvoiceWithDetails.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml.cs" />
 		<Compile Remove="Areas\Finance\Pages\VATSalesReporting.cshtml.cs" />
+		<Compile Remove="Areas\VAT\Pages\VATSalesCOGSPosting.cshtml.cs" />
 		<Compile Remove="Controllers\LoginController.cs" />
 		<Compile Remove="Pages\Dashboard.cshtml.cs" />
 		<Compile Remove="Pages\Login.cshtml.cs" />
@@ -37,6 +38,7 @@
 		<Content Remove="Areas\Finance\Pages\VATMasterModule.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATOurAddressDetails.cshtml" />
 		<Content Remove="Areas\Finance\Pages\VATSalesReporting.cshtml" />
+		<Content Remove="Areas\VAT\Pages\VATSalesCOGSPosting.cshtml" />
 		<Content Remove="Pages\Dashboard.cshtml" />
 		<Content Remove="Pages\Login.cshtml" />
 	</ItemGroup>
