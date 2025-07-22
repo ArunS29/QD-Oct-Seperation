@@ -1,7 +1,13 @@
-﻿function openModal(url, title) {
-    document.getElementById("modalIframe").src = url + "?modal=true"; // Append ?modal=true
+﻿function openModal(url, title, height = "90%", width = "100%") {
+    debugger;
+    const separator = url.includes('?') ? '&' : '?';
+    const modalUrl = url + separator + 'modal=true';
+
+    document.getElementById("modalIframe").src = modalUrl; 
     document.getElementById("modalTitle").innerText = title; // Set modal title
     document.getElementById("customModal").style.display = "block";
+    document.getElementById("modalContent").style.height = height;
+    document.getElementById("modalContent").style.width = width;
 }
 
 // Function to close modal

@@ -141,7 +141,7 @@
                               .ID("taxPercentage")
                               .Label("Tax Percentage")
                               .Width("100%")
-                              .LabelMode(EditorLabelMode.Outside)
+                              .LabelMode(EditorLabelMode.Floating)
                               )
                     @(Html.DevExtreme().Button()
                                         @* .ID("saveEntry") *@
@@ -157,7 +157,7 @@
                             .ID("taxableAmount")
                             .Width("100%")
                             .Label("Taxable Amount")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             @* .ElementAttr("class", "input-group") *@
                             )
             
@@ -169,7 +169,7 @@
                             .ID("vatAmount")
                             .Label("VAT Amount")
                             .Width("100%")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ElementAttr("class", "input-group")
                             )
                     
@@ -179,7 +179,7 @@
                             .ID("roundOff")
                             .Label("Round Off")
                             .Width("100%")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ElementAttr("class", "input-group")
                             )
                     
@@ -189,7 +189,7 @@
                         .ID("billAmount")
                         .Label("Bill Amount")
                         .Width("100%")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ElementAttr("class", "input-group")
                         )
                    
@@ -202,7 +202,7 @@
                         .ID("supplierName")
                         .Label("Supplier Name")
                         .Width("100%")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         @* .ElementAttr("class", "input-group") *@
                         )
                     
@@ -211,7 +211,7 @@
                     @(Html.DevExtreme().TextBox()
                         @* .ID("supplierName") *@
                         .Label("Supplier Name In Arabic")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .ElementAttr("class", "input-group")
                         )
@@ -224,7 +224,7 @@
                     @(Html.DevExtreme().TextBox()
                     @* .ID("supplierName") *@
                         .Label("Supplier VAT No")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .ElementAttr("class", "input-group")
                         )
@@ -233,7 +233,7 @@
                     @(Html.DevExtreme().SelectBox()
                         .ID("purchaserName")
                         .Label("Purchaser Name")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         @* .ElementAttr("class", "input-group") *@
                         )
@@ -244,7 +244,7 @@
                 <td colspan="4">
                     @(Html.DevExtreme().TextArea()
                                         .Label("Line Narration")
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .Width("100%")
                                         )
                 </td>
@@ -266,7 +266,7 @@
                     @(Html.DevExtreme().SelectBox()
                         .ID("costEmployees")
                         .Label("Cost Allocation for Employees")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("90%")
                         @* .ElementAttr("class", "input-group") *@
                         )
@@ -277,7 +277,7 @@
                         .ID("costProperty")
                         .Label("Cost Allocation for Property/Equipment")
                         .Width("90%")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                     @* .ElementAttr("class", "input-group") *@
                                         )
 

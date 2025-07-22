@@ -166,7 +166,7 @@
         .Hint("Click to Preview")
         .ElementAttr(new { @class = "dx-button-custom btn-preview" })
         .Width(180)
-        .DropDownOptions(options => options.Width(220))
+        .DropDownOptions(options => options.Width(280))
         .Items(items =>
         {
             items.Add().Text(new JS("formatMessage('Preview Claim/Request')")).Icon("textdocument");
@@ -540,7 +540,9 @@
         }else if (selectedText === formatMessage('Claim /Request Form Entry Checking')) {
             reportName = "ClaimEntryCheck";
         }else if (selectedText === formatMessage('Payment Advice(Supplier Payments)')) {
-            reportName = "PaymentsAdviceSupplierPayments";
+            // reportName = "PaymentsAdviceSupplierPayments";
+            openModal(`/${tenantName}/Finance/PaymentAdvice`,"Payment Advice","50%","50%");
+            return;
         }
 
 

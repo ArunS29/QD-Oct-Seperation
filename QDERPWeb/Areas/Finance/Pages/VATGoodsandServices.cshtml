@@ -156,7 +156,7 @@
                                         .LoadAction("GetGoodsAndServicesGroups")
                                         .LoadMode(DataSourceLoadMode.Raw)
                                         .Key("GsgroupId"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("ddlGoodsGroup1")
                                         .ShowClearButton(true)
                                         .AcceptCustomValue(true)
@@ -214,7 +214,7 @@
 
                                 @(Html.DevExtreme().TextArea()
                                     .Label("Goods & Services Description:")
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("txtDescription8")
                                     .Width("100%")
                                     .Height(150) // Adjust height here for scrollbar to appear
@@ -237,7 +237,7 @@
                             <td>
                                 @(Html.DevExtreme().TextBox()
                                 .Label(new JS("formatMessage('Goods & Services Description (in Arabic):')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ID("txtDescriptionArabic").Width("100%")
                                     .ElementAttr(new { @class = "heightTextArea" }))
                                 
@@ -255,7 +255,7 @@
                                 <div style="display: flex; align-items: end; gap: 8px; margin-right:10px;">
                                     @(Html.DevExtreme().DropDownBox()
                                         .Label(new JS("formatMessage('Unit of Measure:')"))
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ID("ddlUnitMeasure9")
                                         .Width("100%")
                                         .DataSource(d => d.WebApi()
@@ -264,7 +264,7 @@
                                         .LoadMode(DataSourceLoadMode.Raw)
                                         .Key("UnitCode")
                                         )
-                                        .LabelMode(EditorLabelMode.Outside)
+                                        .LabelMode(EditorLabelMode.Floating)
                                         .ShowClearButton(true)
                                         .AcceptCustomValue(true)
                                         .OpenOnFieldClick(false)
@@ -302,7 +302,7 @@
                             @(Html.DevExtreme().NumberBox()
                                 .ID("packingUnit")
                                 .Label(new JS("formatMessage('Packing Unit:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Value(1) // default
                                 .Min(1)
                                 .Step(1)
@@ -315,7 +315,7 @@
                         <td>
                             @(Html.DevExtreme().NumberBox()
                                 .Label(new JS("formatMessage('Selling Rate:')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ID("sellingRate")
                                 .Value(1)
                                 .Min(1)
@@ -328,7 +328,7 @@
 
                         <td>
                             @(Html.DevExtreme().NumberBox()
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Label(new JS("formatMessage('Cost Price:')"))
                                 .ID("txtCostPrice3")
                                 .Value(1)
@@ -352,7 +352,7 @@
                         <td>
                             @(Html.DevExtreme().TextArea()
                             .Label(new JS("formatMessage('Detailed Description:')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("txtDetailedDescription")
                             .ElementAttr(new { @class = "heightTextArea" })
                             .Width("100%").Height(80))
@@ -370,7 +370,7 @@
                             <td style="display:flex;">
                                 @(Html.DevExtreme().TextBox()
                                 .Label(new JS("formatMessage('Detailed Description (in Arabic):')"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ID("txtDetailedDescriptionArabic")
                                 .ElementAttr(new { @class = "heightTextArea" })
                                 .Width("100%").Height(80))

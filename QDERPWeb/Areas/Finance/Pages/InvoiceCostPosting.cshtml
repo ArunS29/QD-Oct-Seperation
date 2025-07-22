@@ -191,7 +191,7 @@
 	@(Html.DevExtreme().DateBox()
 		.ID("todateBox")
 		.Label(new JS("formatMessage('')"))
-		.LabelMode(EditorLabelMode.Outside)
+		.LabelMode(EditorLabelMode.Floating)
 		.InputAttr("aria-label", "Date")
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
