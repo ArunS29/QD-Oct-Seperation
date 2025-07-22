@@ -433,7 +433,7 @@ td {
     /* right: 0; */
     height: 60px;
     background: #ffffff;
-    z-index: 9999;
+    z-index: 999;
 }
 .content-container-top {
     position: relative;

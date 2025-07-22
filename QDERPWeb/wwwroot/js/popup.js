@@ -51,3 +51,21 @@ function showToastModal(type, title, message) {
 function hideToastModal() {
     document.getElementById("toastModal").style.display = "none";
 }
+const originalNotify = DevExpress.ui.notify;
+DevExpress.ui.notify = function (options, type, displayTime) {
+    if (typeof options === "string") {
+        options = {
+            message: options,
+            type: type || "info",
+            displayTime: displayTime || 3000,
+        };
+    }
+    options.width = "20vw";
+    options.position = {
+        my: "top right",
+        at: "top right",
+        of: "#toastModal"
+    };
+    const result = originalNotify(options);
+    return result;
+};
