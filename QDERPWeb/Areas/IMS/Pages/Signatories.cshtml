@@ -7,9 +7,6 @@
 @using DevExtreme.AspNet.Mvc
 @using DevExtreme.AspNet.Mvc.Builders
 <style>
-    .signatory-form-container {
-        padding: 20px;
-    }
 
     .form-row {
         display: flex;
@@ -33,7 +30,6 @@
     }
     .form-row .form-row-btn {
         margin: 2px;
-        
         width: 340px;
         padding: 0px;
     }
@@ -127,16 +123,16 @@
         display: none;
     }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="DatabaseSignatories1" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div class="signatory-form-container">
         <table style="width: 100%;">
             <tr>
                 <!-- LEFT CONTAINER -->
-                <td style="vertical-align: top; width: 50%; padding-right: 20px;">
+                <td style="vertical-align: top; width: 50%;">
                     <div class="form-group">
                         @(Html.DevExtreme().TextBox()
                             .ID("SignatoryName")
@@ -349,7 +345,7 @@
                 });
                
   })
-        .Height(500)
+        .Height("40vh")
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
