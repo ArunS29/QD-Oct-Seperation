@@ -154,9 +154,9 @@
 </div>
 
 <div class="Head">
-	<div class="limited-footer" style="margin: 10px;">
-		@await Html.PartialAsync("VATModuleFooter")
-	</div>
+	
+		@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceWithDetailsFooter.cshtml")
+	
 </div>
 
 <div class="context-menuInvoice" id="contextMenu">
@@ -297,7 +297,7 @@
 		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))

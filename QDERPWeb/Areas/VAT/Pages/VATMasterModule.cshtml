@@ -106,68 +106,69 @@
             <div class="dx-field">
                 <table>
                     <tr>
-                        <td colspan="2">
+                        <td>
                             
                             @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                             .ID("txtGoodsCode7").Width("69%"))
                         </td>
-                    </tr>
-                    <tr>
+                   
                         <td>
                             @(Html.DevExtreme().TextArea()
                                 .Label(new JS("formatMessage('UoM Description:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                             .ID("txtDescription8").Width("95%").Height(60))
                         </td>
-                        <td>
-                            <div style="display: flex; gap: 10px; width: 100%;">
-                                <!-- Language Button -->
-                                <div style="padding-top:25px;">
-                                    @(Html.DevExtreme().Button()
-                                        .ID("convertToArabic1")
-                                        .Width(60)
-                                        .Height(40)
-                                        .Icon("fas fa-language")
-                                        .ElementAttr(new { @class = "input-button" })
-                                        .OnClick("function() { convertToArabic(); }"))
-                                </div>
+                <td>
+                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                        <!-- Language Button -->
+                        <div>
+                            @(Html.DevExtreme().Button()
+                                                        .ID("convertToArabic1")
+                                                        .Width(60)
+                                                        .Height(40)
+                                                        .Icon("fas fa-language")
+                                                        .ElementAttr(new { @class = "input-button" })
+                                                        .OnClick("function() { convertToArabic(); }"))
+                        </div>
 
-                                <!-- Arabic TextArea -->
-                                <div style="flex: 1;">
-                                    @(Html.DevExtreme().TextArea()
-                                        .Label(new JS("formatMessage('UoM Description(in Arabic):')"))
-                                        .LabelMode(EditorLabelMode.Floating)
-                                        .ID("txtDescriptionArabic")
-                                        .Width("100%")
-                                        .InputAttr("dir", "rtl")
-                                        .Height(45))
-                                </div>
-                                <div style="flex: 1; padding-top:25px;">
-                                    @(Html.DevExtreme().Button()
-                                        .Text(new JS("formatMessage('Add')"))
-                                        .ID("btnAddGroup3").Icon("plus").Height(60)
-                                        .OnClick("addUomToDatabase"))
-                                </div>
-                            </div>
+                        <!-- Arabic TextArea -->
+                        <div style="flex: 1;">
+                            @(Html.DevExtreme().TextArea()
+                                                        .Label(new JS("formatMessage('UoM Description(in Arabic):')"))
+                                                        .LabelMode(EditorLabelMode.Floating)
+                                                        .ID("txtDescriptionArabic")
+                                                        .Width("100%")
+                                                        .InputAttr("dir", "rtl")
+                                                        .Height(45))
+                        </div>
 
-                        </td>
+                        <!-- Add Button -->
+                        <div>
+                            @(Html.DevExtreme().Button()
+                                                        .Text(new JS("formatMessage('Add')"))
+                                                        .ID("btnAddGroup3")
+                                                        .Icon("plus")
+                                                        .Height(40)
+                                                        .OnClick("addUomToDatabase"))
+                        </div>
+                    </div>
+                </td>
+
     
                     </tr>
                 </table>
             </div>
     <div class="dx-field ledgerResult">
         @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl40111PropertyUnitCode>()
-
-            .ID("dataGrid")
-            .RemoteOperations(false)
-            .DataSource(d => d.WebApi()
-            .Controller("VATModule") 
-            .LoadAction("GetAccountGroups") 
-            .LoadMode(DataSourceLoadMode.Raw)
-
-            )
+                .ID("dataGrid")
+                .RemoteOperations(false)
+                .DataSource(d => d.WebApi()
+                .Controller("VATModule")
+                .LoadAction("GetAccountGroups")
+                .LoadMode(DataSourceLoadMode.Raw)
+                )
                 .Columns(columns =>
                 {
                     columns.Add().DataField("UnitCode")
@@ -193,47 +194,47 @@
                     .Width(371)
                     .VisibleIndex(3)
                     .Alignment(HorizontalAlignment.Center);
-                })
-                .KeyExpr("UnitCode") // 👈 Must be unique
-                .Editing(editing => editing
-                .Mode(GridEditMode.Batch)
-                .AllowUpdating(true)
 
+                    // ✅ Add command column with Delete button
+                    columns.Add()
+                    .Type(GridCommandColumnType.Buttons)
+                    .Buttons(buttons =>
+                    {
+                        buttons.Add().Name(GridColumnButtonName.Delete);
+                    });
+                })
+                .KeyExpr("UnitCode") // Must be unique
+                .Editing(editing => editing
+                .Mode(GridEditMode.Batch) // You can also use Row mode if needed
+                .AllowUpdating(true)
+                .AllowDeleting(true) // ✅ Enable delete
                 )
                 .Toolbar(toolbar =>
                 {
                     toolbar.Items(items => { }); // hide default toolbar
                 })
                 .OnRowUpdating("onUnitRowUpdating")
-                .Toolbar(toolbar =>
-                {
-                    toolbar.Items(items => { }); // this disables default toolbar items
-                })
-            .AllowColumnReordering(true)
-            .AllowColumnResizing(true)
-            .Paging(p => p.Enabled(false))
-            .HeaderFilter(filter => filter.Visible(false))
-            .Height(400)
-            .FilterRow(filterRow => filterRow.Visible(false))
-            .GroupPanel(groupPanel => groupPanel.Visible(false))
-            .ShowBorders(true)
-            .ShowRowLines(true)
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .Paging(p => p.Enabled(false))
+                .HeaderFilter(filter => filter.Visible(false))
+                .Height(400)
+                .FilterRow(filterRow => filterRow.Visible(false))
+                .GroupPanel(groupPanel => groupPanel.Visible(false))
+                .ShowBorders(true)
+                .ShowRowLines(true)
                 .ColumnChooser(c => c.Enabled(false))
-            .Width("100%")
-
-            )
-
-   
-
-
+                .Width("100%")
+                )
     </div>
 
 
+
     <div class="Head">
-        <div class="limited-footer">
-           
-            @await Html.PartialAsync("/Pages/Shared/VAT/VATMasterModuleFooter.cshtml")
-        </div>
+
+
+        @await Html.PartialAsync("/Pages/Shared/VAT/VATMasterModuleFooter.cshtml")
+       
     </div>
 </body>
 </html>

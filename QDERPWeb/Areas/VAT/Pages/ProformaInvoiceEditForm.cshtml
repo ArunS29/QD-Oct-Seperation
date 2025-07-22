@@ -1309,7 +1309,7 @@
 		<div class="dx-field ledgerResult">
 			@(
 							Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-							.ID("B2BdataGrid")
+						.ID("B2BdataGrid")
 							.RemoteOperations(false)
 							.Columns(columns =>
 							{
@@ -1495,6 +1495,9 @@
 						.ColumnFixing(fixing => fixing.Enabled(true))
 						.Height("45vh")
 						.ColumnAutoWidth(true)
+						.FilterPanel(f => f.Visible(true))
+						.Paging(p => p.PageSize(10))
+
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
 						.ShowBorders(true)
@@ -6576,6 +6579,25 @@
 			...item
 			//LineTotal: currencyRate // overwrite with converted value
 		};
+	// 		$(document).ready(function () {
+	// 			debugger;
+	// 	$.ajax({
+	// 		url: '/api/VATModule/GetGridProformaInvoiceDetails',
+	// 		method: 'GET',
+	// 		dataType: 'json',
+	// 		success: function (data) {
+	// 			  $("#B2BdataGrid").dxDataGrid({
+						
+	// 				dataSource: data,
+	// 				// other grid options
+	// 			});
+	// 		},
+	// 		error: function (err) {
+	// 			console.error("Grid load failed", err);
+	// 		}
+	// 	});
+	// });
+
 	});
 
 
@@ -6586,11 +6608,15 @@
 										console.error("Error fetching grid data:", error);
 									}
 								});
-								  DevExpress.ui.dialog.alert(
-							"Proforma Invoice Details updated Successfully.",
-							"Update successful"
-						);
-						history.back();
+									DevExpress.ui.dialog.alert(
+					  "Credit Note Details updated Successfully.",
+					  "Update successful"
+				  );
+				  history.back();
+					  
+	// 										  window.location.href = `/${tenantName}/VAT/ProformaInvoiceMasterView`;
+	// // Replace with actual register page URL
+
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6611,6 +6637,29 @@
 				}
 
 			 });
+
+				$(document).ready(function () {
+			  if (IsCurrent !== "true" && IsAmend !=="true") {
+
+			  $.ajax({
+				url: "/api/VATModule/GetVATInvoiceNo",
+				  type: 'GET',
+				  success: function (data) {
+					  console.log("Success:", data);
+
+					$("#InvoiceNo").dxTextBox("instance").option("value", data);
+				  InvoiceOPenToSave(data)
+				  CrNoteNo=data;
+
+
+				  },
+				  error: function (xhr, status, error) {
+					  console.error("Error loading Payment Accounts:", error);
+					  DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+				  }
+			  });
+			  }
+		  });
 
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
@@ -7666,5 +7715,22 @@
 			textBox.option("value", "");
 		}
 	}
+	// 	  function refreshRegisterGrid() {
+	// 	  const grid = $("#RegisterGrid").dxDataGrid("instance");
+	// 	  if (grid) {
+	// 		  grid.getDataSource().reload().done(() => {
+	// 			  grid.refresh(); // Optional, but ensures UI is updated
+	// 			  console.log("Register grid refreshed");
+	// 		  });
+	// 	  }
+	//   }
+	// 	if (window.opener && typeof window.opener.refreshRegisterGrid === 'function') {
+	// 	window.opener.refreshRegisterGrid(); // 🔄 Refresh parent grid
+	// 	window.close(); // ✅ Close popup if needed
+	// } else {
+	// 	// fallback: redirect to register page if not opened as a popup
+	// 	window.location.href = "/VATModule/ProformaInvoiceMasterView";
+	// }
+
 </script>
 
