@@ -34,7 +34,7 @@ namespace QD.ERP.Web.Reports
 
             try
             {
-                sqlDataSource1.Fill();
+                sqlDataSource2.Fill();
                 LoadCurrencyImage(accountId, frmDate, toDate);
 
             }
@@ -121,11 +121,11 @@ namespace QD.ERP.Web.Reports
 
         private void ConfigureSqlDataSource(string accountId, DateTime frmDate, DateTime toDate)
         {
-            sqlDataSource1.Queries.Clear();
+            sqlDataSource2.Queries.Clear();
 
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                sqlDataSource2.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
 
                 // Use schema from tenant, or default to dbo
                 string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
@@ -144,8 +144,8 @@ namespace QD.ERP.Web.Reports
             new QueryParameter("@EndDate", typeof(DateTime), toDate)
         });
 
-                sqlDataSource1.Queries.Add(storedProcQuery);
-                sqlDataSource1.Name = "sqlDataSource1";
+                sqlDataSource2.Queries.Add(storedProcQuery);
+                sqlDataSource2.Name = "sqlDataSource2";
             }
             else
             {

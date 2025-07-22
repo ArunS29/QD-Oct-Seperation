@@ -51,9 +51,17 @@ namespace QD.ERP.Web.Pages
             // Get Tenant Name from Session
             var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
             var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+            var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+            // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+            if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+            {
+                // Handle invalid or missing ID (fallback or error handling)
+                defaultCompanyId = 0; // or return early / throw error
+            }
             // Company Info
             var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
             string companyName = companyDetails?.CompanyName ?? string.Empty;
             string companyAddress = companyDetails?.CompanyFullAddress ?? string.Empty;

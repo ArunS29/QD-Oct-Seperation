@@ -78,6 +78,7 @@
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
+            this.xrPictureBox14 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrPictureBox5 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrPictureBox6 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel11 = new DevExpress.XtraReports.UI.XRLabel();
@@ -105,7 +106,6 @@
             this.xrLabel30 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel31 = new DevExpress.XtraReports.UI.XRLabel();
             this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
-            this.xrPictureBox14 = new DevExpress.XtraReports.UI.XRPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -173,8 +173,8 @@
             this.xrLabel5.BorderWidth = 0.5F;
             this.xrLabel5.CanGrow = false;
             this.xrLabel5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  IsNull([CrAmount]),\n  \'-\',\n  FormatString(\'{0:#,##0.00}\', Sum([CrAmount]))" +
-                    "\n)\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  IsNull([ConvertedCrAmount]),\n  \'-\',\n  FormatString(\'{0:#,##0.00}\', Sum([Co" +
+                    "nvertedCrAmount]))\n)\n")});
             this.xrLabel5.Font = new DevExpress.Drawing.DXFont("Times New Roman", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(760.1993F, 0.5000496F);
             this.xrLabel5.Name = "xrLabel5";
@@ -201,8 +201,8 @@
             this.xrLabel4.BorderWidth = 0.5F;
             this.xrLabel4.CanGrow = false;
             this.xrLabel4.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  Sum([VoucherAmountFormatted]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([Vou" +
-                    "cherAmountFormatted])),\n  \'-\'\n)\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  Sum([ConvertedAmount]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([ConvertedA" +
+                    "mount])),\n  \'-\'\n)\n")});
             this.xrLabel4.Font = new DevExpress.Drawing.DXFont("Times New Roman", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel4.LocationFloat = new DevExpress.Utils.PointFloat(641.7216F, 0.5000496F);
             this.xrLabel4.Name = "xrLabel4";
@@ -703,6 +703,15 @@
             this.ReportFooter.HeightF = 102.1667F;
             this.ReportFooter.Name = "ReportFooter";
             // 
+            // xrPictureBox14
+            // 
+            this.xrPictureBox14.LocationFloat = new DevExpress.Utils.PointFloat(757.8238F, 0F);
+            this.xrPictureBox14.Name = "xrPictureBox14";
+            this.xrPictureBox14.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
+            this.xrPictureBox14.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
+            this.xrPictureBox14.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            this.xrPictureBox14.StylePriority.UsePadding = false;
+            // 
             // xrPictureBox5
             // 
             this.xrPictureBox5.BorderColor = System.Drawing.Color.Black;
@@ -889,7 +898,7 @@
             // 
             // xrPictureBox8
             // 
-            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(632.5018F, 3.000128F);
+            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(632.5018F, 0.5000496F);
             this.xrPictureBox8.Name = "xrPictureBox8";
             this.xrPictureBox8.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.xrPictureBox8.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
@@ -898,7 +907,7 @@
             // 
             // xrPictureBox7
             // 
-            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(757.8237F, 6.500041F);
+            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(757.8237F, 3.000128F);
             this.xrPictureBox7.Name = "xrPictureBox7";
             this.xrPictureBox7.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.xrPictureBox7.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
@@ -1126,15 +1135,6 @@
             this.sqlDataSource2.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
             storedProcQuery2});
             this.sqlDataSource2.ResultSchemaSerializable = resources.GetString("sqlDataSource2.ResultSchemaSerializable");
-            // 
-            // xrPictureBox14
-            // 
-            this.xrPictureBox14.LocationFloat = new DevExpress.Utils.PointFloat(757.8238F, 0F);
-            this.xrPictureBox14.Name = "xrPictureBox14";
-            this.xrPictureBox14.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox14.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
-            this.xrPictureBox14.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox14.StylePriority.UsePadding = false;
             // 
             // AccountOrderbyVchNoWONarrationReport
             // 

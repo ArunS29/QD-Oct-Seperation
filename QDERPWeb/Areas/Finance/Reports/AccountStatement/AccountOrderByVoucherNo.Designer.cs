@@ -42,8 +42,6 @@
             DevExpress.DataAccess.Sql.QueryParameter queryParameter6 = new DevExpress.DataAccess.Sql.QueryParameter();
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
-            this.xrPictureBox8 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox7 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel10 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel12 = new DevExpress.XtraReports.UI.XRLabel();
@@ -108,8 +106,6 @@
             // BottomMargin
             // 
             this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox8,
-            this.xrPictureBox7,
             this.xrLabel5,
             this.xrLabel10,
             this.xrLabel12,
@@ -118,24 +114,6 @@
             this.xrLabel4});
             this.BottomMargin.HeightF = 67.83365F;
             this.BottomMargin.Name = "BottomMargin";
-            // 
-            // xrPictureBox8
-            // 
-            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(657.5131F, 4.500326F);
-            this.xrPictureBox8.Name = "xrPictureBox8";
-            this.xrPictureBox8.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox8.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
-            this.xrPictureBox8.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox8.StylePriority.UsePadding = false;
-            // 
-            // xrPictureBox7
-            // 
-            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(762.808F, 4.500326F);
-            this.xrPictureBox7.Name = "xrPictureBox7";
-            this.xrPictureBox7.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox7.SizeF = new System.Drawing.SizeF(23.83337F, 12.99993F);
-            this.xrPictureBox7.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox7.StylePriority.UsePadding = false;
             // 
             // xrLabel5
             // 
@@ -163,9 +141,9 @@
                     "hh:mm tt}\', Now())\n")});
             this.xrLabel10.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel10.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel10.LocationFloat = new DevExpress.Utils.PointFloat(493.2297F, 34.87518F);
+            this.xrLabel10.LocationFloat = new DevExpress.Utils.PointFloat(533.3253F, 34.87518F);
             this.xrLabel10.Name = "xrLabel10";
-            this.xrLabel10.SizeF = new System.Drawing.SizeF(387.7702F, 21.79171F);
+            this.xrLabel10.SizeF = new System.Drawing.SizeF(347.6744F, 21.79171F);
             this.xrLabel10.StylePriority.UseBorderColor = false;
             this.xrLabel10.StylePriority.UseFont = false;
             this.xrLabel10.StylePriority.UseForeColor = false;
@@ -181,12 +159,12 @@
             this.xrLabel12.BorderWidth = 0.5F;
             this.xrLabel12.CanGrow = false;
             this.xrLabel12.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  IsNull([CrAmount]),\n  \'-\',\n  FormatString(\'{0:#,##0.00}\', Sum([CrAmount]))" +
-                    "\n)\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Iif(\n  IsNull([ConvertedCrAmount]),\n  \'-\',\n  FormatString(\'{0:#,##0.00}\', " +
+                    "Sum([ConvertedCrAmount]))\n)\n)")});
             this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(762.808F, 0.04189809F);
+            this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(752.8379F, 0.04191081F);
             this.xrLabel12.Name = "xrLabel12";
-            this.xrLabel12.SizeF = new System.Drawing.SizeF(118.192F, 18.45837F);
+            this.xrLabel12.SizeF = new System.Drawing.SizeF(128.162F, 18.45837F);
             this.xrLabel12.StylePriority.UseBackColor = false;
             this.xrLabel12.StylePriority.UseBorderColor = false;
             this.xrLabel12.StylePriority.UseBorderDashStyle = false;
@@ -209,12 +187,12 @@
             this.xrLabel9.BorderWidth = 0.5F;
             this.xrLabel9.CanGrow = false;
             this.xrLabel9.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  Sum([VoucherAmountFormatted]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([Vou" +
-                    "cherAmountFormatted])),\n  \'-\'\n)\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Iif(Sum([VoucherAmountFormatted]) > 0, FormatString(\'{0:#,##0.00}\', Sum([V" +
+                    "oucherAmountFormatted])), \'-\'))")});
             this.xrLabel9.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel9.LocationFloat = new DevExpress.Utils.PointFloat(657.5131F, 4.500326F);
+            this.xrLabel9.LocationFloat = new DevExpress.Utils.PointFloat(625.6616F, 0.04191081F);
             this.xrLabel9.Name = "xrLabel9";
-            this.xrLabel9.SizeF = new System.Drawing.SizeF(105.2949F, 14.33334F);
+            this.xrLabel9.SizeF = new System.Drawing.SizeF(127.1763F, 18.45835F);
             this.xrLabel9.StylePriority.UseBackColor = false;
             this.xrLabel9.StylePriority.UseBorderColor = false;
             this.xrLabel9.StylePriority.UseBorderDashStyle = false;
@@ -229,7 +207,7 @@
             // 
             // xrPageInfo2
             // 
-            this.xrPageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(386.3408F, 41.66677F);
+            this.xrPageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(397.1741F, 34.87518F);
             this.xrPageInfo2.Name = "xrPageInfo2";
             this.xrPageInfo2.SizeF = new System.Drawing.SizeF(106.8889F, 15.00012F);
             this.xrPageInfo2.StyleName = "PageInfo";
@@ -1136,8 +1114,6 @@
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox4;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox6;
         private DevExpress.XtraReports.UI.XRLabel xrLabel5;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox8;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox7;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox9;
         private DevExpress.XtraReports.UI.XRLabel xrLabel24;
         private DevExpress.XtraReports.UI.XRLabel xrLabel25;

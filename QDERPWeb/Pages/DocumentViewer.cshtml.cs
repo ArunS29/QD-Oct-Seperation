@@ -72,10 +72,19 @@ namespace QD.ERP.Web.Pages
 				var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
-                var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
-					.FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
 
-				string companyName = companyDetails?.CompanyName ?? string.Empty;
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+                var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
+
+                string companyName = companyDetails?.CompanyName ?? string.Empty;
 				string companyAddress = companyDetails?.CompanyFullAddress ?? string.Empty;
 				string companyAddressAr = companyDetails?.CompanyFullAddressAr ?? string.Empty;
 				string companyNameAr = companyDetails?.CompanyNameAr ?? string.Empty;
@@ -128,9 +137,18 @@ namespace QD.ERP.Web.Pages
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
 
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+                
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -175,8 +193,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -218,11 +246,19 @@ namespace QD.ERP.Web.Pages
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
 
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-           .FirstOrDefault(x => x.CompanyNameShort == tenantName);
-
-       var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
        var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
        var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
        var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
@@ -264,8 +300,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -310,8 +356,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -370,8 +426,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -429,8 +495,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -482,9 +558,18 @@ namespace QD.ERP.Web.Pages
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
 
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -529,8 +614,18 @@ namespace QD.ERP.Web.Pages
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -596,8 +691,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -641,8 +746,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -686,8 +801,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -728,10 +853,20 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                
+
+
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
 
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -776,8 +911,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -822,8 +967,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -865,10 +1020,20 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-      
+
+
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
 
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -913,8 +1078,18 @@ namespace QD.ERP.Web.Pages
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -971,8 +1146,18 @@ namespace QD.ERP.Web.Pages
 
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1026,8 +1211,18 @@ namespace QD.ERP.Web.Pages
                 ToDate = toDate.Value;
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1085,8 +1280,18 @@ namespace QD.ERP.Web.Pages
 
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1142,8 +1347,18 @@ namespace QD.ERP.Web.Pages
 
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1189,8 +1404,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1235,8 +1460,18 @@ namespace QD.ERP.Web.Pages
 
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1281,9 +1516,18 @@ namespace QD.ERP.Web.Pages
 
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
 
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -1326,8 +1570,18 @@ namespace QD.ERP.Web.Pages
 
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1380,8 +1634,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1427,8 +1691,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1473,8 +1747,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1501,7 +1785,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new TrialBalanceReport(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
@@ -1518,8 +1802,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1546,7 +1840,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new TrialBalance_ExportFormat_(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
@@ -1563,8 +1857,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1591,7 +1895,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new TrialBalanceDrCr(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
@@ -1609,8 +1913,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1655,8 +1969,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1683,7 +2007,7 @@ namespace QD.ERP.Web.Pages
                     }
                 }
                 Report = new incomeStatements_Bymonth_(
-                    AccountGroup, FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, _tenantDbContextHelper,userName
                 );
             }
@@ -1700,8 +2024,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1746,9 +2080,18 @@ namespace QD.ERP.Web.Pages
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
 
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1793,8 +2136,18 @@ namespace QD.ERP.Web.Pages
 
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1839,8 +2192,18 @@ namespace QD.ERP.Web.Pages
 
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1886,9 +2249,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
 
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -1932,8 +2304,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -1978,9 +2360,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
 
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
                 var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
@@ -2024,8 +2415,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -2070,8 +2471,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
@@ -2116,8 +2527,18 @@ namespace QD.ERP.Web.Pages
                 var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
 
                 var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
                 ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
-                    .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
 
                 var companyName = ERPCompany_details?.CompanyName ?? string.Empty;

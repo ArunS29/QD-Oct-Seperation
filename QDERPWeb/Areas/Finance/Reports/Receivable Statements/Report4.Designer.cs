@@ -1617,7 +1617,7 @@
                     "hh:mm tt}\', Now())\n")});
             this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel18.ForeColor = System.Drawing.Color.DarkGray;
-            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(1029.396F, 0F);
+            this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(1031.396F, 0F);
             this.xrLabel18.Name = "xrLabel18";
             this.xrLabel18.SizeF = new System.Drawing.SizeF(411.9371F, 20.66685F);
             this.xrLabel18.StylePriority.UseBorderColor = false;

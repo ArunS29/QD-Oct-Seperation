@@ -1862,7 +1862,7 @@
             this.xrLabel8,
             this.xrLabel1,
             this.pageInfo2});
-            this.PageFooter.HeightF = 42.99996F;
+            this.PageFooter.HeightF = 23F;
             this.PageFooter.Name = "PageFooter";
             // 
             // xrLabel8

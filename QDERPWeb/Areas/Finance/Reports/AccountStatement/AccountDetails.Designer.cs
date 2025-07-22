@@ -169,14 +169,14 @@
             // 
             // xrPictureBox12
             // 
-            this.xrPictureBox12.LocationFloat = new DevExpress.Utils.PointFloat(767.3079F, 9.999974F);
+            this.xrPictureBox12.LocationFloat = new DevExpress.Utils.PointFloat(767.3079F, 0F);
             this.xrPictureBox12.Name = "xrPictureBox12";
             this.xrPictureBox12.SizeF = new System.Drawing.SizeF(12.15277F, 18.22917F);
             this.xrPictureBox12.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrPictureBox11
             // 
-            this.xrPictureBox11.LocationFloat = new DevExpress.Utils.PointFloat(628.5798F, 9.999974F);
+            this.xrPictureBox11.LocationFloat = new DevExpress.Utils.PointFloat(628.5798F, 0F);
             this.xrPictureBox11.Name = "xrPictureBox11";
             this.xrPictureBox11.SizeF = new System.Drawing.SizeF(12.15277F, 18.22917F);
             this.xrPictureBox11.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
@@ -189,8 +189,8 @@
             this.xrLabel8.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel8.BorderWidth = 0.5F;
             this.xrLabel8.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  IsNullOrEmpty([CurrencySymbole]),\n  \'\', \n  [CurrencySymbole] + \' \'\n) + For" +
-                    "matString(\'{0:##,##,##0.00}\', Sum([ConvertedCrAmount]))\n\n\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Iif(\n  IsNullOrEmpty([CurrencySymbole]),\n  \'\', \n  [CurrencySymbole] + \' \'\n" +
+                    ") + FormatString(\'{0:##,##,##0.00}\', Sum([ConvertedCrAmount]))\n\n\n)")});
             this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(767.3079F, 0F);
             this.xrLabel8.Name = "xrLabel8";
@@ -216,8 +216,8 @@
             this.xrLabel6.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel6.BorderWidth = 0.5F;
             this.xrLabel6.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  Sum([VoucherAmountFormatted]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([Vou" +
-                    "cherAmountFormatted])),\n  \'-\'\n)\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Iif(\n  Sum([ConvertedAmount]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([Con" +
+                    "vertedAmount])),\n  \'-\'\n)\n)")});
             this.xrLabel6.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(628.5798F, 0F);
             this.xrLabel6.Name = "xrLabel6";
@@ -1122,7 +1122,7 @@
             this.xrLabel17.Font = new DevExpress.Drawing.DXFont("Times New Roman", 11F);
             this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(0F, 77.66668F);
             this.xrLabel17.Name = "xrLabel17";
-            this.xrLabel17.SizeF = new System.Drawing.SizeF(870F, 27.66663F);
+            this.xrLabel17.SizeF = new System.Drawing.SizeF(870F, 37.78474F);
             this.xrLabel17.StylePriority.UseBorders = false;
             this.xrLabel17.StylePriority.UseFont = false;
             this.xrLabel17.StylePriority.UseTextAlignment = false;
