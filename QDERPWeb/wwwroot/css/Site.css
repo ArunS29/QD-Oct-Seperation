@@ -986,3 +986,6 @@ dx-item-content dx-list-item-content:hover{
 #ddBtnShowRecords .dx-button-text {
     color: #fff !important;
 }
+#ddBtnShowRecords .dx-icon {
+    color: #fff !important;
+}
