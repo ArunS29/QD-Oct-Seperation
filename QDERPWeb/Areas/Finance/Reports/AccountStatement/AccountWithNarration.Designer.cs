@@ -96,8 +96,6 @@
             this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             this.GroupFooter1 = new DevExpress.XtraReports.UI.GroupFooterBand();
             this.PageFooter = new DevExpress.XtraReports.UI.PageFooterBand();
-            this.xrPictureBox6 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox8 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel4 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel8 = new DevExpress.XtraReports.UI.XRLabel();
@@ -976,27 +974,11 @@
             // PageFooter
             // 
             this.PageFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox6,
-            this.xrPictureBox8,
             this.xrLabel4,
             this.xrLabel5,
             this.xrLabel8});
             this.PageFooter.HeightF = 57.4586F;
             this.PageFooter.Name = "PageFooter";
-            // 
-            // xrPictureBox6
-            // 
-            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(730.0706F, 7.000033F);
-            this.xrPictureBox6.Name = "xrPictureBox6";
-            this.xrPictureBox6.SizeF = new System.Drawing.SizeF(23.83F, 17F);
-            this.xrPictureBox6.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            // 
-            // xrPictureBox8
-            // 
-            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(624.3351F, 2.000046F);
-            this.xrPictureBox8.Name = "xrPictureBox8";
-            this.xrPictureBox8.SizeF = new System.Drawing.SizeF(23.83F, 17F);
-            this.xrPictureBox8.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrLabel4
             // 
@@ -1006,8 +988,8 @@
             this.xrLabel4.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel4.BorderWidth = 0.5F;
             this.xrLabel4.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  IsNull([CrAmount]),\n  \'-\',\n  FormatString(\'{0:#,##0.00}\', Sum([CrAmount]))" +
-                    "\n)\n\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  IsNull([ConvertedCrAmount]),\n  \'-\',\n  FormatString(\'{0:#,##0.00}\', sumSum(" +
+                    "[ConvertedCrAmount]))\n)\n\n")});
             this.xrLabel4.Font = new DevExpress.Drawing.DXFont("Calibri", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel4.LocationFloat = new DevExpress.Utils.PointFloat(729.0703F, 0F);
             this.xrLabel4.Name = "xrLabel4";
@@ -1034,12 +1016,12 @@
             this.xrLabel5.BorderWidth = 0.5F;
             this.xrLabel5.CanGrow = false;
             this.xrLabel5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  Sum([VoucherAmountFormatted]) > 0,\n  FormatString(\'{0:#,##0.00}\', Sum([Vou" +
-                    "cherAmountFormatted])),\n  \'-\'\n)\n\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  sumSum([VoucherAmountFormatted]) > 0,\n  FormatString(\'{0:#,##0.00}\', sumSu" +
+                    "m([VoucherAmountFormatted])),\n  \'-\'\n)\n\n")});
             this.xrLabel5.Font = new DevExpress.Drawing.DXFont("Calibri", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(632.9489F, 0F);
             this.xrLabel5.Name = "xrLabel5";
-            this.xrLabel5.SizeF = new System.Drawing.SizeF(97.12177F, 16.99997F);
+            this.xrLabel5.SizeF = new System.Drawing.SizeF(97.12177F, 21.99997F);
             this.xrLabel5.StylePriority.UseBackColor = false;
             this.xrLabel5.StylePriority.UseBorderColor = false;
             this.xrLabel5.StylePriority.UseBorderDashStyle = false;
@@ -1164,8 +1146,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel39;
         private DevExpress.XtraReports.UI.XRLabel xrLabel41;
         private DevExpress.XtraReports.UI.PageFooterBand PageFooter;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox6;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox8;
         private DevExpress.XtraReports.UI.XRLabel xrLabel4;
         private DevExpress.XtraReports.UI.XRLabel xrLabel5;
         private DevExpress.XtraReports.UI.XRLabel xrLabel8;

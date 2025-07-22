@@ -95,6 +95,7 @@
             this.xrLabel16 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel28 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel29 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel30 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -110,10 +111,11 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel30,
             this.xrLabel7,
             this.xrLabel8,
             this.xrLabel3});
-            this.Detail.HeightF = 33F;
+            this.Detail.HeightF = 23F;
             this.Detail.Name = "Detail";
             // 
             // xrLabel7
@@ -563,7 +565,7 @@
             // 
             this.pageInfo2.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.pageInfo2.Font = new DevExpress.Drawing.DXFont("Arial", 8F);
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(371.9751F, 36.49999F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(411.7651F, 35.49999F);
             this.pageInfo2.Name = "pageInfo2";
             this.pageInfo2.SizeF = new System.Drawing.SizeF(83.02484F, 22.16688F);
             this.pageInfo2.StylePriority.UseBorders = false;
@@ -799,7 +801,7 @@
             new DevExpress.XtraReports.UI.GroupField("VoucherNo", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending),
             new DevExpress.XtraReports.UI.GroupField("VoucherType", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending),
             new DevExpress.XtraReports.UI.GroupField("VoucherDate", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending)});
-            this.GroupHeader1.HeightF = 39.54168F;
+            this.GroupHeader1.HeightF = 33.00004F;
             this.GroupHeader1.Name = "GroupHeader1";
             // 
             // xrLabel16
@@ -854,6 +856,19 @@
             this.xrLabel29.StylePriority.UseTextAlignment = false;
             this.xrLabel29.Text = "xrLabel6";
             this.xrLabel29.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopCenter;
+            // 
+            // xrLabel30
+            // 
+            this.xrLabel30.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AccountHeadName]")});
+            this.xrLabel30.Font = new DevExpress.Drawing.DXFont("v", 8.25F);
+            this.xrLabel30.LocationFloat = new DevExpress.Utils.PointFloat(92.2619F, 1.907349E-06F);
+            this.xrLabel30.Multiline = true;
+            this.xrLabel30.Name = "xrLabel30";
+            this.xrLabel30.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel30.SizeF = new System.Drawing.SizeF(210.6668F, 23F);
+            this.xrLabel30.StylePriority.UseFont = false;
+            this.xrLabel30.Text = "xrLabel4";
             // 
             // PreviewRegister
             // 
@@ -934,5 +949,6 @@
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox10;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox12;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox13;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel30;
     }
 }

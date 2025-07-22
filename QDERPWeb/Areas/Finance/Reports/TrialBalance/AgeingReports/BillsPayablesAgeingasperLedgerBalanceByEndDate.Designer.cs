@@ -135,6 +135,7 @@
             this.xrTableCell27 = new DevExpress.XtraReports.UI.XRTableCell();
             this.xrTableCell28 = new DevExpress.XtraReports.UI.XRTableCell();
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
+            this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
             this.xrTable3 = new DevExpress.XtraReports.UI.XRTable();
             this.xrTableRow3 = new DevExpress.XtraReports.UI.XRTableRow();
             this.xrTableCell16 = new DevExpress.XtraReports.UI.XRTableCell();
@@ -172,7 +173,6 @@
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.xrLine1 = new DevExpress.XtraReports.UI.XRLine();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable3)).BeginInit();
@@ -201,7 +201,7 @@
                     "hh:mm tt}\', Now())\n")});
             this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel1.ForeColor = System.Drawing.Color.Black;
-            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(815.0842F, 0F);
+            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(916.1465F, 0F);
             this.xrLabel1.Name = "xrLabel1";
             this.xrLabel1.SizeF = new System.Drawing.SizeF(342.8535F, 20.66685F);
             this.xrLabel1.StylePriority.UseBorderColor = false;
@@ -228,7 +228,7 @@
             // 
             // pageInfo2
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(552.3574F, 2.499962F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(590.3472F, 0F);
             this.pageInfo2.Name = "pageInfo2";
             this.pageInfo2.SizeF = new System.Drawing.SizeF(90.7691F, 23F);
             this.pageInfo2.StyleName = "PageInfo";
@@ -992,6 +992,15 @@
             this.xrLine1,
             this.xrTable3});
             this.ReportFooter.Name = "ReportFooter";
+            // 
+            // xrLine1
+            // 
+            this.xrLine1.ForeColor = System.Drawing.Color.WhiteSmoke;
+            this.xrLine1.LineWidth = 3F;
+            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 28.12499F);
+            this.xrLine1.Name = "xrLine1";
+            this.xrLine1.SizeF = new System.Drawing.SizeF(1259F, 3.125F);
+            this.xrLine1.StylePriority.UseForeColor = false;
             // 
             // xrTable3
             // 
@@ -1759,15 +1768,6 @@
             this.PageInfo.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(75)))), ((int)(((byte)(75)))), ((int)(((byte)(75)))));
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            // 
-            // xrLine1
-            // 
-            this.xrLine1.ForeColor = System.Drawing.Color.WhiteSmoke;
-            this.xrLine1.LineWidth = 3F;
-            this.xrLine1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 28.12499F);
-            this.xrLine1.Name = "xrLine1";
-            this.xrLine1.SizeF = new System.Drawing.SizeF(1259F, 3.125F);
-            this.xrLine1.StylePriority.UseForeColor = false;
             // 
             // BillsPayablesAgeingasperLedgerBalanceByEndDate
             // 

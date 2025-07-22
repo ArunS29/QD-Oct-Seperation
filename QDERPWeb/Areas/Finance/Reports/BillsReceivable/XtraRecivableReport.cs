@@ -177,5 +177,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             base.OnDataSourceDemanded(e);
             Console.WriteLine("Report DataSource Demanded.");
         }
+
+        private void xrTableCell4_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }
