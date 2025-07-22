@@ -983,6 +983,6 @@ dx-item-content dx-list-item-content:hover{
     border-radius: 4px;
     color: #fff !important;
 }
-.dx-widget {
+#ddBtnShowRecords .dx-button-text {
     color: #fff !important;
 }
