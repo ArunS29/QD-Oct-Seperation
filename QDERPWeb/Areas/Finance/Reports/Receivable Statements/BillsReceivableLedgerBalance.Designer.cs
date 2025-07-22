@@ -178,7 +178,7 @@
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.StylePriority.UseTextAlignment = false;
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
+            this.pageInfo2.TextFormatString = "Page No:{0} of {1}";
             // 
             // ReportHeader
             // 
@@ -248,7 +248,7 @@
             // 
             this.xrLabel21.BackColor = System.Drawing.Color.White;
             this.xrLabel21.Font = new DevExpress.Drawing.DXFont("Cambria", 16F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel21.ForeColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel21.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(128)))), ((int)(((byte)(255)))));
             this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(0F, 53.41671F);
             this.xrLabel21.Multiline = true;
             this.xrLabel21.Name = "xrLabel21";
@@ -1231,7 +1231,7 @@
             this.xrLabel4,
             this.xrLabel2,
             this.xrLabel1});
-            this.ReportFooter.HeightF = 148.9999F;
+            this.ReportFooter.HeightF = 25.29166F;
             this.ReportFooter.Name = "ReportFooter";
             // 
             // xrPictureBox7

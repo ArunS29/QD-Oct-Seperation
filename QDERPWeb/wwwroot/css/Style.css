@@ -230,7 +230,7 @@ td {
     margin-right: 18px;
     align-items: center;
     gap: 10px;
-    padding: 15px 10px;
+    padding: 10px 10px;
     position: relative;
     overflow: hidden;
     opacity: 1 !important;
@@ -423,7 +423,7 @@ td {
     bottom: 35px!important;
     height: 60px;
     background: #ffffff;
-    z-index: 9999;
+    z-index: 999;
 }
 .content-container-top {
     position: relative;

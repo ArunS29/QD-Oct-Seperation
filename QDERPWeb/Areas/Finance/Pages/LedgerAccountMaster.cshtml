@@ -228,7 +228,7 @@
                 @(
                     Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Account Group ID')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("AccountGroupID")
                     .Value(null)
                     .Width(250)
@@ -240,7 +240,7 @@
                 @(
                     Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Account Group')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("AccountGroup")
                     .Value(null)
                     .Width(250)
@@ -269,7 +269,7 @@
                         rules.AddRequired()
                         .Message("Account Master is required");
                     })
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("accountMasterDropDownBox")
                     .ShowClearButton(true)
                     .AcceptCustomValue(false)
@@ -303,7 +303,7 @@
                 @(
                     Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Number')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("AccountGroupID1")
                     .Value(null)
                     .Width(250)
@@ -329,7 +329,7 @@
                     @(
                         Html.DevExtreme().TextBox()
                         .Label(new JS("formatMessage('Account Group Name')"))
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("AccountGroup1")
                         .Value(null)
                         .Width(250)
@@ -348,7 +348,7 @@
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("MasterGroup")
                     )
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("accountDropDownBoxArabic")
                     .ShowClearButton(true)
                     .AcceptCustomValue(true)

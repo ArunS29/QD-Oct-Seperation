@@ -6247,6 +6247,37 @@ function syncSupVATNumbers(e) {
         textBox2Instance.option("value", arabicTranslation);
 
     }
+    $(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Correct text value to match DropDownBox entries
+    const sundryCreditorValue = "SUNDARY CREDITORS"; // Exact match required from your data source
+
+    if (urlParams.get('IsSupplier') === 'true') {
+        // From Add popup → select & disable 'SUNDARY CREDITORS'
+        setTimeout(() => {
+            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+            if (group) {
+                group.option({
+                    value: sundryCreditorValue,
+                    disabled: true
+                });
+            }
+        }, 300);
+    }
+
+    if (urlParams.get('IsPurchaseEdit') === 'true') {
+        // From Edit popup → just disable Account Group
+        setTimeout(() => {
+            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+            if (group) {
+                group.option("disabled", true);
+            }
+        }, 300);
+    }
+});
+
+
 
     // alert("two");
     // alert(getidfromCOA);

@@ -7029,6 +7029,10 @@
       "ObjectType": 1
     },
     {
+      "Name": "[sp201_85InsertDebiteNoteFromPurchase]",
+      "ObjectType": 1
+    },
+    {
       "Name": "[sp201_91DeleteDebitNoteChild]",
       "ObjectType": 1
     },

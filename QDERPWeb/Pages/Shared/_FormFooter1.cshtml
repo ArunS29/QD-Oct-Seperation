@@ -147,7 +147,7 @@
     }
 </style>
 <div class="dx-fieldset horizontal-container mt-2">
-    @(Html.DevExtreme().DropDownButton()
+    @* @(Html.DevExtreme().DropDownButton()
         .ID("journaleditButtonLayout1")
         .Icon("smalliconslayout")
         .Width(100)
@@ -163,7 +163,7 @@
             items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
         })
         .ShowArrowIcon(false)
-        )
+        ) *@
     @* @(Html.DevExtreme().Button()
         .ID("btnMoveUp")
         
@@ -196,10 +196,34 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("save")
         .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
-
-
-
-
+    @(Html.DevExtreme().Button()
+        .ID("btnjournalBack")
+        .Text(new JS("formatMessage('Back')"))
+        .Icon("arrowleft")
+        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+        )
+    @(Html.DevExtreme().Button()
+        .ID("btnAttach")
+        .Text(new JS("formatMessage('Attach')"))
+        .Icon("link")
+        .OnClick("onAttachmentButtonClick")
+        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+    @(Html.DevExtreme().DropDownButton()
+        .ID("btnPreview2")
+        .Text(new JS("formatMessage('Print')"))
+        .Icon("fullscreen")
+        .Hint("Click to Preview")
+        .ElementAttr(new { @class = "dx-button-custom btn-preview" })
+        .Height(39)
+        .DropDownOptions(options => options.Width(220))
+        .Items(items =>
+        {
+            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm(with Employee Cost)')")).Icon("textdocument");
+            items.Add().Text(new JS("formatMessage('Edit Posted Voucher')")).Icon("textdocument");
+        })
+        .OnItemClick("handlePreviewClick1")
+        )
     @(Html.DevExtreme().Button()
         .ID("btnAddLine")
         .Text(new JS("formatMessage('Add Line')"))
@@ -214,22 +238,7 @@
         //.OnClick("function() { addRow(); }")
         .ElementAttr(new { @class = "bold-button button-submit" })
         )
-    @(Html.DevExtreme().DropDownButton()
-        .ID("btnPreview2")
-        .Text(new JS("formatMessage('Print')"))
-        .Icon("fullscreen")
-        .Hint("Click to Preview")
-        .ElementAttr(new { @class = "dx-button-custom btn-preview" })
-        .Width(180)
-        .DropDownOptions(options => options.Width(220))
-        .Items(items =>
-        {
-            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm(with Employee Cost)')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Edit Posted Voucher')")).Icon("textdocument");
-        })
-        .OnItemClick("handlePreviewClick1")
-        )
+    
     @(Html.DevExtreme().Button()
         .ID("btnDelete")
         .Text(new JS("formatMessage('Delete')"))
@@ -237,12 +246,6 @@
        // .OnClick("onDeleteButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
     
-    @(Html.DevExtreme().Button()
-        .ID("btnjournalBack")
-        .Text(new JS("formatMessage('Back')"))
-        .Icon("arrowleft")
-        .ElementAttr(new { @class = "dx-button-custom btn-back" })
-        )
     @(Html.DevExtreme().Button()
         .ID("btnVerify")
         .Text(new JS("formatMessage('Verify')"))
@@ -255,18 +258,11 @@
         .Icon("exportselected")
         .ElementAttr(new { @class = "dx-button-custom btn-approve" }))
 
-    @(Html.DevExtreme().Button()
-        .ID("btnAttach")
-        .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
-        .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+    
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-            .ID("btnColumnChooser")
+            .ID("btnColumnChooser1")
             .Icon("columnchooser")
-            .Width(40)
-
             .Text(new JS("formatMessage('Column Chooser')"))
             .OnClick("showColumnChooser")
             )
@@ -319,7 +315,7 @@
                         "btnVerify": { "Visible": false, "Enabled": false },
                         "btnApprove": { "Visible": false, "Enabled": false },
                         "btnAttach": { "Visible": true, "Enabled": true },
-                        "btnColumnChooser": { "Visible": false, "Enabled": false },
+                        "btnColumnChooser1": { "Visible": false, "Enabled": false },
                         "btnPostJournal": { "Visible": false, "Enabled": false }
                     };
 

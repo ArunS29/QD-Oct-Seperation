@@ -79,7 +79,7 @@
     <div class="dx-field">
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Currency Name:')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("txtCurrencyName")
             .Width("60%")
             )
@@ -88,7 +88,7 @@
     <div class="dx-field">
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Currency Name (In Arabic):')"))
-            .LabelMode(EditorLabelMode.Outside)
+            .LabelMode(EditorLabelMode.Floating)
             .ID("txtCurrencyNameAr")
             .Width("60%")
            
@@ -98,7 +98,7 @@
         @(Html.DevExtreme().NumberBox()
             .ID("currencyexchangerate")
             .Label(new JS("formatMessage('Currency Exchange Rate:')"))
-            .LabelMode(EditorLabelMode.Outside)       
+            .LabelMode(EditorLabelMode.Floating)       
             .Min(1)
             .Step(1)
             .ShowSpinButtons(true)
@@ -112,14 +112,14 @@
             <div> 
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Currency Code:')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("txtCurrencyCode")
                     .Width(400))
             </div>
             <div>
                 @(Html.DevExtreme().TextBox()
                     .Label(new JS("formatMessage('Currency Code (In Arabic):')"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("txtCurrencyCodeAr")
                     .Width(400))
             </div>

@@ -21,7 +21,7 @@
 .content-container {
     background-color: #909ead00;
     /* border-radius: 10px; */
-    padding: 15px;
+    /*padding: 15px;*/
 }
 
 .custom-context-menu {
@@ -240,7 +240,7 @@ body {
 }
 .dx-textcolor-heading .dx-texteditor-input {
     color: var(--title-background-color) !important;
-    font-size: 24px !important;
+    font-size: 22px !important;
     font-weight: bold;
 }
 
@@ -687,7 +687,7 @@ body.dark-mode {
     color:white;
 }
 .dx-tab.dx-tab-selected .dx-icon, .dx-tab.dx-tab-selected .dx-tab-text:hover {
-    color: black;
+    color: white;
 }
 .dx-tab.dx-tab-selected {
     background-color: var(--title-background-color) !important;
@@ -699,8 +699,8 @@ body.dark-mode {
 }
 
     .dx-tab:hover {
-        background-color: var(--background-color) !important;
-        color: black !important;
+        background-color: var(--title-background-color) !important;
+        color: white !important;
         border-color: var(--title-background-color) !important;
     }
 
@@ -962,3 +962,19 @@ dx-item-content dx-list-item-content:hover{
         font-size: 12px;
         color: #888;
     }
+
+.dx-toast-success {
+    background: linear-gradient(90deg, #32BB71, #2A9D8F) !important;
+}
+
+.dx-toast-info {
+    background: linear-gradient(90deg, #2D82B2, #329ABB) !important;
+}
+
+.dx-toast-warning {
+    background: linear-gradient(90deg, #F8B806, #FF8C04) !important;
+}
+
+.dx-toast-error {
+    background: linear-gradient(90deg, #F6743E, #D42525) !important;
+}

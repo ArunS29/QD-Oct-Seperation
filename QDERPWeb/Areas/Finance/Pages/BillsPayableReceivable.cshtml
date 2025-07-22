@@ -56,7 +56,7 @@
 					@(
 												Html.DevExtreme().TextBox()
 												.Label(new JS("formatMessage('Voucher Entry ID:')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.ID("VoucherNoId")
 												.Value(null)
 												//.OnValueChanged("onVoucherNoChanged")
@@ -69,7 +69,7 @@
 				<div class="form-group">
 					@(Html.DevExtreme().DropDownBox()
 												.Label(new JS("formatMessage('Payment Account:')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.Disabled(true)
 												.DataSource(d => d.WebApi()
 												//	.Controller("PurchaseVoucher")
@@ -82,7 +82,7 @@
 													rules.AddRequired()
 													.Message("Supplier Name is required");
 												})
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.ID("PaymentNameDropDown")
 												.ShowClearButton(true)
 												.AcceptCustomValue(true)
@@ -113,7 +113,7 @@
 				<div class="form-group">
 					@(Html.DevExtreme().NumberBox()
 												.Label(new JS("formatMessage('Amount')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.ID("AmountId")
 												.Value(null)
 												.ShowSpinButtons(true)
@@ -130,7 +130,7 @@
 					@(
 												Html.DevExtreme().SelectBox()
 												.Label(new JS("formatMessage('DrCr')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.ID("DrCrId")
 												.DataSource(new[] { "Dr", "Cr" })
 												.Value("null")
@@ -156,7 +156,7 @@
 			@(
 						Html.DevExtreme().SelectBox()
 						.Label(new JS("formatMessage('Reference')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("Reference")
 						.DataSource(new[] { "New Reference", "Against Reference" })
 						.Value("Dr")
@@ -165,7 +165,7 @@
 						)
 		</div>
 		<div class="form-group">
-			@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Reference No:')")).LabelMode(EditorLabelMode.Outside)
+			@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Reference No:')")).LabelMode(EditorLabelMode.Floating)
 						.DataSource(new[] {
 			new { AccountId = "2024-00088", AccountHead = "Account 2024-00088" },
 			new { AccountId = "2024-00089", AccountHead = "Account 2024-00089" }
@@ -174,7 +174,7 @@
 						{
 							rules.AddRequired().Message("Account Head is required");
 						})
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("ddAccountHeadBills")
 						.ShowClearButton(true)
 						.AcceptCustomValue(true)
@@ -201,7 +201,7 @@
 			@(
 						Html.DevExtreme().NumberBox()
 						.Label(new JS("formatMessage('Amount')"))
-						.LabelMode(EditorLabelMode.Outside)
+						.LabelMode(EditorLabelMode.Floating)
 						.ID("txtAmount2")
 						.Value(null)
 						.Width(150)
