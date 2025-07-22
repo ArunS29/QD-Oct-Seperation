@@ -95,13 +95,6 @@
         height: 39px !important;
     }
 
-        .dx-texteditor:hover,
-        .dx-texteditor.dx-state-hover,
-        .dx-button:hover {
-            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important;
-            border-color: #86b7fe !important;
-        }
-
         .dx-texteditor.dx-state-focused {
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important;
             border-color: #508ae1 !important;
@@ -167,16 +160,14 @@
     }
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container" style="text-align:center;">
         <div id="StockDetailsItemStore" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 
 <!-- Filter/Info Section -->
-<div class="dx-fieldset" style="padding: 20px;" id="storeFormValidationGroup">
-    <div class="store-master-container">
-
+<div class="dx-fieldset" id="storeFormValidationGroup">
         <div class="form-row">
             @(Html.DevExtreme().TextBox()
                 .ID("StoreName")
@@ -227,6 +218,7 @@
                         @(Html.DevExtreme().Button()
                             .Text(new JS("formatMessage('Add')"))
                             .Type(ButtonType.Success)
+                            .ElementAttr(new { @class = "custom-ui-button" })
                             .Icon("plus")
                             .Width("100%")
                             .OnClick("onAddStoreClick")
@@ -235,47 +227,6 @@
                 </div>
             </div>
         </div>
-
-        <br />
-
-        <!-- Data Grid -->
-   @*      <div>
-            @(Html.DevExtreme().DataGrid()
-                .ID("storeGrid")
-                .Height(300)
-                .Width("100%")
-                .ShowBorders(true)
-                .ColumnAutoWidth(true)
-                .ShowColumnLines(true)
-                .ShowRowLines(true)
-                .RowAlternationEnabled(true)
-                .DataSource(d => d.WebApi()
-                .Controller("StockInventory")
-                .LoadAction("GetAllStores")
-                .UpdateAction("UpdateStore")
-                .UpdateMethod("PUT")
-                .Key("StoreId")
-                )
-
-             
-        .Columns(columns =>
-        {
-            columns.Add().DataField("StoreId").Caption(new JS("formatMessage('Store ID')")).Width(200).Alignment(HorizontalAlignment.Center).AllowEditing(true);
-            columns.Add().DataField("StoreName").Caption(new JS("formatMessage('Store Name')")).Width(300).Alignment(HorizontalAlignment.Center).AllowEditing(false);
-            columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Center for Consumption')")).Width(250).Alignment(HorizontalAlignment.Center).AllowEditing(false);
-        })
-        .Editing(editing => editing
-        .Mode(GridEditMode.Row)
-        .AllowUpdating(true)
-        .AllowAdding(false)
-        .AllowDeleting(false)
-        .UseIcons(true)
-        )
-
-        )
-
-
-        </div> *@
         <div class="dx-field ledgerResult">
             @(Html.DevExtreme().DataGrid()
                         .ID("storeGrid")
@@ -339,7 +290,7 @@
                             });
 
                         })
-                        .Height(500)
+                        .Height("60vh")
                         .ColumnAutoWidth(true)
                         .AllowColumnReordering(true)
                         .AllowColumnResizing(true)

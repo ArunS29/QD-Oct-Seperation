@@ -411,66 +411,78 @@
 														)
 						</td>
 						<td style="display: flex; align-items: end; width:100%;" colspan="2">
-							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-														.Label(new JS("formatMessage('Client Name:')"))
-														.DataSource(d => d.WebApi()
-														.Controller("AddNewClientRequest")
-														.LoadAction("GetClientDetails")
-														.LoadMode(DataSourceLoadMode.Raw)
-														.Key("CategoryCode")
-														)
-														.LabelMode(EditorLabelMode.Floating)
-														.ID("GetProjectDropDown")
-														.Width(900)
-																	@*  .ShowClearButton(true)
-                 .AcceptCustomValue(true) *@
-														.OpenOnFieldClick(false)//
-														.ValueChangeEvent("input")
-														.HoverStateEnabled(true)
-														.ValueExpr("ClientCode")
-														.DisplayExpr("ClientName")
-														.OnInput("dropDownBoxOnInput")
-														.OnOpened("onOpened")
-														.TabIndex(1)
-														.Width("100%")
-														.OnKeyDown("onKeyDown")
-													                  //.OnValueChanged("dropDownBoxValueChanged")
-														.ContentTemplate(new TemplateName("GetProjectContentTemplate"))
-														.ValidationRules(rules =>
-														{
-															rules.AddRequired()
-															.Message(new JS("formatMessage('Client Name should be entered')"));
-														})
-														)
+							@(Html.DevExtreme().DropDownBox()
+							.ID("GetProjectDropDown")
+							.Label(new JS("formatMessage('Client Name:')"))
+							.LabelMode(EditorLabelMode.Floating)
+							.DataSource(d => d.WebApi()
+								.Controller("AddNewClientRequest")
+								.LoadAction("GetClientDetails")
+								.LoadMode(DataSourceLoadMode.Raw)
+								.Key("CategoryCode")
+							)
+							.ValueExpr("ClientCode")
+							.DisplayExpr("ClientName")
+							.AcceptCustomValue(true)
+							.ValueChangeEvent("input")
+							.HoverStateEnabled(true)
+							.OpenOnFieldClick(false)
+							.TabIndex(1)
+							.Width("100%")
+							.OnInput("dropDownBoxOnInput")
+							.OnOpened("onOpened")
+							.OnKeyDown("onKeyDown")
+							//.OnValueChanged("dropDownBoxValueChanged")
+							.ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+							.ValidationRules(rules =>
+							{
+								rules.AddRequired()
+									.Message(new JS("formatMessage('Client Name should be entered')"));
+							})
+							.Buttons(buttons => {
+								// Clear Button
+								buttons.Add()
+									.Name("clear");
 
-							@(Html.DevExtreme().Button()
-														.ID("AddDebits")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top: 20px;")
-														.OnClick("AddNewClient")
-														)
+								// Add Client Button
+								buttons.Add()
+									.Name("AddDebits")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										.OnClick("AddNewClient")
+									);
 
-							@(Html.DevExtreme().Button()
-														.ID("btnEditClient")
-														.Icon("edit")
-														.ElementAttr("class", "button-alignment-up button-group")
-														.OnClick(@<text>
-									  								function() {
-									  								var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
-									  								var selectedValue = dropDownBox.option('value');
+								// Edit Client Button
+								buttons.Add()
+									.Name("btnEditClient")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+										.OnClick(@<text>
+											function() {
+												var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+												var selectedValue = dropDownBox.option('value');
+												if (!selectedValue) {
+													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+													return;
+												}
+												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+												openModal(url, 'Client Master');
+											}
+										</text>)
+									);
+									  buttons.Add()
+									   .Name("dropDown");
+							})
+						)
+														
 
-															if (!selectedValue) {
-															DevExpress.ui.notify('Please select a client.', 'warning', 2000);
-															return;
-															}
-
-															var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
-															openModal(url, '');
-															}
-														</text>)
-														)
+						
 
 
 						</td>
@@ -495,15 +507,17 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														.Disabled(true)
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddStoreCode")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.Disabled(true))
-
+														 .Buttons(buttons =>
+															{
+																buttons.Add()
+																.Name("AddStoreCode")
+																.Location(TextEditorButtonLocation.After)
+																.Widget(w => w.Button()
+																.Type(ButtonType.Default)
+																.Icon("plus")
+																.Disabled(true)
+																.ElementAttr(new { @class = "custom-hover-button add-hover" }));
+															}))
 
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
@@ -524,15 +538,17 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														.Disabled(true)
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddDep")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.Disabled(true)
-														)
+														 .Buttons(buttons =>
+															{
+																buttons.Add()
+																.Name("AddDep")
+																.Location(TextEditorButtonLocation.After)
+																.Widget(w => w.Button()
+																.Type(ButtonType.Default)
+																.Icon("plus")
+																.Disabled(true)
+																.ElementAttr(new { @class = "custom-hover-button add-hover" }));
+															}))
 
 						</td>
 						<td colspan="2" style="width:100%; display:flex; align-items:end;">
@@ -541,14 +557,17 @@
 														.ID("txtContactName")
 														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
-														)
-							@(Html.DevExtreme().Button()
-														.ID("Addcontactname")
-														.Icon("plus")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddContactName")
-														)
+														 .Buttons(buttons =>
+							{
+								buttons.Add()
+								.Name("Addcontactname")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+								.Type(ButtonType.Default)
+								.Icon("plus")
+								.ElementAttr(new { @class = "custom-hover-button add-hover" })
+								.OnClick("AddContactName"));
+							}))
 						</td>
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().TextBox()
@@ -595,15 +614,19 @@
 														.OnKeyDown("onKeyDown")
 																				//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddModeReq")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddModeReq")
-														)
+														   .Buttons(buttons =>
+														   {
+															   buttons.Add()
+															   .Name("AddModeReq")
+															   .Location(TextEditorButtonLocation.After)
+															   .Widget(w => w.Button()
+															   .Type(ButtonType.Default)
+															   .Icon("plus")
+															   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																   .OnClick("AddModeReq"));
+															   buttons.Add()
+															   .Name("dropDown");
+														   }))
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -631,15 +654,19 @@
 														.OnKeyDown("onKeyDown")
 																				//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddTypeReq")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddTypeReq")
-														)
+														  .Buttons(buttons =>
+														   {
+															   buttons.Add()
+															   .Name("AddTypeReq")
+															   .Location(TextEditorButtonLocation.After)
+															   .Widget(w => w.Button()
+															   .Type(ButtonType.Default)
+															   .Icon("plus")
+															   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+																   .OnClick("AddTypeReq"));
+															   buttons.Add()
+															   .Name("dropDown");
+														   }))
 						</td>
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -686,7 +713,7 @@
 														.LoadAction("getVATInvoiceTypes")
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("InvoiceType"))
-																											.OpenOnFieldClick(false)
+													    .OpenOnFieldClick(false)
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
 
@@ -695,16 +722,18 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.Disabled(true)
 														.Width("100%")
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddProject")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddProject")
-														.Disabled(true)
-														)
+														 .Buttons(buttons =>
+												{
+																buttons.Add()
+																.Name("AddProject")
+																.Location(TextEditorButtonLocation.After)
+																.Widget(w => w.Button()
+																.Type(ButtonType.Default)
+																.Icon("plus")
+																.Disabled(true)
+																.ElementAttr(new { @class = "custom-hover-button add-hover" }));
+												}))
+													
 						</td>
 					</tr>
 				</table>
@@ -3731,8 +3760,8 @@
 
 								// Open modal
 								let url = `/${tenantName}/IMS/DetailsDescriptionMR`;
-							let title = "VAT Details Description";
-							openModal(url, title);
+							let title = "Details Description";
+							openModal(url, title,"60%","60%");
 						}
 					}).appendTo(container);
 				}
@@ -7528,28 +7557,28 @@ $("#btnAddNew").on("click", function (e) {
 
 			 function AddPreparedBy(){
 					const url = `/${tenantName}/IMS/Signatories`;
-				  const title = "";
+				  const title = "Signatories";
 					  openModal(url, title);
 			  }
 
 			   function AddReqUnit(){
 					const url = `/${tenantName}/IMS/ProjectSubUnits`;
-				  const title = "";
+				  const title = "Project Sub Units";
 					  openModal(url, title);
 			  }
 				 function AddModeReq(){
 					const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-				  const title = "";
+				  const title = "Quotation Mode Of Request";
 					  openModal(url, title);
 			  }
 				 function AddTypeReq(){
 					const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-				  const title = "";
+				  const title = "Quotation Type Of Request";
 					  openModal(url, title);
 			  }
 				 function AddNewClient(){
 					const url = `/${tenantName}/IMS/ClientLeadMaster`;
-				  const title = "";
+					  const title = "Client Master";
 					  openModal(url, title);
 				  }
 			
@@ -7581,7 +7610,7 @@ $("#btnAddNew").on("click", function (e) {
 				encodeURIComponent(clientCode) + '&clientName=' +
 				encodeURIComponent(clientName);
 
-			openModal(url, '');
+			openModal(url, 'Client Contact List');
 		});
 	}
 

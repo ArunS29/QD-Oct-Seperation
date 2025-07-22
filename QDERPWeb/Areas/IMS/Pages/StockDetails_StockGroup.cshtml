@@ -133,11 +133,11 @@
     }
     </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="Stockgroup" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div class="maindiv">
     <table class="form-table">
         <tr>
@@ -352,23 +352,14 @@
                     .ID("btnAdd")
                     .Icon("plus")
                     .Text(new JS("formatMessage('Add')"))
+                    .Type(ButtonType.Success)
+                     .ElementAttr(new { @class = "custom-ui-button" })
                     .Width(60)
-                    .ElementAttr("style", "margin-top:23px")
                     )
             </td>
-            
-
-        </tr>
-
-
+        </tr> 
     </table>
-
-
-    
-
 </div>
-
-
 
 <div class="dx-field ledgerResult" style="margin-bottom: 100px">
     <table style="width:100%;">

@@ -38,18 +38,7 @@
     .dx-datagrid-headers .dx-header-row {
         background-color: white; /* Set background color for column headers */
     }
-
-    /* Button customization */
-    .dx-button-add {
-        background-color: #f5f8fb !important; /* Set background color to #cfddee */
-        color: red !important; /* Set text color to red */
-        border: 1px solid #b0c4de; /* Light border around the button */
-    }
-
-        .dx-button-add .dx-icon {
-            color: green !important; /* Set icon color to green */
-        }
-
+      
     .horizontal-container {
         display: flex;
         gap: 10px; /* Adds spacing between buttons */
@@ -107,11 +96,11 @@
     }
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="BranchMaster" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 @* <div class="sathish-container-top"> *@
 <div class="content-container-top">
     <div class="form-group">
@@ -141,6 +130,13 @@
                         .ShowSpinButtons(true)
                         .Width(200) 
                         )
+
+            <div class="form-group">
+                @(Html.DevExtreme().CheckBox()
+                                .ID("chkEmployeeDocument")
+                                .Text("Employee Document")
+                                )
+            </div>
             @(Html.DevExtreme().Button()
                         .ID("btnadd")
                         .Text(new JS("formatMessage('ADD')"))
@@ -150,19 +146,11 @@
                         .OnClick("function() { adddivmaster(); }")
                         )
 
+
+           
         </div>
 
-        <br />
-    <div class="col-md-4">
-        <div class="form-group">
-            @(Html.DevExtreme().CheckBox()
-                .ID("chkEmployeeDocument")
-                .Text("Employee Document")
-                )
-        </div>
     </div>
-    </div>
-    <br />
     <div id="gridContainer"></div>
 
    
@@ -413,8 +401,8 @@
                 rowRenderingMode: "virtual", // Optimizes row rendering
                 useNative: true // Use native scrolling for better performance
             },
-            height: 300, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
-            width: "100%" // Make grid responsive and take full width of the container
+            height: "65vh", 
+            width: "100%" 
         });
     });
 
