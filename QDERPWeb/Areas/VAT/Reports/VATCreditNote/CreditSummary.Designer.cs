@@ -320,7 +320,6 @@
             this.xrTableCell20 = new DevExpress.XtraReports.UI.XRTableCell();
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
-            this.pageInfo1 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel26 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
             this.xrLabel17 = new DevExpress.XtraReports.UI.XRLabel();
@@ -411,7 +410,7 @@
             // 
             // tableCell21
             // 
-            this.tableCell21.BorderColor = System.Drawing.Color.Black;
+            this.tableCell21.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell21.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -432,7 +431,7 @@
             // 
             // tableCell22
             // 
-            this.tableCell22.BorderColor = System.Drawing.Color.Black;
+            this.tableCell22.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell22.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -449,7 +448,7 @@
             // 
             // tableCell23
             // 
-            this.tableCell23.BorderColor = System.Drawing.Color.Black;
+            this.tableCell23.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell23.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -467,7 +466,7 @@
             // 
             // tableCell24
             // 
-            this.tableCell24.BorderColor = System.Drawing.Color.Black;
+            this.tableCell24.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell24.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -486,7 +485,7 @@
             // 
             // tableCell25
             // 
-            this.tableCell25.BorderColor = System.Drawing.Color.Black;
+            this.tableCell25.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell25.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -503,7 +502,7 @@
             // 
             // tableCell26
             // 
-            this.tableCell26.BorderColor = System.Drawing.Color.Black;
+            this.tableCell26.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell26.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -520,7 +519,7 @@
             // 
             // tableCell27
             // 
-            this.tableCell27.BorderColor = System.Drawing.Color.Black;
+            this.tableCell27.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell27.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -541,7 +540,7 @@
             // tableCell28
             // 
             this.tableCell28.BackColor = System.Drawing.Color.Silver;
-            this.tableCell28.BorderColor = System.Drawing.Color.Black;
+            this.tableCell28.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell28.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -565,7 +564,7 @@
             // tableCell29
             // 
             this.tableCell29.BackColor = System.Drawing.Color.Silver;
-            this.tableCell29.BorderColor = System.Drawing.Color.Black;
+            this.tableCell29.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell29.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -587,7 +586,7 @@
             // tableCell31
             // 
             this.tableCell31.BackColor = System.Drawing.Color.Silver;
-            this.tableCell31.BorderColor = System.Drawing.Color.Black;
+            this.tableCell31.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell31.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -609,7 +608,7 @@
             // xrTableCell17
             // 
             this.xrTableCell17.BackColor = System.Drawing.Color.Silver;
-            this.xrTableCell17.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell17.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell17.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -631,7 +630,7 @@
             // 
             // tableCell32
             // 
-            this.tableCell32.BorderColor = System.Drawing.Color.Black;
+            this.tableCell32.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell32.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -651,7 +650,7 @@
             // 
             // tableCell34
             // 
-            this.tableCell34.BorderColor = System.Drawing.Color.Black;
+            this.tableCell34.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell34.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -671,7 +670,7 @@
             // 
             // tableCell35
             // 
-            this.tableCell35.BorderColor = System.Drawing.Color.Black;
+            this.tableCell35.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell35.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -691,7 +690,7 @@
             // 
             // xrTableCell18
             // 
-            this.xrTableCell18.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell18.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell18.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -712,7 +711,7 @@
             // 
             // xrTableCell19
             // 
-            this.xrTableCell19.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell19.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell19.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -733,7 +732,7 @@
             // 
             // xrTableCell20
             // 
-            this.xrTableCell20.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell20.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell20.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -762,7 +761,6 @@
             // BottomMargin
             // 
             this.BottomMargin.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.pageInfo1,
             this.xrLabel26,
             this.pageInfo2,
             this.xrLabel17});
@@ -771,25 +769,22 @@
             this.BottomMargin.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
             this.BottomMargin.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopLeft;
             // 
-            // pageInfo1
-            // 
-            this.pageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(1207.84F, 9.999949F);
-            this.pageInfo1.Name = "pageInfo1";
-            this.pageInfo1.PageInfo = DevExpress.XtraPrinting.PageInfo.DateTime;
-            this.pageInfo1.SizeF = new System.Drawing.SizeF(143.3333F, 15.49995F);
-            // 
             // xrLabel26
             // 
             this.xrLabel26.BorderColor = System.Drawing.Color.Transparent;
+            this.xrLabel26.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'Reported By: \' + [Parameters.UserName] + \' on \' + FormatString(\'{0:dd MMMM yyyy " +
+                    "hh:mm tt}\', Now())\n")});
             this.xrLabel26.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel26.ForeColor = System.Drawing.Color.Black;
-            this.xrLabel26.LocationFloat = new DevExpress.Utils.PointFloat(1036.062F, 10F);
+            this.xrLabel26.ForeColor = System.Drawing.SystemColors.WindowFrame;
+            this.xrLabel26.LocationFloat = new DevExpress.Utils.PointFloat(1168.313F, 10F);
             this.xrLabel26.Name = "xrLabel26";
-            this.xrLabel26.SizeF = new System.Drawing.SizeF(250.3535F, 15.49992F);
+            this.xrLabel26.SizeF = new System.Drawing.SizeF(273.6868F, 22.99997F);
             this.xrLabel26.StylePriority.UseBorderColor = false;
             this.xrLabel26.StylePriority.UseFont = false;
             this.xrLabel26.StylePriority.UseForeColor = false;
-            this.xrLabel26.Text = "Reported By:[Parameters.UserName]";
+            this.xrLabel26.StylePriority.UseTextAlignment = false;
+            this.xrLabel26.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             // 
             // pageInfo2
             // 
@@ -805,15 +800,15 @@
             // xrLabel17
             // 
             this.xrLabel17.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel17.ForeColor = System.Drawing.Color.DimGray;
-            this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(80.7929F, 10F);
+            this.xrLabel17.ForeColor = System.Drawing.SystemColors.WindowFrame;
+            this.xrLabel17.LocationFloat = new DevExpress.Utils.PointFloat(13.32097F, 10F);
             this.xrLabel17.Multiline = true;
             this.xrLabel17.Name = "xrLabel17";
             this.xrLabel17.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel17.SizeF = new System.Drawing.SizeF(175F, 23F);
+            this.xrLabel17.SizeF = new System.Drawing.SizeF(259.9191F, 23F);
             this.xrLabel17.StylePriority.UseFont = false;
             this.xrLabel17.StylePriority.UseForeColor = false;
-            this.xrLabel17.Text = "QuickDice ERP Solution";
+            this.xrLabel17.Text = "[Parameters.CompanyName]";
             // 
             // sqlDataSource1
             // 
@@ -1344,11 +1339,13 @@
             // 
             // table1
             // 
+            this.table1.BorderColor = System.Drawing.Color.DimGray;
             this.table1.LocationFloat = new DevExpress.Utils.PointFloat(0F, 0F);
             this.table1.Name = "table1";
             this.table1.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.tableRow1});
             this.table1.SizeF = new System.Drawing.SizeF(1450F, 65.5F);
+            this.table1.StylePriority.UseBorderColor = false;
             // 
             // tableRow1
             // 
@@ -1375,8 +1372,8 @@
             // 
             // tableCell1
             // 
-            this.tableCell1.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.tableCell1.BorderColor = System.Drawing.Color.Black;
+            this.tableCell1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.tableCell1.BorderColor = System.Drawing.Color.DimGray;
             this.tableCell1.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1397,8 +1394,8 @@
             // 
             // xrTableCell1
             // 
-            this.xrTableCell1.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell1.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell1.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell1.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1420,8 +1417,8 @@
             // 
             // xrTableCell2
             // 
-            this.xrTableCell2.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell2.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell2.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell2.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1443,8 +1440,8 @@
             // 
             // xrTableCell3
             // 
-            this.xrTableCell3.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell3.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell3.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell3.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1466,8 +1463,8 @@
             // 
             // xrTableCell4
             // 
-            this.xrTableCell4.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell4.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell4.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell4.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1489,8 +1486,8 @@
             // 
             // xrTableCell5
             // 
-            this.xrTableCell5.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell5.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell5.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell5.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1512,8 +1509,8 @@
             // 
             // xrTableCell6
             // 
-            this.xrTableCell6.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell6.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell6.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell6.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1535,8 +1532,8 @@
             // 
             // xrTableCell7
             // 
-            this.xrTableCell7.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell7.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell7.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell7.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell7.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1558,8 +1555,8 @@
             // 
             // xrTableCell8
             // 
-            this.xrTableCell8.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell8.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell8.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell8.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell8.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1581,8 +1578,8 @@
             // 
             // xrTableCell10
             // 
-            this.xrTableCell10.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell10.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell10.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell10.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell10.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1604,8 +1601,8 @@
             // 
             // xrTableCell11
             // 
-            this.xrTableCell11.BackColor = System.Drawing.Color.LightSkyBlue;
-            this.xrTableCell11.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell11.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrTableCell11.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell11.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1628,7 +1625,7 @@
             // xrTableCell15
             // 
             this.xrTableCell15.BackColor = System.Drawing.Color.Pink;
-            this.xrTableCell15.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell15.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell15.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1651,7 +1648,7 @@
             // xrTableCell16
             // 
             this.xrTableCell16.BackColor = System.Drawing.Color.Pink;
-            this.xrTableCell16.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell16.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell16.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1674,7 +1671,7 @@
             // xrTableCell12
             // 
             this.xrTableCell12.BackColor = System.Drawing.Color.Pink;
-            this.xrTableCell12.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell12.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell12.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1697,7 +1694,7 @@
             // xrTableCell13
             // 
             this.xrTableCell13.BackColor = System.Drawing.Color.Pink;
-            this.xrTableCell13.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell13.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell13.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1720,7 +1717,7 @@
             // xrTableCell14
             // 
             this.xrTableCell14.BackColor = System.Drawing.Color.Pink;
-            this.xrTableCell14.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell14.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell14.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1743,7 +1740,7 @@
             // xrTableCell9
             // 
             this.xrTableCell9.BackColor = System.Drawing.Color.Pink;
-            this.xrTableCell9.BorderColor = System.Drawing.Color.Black;
+            this.xrTableCell9.BorderColor = System.Drawing.Color.DimGray;
             this.xrTableCell9.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1863,11 +1860,13 @@
             this.xrLabel3,
             this.xrLabel2,
             this.xrLabel1});
+            this.GroupFooter1.HeightF = 48.33335F;
             this.GroupFooter1.Name = "GroupFooter1";
             // 
             // xrLabel16
             // 
             this.xrLabel16.BackColor = System.Drawing.Color.Pink;
+            this.xrLabel16.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel16.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1879,6 +1878,7 @@
             this.xrLabel16.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel16.SizeF = new System.Drawing.SizeF(98.82629F, 48.33335F);
             this.xrLabel16.StylePriority.UseBackColor = false;
+            this.xrLabel16.StylePriority.UseBorderColor = false;
             this.xrLabel16.StylePriority.UseBorders = false;
             this.xrLabel16.StylePriority.UseTextAlignment = false;
             xrSummary2.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -1889,6 +1889,7 @@
             // xrLabel15
             // 
             this.xrLabel15.BackColor = System.Drawing.Color.Pink;
+            this.xrLabel15.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel15.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1900,6 +1901,7 @@
             this.xrLabel15.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel15.SizeF = new System.Drawing.SizeF(84.68372F, 48.33335F);
             this.xrLabel15.StylePriority.UseBackColor = false;
+            this.xrLabel15.StylePriority.UseBorderColor = false;
             this.xrLabel15.StylePriority.UseBorders = false;
             this.xrLabel15.StylePriority.UseTextAlignment = false;
             xrSummary3.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -1910,7 +1912,7 @@
             // xrLabel14
             // 
             this.xrLabel14.BackColor = System.Drawing.Color.Pink;
-            this.xrLabel14.BorderColor = System.Drawing.Color.Black;
+            this.xrLabel14.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel14.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1933,7 +1935,7 @@
             // xrLabel9
             // 
             this.xrLabel9.BackColor = System.Drawing.Color.Pink;
-            this.xrLabel9.BorderColor = System.Drawing.Color.Black;
+            this.xrLabel9.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel9.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1956,7 +1958,7 @@
             // xrLabel8
             // 
             this.xrLabel8.BackColor = System.Drawing.Color.Pink;
-            this.xrLabel8.BorderColor = System.Drawing.Color.Black;
+            this.xrLabel8.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel8.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1979,6 +1981,7 @@
             // xrLabel7
             // 
             this.xrLabel7.BackColor = System.Drawing.Color.Pink;
+            this.xrLabel7.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel7.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -1990,6 +1993,7 @@
             this.xrLabel7.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel7.SizeF = new System.Drawing.SizeF(70.82196F, 48.33335F);
             this.xrLabel7.StylePriority.UseBackColor = false;
+            this.xrLabel7.StylePriority.UseBorderColor = false;
             this.xrLabel7.StylePriority.UseBorders = false;
             this.xrLabel7.StylePriority.UseTextAlignment = false;
             xrSummary7.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -1999,7 +2003,8 @@
             // 
             // xrLabel6
             // 
-            this.xrLabel6.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel6.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrLabel6.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel6.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel6.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
@@ -2010,6 +2015,7 @@
             this.xrLabel6.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel6.SizeF = new System.Drawing.SizeF(84.15509F, 48.33335F);
             this.xrLabel6.StylePriority.UseBackColor = false;
+            this.xrLabel6.StylePriority.UseBorderColor = false;
             this.xrLabel6.StylePriority.UseBorders = false;
             this.xrLabel6.StylePriority.UseTextAlignment = false;
             xrSummary8.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -2019,7 +2025,8 @@
             // 
             // xrLabel5
             // 
-            this.xrLabel5.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel5.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrLabel5.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel5.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -2031,6 +2038,7 @@
             this.xrLabel5.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel5.SizeF = new System.Drawing.SizeF(84.77704F, 48.33335F);
             this.xrLabel5.StylePriority.UseBackColor = false;
+            this.xrLabel5.StylePriority.UseBorderColor = false;
             this.xrLabel5.StylePriority.UseBorders = false;
             this.xrLabel5.StylePriority.UseTextAlignment = false;
             xrSummary9.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -2040,7 +2048,8 @@
             // 
             // xrLabel4
             // 
-            this.xrLabel4.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrLabel4.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel4.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -2052,6 +2061,7 @@
             this.xrLabel4.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel4.SizeF = new System.Drawing.SizeF(79.52661F, 48.33335F);
             this.xrLabel4.StylePriority.UseBackColor = false;
+            this.xrLabel4.StylePriority.UseBorderColor = false;
             this.xrLabel4.StylePriority.UseBorders = false;
             this.xrLabel4.StylePriority.UseTextAlignment = false;
             xrSummary10.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -2061,7 +2071,8 @@
             // 
             // xrLabel3
             // 
-            this.xrLabel3.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrLabel3.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel3.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -2073,6 +2084,7 @@
             this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel3.SizeF = new System.Drawing.SizeF(92.10352F, 48.33335F);
             this.xrLabel3.StylePriority.UseBackColor = false;
+            this.xrLabel3.StylePriority.UseBorderColor = false;
             this.xrLabel3.StylePriority.UseBorders = false;
             this.xrLabel3.StylePriority.UseTextAlignment = false;
             xrSummary11.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -2082,7 +2094,8 @@
             // 
             // xrLabel2
             // 
-            this.xrLabel2.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrLabel2.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel2.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -2094,6 +2107,7 @@
             this.xrLabel2.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel2.SizeF = new System.Drawing.SizeF(92.4502F, 48.33335F);
             this.xrLabel2.StylePriority.UseBackColor = false;
+            this.xrLabel2.StylePriority.UseBorderColor = false;
             this.xrLabel2.StylePriority.UseBorders = false;
             this.xrLabel2.StylePriority.UseTextAlignment = false;
             xrSummary12.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
@@ -2103,7 +2117,8 @@
             // 
             // xrLabel1
             // 
-            this.xrLabel1.BackColor = System.Drawing.Color.LightSkyBlue;
+            this.xrLabel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(185)))), ((int)(((byte)(209)))), ((int)(((byte)(234)))));
+            this.xrLabel1.BorderColor = System.Drawing.Color.DimGray;
             this.xrLabel1.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
@@ -2114,6 +2129,7 @@
             this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel1.SizeF = new System.Drawing.SizeF(494.0746F, 48.33335F);
             this.xrLabel1.StylePriority.UseBackColor = false;
+            this.xrLabel1.StylePriority.UseBorderColor = false;
             this.xrLabel1.StylePriority.UseBorders = false;
             this.xrLabel1.StylePriority.UseFont = false;
             this.xrLabel1.StylePriority.UseTextAlignment = false;
@@ -2212,6 +2228,5 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel17;
         private DevExpress.XtraReports.UI.XRPageInfo pageInfo2;
         private DevExpress.XtraReports.UI.XRLabel xrLabel26;
-        private DevExpress.XtraReports.UI.XRPageInfo pageInfo1;
     }
 }
