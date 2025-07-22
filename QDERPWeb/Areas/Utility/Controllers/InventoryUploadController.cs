@@ -77,7 +77,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
             public string ItemSize { get; set; }
             public string ItemPartNo { get; set; }
             public string ItemBrand { get; set; }
-            public string ItemColor { get; set; }
+            public string ItemColor { get; set; }   
             public string ItemDimension { get; set; }
             public string ItemThickness { get; set; }
         }

@@ -301,15 +301,8 @@ function uploadItemsToMaterialRequests() {
         return;
     }
 
-    console.log("🔍 Selected GSGroupId:", selectedGSGroupId);
-    console.log("📋 Raw Items from Grid:", items);
-
-    $.ajax({
-        url: `/api/InventoryUpload/GetGSGroupCode?gsgroupId=${selectedGSGroupId}`,
-        method: "GET",
-        success: function (GSGroupCode) {
-            console.log("✅ Received GSGroupCode:", GSGroupCode);
-
+    getGSGroupCode(selectedGSGroupId)
+        .then(GSGroupCode => {
             if (!GSGroupCode) {
                 DevExpress.ui.notify("GSGroupCode not found.", "error", 3000);
                 return;
@@ -334,40 +327,64 @@ function uploadItemsToMaterialRequests() {
             }));
 
             const requestBody = {
-                GSGroupCode: GSGroupCode,
+                GSGroupCode: selectedGSGroupId,
                 RequestNo: requestNo,
                 Items: cleanedItems
             };
 
-            console.log("📦 Final Payload to UploadStock:", requestBody);
+            uploadStockData(requestBody, grid, requestNo);
+        })
+        .catch(error => {
+            console.error("❌ GetGSGroupCode error:", error);
+            DevExpress.ui.notify("Failed to get GSGroupCode: " + error, "error", 3000);
+        });
+}
 
-            $.ajax({
-                url: "/api/InventoryUpload/UploadStock",
-                method: "POST",
-                contentType: "application/json",
-                data: JSON.stringify(requestBody),
-                success: function (result) {
-                    if (result.success) {
-                        DevExpress.ui.notify("Stock uploaded and GSCode generated successfully ✅", "success", 3000);
-                        grid.refresh();
+// 🔹 Reusable Function to get GSGroupCode
+function getGSGroupCode(gsgroupId) {
+    return new Promise((resolve, reject) => {
+        $.ajax({
+            url: `/api/InventoryUpload/GetGSGroupCode?gsgroupId=${gsgroupId}`,
+            method: "GET",
+            success: resolve,
+            error: function (xhr) {
+                const msg = xhr.responseText || xhr.statusText || "Unknown error";
+                reject(msg);
+            }
+        });
+    });
+}
 
-                        const tenantName = window.location.pathname.split("/")[1];
-                        setTimeout(() => {
-                            window.location.href = `/${tenantName}/IMS/AddNewClientRequest?requestNo=${encodeURIComponent(requestNo)}`;
-                        }, 1000);
-                    } else {
-                        DevExpress.ui.notify(result.message || "Upload failed", "error", 3000);
-                    }
-                },
-                error: function (xhr) {
-                    console.error("❌ UploadStock error:", xhr);
-                    DevExpress.ui.notify("Upload failed: " + (xhr.responseText || "Unknown error"), "error", 3000);
-                }
-            });
+// 🔹 Reusable Function to upload stock
+function uploadStockData(requestBody, grid, requestNo) {
+    $.ajax({
+        url: "/api/InventoryUpload/UploadStock",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestBody),
+        success: function (result) {
+            if (result.success) {
+                DevExpress.ui.notify("Stock uploaded and GSCode generated successfully ✅", "success", 3000);
+                grid.refresh();
+
+                const tenantName = window.location.pathname.split("/")[1];
+                setTimeout(() => {
+                    window.location.href = `/${tenantName}/IMS/AddNewClientRequest?requestNo=${encodeURIComponent(requestNo)}`;
+                }, 1000);
+            } else {
+                DevExpress.ui.notify(result.message || "Upload failed", "error", 3000);
+            }
         },
         error: function (xhr) {
-            console.error("❌ GetGSGroupCode error:", xhr);
-            DevExpress.ui.notify("Failed to get GSGroupCode: " + (xhr.responseText || "Unknown error"), "error", 3000);
+            let errorMessage = "Unknown error";
+            try {
+                const response = JSON.parse(xhr.responseText);
+                errorMessage = response.message || errorMessage;
+            } catch {
+                errorMessage = xhr.statusText || errorMessage;
+            }
+            console.error("❌ UploadStock error:", xhr);
+            DevExpress.ui.notify("Upload failed: " + errorMessage, "error", 3000);
         }
     });
 }
