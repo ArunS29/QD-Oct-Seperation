@@ -1819,7 +1819,7 @@
                                 $("#IsSubmitted").dxCheckBox("instance").option("value", true);
 
                                 disableclaim();
-
+                                syncWorkflowFromFields();
                             });
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -2159,17 +2159,18 @@
     }
             let isVoucherSaved = false;
 
-       function getWorkflowStatusFromFields() {
-        const submitted = $("#IsSubmitted").dxCheckBox("option", "value") === true;
-        const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
-        const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+          function getWorkflowStatusFromFields() {
+        const submitted = $("#IsSubmitted").dxCheckBox("instance").option("value") === true;
+        const verified = $("#IsVerified").dxCheckBox("instance").option("value") === true;
+        const approved = $("#IsApproved").dxCheckBox("instance").option("value") === true;
 
-        if (approved) return 3; // Final state
+        if (approved) return 3;
         if (verified) return 2;
-        if (isVoucherSaved) return 1;
+        if (submitted) return 1;
 
         return 0;
     }
+
 
 
      function updateWorkflowVisual(status) {
@@ -2218,10 +2219,11 @@
             updateWorkflowVisual(status);
         }
 
-        function attachWorkflowWatchers() {
-            $("#VerifiedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
-            $("#ApprovedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
-        }
+    function attachWorkflowWatchers() {
+        $("#IsSubmitted").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#IsVerified").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#IsApproved").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+    }
 
         $(function () {
             setTimeout(() => {

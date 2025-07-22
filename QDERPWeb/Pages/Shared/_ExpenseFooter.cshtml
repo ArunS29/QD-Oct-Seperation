@@ -792,10 +792,12 @@
 
 
                     saveverifydetails();
+                    syncWorkflowFromFields();
                  // Adjust time if needed
             } else {
                 // If exists, go straight to submit
                     proceedWithVerify();
+                    syncWorkflowFromFields();
             }
         },
         error: function () {
@@ -873,7 +875,7 @@
                             $("#IsVerified").dxCheckBox("instance").option("value", true);
 
                             disableclaim();
-
+                            syncWorkflowFromFields();
                         });
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -908,6 +910,7 @@
             data: JSON.stringify({ ClaimRefNo: voucherNo }),
         contentType: "application/json; charset=utf-8",
             success: function (response) {
+                syncWorkflowFromFields();
                 if (!response.exists) {
 
 
@@ -917,6 +920,7 @@
                      // Adjust time if needed
                 } else {
                     // If exists, go straight to submit
+                    syncWorkflowFromFields();
                         saveapprovedetails();
                 }
             },
