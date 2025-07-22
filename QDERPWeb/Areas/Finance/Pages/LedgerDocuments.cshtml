@@ -551,14 +551,15 @@
                 {
                     dataField: "DocumentType",
                     caption: "Document Type",
-
+                    lookup: {
+                        dataSource: documentTypeStore,
+                        valueExpr: "DocumentTypeId",
+                        displayExpr: "DocumentType"
+                    },
                     editorType: "dxSelectBox",
                     editCellTemplate: function (cellElement, cellInfo) {
-                        const $selectBox = $("<div>").appendTo(cellElement).dxSelectBox({
-                            dataSource: DevExpress.data.AspNet.createStore({
-                                key: "DocumentTypeId",  // or "DocumentTypeId" based on your API
-                                loadUrl: "/api/LedgerDocumentsF/GetDocumentTypes"
-                            }),
+                        $("<div>").appendTo(cellElement).dxSelectBox({
+                            dataSource: documentTypeStore,
                             value: cellInfo.value,
                             valueExpr: "DocumentTypeId",
                             displayExpr: "DocumentType",
@@ -584,6 +585,8 @@
                         });
                     }
                 },
+
+
 
 
                 {
@@ -758,12 +761,22 @@
         }
     }
 
-    
-    function onAddDocType(){
+    const documentTypeStore = DevExpress.data.AspNet.createStore({
+        key: "DocumentTypeId",
+        loadUrl: "/api/LedgerDocumentsF/GetDocumentTypes"
+    });
+
+
+    function onAddDocType() {
         const url = `/${tenantName}/IMS/DocumentTypes`;
-        const title = "";
-        openModal(url, title);
+        const title = "Add Document Type";
+
+        openModal(url, title).then(() => {
+            // reload the store after modal is closed
+            documentTypeStore.load();
+        });
     }
+
 
     function formatDateForServer(dateValue) {
         if (!dateValue) return "";
