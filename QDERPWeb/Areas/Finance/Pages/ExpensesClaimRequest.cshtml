@@ -927,7 +927,7 @@
         });
 
 
-        let paymentaccheadId;
+        let paymentaccheadId,accheadId;
         function dropDownBoxOnInput(e) {
             const ddbInstance = e.component;
             if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -1427,8 +1427,8 @@
                             $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
                             $("#IsApproved").dxCheckBox("instance").option("value", entry.IsApproved || false);
                             $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
-                            $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPosted || false);
-                            $("#paidBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
+                            $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPaid || false);
+                            $("#paidBytext").dxTextBox("instance").option("value", entry.PaidBy || "");
                             var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
                             var formattedsubmittedDate = submittedDate
                                 ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
@@ -1447,13 +1447,13 @@
                                 : "";
 
                             $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
-                            var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
+                            var postedDate = entry.PaidOn ? new Date(entry.PaidOn) : null;
                             var formattedPostedDate = postedDate
-                                ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                                ? postedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
                                 : "";
 
                             $("#paidOntext").dxTextBox("instance").option("value", formattedPostedDate);
-                            // $("#GeneratedVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
+                            $("#GenerateVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
                             // Disable DevExtreme buttons based on submission and verification date
                             const btnSubmit = $("#btnSubmit").dxButton("instance");
                             const btnVerify = $("#btnExpenseVerify").dxButton("instance");
@@ -1846,7 +1846,7 @@
         const data = grid.getDataSource().items();
         const claimRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
             const accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
-            const selectedAccountHead = accountHeadInstance.option("value");
+            const selectedAccountHead = accheadId;
 
 
         const hasValidAmounts = data.some(row => {

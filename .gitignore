@@ -39,3 +39,13 @@ logs/
 *.log
 *.mdmp
 
+/logs
+/Publish_Dev.ps1
+*.log
+*.mdmp
+/.cr/personal/FavoritesList
+/QDERPWeb/wwwroot/css/reporting.designer.part.bundle.css
+/QDERPWeb/wwwroot/css/reporting.viewer.part.bundle.css
+/QDERPWeb/wwwroot/js/reporting.designer.part.bundle.js
+/QDERPWeb/wwwroot/js/reporting.viewer.part.bundle.js
+/QDERPWeb/wwwroot/js/vendor.js

@@ -460,7 +460,7 @@
             .Key("UserId")
             )
             
-            .LabelMode(EditorLabelMode.Floating)
+            .LabelMode(EditorLabelMode.Outside)
             .ID("Claimer")
             .ShowClearButton(true)
             .AcceptCustomValue(true)
@@ -486,7 +486,7 @@
             .ID("startDate")
             .InputAttr("aria-label", "Date")
             .Label(new JS("formatMessage('Start Date')"))
-            .LabelMode(EditorLabelMode.Floating)
+            .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -496,7 +496,7 @@
             .ID("endDate")
             .InputAttr("aria-label", "Date")
                 .Label(new JS("formatMessage('End Date')"))
-            .LabelMode(EditorLabelMode.Floating)
+            .LabelMode(EditorLabelMode.Outside)
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(DateTime.Now)
@@ -508,7 +508,7 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Contained)
             .Width(180)
-            .ElementAttr("class", "button-alignment-left")
+            .ElementAttr("class", "button-alignment-down button-alignment-left")
             .OnClick("getAllSubmissionJournal")
             )
 
@@ -517,31 +517,25 @@
             .Text(new JS("formatMessage('Show Records')"))
             .Icon("smalliconslayout")
             .Width(180)
+            .ElementAttr("class", "button-alignment-down")
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                    items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-                    items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-                    items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-                    items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-                    items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-                    items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-                    items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-                    items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-                    items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-                    items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+                items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event")
+
+
+                .OnClick("function() { ddBtnShowRecords_click('range'); }");
+                items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
+                items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+                items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+                items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+                items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+                items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+                items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+                items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+                items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+
             })
-                .ItemTemplate(@<text>
-            <div class="custom-dropdown-item">
-                <div style="background-color:<%- color %>;height:8%;" class="side-bar"></div>
-                <div class="item-content">
-                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                    <div>
-                        <div class="item-title"><%- text %></div>
-                    </div>
-                </div>
-            </div>
-        </text>)
             )
     </div>
     <div class="dx-field ledgerResult" style="height:70%;">
@@ -622,7 +616,7 @@ columns.Add()
                 .LoadAction("GetCostAllocationUnits")
                 .LoadMode(DataSourceLoadMode.Raw)
                 .Key("CostAllocationUnitId"))
-                .LabelMode(EditorLabelMode.Floating)
+                .LabelMode(EditorLabelMode.Outside)
                 .ID("Costgriddropdown_{rowIndex}")
                 .ShowClearButton(false)
                 .AcceptCustomValue(true)
@@ -729,12 +723,12 @@ columns.Add()
                     columns.AddFor(m => m.IsPaid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Center)
                 .CellTemplate(@<text>
             <div class="dx-icon">
-                <%= data.IsPosted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                <%= data.IsPaid ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>).Visible(true).AllowEditing(false);
 
                 })
-            .Height("60vh")
+            .Height("100%")
             .Grouping(grouping => grouping.AutoExpandAll(true)) // Optional
             .GroupPanel(groupPanel => groupPanel.Visible(false))
             .Scrolling(scrolling => scrolling
@@ -1094,42 +1088,40 @@ columns.Add()
                 }
             });
         }
-        $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
-            e.preventDefault();
-            e.stopPropagation();
-            debugger;
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const rowElements = dataGrid.getScrollable().content().find(".dx-data-row");
-            const clickedRowElement = $(this).get(0);
 
-            let rowIndex = -1;
 
-            rowElements.each(function (index) {
-                if (this === clickedRowElement) {
-                    rowIndex = index;
-                    return false; // break
+            $("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+
+                const gridElement = $("#dataGrid");
+                const gridInstance = DevExpress.ui.dxDataGrid.getInstance(gridElement[0]); // ✅ THIS IS THE FIX
+
+                const rowElement = e.currentTarget;
+                const rowIndex = gridInstance.getRowIndexByElement($(rowElement)); // ✅ No longer throws error
+
+                const visibleRows = gridInstance.getVisibleRows();
+
+                if (rowIndex === -1 || visibleRows[rowIndex]?.rowType !== "data") {
+                    console.warn("Clicked row is a group row or invalid.");
+                    return;
                 }
+
+                contextMenuRowData = visibleRows[rowIndex].data;
+
+                console.log("Right-clicked row data:", contextMenuRowData);
+
+                // Optional: visually select the row
+                gridInstance.selectRowsByIndexes([rowIndex]);
+
+                // Show your context menu
+                $("#contextMenuContent").empty(); // Optional
+                $("#contextMenu").css({
+                        top: e.pageY + "px",
+                        left: e.pageX + "px"
+                }).show();
             });
 
-            const visibleRows = dataGrid.getVisibleRows();
-            const rowData = visibleRows[rowIndex]?.data;
-
-            contextMenuRowData = rowData;
-
-            if (!contextMenuRowData) {
-                console.warn("Clicked row is a group row or invalid.");
-                return;
-            }
-
-            console.log("Row Data:", contextMenuRowData);
-
-            // Show context menu
-            $("#contextMenuContent").empty();
-            $("#contextMenu").css({
-                top: e.pageY + "px",
-                left: e.pageX + "px"
-            }).show();
-        });
 
 
         $("#dataGrid").dxDataGrid({
@@ -1419,7 +1411,7 @@ columns.Add()
             } else if (claimRefNo.startsWith('PCQ')) {
             targetUrl = `/${tenantName}/finance/PettyCashRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
             } else if (claimRefNo.startsWith('SRQ')) {
-            targetUrl = `/${tenantName}/finance/SupplierPaymentRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
+            targetUrl = `/${tenantName}/finance/CreatePaymentRequest?claimRefNo=${encodeURIComponent(claimRefNo)}`;
             }
 
         if (targetUrl) {
@@ -1430,6 +1422,17 @@ columns.Add()
     function createpayment() {
         window.location.href = `/${tenantName}/Finance/CreatePaymentRequest`;
     }
-    
+    function togglesupplierGroupPanel() {
+        var dataGrid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var isVisible = dataGrid.option("groupPanel.visible");
+        dataGrid.option("groupPanel.visible", !isVisible);
+    }
+    function togglesupplierFilterRow() {
+
+        var grid = $("#SupplierpaymentdataGrid").dxDataGrid("instance");
+        var currentVisibility = grid.option("filterRow.visible");
+
+        grid.option("filterRow.visible", !currentVisibility);
+    }
    
 </script>

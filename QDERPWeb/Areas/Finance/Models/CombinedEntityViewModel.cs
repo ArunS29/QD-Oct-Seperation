@@ -1154,6 +1154,12 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public decimal Amount { get; set; }
     }
 
+    public class ClaimMasterDto
+    {
+        public string ClaimRefNo { get; set; }
+        public string ClaimRemarks { get; set; }
+        public string SupplierPaymentLedgerNo { get; set; }
+    }
 
 }
 

@@ -106,7 +106,7 @@
     <div class="form-group col-md-7 col-sm-12">
         @(Html.DevExtreme().DropDownBox()
             .Label(new JS("formatMessage('Payment Account')"))
-            .DataSource(d => d.WebApi().Controller("VoucherMaster").LoadAction("GetCPPaymentAccounts").LoadMode(DataSourceLoadMode.Raw).Key("AccountHead"))
+            .DataSource(d => d.WebApi().Controller("VoucherMaster").LoadAction("GetBPPaymentAccounts").LoadMode(DataSourceLoadMode.Raw).Key("AccountHead"))
             .LabelMode(EditorLabelMode.Floating)
             .ID("accountDropDownBox")
             .ShowClearButton(true)
@@ -4160,7 +4160,7 @@ function onAccountHeadRowPrepared(e) {
                 var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
 
                 // Set the dropdown value
-                dropDown.option("value", data.AccountId);
+                    dropDown.option("value", data.AccountHead);
 
                 // Get the DataGrid instance inside the dropdown
                 var dataGrid = $("#accountpaymentamount-datagrid").dxDataGrid("instance");

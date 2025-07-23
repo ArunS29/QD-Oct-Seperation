@@ -461,8 +461,8 @@
                                         .Label("Type of Claim:")
                                         .ID("ClaimType")
                                         .LabelMode(EditorLabelMode.Floating)
-                                        .DataSource(new[] { "Expenses Claim Request" })
-                                        .Value("Expenses Claim Request")
+                                        .DataSource(new[] { "Petty Cash Request" })
+                                        .Value("Petty Cash Request")
                                         .Disabled(true))
                 </div>
                                 <div class="form-group">
@@ -479,7 +479,7 @@
                     @(Html.DevExtreme().RadioGroup()
                                         .ID("radioGroup")
                                         .Items(new[] { "Cash Payment", "Bank Payment" })
-                                        .Value(null)
+                                        
                                         .Layout(Orientation.Horizontal)
                                         .OnValueChanged("onRadioGroupValueChanged"))
                 </div>
@@ -923,7 +923,7 @@
         });
 
 
-        let paymentaccheadId;
+        let paymentaccheadId,accheadId;
         function dropDownBoxOnInput(e) {
             const ddbInstance = e.component;
             if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -1423,8 +1423,8 @@
                             $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
                             $("#IsApproved").dxCheckBox("instance").option("value", entry.IsApproved || false);
                             $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
-                            $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPosted || false);
-                            $("#paidBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
+                            $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPaid || false);
+                            $("#paidBytext").dxTextBox("instance").option("value", entry.PaidBy || "");
                             var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
                             var formattedsubmittedDate = submittedDate
                                 ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
@@ -1443,13 +1443,13 @@
                                 : "";
 
                             $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
-                            var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
+                            var postedDate = entry.PaidOn ? new Date(entry.PaidOn) : null;
                             var formattedPostedDate = postedDate
-                                ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                                ? postedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
                                 : "";
 
                             $("#paidOntext").dxTextBox("instance").option("value", formattedPostedDate);
-                            // $("#GeneratedVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
+                            $("#GenerateVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
                             // Disable DevExtreme buttons based on submission and verification date
                             const btnSubmit = $("#btnSubmit").dxButton("instance");
                             const btnVerify = $("#btnExpenseVerify").dxButton("instance");
@@ -1840,7 +1840,7 @@
         const data = grid.getDataSource().items();
         const claimRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
             const accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
-            const selectedAccountHead = accountHeadInstance.option("value");
+            const selectedAccountHead = accheadId;
 
 
         const hasValidAmounts = data.some(row => {
@@ -1913,10 +1913,46 @@
                 $.ajax({
                     url: apiUrl,
                     method: "GET",
-                    success: function (data) {
-                        $("#GenerateVoucher").dxTextBox("instance").option("value", data);
+                        success: function (data) {            // ① voucher number arrived
+            const grid               = $("#dataGrid").dxDataGrid("instance");
+            const totalApproved      = grid.getTotalSummaryValue("ApprovedAmount") || 0;
+            const claimRefNo         = $("#VoucherNo").dxTextBox("instance").option("value");
+            const effectiveDate      = $("#claimerEffectiveDate").dxDateBox("instance").option("value");
+            const accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
+            const selectedAccountHead = accountHeadInstance.option("value");
+            const selectedPaymentType = radioGroupInstance.option("value");
+            $("#GenerateVoucher").dxTextBox("instance").option("value", data);   // keep your original line
 
-                    },
+            // ② tell the back-end to mark the claim as paid *and* insert the voucher in one go
+            $.ajax({
+                url: "/api/ExpenseClaim/FinalizeClaimPayment",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({
+                    ClaimRefNo:        claimRefNo,
+                    PaymentVoucherNo:  data,             // the voucher no. you just got
+                    TotalAmount:       totalApproved,
+                    EffectiveDate:     effectiveDate.toISOString(),
+                    TypeOfClaim:1,
+                    SelectedAccountHead:selectedAccountHead,
+                    SelectedPaymentType:selectedPaymentType// JS Date object ⟶ ISO is fine
+                }),
+                    success: function (result) {
+                           // ✅ Update UI fields with result
+                    $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
+                    $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
+                    $("#paidOntext").dxTextBox("instance").option("value", result.PaidOn);
+                    disableclaim();
+                    DevExpress.ui.notify("Voucher saved and claim marked as paid.", "success", 2500);
+
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Could not finalize the payment: " + xhr.responseText, "error", 4000);
+                        console.log(xhr.responseText);
+                }
+            });
+        },
+
                     error: function () {
                         DevExpress.ui.notify("Failed to generate voucher number.", "error", 2000);
                     }
