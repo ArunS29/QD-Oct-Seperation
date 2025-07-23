@@ -115,6 +115,7 @@ namespace QDWEB.Areas.Finance.Controllers
         v.CreditAmount,
         v.ConvertedCrAmount,
         v.ConvertedDrAmount,
+        v.IsAuditVerified,
         company.CurrencyImage
 
     });

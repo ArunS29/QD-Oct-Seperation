@@ -1390,8 +1390,8 @@ buttons.Add()
             VoucherEntries: gridData
         };
 
-        // var button = $("#btnSave").dxButton("instance");
-        // var action = finalVoucherNo ? "UpdateVoucher" : "SaveVoucher"; // Determine Save or Update
+        var button = $("#btnSave").dxButton("instance");
+        var action = finalVoucherNo ? "UpdateVoucher" : "SaveVoucher"; // Determine Save or Update
 
         $.ajax({
             type: "POST",
