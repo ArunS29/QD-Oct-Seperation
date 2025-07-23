@@ -308,7 +308,7 @@
                             .ID("btnaddsupplier")
                             .Text("Create Payment Request")
                             .Icon("plus")
-                            .OnClick("createpayment")
+                            
                             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                             )
             </div>
@@ -317,7 +317,7 @@
 	<div class="dx-field ledgerResult">
         @(
                 Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201SubLedgerPayablesMaster>()
-                            .ID("dataGrid")
+                            .ID("SupplierdataGrid")
                             .RemoteOperations(false)
                             .Columns(columns =>
                             {
@@ -466,6 +466,8 @@
 </div> 
 
 <script>
+            let supplieraccheadId,supplieraccheadname;
+
     function dropDownBoxInput(e) {
         const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -517,7 +519,7 @@
         accountHead: supplieraccheadname
     },
     success: function (data) {
-        const targetGrid = $("#dataGrid").dxDataGrid("instance");
+            const targetGrid = $("#SupplierdataGrid").dxDataGrid("instance");
         targetGrid.option("dataSource", data);
     },
     error: function (err) {
@@ -547,7 +549,7 @@
     // Footer Filter row button click event
     function togglesupplierFilterRow() {
         
-        var grid = $("#dataGrid").dxDataGrid("instance");
+        var grid = $("#SupplierdataGrid").dxDataGrid("instance");
         var currentVisibility = grid.option("filterRow.visible");
 
         grid.option("filterRow.visible", !currentVisibility);
@@ -581,9 +583,7 @@
     function closeSubmenu() {
         $("#submenuContainer").hide();
     }
-    function createpayment() {
-        window.location.href = `/${tenantName}/Finance/CreatePaymentRequest`;
-    }
+        
     $(function () {
         const svgIcon = `
         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 399.58 279.97" width="20" height="20">
@@ -602,4 +602,74 @@
         </svg>`;
         $('#a1rowHeightProperties .dx-button-content').prepend(svgIcon);
     });
+
+     $("#btnaddsupplier").on("click", function (e) {
+                e.preventDefault();
+        const gridInstance = $("#SupplierdataGrid").dxDataGrid("instance");
+        const selectedRows = gridInstance.getSelectedRowsData();
+
+        if (selectedRows.length === 0) {
+            DevExpress.ui.notify("Please select at least one row to create a payment request.", "warning", 2000);
+            return;
+        }
+
+        // Step 1: Get NewClaimNo
+        $.ajax({
+            url: '@Url.Action("GetNewPaymentNo", "ExpenseClaim")',
+            type: 'GET',
+            success: function (newClaimNo) {
+                if (!newClaimNo) {
+                    DevExpress.ui.notify("Failed to get new claim number.", "error", 2000);
+                    return;
+                }
+
+                const childRecords = selectedRows.map(row => ({
+                    ClaimRefNo: newClaimNo,
+                    BillRefNo: row.PurchaseBillNo,
+                    BillDate: row.VoucherDate,
+                    ExpenseDescription: row.VoucherNarration,
+                    ClaimedAmount: Math.abs(row.Balance),
+                    ApprovedAmount: Math.abs(row.Balance),
+                    VoucherNo: row.ReferenceNo,
+                    CostCenterCode: "ADMIN-0001",
+                    AccountId: supplieraccheadId
+                }));
+
+                // Step 2: Insert child records
+                $.ajax({
+                    url: '/api/ExpenseClaim/AddExpenseClaimChildRecords',
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(childRecords),
+                    success: function () {
+                        // Step 3: Call stored procedure
+                        $.ajax({
+                            url: '@Url.Action("InsertClaimMaster", "ExpenseClaim")',
+                            type: 'POST',
+                            contentType: 'application/json',
+                            data: JSON.stringify({
+                                ClaimRefNo: newClaimNo,
+                                ClaimRemarks: `Payment request for ${supplieraccheadname}.`,
+                                SupplierPaymentLedgerNo: supplieraccheadId
+                            }),
+                            success: function () {
+                                    window.location.href = `/${tenantName}/finance/CreatePaymentRequest?claimRefNo=${encodeURIComponent(newClaimNo)}`;
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to insert Claim Master.", "error", 2000);
+                            }
+                        });
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to insert child records.", "error", 2000);
+                    }
+                });
+
+            },
+            error: function () {
+                DevExpress.ui.notify("Error generating voucher number.", "error", 2000);
+            }
+        });
+     });
+
 </script>
