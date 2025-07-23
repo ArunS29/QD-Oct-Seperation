@@ -105,9 +105,15 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
         {
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                // Add command timeout to connection string
+                string connectionString = tenant.ConnectionString;
+                if (!connectionString.Contains("Command Timeout"))
+                {
+                    connectionString += ";Command Timeout=120";
+                }
+                var connectionParams = new CustomStringConnectionParameters(connectionString);
+                sqlDataSource1.ConnectionParameters = connectionParams;
 
-                // Use schema from tenant, or default to dbo
                 string schemaName = string.IsNullOrWhiteSpace(tenant.schemaname) ? "dbo" : tenant.schemaname;
                 string fullStoredProcName = $"{schemaName}.sp20101TrialBalanceReport";
 
@@ -119,10 +125,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
 
                 storedProcQuery.Parameters.AddRange(new[]
                 {
-            new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), Value = Parameters["StartDate"].Value },
-            new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value },
-            new QueryParameter { Name = "@IsUseEffectiveDate", Type = typeof(bool), Value = Parameters["IsUseEffectiveDate"].Value }
-        });
+                    new QueryParameter { Name = "@StartDate", Type = typeof(DateTime), Value = Parameters["StartDate"].Value },
+                    new QueryParameter { Name = "@EndDate", Type = typeof(DateTime), Value = Parameters["EndDate"].Value },
+                    new QueryParameter { Name = "@IsUseEffectiveDate", Type = typeof(bool), Value = Parameters["IsUseEffectiveDate"].Value }
+                });
 
                 sqlDataSource1.Queries.Clear();
                 sqlDataSource1.Queries.Add(storedProcQuery);
@@ -133,6 +139,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
             }
         }
+
 
         private void AddReportParameter(string paramName, Type paramType, object paramValue)
         {
