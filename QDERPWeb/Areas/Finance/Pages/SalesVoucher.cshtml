@@ -324,9 +324,11 @@ buttons.Add()
 										.TabIndex(11)
 										.InputAttr(new
 										{
-											style = "font-family: Inter; font-size: 11pt;  color: maroon; text-align: right;",
-											type = "number",
-											step = "0.01"
+											 type = "number",
+											step = "0.01",
+											style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+											maxLength = 16,
+											autocomplete = "off"
 										})
 
 										)
@@ -1428,6 +1430,8 @@ buttons.Add()
 					dataGrid.option("dataSource", response.data);
 					var button = $("#btnSave").dxButton("instance");
 					button.option("text", "Update");
+					$("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 				} else {
 					$("#dataGrid").dxDataGrid({
 						dataSource: response.data,
@@ -1683,6 +1687,8 @@ buttons.Add()
 					 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 					  var button = $("#btnSave").dxButton("instance");
 					 button.option("text", "Update");
+					 $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 					var voucherNoTextBox = $("#VoucherNo").dxTextBox("instance");
 					voucherNoTextBox.option("readOnly", true);
 					 //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
