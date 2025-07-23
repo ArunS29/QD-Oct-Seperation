@@ -3837,7 +3837,7 @@
 								hint: "Add new item",
 								onClick: function () {
 									let url = `/${tenantName}/VAT/VATGoodsandServices`;
-									let title = "Goods and Services";
+									let title = "";
 									openModal(url, title);
 								},
 								width: 60,
@@ -3849,12 +3849,24 @@
 								hint: "Edit item",
 								onClick: function () {
 									let url = `/${tenantName}/VAT/VATGoodsandServices`;
-									let title = "Goods and Services";
+									let title = "";
 									openModal(url, title);
 								},
 								width: 60,
 								height: 30
 							}).appendTo($container);
+
+							 $("<div>").dxButton({
+                            icon: "paste",
+                            hint: "Stock Inventory Edit",
+                            onClick: function () {
+                                let url = `/${tenantName}/IMS/InventoryStockDetails`;
+                                let title = "";
+                                openModal(url, title);
+                            },
+                            width: 60,
+                            height: 30
+                        }).appendTo($container);
 						});
 					}
 				},
@@ -4419,7 +4431,7 @@
 									hint: "Add new item",
 									onClick: function () {
 										let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
-										let title = "Goods and Services";
+										let title = "";
 										openModal(url, title); // Opens the form in a modal
 										// Or use: window.location.href = url; if navigating directly
 									},
@@ -4441,7 +4453,7 @@
 										//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
 									  // let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; Example add page
 												let url = `/${tenantName}/VAT/VATGoodsandServices`;
-												let title = "Goods and Services";
+												let title = "";
 														openModal(url, title);
 										//window.location.href = url;
 
@@ -4452,6 +4464,17 @@
 									height: 30
 
 								}).appendTo($container);
+								 $("<div>").dxButton({
+                            icon: "paste",
+                            hint: "Stock Inventory Edit",
+                            onClick: function () {
+                                let url = `/${tenantName}/IMS/InventoryStockDetails`;
+                                let title = "";
+                                openModal(url, title);
+                            },
+                            width: 60,
+                            height: 30
+                        }).appendTo($container);
 
 							});
 

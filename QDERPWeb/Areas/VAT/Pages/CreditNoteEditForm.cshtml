@@ -716,6 +716,7 @@
 									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddclientname")
+														.Width("100%")
 														.ValidationRules(rules =>
 														{
 															rules.AddRequired()
@@ -730,7 +731,7 @@
 								@(
 														Html.DevExtreme().Button()
 														.ID("ClientNameconvertToArabic")
-														.Width("60")
+														.Width(40)
 														.Height(50)
 														.Icon("fas fa-language") // Ensure Font Awesome class is correct
 														.ElementAttr(new { @class = "input-button" })
@@ -901,7 +902,7 @@
 							<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice Start Date')")).ID("InvoiceEndDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Floating))</td>
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('Invoice End Date')")).ID("InvoiceStartDate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Floating))</td>
 
-							<td>
+							<td colspan="2">
 							@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Revenue Account')")).ID("RevenueAccount")
 								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType"))) *@
 							@(Html.DevExtreme().DropDownBox()
@@ -940,7 +941,80 @@
 																					.Width("100%")
 																					)
 							</td>
-							<td>
+							
+
+						</tr>
+					<tr>
+						<td colspan="2">
+						<div style="position: relative; width: 100%;">
+									@(Html.DevExtreme().TextArea()
+																			.Label(new JS("formatMessage('Invoice Notes')"))
+																			.LabelMode(EditorLabelMode.Floating)
+																			.ID("txtInvoiceNotes")
+																			.Value("")
+																			.Width("100%")
+																			.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+																			)
+								
+
+								<div style="position: absolute; bottom: 0px; right: 1px; display: flex;">
+									@(Html.DevExtreme().Button()
+																		.ID("btnSetDefault")
+																		.Icon("save")
+																		.Hint("Set as default")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("onSetDefaultClick")
+																		)
+									@(Html.DevExtreme().Button()
+																		.ID("btnClearNotes")
+																		.Icon("clear")
+																		.Hint("Clear notes")
+																		.Type(ButtonType.Default)
+																		.StylingMode(ButtonStylingMode.Contained)
+																		.OnClick("function() { $('#txtInvoiceNotes').dxTextArea('instance').option('value', ''); }")
+																		)
+								</div>
+								
+													</div>
+
+														</td>
+
+														<td colspan="2">
+														<div style="display: flex; align-items: end;gap: 4px;">
+
+														
+							@(Html.DevExtreme().TextArea()
+														.Label(new JS("formatMessage('Notes in Arabic')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("txtNotesinArabic")
+														.Value("")
+														.Height(40)
+														.Width("100%")
+														.Placeholder(new JS("formatMessage('Enter your comments here...')"))
+
+
+														)
+												
+													
+						
+
+							@(
+														Html.DevExtreme().Button()
+														.ID("InvoiceNotesconvertToArabic")
+														.Width("40")
+														.Height(40)
+														.Icon("fas fa-language") // Ensure Font Awesome class is correct
+														.ElementAttr(new { @class = "input-button" })
+														.OnClick("function() { convertToArabic(); }")
+
+														)	
+													</div>
+
+						</td>
+													
+
+						<td>
 							@* @(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Cost Center Account')")).ID("CostCenterAccount")
 								.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getPaymentMeans").LoadMode(DataSourceLoadMode.Raw).Key("PaymentMeans"))) *@
 							@(Html.DevExtreme().DropDownBox()
@@ -975,81 +1049,6 @@
 																					)
 							</td>
 
-						</tr>
-					<tr>
-						<td colspan="3">
-							<div style="display: flex; gap: 4px; align-items: flex-end;">
-								<div style="flex: 1;">
-									@(Html.DevExtreme().TextArea()
-																			.Label(new JS("formatMessage('Invoice Notes')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.ID("txtInvoiceNotes")
-																			.Value("")
-																			.Width("100%")
-																			.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-																			)
-								</div>
-
-								<div style="width: 55px;">
-									@(Html.DevExtreme().Button()
-																			.ID("btnSetDefault")
-																			.Icon("save")
-																			.Hint("Set as default")
-																			.Type(ButtonType.Default)
-																			.StylingMode(ButtonStylingMode.Contained)
-																			.OnClick("onSetDefaultClick")
-																			)
-								</div>
-								<div style="width: 55px;">
-									@(Html.DevExtreme().Button()
-																			.ID("btnClearNotes")
-																			.Icon("clear") // You can use "close" or "clearsquare" if available
-																			.Hint("Clear notes")
-																			.Type(ButtonType.Default)
-																			.StylingMode(ButtonStylingMode.Contained)
-																			.OnClick("function() { $('#txtInvoiceNotes').dxTextArea('instance').option('value', ''); }")
-																			)
-								</div>
-								<div>
-						
-
-							@(
-														Html.DevExtreme().Button()
-														.ID("InvoiceNotesconvertToArabic")
-														.Width("60")
-														.Height(50)
-														.Icon("fas fa-language") // Ensure Font Awesome class is correct
-														.ElementAttr(new { @class = "input-button" })
-														.OnClick("function() { convertToArabic(); }")
-
-														)	
-													</div>
-													</div>
-
-														</td>
-
-														<td colspan="2">
-														<div style="display: flex; align-items: end;gap: 4px;">
-
-														
-							@(Html.DevExtreme().TextArea()
-														.Label(new JS("formatMessage('Notes in Arabic')"))
-														.LabelMode(EditorLabelMode.Floating)
-														.ID("txtNotesinArabic")
-														.Value("")
-														.Height(40)
-														.Width("100%")
-														.Placeholder(new JS("formatMessage('Enter your comments here...')"))
-
-
-														)
-													</div>
-
-						</td>
-													
-
-
-
 					</tr>
 					</table>
 
@@ -1058,109 +1057,60 @@
 			
 
 
-			<div id="tab-content-3" class="tab-content" style="padding:1em;">
+			<div id="tab-content-3" class="tab-content">
 				<div class="card-container">
 					<!-- Left Card: Foreign Currency Billing -->
-					<div> 
-					<table style="width:500px; font-size:14px; margin:5px;" cellpadding="5">
-							<tr>
+				
+					<table style="width:100%; font-size:12px; margin:5px;" cellpadding="5">
+							@* <tr>
 								<th>Foreign Currency Billing</th>
-							</tr>
+							</tr> *@
 							<tr>
 								<td>
-									<div style="display: flex; align-items: end; gap: 10px;">
-										@(Html.DevExtreme().DropDownBox()
-																				.Label(new JS("formatMessage('Invoice Currency')"))
-																				.DataSource(d => d.WebApi()
-																				.Controller("VATModule")
-																				.LoadAction("GetInvoiceCurrency")
-																				.LoadMode(DataSourceLoadMode.Raw)
-																				.Key("CurrencyExchangeId"))
-																				.LabelMode(EditorLabelMode.Floating)
-																				.ID("ddlGoodsGroup3")
-																				.ShowClearButton(true)
-																				.Value("Saudi Arabian Riyals")
-																				.AcceptCustomValue(true)
-																				.OpenOnFieldClick(false)
-																				.ValueChangeEvent("input")
-																				.HoverStateEnabled(true)
-																				.ValueExpr("CurrencyExchangeId")
-																				.DisplayExpr("CurrencyName")
-																				.OnInput("dropDownBoxOnInput")
-																				.OnOpened("onOpened")
-																				.TabIndex(1)
-																				.DropDownOptions(o => o.Width(1000))
-																				.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
-																				.Width("100%"))
-										@(Html.DevExtreme().Button()
-																				.ID("EditClient2")
-																				.Icon("edit")
-																				.Hint("Edit Description")
-																				.Width(60)
-																				)
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									<div style="display: flex; align-items: end; gap: 10px;">
-										@(Html.DevExtreme().DropDownBox()
-																				.Label(new JS("formatMessage('Tax Currency')"))
-																				.DataSource(d => d.WebApi()
-																				.Controller("VATModule")
-																				.LoadAction("GetTaxCurrency")
-																				.LoadMode(DataSourceLoadMode.Raw)
-																				.Key("CurrencyExchangeId"))
-																				.LabelMode(EditorLabelMode.Floating)
-																				.ID("ddlGoodsGroup4")
-																				.ShowClearButton(true)
-																				.Value("Saudi Arabian Riyals")
-																				.AcceptCustomValue(true)
-																				.OpenOnFieldClick(false)
-																				.ValueChangeEvent("input")
-																				.HoverStateEnabled(true)
-																				.ValueExpr("CurrencyExchangeId")
-																				.DisplayExpr("CurrencyName")
-																				.OnInput("dropDownBoxOnInput")
-																				.OnOpened("onOpened")
-																				.TabIndex(1)
-																				.DropDownOptions(o => o.Width(1000))
-																				@* .Disabled(true) *@
-																				.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
-																				.Width("100%"))
-										@(Html.DevExtreme().Button()
-																				.ID("EditClient1")
-																				.Icon("edit")
-																				.Hint("Edit Description")
-																				.Width(60)
-																				)
-									</div>
-								</td>
-							</tr>
-							<tr>
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate")
-																			.Label(new JS("formatMessage('Currency Exchange Rate:')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Value(1)
-																			.Width("100%")
-                                     )
-								</td>
-							</tr>
-						</table>
-					</div>
-					<!-- Right Card: Deductions -->
-					<div style="margin-right: 30%" >
-						<table width="900px" style="font-size:14px; margin:5px;" cellpadding="2">
-							<tr>
-								<th>Deductions:Advance / Retention</th>
-							</tr>
-							<tr>
+									
+									@(
+																		Html.DevExtreme().DropDownBox()
+										.ID("ddlGoodsGroup3")
+										.Label(new JS("formatMessage('Invoice Currency')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.DataSource(d => d.WebApi()
+											.Controller("VATModule")
+											.LoadAction("GetInvoiceCurrency")
+											.Key("CurrencyExchangeId"))
+										.Value("Saudi Arabian Riyals")
+										.ShowClearButton(true)
+										.AcceptCustomValue(true)
+										.OpenOnFieldClick(false)
+										.ValueChangeEvent("input")
+										.HoverStateEnabled(true)
+										.ValueExpr("CurrencyExchangeId")
+										.DisplayExpr("CurrencyName")
+										.OnInput("dropDownBoxOnInput")
+										.OnOpened("onOpened")
+										.TabIndex(1)
+										.Width("100%")
+										.DropDownOptions(o => o.Width(1000))
+										.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
+										.Buttons(buttons =>
+										{
+											// 👇 Custom Edit Button inside the DropDown
+											buttons.Add()
+												.Name("btnAddInvoiceCurrency")
+												.Location(TextEditorButtonLocation.After)
+												.Widget(w => w.Button()
+													.Type(ButtonType.Default)
+													.Icon("edit") // Choose appropriate icon
+													.Hint("Edit Invoice Currency")
+													.ElementAttr(new { @class = "custom-hover-button add-hover" }));
+											@* .OnClick("CurrencyClick")); // 👈 Your handler name *@
 
+        // 👇 Optional: Default DropDown arrow (if you want it)
+        buttons.Add().Name("dropDown");
+    }))
+
+																				
+									
+								</td>
 								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessAdvance")
@@ -1182,6 +1132,7 @@
 																			Html.DevExtreme().Button()
 																			.ID("convertToArabic1")
 																			.Height(0)
+																.Width(50)
 																			.Icon("fas fa-language") // Ensure Font Awesome class is correct
 																			.ElementAttr(new { @class = "input-button" })
 																			.OnClick("function() { AdvanceconvertToArabic(); }")
@@ -1195,16 +1146,59 @@
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("LessAdvanceAr")
 																			.Value("اقب المسبق")
-																			.Width("90%")
+																			.Width("100%")
 																			.RtlEnabled(true)
 																			)
 
 								</td>
 
 							</tr>
-
 							<tr>
+								<td>
+									
+									@(
+																		Html.DevExtreme().DropDownBox()
+										.ID("ddlGoodsGroup4")
+										.Label(new JS("formatMessage('Tax Currency')"))
+										.LabelMode(EditorLabelMode.Floating)
+										.DataSource(d => d.WebApi()
+											.Controller("VATModule")
+											.LoadAction("GetTaxCurrency")
+											.LoadMode(DataSourceLoadMode.Raw)
+											.Key("CurrencyExchangeId"))
+										.ShowClearButton(true)
+										.Value("Saudi Arabian Riyals")
+										.AcceptCustomValue(true)
+										.OpenOnFieldClick(false)
+										.ValueChangeEvent("input")
+										.HoverStateEnabled(true)
+										.ValueExpr("CurrencyExchangeId")
+										.DisplayExpr("CurrencyName")
+										.OnInput("dropDownBoxOnInput")
+										.OnOpened("onOpened")
+										.TabIndex(1)
+										.Width("100%")
+										.DropDownOptions(o => o.Width(1000))
+										.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+										.Buttons(buttons =>
+										{
+											// 👇 Edit Button inside the DropDown
+											buttons.Add()
+												.Name("editTaxCurrency")
+												.Location(TextEditorButtonLocation.After)
+												.Widget(w => w.Button()
+													.Type(ButtonType.Default)
+													.Icon("edit")
+													.Hint("Edit Tax Currency")
+													.ElementAttr(new { @class = "custom-hover-button add-hover" }));
+											@* .OnClick("onEditTaxCurrencyClick")); // 👈 JS function name *@
 
+        // 👇 Default dropdown arrow
+        buttons.Add().Name("dropDown");
+    }))
+
+									
+								</td>
 								<td >
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessOtherDeductions")
@@ -1221,11 +1215,12 @@
 																			.Width("90%"))
 								</td>
 								<td>
-									<span class="input-group-prepend" style="margin-right: 10px;">
+									@* <span class="input-group-prepend" style="margin-right: 10px;"> *@
 										@(
 																				Html.DevExtreme().Button()
 																				.ID("convertToArabic2")
 																				.Height(30)
+																.Width(50)
 																				.Icon("fas fa-language") // Ensure Font Awesome class is correct
 																				.ElementAttr(new { @class = "input-button" })
 																				.OnClick("function() { OtherDeductionsconvertToArabic(); }")
@@ -1239,15 +1234,33 @@
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("LessAdvanceAr1")
 																			.Value("ناقص قيمة الخصومات الأخرى")
-																			.Width("90%")
+																			.Width("100%")
 																			.RtlEnabled(true)
 																			)
 
 								</td>
 							</tr>
+							
+						
+							@* <tr>
+								<th>Deductions:Advance / Retention</th>
+							</tr> *@
+							
+							
 
 							<tr>
-
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate")
+																			.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+																			.LabelMode(EditorLabelMode.Floating)
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Value(1)
+																			.Width("100%")
+                                     )
+								</td>
 								<td >
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessRetention")
@@ -1269,6 +1282,7 @@
 																				Html.DevExtreme().Button()
 																				.ID("convertToArabic3")
 																				.Height(30)
+																				.Width(50)
 																				.Icon("fas fa-language") // Ensure Font Awesome class is correct
 																				.ElementAttr(new { @class = "input-button" })
 																				.OnClick("function() { RetentionconvertToArabic(); }")
@@ -1282,14 +1296,14 @@
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("LessAdvanceAr2")
 																			.Value("احتفاظ أقل")
-																			.Width("90%")
+																			.Width("100%")
 																			.RtlEnabled(true)
 																			)
 
 								</td>
 
 							</tr>
-							<tr>
+							@* <tr>
 								<td>
 									@(Html.DevExtreme().CheckBox()
 																			.Text(new JS("formatMessage('Verified By')"))
@@ -1323,16 +1337,16 @@
 																			.ID("ApprovedBy")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			)
-									@(Html.DevExtreme().TextBox()
-																			//.Label(new JS("formatMessage('Approved By')"))
+																			) *@
+								@* 	@(Html.DevExtreme().TextBox() *@
+																			@* .Label(new JS("formatMessage('Approved By')"))
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
-																			.Width("97%")
+																			.Width("97%") *@
 																			@* .Disabled(true) *@
-																			)
+																			@* )
 									@(Html.DevExtreme().TextBox()
 																			.Label(new JS("formatMessage('Approved On')"))
 																			.LabelMode(EditorLabelMode.Floating)
@@ -1342,9 +1356,9 @@
 																			.Width("97%")
 																			)
 								</td>
-							</tr>
+							</tr> *@
 					</table>
-					</diV>
+					
 				</div>
 			</div>
 
@@ -1412,7 +1426,12 @@
 								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Credit Note Submitted By:')")).LabelMode(EditorLabelMode.Floating)
 								.ID("CreditNoteSubmittedBy").Width("100%")
 																						)
-							</td></tr>
+							</td>
+						<td>
+							@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No:')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Floating).Width("85%").Width("100%")
+														)
+						</td>
+							</tr>
 						<tr>
 
 							<td>
@@ -1421,7 +1440,7 @@
 								@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Reference No:')")).ID("ProjectRef").LabelMode(EditorLabelMode.Floating).Width("100%")
 																						)
 							</td>
-							<td colspan="2">
+							<td>
 								@(Html.DevExtreme().DropDownBox()
 																						.Label(new JS("formatMessage('Items Returned to Store:')"))
 														                             	.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetStores").LoadMode(DataSourceLoadMode.Raw).Key("StoreId"))
@@ -1442,6 +1461,47 @@
 																						)
 
 							</td>
+						<td>
+							@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No:')")).ID("OurVATNo").LabelMode(EditorLabelMode.Floating).Width("100%")
+														)
+						</td>
+
+
+						<td>
+							@* 	@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType1") .LabelMode(EditorLabelMode.Floating)  
+																.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
+ *@				
+									@(Html.DevExtreme().DropDownBox()
+														.Label(new JS("formatMessage('Other ID Type')"))
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetOtherIDType")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("SellerOtherIdtype")
+														)
+
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ddlGoodsGroup8")
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.OpenOnFieldClick(false)
+														.ValueChangeEvent("input")
+														.HoverStateEnabled(true)
+														.ValueExpr("SellerOtherIdtype")
+														.DisplayExpr("SellerIdtypeName")
+														.OnInput("dropDownBoxOnInput")
+														.OnOpened("onOpened")
+												  							//.Width(650)
+														.TabIndex(1)
+														.DropDownOptions(o => o
+														.Width(1000)
+														)
+							  							//  .OnKeyDown("onKeyDown")
+							  							//.OnValueChanged("dropDownBoxValueChanged")
+														.ContentTemplate(new TemplateName("OtherIDTypeTemplate"))
+														.Width("100%")
+														)
+						</td>
 							</tr>
 						
 
@@ -1627,98 +1687,63 @@
 									</text>)
 																			)
 								</td>
+						<td>
+							@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID:')")).ID("OtherID1").LabelMode(EditorLabelMode.Floating).Width("100%")
+														)
+						</td>
 							</tr>
-							<tr>
-								<td>
-									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Group VAT No:')")).ID("OurGroupVATNo").LabelMode(EditorLabelMode.Floating).Width("85%").Width("100%")
-																										)
-								</td>
-								<td>
-									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our VAT No:')")).ID("OurVATNo").LabelMode(EditorLabelMode.Floating).Width("100%")
-																										)
-								</td>
-								
 							
-								<td>
-									@* 	@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Other ID Type')")).ID("OtherIDType1") .LabelMode(EditorLabelMode.Floating)  
-																.DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getVATInvoiceTypes").LoadMode(DataSourceLoadMode.Raw).Key("InvoiceType")))
- *@				
-									@(Html.DevExtreme().DropDownBox()
-																											.Label(new JS("formatMessage('Other ID Type')"))
-																											.DataSource(d => d.WebApi()
-																											.Controller("VATModule")
-																											.LoadAction("GetOtherIDType")
-																											.LoadMode(DataSourceLoadMode.Raw)
-																											.Key("SellerOtherIdtype")
-																											)
-
-																											.LabelMode(EditorLabelMode.Floating)
-																											.ID("ddlGoodsGroup8")
-																											.ShowClearButton(true)
-																											.AcceptCustomValue(true)
-																											.OpenOnFieldClick(false)
-																											.ValueChangeEvent("input")
-																											.HoverStateEnabled(true)
-																											.ValueExpr("SellerOtherIdtype")
-																											.DisplayExpr("SellerIdtypeName")
-																											.OnInput("dropDownBoxOnInput")
-																											.OnOpened("onOpened")
-																											//.Width(650)
-																											.TabIndex(1)
-																											.DropDownOptions(o => o
-																											.Width(1000)
-																											)
-																											//  .OnKeyDown("onKeyDown")
-																											//.OnValueChanged("dropDownBoxValueChanged")
-																											.ContentTemplate(new TemplateName("OtherIDTypeTemplate"))
-																										.Width("100%")
-																											)
-								</td>
-								<td>
-									@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Other ID:')")).ID("OtherID1").LabelMode(EditorLabelMode.Floating).Width("100%")
-																										)
-								</td>
-								
-							</tr>
 					</table>
 				
 			</div>
 
 			<div id="tab-content-5" class="tab-content">
 
-				<div class="horizontal-container" style="display: flex; align-items: center;">
-					<div >
+				<div class="card-container">
+
+					<table width="100%" style="font-size:12px;" cellpadding="5">
+
+						<tr>
+							<td>
 						@(Html.DevExtreme().DropDownBox()
-																								.Label(new JS("formatMessage('Prepared By')"))
-																								.DataSource(d => d.WebApi()
-																								.Controller("VATModule")
-																								.LoadAction("GetAllSignatories")
-																								.LoadMode(DataSourceLoadMode.Raw)
-																								.Key("SignatoryID"))
-																								.LabelMode(EditorLabelMode.Floating)
-																								.ID("ddlGoodsGroup9")
-																								.ShowClearButton(true)
-																								.AcceptCustomValue(true)
-																								.OpenOnFieldClick(false)
-																								.ValueChangeEvent("input")
-																								.HoverStateEnabled(true)
-																								.ValueExpr("SignatoryID")
-																								.DisplayExpr("SignatoryName")
-																								.OnInput("dropDownBoxOnInput")
-																								.OnOpened("onOpened")
-																								.DropDownOptions(o => o.Width(1000))
-																								.ContentTemplate(new TemplateName("PreparedByTemplate"))
-																								.Width("100%")
-																								)
-					</div>
-					<div style="margin-top:24px;">
-						@(Html.DevExtreme().Button()
-																					.ID("AddClient")
-																					.Icon("plus")
-																					.Hint("Add Description")
-																		.ElementAttr("class", "plusbtn")
-																					)
-					</div>
+												.Label(new JS("formatMessage('Prepared By')"))
+												.DataSource(d => d.WebApi()
+												.Controller("VATModule")
+												.LoadAction("GetAllSignatories")
+												.LoadMode(DataSourceLoadMode.Raw)
+												.Key("SignatoryID"))
+												.LabelMode(EditorLabelMode.Floating)
+												.ID("ddlGoodsGroup9")
+												.ShowClearButton(true)
+												.AcceptCustomValue(true)
+												.OpenOnFieldClick(false)
+												.ValueChangeEvent("input")
+												.HoverStateEnabled(true)
+												.ValueExpr("SignatoryID")
+												.DisplayExpr("SignatoryName")
+												.OnInput("dropDownBoxOnInput")
+												.OnOpened("onOpened")
+												.DropDownOptions(o => o.Width(1000))
+												.ContentTemplate(new TemplateName("PreparedByTemplate"))
+												.Width("25%")
+												.Buttons(buttons =>
+												{
+													buttons.Add()
+													.Name("addSignatory")
+													.Location(TextEditorButtonLocation.After)
+													.Widget(w => w.Button()
+													.Type(ButtonType.Default)
+													.Icon("plus")
+													.Hint("Add Description")
+													.ElementAttr(new { @class = "custom-hover-button plusbtn" }));
+													@* .OnClick("onAddSignatoryClick")); // 🔔 JS function to be created *@
+
+													buttons.Add().Name("dropDown");
+												}))
+												</td>
+												</tr>
+												</table>
+
 
 
 				</div>
