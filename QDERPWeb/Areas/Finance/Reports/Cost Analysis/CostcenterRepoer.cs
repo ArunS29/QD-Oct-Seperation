@@ -148,7 +148,19 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             }
 
             this.sqlDataSource1.Fill();
+            CreateNoDataLabel();
         }
+        private void CreateNoDataLabel()
+        {
+            XRLabel noDataLabel = new XRLabel
+            {
+                Text = "No records found.",
+                BoundsF = new RectangleF(0, 0, PageWidth - Margins.Left - Margins.Right, 50),
+                TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter
+            };
+            this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
+        }
+
         private void LoadCurrencySymbolAndImage()
         {
             try
