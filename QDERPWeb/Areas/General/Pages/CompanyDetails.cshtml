@@ -11,7 +11,9 @@
         padding: 10px 15px;
     }
 
-
+    .dx-tabpanel-container {
+        height: 74vh !important;
+    }
         .dx-tabpanel .dx-tab.dx-selection {
             background-color: lightblue;
             color: white !important;
@@ -26,7 +28,7 @@
     }
 
     .form-container1 {
-        margin: 15px;
+        margin: 0px 10px;
         width: 99%;
         padding: 5px;
         border-radius: 1px;
@@ -107,27 +109,29 @@
     }
 
     .imagecontainer {
-        background-color: #e0f7fa;
-        border: 1px solid #90caf9;
-        height: 200px;
+        border: 2px dashed #ccc;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
+
+    .imagecontainer:hover {
+        border-color: #007bff;
+        box-shadow: 0 0 10px rgba(0, 123, 255, 0.3);
+    }
+
+    .imagecontainer span {
         display: flex;
-        align-items: center;
         justify-content: center;
-        cursor: pointer;
-        overflow: hidden;
-        position: relative;
+        align-items: center;
+        height: 100%;
+        color: #999;
+        font-size: 1.2rem;
+        font-style: italic;
     }
 
         .imagecontainer img {
             max-height: 100%;
             max-width: 100%;
             object-fit: contain;
-        }
-
-        .imagecontainer span {
-            color: #555;
-            font-style: italic;
-            position: absolute;
         }
 
     .flex-row {
@@ -224,6 +228,9 @@
             user-select: none;
         }
 
+        .titleCard-toggle1 {
+            display: none;
+        }
 </style>
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
@@ -239,7 +246,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                Html.DevExtreme().TabPanel().ID("SupplierTabs").Width("100%")
                 .Items(item =>
                 {
                     item.Add()
@@ -254,7 +261,7 @@
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyID")
                     .Label("Company ID:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
@@ -262,7 +269,7 @@
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyName")
                     .Label("Company Name:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%")
                     )
@@ -270,14 +277,14 @@
                     @(Html.DevExtreme().TextBox()
                     .ID("StreetName")
                     .Label("Our Address - Street Name: *")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("AdditionalAddress")
                     .Label("Our Address - Additional Address:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
@@ -289,7 +296,7 @@
                             .Mask("0000") // Accept only 4 digits
                          @* .InputAttr("pattern", "[0-9]{4}") // HTML5 pattern for client-side validation *@
                             .Label("Building Number:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </div>
@@ -297,7 +304,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("City")
                             .Label("City: *")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ValidationRules(rules =>
                             {
                             rules.AddRequired()
@@ -315,7 +322,7 @@
                             .MaxLength(4)
                             .Mask("0000")
                             .Label("Additional Number:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </div>
@@ -323,7 +330,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("Province")
                             .Label("Province / State:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </div>
@@ -336,7 +343,7 @@
                             .MaxLength(5)
                             .Mask("00000")
                             .Label("Postal Code:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </div>
@@ -349,7 +356,7 @@
                             rules.AddRequired()
                             .Message("District is required");
                             })
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </div>
@@ -376,7 +383,7 @@
                             )
                             .DropDownOptions(d => d.Width(280)) // Make dropdown wide enough for the grid
 
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%")
                             .ContentTemplate(new TemplateName("CodeDropDownTemplate"))
@@ -391,7 +398,7 @@
                             .Message("Company Short Name is required");
                             })
                             .Label("Company Short Name:")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </div>
@@ -405,7 +412,7 @@
                     @(Html.DevExtreme().TextBox()
                     .ID("ar_CompanyID")
                     .Label("هوية الشركة")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
@@ -414,7 +421,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ar_CompanyName")
                         .Label("اسم الشركة")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%")
                         )
@@ -432,7 +439,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ar_StreetName")
                         .Label("العنوان 1: (اسم الشارع)")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                         @(Html.DevExtreme().Button()
@@ -449,7 +456,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ar_AdditionalAddress")
                         .Label("العنوان 2: إضافي")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                         @(Html.DevExtreme().Button()
@@ -466,7 +473,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ar_City")
                         .Label("رقم المبنى")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                         @(Html.DevExtreme().Button()
@@ -482,7 +489,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ar_Province")
                         .Label("رقم إضافي")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                         @(Html.DevExtreme().Button()
@@ -498,7 +505,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ar_District")
                         .Label("الرمز البريدي")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                         @(Html.DevExtreme().Button()
@@ -514,7 +521,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ar_ShortName")
                         .Label("رمز الدولة")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                         @(
@@ -544,7 +551,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("FullAddress")
                             .Label("Full Address")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .Height(80))
 
@@ -552,7 +559,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("FullAddressArabic")
                             .Label("Full Address (Arabic)")
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             .Height(80))
                         </div>
@@ -575,13 +582,13 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ProductName")
                         .Label("Product Name")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CompanySlogan")
                         .Label("Company Slogan")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
 
@@ -590,13 +597,13 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("Phone")
                         .Label("Company Phone")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("Fax")
                         .Label("Company Fax")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
 
@@ -605,13 +612,13 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("Email")
                         .Label("Email Address")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("Website")
                         .Label("Website")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
 
@@ -625,7 +632,7 @@
                         rules.AddRequired()
                         .Message("VAT NO is required");
                         })
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
@@ -633,7 +640,7 @@
                         .Label("Group VAT No")
                         .MaxLength(10)
                         .Mask("0000000000")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
@@ -641,7 +648,7 @@
                         .Label("TIN")
                         .MaxLength(10)
                         .Mask("0000000000")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
 
@@ -664,7 +671,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .   Key("SellerOtherIdtype")
                         )
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .ContentTemplate(new TemplateName("IDDropDownTemplate"))
                         )
@@ -677,13 +684,13 @@
                         rules.AddRequired()
                         .Message("ID Number is required");
                         })
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CRNumber")
                         .Label("Commercial Registration No")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
 
@@ -713,7 +720,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("AuditorName")
                         .Label("Auditor's Name:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -721,7 +728,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("AuditorFax")
                         .Label("Auditor's Fax Number:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -729,7 +736,7 @@
                         @(Html.DevExtreme().TextArea()
                         .ID("AuditorAddress")
                         .Label("Auditor's Address:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Height(70)
                         .Width("100%")
                         )
@@ -738,7 +745,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("AuditorEmail")
                         .Label("Auditor's Email:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
@@ -752,7 +759,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ERPDBLocation")
                                 .Label("ERP Database Location")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
@@ -760,7 +767,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DMSLocation")
                                 .Label("ERP DMS Location")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
@@ -771,7 +778,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("AutoBackupLocation")
                                 .Label("ERP Auto Backup Location")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
@@ -779,7 +786,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("ReceivableLocation")
                                 .Label("Bills Receivable Location")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
@@ -791,7 +798,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("BackupEmail")
                                 .Label("Backup Operator Email")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
 
@@ -801,7 +808,7 @@
                                 @(Html.DevExtreme().TextBox()
                                 .ID("OnlineBackup")
                                 .Label("Online Backup Location")
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
 
@@ -861,21 +868,18 @@
 
         </text>);
                     item.Add().Text("Letter Head (Full)").Icon("user").Title("Letter Head (Full)").Template(@<text>
-            <div class="form-group">
-                <div class="dx-fieldset" style="width: 100%;">
-                    <div class="imagecontainer"
-                         id="imgBox1"
-                         style="min-width: 1000px; height: 540px; background-color: white; cursor: pointer;"
-                         oncontextmenu="handleRightClick(event)">
-                        <span>No Image Data</span>
+                    <div class="form-group">
+                        <div class="dx-fieldset">
+                            <div class="imagecontainer" id="imgBox1" style="height: 450px;background-color: var(--background-color); cursor: pointer;border-radius: 10px;" oncontextmenu="handleRightClick(event)">
+                                <span>No Image Data</span>
+                            </div>
+                            <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
+                        </div>
                     </div>
-                    <input type="file" id="imageInput" accept="image/*" style="display:none;" onchange="handleFileUpload(event)" />
-                </div>
-            </div>
 
         </text>);
                     item.Add().Text("Company Documents").Icon("user").Title("Company Documents").Template(@<text>
-            <div style="display: flex; justify-content: center; gap: 15px; padding: 15px; width: fit-content;">
+            <div style="display: flex; justify-content: center; gap: 15px; padding: 10px; width: fit-content;">
                 <!-- Layout Button -->
                 @(Html.DevExtreme().Button()
                 .ID("btnLayout")
@@ -931,7 +935,7 @@
             <div>
                 @(Html.DevExtreme().DataGrid()
                 .ID("itemGrid")
-                .Height("600px")
+                .Height("65vh")
                 .Selection(s => s
                 .Mode(SelectionMode.Multiple)
                 .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -946,7 +950,6 @@
                 })
                 .ColumnAutoWidth(true)
                 .Width("100%")
-                .Height(600)
                 .WordWrapEnabled(true)
                 .OnCellClick("function(e) {handleCellClick(e);}")
                 .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
@@ -966,7 +969,7 @@
         </text>);
                     item.Add().Text("Data Locking").Icon("user").Title("Data Locking").Template(@<text>
             <div>
-                <div style="display: flex; justify-content: center; gap: 15px; padding: 15px; width: fit-content;">
+                <div style="display: flex; justify-content: center; gap: 15px; padding: 10px; width: fit-content;">
                     <!-- Date Picker -->
                     @(Html.DevExtreme().DateBox()
                     .ID("lockedDate")
@@ -1001,10 +1004,9 @@
                 <div style="padding:0px;">
                     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl90117VoucherDateLocking>()
                     .ID("itemGrid1")
-                    .Height("600px")
+                    .Height("65vh")
                     .ColumnAutoWidth(true)
                     .Width("100%")
-                    .Height(600)
                     .DataSource(ds => ds.Mvc()
                     .Controller("CompanyDetails")
                     .LoadAction("VoucherDateLocking"))
@@ -1039,13 +1041,13 @@
                     item.Add().Text("Obselete").Icon("user").Title("Obselete").Template(@<text>
 
 
-            <div class="form-container3" style="width:50%; padding: 20px; width:100%;">
+            <div class="form-container3" style="width:50%; padding: 10px; width:100%;">
                 <!-- English Column -->
                 <div class="column4">
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyID1")
                     .Label("Company ID:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
@@ -1053,35 +1055,35 @@
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyName1")
                     .Label("Company Name:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("StreetName1")
                     .Label("Our Address - Street Name:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("AdditionalAddress1")
                     .Label("Our Address - Additional Address:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("ShortName1")
                     .Label("Company Name Short:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
 
                     @(Html.DevExtreme().TextBox()
                     .ID("CompanyCity")
                     .Label("Company City:")
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Width("100%"))
                 </div>
@@ -1092,7 +1094,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("CompanyID_Ar")
                         .Label("هوية الشركة")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ReadOnly(true)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
@@ -1100,35 +1102,35 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("CompanyName_Ar")
                         .Label("اسم الشركة")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("StreetName_Ar")
                         .Label("خط عنوان الشركة 1")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("AdditionalAddress_Ar")
                         .Label("خط عنوان الشركة 2")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("ShortName_Ar")
                         .Label("اسم الشركة القصير")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
 
                         @(Html.DevExtreme().TextBox()
                         .ID("CompanyCity_Ar")
                         .Label("مدينة الشركة")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .StylingMode(EditorStylingMode.Outlined)
                         .Width("100%"))
                     </div>
@@ -1531,5 +1533,7 @@
             $(`#ar_${en}1`).on("click", function () { translateFieldToArabic(en, ar); });
         }
     });
-
+        function onAttachmentButton(mus = "Musharaf"){
+            console.log(mus);
+        }
 </script>

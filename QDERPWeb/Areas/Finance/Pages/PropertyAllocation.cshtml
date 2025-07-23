@@ -151,7 +151,7 @@
 					@(
 												Html.DevExtreme().SelectBox()
 												.Label(new JS("formatMessage('Dr/Cr')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.ID("PaDrCr")
 												.DataSource(new[] { drCr })
 												.Value(drCr)
@@ -168,7 +168,7 @@
 					@(
 												Html.DevExtreme().SelectBox()
 												.Label(new JS("formatMessage('Expenses Ledger Account')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.ID("PropertyExpenses")
 												.DataSource(new[] { accountHead }) // Only the selected AccountHead
 												.Value(accountHead) // Pre-selected value
@@ -183,7 +183,7 @@
 					@(
 												Html.DevExtreme().NumberBox()
 												.Label(new JS("formatMessage('Amount')"))
-												.LabelMode(EditorLabelMode.Outside)
+												.LabelMode(EditorLabelMode.Floating)
 												.ID("propertyAmount")
 												.Value(voucherAmountParsed)
 												.ShowSpinButtons(true)
@@ -217,7 +217,7 @@
 						@(
 													Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Voucher No')"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("propertyVoucherNo")
 													.Value(voucherNo)
 													.ReadOnly(true)
@@ -228,7 +228,7 @@
 						@(
 													Html.DevExtreme().TextBox()
 													.Label(new JS("formatMessage('Proprty Id')"))
-													.LabelMode(EditorLabelMode.Outside)
+													.LabelMode(EditorLabelMode.Floating)
 													.ID("propertyId")
 													.Value(accountId)
 													.ReadOnly(true)
@@ -291,7 +291,7 @@
 				.LoadAction("GetPropertyAllocationUnits")
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("PropertyNo"))
-				.LabelMode(EditorLabelMode.Outside)
+				.LabelMode(EditorLabelMode.Floating)
 				.ID("Propertygriddropdown_{rowIndex}")
 				.ShowClearButton(false)
 				.AcceptCustomValue(true)

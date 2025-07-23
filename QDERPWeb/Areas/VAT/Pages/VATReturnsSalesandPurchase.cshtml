@@ -717,7 +717,7 @@
         </tr>
         <tr>
             <td>2</td>
-            <td>Sales to GCC Customer</td>
+            <td>Sales to customers in VAT Implementing GCC</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("GccRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("GccCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
@@ -752,6 +752,8 @@
                                                                         .ID("RevenueTotal")
                                                                         .Disabled(true)
                                                                         .Format("#,##0.00")
+                                                                .OnValueChanged("calculateRevenueTotal")
+
                                                                         .ShowSpinButtons(false)
                                                                         .ElementAttr("class", "dx-numberbox-iconed text-right-number")
                                                                         )
@@ -772,17 +774,19 @@
                                 </div>
                             </td>
 
-                            <td>
-                                <div class="numberbox-with-icon">
-                                    @(Html.DevExtreme().NumberBox()
-                                                                        .ID("DSSTotalSalesTax")
-                                                                        .Disabled(true)
-                                                                        .Format("#,##0.00")
-                                                                        .ShowSpinButtons(false)
-                                                                        .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
-                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('DSSTotalSalesTax', 'Total Sales - Sales Tax')"></span>
-                                </div>
-                            </td>
+                        <td>
+                            <div class="numberbox-with-icon">
+                                @(Html.DevExtreme().NumberBox()
+                                                                .ID("DSSTotalSalesTax")
+                                                                .Disabled(true)
+                                                                .Format("#,##0.00")
+                                                                .ShowSpinButtons(false)
+                                                                .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
+                                <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('DSSTotalSalesTax', 'Total Sales - Sales Tax')"></span>
+                            </div>
+                        </td>
+
+
 
 
                     </tbody>
@@ -919,7 +923,20 @@
 
 
 <script>
+     function calculateRevenueTotal() {
+        const dss15Revenue = parseFloat($("#Dss15Revenue").dxNumberBox("instance").option("value")) || 0;
+        const dexRevenue = parseFloat($("#DexRevenue").dxNumberBox("instance").option("value")) || 0;
+        setTimeout(calculateRevenueTotal, 300);
 
+        const total = dss15Revenue + dexRevenue;
+
+        $("#RevenueTotal").dxNumberBox("instance").option("value", total.toFixed(2));
+    }
+
+    // Call this on page load
+    $(document).ready(function () {
+        calculateRevenueTotal();
+    });
 
     function animateCount(el, target) {
       let i = 0;
@@ -1087,6 +1104,12 @@
               $("#TotalPurchaseTax").dxNumberBox("instance").option("value", data[0].TotalPurchaseTax);
               $("#vatSalesTurnover").text(new Intl.NumberFormat().format(data[0].RevenueTotal));
               $("#vatPurchaseTurnover").text(new Intl.NumberFormat().format(data[0].TotalPurchaseTax));
+              $("#DssSalesTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_Sales_TaxAfterAdj);
+              $("#Dss15SalesTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_15_Sales_TaxAfterAdj);
+                  $("#DSSTotalSalesTax").dxNumberBox("instance").option("value",
+        (data[0].DSS_Sales_TaxAfterAdj || 0) + (data[0].DSS_15_Sales_TaxAfterAdj || 0)
+    );
+
 
             },
             error: function () {
@@ -1094,6 +1117,17 @@
             }
         });
     }
+        function setPurchaseTotal() {
+        let total = 0;
+
+        purchaseData.forEach(row => {
+            total += parseFloat(row.purchases || 0);
+        });
+
+        // Set to DevExtreme NumberBox in the total row
+        $("#RevenueTotal").dxNumberBox("instance").option("value", total);
+    }
+
     $(function () {
         $("#StandardratedSales").text(
             formatMessage("Standard rated Sales 5%"));

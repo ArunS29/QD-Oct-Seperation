@@ -19,6 +19,7 @@ using QD.ERP.Web.Areas.VAT.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QRCoder;
+using static QD.ERP.Web.Service.UserAccessService;
 
 
 
@@ -85,6 +86,77 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
         //	return Unauthorized(new { message = "Invalid tenant.", success = false });
         //}
+        //[Area("VAT")]
+        //[Route("api/[controller]/[action]")]
+        //[ApiController]
+        //public class GoodsCombinedController : Controller
+        //{
+        //    private readonly TenantDbContextHelper _tenantDbContextHelper;
+        //    private readonly ILogger<GoodsCombinedController> _logger;
+
+        //    public GoodsCombinedController(ILogger<GoodsCombinedController> logger, TenantDbContextHelper tenantDbContextHelper)
+        //    {
+        //        _tenantDbContextHelper = tenantDbContextHelper;
+        //        _logger = logger;
+        //    }
+
+        //    [HttpGet]
+        //    public async Task<IActionResult> GetCombinedGoodsData(DateTime? fromDate, DateTime? toDate)
+        //    {
+        //        try
+        //        {
+        //            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //            {
+        //                // Default dates: current month if not passed
+        //                fromDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1);
+        //                toDate ??= new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month));
+
+        //                _logger.LogInformation($"Running SP and fetching combined goods data from {fromDate:yyyy-MM-dd} to {toDate:yyyy-MM-dd}");
+
+        //                // 1. Execute stored procedure
+        //                await dbContext.Database.ExecuteSqlRawAsync("EXEC sp20131InsertGoodsCombinedMaster @p0, @p1", fromDate, toDate);
+
+        //                // 2. Fetch filtered result from tbl20124GoodsCombinedMaster
+        //                var data = await dbContext.Tbl20124GoodsCombinedMasters
+        //                    .Where(x => x.DocumentDate >= fromDate && x.DocumentDate <= toDate)
+        //                    .OrderByDescending(x => x.DocumentDate)
+        //                    .Select(x => new
+        //                    {
+        //                        x.DocumentNo,
+        //                        x.DocumentDate,
+        //                        x.Gscode,
+        //                        x.UnitRateMethod,
+        //                        x.DocumentQty,
+        //                        x.DocumentLineUnitPrice,
+        //                        x.Discount,
+        //                        x.DocumentLineTotalAmount,
+        //                        x.TransactionType
+        //                    })
+        //                    .ToListAsync();
+
+        //                return Ok(new
+        //                {
+        //                    Message = "Data retrieved successfully.",
+        //                    FromDate = fromDate.Value.ToString("yyyy-MM-dd"),
+        //                    ToDate = toDate.Value.ToString("yyyy-MM-dd"),
+        //                    Data = data
+        //                });
+        //            }
+
+        //            return Unauthorized(new { Message = "Invalid tenant context." });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            _logger.LogError($"Error in GetCombinedGoodsData: {ex.Message}");
+        //            return StatusCode(500, new
+        //            {
+        //                Message = "An error occurred while processing the request.",
+        //                Error = ex.Message
+        //            });
+        //        }
+        //    }
+        //}
+       
         public async Task<ActionResult> GetVatInvoices(
     string frmDate,
     string toDate,

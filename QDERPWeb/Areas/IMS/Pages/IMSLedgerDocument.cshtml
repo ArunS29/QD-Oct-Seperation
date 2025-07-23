@@ -65,17 +65,16 @@
     }
 
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="IMSLedgerDocument" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div class="my-3" style="max-width:2000px;">
     <div class="row g-3">
         <!-- Card -->
         <div class="col-12">
             <div class=" p-3 ">
-
                 <!-- First Row -->
                 <div id="EnteraNewDocument&AddtotheExistingList" class="no-border-input cards-container-title"></div>
                 <div style="display:flex; align-items:end;">
@@ -278,7 +277,7 @@
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
                     .HeaderFilter(filter => filter.Visible(true))
-                    .Height(500)
+                    .Height("50vh")
                     .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false))
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -597,7 +596,7 @@
     }
     function redirecttoDocumentTypes(){
                         const url = `/${tenantName}/IMS/DocumentTypes`;
-                 const title = "";
+                 const title = "Document Types";
                       openModal(url, title);
               }
 </script>

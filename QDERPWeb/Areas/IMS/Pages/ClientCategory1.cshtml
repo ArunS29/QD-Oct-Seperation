@@ -82,7 +82,7 @@
         }
 
     .content-container-top {
-        padding:15px;
+        padding:10px;
     }
     .container {
         display: none !important;
@@ -111,69 +111,64 @@
     }
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="ClientCategory" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 @* <div class="sathish-container-top"> *@
 <div class="content-container-top">
-    <div class="form-group">
-
-        @(
-            Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Type a New Client & Add to the Existing List:')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .ID("txtClientCategory")
-            .Value(null)
-            .ValidationRules(rules =>
-            {
-                rules.AddRequired()
-                .Message(new JS("formatMessage('Client Category is required')"));
-            })
-            )
-
+    <div class="row">
+        <!-- Client Name Input (Full width row) -->
+        <div class="col-md-12">
+            @(Html.DevExtreme().TextBox()
+                        .ID("txtClientCategory")
+                        .Label(new JS("formatMessage('Type a New Client & Add to the Existing List:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Value(null)
+                        .Width("100%")
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired()
+                            .Message(new JS("formatMessage('Client Category is required')"));
+                        })
+                        )
+        </div>
     </div>
 
-    <div class="col-md-8">
-        <div class="form-group">
-            @(
-                Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Client Category Code:')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .ID("txtCategoryCode")
-                .Value(null)
+    <!-- Client Category Code and Button aligned in same row -->
+    <div class="row">
+        <!-- TextBox: 8 columns -->
+        <div class="col-md-8">
+            @(Html.DevExtreme().TextBox()
+                        .ID("txtCategoryCode")
+                        .Label(new JS("formatMessage('Client Category Code:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Value(null)
+                        .Width("100%")
                         .ValidationRules(rules =>
                         {
                             rules.AddRequired()
                             .Message(new JS("formatMessage('Client Category Code is required')"));
                         })
-                )
+                        )
         </div>
-    </div>
 
-    <br />
-
-    <div class="col-md-4">
-        <div class="form-group">
+        <!-- Button: 4 columns -->
+        <div class="col-md-4 d-flex align-items-end" style="padding-left: 10px;">
             @(Html.DevExtreme().Button()
-                .ID("btnadd")
-                .Text(new JS("formatMessage('ADD')"))
-                .Height(40)
-                .Width(178)
-                .Icon("plus")
-                .OnClick("function() { adddivmaster(); }")
-                .ElementAttr(new { @class = "dx-button-add" })
-                )
+                        .ID("btnadd")
+                        .Text(new JS("formatMessage('ADD')"))
+                        .Icon("plus")
+                        .Height(40)
+                        .Width("30%")
+                        .OnClick("function() { adddivmaster(); }")
+                        .ElementAttr(new { @class = "dx-button-add" })
+                        )
         </div>
-
-
     </div>
-    <br />
+
     <div id="gridContainer"></div>
-
-
-   
 </div>
 @* </div> *@
 

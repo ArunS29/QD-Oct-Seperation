@@ -111,7 +111,7 @@
             @(Html.DevExtreme().SelectBox()
                 .ID("DrCr")
                 .Label(new JS("formatMessage('Dr/Cr')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .DataSource(new[] { drCr })
                 .Value(drCr)
                 .Width(150)
@@ -122,7 +122,7 @@
             @(Html.DevExtreme().TextBox()
                 .ID("Textbox")
                 .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Value(voucherNo)
                 .Width(250)
                 .ReadOnly(true)
@@ -132,7 +132,7 @@
             @(Html.DevExtreme().NumberBox()
                 .ID("CostAmount")
                 .Label(new JS("formatMessage('Amount')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Value(voucherAmountParsed)
                 .ShowSpinButtons(true)
                 .ReadOnly(true)
@@ -145,7 +145,7 @@
                     )
                 @(Html.DevExtreme().TextBox()
                     @* .Label(new JS("formatMessage('Approved By')")) *@
-                    @* .LabelMode(EditorLabelMode.Outside) *@
+                    @* .LabelMode(EditorLabelMode.Floating) *@
                     .ID("ApprovedBycost")
                     .Value(null) // Default value
                     .ReadOnly(true)
@@ -153,7 +153,7 @@
             </div>
             @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Approved On')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .ID("ApprovedOncost")
                 .Value(null) // Default value
                 .ReadOnly(true)
@@ -164,7 +164,7 @@
             @(Html.DevExtreme().SelectBox()
                 .ID("CostAllocationExpense")
                 .Label(new JS("formatMessage('Account Head')"))
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .DataSource(new[] { accountHead }) // Only the selected AccountHead
                 .Value(accountHead) // Pre-selected value
                 .ReadOnly(true) // Make the dropdown read-onlyr
@@ -219,7 +219,7 @@
                     .LoadAction("GetCostAllocationUnits")
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("CostAllocationUnitId"))
-                    .LabelMode(EditorLabelMode.Outside)
+                    .LabelMode(EditorLabelMode.Floating)
                     .ID("Costgriddropdown_{rowIndex}")
                     .ShowClearButton(false)
                     .AcceptCustomValue(true)

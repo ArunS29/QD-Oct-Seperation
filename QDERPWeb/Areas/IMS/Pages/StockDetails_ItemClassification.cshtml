@@ -159,31 +159,32 @@
 	}
 </style>
 
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="ItemClassification" class="no-border-input"></div>
 	</div>
-</div>
+</div> *@
 <!-- Filter/Info Section -->
 
 
-<div class="dx-fieldset" style="padding: 20px;">
+<div class="dx-fieldset">
 	<div class="store-master-container">
 		<!-- Store Name Input -->
 		<div>
 			<div>
-				<label id="TypenewStockClassification" class="form-label"></label>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
 										.ID("stockClassificationInput")
+										.Label(new JS("formatMessage('Type new Stock Classification By & Add to the Existing List')"))
+										.LabelMode(EditorLabelMode.Floating)
 										.Width("70%")
-										.Placeholder("Type new Stock Classification")
 										)
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
 												.ID("addStockClassBtn")
 												.Text(new JS("formatMessage('Add')"))
 												.Type(ButtonType.Success)
+												.ElementAttr(new { @class = "custom-ui-button" })
 												.Icon("plus")
 												.Width("100%")
 												)
@@ -267,6 +268,7 @@
 						.Text(new JS("formatMessage('Back')"))
 						.Icon("arrowleft")
 						.OnClick("Goback")
+						.ElementAttr(new { @class = "dx-button-custom btn-back" })
 						.Width(120)
 						.Type(ButtonType.Default))
 		</div>

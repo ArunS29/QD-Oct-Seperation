@@ -557,7 +557,7 @@
 			<div id="tab-content-1" class="tab-content">
 			<div class="card-container">
 					<!-- First Card (Left Side) -->
-				<table width="95%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+				<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 					<tr>
 						<!-- 1. Purchase Voucher No -->
 						<td>
@@ -566,7 +566,7 @@
 														.ID("InvoiceNo")
 														.Label("")
 														.Label(new JS("formatMessage('Purchase Voucher No')"))
-														.LabelMode(EditorLabelMode.Outside)
+														.LabelMode(EditorLabelMode.Floating)
 														.Disabled(true))
 						</td>
 
@@ -584,29 +584,167 @@
 
 														)
 						</td>
+						<td style="padding-bottom: 5px;">
+							@(Html.DevExtreme().DropDownBox()
+														.ID("ddclientcode")
+														.Label(new JS("formatMessage('Supplier Code')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetSupplierCode")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("AccountId"))
+														.ValueExpr("AccountId")
+														.DisplayExpr("AccountId")
+														.ShowClearButton(true)
+														.DropDownOptions(d => d.Width(800))
+														.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
+														.OnFocusIn("onSupplierDropDownFirstClick")
+														.Width("100%")
+														.Buttons(buttons =>
+														{
+															buttons.Add() // ADD BUTTON
+            .Name("addButton")
+            .Location(TextEditorButtonLocation.After)
+            .Widget(w => w.Button()
+                .Type(ButtonType.Default)
+                .Icon("plus")
+                .Hint("Add Supplier")
+                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                .OnClick("showLedgerAccountPopup") // 🔸 ADD FUNCTION
+            );
+
+        buttons.Add() // EDIT BUTTON
+            .Name("editButton")
+            .Location(TextEditorButtonLocation.After)
+            .Widget(w => w.Button()
+                .Type(ButtonType.Default)
+                .Icon("edit")
+                .Hint("Edit Supplier")
+                .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+                .OnClick("onEditClientClick") // 🔸 EDIT FUNCTION
+            );
+
+															buttons.Add()
+															.Name("dropDown"); // ✅ This must be inside Buttons
+														})
+														)
+
+
+
+							@(Html.DevExtreme().Popup()
+														.ID("ledgerAccountPopup")
+														.Width("80%")
+														.Height("85%")
+														.Title("Add Ledger Account")
+														.ShowTitle(true)
+														.CloseOnOutsideClick(true)
+														.Visible(false)
+														.ResizeEnabled(true)
+														.ContentTemplate(@<text>
+											  								<div id="popupContent" style="width:100%; height:100%;">
+											  									<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+											  								</div>
+											  							</text>)
+														)
+
+
+							@(Html.DevExtreme().Popup()
+														.ID("ledgerEditAccountPopup")
+														.Width("80%")
+														.Height("85%")
+														.Title(new JS("formatMessage('Edit Ledger Account')"))
+														.ShowTitle(true)
+														.CloseOnOutsideClick(true)
+														.Visible(false)
+														.ResizeEnabled(true)
+														.ContentTemplate(@<text>
+											  								<div id="popupContent" style="width:100%; height:100%;">
+											  									<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+											  								</div>
+											  							</text>)
+														)
+
+
+						</td>
+						<td>
+
+							@(Html.DevExtreme().TextBox()
+														.ID("InvoiceCounterValue")
+														.Label(new JS("formatMessage('Invoice Period')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
+
+						<!-- 18. Reference No -->
+						<td>
+
+							@(Html.DevExtreme().TextBox()
+														.ID("UUID")
+														.Label(new JS("formatMessage('Reference No')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
+																 						<td>
+							@(Html.DevExtreme().DropDownBox()
+														.ID("OtherIDType")
+														.Label(new JS("formatMessage('Other ID Type')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetVATInvoiceMaster")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("BuyerIdtypeName"))
+														.ValueExpr("BuyerIdtypeName")
+														.DisplayExpr("BuyerIdtypeName")
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.ContentTemplate(new TemplateName("ClientNameContent")))
+																											</td>
+						<!-- 10. Supplier Name (ComboBoxEdit) -->
+					
 					</tr>
 
 					<tr>
+						<td>
+							@(Html.DevExtreme().DropDownBox()
+														.ID("ddclientname")
+														.Label(new JS("formatMessage('Supplier Name')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetSupplierCode")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("AccountId"))
+														.ValueExpr("AccountId")
+														.DisplayExpr("SupplierName")
+														.Width("100%")
+														.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Supplier Name should be entered')"));
+														})
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("linkButton")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Normal)
+															.Icon("link")
+															.Hint("Link Supplier")
+															.StylingMode(ButtonStylingMode.Text) // Hyperlink style
+																	 							@* .OnClick("onLinkClick") *@ // 🔗 Bind your JS function here
+															);
+															buttons.Add()
+															.Name("dropDown");
+														})
+														)
+						</td>
 						<!-- 3. Supplier Invoice No -->
 						<td>
-					@* 
-							@(Html.DevExtreme().DropDownBox()
-														.ID("SupplierInvoiceNo")
-														.DataSource(ds => ds.WebApi()
-														.Controller("VATModule")
-														.LoadAction("GetSupplierInvoices")
-														.LoadMode(DataSourceLoadMode.Raw)
-														.Key("InvoiceNo"))
-														.DisplayExpr("InvoiceNo")
-														.ValueExpr("InvoiceNo")
-														.Label(new JS("formatMessage('Supplier Invoice No')"))
-														.LabelMode(EditorLabelMode.Floating)
-														.ShowClearButton(true)
-														@* .Disabled(true)
-														.AcceptCustomValue(true)
-														.OpenOnFieldClick(false)
-														.DropDownOptions(d => d.Width(600))
-														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))) *@
+					
 
 							@(Html.DevExtreme().DropDownBox()
 														.ID("SupplierInvoiceNo")
@@ -640,6 +778,169 @@
 														.Label(new JS("formatMessage('Invoice Date')"))
 														.LabelMode(EditorLabelMode.Floating))
 						</td>
+																 						<td>
+							@(Html.DevExtreme().TextBox()
+														.ID("GroupVATNo")
+														.Label(new JS("formatMessage('Group VAT No')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.MaxLength(15)
+														.Mask("300000000010000") // 15 digits
+														.MaskChar("_") // Optional: makes it more readable
+														)
+						</td>
+
+						<!-- 12. Supplier VAT No (TextEdit) -->
+						<td>
+							@(Html.DevExtreme().TextBox()
+														.ID("ClientVATNo")
+														.Label(new JS("formatMessage('Supplier VAT No')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.Mask("300000000000003") // 15 digits
+														.MaskChar("_") // Optional: makes it more readable
+														)
+
+						</td>
+						<td>
+							@(Html.DevExtreme().DropDownBox()
+														.ID("ClientAddressDetails")
+														.Label(new JS("formatMessage('Supplier Address Details')"))
+														.ShowClearButton(true)
+														.Width("100%")
+														.LabelMode(EditorLabelMode.Floating)
+														.DropDownOptions(o => o.Width(600).Height(550))
+														.OpenOnFieldClick(true)
+														.ContentTemplate(@<text>
+
+
+								<div class="address-form-container">
+
+
+									<table class="address-form-table" cellpadding="5">
+										<tr>
+											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Address - Street Name:')"))
+																								.ID("StreetName")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
+																								.ID("StreetNameArabic")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Building Number:')"))
+																								.ID("BuildingNumber")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   										</tr>
+															   										<tr>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Address - Additional Address:')"))
+																								.ID("AdditionalAddress")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
+																								.ID("AdditionalAddressArabic")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Additional Number:')"))
+																								.ID("AdditionalNumber")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+
+										</tr>
+										<tr>
+
+											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Client City:')"))
+																								.ID("ClientCity")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Client City: (Arabic)')"))
+																								.ID("ClientCityArabic")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Postal Code:')"))
+																								.ID("PostalCode")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   										</tr>
+															   										<tr>
+
+											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Province / State:')"))
+																								.ID("Province")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('Province / State: (Arabic)')"))
+																								.ID("ProvinceArabic")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+
+											<td style="width: 100%">
+												@(Html.DevExtreme().SelectBox()
+																								.ID("CountryCode")
+																								.Label(new JS("formatMessage('Country Code:')"))
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Items(new[] { "US", "UK", "IN", "SA", "UAE" })
+																								.Value("IN")
+																								.SearchEnabled(true)
+																								.Width("100%"))
+															   											</td>
+															   										</tr>
+															   										<tr>
+
+											<td>
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('District / Neighborhood:')"))
+																								.ID("District")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+															   											<td colspan="2">
+												@(Html.DevExtreme().TextBox()
+																								.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
+																								.ID("DistrictArabic")
+																								.LabelMode(EditorLabelMode.Floating)
+																								.Width("100%"))
+															   											</td>
+
+																	</tr>
+																</table>
+
+															</div>
+
+														</text>)
+														)
+						</td>
+						
 					</tr>
 
 					<tr>
@@ -665,22 +966,18 @@
 														.Label(new JS("formatMessage('Order Date')"))
 														.LabelMode(EditorLabelMode.Floating))
 						</td>
-					</tr>
+																 						<td>
 
-					<tr>
-						<!-- 7. Material Receipt -->
-						<td>
-							
 							@(Html.DevExtreme().TextBox()
 														.ID("MaterialReceipt")
 														.Label(new JS("formatMessage('Material Receipts')"))
 														.LabelMode(EditorLabelMode.Floating)
 														.Placeholder(""))
-						</td>
+											 						</td>
 
 						<!-- 8. Supply Date -->
 						<td>
-						
+
 							@(Html.DevExtreme().DateBox()
 														.ID("SupplyDates")
 														.Type(DateBoxType.Date)
@@ -688,364 +985,25 @@
 														.Value(DateTime.Now)
 														.Label(new JS("formatMessage('Supply Date')"))
 														.LabelMode(EditorLabelMode.Floating))
-						</td>
-					</tr>
-				</table>
+																 						</td>
+																 						<td>
+							@(Html.DevExtreme().TextBox()
+														.ID("ClientNameArabic")
+														.Label(new JS("formatMessage('Supplier Name in Arabic')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
 
-
-					<!-- Second Card (Right Side) -->
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
-							<tr>
-								<!-- 9. Supplier Code (GridLookUpEdit) -->
-								<td>
-									@* @(Html.DevExtreme().DropDownBox()
-																			.ID("ddclientcode")
-																			.Label(new JS("formatMessage('Supplier Code')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetSupplierCode")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("AccountId"))
-																			.ValueExpr("AccountId")
-																			.DisplayExpr("AccountId")
-																			.ShowClearButton(true)
-														 // ✅ Width of the editor box
-														.DropDownOptions(d => d.Width(800))
-														.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))) *@
-
-
-							@(Html.DevExtreme().DropDownBox()
-														.ID("ddclientcode")
-														.Label(new JS("formatMessage('Supplier Code')"))
-														.LabelMode(EditorLabelMode.Floating)
-														.DataSource(d => d.WebApi()
-														.Controller("VATModule")
-														.LoadAction("GetSupplierCode")
-														.LoadMode(DataSourceLoadMode.Raw)
-														.Key("AccountId"))
-														.ValueExpr("AccountId")
-														.DisplayExpr("AccountId")
-														.ShowClearButton(true)
-														.DropDownOptions(d => d.Width(800))
-														.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
-														.OnFocusIn("onSupplierDropDownFirstClick")  // 🔗 bind alert function
-														)
-
-								</td>
-
-								<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
-									<div style="display:flex; gap:5px;">
-										      @(Html.DevExtreme().Button()
-																				.ID("AddClient")
-																				.Icon("plus")
-																				.Hint("Add Description")
-																				.Width(60)
-																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-																			.OnClick("showLedgerAccountPopup")
-
-																				)
-								             @(Html.DevExtreme().Popup()
-																.ID("ledgerAccountPopup")
-																.Width("80%")
-																.Height("85%")
-																.Title("Add Ledger Account")
-																.ShowTitle(true)
-																.CloseOnOutsideClick(true)
-																.Visible(false)
-																.ResizeEnabled(true)
-																.ContentTemplate(@<text>
-												  									<div id="popupContent" class="background" style="width:100%; height:100%;">
-												  										<iframe id="ledgerAccountFrame" class="background" style="width:100%; height:100%; border:none;"></iframe>
-												  									</div>
-												  								</text>)
-																)
-																 @(Html.DevExtreme().Button()
-																				.ID("EditClient")
-																				.Icon("edit")
-																				.Hint("Edit Description")
-													                     		.Width(60)
-																				.ElementAttr("style", "display: flex; justify-content: center; align-items: center;")
-																			.OnClick("showLedgerAccountEditPopup")
-
-																				)
-								@(Html.DevExtreme().Popup()
-																.ID("ledgerEditAccountPopup")
-																.Width("80%")
-																.Height("85%")
-																.Title(new JS("formatMessage('Edit Ledger Account')"))
-																.ShowTitle(true)
-																.CloseOnOutsideClick(true)
-																.Visible(false)  // Hidden by default
-																.ResizeEnabled(true)
-																.ContentTemplate(@<text>
-												  									<div id="popupContent" style="width:100%; height:100%;">
-												  										<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
-												  									</div>
-												  								</text>)
-																)
-									</div>
-								</td>
-
-								<!-- 10. Supplier Name (ComboBoxEdit) -->
-								<td>
-									@(Html.DevExtreme().DropDownBox()
-																			.ID("ddclientname")
-																			.Label(new JS("formatMessage('Supplier Name')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetSupplierCode")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("AccountId"))
-																			.ValueExpr("AccountId")
-																			.DisplayExpr("SupplierName")
-.Width("100%")
-																			.ValidationRules(rules =>
-																			{
-																				rules.AddRequired()
-																				.Message(new JS("formatMessage('Supplier Name should be entered')"));
-																			})
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.ContentTemplate(new TemplateName("ClientNameContentTemplate")))
-								</td>
-						<td style="width:10%; vertical-align: bottom; padding-bottom: 5px;">
-
-							@(Html.DevExtreme().Button()
-														.ID("btnLink")
-														.Text(new JS("formatMessage('Link')"))
-														.Icon("link")// Display text
-														.StylingMode(ButtonStylingMode.Text)   // Makes it look like a hyperlink
-														.Type(ButtonType.Normal)
-														//.OnClick("onLinkClick")
-														)
-						</td>
-							</tr>
-
-							<tr>
-								<!-- 11. Group VAT No (TextEdit) -->
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("GroupVATNo")
-																			.Label(new JS("formatMessage('Group VAT No')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.MaxLength(15)
-														.Mask("300000000010000") // 15 digits
-														.MaskChar("_") // Optional: makes it more readable
-									)
-								</td>
-
-								<!-- 12. Supplier VAT No (TextEdit) -->
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("ClientVATNo")
-																			.Label(new JS("formatMessage('Supplier VAT No')"))
-																			.LabelMode(EditorLabelMode.Floating)
-														.Mask("300000000000003") // 15 digits
-														.MaskChar("_") // Optional: makes it more readable
-																			)
-
-								</td>
-
-								<!-- 13. Supplier Name in Arabic (TextEdit) -->
-								<td colspan="2">
-									@(Html.DevExtreme().TextBox()
-																			.ID("ClientNameArabic")
-																			.Label(new JS("formatMessage('Supplier Name in Arabic')"))
-																			.LabelMode(EditorLabelMode.Floating))
-								</td>
-							</tr>
-
-							<tr>
-								<!-- 14. Other ID Type (GridLookUpEdit) -->
-								<td>
-									@(Html.DevExtreme().DropDownBox()
-																			.ID("OtherIDType")
-																			.Label(new JS("formatMessage('Other ID Type')"))
-																			.LabelMode(EditorLabelMode.Floating)
-																			.DataSource(d => d.WebApi()
-																			.Controller("VATModule")
-																			.LoadAction("GetVATInvoiceMaster")
-																			.LoadMode(DataSourceLoadMode.Raw)
-																			.Key("BuyerIdtypeName"))
-																			.ValueExpr("BuyerIdtypeName")
-																			.DisplayExpr("BuyerIdtypeName")
-																			.ShowClearButton(true)
-																			.AcceptCustomValue(true)
-																			.ContentTemplate(new TemplateName("ClientNameContent")))
-								</td>
-
-								<!-- 15. Supplier Other ID (TextEdit) -->
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("ClientOtherID")
-																			.Label(new JS("formatMessage('Supplier Other ID')"))
-																			.LabelMode(EditorLabelMode.Floating))
-								</td>
+						<td>
+							@(Html.DevExtreme().TextBox()
+														.ID("ClientOtherID")
+														.Label(new JS("formatMessage('Supplier Other ID')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
 
 								<!-- 16. Supplier Address Details (PopContainerEdit) -->
-								<td colspan="2">
-									@(Html.DevExtreme().DropDownBox()
-																			.ID("ClientAddressDetails")
-																			.Label(new JS("formatMessage('Supplier Address Details')"))
-																			.ShowClearButton(true)
-																			.Width("100%")
-																			.LabelMode(EditorLabelMode.Floating)
-																			.DropDownOptions(o => o.Width(600).Height(550))
-																			.OpenOnFieldClick(true)
-																			.ContentTemplate(@<text>
-
-
-								<div class="address-form-container">
-
-
-									<table class="address-form-table" cellpadding="5">
-										<tr>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Address - Street Name:')"))
-												.ID("StreetName")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
-												.ID("StreetNameArabic")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Building Number:')"))
-												.ID("BuildingNumber")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-										</tr>
-										<tr>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Address - Additional Address:')"))
-												.ID("AdditionalAddress")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
-												.ID("AdditionalAddressArabic")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Additional Number:')"))
-												.ID("AdditionalNumber")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-
-										</tr>
-										<tr>
-
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Client City:')"))
-												.ID("ClientCity")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Client City: (Arabic)')"))
-												.ID("ClientCityArabic")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Postal Code:')"))
-												.ID("PostalCode")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-										</tr>
-										<tr>
-
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Province / State:')"))
-												.ID("Province")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('Province / State: (Arabic)')"))
-												.ID("ProvinceArabic")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-
-											<td style="width: 100%">
-												@(Html.DevExtreme().SelectBox()
-												.ID("CountryCode")
-												.Label(new JS("formatMessage('Country Code:')"))
-												.LabelMode(EditorLabelMode.Floating)
-												.Items(new[] { "US", "UK", "IN", "SA", "UAE" })
-												.Value("IN")
-												.SearchEnabled(true)
-												.Width("100%"))
-											</td>
-										</tr>
-										<tr>
-
-											<td>
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('District / Neighborhood:')"))
-												.ID("District")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-											<td colspan="2">
-												@(Html.DevExtreme().TextBox()
-												.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
-												.ID("DistrictArabic")
-												.LabelMode(EditorLabelMode.Floating)
-												.Width("100%"))
-											</td>
-
-										</tr>
-									</table>
-
-								</div>
-
-									</text>)
-																			)
-								</td>
+								
 							</tr>
 
-					<tr>
-						<!-- 17. Invoice Period -->
-						<td colspan="2">
-							
-							@(Html.DevExtreme().TextBox()
-														.ID("InvoiceCounterValue")
-														.Label(new JS("formatMessage('Invoice Period')"))
-														.LabelMode(EditorLabelMode.Floating))
-						</td>
-
-						<!-- 18. Reference No -->
-						<td colspan="2">
-							
-							@(Html.DevExtreme().TextBox()
-														.ID("UUID")
-														.Label(new JS("formatMessage('Reference No')"))
-														.LabelMode(EditorLabelMode.Floating))
-						</td>
-					</tr>
 
 						</table>
 				</div>
@@ -1578,9 +1536,9 @@
 								.Caption(new JS("formatMessage('Unit Price')"))
 								.Width(200);
 
-											columns.Add().DataField("TotalBeforeDiscount")
+											@* columns.Add().DataField("TotalBeforeDiscount")
 								.Caption(new JS("formatMessage('Total Before Discount')"))
-								.Width(200);
+								.Width(200); *@
 
 											columns.Add().DataField("Discount")
 								.Caption(new JS("formatMessage('Discount')"))
@@ -2967,8 +2925,8 @@
 			dataSource: rowData,
 			keyExpr: "SNo",
 			columns: [
-						{ dataField: "InvoiceChildSlNo", caption: "InvoiceChildSLNo", width: 100, allowEditing: false, visible: false },
-				{ dataField: "SNo", caption: "#", width: 100, allowEditing: false },
+						{ dataField: "PurchaseChildSlNo", caption: "PurchaseChildSlNo", width: 100, allowEditing: false, visible: false },
+				{ dataField: "PurchaseChildSlNo", caption: "#", width: 100, allowEditing: false },
 				{ dataField: "ItemCode", caption: formatMessage('Item Code'), width: 200 },
 				{
 					dataField: "DetailedDescription",
@@ -3039,24 +2997,38 @@
 								icon: "plus",
 								hint: "Add new item",
 								onClick: function () {
-									let url = `/${tenantName}/VAT/VATGoodsandServices`;
+									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
 									let title = "Goods and Services";
-									openModal(url, title);
+									openModal(url, title); // Opens the form in a modal
+									// Or use: window.location.href = url; if navigating directly
 								},
 								width: 60,
 								height: 30
 							}).appendTo($container);
 
+
+							// ✅ Edit icon with navigation
+
 							$("<div>").dxButton({
+
 								icon: "edit",
+
 								hint: "Edit item",
+
 								onClick: function () {
-									let url = `/${tenantName}/VAT/VATGoodsandServices`;
-									let title = "Goods and Services";
-									openModal(url, title);
+
+									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
+								  let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+											let title = "Goods and Services";
+													openModal(url, title);
+									//window.location.href = url;
+
 								},
+
 								width: 60,
+
 								height: 30
+
 							}).appendTo($container);
 						});
 					}
@@ -3134,9 +3106,9 @@
 				},
 					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
 				{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
+				// { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
 				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
-				{ dataField: "DiscountDetails", caption: "...", width: 50 },
+				// { dataField: "DiscountDetails", caption: "...", width: 50 },
 				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
 				{
 		dataField: "VATPercentage",
@@ -3306,8 +3278,8 @@
 			   columns: [
 							 {
 
-								   dataField: "InvoiceChildSLNo",
-								   caption: "InvoiceChildSLNo",
+								   dataField: "PurchaseChildSlNo",
+								   caption: "PurchaseChildSlNo",
 								   width: 100,
 								   allowEditing: false, // Prevent manual editing
 								   visible: false // Hide the column
@@ -3485,43 +3457,43 @@
 
 							   });
 
-							   $("<div>").dxButton({
-								   icon: "plus",
-								   hint: "Add new item",
-								   onClick: function () {
-										   let url = `/${tenantName}/IMS/GoodsAndService`; // ✅ No query parameters
-									   let title = "Goods and Services";
-									   openModal(url, title); // Opens the form in a modal
-									   // Or use: window.location.href = url; if navigating directly
-								   },
-								   width: 60,
-								   height: 30
-							   }).appendTo($container);
+							 $("<div>").dxButton({
+								icon: "plus",
+								hint: "Add new item",
+								onClick: function () {
+									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+									let title = "Goods and Services";
+									openModal(url, title); // Opens the form in a modal
+									// Or use: window.location.href = url; if navigating directly
+								},
+								width: 60,
+								height: 30
+							}).appendTo($container);
 
 
-							   // ✅ Edit icon with navigation
+							// ✅ Edit icon with navigation
 
-							   $("<div>").dxButton({
+							$("<div>").dxButton({
 
-								   icon: "edit",
+								icon: "edit",
 
-								   hint: "Edit item",
+								hint: "Edit item",
 
-								   onClick: function () {
+								onClick: function () {
 
-									   //let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-										 let url = `/${tenantName}/IMS/GoodsAndService?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
-											   let title = "Goods and Services";
-													   openModal(url, title);
-									   //window.location.href = url;
+									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
+									let url = `/${tenantName}/VAT/VATGoodsandServices`;
+											let title = "Goods and Services";
+													openModal(url, title);
+									//window.location.href = url;
 
-								   },
+								},
 
-								   width: 60,
+								width: 60,
 
-								   height: 30
+								height: 30
 
-							   }).appendTo($container);
+							}).appendTo($container);
 
 						   });
 
@@ -3690,30 +3662,30 @@
 
 						   { dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150, cssClass: "center-header" },
 
-					   { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+					   // { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
 				   { dataField: "Discount", caption: formatMessage('Discount'), width: 150, cssClass: "center-header" },
 
 				   //{ dataField: "DiscountDetails", caption: "...", width: 50 },
-					 {
-		dataField: "DiscountDetails",
-		caption: "...",
-		cssClass: "center-header",
-		width: 100,
-		allowEditing: false,
-		cellTemplate: function (container, options) {  // ✅ fixed here
-			$("<div>").dxButton({
-					icon: "fa fa-calculator", // or another valid icon
-				hint: "VAT Calculator",
-				stylingMode: "text",
-				width: 60,
-				onClick: function (e) {
-					onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
-				}
-			}).appendTo(container);
-		}
-	}
-	,
+	// 				 {
+	// 	dataField: "DiscountDetails",
+	// 	caption: "...",
+	// 	cssClass: "center-header",
+	// 	width: 100,
+	// 	allowEditing: false,
+	// 	cellTemplate: function (container, options) {  // ✅ fixed here
+	// 		$("<div>").dxButton({
+	// 				icon: "fa fa-calculator", // or another valid icon
+	// 			hint: "VAT Calculator",
+	// 			stylingMode: "text",
+	// 			width: 60,
+	// 			onClick: function (e) {
+	// 				onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+	// 			}
+	// 		}).appendTo(container);
+	// 	}
+	// }
+	// ,
 
 
 						   { dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
@@ -6754,43 +6726,56 @@
 	});
 
 
+				function showLedgerAccountPopup() {
+		console.log("Opening Add Supplier popup");
 
-			function showLedgerAccountPopup() {
-				var popup = $("#ledgerAccountPopup").dxPopup("instance");
-				popup.show();
+		const tenantName = window.location.pathname.split('/')[1];
+		const url = `/${tenantName}/Finance/LedgerAccount?IsSupplier=true`;
 
-				// Correct URL to your LedgerAccount view
-				$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+		const popup = $("#ledgerAccountPopup").dxPopup("instance");
+		popup.show();
+
+		setTimeout(() => {
+			const iframe = document.getElementById("ledgerAccountFrame");
+			if (!iframe) {
+				console.error("Add iframe not found!");
+				return;
 			}
+			iframe.src = url;
+		}, 300);
+	}
 
-			function showLedgerAccountEditPopup() {
 
-				let IsPurchaseEdit=true;
-				const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsPurchaseEdit=${IsPurchaseEdit}`;
-				var popupInstance = $("#ledgerEditAccountPopup").dxPopup("instance");
+		function onEditClientClick() {
+		const clientId = $("#ddclientcode").dxDropDownBox("option", "value");
 
-				// Add an event to refresh the page when the popup is closed
-				popupInstance.option("onHidden", function () {
-					//location.reload(); // Reloads the page after closing the popup
-				});
+		if (!clientId) {
+			DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Supplier");
+			return;
+		}
 
-				popupInstance.show();
+		showLedgerAccountEditPopup(clientId);
+	}
 
-				setTimeout(function () {
-					var iframe = document.getElementById("ledgerEditAccountFrame");
+	function showLedgerAccountEditPopup(accheadid) {
+		console.log("Opening Edit Supplier popup for ID:", accheadid);
 
-					if (!iframe) {
-						console.error("Error: ledgerEditAccountFrame not found!");
-						return;
-					}
+		const tenantName = window.location.pathname.split('/')[1];
+		const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsPurchaseEdit=true`;
 
-					iframe.onload = function () {
-						console.log("Iframe loaded successfully.");
-					};
+		const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+		popup.show();
 
-					iframe.src = url;
-				}, 300);
+		setTimeout(() => {
+			const iframe = document.getElementById("ledgerEditAccountFrame");
+			if (!iframe) {
+				console.error("Edit iframe not found!");
+				return;
 			}
+			iframe.src = url;
+		}, 300);
+	}
+
 
 
 			 function onVoucherDateChanged(e) {
@@ -7551,8 +7536,8 @@
 			}
 		});
 	}
+		
 
-	
 
 
 </script>

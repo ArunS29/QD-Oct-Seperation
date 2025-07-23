@@ -193,7 +193,7 @@
                
                 .ID("VoucherDate")
                 .InputAttr("aria-label", "Date")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
                 .Value(firstDateOfYear)
@@ -204,7 +204,7 @@
                
                 .ID("EffectiveDate")
                 .InputAttr("aria-label", "Effective Date")
-                .LabelMode(EditorLabelMode.Outside)
+                .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .DisplayFormat("dd-MMM-yyyy")
                 .Value(lastDateOfCurrentMonth))
@@ -233,7 +233,7 @@
                 })
         .ItemTemplate(@<text>
         <div class="custom-dropdown-item">
-            <div style="background-color:<%- color %>;" class="side-bar"></div>
+            <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
             <div class="item-content">
                 <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                 <div>

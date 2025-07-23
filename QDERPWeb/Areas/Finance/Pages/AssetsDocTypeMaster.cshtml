@@ -66,7 +66,7 @@
                     <div class="form-group">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Document Type')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("txtDocumentType")
                             . Value(null)
                             .ValidationRules(rules =>
@@ -82,7 +82,7 @@
                     <div class="form-group">
                         @(Html.DevExtreme().NumberBox()
                             .Label(new JS("formatMessage('Reminder Days')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                             .ID("txtReminderDays")
                             .Value(null)
                             .Min(0)

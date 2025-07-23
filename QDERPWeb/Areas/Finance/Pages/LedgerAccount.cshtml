@@ -469,7 +469,7 @@
                     </div>
 
                     <!-- Default Entry Section -->
-                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                    <div class="border rounded p-3 mb-4 ">
                         <div class="row g-3 align-items-center">
                             <div class="col-md-8">
                                 @(Html.DevExtreme().CheckBox()
@@ -493,7 +493,7 @@
                     </div>
 
                     <!-- Maintain Bill Entry Section -->
-                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                    <div class="border rounded p-3 mb-4 ">
                         <div class="row g-3 align-items-center">
                             <div class="col-md-8">
                                 @(Html.DevExtreme().CheckBox()
@@ -520,7 +520,7 @@
                     </div>
 
                     <!-- Linkage Checkboxes Group -->
-                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                    <div class="border rounded p-3 mb-4 ">
                         <div class="row mb-2">
                             <div class="col">
                                 @(Html.DevExtreme().CheckBox()
@@ -2196,7 +2196,30 @@
                                 .OnClick("onsaveLedgerAccountClick"))
             </div>
         </div>
+         <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="CreatedBy1">Created By:</strong>
+                <div class="col-md-4"> 
+                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("180%").ReadOnly(true)
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="CreatedOn1">Created On:</strong>
+                <div class="col-md-4">
+                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("180%").ReadOnly(true)
+                </div></div>
+                 <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="ModifiedBy1">Modified By:</strong>
+                <div class="col-md-4">
+                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("180%").ReadOnly(true)
+                </div>
+            </div>
 
+            <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="ModifiedOn1">Modified On:</strong>
+                <div class="col-md-3">
+                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("240%").ReadOnly(true)
+                </div>
+                </div>
         
 </div>
 
@@ -6224,6 +6247,37 @@ function syncSupVATNumbers(e) {
         textBox2Instance.option("value", arabicTranslation);
 
     }
+    $(document).ready(function () {
+    const urlParams = new URLSearchParams(window.location.search);
+
+    // Correct text value to match DropDownBox entries
+    const sundryCreditorValue = "SUNDARY CREDITORS"; // Exact match required from your data source
+
+    if (urlParams.get('IsSupplier') === 'true') {
+        // From Add popup → select & disable 'SUNDARY CREDITORS'
+        setTimeout(() => {
+            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+            if (group) {
+                group.option({
+                    value: sundryCreditorValue,
+                    disabled: true
+                });
+            }
+        }, 300);
+    }
+
+    if (urlParams.get('IsPurchaseEdit') === 'true') {
+        // From Edit popup → just disable Account Group
+        setTimeout(() => {
+            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+            if (group) {
+                group.option("disabled", true);
+            }
+        }, 300);
+    }
+});
+
+
 
     // alert("two");
     // alert(getidfromCOA);

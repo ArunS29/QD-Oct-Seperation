@@ -47,7 +47,6 @@
 
     .dx-card {
         width: 1000px;
-        background: var(--background-color);
     }
 
     .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
@@ -75,12 +74,13 @@
         width:97%;
     }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="Projectsub" class="no-border-input"></div>
     </div>
-</div>
-<div class="dx-card" style="margin: auto; padding:15px; width:100%;">
+</div> *@
+<div>
+<div class="dx-card" style="width:100%;">
     <!-- Input Fields -->
     <div class="row mb-2">
         <div class="col-md-12">
@@ -95,20 +95,22 @@
     <div class="row mb-3">
         <div class="col-md-6" style="display:flex; align-items:end;">
             @(Html.DevExtreme().TextBox().ID("txtGroupArabic").Label(new JS("formatMessage('Projects Group (In Arabic):')"))
-                .LabelMode(EditorLabelMode.Floating).Width("100%"))
-
-                <div>
-                @(Html.DevExtreme().Button()
-                    .ID("convertToArabic3")
-                    .Height(30)
-                    .Hint("Convert to Arabic")
-                    .Icon("fas fa-language") // Ensure Font Awesome class is correct
-                    .ElementAttr(new { @class = "input-button" })
-                    .OnClick("convertToArabic"))
-                    
-                </div>
+                .LabelMode(EditorLabelMode.Floating).Width("100%")
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                    .Name("convertToArabic3")
+                                    .Location(TextEditorButtonLocation.After)
+                                    .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("fas fa-language")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("convertToArabic"));
+                                }))
+          
         </div>
     </div>
+
     <div style="display:flex; align-items:end;" >
             @(Html.DevExtreme().TextBox().ID("txtGroupCode").Label(new JS("formatMessage('Group Code:')"))
             .LabelMode(EditorLabelMode.Floating).Width("30%").ValidationRules(rules =>
@@ -188,7 +190,7 @@
                 });
 
             })
-            .Height(500)
+            .Height("55vh")
             .ColumnAutoWidth(true)
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
@@ -211,6 +213,7 @@
     <div class="limited-footer">
         @await Html.PartialAsync("InventoryModuleFooter")
     </div>
+</div>
 </div>
 <script>
     $(document).ready(function () {

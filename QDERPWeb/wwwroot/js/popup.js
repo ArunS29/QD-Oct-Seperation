@@ -1,7 +1,12 @@
-﻿function openModal(url, title) {
-    document.getElementById("modalIframe").src = url + "?modal=true"; // Append ?modal=true
+﻿function openModal(url, title, height = "90%", width = "100%") {
+    const separator = url.includes('?') ? '&' : '?';
+    const modalUrl = url + separator + 'modal=true';
+
+    document.getElementById("modalIframe").src = modalUrl; 
     document.getElementById("modalTitle").innerText = title; // Set modal title
     document.getElementById("customModal").style.display = "block";
+    document.getElementById("modalContent").style.height = height;
+    document.getElementById("modalContent").style.width = width;
 }
 
 // Function to close modal
@@ -45,3 +50,21 @@ function showToastModal(type, title, message) {
 function hideToastModal() {
     document.getElementById("toastModal").style.display = "none";
 }
+const originalNotify = DevExpress.ui.notify;
+DevExpress.ui.notify = function (options, type, displayTime) {
+    if (typeof options === "string") {
+        options = {
+            message: options,
+            type: type || "info",
+            displayTime: displayTime || 3000,
+        };
+    }
+    options.width = "20vw";
+    options.position = {
+        my: "top right",
+        at: "top right",
+        of: "#toastModal"
+    };
+    const result = originalNotify(options);
+    return result;
+};

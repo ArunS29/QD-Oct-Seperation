@@ -57,7 +57,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessge('Voucher Entry ID')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                                 .ID("VoucherEntryID")
                                 .Value(null)
                                 .Disabled(true)
@@ -73,7 +73,7 @@
                                     .LoadAction("GetPaymentAccounts")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("AccountId"))
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ID("accountDropDownBox")
                                 .ShowClearButton(true)
                                 .AcceptCustomValue(true)
@@ -100,7 +100,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().NumberBox()
                             .Label(new JS("formatMessge('Amount')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                                 .ID("txtVoucherAmount")
                                 .Value(null)
                                 .ValidationRules(rules =>
@@ -120,7 +120,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().SelectBox()
                             .Label(new JS("formatMessge('Dr/Cr')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                                 .ID("sbDrCr")
                                 .DataSource(new[] { "Dr", "Cr" })
                                 .Value("Dr")
@@ -132,7 +132,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().SelectBox()
                             .Label(new JS("formatMessge('Reference')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                                 .ID("SalaryPaid")
                                 .DataSource(new[] { "Salary Paid", "Salary Payable" })
                                 .Value("Salary Paid")
@@ -161,7 +161,7 @@
                                               rules.AddRequired()
                                              .Message(new JS("formatMessage('Employee details is required')"));
                                                                             })
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ID("accountEmployeeDropDownBox")
                                 .ShowClearButton(true)
                                 .AcceptCustomValue(true)
@@ -204,7 +204,7 @@
                                                                         rules.AddRequired()
                                                                         .Message(new JS("formatMessage('Against Payable is required')"));
                                                                     })
-                                .LabelMode(EditorLabelMode.Outside)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .ID("againstDropDownBoxPayable")
                                 .ShowClearButton(true)
                                 .AcceptCustomValue(true)
@@ -237,7 +237,7 @@
                         @(
                                                     Html.DevExtreme().NumberBox()
                             .Label(new JS("formatMessge('Amount')"))
-                            .LabelMode(EditorLabelMode.Outside)
+                            .LabelMode(EditorLabelMode.Floating)
                                                     .ID("txtVoucherAmount1")
                                                     .Value(null)
                                                     .ValidationRules(rules =>

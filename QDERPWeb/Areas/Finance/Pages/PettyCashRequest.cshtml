@@ -35,7 +35,6 @@
         padding: 2px;
         box-sizing: border-box;
         border-radius: 2px;
-        border: 1px solid #ccc;
         color: black;
     }
 
@@ -182,20 +181,28 @@
     .dx-overlay-wrapper {
         z-index: 1050 !important; /* Or higher if necessary */
     }
+
+    .footer-fixed {
+        bottom: 37px !important;
+    }
+
+    .titleCard-toggle1 {
+        display: none;
+    }
 </style>
 
-<div class="title">
-    <div class="header-container">
-        <div id="ExpensesClaimRequest" class="no-border-title"></div>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
     </div>
+    <h3 class="card-title-text">Petty Cash Request</h3>
 </div>
-
 <div class="content-container">
-    <div class="row w-100 align-items-center" style="margin-top: 8px;">
+    <div class="horizontal-container row w-100 align-items-center" style="margin-top: 8px;">
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().TextBox()
                         .Label("Claim Reference No:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("VoucherNo")
                         .Value("")
                         .ReadOnly(true)
@@ -206,7 +213,7 @@
             @(Html.DevExtreme().DateBox()
                         .Label("Claim Date:")
                         .ID("claimerdate")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
@@ -216,7 +223,7 @@
             @(Html.DevExtreme().DateBox()
                         .Label("Effective Date:")
                         .ID("claimerEffectiveDate")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
@@ -225,7 +232,7 @@
         <div class="form-group col-md-4 col-sm-6">
             @(Html.DevExtreme().TextArea()
                         .Label("Claim Remarks:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("txtEntryNarration")
                         .Value("Petty Cash Request for the month of ")
 
@@ -235,7 +242,7 @@
         </div>
     </div>
 
-    <div class="row w-100 align-items-center" style="margin-top: 8px;">
+    <div class="horizontal-container row w-100 align-items-center" style="margin-top: 8px;">
         <div class="form-group col-md-4 col-sm-6">
             @(Html.DevExtreme().DropDownBox()
                         .DataSource(d => d.WebApi()
@@ -245,7 +252,7 @@
                         .Key("CostAllocationUnitId")
                         )
                         .Label("Claimed for Project/Jobs:")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .ID("accountDropDownBox")
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
@@ -270,7 +277,7 @@
                         Html.DevExtreme().SelectBox()
                         .Label("Priority:")
                         .ID("Priorityclaim")
-                        .LabelMode(EditorLabelMode.Outside)
+                        .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Critical", "High", "Medium", "Low" })
                         .Value(null)
                         )
@@ -355,7 +362,7 @@
                                     .LoadAction("GetEditAccountHead")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("AccountId"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("accountDropDownBoxEdit")
                                     .ShowClearButton(false)
                                     .AcceptCustomValue(true)
@@ -396,7 +403,7 @@
                                     .LoadAction("GetEditCostCenter")
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("CostAllocationUnitId"))
-                                    .LabelMode(EditorLabelMode.Outside)
+                                    .LabelMode(EditorLabelMode.Floating)
                                     .ID("CostDropDownBoxEdit")
                                     .ShowClearButton(false)
                                     .AcceptCustomValue(true)
@@ -520,7 +527,7 @@
 
 
                 <!-- Row 2: Payment Details + Dropdown + Button -->
-        <div class="row w-100 align-items-start ms-0" style="margin-top: 8px;">
+        <div class="row w-100 align-items-start ms-0" style="margin-top: 8px;display:none;">
             <div class="col-3 d-flex justify-content-center gap-3 align-items-start">
                 <div class="form-group" style="margin-top: 7.5px;">
                 @(Html.DevExtreme().CheckBox().ID("IsSubmitted").Disabled(true))
@@ -2115,5 +2122,177 @@
 
             openModal(url, title);
         }
+                   let isVoucherSaved = false;
+
+       function getWorkflowStatusFromFields() {
+        const submitted = $("#IsSubmitted").dxCheckBox("option", "value") === true;
+        const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
+        const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+
+        if (approved) return 3; // Final state
+        if (verified) return 2;
+        if (isVoucherSaved) return 1;
+
+        return 0;
+    }
+
+
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = "In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = "Pending";
+            }
+
+            // Final Approved state
+                        if (status === 3 && index === 3) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+        function attachWorkflowWatchers() {
+            $("#VerifiedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+            $("#ApprovedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+        }
+
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+
+
+    // function bindWorkflowPopovers() {
+    //     const verifiedBy = $("#VerifiedBytext").dxTextBox("instance").option("value") || "N/A";
+    //     const verifiedOn = $("#VerifiedDate").dxDateBox("instance")?.option("value") || "N/A";
+    //     const approvedBy = $("#ApprovedBytext").dxTextBox("instance").option("value") || "N/A";
+    //     const approvedOn = $("#ApprovedDate").dxDateBox("instance")?.option("value") || "N/A";
+
+    //     $("#verifiedByName").text(verifiedBy);
+    //     $("#verifiedOn").text(formatDate(verifiedOn));
+    //     $("#approvedByName").text(approvedBy);
+    //     $("#approvedOn").text(formatDate(approvedOn));
+
+    //     attachPopoverEvents("#circle-verify", "#verifyPopover");
+    //     attachPopoverEvents("#circle-approve", "#approvePopover");
+    // }
+
+    // function formatDate(date) {
+    //     if (!date) return "N/A";
+    //     const d = new Date(date);
+    //     return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    // }
+
+    // function attachPopoverEvents(targetSelector, popoverSelector) {
+    //     const $target = $(targetSelector);
+    //     const $popover = $(popoverSelector);
+
+    //     $target.on("mouseenter", function (e) {
+    //         const offset = $target.offset();
+    //         $popover.css({
+    //             top: offset.top - $popover.outerHeight() - 10,
+    //             left: offset.left,
+    //             display: "block"
+    //         });
+    //     });
+
+    //     $target.on("mouseleave", function () {
+    //         $(popoverSelector).hide();
+    //     });
+    // }
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+        const submittedBy = $("#SubmittedBytext").dxTextBox("instance")?.option("value") || "N/A";
+        const submittedOn = $("#SubmittedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+        const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
+        const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
+        const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
+
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+
+        });
+            tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+    }
+
 
 </script>

@@ -11,7 +11,9 @@
     }
 }
 <style>
-
+    .titleCard-toggle1 {
+        display: none;
+    }
     /* CSS */
     .context-menu {
         width: 250px;
@@ -447,7 +449,7 @@
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("UserId")
         )
-        .LabelMode(EditorLabelMode.Outside)
+        .LabelMode(EditorLabelMode.Floating)
         .ID("requestedBy")
         .ShowClearButton(true)
 
@@ -509,7 +511,7 @@
         .ID("startDate")
         .InputAttr("aria-label", "Date")
         .Label(new JS("formatMessage('Start Date')"))
-        .LabelMode(EditorLabelMode.Outside)
+        .LabelMode(EditorLabelMode.Floating)
         .Type(DateBoxType.Date)
         .DisplayFormat("dd-MMM-yyyy")
         .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1))
@@ -518,7 +520,7 @@
         .ID("endDate")
         .InputAttr("aria-label", "Date")
         .Label(new JS("formatMessage('End Date')"))
-        .LabelMode(EditorLabelMode.Outside)
+        .LabelMode(EditorLabelMode.Floating)
         .Type(DateBoxType.Date)
         .DisplayFormat("dd-MMM-yyyy")
         .Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)))
@@ -529,7 +531,7 @@
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Contained)
         .Width(200)
-        .ElementAttr("class", "button-alignment-down button-alignment-left")
+        .ElementAttr("class", "button-alignment-left")
         .OnClick("getAllSubmissionJournal")
         )
 
@@ -538,7 +540,6 @@
         .Text(new JS("formatMessage('Show Records')"))
         .Icon("smalliconslayout")
         .Width(180)
-        .ElementAttr("class", "button-alignment-down")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -555,7 +556,7 @@
                 })
                 .ItemTemplate(@<text>
             <div class="custom-dropdown-item">
-                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -566,7 +567,7 @@
         </text>)
                 )
 </div>
-<div class="dx-field ledgerResult"style="height:68%;">
+<div class="dx-field ledgerResult"style="height:60vh;">
     @(
             Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20201JournalRegisterViewResult>() // Replace with your model
             .ID("dataGrid")
