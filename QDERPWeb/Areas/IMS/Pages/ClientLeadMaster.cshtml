@@ -289,7 +289,7 @@
                 .Template(@<text>
             <div class="form-container">
                 <div class="form-row">
-                    <div class="col-md-6" style="">
+                    <div class="col-md-6">
                         @(Html.DevExtreme().DateBox().ID("ClientVisitedOn").Label(new JS("formatMessage('Client Visited On')"))
                         .LabelMode(EditorLabelMode.Floating).DisplayFormat("dd-MMM-yyyy"))
                     </div>
@@ -447,7 +447,7 @@
 
                      
 
-                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;padding:8px;">
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                     @(Html.DevExtreme().Button()
                     .ID("btnAddRepotStatus")
                     .Text(new JS("formatMessage('Add Report Status')"))
@@ -775,7 +775,7 @@
         url: `/api/ClientLeadMaster/GetClientByCode?clientCode=${cleanClientCode}`,
         type: 'GET',
         success: function (data) {
-              $("#btnSave").dxButton("instance").option("text", "Update");
+                 $("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
             console.log("binddata:",data);
             if (data) {
                 $('#txtClientCode').dxTextBox("instance").option("value", data.ClientCode);
