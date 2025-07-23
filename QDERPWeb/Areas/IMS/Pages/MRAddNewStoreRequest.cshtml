@@ -789,7 +789,6 @@
 															.Label(new JS("formatMessage('Cost Center:')"))
 															.ID("txtCostCenter")
 															.LabelMode(EditorLabelMode.Floating)
-															.Width("121%")
 															)
 							</td>
 						</tr>
@@ -825,7 +824,7 @@
 															)
 							</td>
 
-							<td colspan="1">
+							<td colspan="1" style="display:flex;gap: 5px;" >
 								@(Html.DevExtreme().DateBox()
 															.Label(new JS("formatMessage('Expected Date:')"))
 															.ID("txtExpectedDate")
@@ -834,10 +833,6 @@
 														
 															.LabelMode(EditorLabelMode.Floating)
 															)
-							</td>
-
-							<td colspan="1">
-								<!-- Added 'white-space: normal;' to allow text wrapping -->
 								@(Html.DevExtreme().CheckBox()
 															.Text(new JS("formatMessage('Show VAT in Report')"))
 															.ID("ShowVATinReport")

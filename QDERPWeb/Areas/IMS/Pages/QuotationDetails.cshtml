@@ -149,11 +149,11 @@
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="Quotation" class="no-border-input"></div>
 	</div>
-</div>
+</div> *@
 
 
 <div class="Head">
@@ -323,7 +323,7 @@
 			columns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Visible(false);
 
 		})
-		.Height(680) // Fixed height for the grid
+		.Height("75vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
