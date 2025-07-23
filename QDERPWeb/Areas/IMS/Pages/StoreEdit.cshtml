@@ -126,110 +126,102 @@
         display: none;
     }
 </style>
-<div class="title">
-    <div class="header-container">
-        <div id="TypeStore" class="no-border-input"></div>
-    </div>
-</div>
 <div class="signatory-form-container">
-    <div id="Stores" class="no-border-title"></div>
-
-        <table style="width: 60%;">
-            <tr>
-                <!-- LEFT CONTAINER -->
-                <td style="vertical-align: top; width: 50%; padding-right: 20px;">
-                    <div class="form-group">
+    <table style="width: 60%;">
+        <tr>
+            <td style="vertical-align: top; padding-right: 20px;">
+                <!-- ✅ First Row: Store Name + Store Code -->
+                <div style="display: flex; gap: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1;">
                         @(Html.DevExtreme().TextBox()
                             .ID("txtStoreName")
-                        .Label(new JS("formatMessage('Type a newStore & Add to the Existing List')"))
+                            .Label(new JS("formatMessage('Type a newStore & Add to the Existing List')"))
                             .LabelMode(EditorLabelMode.Floating)
-                             .ValidationRules(rules => {
-        rules.AddRequired().Message("Store Name is required");
-    })
-                            )
+                            .ValidationRules(rules => {
+                                rules.AddRequired().Message("Store Name is required");
+                            })
+                        )
                     </div>
-
-                    <div class="form-group">
+                    <div style="flex: 1;">
                         @(Html.DevExtreme().TextBox()
-                        .ID("txtStoreCode")
-                        .Label(new JS("formatMessage('Store Code')"))
+                            .ID("txtStoreCode")
+                            .Label(new JS("formatMessage('Store Code')"))
                             .LabelMode(EditorLabelMode.Floating)
-                          .ValidationRules(rules => {
-        rules.AddRequired().Message("Store Code is required");
-    })
+                            .ValidationRules(rules => {
+                                rules.AddRequired().Message("Store Code is required");
+                            })
+                        )
+                    </div>
+                </div>
+
+                <!-- ✅ Second Row: Dropdown + Add Button -->
+                <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
+                    <div style="flex: 1;">
+                        @(Html.DevExtreme().DropDownBox()
+                            .ID("ddCostcenter")
+                            .Label(new JS("formatMessage('Cost Center Code:(Finance Modules)')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ShowClearButton(true)
+                            .OpenOnFieldClick(true)
+                            .AcceptCustomValue(false)
+                            .DataSource(d => d.WebApi()
+                                .Controller("StoreCode")
+                                .LoadAction("GetCostCenter")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("CostAllocationUnitId")
                             )
-                    </div>
-
-                   
-
-                    <div class="form-group">
-                        <div style="display: flex; gap: 10px; align-items: flex-end;margin-top: 40px;flex-wrap: wrap;">
-                            <div style="flex: 1;">
-                                @(Html.DevExtreme().DropDownBox()
-                                    .ID("ddCostcenter")
-                                    .Label(new JS("formatMessage('Cost Center Code:(Finance Modules)')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .ShowClearButton(true)
-                                    .OpenOnFieldClick(true)
-                                    .AcceptCustomValue(false)
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("StoreCode")
-                                    .LoadAction("GetCostCenter")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("CostAllocationUnitId"))
-                                    .ValueExpr("CostAllocationUnitId")
-                                    .DisplayExpr("CostAllocationUnit")
-                                    .ContentTemplate(@<text>
-                                    <div id="SignatoryGridContainer"></div>
-                                    <script>
-                                        $(function () {
-                                            $("#SignatoryGridContainer").dxDataGrid({
-                                                dataSource: DevExpress.data.AspNet.createStore({
-                                                    key: "CostAllocationUnitId",
-                                                    loadUrl: "/api/StoreCode/GetCostCenter"
-                                                }),
-                                                height: 250,
-                                                selection: { mode: "single" },
-                                                hoverStateEnabled: true,
-                                                paging: { pageSize: 10 },
-                                                pager: {
-                                                    showPageSizeSelector: true,
-                                                    allowedPageSizes: [5, 10, 20]
-                                                },
-                                                columns: [
-                                        { dataField: "CostAllocationUnitId",caption: formatMessage("ID"), width: 250 },
-                                        { dataField: "CostAllocationUnit",caption: formatMessage("Name"),width: 250 },
-                                         { dataField: "CostAllocationGroup", caption: formatMessage("ID") ,width: 250 },
-                                        { dataField: "CostAllocationMasterGroup",caption: formatMessage("Name"), width: 250 },
-                                                ],
-                                                onSelectionChanged: function (e) {
-                                                    var selected = e.selectedRowsData[0];
-                                                    if (selected) {
-                                                        $("#ddCostcenter").dxDropDownBox("instance").option("value", selected.CostAllocationUnitId);
-                                                    }
+                            .ValueExpr("CostAllocationUnitId")
+                            .DisplayExpr("CostAllocationUnit")
+                            .ContentTemplate(@<text>
+                                <div id="SignatoryGridContainer"></div>
+                                <script>
+                                    $(function () {
+                                        $("#SignatoryGridContainer").dxDataGrid({
+                                            dataSource: DevExpress.data.AspNet.createStore({
+                                                key: "CostAllocationUnitId",
+                                                loadUrl: "/api/StoreCode/GetCostCenter"
+                                            }),
+                                            height: 250,
+                                            selection: { mode: "single" },
+                                            hoverStateEnabled: true,
+                                            paging: { pageSize: 10 },
+                                            pager: {
+                                                showPageSizeSelector: true,
+                                                allowedPageSizes: [5, 10, 20]
+                                            },
+                                            columns: [
+                                                { dataField: "CostAllocationUnitId", caption: formatMessage("ID"), width: 250 },
+                                                { dataField: "CostAllocationUnit", caption: formatMessage("Name"), width: 250 },
+                                                { dataField: "CostAllocationGroup", caption: formatMessage("ID"), width: 250 },
+                                                { dataField: "CostAllocationMasterGroup", caption: formatMessage("Name"), width: 250 }
+                                            ],
+                                            onSelectionChanged: function (e) {
+                                                var selected = e.selectedRowsData[0];
+                                                if (selected) {
+                                                    $("#ddCostcenter").dxDropDownBox("instance").option("value", selected.CostAllocationUnitId);
                                                 }
-                                            });
+                                            }
                                         });
-                                    </script>
-                                </text>)
-                                    )
-                            </div>
-                            <div>
-                                @(Html.DevExtreme().Button()
-                                    .ID("btnAddSalesPerson")
-                                    .Text(new JS("formatMessage('ADD')"))
-                                    .Icon("plus")
-                                    .OnClick("function() { addStoreToGrid(); }")
-                                    .ElementAttr(new { @class = "dx-button-add" })
-                                    )
-                            </div>
-                        </div>
+                                    });
+                                </script>
+                            </text>)
+                        )
                     </div>
-                </td>
+                    <div>
+                        @(Html.DevExtreme().Button()
+                            .ID("btnAddSalesPerson")
+                            .Text(new JS("formatMessage('ADD')"))
+                            .Icon("plus")
+                            .OnClick("function() { addStoreToGrid(); }")
+                            .ElementAttr(new { @class = "dx-button-add" })
+                        )
+                    </div>
+                </div>
+            </td>
+        </tr>
+    </table>
 
-            </tr>
-        </table>
-  
+
 
 
 <div class="dx-field ledgerResult">
@@ -280,7 +272,7 @@
                 });
  
             })
-        .Height(500)
+        .Height("65vh")
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)

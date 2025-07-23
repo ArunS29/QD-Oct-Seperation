@@ -332,7 +332,6 @@
 		display: flex;
 		justify-content: space-between;
 		gap: 20px;
-		padding: 20px;
 	}
 
 
@@ -398,7 +397,7 @@
 
 
 
-			<div id="tab-content-1" class="tab-content">
+			<div id="tab-content-1" class="tab-content" style="height: 200px;">
 
 				<table style="width:100%;">
 					<tr style="display:flex; gap: 10px; align-items:end; width:100%;">
@@ -450,13 +449,12 @@
 														.LoadAction("GetClientName")
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("CategoryCode")
-
 														)
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("GetProjectDropDown")
 														.Width(900)
-														@*  .ShowClearButton(true)
-                 .AcceptCustomValue(true) *@
+																	@*  .ShowClearButton(true)
+							.AcceptCustomValue(true) *@
 														.OpenOnFieldClick(false)//
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
@@ -466,28 +464,38 @@
 														.OnOpened("onOpened")
 														.TabIndex(1)
 														.Width("100%")
-														.Disabled(true)
 														.OnKeyDown("onKeyDown")
-														//.OnValueChanged("dropDownBoxValueChanged")
-														.ContentTemplate(new TemplateName("GetClientNameContentTemplate"))
-														)
-
-							@(Html.DevExtreme().Button()
-														.ID("AddDebits")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
 														.Disabled(true)
-														.ElementAttr("style", "margin-top: 20px;")
-														)
+																		//.OnValueChanged("dropDownBoxValueChanged")
+														.ContentTemplate(new TemplateName("GetProjectContentTemplate"))
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("clear");
 
-							@(Html.DevExtreme().Button()
-														.ID("EditDebits")
-														.Icon("edit")
-														.Hint("Edit Description")
-														.Width(40)
-														.Disabled(true)
-														.ElementAttr("style", "margin-top: 20px;")
+															buttons.Add()
+															.Name("AddDebits")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("plus")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.Disabled(true)
+															);
+
+															// Custom editLedger button
+															buttons.Add()
+															.Name("EditDebits")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("edit")
+															.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+															.Disabled(true)
+															);
+															buttons.Add()
+															.Name("dropDown");
+														})
 														)
 						</td>
 					</tr>
@@ -504,8 +512,8 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddStoreCodeDropDown")
 														.Width(900)
-														@*  .ShowClearButton(true)
-                                    .AcceptCustomValue(true) *@
+																	@*  .ShowClearButton(true)
+							.AcceptCustomValue(true) *@
 														.OpenOnFieldClick(false)//
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
@@ -516,17 +524,21 @@
 														.TabIndex(1)
 														.Width("100%")
 														.OnKeyDown("onKeyDown")
-														//.OnValueChanged("dropDownBoxValueChanged")
+																				//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetStoreCodeContentTemplate"))
-														)
-
-							@(Html.DevExtreme().Button()
-														.ID("AdStoreCode")
-														.Icon("plus")
-														.Hint("Add Store Code")
-														.Width(35)
-														.OnClick("AddStoreEdit")
-														.ElementAttr("style", "justify-content: center"))
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("AdStoreCode")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("plus")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.OnClick("AddStoreEdit"));
+															buttons.Add()
+															.Name("dropDown");
+														}))
 
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
@@ -534,9 +546,9 @@
 														.Label(new JS("formatMessage('Department Requested By:')"))
 														.ID("ddDep")
 														.DataSource(d => d.WebApi()
-														.Controller("AccountLedgerMaster")
-														//.LoadAction("getVATInvoiceTypes")
-														//.LoadMode(DataSourceLoadMode.Raw)
+																					//.Controller("AccountLedgerMaster")
+																					//.LoadAction("getVATInvoiceTypes")
+														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("InvoiceType"))
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
@@ -547,15 +559,19 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.Width("100%")
 														.Disabled(true)
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddDep")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.Disabled(true).Disabled(true)
-														)
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("btndepts")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("plus")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.Disabled(true));
+															buttons.Add()
+															.Name("dropDown");
+														}))
 
 						</td>
 						<td colspan="2" style="width:100%;">
@@ -598,8 +614,8 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddGetModeOfRequest")
 														.Width(900)
-														@*  .ShowClearButton(true)
-							                           .AcceptCustomValue(true) *@
+																	@*  .ShowClearButton(true)
+							.AcceptCustomValue(true) *@
 														.OpenOnFieldClick(false)//
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
@@ -610,17 +626,21 @@
 														.TabIndex(1)
 														.Width("100%")
 														.OnKeyDown("onKeyDown")
-														//.OnValueChanged("dropDownBoxValueChanged")
+																				//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddModeReq")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddModeReq")
-														)
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("AddModeReq")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("plus")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.OnClick("AddModeReq"));
+															buttons.Add()
+															.Name("dropDown");
+														}))
 						</td>
 						<td style="display: flex; align-items:end;width:100%;" colspan="2">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -634,7 +654,7 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddGetTypeOfRequest")
 														.Width(900)
-														@*  .ShowClearButton(true)
+																	@*  .ShowClearButton(true)
 							.AcceptCustomValue(true) *@
 														.OpenOnFieldClick(false)//
 														.ValueChangeEvent("input")
@@ -646,17 +666,21 @@
 														.TabIndex(1)
 														.Width("100%")
 														.OnKeyDown("onKeyDown")
-														//.OnValueChanged("dropDownBoxValueChanged")
+																				//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddTypeReq")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddTypeReq")
-														)
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("AddTypeReq")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("plus")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.OnClick("AddTypeReq"));
+															buttons.Add()
+															.Name("dropDown");
+														}))
 						</td>
 						<td colspan="2" style="width:100%;">
 							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
@@ -706,8 +730,6 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddProject")
 														.Width(900)
-														@*  .ShowClearButton(true)
-							.AcceptCustomValue(true) *@
 														.OpenOnFieldClick(false)//
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
@@ -720,15 +742,19 @@
 														.OnKeyDown("onKeyDown")
 														//.OnValueChanged("dropDownBoxValueChanged")
 														.ContentTemplate(new TemplateName("GetProjectContentTemplate"))
-														)
-							@(Html.DevExtreme().Button()
-														.ID("AddProject")
-														.Icon("plus")
-														.Hint("Add Description")
-														.Width(40)
-														.ElementAttr("style", "margin-top:18px;")
-														.OnClick("AddProject")
-														)
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("AddProject")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("plus")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.OnClick("AddProject"));
+															buttons.Add()
+															.Name("dropDown");
+														}))
 						</td>
 					</tr>
 				</table>
@@ -738,7 +764,7 @@
 
 
 
-			<div id="tab-content-2" class="tab-content">
+			<div id="tab-content-2" class="tab-content" style="height: 200px;">
 
 				<div class="card-container">
 
@@ -771,7 +797,6 @@
 															.Label(new JS("formatMessage('Cost Center:')"))
 															.ID("txtCostCenter")
 															.LabelMode(EditorLabelMode.Floating)
-															.Width("121%")
 															)
 							</td>
 						</tr>
@@ -807,7 +832,7 @@
 															)
 							</td>
 
-							<td colspan="1">
+							<td colspan="1" style="display:flex;gap: 5px;">
 								@(Html.DevExtreme().DateBox()
 															.Label(new JS("formatMessage('Expected Date:')"))
 															.ID("txtExpectedDate")
@@ -816,10 +841,6 @@
 															
 															.LabelMode(EditorLabelMode.Floating)
 															)
-							</td>
-
-							<td colspan="1">
-								<!-- Added 'white-space: normal;' to allow text wrapping -->
 								@(Html.DevExtreme().CheckBox()
 															.Text(new JS("formatMessage('Show VAT in Report')"))
 															.ID("ShowVATinReport")
@@ -850,7 +871,7 @@
 
 			</div>
 
-			<div id="tab-content-3" class="tab-content">
+			<div id="tab-content-3" class="tab-content" style="height: 200px;">
 				<div class="row">
 					<!-- Card 1: 8 columns -->
 					<div class="col-6">
@@ -859,120 +880,121 @@
 						<div class="row" style="font-size:14px;">
 							<div class="col-12">
 								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-															.Label(new JS("formatMessage('Company Branch/Division:')"))
-															.DataSource(d => d.WebApi()
-															.Controller("AddNewClientRequest")
-															.LoadAction("GetCompany")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("CompanyId")
-															)
-															.LabelMode(EditorLabelMode.Floating)
-															.ID("ddGetCompany")
-															.Width(900)
-															@*  .ShowClearButton(true)
-                                                     .AcceptCustomValue(true) *@
-															.OpenOnFieldClick(false)//
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("CompanyId")
-															.DisplayExpr("CompanyName")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															.TabIndex(1)
-															.Width("100%")
-															.OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
-															)
-
-							</div>
-							<div class="col-6">
-
-								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-															.Label(new JS("formatMessage('Requested By(MPR Type):')"))
-															.DataSource(d => d.WebApi()
-															.Controller("AddNewClientRequest")
-															.LoadAction("GetMPRRequesterBy")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("RequestedByCode")
-															)
-															.LabelMode(EditorLabelMode.Floating)
-															.ID("ddRequestedBy")
-															.Width(900)
-															@*  .ShowClearButton(true)
+																.Label(new JS("formatMessage('Company Branch/Division:')"))
+																.DataSource(d => d.WebApi()
+																.Controller("AddNewClientRequest")
+																.LoadAction("GetCompany")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("CompanyId")
+																)
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddGetCompany")
+																.Width(900)
+																			@*  .ShowClearButton(true)
 								.AcceptCustomValue(true) *@
-															.OpenOnFieldClick(false)
-														   .ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("RequestedByCode")
-															.DisplayExpr("RequestedBy")
-															.Value(4)
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															.TabIndex(1)
-															.Width("100%")
-															.OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("GetMPRRequesterByContentTemplate"))
-															)
-							</div>
-							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-															.Label(new JS("formatMessage('Requested/Enquiry Status:')"))
-															.DataSource(d => d.WebApi()
-															.Controller("AddNewClientRequest")
-															.LoadAction("GetEnquiry")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("PurchaseRequestStatusId")
-															)
-															.LabelMode(EditorLabelMode.Floating)
-															.ID("ddGetEnquiry")
-															.Width(900)
-															@*  .ShowClearButton(true)
-								                                .AcceptCustomValue(true) *@
-															.OpenOnFieldClick(false)//
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("PurchaseRequestStatusId")
-															.DisplayExpr("PurchaseRequestStatus")
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															.TabIndex(1)
-															.Width("100%")
-															.OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("GetEnquiryContentTemplate"))
-															)
+																.OpenOnFieldClick(false)//
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.ValueExpr("CompanyId")
+																.DisplayExpr("CompanyName")
+																.OnInput("dropDownBoxOnInput")
+																.OnOpened("onOpened")
+																.TabIndex(1)
+																.Width("100%")
+																.OnKeyDown("onKeyDown")
+																						//.OnValueChanged("dropDownBoxValueChanged")
+																.ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
+																)
 
 							</div>
 							<div class="col-6">
 								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-															.Label(new JS("formatMessage('Inventory Group Master:')"))
-															.DataSource(d => d.WebApi()
-															.Controller("AddNewClientRequest")
-															.LoadAction("GetInventoryGroup")
-															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("InventoryMasterGroupId")
-															)
-															.LabelMode(EditorLabelMode.Floating)
-															.ID("ddGetInventoryGroup")
-															.Width(900)
-															@*  .ShowClearButton(true)
-                                                    .AcceptCustomValue(true) *@
-															.OpenOnFieldClick(false)//
-															.ValueChangeEvent("input")
-															.HoverStateEnabled(true)
-															.ValueExpr("InventoryMasterGroupId")
-															.DisplayExpr("InventoryMasterGroup")
-															.Value(1)
-															.OnInput("dropDownBoxOnInput")
-															.OnOpened("onOpened")
-															.TabIndex(1)
-															.Width("100%")
-															.OnKeyDown("onKeyDown")
-															//.OnValueChanged("dropDownBoxValueChanged")
-															.ContentTemplate(new TemplateName("GetInventoryGroupContentTemplate"))
-															)
+																.Label(new JS("formatMessage('Requested By(MPR Type):')"))
+																.DataSource(d => d.WebApi()
+																.Controller("AddNewClientRequest")
+																.LoadAction("GetMPRRequesterBy")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("RequestedByCode")
+																)
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddRequestedBy")
+																.Width(900)
+																			@*  .ShowClearButton(true)
+								.AcceptCustomValue(true) *@
+																.OpenOnFieldClick(false)//
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.Value(2)
+																.ValueExpr("RequestedByCode")
+																.DisplayExpr("RequestedBy")
+																.OnInput("dropDownBoxOnInput")
+																.OnOpened("onOpened")
+																.TabIndex(1)
+																.Width("100%")
+																.OnKeyDown("onKeyDown")
+																.Disabled(true)
+																				//.OnValueChanged("dropDownBoxValueChanged")
+																.ContentTemplate(new TemplateName("GetMPRRequesterByContentTemplate"))
+																)
+
+							</div>
+							<div class="col-6">
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+																.Label(new JS("formatMessage('Requested/Enquiry Status:')"))
+																.DataSource(d => d.WebApi()
+																.Controller("AddNewClientRequest")
+																.LoadAction("GetEnquiry")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("PurchaseRequestStatusId")
+																)
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddGetEnquiry")
+																.Width(900)
+																			@*  .ShowClearButton(true)
+								.AcceptCustomValue(true) *@
+																.OpenOnFieldClick(false)//
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.ValueExpr("PurchaseRequestStatusId")
+																.DisplayExpr("PurchaseRequestStatus")
+																.OnInput("dropDownBoxOnInput")
+																.OnOpened("onOpened")
+																.TabIndex(1)
+																.Width("100%")
+																.OnKeyDown("onKeyDown")
+																						//.OnValueChanged("dropDownBoxValueChanged")
+																.ContentTemplate(new TemplateName("GetEnquiryContentTemplate"))
+																)
+
+							</div>
+							<div class="col-6">
+								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+																.Label(new JS("formatMessage('Inventory Group Master:')"))
+																.DataSource(d => d.WebApi()
+																.Controller("AddNewClientRequest")
+																.LoadAction("GetInventoryGroup")
+																.LoadMode(DataSourceLoadMode.Raw)
+																.Key("InventoryMasterGroupId")
+																)
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("ddGetInventoryGroup")
+																.Width(900)
+																			@*  .ShowClearButton(true)
+								.AcceptCustomValue(true) *@
+																.OpenOnFieldClick(false)
+																.Value(1)
+																.ValueChangeEvent("input")
+																.HoverStateEnabled(true)
+																.ValueExpr("InventoryMasterGroupId")
+																.DisplayExpr("InventoryMasterGroup")
+																.OnInput("dropDownBoxOnInput")
+																.OnOpened("onOpened")
+																.TabIndex(1)
+																.Width("100%")
+																.OnKeyDown("onKeyDown")
+																						//.OnValueChanged("dropDownBoxValueChanged")
+																.ContentTemplate(new TemplateName("GetInventoryGroupContentTemplate"))
+																)
 
 							</div>
 							<div class="col-6">
@@ -989,8 +1011,8 @@
 																				.LabelMode(EditorLabelMode.Floating)
 																				.ID("ddGetRequesstingUnit")
 																				.Width(900)
-																				@*  .ShowClearButton(true)
-										                                      .AcceptCustomValue(true) *@
+																							@*  .ShowClearButton(true)
+										.AcceptCustomValue(true) *@
 																				.OpenOnFieldClick(false)//
 																				.ValueChangeEvent("input")
 																				.HoverStateEnabled(true)
@@ -1001,27 +1023,40 @@
 																				.TabIndex(1)
 																				.Width("100%")
 																				.OnKeyDown("onKeyDown")
-																				//.OnValueChanged("dropDownBoxValueChanged")
+																										//.OnValueChanged("dropDownBoxValueChanged")
 																				.ContentTemplate(new TemplateName("GetRequesstingUnitContentTemplate"))
+																				.Buttons(buttons =>
+																				{
+										  										// Built-in clear button
+																					buttons.Add()
+																					.Name("clear");
+
+																					// Custom addLedger button
+																					buttons.Add()
+																					.Name("AddReqUnit")
+																					.Location(TextEditorButtonLocation.After)
+																					.Widget(w => w.Button()
+																					.Type(ButtonType.Default)
+																					.Icon("plus")
+																					.ElementAttr(new { @class = "custom-hover-button add-hover" })
+																					.OnClick("AddReqUnit")
+																					);
+
+																					// Custom editLedger button
+																					buttons.Add()
+																					.Name("EditReqUnit")
+																					.Location(TextEditorButtonLocation.After)
+																					.Widget(w => w.Button()
+																					.Type(ButtonType.Default)
+																					.Icon("edit")
+																					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+																																					//.OnClick("showLedgerAccountEditPopup")
+																					);
+																					buttons.Add()
+																					.Name("dropDown");
+																				})
 																				)
 									</div>
-
-									@(Html.DevExtreme().Button()
-																			.ID("AddReqUnit")
-																			.Icon("plus")
-																			.Hint("Add Description")
-																			.Width(40)
-																			.ElementAttr("style", "margin-top:18px;")
-																			.OnClick("AddReqUnit")
-																			)
-
-									@(Html.DevExtreme().Button()
-																			.ID("EditReqUnit")
-																			.Icon("edit")
-																			.Hint("Edit Description")
-																			.Width(40)
-																			.ElementAttr("style", "margin-top:18px;")
-																			)
 								</div>
 							</div>
 
@@ -1041,27 +1076,27 @@
 
 							<div class="col-6">
 								@(Html.DevExtreme().DateBox()
-															.ID("ddBitCls")
-															.Label(new JS("formatMessage('Bit Closing Date:')"))
-															.Type(DateBoxType.Date) // Other options: DateTime, Time
-															
-															.DisplayFormat("dd/MM/yyyy")
-															.LabelMode(EditorLabelMode.Floating)
-															.Width("100%")
-															)
+																.ID("ddBitCls")
+																.Label(new JS("formatMessage('Bit Closing Date:')"))
+																.Type(DateBoxType.Date) // Other options: DateTime, Time
+
+																.DisplayFormat("dd/MM/yyyy")
+																.LabelMode(EditorLabelMode.Floating)
+																.Width("100%")
+																)
 
 							</div>
 
 							<div class="col-6">
 								@(Html.DevExtreme().DateBox()
-															.ID("ddReminder")
-															.Label(new JS("formatMessage('Set Reminder On:')"))
-															.Type(DateBoxType.Date) // Other options: DateTime, Time
-															
-															.DisplayFormat("dd/MM/yyyy")
-															.LabelMode(EditorLabelMode.Floating)
-															.Width("100%")
-															)
+																.ID("ddReminder")
+																.Label(new JS("formatMessage('Set Reminder On:')"))
+																.Type(DateBoxType.Date) // Other options: DateTime, Time
+
+																.DisplayFormat("dd/MM/yyyy")
+																.LabelMode(EditorLabelMode.Floating)
+																.Width("100%")
+																)
 
 							</div>
 
@@ -1069,11 +1104,11 @@
 							<div class="col-12">
 
 								@(Html.DevExtreme().TextBox()
-															.Label(new JS("formatMessage('Client Project Details:')"))
-															.LabelMode(EditorLabelMode.Floating)
-															.ID("txtClientProject")
+																.Label(new JS("formatMessage('Client Project Details:')"))
+																.LabelMode(EditorLabelMode.Floating)
+																.ID("txtClientProject")
 
-															)
+																)
 							</div>
 
 
@@ -1091,151 +1126,149 @@
 			</div>
 
 
-			<div id="tab-content-4" class="tab-content">
+			<div id="tab-content-4" class="tab-content" style="height: 200px;">
 
 
-				<div class="row">
-					<!-- Add margin bottom to separate rows -->
-					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-													.Label(new JS("formatMessage('Prepared By:')"))
-													.DataSource(d => d.WebApi()
-													.Controller("AddNewClientRequest")
-													.LoadAction("GetSignatory")
-													.LoadMode(DataSourceLoadMode.Raw)
-													.Key("SignatoryId")
-													)
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("ddPreparedby")
-													.Width(900)
-													@*  .ShowClearButton(true)
+					<div class="row">
+						<!-- Add margin bottom to separate rows -->
+						<div class="col-3">
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+														.Label(new JS("formatMessage('Prepared By:')"))
+														.DataSource(d => d.WebApi()
+														.Controller("AddNewClientRequest")
+														.LoadAction("GetSignatory")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("SignatoryId")
+														)
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ddPreparedby")
+														.Width(900)
+																	@*  .ShowClearButton(true)
 						.AcceptCustomValue(true) *@
-													.OpenOnFieldClick(false)//
-													.ValueChangeEvent("input")
-													.HoverStateEnabled(true)
-													.ValueExpr("SignatoryId")
-													.DisplayExpr("SignatoryName")
-													.OnInput("dropDownBoxOnInput")
-													.OnOpened("onOpened")
-													.TabIndex(1)
-													.Width("100%")
-													.OnKeyDown("onKeyDown")
-													//.OnValueChanged("dropDownBoxValueChanged")
-													.ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
-													)
-					</div>
+														.OpenOnFieldClick(false)//
+														.ValueChangeEvent("input")
+														.HoverStateEnabled(true)
+														.ValueExpr("SignatoryId")
+														.DisplayExpr("SignatoryName")
+														.OnInput("dropDownBoxOnInput")
+														.OnOpened("onOpened")
+														.TabIndex(1)
+														.Width("100%")
+														.OnKeyDown("onKeyDown")
+																				//.OnValueChanged("dropDownBoxValueChanged")
+														.ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("AddPreparedBy")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("plus")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.OnClick("AddPreparedBy"));
+															buttons.Add()
+															.Name("dropDown");
+														}))
 
-					<div class="col-1 d-flex align-items-start">
-						@(Html.DevExtreme().Button()
-													.ID("AddPreparedBy")
-													.Icon("plus")
-													.Hint("Add Sales Person")
-													.Width(40)
-													.ElementAttr("style", "margin-top:25px;")
-													.OnClick("AddPreparedBy")
-													)
-					</div>
+						</div>
 
-					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-													.Label(new JS("formatMessage('Verified By:')"))
-													.DataSource(d => d.WebApi()
-													.Controller("AddNewClientRequest")
-													.LoadAction("GetSignatory")
-													.LoadMode(DataSourceLoadMode.Raw)
-													.Key("SignatoryId")
-													)
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("ddVerifiedby")
-													.Width(900)
-													@*  .ShowClearButton(true)
+
+
+						<div class="col-3">
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+														.Label(new JS("formatMessage('Verified By:')"))
+														.DataSource(d => d.WebApi()
+														.Controller("AddNewClientRequest")
+														.LoadAction("GetSignatory")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("SignatoryId")
+														)
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ddVerifiedby")
+														.Width(900)
+																	@*  .ShowClearButton(true)
 						.AcceptCustomValue(true) *@
-													.OpenOnFieldClick(false)//
-													.ValueChangeEvent("input")
-													.HoverStateEnabled(true)
-													.ValueExpr("SignatoryId")
-													.DisplayExpr("SignatoryName")
-													.OnInput("dropDownBoxOnInput")
-													.OnOpened("onOpened")
-													.TabIndex(1)
-													.Width("100%")
-													.OnKeyDown("onKeyDown")
-													//.OnValueChanged("dropDownBoxValueChanged")
-													.ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
-													)
-					</div>
+														.OpenOnFieldClick(false)//
+														.ValueChangeEvent("input")
+														.HoverStateEnabled(true)
+														.ValueExpr("SignatoryId")
+														.DisplayExpr("SignatoryName")
+														.OnInput("dropDownBoxOnInput")
+														.OnOpened("onOpened")
+														.TabIndex(1)
+														.Width("100%")
+														.OnKeyDown("onKeyDown")
+																				//.OnValueChanged("dropDownBoxValueChanged")
+														.ContentTemplate(new TemplateName("GetVerifiedByContentTemplate"))
+														)
+						</div>
 
-					<div class="col-3">
-						@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-													.Label(new JS("formatMessage('Approved By:')"))
-													.DataSource(d => d.WebApi()
-													.Controller("AddNewClientRequest")
-													.LoadAction("GetSignatory")
-													.LoadMode(DataSourceLoadMode.Raw)
-													.Key("SignatoryId")
-													)
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("ddApprovedby")
-													.Width(900)
-													@*  .ShowClearButton(true)
+						<div class="col-3">
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+														.Label(new JS("formatMessage('Approved By:')"))
+														.DataSource(d => d.WebApi()
+														.Controller("AddNewClientRequest")
+														.LoadAction("GetSignatory")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("SignatoryId")
+														)
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ddApprovedby")
+														.Width(900)
+																	@*  .ShowClearButton(true)
 						.AcceptCustomValue(true) *@
-													.OpenOnFieldClick(false)//
-													.ValueChangeEvent("input")
-													.HoverStateEnabled(true)
-													.ValueExpr("SignatoryId")
-													.DisplayExpr("SignatoryName")
-													.OnInput("dropDownBoxOnInput")
-													.OnOpened("onOpened")
-													.TabIndex(1)
-													.Width("100%")
-													.OnKeyDown("onKeyDown")
-													//.OnValueChanged("dropDownBoxValueChanged")
-													.ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
-													)
-					</div>
-				</div>
-
-				<!-- Row 2: CheckBox 1 -->
-				<div class="row">
-					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Print in Letter Head')"))
-													.ID("txtLetter")
-													.Value(null)
-													)
-					</div>
-				</div>
-
-				<!-- Row 3: CheckBox 2 -->
-				<div class="row">
-					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Show Company Seal')"))
-													.ID("txtShowSeal")
-													.Value(null)
-													)
-					</div>
-				</div>
-
-				<!-- Row 4: CheckBox 3 -->
-				<div class="row">
-					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Show Signature')"))
-													.ID("txtShowSign")
-													.Value(null)
-													)
+														.OpenOnFieldClick(false)//
+														.ValueChangeEvent("input")
+														.HoverStateEnabled(true)
+														.ValueExpr("SignatoryId")
+														.DisplayExpr("SignatoryName")
+														.OnInput("dropDownBoxOnInput")
+														.OnOpened("onOpened")
+														.TabIndex(1)
+														.Width("100%")
+														.OnKeyDown("onKeyDown")
+																				//.OnValueChanged("dropDownBoxValueChanged")
+														.ContentTemplate(new TemplateName("GetApprovedByContentTemplate"))
+														)
+						</div>
 					</div>
 
+					<!-- Row 2: CheckBox 1 -->
+					<div class="row">
+						<div class="col-3">
+							@(Html.DevExtreme().CheckBox()
+														.Text(new JS("formatMessage('Print in Letter Head')"))
+														.ID("txtLetter")
+														.Value(null)
+														)
+						</div>
+					</div>
+
+					<!-- Row 3: CheckBox 2 -->
+					<div class="row">
+						<div class="col-3">
+							@(Html.DevExtreme().CheckBox()
+														.Text(new JS("formatMessage('Show Company Seal')"))
+														.ID("txtShowSeal")
+														.Value(null)
+														)
+						</div>
+					</div>
+
+					<!-- Row 4: CheckBox 3 -->
+					<div class="row">
+						<div class="col-3">
+							@(Html.DevExtreme().CheckBox()
+														.Text(new JS("formatMessage('Show Signature')"))
+														.ID("txtShowSign")
+														.Value(null)
+														)
+						</div>
+
+					</div>
+
 				</div>
-
-			</div>
-
-
-
-
-
-
 		</div>
 
 
@@ -2531,7 +2564,7 @@
 		}
 	function AddStoreEdit(){
 					const url = `/${tenantName}/IMS/StoreEdit`;
-				  const title = "";
+				  const title = "Store";
 					  openModal(url, title);
 			  }
 
@@ -2555,7 +2588,7 @@
 			function navigateToLedgerAccountForm() {
 			// make sure this is available in the view
 				const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-				const title = "";
+				const title = "Signatories";
 				openModal(url, title); // opens in modal instead of new window
 			}
 
@@ -6993,28 +7026,28 @@
 			});
 			  function AddProject(){
 				const url = `/${tenantName}/IMS/Projects`;
-				const title = "";
-					openModal(url, title);
+				const title = "Projects";
+					 openModal(url, title);
 			}
 			 function AddPreparedBy(){
 					const url = `/${tenantName}/IMS/Signatories`;
-				  const title = "";
+				  const title = "Signatories";
 					  openModal(url, title);
 			  }
 
 			   function AddReqUnit(){
 					const url = `/${tenantName}/IMS/ProjectSubUnits`;
-				  const title = "";
+				  const title = "Project Sub Units";
 					  openModal(url, title);
 			  }
 				 function AddModeReq(){
 					const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-				  const title = "";
+				  const title = "Quotation Mode Of Request";
 					  openModal(url, title);
 			  }
 				 function AddTypeReq(){
 					const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-				  const title = "";
+				  const title = "Quotation Type Of Request";
 					  openModal(url, title);
 			  }
 				   $(function () {

@@ -103,15 +103,7 @@ td {
         position: relative;
     } */
 
-/*.footer-fixed {
-    position: fixed;
-    bottom: 0;
-    left: 0px;
-    right: 0;
-    height: 60px;
-    background: #ffffff;
-    z-index: 9999;
-}*/
+
 /* Red background for the Attachment button */
 .btn-attachment-red .dx-button-content {
     background-color: #e74c3c !important; /* bright red */
@@ -428,9 +420,7 @@ td {
 .footer-fixed {
     width: -webkit-fill-available;
     position: fixed;
-    bottom: 0;
-    /* left: 0px; */
-    /* right: 0; */
+    bottom: 35px!important;
     height: 60px;
     background: #ffffff;
     z-index: 999;

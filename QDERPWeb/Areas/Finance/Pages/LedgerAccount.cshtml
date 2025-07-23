@@ -268,7 +268,9 @@
         /* flex-wrap: wrap;
         gap: 10px; */
     }
-
+    #chatbot-container{
+        display:none;
+    }
    
 
     .containerLedgerAccount{
@@ -283,6 +285,9 @@
     }
     .dx-popup-title.dx-toolbar{
         background-color:  var(--title-background-color) !important;
+    }
+    .footer-fixed{
+        bottom: 0px !important;
     }
         </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -347,6 +352,16 @@
 
                 <!-- 🔹 Row 2 -->
                 <div class="row g-3 align-items-end ">
+
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("txtAccountHead")
+                                                .Label(new JS("formatMessage('Account Head Name')"))
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .TabIndex(3)
+                                                .ValidationRules(v => v.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
+                                                .OnFocusOut("txtAccountHeadFocusOut"))
+                    </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12 position-relative">
                         @(Html.DevExtreme().TextBox()
                                                 .ID("txtAccountHeadAr")
@@ -358,16 +373,6 @@
                         <i class="fas fa-language arabic-icon-inside"
                            onclick="convertToArabic()"></i>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                        @(Html.DevExtreme().TextBox()
-                                                .ID("txtAccountHead")
-                                                .Label(new JS("formatMessage('Account Head Name')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .TabIndex(3)
-                                                .ValidationRules(v => v.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
-                                                .OnFocusOut("txtAccountHeadFocusOut"))
-                    </div>
-                  
                 </div>
             </div>
 
@@ -469,7 +474,7 @@
                     </div>
 
                     <!-- Default Entry Section -->
-                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                    <div class="border rounded p-3 mb-4 ">
                         <div class="row g-3 align-items-center">
                             <div class="col-md-8">
                                 @(Html.DevExtreme().CheckBox()
@@ -493,7 +498,7 @@
                     </div>
 
                     <!-- Maintain Bill Entry Section -->
-                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                    <div class="border rounded p-3 mb-4 ">
                         <div class="row g-3 align-items-center">
                             <div class="col-md-8">
                                 @(Html.DevExtreme().CheckBox()
@@ -520,7 +525,7 @@
                     </div>
 
                     <!-- Linkage Checkboxes Group -->
-                    <div class="border rounded p-3 mb-4 bg-light-subtle">
+                    <div class="border rounded p-3 mb-4 ">
                         <div class="row mb-2">
                             <div class="col">
                                 @(Html.DevExtreme().CheckBox()
@@ -2196,7 +2201,30 @@
                                 .OnClick("onsaveLedgerAccountClick"))
             </div>
         </div>
+         <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="CreatedBy1">Created By:</strong>
+                <div class="col-md-4"> 
+                    @Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("180%").ReadOnly(true)
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="CreatedOn1">Created On:</strong>
+                <div class="col-md-4">
+                    @Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("180%").ReadOnly(true)
+                </div></div>
+                 <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="ModifiedBy1">Modified By:</strong>
+                <div class="col-md-4">
+                    @Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("180%").ReadOnly(true)
+                </div>
+            </div>
 
+            <div style="display: flex; align-items: center; gap: 5px;display:none;">
+                <strong id="ModifiedOn1">Modified On:</strong>
+                <div class="col-md-3">
+                    @Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("240%").ReadOnly(true)
+                </div>
+                </div>
         
 </div>
 
@@ -5238,11 +5266,7 @@ function syncSupVATNumbers(e) {
                 BillingContactPersonTitle: bBillingTitle,
                 BillingBankAccount: bBillingPayment,
                 SupplierAddress: obAddress,
-                SupplierVATNo:String(obVATNo),
-                RecordCreatedBy:CreatedBy,
-                RecordCreatedOn:CreatedOn,
-                RecordModifiedBy: ModifiedBy,
-               RecordModifiedOn:ModifiedOn
+                SupplierVATNo:String(obVATNo)
             };
 
             console.log(data);

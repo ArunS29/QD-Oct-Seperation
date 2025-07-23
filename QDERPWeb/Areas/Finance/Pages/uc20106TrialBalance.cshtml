@@ -137,7 +137,7 @@
                 })
                     .ItemTemplate(@<text>
             <div class="custom-dropdown-item">
-                <div style="background-color:<%- color %>;" class="side-bar"></div>
+                <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -422,58 +422,132 @@
         showRowTotals: false,
         showRowGrandTotals: true,
         onContentReady: function () {
-            updateTrialBalanceChart(pivotGrid);
+            const instance = $("#pivotGridContainer").dxPivotGrid("instance");
+             const ds = instance.getDataSource();
+            ds.on("changed", function () {
+        updateTrialBalanceChartByGroup(instance);
+    });
         }
     }).dxPivotGrid("instance");
 
-    // ✅ Chart Initialization (Trial Balance)
-    $("#pivotChartContainer").dxChart({
-        rotated: true,
-        commonSeriesSettings: {
-            argumentField: "account",
-            type: "bar"
+
+// ✅ Chart Initialization (Trial Balance)
+$("#pivotChartContainer").dxChart({
+    dataSource: [], 
+    rotated: true,
+    commonSeriesSettings: {
+        argumentField: "account",
+        type: "stackedBar",
+        barPadding: 0.3,
+        cornerRadius: 5,
+       label: {
+    visible: true,
+    position: "outside",
+    font: {
+        size: 12,
+        color: "#333"
+    },
+    backgroundColor: "transparent",
+    customizeText: function (arg) {
+        return arg.point.data.visiblePercentage || "";
+    }
+}
+    },
+    series: [
+        {
+            valueField: "debitVisible",
+            name: "Debit (SAR)",
+            color: "#87CEEB"
         },
-        series: [
-            {
-                valueField: "debit",
-                name: "Debit (SAR)",
-                color: "#7ec8e3",
-                label: {
-                    visible: true,
-                    customizeText: function (arg) {
-                        return arg.point.data.debitPercent || "";
-                    }
-                }
-            },
-            {
-                valueField: "credit",
-                name: "Credit (SAR)",
-                color: "#f08080",
-                label: {
-                    visible: true,
-                    customizeText: function (arg) {
-                        return arg.point.data.creditPercent || "";
-                    }
-                }
-            }
-        ],
-        title: "Trial Balance - Debit vs Credit with Percentage",
-        legend: {
-            visible: true,
-            position: "bottom"
-        },
-        tooltip: {
-            enabled: true,
-            customizeTooltip: function (arg) {
-                return {
-                    text: `${arg.seriesName}: SAR ${arg.valueText}`
-                };
-            }
-        },
-        export: {
-            enabled: true
+        {
+            valueField: "creditVisible",
+            name: "Credit (SAR)",
+            color: "#F08080"
         }
-    });
+    ],
+    title: {
+        text: "Trial Balance - Debit vs Credit with Percentage",
+        font: {
+            size: 18,
+            weight: 600
+        },
+        margin: {
+            bottom: 20
+        }
+    },
+    legend: {
+        visible: true,
+        position: "top",
+        horizontalAlignment: "right",
+        verticalAlignment: "top",
+        margin: {
+            top: 10
+        }
+    },
+    tooltip: {
+        enabled: true,
+        customizeTooltip: function (arg) {
+            const data = arg.point.data;
+            const total = (data.debit || 0) + (data.credit || 0);
+
+            const debit = data.debit || 0;
+            const credit = data.credit || 0;
+            const debitPct = total > 0 ? ((debit / total) * 100).toFixed(2) + "%" : "0%";
+            const creditPct = total > 0 ? ((credit / total) * 100).toFixed(2) + "%" : "0%";
+
+            return {
+                html: `
+                    <strong>${data.account}</strong><br>
+                    <span style="color:#87CEEB">● Debit:</span> SAR ${debit.toLocaleString()} (${debitPct})<br>
+                    <span style="color:#F08080">● Credit:</span> SAR ${credit.toLocaleString()} (${creditPct})
+                `
+            };
+        }
+    },
+    valueAxis: {
+        title: {
+            text: "Amount (SAR)",
+            font: {
+                size: 14,
+                weight: 500
+            }
+        },
+        label: {
+            customizeText: function (arg) {
+                const val = arg.value;
+                if (val >= 1_000_000) return (val / 1_000_000).toFixed(1) + "M";
+                if (val >= 1_000) return (val / 1_000).toFixed(0) + "K";
+                return val.toLocaleString();
+            },
+            font: {
+                size: 12
+            }
+        }
+    },
+    argumentAxis: {
+        title: {
+            text: "Account Name",
+            font: {
+                size: 14,
+                weight: 500
+            }
+        },
+        label: {
+            font: {
+                size: 11
+            }
+        }
+    },
+    export: {
+        enabled: true
+    },
+    animation: {
+        enabled: true,
+        duration: 1200,
+        easing: "easeOutQuint"
+    }
+});
+
 
     // ✅ Expand rows logic
     setTimeout(function () {
@@ -591,14 +665,13 @@
     const newHeight = chartContainer.is(":visible") ? "calc(100vh - 460px)" : "calc(100vh - 160px)";
     $("#pivotGridContainer").css("height", newHeight);
 });
-
-function updateTrialBalanceChartByLedger(pivotGridInstance) {
+function updateTrialBalanceChartByGroup(pivotGridInstance) {
     const rawData = pivotGridInstance.option("dataSource").store.data;
 
     const grouped = {};
 
     rawData.forEach(item => {
-        const key = item.LedgerNo || "Unnamed";
+        const key = item.MasterGroup || "Unknown";
         if (!grouped[key]) {
             grouped[key] = { account: key, debit: 0, credit: 0 };
         }
@@ -606,17 +679,25 @@ function updateTrialBalanceChartByLedger(pivotGridInstance) {
         grouped[key].credit += item.CrAmount || 0;
     });
 
-    const finalData = Object.values(grouped);
+    const finalData = Object.values(grouped).map(item => {
+    const debit = item.debit || 0;
+    const credit = item.credit || 0;
+    const total = debit + credit;
 
-    const totalDebit = finalData.reduce((sum, d) => sum + d.debit, 0);
-    const totalCredit = finalData.reduce((sum, d) => sum + d.credit, 0);
+    const showDebit = debit >= credit;
+    const percentage = total > 0 ? ((Math.max(debit, credit) / total) * 100).toFixed(2) + "%" : "";
 
-    finalData.forEach(d => {
-        d.debitPercent = d.debit ? ((d.debit / totalDebit) * 100).toFixed(2) + "%" : "";
-        d.creditPercent = d.credit ? ((d.credit / totalCredit) * 100).toFixed(2) + "%" : "";
-    });
+    return {
+        ...item,
+        debitVisible: showDebit ? debit : 0,
+        creditVisible: !showDebit ? credit : 0,
+        visiblePercentage: percentage
+    };
+});
+
     $("#pivotChartContainer").dxChart("instance").option("dataSource", finalData);
 }
+
 
 
 </script>

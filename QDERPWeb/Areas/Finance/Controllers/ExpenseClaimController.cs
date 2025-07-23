@@ -9,7 +9,8 @@ using QD.ERP.Web.Areas.Finance.Views;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System;
-using System.Data.SqlClient;
+using System.Data;
+using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -1165,52 +1166,117 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpPost]
         public async Task<IActionResult> FinalizeClaimPayment([FromBody] ClaimPaymentDto dto, CancellationToken ct)
         {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                return BadRequest("Tenant context could not be determined.");
-
-            var strategy = dbContext.Database.CreateExecutionStrategy();
-
-            await strategy.ExecuteAsync(async () =>
+            try
             {
-                await using var tx = await dbContext.Database.BeginTransactionAsync(ct);
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return BadRequest("Tenant context could not be determined.");
 
-                var master = await dbContext.Tbl20102ExpenseClaimMasters
-                    .FirstOrDefaultAsync(x => x.ClaimRefNo == dto.ClaimRefNo, ct);
+                var strategy = dbContext.Database.CreateExecutionStrategy();
 
-                if (master is null)
-                    throw new Exception($"ClaimRefNo '{dto.ClaimRefNo}' not found.");
+                await strategy.ExecuteAsync(async () =>
+                {
+                    await using var tx = await dbContext.Database.BeginTransactionAsync(ct);
 
-                master.IsPaid = true;
-                master.PaidBy = HttpContext.Session.GetString("UserName") ?? "System";
-                master.PaidOn = DateTime.Now;
-                master.PaymentAccount = dto.SelectedAccountHead;
-                master.PaymentVoucherNo = dto.PaymentVoucherNo;
-                master.PaymentType = dto.SelectedPaymentType;
+                    var master = await dbContext.Tbl20102ExpenseClaimMasters
+                        .FirstOrDefaultAsync(x => x.ClaimRefNo == dto.ClaimRefNo, ct);
 
-                await dbContext.SaveChangesAsync(ct);
+                    if (master is null)
+                        throw new Exception($"ClaimRefNo '{dto.ClaimRefNo}' not found.");
 
-                await dbContext.Database.ExecuteSqlRawAsync(
-                    "EXEC sp20105InsertClaimToVoucher @ClaimRefNo = {0}, @PaymentVoucherNo = {1}, @AddedBy = {2}, @AddedOn = {3}, @TotalAmount = {4}, @JustAddedVoucherEntryNo = {5}, @TypeOfClaim = {6}, @EffectiveDate = {7}",
-                    dto.ClaimRefNo,
-                    dto.PaymentVoucherNo,
-                    master.PaidBy,
-                    master.PaidOn,
-                    dto.TotalAmount,
-                    0,
-                    dto.TypeOfClaim,
-                    dto.EffectiveDate
-                );
+                    master.IsPaid = true;
+                    master.PaidBy = HttpContext.Session.GetString("UserName") ?? "System";
+                    master.PaidOn = DateTime.Now;
+                    master.PaymentAccount = dto.SelectedAccountHead;
+                    master.PaymentVoucherNo = dto.PaymentVoucherNo;
+                    master.PaymentType = dto.SelectedPaymentType;
 
-                await tx.CommitAsync(ct);
-            });
+                    await dbContext.SaveChangesAsync(ct);
 
-            return Ok(new
+                    await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp20105InsertClaimToVoucher @ClaimRefNo = {0}, @PaymentVoucherNo = {1}, @AddedBy = {2}, @AddedOn = {3}, @TotalAmount = {4}, @JustAddedVoucherEntryNo = {5}, @TypeOfClaim = {6}, @EffectiveDate = {7}",
+                        dto.ClaimRefNo,
+                        dto.PaymentVoucherNo,
+                        master.PaidBy,
+                        master.PaidOn,
+                        dto.TotalAmount,
+                        0,
+                        dto.TypeOfClaim,
+                        dto.EffectiveDate
+                    );
+
+                    await tx.CommitAsync(ct);
+                });
+
+                return Ok(new
+                {
+                    IsPaid = true,
+                    PaidBy = HttpContext.Session.GetString("UserName") ?? "System",
+                    PaidOn = DateTime.Now.ToString("dd-MMM-yyyy")
+                });
+            }
+            catch (Exception ex)
             {
-                IsPaid = true,
-                PaidBy = HttpContext.Session.GetString("UserName") ?? "System",
-                PaidOn = DateTime.Now.ToString("dd-MMM-yyyy")
-        });
+                // You can log ex here (ILogger, or any logging mechanism)
+                return StatusCode(500, new
+                {
+                    Error = "An error occurred while finalizing claim payment.",
+                    Details = ex.Message // Optionally include stacktrace or more details for debugging
+                });
+            }
         }
+        [HttpPost]
+        public async Task<IActionResult> InsertClaimMaster([FromBody] ClaimMasterDto dto)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            string userName = HttpContext.Session.GetString("UserName");
+            string userIdStr = HttpContext.Session.GetString("UserId");
+
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(userIdStr))
+                return Unauthorized(new { success = false, message = "User session expired." });
+
+            byte claimerId = Convert.ToByte(userIdStr);
+
+            using var connection = dbContext.Database.GetDbConnection();
+            using var command = connection.CreateCommand();
+            command.CommandText = "sp201_27InsertClaimMaster";
+            command.CommandType = CommandType.StoredProcedure;
+
+            command.Parameters.Add(new SqlParameter("@ClaimRefNo", dto.ClaimRefNo));
+            command.Parameters.Add(new SqlParameter("@ClaimRemarks", dto.ClaimRemarks));
+            command.Parameters.Add(new SqlParameter("@ClaimCreatedBy", userName));
+            command.Parameters.Add(new SqlParameter("@ClaimerID", claimerId));
+            command.Parameters.Add(new SqlParameter("@FundRequestTypeID", 3));
+            command.Parameters.Add(new SqlParameter("@SupplierPaymentLedgerNo", dto.SupplierPaymentLedgerNo));
+
+            await connection.OpenAsync();
+            await command.ExecuteNonQueryAsync();
+
+            return Ok(new { success = true });
+        }
+        [HttpPost]
+       
+        public async Task<IActionResult> AddExpenseClaimChildRecords([FromBody] List<Tbl20103ExpenseClaimChild> records)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (records == null || records.Count == 0)
+            {
+                return BadRequest(new { success = false, message = "No data provided." });
+            }
+
+            dbContext.Tbl20103ExpenseClaimChildren.AddRange(records);
+            await dbContext.SaveChangesAsync();
+
+            return Ok(new { success = true });
+        }
+
 
     }
 }

@@ -20,6 +20,9 @@
     .titleCard-toggle1 {
         display: none;
     }
+	.footer-fixed{
+		bottom:35px!important;
+	}
 </style>
 
 <div class="content-container-top">
@@ -321,9 +324,11 @@ buttons.Add()
 										.TabIndex(11)
 										.InputAttr(new
 										{
-											style = "font-family: Inter; font-size: 11pt;  color: maroon; text-align: right;",
-											type = "number",
-											step = "0.01"
+											 type = "number",
+											step = "0.01",
+											style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+											maxLength = 16,
+											autocomplete = "off"
 										})
 
 										)
@@ -741,7 +746,7 @@ buttons.Add()
 										.Value(null)
 										)
 				</div>
-
+				
 
 
 				@* <div class="form-group "> *@
@@ -755,9 +760,19 @@ buttons.Add()
 				@* </div> *@
 			</div>
 		</div>
+		<div class="col-md-8">
+				@(
+								Html.DevExtreme().TextBox()
+								.Label(new JS("formatMessage('Remarks')"))
+								.LabelMode(EditorLabelMode.Floating)
+								.Width(660)
+								.ID("BillRemarks")
+								.Value(null)
 
+								)
+			</div>
 		<!-- Row 3: VoucherType, Verified By, Approved By, Dates -->
-		<div class="form-group" style="display: flex;flex-wrap: wrap;gap: 10px;width: 1600px;">
+		<div class="form-group" style="display: flex;flex-wrap: wrap;gap: 10px;width: 1600px;display:none;">
 			<div style="flex: 1 1 200px; min-width: 180px;">
 				@(Html.DevExtreme().CheckBox()
 								.Text(new JS("formatMessage('Verified By')"))
@@ -803,17 +818,7 @@ buttons.Add()
 								.Width("100%")
 								.ElementAttr(new { @class = "custom-disabled-textbox" }))
 			</div>
-			<div class="form-group">
-				@(
-								Html.DevExtreme().TextBox()
-								.Label(new JS("formatMessage('Remarks')"))
-								.LabelMode(EditorLabelMode.Floating)
-								.Width(660)
-								.ID("BillRemarks")
-								.Value(null)
-
-								)
-			</div>
+			
 								
 
 			</div>
@@ -844,7 +849,7 @@ buttons.Add()
 <div class="footer-fixed">
 		@await Html.PartialAsync("SalesVoucherFooter")
 </div>
-</div>
+
 
 
 
@@ -1425,6 +1430,8 @@ buttons.Add()
 					dataGrid.option("dataSource", response.data);
 					var button = $("#btnSave").dxButton("instance");
 					button.option("text", "Update");
+					$("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 				} else {
 					$("#dataGrid").dxDataGrid({
 						dataSource: response.data,
@@ -1680,6 +1687,8 @@ buttons.Add()
 					 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 					  var button = $("#btnSave").dxButton("instance");
 					 button.option("text", "Update");
+					 $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 					var voucherNoTextBox = $("#VoucherNo").dxTextBox("instance");
 					voucherNoTextBox.option("readOnly", true);
 					 //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
@@ -1890,6 +1899,8 @@ buttons.Add()
                         }
 
                         var button = $("#btnSave").dxButton("instance");
+						isVoucherSaved = true; // Mark Updated step as done
+						updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         button.option("text", "Update");
                     },
                     error: function (xhr, status, error) {
@@ -3652,7 +3663,182 @@ buttons.Add()
 			});
 	}
 
-	
+	    let isVoucherSaved = false;
+
+   function getWorkflowStatusFromFields() {
+    const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
+    const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+
+    if (approved) return 3; // Final state
+    if (verified) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+ function updateWorkflowVisual(status) {
+    const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+    steps.forEach((step, index) => {
+        const el = document.getElementById(step.id);
+        const statusMsg = el.querySelector(".step-status-msg");
+        const icon = el.querySelector("i");
+
+        el.classList.remove("completed", "current", "upcoming", "done");
+        icon.className = step.icon;
+
+        if (index < status) {
+            el.classList.add("completed");
+            statusMsg.textContent = "Done";
+            icon.className = "fas fa-check-circle";
+        } else if (index === status && status < 3) {
+            el.classList.add("current");
+            statusMsg.textContent = "In Progress";
+            icon.className = "fas fa-spinner fa-spin";
+        } else {
+            el.classList.add("upcoming");
+            statusMsg.textContent = "Pending";
+        }
+
+        // Final Approved state
+        if (status === 3 && index === 2) {
+            el.classList.add("completed");
+            statusMsg.textContent = "Done";
+            icon.className = "fas fa-check-circle";
+        }
+    });
+}
+
+
+
+
+    function syncWorkflowFromFields() {
+        const status = getWorkflowStatusFromFields();
+        updateWorkflowVisual(status);
+    }
+
+    function attachWorkflowWatchers() {
+        $("#VerifiedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+        $("#ApprovedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+    }
+
+    $(function () {
+        setTimeout(() => {
+            attachWorkflowWatchers();
+            syncWorkflowFromFields();
+             // bindWorkflowPopovers(); 
+             initWorkflowTippyPopovers();
+
+        }, 300);
+    });
+    function loadCurrencyGridOnOpen(e) {
+    debugger;
+    const dropDown = e.component;
+    const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
+
+    if (!baseCurrencyId) return;
+
+    const grid = $("#currency-datagrid").dxDataGrid("instance");
+    if (!grid) return;
+
+    DevExpress.data.AspNet.createStore({
+        key: "CurrencyExchangeId",
+        loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
+    }).load().done(data => {
+        grid.option("dataSource", data);
+        dropDown.option("dataSource", data);
+    });
+}
+
+// function bindWorkflowPopovers() {
+//     const verifiedBy = $("#VerifiedBytext").dxTextBox("instance").option("value") || "N/A";
+//     const verifiedOn = $("#VerifiedDate").dxDateBox("instance")?.option("value") || "N/A";
+//     const approvedBy = $("#ApprovedBytext").dxTextBox("instance").option("value") || "N/A";
+//     const approvedOn = $("#ApprovedDate").dxDateBox("instance")?.option("value") || "N/A";
+
+//     $("#verifiedByName").text(verifiedBy);
+//     $("#verifiedOn").text(formatDate(verifiedOn));
+//     $("#approvedByName").text(approvedBy);
+//     $("#approvedOn").text(formatDate(approvedOn));
+
+//     attachPopoverEvents("#circle-verify", "#verifyPopover");
+//     attachPopoverEvents("#circle-approve", "#approvePopover");
+// }
+
+// function formatDate(date) {
+//     if (!date) return "N/A";
+//     const d = new Date(date);
+//     return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+// }
+
+// function attachPopoverEvents(targetSelector, popoverSelector) {
+//     const $target = $(targetSelector);
+//     const $popover = $(popoverSelector);
+
+//     $target.on("mouseenter", function (e) {
+//         const offset = $target.offset();
+//         $popover.css({
+//             top: offset.top - $popover.outerHeight() - 10,
+//             left: offset.left,
+//             display: "block"
+//         });
+//     });
+
+//     $target.on("mouseleave", function () {
+//         $(popoverSelector).hide();
+//     });
+// }
+function formatDate(date) {
+    if (!date) return "N/A";
+    const d = new Date(date);
+    return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+}
+
+function initWorkflowTippyPopovers() {
+    // 🧼 Clean up any old tippy instances
+    tippy.hideAll();
+    document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+
+    const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
+    const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+    const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
+    const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
+
+    console.log("🧪 Tooltip data:", {
+        verifiedBy, verifiedOn, approvedBy, approvedOn
+    });
+
+    // 🟩 Verified Popover
+    tippy('#circle-verify', {
+        content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+
+    // 🟩 Approved Popover
+    tippy('#circle-approve', {
+        content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+}
+
+
 </script>
 
 

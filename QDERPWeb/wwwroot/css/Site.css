@@ -978,3 +978,14 @@ dx-item-content dx-list-item-content:hover{
 .dx-toast-error {
     background: linear-gradient(90deg, #F6743E, #D42525) !important;
 }
+#ddBtnShowRecords{
+    background:linear-gradient(180deg, #32BB71, #2A9D8F) !important;
+    border-radius: 4px;
+    color: #fff !important;
+}
+#ddBtnShowRecords .dx-button-text {
+    color: #fff !important;
+}
+#ddBtnShowRecords .dx-icon {
+    color: #fff !important;
+}

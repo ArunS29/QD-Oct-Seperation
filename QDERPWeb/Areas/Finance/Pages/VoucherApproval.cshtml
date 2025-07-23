@@ -261,7 +261,7 @@
             </div>
 
 
-            <div style="margin-top:25px;">
+            <div style="margin-top:4px;">
 
                 @(Html.DevExtreme().DropDownButton()
                     .ID("ddBtnShowRecords")
@@ -1051,30 +1051,28 @@
                         voucherNo: data.VoucherNo
                     },
                     success: function () {
-                        const grid = $("#dataGrid").dxDataGrid("instance");
+                        const grid = $("#dataGrid").dxDataGrid("instance"); // Declare at the top
+
                         const rowIndex = grid.getRowIndexByKey(data.VoucherNo);
 
                         if (rowIndex >= 0) {
-                            // Update data in the grid's store
                             const updatedData = Object.assign({}, data, {
                                 IsAuditVerified: true
                             });
-                            grid.cellValue(rowIndex, "IsAuditVerified", true); // Sets the value
-                            grid.getDataSource().items()[rowIndex].IsAuditVerified = true; // Update backing store
-                            grid.repaintRows([rowIndex]); // Repaint to disable checkbox
 
-                            // Change background color
+                            grid.cellValue(rowIndex, "IsAuditVerified", true); // ✅ This now works
+                            grid.getDataSource().items()[rowIndex].IsAuditVerified = true;
+                            grid.repaintRows([rowIndex]);
+
                             const rowElement = grid.getRowElement(rowIndex);
                             rowElement.find("td").first().css("background-color", "rgb(192, 255, 192)");
-                            const grid = $("#dataGrid").dxDataGrid("instance");
 
-                            // Show toast
                             DevExpress.ui.notify("Voucher audited successfully!", "success", 2000);
 
-                            // Refresh the grid to get updated data from DB
                             grid.refresh();
                         }
                     }
+
                     ,
                     error: function () {
                         DevExpress.ui.dialog.alert("Failed to update audit status.", "Error");

@@ -34,22 +34,20 @@
         overflow-x: hidden;
     }
     .form-container1 {
-        margin: 15px;
+        margin: 10px;
         width: 98%;
-        padding: 5px; /* Optional: Add some padding inside the border */
         border-radius: 1px; /* Optional: Rounded corners */
     }
 
     .form-container {
         width: 100%;
-        border-radius: 1px; /* Optional: Rounded corners */
+        border-radius: 1px;
     }
 
     .form-row {
         display: flex;
         gap: 10px;
-        padding: 10px;
-        margin-bottom: 15px;
+            padding: 0px 17px 4px;
         width: 97%;
     }
 
@@ -176,15 +174,15 @@
 
 </style>
 <meta charset="UTF-8">
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="ClientMaster" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 <div class="form-container1">
 
     <div class="col-md-12">
-        <div class="outline-container p-3" ">
+        <div class="outline-container">
 
             <div class="row">
 
@@ -225,9 +223,19 @@
      .OnKeyDown("onKeyDown")
      //.OnValueChanged("dropDownBoxValueChanged")
      .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
-     )
-
-        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-down button-group").OnClick("redirectToClientCategory"))
+        .Buttons(buttons =>
+   {
+       buttons.Add()
+       .Name("btnAddAccount")
+       .Location(TextEditorButtonLocation.After)
+       .Widget(w => w.Button()
+       .Type(ButtonType.Default)
+       .Icon("plus")
+       .ElementAttr(new { @class = "custom-hover-button add-hover" })
+           .OnClick("redirectToClientCategory"));
+       buttons.Add()
+       .Name("dropDown");
+   }))
                     </div>
                 </div>
             </div>
@@ -281,7 +289,7 @@
                 .Template(@<text>
             <div class="form-container">
                 <div class="form-row">
-                    <div class="col-md-6" style="">
+                    <div class="col-md-6">
                         @(Html.DevExtreme().DateBox().ID("ClientVisitedOn").Label(new JS("formatMessage('Client Visited On')"))
                         .LabelMode(EditorLabelMode.Floating).DisplayFormat("dd-MMM-yyyy"))
                     </div>
@@ -369,7 +377,7 @@
                         @(Html.DevExtreme().TextBox().ID("Email").Label(new JS("formatMessage('Email')"))
                         .LabelMode(EditorLabelMode.Floating))
                     </div>
-                </div
+                </div>
 
                 <div class="form-row">
                     <div class="col-md-6">
@@ -377,27 +385,27 @@
                         Html.DevExtreme().DropDownBox()
                         .Label(new JS("formatMessage('Sales Person')"))
                         .LabelMode(EditorLabelMode.Floating)
-     .DataSource(d => d.WebApi()
-     .Controller("ClientLeadMaster")
-     .LoadAction("GetSalesPerson")
-     .LoadMode(DataSourceLoadMode.Raw)
-     .Key("CategoryCode")
-     )
-     .ID("GetSalesPersonDropDown")
-     .Width(900)
-                        .OpenOnFieldClick(false)
-     .ValueChangeEvent("input")
-     .HoverStateEnabled(true)
-     .ValueExpr("SalesPersonCode")
-     .DisplayExpr("SalesPersonName")
-     .OnInput("dropDownBoxOnInput")
-     .OnOpened("onOpened")
-     .TabIndex(1)
-     .Width("100%")
-     .OnKeyDown("onKeyDown")
-     //.OnValueChanged("dropDownBoxValueChanged")
-     .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-     )
+                         .DataSource(d => d.WebApi()
+                         .Controller("ClientLeadMaster")
+                         .LoadAction("GetSalesPerson")
+                         .LoadMode(DataSourceLoadMode.Raw)
+                         .Key("CategoryCode")
+                         )
+                         .ID("GetSalesPersonDropDown")
+                         .Width(900)
+                                            .OpenOnFieldClick(false)
+                         .ValueChangeEvent("input")
+                         .HoverStateEnabled(true)
+                         .ValueExpr("SalesPersonCode")
+                         .DisplayExpr("SalesPersonName")
+                         .OnInput("dropDownBoxOnInput")
+                         .OnOpened("onOpened")
+                         .TabIndex(1)
+                         .Width("100%")
+                         .OnKeyDown("onKeyDown")
+                         //.OnValueChanged("dropDownBoxValueChanged")
+                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+                         )
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("VendorCode").Label(new JS("formatMessage('Vendor Code')"))
@@ -439,7 +447,7 @@
 
                      
 
-                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;padding:8px;">
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                     @(Html.DevExtreme().Button()
                     .ID("btnAddRepotStatus")
                     .Text(new JS("formatMessage('Add Report Status')"))
@@ -449,7 +457,7 @@
                     .OnClick("redirectToStatusUpdate")
                     )
                 </div>
-               <div class="dx-field ledgerResult" style="padding:10px;">
+               <div class="dx-field ledgerResult">
 
     @(
         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry30102ClientStatus>()
@@ -465,7 +473,6 @@
             )
             .Columns(columns =>
             {
-                    @*   columns.AddFor(m => m.)..Caption(new JS("formatMessage('"); *@
                     columns.AddFor(m => m.ReportedOn).Format("dd-MMM-yyyy").Caption(new JS("formatMessage('Reported On')"));
                     columns.AddFor(m => m.Status).Caption(new JS("formatMessage('Status')"));
                     columns.AddFor(m => m.FollowupOn).Format("dd-MMM-yyyy").Caption(new JS("formatMessage('Followup On')"));
@@ -475,12 +482,11 @@
                     
                 
             })
-            //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
             .AllowColumnReordering(true) // Enable column reordering
             .AllowColumnResizing(true)   // Enable column resizing
             .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
             .HeaderFilter(filter => filter.Visible(true))
-            .Height(250)
+            .Height("56vh")
             .ColumnAutoWidth(true)
             .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
             .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -512,7 +518,7 @@
 
 
 
-                <div style="padding:10px;">
+                <div>
                    
                     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl3010102clientContactList>()
                     .ID("ContactListdataGrid")
@@ -529,13 +535,12 @@
                                 columns.Add().Caption(new JS("formatMessage('Client ContactSlNo')")).DataField("ClientContactSlNo");
                    
                     })
-                    .Height(250)
+                    .Height("60vh")
                     .Width("100%")
                       .AllowColumnReordering(true) // Enable column reordering
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                     .HeaderFilter(filter => filter.Visible(true))
-                    .Height(250)
                     .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                     .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -565,17 +570,17 @@
             <div class="col-md-12">
                 <div class="row">
                     <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").OnClick("onSaveClientMasterClick"))
+                        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("onSaveClientMasterClick"))
 
                     </div>
-       <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").OnClick("function() { saveAndClose(); }"))
+                 <div class="col-md-2">
+                        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).OnClick("function() { saveAndClose(); }"))
                 </div> 
                 <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash"))
+                        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
                     </div>
                     <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("arrowleft").OnClick("GoBack"))
+                        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("GoBack"))
                     </div>
                 </div>
             </div>
@@ -770,7 +775,7 @@
         url: `/api/ClientLeadMaster/GetClientByCode?clientCode=${cleanClientCode}`,
         type: 'GET',
         success: function (data) {
-              $("#btnSave").dxButton("instance").option("text", "Update");
+                 $("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
             console.log("binddata:",data);
             if (data) {
                 $('#txtClientCode').dxTextBox("instance").option("value", data.ClientCode);
@@ -1325,21 +1330,9 @@ ContactRemarks:clientRemarks,
     }
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
  function redirectToClientCategory() {
         let url = `/${tenantName}/IMS/ClientCategory1`;
-        let title = "";
+            let title = "Client Category";
         openModal(url, title);
         refreshClientCategorySelectBox()
     }

@@ -1,5 +1,4 @@
 ﻿function openModal(url, title, height = "90%", width = "100%") {
-    debugger;
     const separator = url.includes('?') ? '&' : '?';
     const modalUrl = url + separator + 'modal=true';
 

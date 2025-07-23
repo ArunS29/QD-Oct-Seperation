@@ -47,7 +47,6 @@
 
     .dx-card {
         width: 1000px;
-        background: var(--background-color);
     }
 
     .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
@@ -85,12 +84,13 @@
         width: 97%;
     }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="Project" class="no-border-input"></div>
     </div>
-</div>
-<div class="dx-card" style="margin: auto; padding:15px; width:100%; ">
+</div> *@
+<div>
+<div class="dx-card" style="margin: auto; width:100%; ">
     <!-- Input Fields -->
     <div class="row mb-2" style="display: flex; gap: 10px; align-items: flex-end; flex-direction: row; flex-wrap: nowrap;">
         <div style="width: 21%;">
@@ -137,16 +137,19 @@
                 })
                 //.OnValueChanged("dropDownBoxValueChanged")
                 .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
-                )
-
-
-            @(Html.DevExtreme().Button()
-                .ID("btnAdd1")
-                .Icon("plus")
-                .Width(100)
-                .Type(ButtonType.Success)
-                .ElementAttr(new { @class = "input-button" })
-                .OnClick("AddProjectgroup"))
+                   .Buttons(buttons =>
+                       {
+                           buttons.Add()
+                             .Name("btnAdd1")
+                           .Location(TextEditorButtonLocation.After)
+                           .Widget(w => w.Button()
+                           .Type(ButtonType.Default)
+                           .Icon("plus")
+                           .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                           .OnClick("AddProjectgroup"));
+                           buttons.Add()
+                           .Name("dropDown");
+                       }))
         </div>
     </div>
 
@@ -157,20 +160,22 @@
                 .LabelMode(EditorLabelMode.Floating).Width("100%").ValidationRules(rules =>
                 {
                     rules.AddRequired().Message("Project Description is required");
-                }))
-            <div>
-                @(Html.DevExtreme().Button()
-                    .ID("convertToCaptialORSmall3")
-                    .Height(30)
-                    .Icon("fas fa-text-height") // Ensure Font Awesome class is correct
-                    .Hint("Toggle Uppercase/Lowercase")
-                    .OnClick("toggleCase")
-                    )
-                    
+                })
+                   .Buttons(buttons =>
+                   {
+                       buttons.Add()
+                        .Name("convertToCaptialORSmall3")
+                       .Location(TextEditorButtonLocation.After)
+                       .Widget(w => w.Button()
+                       .Type(ButtonType.Default)
+                                    .Icon("fas fa-language")
+                       .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                       .OnClick("toggleCase"));
+                   }))
             </div>  
         </div>
     </div>
-    <div style="display:flex; align-items:end; gap:730px;">
+    <div style="display:flex; align-items:end; gap:450px;">
         @(Html.DevExtreme().DropDownBox()
             .ID("ddCostAllocation")
             .Label("Signatory User ID:")
@@ -190,6 +195,7 @@
             {
                 rules.AddRequired().Message("Cost Center Code is required");
             })
+
             .ContentTemplate(@<text>
             <div id="SignatoryGridContainer"></div>
             <script>
@@ -222,6 +228,7 @@
                 });
             </script>
         </text>)
+
             )
 
 
@@ -298,9 +305,8 @@
                     .Hint("Delete Row") // Tooltip
                   .OnClick("onDeleteButtonClicks");
                     });
-
                 })
-                .Height(500)
+                .Height("60vh")
                 .ColumnAutoWidth(true)
                 .AllowColumnReordering(true)
                 .AllowColumnResizing(true)
@@ -316,10 +322,8 @@
                 .ShowRowLines(true)
                 .Width("100%")
                 )
-
-
         </div>
-
+    </div>
     <div class="limited-footer">
         @await Html.PartialAsync("InventoryModuleFooter")
     </div>
@@ -357,15 +361,14 @@
             )
     }
 
-</div>
 
  <script>
     
         //addProjectGroup
     function AddProjectgroup(){
            const url = `/${tenantName}/IMS/ProjectGroup`;
-           const title = "";
-               openModal(url, title);
+           const title = "Project Group";
+               openModal(url, title,"","90%");
        }
     $(document).ready(function () {
 
