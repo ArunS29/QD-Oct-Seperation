@@ -3538,20 +3538,24 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    // Step 1: Get company name from session
-                    var companyNameShort = HttpContext.Session.GetString("TenantName");
-                    if (string.IsNullOrEmpty(companyNameShort))
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
                     {
-                        return BadRequest("Company name not found in session.");
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
                     }
 
-                    // Step 2: Get company details using dbContext
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+
                     var company = dbContext.Tbl901CompanyDetails
-                       .FirstOrDefault(c => c.CompanyNameShort.Contains(companyNameShort));
-
-
-                    //var company = dbContext.Tbl901CompanyDetails
-                    //                       .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+                    .FirstOrDefault(c => c.CompanyId == companyId);
 
 
                     if (company == null)
