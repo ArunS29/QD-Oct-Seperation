@@ -286,6 +286,9 @@
     .dx-popup-title.dx-toolbar{
         background-color:  var(--title-background-color) !important;
     }
+    .footer-fixed{
+        bottom: 0px !important;
+    }
         </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -5263,11 +5266,7 @@ function syncSupVATNumbers(e) {
                 BillingContactPersonTitle: bBillingTitle,
                 BillingBankAccount: bBillingPayment,
                 SupplierAddress: obAddress,
-                SupplierVATNo:String(obVATNo),
-                RecordCreatedBy:CreatedBy,
-                RecordCreatedOn:CreatedOn,
-                RecordModifiedBy: ModifiedBy,
-               RecordModifiedOn:ModifiedOn
+                SupplierVATNo:String(obVATNo)
             };
 
             console.log(data);
