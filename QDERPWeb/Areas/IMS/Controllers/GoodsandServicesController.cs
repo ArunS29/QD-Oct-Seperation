@@ -130,7 +130,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         dbContext.Tbl20164GoodsAndServicesMasters.Update(existingClient);
                         dbContext.SaveChanges();
 
-                        return Ok(new { success = true, message = "Client updated successfully." });
+                        return Ok(new { success = true, message = "Goods And Service Master Information Update Successfully." });
                     }
                     else
                     {
@@ -154,7 +154,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         dbContext.Tbl20164GoodsAndServicesMasters.Add(newClient);
                         dbContext.SaveChanges();
 
-                        return Ok(new { success = true, message = "Client saved successfully." });
+                        return Ok(new { success = true, message = "Goods And Service Master Information Update Successfully." });
                     }
                 }
                 catch (Exception ex)
