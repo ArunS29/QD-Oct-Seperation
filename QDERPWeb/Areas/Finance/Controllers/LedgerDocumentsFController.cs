@@ -206,7 +206,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // Create document object
                     var document = new Tbl20116LedgerDocument
                     {
+
                         DocumentNo = docNo,
+                        LedgerNo = form["LedgerNo"],
                         DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,
                         DocumentRefNo = form["DocumentRefNo"],
                         DocumentRemarks = form["DocumentRemarks"],
