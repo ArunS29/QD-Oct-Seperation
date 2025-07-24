@@ -9,7 +9,9 @@
 
 
 <style>
-
+    .dx-button{
+        background-color:none!important;
+    }
     /* Ensure tab text is styled properly */
     .dx-tabpanel .dx-tab {
         color: black !important; /* Set the tab text color to black */
@@ -147,6 +149,13 @@
         color: var(--title-background-color);
         padding: 10px;
     }
+    .dx-texteditor-input {
+    border: 0px !important; 
+}
+.footer-fixed {
+bottom: -13px !important;
+}
+
 </style>
 
 <div class="dx-card-header minimal-header">
@@ -1069,26 +1078,43 @@
 
     </div>
 
-    <div class="form-container">
-        <div class="footer-buttons">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-1">
-                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").OnClick("updateAsset"))
-                    </div>
-                    @*<div class="col-md-2">
-                    @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
-                    </div> *@
-                    <div class="col-md-1">
-                      @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").Icon("save").OnClick("onSaveAndClose"))
-                    </div>
-                    <div class="col-md-1">
-                      @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("goBackToAssetView"))
-                    </div>
+<div class="form-container">
+    <div class="footer-fixed">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-1">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnUpdate")
+                        .Text("Update")
+                        .Icon("refresh")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Default) // Use .Success, .Danger, .Normal etc.
+                        .OnClick("updateAsset"))
+                </div>
+
+                <div class="col-md-1"style="width:160px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btDelete")
+                        .Text("Save & Close")
+                        .Icon("save")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Success)
+                        .OnClick("onSaveAndClose"))
+                </div>
+
+                <div class="col-md-1"style="width:160px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text("Back")
+                        .Icon("arrowleft")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Normal) // or .Back if you have custom behavior
+                        .OnClick("goBackToAssetView"))
                 </div>
             </div>
         </div>
     </div>
+</div>
 
 
 
@@ -1999,12 +2025,18 @@
 
   
 
-    function redirectToAssetCategoryView() {
-        let url = `/${tenantName}/Finance/AssetCategoryView`;
-        let title = "";
-        openModal(url, title);
-        refreshAssetCategorySelectBox()
-    }
+function redirectToAssetCategoryView() {
+    let url = `/${tenantName}/Finance/AssetCategoryView`;
+    let title = "";
+    let modalOptions = {
+        width: "500px",
+        height: "90%"
+    };
+
+    openModal(url, title, modalOptions);
+    refreshAssetCategorySelectBox();
+}
+
     function redirectToAssetLocationMaster() {
         let url = `/${tenantName}/Finance/AssetLocation`;
         let title = "";
