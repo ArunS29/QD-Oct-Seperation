@@ -283,10 +283,32 @@
             .DropDownOptions(options => options.Width(500))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('New Standard Tax Invoice(B2B Invoice)')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('New Simplified Tax Invoice(B2C Invoice)')")).Icon("product");
-                items.Add().Text(new JS("formatMessage('New Prepayment Tax Invoice(B2B Invoice) for Advance Payments')")).Icon("product");
+                items.Add()
+                    .Text(new JS("formatMessage('New Standard Tax Invoice(B2B Invoice)')"))
+                    .Icon("money")
+                    .Option("color", "#34A853"); // Green
+
+                items.Add()
+                    .Text(new JS("formatMessage('New Simplified Tax Invoice(B2C Invoice)')"))
+                    .Icon("product")
+                    .Option("color", "#FBBC05"); // Yellow
+
+                items.Add()
+                    .Text(new JS("formatMessage('New Prepayment Tax Invoice(B2B Invoice) for Advance Payments')"))
+                    .Icon("product")
+                    .Option("color", "#4285F4"); // Blue
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("addPaymentButton_click")
             .ShowArrowIcon(false)
             )
@@ -315,10 +337,29 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Tax Report')")).Icon("file").OnClick("showSubmenu8");
-                items.Add().Text(new JS("formatMessage('Inventory Report')")).Icon("file").OnClick("showSubmenu9");
+                items.Add()
+                    .Text(new JS("formatMessage('Tax Report')"))
+                    .Icon("file")
+                    .Option("color", "#FF7043") // Orange
+                    .OnClick("showSubmenu8");
 
+                items.Add()
+                    .Text(new JS("formatMessage('Inventory Report')"))
+                    .Icon("file")
+                    .Option("color", "#00ACC1") // Cyan
+                    .OnClick("showSubmenu9");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("addReportsButton_click")
             .ShowArrowIcon(false)
             )
@@ -617,12 +658,12 @@
 
                DevExpress.ui.dialog.confirm(
                 "<div style='white-space: pre-wrap;'>"
-                + "This option will create a New STANDARD TAX INVOICE (B2C).\n"
+                + "This option will create a New SIMPLIFIED TAX INVOICE (B2C).\n"
                 + "After creating the invoice, you cannot remove or delete the invoice.\n"
                 + "You can cancel only through a CREDIT NOTE.\n"
                 + "Click Yes if you want to continue, or click No to exit this option."
                 + "</div>",
-                "Confirm Creating New STANDARD TAX Invoice?"
+                "Confirm Creating New SIMPLIFIED TAX Invoice?"
             ).done(function (dialogResult) {
                 if (dialogResult) {
                         const  url = `/${tenantName}/VAT/frmVATInvoiceEditB2C`;

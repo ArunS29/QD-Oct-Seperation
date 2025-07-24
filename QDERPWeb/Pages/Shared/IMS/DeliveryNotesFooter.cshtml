@@ -55,14 +55,47 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Custom Report Designs ").Icon("print");
-                    items.Add().Text("Preview Delivery Note").Icon("file");
-                    items.Add().Text("Preview Material Issue Note").Icon("folder");
-                    items.Add().Text("Preview Delivery Note (Dot Matrix)").Icon("folder");
-                    items.Add().Text("Preview Delivery Note (with Price)").Icon("folder");
-                    items.Add().Text("Preview Delivery Note (WIth Cost Price)").Icon("folder");
+                    items.Add()
+                        .Text("Custom Report Designs")
+                        .Icon("print")
+                        .Option("color", "#FF7043"); // Orange
 
+                    items.Add()
+                        .Text("Preview Delivery Note")
+                        .Icon("file")
+                        .Option("color", "#00ACC1"); // Cyan
+
+                    items.Add()
+                        .Text("Preview Material Issue Note")
+                        .Icon("folder")
+                        .Option("color", "#AB47BC"); // Purple
+
+                    items.Add()
+                        .Text("Preview Delivery Note (Dot Matrix)")
+                        .Icon("folder")
+                        .Option("color", "#FBBC05"); // Yellow
+
+                    items.Add()
+                        .Text("Preview Delivery Note (with Price)")
+                        .Icon("folder")
+                        .Option("color", "#EA4335"); // Red
+
+                    items.Add()
+                        .Text("Preview Delivery Note (WIth Cost Price)")
+                        .Icon("folder")
+                        .Option("color", "#34A853"); // Green
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("handleDeliveryNote")
                 )
     </div>

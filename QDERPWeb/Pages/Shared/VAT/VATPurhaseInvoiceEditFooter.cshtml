@@ -208,10 +208,29 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(i =>
                 {
-                    i.Add().Text(new JS("formatMessage('Attachments')")).Icon("attach").OnClick("onAttachmentsClick");
-                    i.Add().Text(new JS("formatMessage('Attach Multiple Files')")).Icon("attach").OnClick("onAttachMultipleFilesClick");
-                })
+                    i.Add()
+                    .Text(new JS("formatMessage('Attachments')"))
+                    .Icon("attach")
+                    .Option("color", "#4285F4") // Blue
+                    .OnClick("onAttachmentsClick");
 
+                    i.Add()
+                    .Text(new JS("formatMessage('Attach Multiple Files')"))
+                    .Icon("attach")
+                    .Option("color", "#34A853") // Green
+                    .OnClick("onAttachMultipleFilesClick");
+                })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 )
 
     </div>
@@ -227,12 +246,38 @@
             .ShowArrowIcon(false)
             .Items(items =>
             {
-                items.Add().Text("Preview Voucher").Icon("print").OnClick("addPreviewVoucher");
-                items.Add().Text("Preview VAT Purchase Bill").Icon("file");
-                items.Add().Text("Edit Voucher").Icon("folder");
-                items.Add().Text("UploadItems Form Excel").Icon("edit");
+                items.Add()
+                    .Text("Preview Voucher")
+                    .Icon("print")
+                    .Option("color", "#FF7043") // Orange
+                    .OnClick("addPreviewVoucher");
 
-                })
+                items.Add()
+                    .Text("Preview VAT Purchase Bill")
+                    .Icon("file")
+                    .Option("color", "#00ACC1"); // Cyan
+
+                items.Add()
+                    .Text("Edit Voucher")
+                    .Icon("folder")
+                    .Option("color", "#AB47BC"); // Purple
+
+                items.Add()
+                    .Text("UploadItems Form Excel")
+                    .Icon("edit")
+                    .Option("color", "#FBBC05"); // Yellow
+            })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
                 .OnItemClick("addPrintButton_click")
 
                 )

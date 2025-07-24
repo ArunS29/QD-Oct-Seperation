@@ -8,9 +8,9 @@
 }
 @{
     var enteredBy = HttpContext.Session.GetString("UserName");
-    var enteredOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+    var enteredOn = DateTime.Now.ToString("yyyy-MMM-dd");
     var modifiedBy = HttpContext.Session.GetString("UserName");
-    var modifiedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+    var modifiedOn = DateTime.Now.ToString("yyyy-MMM-dd");
 }
 <style>
     .form-tablee {

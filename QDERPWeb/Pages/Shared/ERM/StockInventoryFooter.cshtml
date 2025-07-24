@@ -126,20 +126,34 @@
             .Items(items =>
             {
                 items.Add()
-                .Text(new JS("formatMessage('Show Items Discontinued')"))
-                .Icon("close")
-                .OnClick("DiscontinuedClick");
+                    .Text(new JS("formatMessage('Show Items Discontinued')"))
+                    .Icon("close")
+                    .Option("color", "#EA4335") // Red
+                    .OnClick("DiscontinuedClick");
 
                 items.Add()
-                .Text(new JS("formatMessage('Show All Items')"))
-                .Icon("selectall") 
-                .OnClick("AllitemsClick");
+                    .Text(new JS("formatMessage('Show All Items')"))
+                    .Icon("selectall")
+                    .Option("color", "#4285F4") // Blue
+                    .OnClick("AllitemsClick");
 
                 items.Add()
-                .Text(new JS("formatMessage('Show Items In Use')"))
-                .Icon("check") 
-                .OnClick("UseClick");
+                    .Text(new JS("formatMessage('Show Items In Use')"))
+                    .Icon("check")
+                    .Option("color", "#34A853") // Green
+                    .OnClick("UseClick");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .ShowArrowIcon(false)
             )
     </div>
@@ -153,13 +167,47 @@
             .DropDownOptions(options => options.Width(350))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Inventory Report(With Expiry date)')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Inventory Report By date')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Inventory Report On Stores')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Inventory Report on Store(Pivort Report)')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Inventory Report On stores (By Date)')")).Icon("money");
-                items.Add().Text(new JS("formatMessage('Inventory - Stock Movement report')")).Icon("money");
+                items.Add()
+                    .Text(new JS("formatMessage('Inventory Report(With Expiry date)')"))
+                    .Icon("money")
+                    .Option("color", "#FF7043");  // Orange
+
+                items.Add()
+                    .Text(new JS("formatMessage('Inventory Report By date')"))
+                    .Icon("money")
+                    .Option("color", "#00ACC1");  // Cyan
+
+                items.Add()
+                    .Text(new JS("formatMessage('Inventory Report On Stores')"))
+                    .Icon("money")
+                    .Option("color", "#AB47BC");  // Purple
+
+                items.Add()
+                    .Text(new JS("formatMessage('Inventory Report on Store(Pivort Report)')"))
+                    .Icon("money")
+                    .Option("color", "#FBBC05");  // Yellow
+
+                items.Add()
+                    .Text(new JS("formatMessage('Inventory Report On stores (By Date)')"))
+                    .Icon("money")
+                    .Option("color", "#EA4335");  // Red
+
+                items.Add()
+                    .Text(new JS("formatMessage('Inventory - Stock Movement report')"))
+                    .Icon("money")
+                    .Option("color", "#34A853");  // Green
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
             )

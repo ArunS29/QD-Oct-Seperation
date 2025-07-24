@@ -1030,7 +1030,7 @@
             this.xrPageInfo1.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.xrPageInfo1.LocationFloat = new DevExpress.Utils.PointFloat(402.2286F, 0F);
             this.xrPageInfo1.Name = "xrPageInfo1";
-            this.xrPageInfo1.SizeF = new System.Drawing.SizeF(87.50009F, 23F);
+            this.xrPageInfo1.SizeF = new System.Drawing.SizeF(108.3334F, 23F);
             this.xrPageInfo1.StyleName = "PageInfo";
             this.xrPageInfo1.StylePriority.UseFont = false;
             this.xrPageInfo1.StylePriority.UseForeColor = false;
