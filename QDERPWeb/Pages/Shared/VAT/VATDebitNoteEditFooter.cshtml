@@ -56,8 +56,22 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Preview DebitNote Invoice").Icon("print");
+                    items.Add()
+                        .Text("Preview DebitNote Invoice")
+                        .Icon("print")
+                        .Option("color", "#FF7043"); // Orange
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("handleDebitReportPrinting")
                 )
 

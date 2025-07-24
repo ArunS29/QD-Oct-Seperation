@@ -108,11 +108,41 @@
             .DropDownOptions(d => d.Width(200))
             .Items(items =>
             {
-                items.Add().Text("Print Layout 1").Icon("print").OnClick("showSubmenu");
-                items.Add().Text("Print Layout 2").Icon("print").OnClick("onPrintLayout2");
-                items.Add().Text("Show Fields").Icon("hierarchy").OnClick("onShowFields");
-                items.Add().Text("Show Row Totals").Icon("hierarchy").OnClick("onShowRowTotals");
+                items.Add()
+                    .Text(new JS("formatMessage('Print Layout 1')"))
+                    .Option("color", "#4285F4")  // Blue
+                    .Icon("print")
+                    .OnClick("showSubmenu");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Print Layout 2')"))
+                    .Option("color", "#34A853")  // Green
+                    .Icon("print")
+                    .OnClick("onPrintLayout2");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Show Fields')"))
+                    .Option("color", "#FBBC05")  // Yellow
+                    .Icon("hierarchy")
+                    .OnClick("onShowFields");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Show Row Totals')"))
+                    .Option("color", "#EA4335")  // Red
+                    .Icon("hierarchy")
+                    .OnClick("onShowRowTotals");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             )
 
     </div>

@@ -143,8 +143,8 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser)) {
-		display: none !important
+	.titleCard-toggle1 {
+		display: none;
 	}
 </style>
 
@@ -157,8 +157,8 @@
 
 
 <div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("InventoryModuleFooter")
+	<div class="footer-fixed">
+		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
 	</div>
 </div>
 
@@ -201,6 +201,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -211,7 +212,7 @@
 				})
 				.ItemTemplate(@<text>
             <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -323,7 +324,7 @@
 			columns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Visible(false);
 
 		})
-		.Height("75vh") // Fixed height for the grid
+		.Height("73vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
@@ -473,10 +474,30 @@
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
+				case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
+
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
+					break;
 			}
 				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
-
+				toDate = toDate.toISOString().split('T')[0];
+				 $("#frmdateBox").dxDateBox("instance").option("value", frmDate);
+				$("#todateBox").dxDateBox("instance").option("value", toDate);
 				$.ajax({
 			url: '/api/Quotation/GetQuotationDetails',
 		type: 'GET',

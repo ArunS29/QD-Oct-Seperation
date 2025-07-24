@@ -240,13 +240,53 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('All Vouchers')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Payments')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Receipts')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Client Receivables')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Supplier Payables')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Other Vouchers')")).OnClick("onVoucherSelection");
+            items.Add()
+                    .Text(new JS("formatMessage('All Vouchers')"))
+                    .Option("color", "#4285F4") // Blue
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Payments')"))
+                    .Option("color", "#34A853") // Green
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Receipts')"))
+                    .Option("color", "#FBBC05") // Yellow
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Client Receivables')"))
+                    .Option("color", "#EA4335") // Red
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Supplier Payables')"))
+                    .Option("color", "#AB47BC") // Purple
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Other Vouchers')"))
+                    .Option("color", "#00ACC1") // Cyan
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .ShowArrowIcon(true)
             )
     </div>

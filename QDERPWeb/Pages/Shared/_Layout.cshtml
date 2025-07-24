@@ -316,9 +316,10 @@
             border-bottom: 1px solid var(--title-background-color) !important;
         }
 
-        .dx-datagrid-headers .dx-header-row > td:last-child {
-            border-right: none !important;
-        }
+            .dx-datagrid-headers .dx-header-row > td:last-child {
+                border-right: none !important;
+            }
+
         .title {
             /* display: none; */
             display: flex;
@@ -368,7 +369,7 @@
         }
 
         #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
-            background-color: var(--header-color); 
+            background-color: var(--header-color);
             /* border: 1px solid var(--title-background-color); */
             border-radius: 0px;
         }
@@ -393,8 +394,8 @@
             /* background-color: var(--title-background-color); */
             /* height: 100vh; */
             width: max-content;
-            position:fixed;
-            z-index:10;
+            position: fixed;
+            z-index: 10;
         }
 
         .container1 {
@@ -421,7 +422,7 @@
             padding-top: 5.5em;
             transition: width 0.3s ease;
             height: 100vh;
-            z-index:11;
+            z-index: 11;
         }
 
 
@@ -595,7 +596,7 @@
             transition: margin-left 0.3s ease;
             color: black;
             height: inherit;
-            z-index:10;
+            z-index: 10;
         }
 
             /* Scrollbar styles for Webkit-based browsers */
@@ -825,7 +826,7 @@
             z-index: 999;
             border-radius: 8px;
             padding: 10px;
-            border:1px solid #ddd;
+            border: 1px solid #ddd;
         }
 
         .popup-header {
@@ -902,8 +903,8 @@
             margin-top: 37px;
             margin-left: 65px;
             width: 97%;
-            height:100vh;
-            overflow:hidden;
+            height: 100vh;
+            overflow: hidden;
             /* padding: 20px; */
         }
 
@@ -1023,7 +1024,7 @@
         }
 
         .playIcon {
-            display:none !important;
+            display: none !important;
             position: fixed;
             left: 3.5em;
             bottom: 4em;
@@ -1081,12 +1082,12 @@
         }
 
 
-        .modalTitle{
+        .modalTitle {
             padding: 0px 15px;
             color: var(--title-background-color);
             margin-top: 10px;
         }
-        
+
         /* Modal Content */
         .modal-content {
             margin: 5% auto;
@@ -1331,7 +1332,6 @@
             padding-left: 10px;
         }
 
-      
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1342,16 +1342,16 @@
 </head>
 <body>
     <!-- Floating Chatbot -->
-<div id="chatbot-container">
-    <div id="chatbot-inactive" onclick="toggleChat()">
-        <span><i class="fas fa-robot text-white"></i> <span id="chat_text" style="display: none;">Chat with us</span></span>
+    <div id="chatbot-container">
+        <div id="chatbot-inactive" onclick="toggleChat()">
+            <span><i class="fas fa-robot text-white"></i> <span id="chat_text" style="display: none;">Chat with us</span></span>
             <i id="chat_close" style="display: none;" class="fas fa-times text-white"></i>
         </div>
-    <div id="chatbot-box">
-        <div id="chatbot-messages"></div>
-        <input type="text" id="chatbot-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChat()" />
+        <div id="chatbot-box">
+            <div id="chatbot-messages"></div>
+            <input type="text" id="chatbot-input" placeholder="Type a message..." onkeydown="if(event.key==='Enter') sendChat()" />
+        </div>
     </div>
-</div>
     <!-- Modal Structure -->
     <!-- Toast Modal -->
     <div id="toastModal" style="display: block; position: fixed; top: 20px; right: 20px; z-index: 9999;">
@@ -1423,20 +1423,20 @@
             </div> *@
                     <div>
                         @(Html.DevExtreme().SelectBox()
-                            .ID("languageSelectBox")
-                            .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
-                            .DisplayExpr("name")
-                            .ValueExpr("value")
-                            .Width("7em")
-                            .Value(new JS("locale"))
-                            .OnValueChanged("changeLocale")
-                            .ItemTemplate(@<text>
+                                                .ID("languageSelectBox")
+                                                .DataSource(new JS("locales")) // Ensure 'locales' is populated before rendering
+                                                .DisplayExpr("name")
+                                                .ValueExpr("value")
+                                                .Width("7em")
+                                                .Value(new JS("locale"))
+                                                .OnValueChanged("changeLocale")
+                                                .ItemTemplate(@<text>
                             <div style="display: flex; align-items: center;">
                                 <img src="<%- flag %>" alt="" style="width: 20px; height: 20px; border-radius: 50%; margin-right: 8px;" />
                                 <span><%- name %></span>
                             </div>
                         </text>)
-                            )
+                                                )
                     </div>
                 </div>
                 @* <button id="themeToggle">Toggle Dark Mode</button> *@
@@ -1589,53 +1589,53 @@
         <div id="submenuContainer4" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccounts"></div>
                     </div>
                 </div>
-                
+
                 <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts (With Narration)')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccountsWithNarration"></div>
                     </div>
                 </div>
                 <div class="custom-dropdown-item" onclick="handleClick('AccountDetails')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccountsWithDetails"></div>
                     </div>
                 </div>
                 <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format)')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccountsExportFormat"></div>
                     </div>
                 </div>
                 <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Account Export Format(Landscape)')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccountExportFormatLandscape"></div>
                     </div>
                 </div>
                 <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Accounts (Export Format2)')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccountsExportFormat2"></div>
                     </div>
                 </div>
 
-                
+
 
                 <div class="custom-dropdown-item" onclick="handleClick('Account Ledger - Statement of Account OrderByVocuherNo(Without Narration)')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccountOrderByVoucherNoWithoutNarration"></div>
@@ -1643,17 +1643,17 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('AccountOrderByVoucherNo')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="StatementOfAccountOrderByVoucherNo"></div>
                     </div>
                 </div>
-                
+
 
 
                 <div class="custom-dropdown-item" onclick="handleClick('AccountDebtors')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="AccountDebtors"></div>
@@ -1661,7 +1661,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('AccountConfirmationLetter')">
-                    <div style="background-color:#4285F4;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#4285F4;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-th-list"></i>
                         <div class="item-title no-border-input" id="AccountConfirmationLetter"></div>
@@ -1672,9 +1672,9 @@
 
         <div id="submenuContainer5" class="context-menu" style="display:none; width:300px;">
             <div class="context-menu-item1">
-                
+
                 <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableAll')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsReceivableAll"></div>
@@ -1682,7 +1682,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableByAccount')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsReceivableByAccount"></div>
@@ -1690,7 +1690,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableAgeingToday')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsReceivableAgeingToday"></div>
@@ -1698,7 +1698,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('Report4')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="Report4"></div>
@@ -1706,7 +1706,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableRentation')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsReceivableRentation"></div>
@@ -1714,7 +1714,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('BillsReceivablelandscapeformat')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsReceivablelandscapeformat"></div>
@@ -1722,7 +1722,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableLedgerBalance')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsReceivableLedgerBalance"></div>
@@ -1730,7 +1730,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('BillsReceivableFormat')">
-                    <div style="background-color:#34A853;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#34A853;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsReceivableFormat"></div>
@@ -1744,7 +1744,7 @@
         <div id="submenuContainer6" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="custom-dropdown-item" onclick="handleClick('rpt201BillsPayable')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesWithReferenceNo"></div>
@@ -1752,7 +1752,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('rpt201BillsPayableWithVchNo')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesWithVoucherNo"></div>
@@ -1760,7 +1760,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('AgeingToday')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesAgeingasonToday"></div>
@@ -1768,7 +1768,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('EndDate')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesAgeingasonEndDate"></div>
@@ -1776,7 +1776,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('payableRetention')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesWithRetention"></div>
@@ -1784,7 +1784,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('Payablelandscape')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesLandscapeFormat"></div>
@@ -1792,7 +1792,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('Balance')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesAgeingasperLedgerBalance"></div>
@@ -1800,7 +1800,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleClick('BillsPayablePaid')">
-                    <div style="background-color:#EA4335;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="BillsPayablesAllIncludingPaid"></div>
@@ -1811,7 +1811,7 @@
         <div id="submenuContainer7" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
                 <div class="custom-dropdown-item" onclick="handleCstReportClick('CostAllocationReport')">
-                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#FBBC05;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="CostAllocationReportDetailed"></div>
@@ -1819,7 +1819,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleCstReportClick('CostAllocationDetailedReport')">
-                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#FBBC05;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="CostAllocationReportSummary"></div>
@@ -1827,7 +1827,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleCstReportClick('EmpReport')">
-                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#FBBC05;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="EmployeeAllocationReportDetailed"></div>
@@ -1835,7 +1835,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleCstReportClick('EmpSummaryReport')">
-                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#FBBC05;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="EmployeeAllocationReportSummary"></div>
@@ -1843,7 +1843,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleCstReportClick('PropertAllocationReport')">
-                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#FBBC05;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="PropertyCostAllocationReportDetailed"></div>
@@ -1851,7 +1851,7 @@
                 </div>
 
                 <div class="custom-dropdown-item" onclick="handleCstReportClick('EmpSummaryReport')">
-                    <div style="background-color:#FBBC05;height:5%;" class="side-bar"></div>
+                    <div style="background-color:#FBBC05;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
                         <div class="item-title no-border-input" id="PropertyCostAllocationReportSummary"></div>
@@ -1859,96 +1859,172 @@
                 </div>
             </div>
         </div>
+        <!-- SubmenuContainer8 -->
         <div id="submenuContainer8" class="context-menu" style="display: none;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleVATClick('TaxSummaryReport')">
-                    <span id="TaxSummaryReport" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleVATClick('TaxSummaryReport')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="TaxSummaryReport"></div>
+                    </div>
                 </div>
 
-                <div class="submenu-item" onclick="handleVATClick('TaxVATReport')">
-                    <span id="TaxVATReport" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleVATClick('TaxVATReport')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="TaxVATReport"></div>
+                    </div>
                 </div>
 
-                <div class="submenu-item" onclick="handleVATClick('TaxReportRevenueInArabic')">
-                    <span id="TaxReportRevenueInArabic" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleVATClick('TaxReportRevenueInArabic')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="TaxReportRevenueInArabic"></div>
+                    </div>
                 </div>
             </div>
         </div>
+
+        <!-- SubmenuContainer10 -->
         <div id="submenuContainer10" class="context-menu" style="display: none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleVATClick('TaxSummaryReport')">
-                    <span id="TaxSummaryReport1" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleVATClick('TaxSummaryReport')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="TaxSummaryReport1"></div>
+                    </div>
                 </div>
 
-                <div class="submenu-item" onclick="handleVATClick('CreditSummary')">
-                    <span id="CreditSummary" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleVATClick('CreditSummary')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="CreditSummary"></div>
+                    </div>
                 </div>
 
-                <div class="submenu-item" onclick="handleVATClick('VATPurchasesAndExpReport')">
-                    <span id="VATPurchasesAndExpReport" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="handleVATClick('VATPurchasesAndExpReport')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="VATPurchasesAndExpReport"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="handleVATClick('DebitNoteSummary')">
-                    <span id="DebitNoteSummary" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="handleVATClick('DebitNoteSummary')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="DebitNoteSummary"></div>
+                    </div>
                 </div>
             </div>
         </div>
-        <div id="" class="context-menu" style="display: none; width: 300px;">
+
+        <!-- Context Menu with inner text only -->
+        <div class="context-menu" style="display: none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleVATClick('CreditSummary')">
-                    <span class="no-border-input">Tax Summary Report-Credit Notes</span>
+                <div class="custom-dropdown-item" onclick="handleVATClick('CreditSummary')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">Tax Summary Report-Credit Notes</div>
+                    </div>
                 </div>
-
-
             </div>
         </div>
+
+        <!-- SubmenuContainer (Account Group / Tax Report) -->
         <div id="submenuContainer" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="handleClick('Account Group')">
-
-                    <span class="no-border-input">Account Group</span>
-                </div>
-                <div class="submenu-item">
-
-                    <span class="no-border-input">Tax Report (Revenue Classified)</span>
-                </div>
-
-                <div class="submenu-item">
-
-                    <span class="no-border-input">Tax Report (Revenue Classified)in arabic </span>
+                <div class="custom-dropdown-item" onclick="handleClick('Account Group')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">Account Group</div>
+                    </div>
                 </div>
 
+                <div class="custom-dropdown-item">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">Tax Report (Revenue Classified)</div>
+                    </div>
+                </div>
+
+                <div class="custom-dropdown-item">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">Tax Report (Revenue Classified)in arabic</div>
+                    </div>
+                </div>
             </div>
         </div>
+
+        <!-- SubmenuContainer9 -->
         <div id="submenuContainer9" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="stockInventoryReport()">
-                    <span id="stockInventoryReport" class="no-border-input"></span>
+                <div class="custom-dropdown-item" onclick="stockInventoryReport()">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="stockInventoryReport"></div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="cogsposting()">
-                    <span id="cogsposting" class="no-border-input"></span>
+
+                <div class="custom-dropdown-item" onclick="cogsposting()">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input" id="cogsposting"></div>
+                    </div>
                 </div>
-
-
-
-
             </div>
         </div>
+
+        <!-- QuarterSubMenu -->
         <div id="quarterSubMenu" class="context-menu" style="display:none; width: 300px;">
             <div class="context-menu-item1">
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q1')">
-                    <span class="no-border-input">1st Quarter (Jan - Mar)</span>
+                <div class="custom-dropdown-item" onclick="ddBtnShowRecords_click('q1')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">1st Quarter (Jan - Mar)</div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q2')">
-                    <span class="no-border-input">2nd Quarter (Apr - Jun)</span>
+
+                <div class="custom-dropdown-item" onclick="ddBtnShowRecords_click('q2')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">2nd Quarter (Apr - Jun)</div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q3')">
-                    <span class="no-border-input">3rd Quarter (Jul - Sep)</span>
+
+                <div class="custom-dropdown-item" onclick="ddBtnShowRecords_click('q3')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">3rd Quarter (Jul - Sep)</div>
+                    </div>
                 </div>
-                <div class="submenu-item" onclick="ddBtnShowRecords_click('q4')">
-                    <span class="no-border-input">4th Quarter (Oct - Dec)</span>
+
+                <div class="custom-dropdown-item" onclick="ddBtnShowRecords_click('q4')">
+                    <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
+                    <div class="item-content">
+                        <i class="fa fa-file"></i>
+                        <div class="item-title no-border-input">4th Quarter (Oct - Dec)</div>
+                    </div>
                 </div>
             </div>
         </div>
+
 
         <!-- Notification Popup -->
         <div id="notificationPopup" class="popup">
@@ -1997,7 +2073,7 @@
                 </div>
             </div>
         </div>
-      
+
         <!-- Main container to hold sidebars and content -->
         <div class="container">
             <!-- Sidebar 1 Section -->
@@ -2013,7 +2089,7 @@
                     @if (userModules.Contains("HR"))
                     {
                         <div class="menu-item hr" onclick="navigate('Human Resources')">
-                             <i id="humanResourcesIcon"><img src="~/images/hr-icon.png" style="width:30px"/></i>
+                            <i id="humanResourcesIcon"><img src="~/images/hr-icon.png" style="width:30px" /></i>
                             <div id="HumanResources" class="text backgroundWhite"></div>
                         </div>
                     }
@@ -2072,8 +2148,6 @@
 
 
             <!-- Breadcrumb above Sidebar 2 -->
-
-
             @* <div class="main-content" id="mainContent"> *@
             @*     <iframe id="contentIframe" *@
             @*             src="" *@
@@ -2088,17 +2162,17 @@
 
                 <div id="changePasswordPopupContainer">
                     @(Html.DevExtreme().Popup()
-                        .ID("changePasswordPopup")
-                        .Title("Change Your Password")
-                        .Width("50%")
-                        .Height(430)
-                        .Visible(false)
-                        .ShowCloseButton(true)
-                        .ResizeEnabled(true)
-                        .DragEnabled(true)
-                        .ShowTitle(true)
-                        .ContentTemplate(@<text><div id="popupContentPlaceholder">Loading...</div></text>)
-                        )
+                                        .ID("changePasswordPopup")
+                                        .Title("Change Your Password")
+                                        .Width("50%")
+                                        .Height(430)
+                                        .Visible(false)
+                                        .ShowCloseButton(true)
+                                        .ResizeEnabled(true)
+                                        .DragEnabled(true)
+                                        .ShowTitle(true)
+                                        .ContentTemplate(@<text><div id="popupContentPlaceholder">Loading...</div></text>)
+                                        )
                 </div>
 
                 @RenderSection("Scripts", required: false)
@@ -2540,13 +2614,13 @@
                    width:400,
                    readOnly: true
                  });
-       
+
                   $("#TaxVATReport").dxTextBox({
                   text: formatMessage("Tax Report (Revenue Classified)"),
                   width:400,
                   readOnly: true
                  });
-       
+
                   $("#TaxReportRevenueInArabic").dxTextBox({
                   text: formatMessage("Tax Report (Revenue Classified) in Arabic"),
                   width:400,
@@ -4190,7 +4264,7 @@
 
                         // Extract tenant name from URL
                         let pathParts = window.location.pathname.split('/');
-                        
+
                         tenantName = pathParts[1] || "defaultTenant";
 
                         // Mapping report names to actual report IDs
@@ -4283,15 +4357,15 @@
                     doc.save("quotation-analysis.pdf");
                 }
                 function hidequarterSubmenus() {
-            $('#quarterSubMenu').hide();
-        }
+                    $('#quarterSubMenu').hide();
+                }
                 function navigateToTenantHome() {
-            if (tenantName) {
-                window.location.href = `/${tenantName}/Home`;
-            } else {
-                console.warn("Tenant name is not set.");
-            }
-        }
+                    if (tenantName) {
+                        window.location.href = `/${tenantName}/Home`;
+                    } else {
+                        console.warn("Tenant name is not set.");
+                    }
+                }
 
         window.onload = function () {
             const userName = "@userName"; // Razor will render the actual name
@@ -4396,6 +4470,46 @@
                 }
             });
         });
+            function hideAllSubmenus() {
+            $('#submenuContainer4').hide();
+            $('#submenuContainer5').hide();
+            $('#submenuContainer6').hide();
+            $('#submenuContainer7').hide();
+            $('#submenuContainer8').hide();
+            $('#submenuContainer9').hide();
+        }
+        function quarterSubMenu(e) {
+            e.event.stopPropagation();
+            hideAllSubmenus(); // Hide others first
+            var $submenu = $('#quarterSubMenu');
+            var $target = $(e.event.target).closest('.dx-item-content');
+            var offset = $target.offset();
+
+            // Always position to the right of the button
+            const submenuWidth = 250;
+            const topPos = offset.top + $target.outerHeight() - 45;
+            const leftPos = offset.left + $target.outerWidth() +5;
+
+            $submenu.css({
+                'width': submenuWidth + 'px',
+                'position': 'absolute',
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
+                'display': 'block',
+                'background': '#fff',
+               'border-radius':'8px',
+                // 'padding': '5px',
+                // 'z-index': 9999
+            });
+
+            // Click outside to close
+            $(document).on("click", function (event) {
+                if (!$(event.target).closest('#quarterSubMenu, .dx-item-content').length) {
+                    $submenu.hide();
+                    $(document).off("click");
+                }
+            });
+        }
 
     </script>
 </body>
