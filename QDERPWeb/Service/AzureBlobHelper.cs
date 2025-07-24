@@ -87,23 +87,12 @@ public class AzureBlobHelper
         return blobClient.GenerateSasUri(sasBuilder).ToString();
     }
 
-    public async Task<bool> DeleteFileFromAzureAsync(string azurePath)
+    public async Task<bool> DeleteFileFromAzureAsync(string blobPath)
     {
-        if (string.IsNullOrWhiteSpace(azurePath) || !Uri.IsWellFormedUriString(azurePath, UriKind.Absolute))
-        {
-            // log and fail silently
-            Console.WriteLine("Invalid or malformed AzurePath: " + azurePath);
-            return false;
-        }
-
         try
         {
-            var uri = new Uri(azurePath);
-            string containerName = uri.Segments[1].TrimEnd('/'); // e.g., "client-files"
-            string blobPath = string.Join("", uri.Segments.Skip(2)); // skip "/" and container
-
             var blobServiceClient = new BlobServiceClient(_connectionString);
-            var containerClient = blobServiceClient.GetBlobContainerClient(containerName);
+            var containerClient = blobServiceClient.GetBlobContainerClient(_containerName);
             var blobClient = containerClient.GetBlobClient(blobPath);
 
             var result = await blobClient.DeleteIfExistsAsync();
@@ -114,6 +103,20 @@ public class AzureBlobHelper
             Console.WriteLine("Azure deletion failed: " + ex.Message);
             return false;
         }
+    }
+
+    // Get Blobs under folder 
+    public async Task<List<string>> ListBlobsAsync(string prefix)
+    {
+        var result = new List<string>();
+        var containerClient = new BlobContainerClient(_connectionString, _containerName);
+
+        await foreach (var blob in containerClient.GetBlobsAsync(prefix: prefix))
+        {
+            result.Add(blob.Name); // only relative path
+        }
+
+        return result;
     }
 
 

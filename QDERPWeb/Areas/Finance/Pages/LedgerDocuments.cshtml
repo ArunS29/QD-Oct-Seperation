@@ -491,42 +491,36 @@
             scrolling: { mode: "virtual" },
 
             editing: {
-                mode: "row",
-                allowUpdating: true,
-                allowDeleting: true,
-                useIcons: true 
+              mode: "row",
+              allowUpdating: true,
+              allowDeleting: true,
+              useIcons: true,
             },
-            
-            onEditingStart: function (e) {
-                currentEditRowIndex = e.rowIndex;
+
+            onCellValueChanged: function (e) {
+              if (e.column.dataField === "DocumentExpDate" && e.value) {
+                // Convert the Gregorian date to Hijri and update the corresponding field
+                const hijriDate = convertToHijri(new Date(e.value));
+                e.component.cellValue(e.rowIndex, "DocumentExpDateAr", hijriDate);
+              }
             },
-            onEditorPrepared: function (e) {
-                if (e.dataField === "DocumentExpDate" && e.parentType === "dataRow") {
-                    const dateBox = e.editorElement.dxDateBox("instance");
-                    dateBox.on("valueChanged", function (args) {
-                        const gregDate = args.value;
-                        const hijriDate = convertToHijri(new Date(gregDate));
 
-                        const grid = $("#documentsGrid").dxDataGrid("instance");
-                        const editRowIndex = e.row.rowIndex;
+            onRowUpdating: function (e) {
+              // Merge changes
+              e.newData = { ...e.oldData, ...e.newData };
 
-                        const cell = grid.getCellElement(editRowIndex, "DocumentExpDateAr");
-                        if (cell && cell.length) {
-                            const textbox = cell.find(".dx-texteditor-input");
-                            if (textbox.length) {
-                                textbox.val(hijriDate);
-                            }
-                        }
-
-                        grid.getController("editing")._editData.forEach(editItem => {
-                            if (editItem.key === e.row.key) {
-                                editItem.data = editItem.data || {};
-                                editItem.data.DocumentExpDateAr = hijriDate;
-                            }
-                        });
-                    });
-                }
+              if (e.newData.DocumentExpDate) {
+                // Convert and set Hijri date on newData so it gets saved on the server
+                const hijriDate = convertToHijri(new Date(e.newData.DocumentExpDate));
+                e.newData.DocumentExpDateAr = hijriDate;
+              } else if (e.oldData.DocumentExpDate && !e.newData.DocumentExpDate) {
+                // If expiry date removed, clear Hijri field
+                e.newData.DocumentExpDateAr = "";
+              }
             },
+        
+
+
             columns: [
                 { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
 
@@ -615,9 +609,7 @@
                         displayFormat: "dd/MM/yyyy",
                         useMaskBehavior: true,
                         openOnFieldClick: true,
-                        onKeyDown: function (e) {
-                            e.event.preventDefault();
-                        },
+                        
                     },
 
                     format: "dd/MM/yyyy",
@@ -713,26 +705,6 @@
 
 
             ],
-            onCellValueChanged: function (e) {
-                if (e.column.dataField === "DocumentExpDate" && e.value) {
-                    const hijriDate = convertToHijri(new Date(e.value));
-                    e.component.cellValue(e.rowIndex, "DocumentExpDateAr", hijriDate);
-                }
-            },
-
-            onRowUpdating: function (e) {
-                // Merge changes
-                e.newData = { ...e.oldData, ...e.newData };
-
-                // Convert Hijri from updated ExpDate
-                if (e.newData.DocumentExpDate) {
-                    const hijriDate = convertToHijri(new Date(e.newData.DocumentExpDate));
-                    e.newData.DocumentExpDateAr = hijriDate; // ✅ Always set
-                } else if (e.oldData.DocumentExpDate && !e.newData.DocumentExpDate) {
-                    // fallback: if exp date removed
-                    e.newData.DocumentExpDateAr = "";
-                }
-            }
             
 
 
@@ -806,9 +778,20 @@
         const refNo = '@(ViewData["RefNo"] ?? "")';
         $("#ReferenceNo").dxTextBox("instance").option("value", refNo);
     });
+    // Global prevention to avoid browser navigating away
+    window.addEventListener("dragover", (e) => e.preventDefault(), false);
+    window.addEventListener("drop", (e) => {
+        // Safely prevent file drop outside dropZone
+        const dropTarget = e.composedPath().find(el => el.id === 'dropZone');
+        if (!dropTarget) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+    }, false);
+
 
     let selectedFiles = [];
-
+    
     function setupDragDrop() {
         const dropZone = document.getElementById("dropZone");
         const uploader = document.getElementById("fileUploader");
@@ -830,11 +813,30 @@
             dropZone.classList.remove("drag-over");
         });
 
-        dropZone.addEventListener("drop", (e) => {
+        dropZone.addEventListener("drop", async (e) => {
             e.preventDefault();
+            e.stopPropagation(); // ✅ Prevent bubbling
             dropZone.classList.remove("drag-over");
-            const files = Array.from(e.dataTransfer.files);
-            handleFiles(files);
+
+            let files = Array.from(e.dataTransfer.files || []);
+
+            if (files.length === 0 && e.dataTransfer.items) {
+                const items = Array.from(e.dataTransfer.items);
+                files = await Promise.all(
+                    items.filter(item => item.kind === "file").map(item => item.getAsFile())
+                );
+                files = files.filter(f => f instanceof File);
+            }
+
+            if (files.length > 0) {
+                handleFiles(files);
+            } else {
+                DevExpress.ui.notify(
+                    "Files dragged from other apps (Teams/Outlook) may not be supported directly. Save locally before dragging.",
+                    "warning",
+                    4000
+                );
+            }
         });
 
         uploader.addEventListener("change", (e) => {
@@ -843,29 +845,28 @@
             uploader.value = "";
         });
     }
+    let isHandlingFiles = false;
 
-       async function handleFiles(files) {
-        const preview = document.getElementById("preview");
-        preview.innerHTML = "";
-        selectedFiles = [];
-
-        // ✅ Filter files
-        const validFiles = files.filter(file => {
-            const maxSizeMB = 5;
-            const disallowedTypes = ["video/", "application/zip", "application/x-zip-compressed"];
-            const isTooBig = file.size > maxSizeMB * 1024 * 1024;
-            const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
-            if (isTooBig || isDisallowed) {
-                DevExpress.ui.notify(`Skipped: ${file.name} (too big or unsupported)`, "warning", 2500);
-                return false;
-            }
-            return true;
-        });
-
-        if (validFiles.length === 0) return;
+    async function handleFiles(files) {
+        if (isHandlingFiles) return; // ⛔ prevent re-entry
+        isHandlingFiles = true;
 
         try {
-            // ✅ WAIT for document numbers before continuing
+            const preview = document.getElementById("preview");
+            const validFiles = files.filter(file => {
+                const maxSizeMB = 2;
+                const disallowedTypes = ["video/", "application/zip", "application/x-zip-compressed"];
+                const isTooBig = file.size > maxSizeMB * 1024 * 1024;
+                const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
+                if (isTooBig || isDisallowed) {
+                    DevExpress.ui.notify(`Skipped: ${file.name} (too big or unsupported)`, "warning", 2500);
+                    return false;
+                }
+                return true;
+            });
+
+            if (validFiles.length === 0) return;
+
             const docNos = await getNewDocumentNos(validFiles.length);
 
             if (!docNos || docNos.length !== validFiles.length) {
@@ -878,33 +879,39 @@
                 selectedFiles.push(file);
             });
 
-            // ✅ Slight delay to ensure all inputs are ready (helps if controls not initialized yet)
+            // Upload with small delay
             setTimeout(() => {
                 uploadMultipleDocuments(validFiles, docNos);
-            }, 150); // or remove if controls are ready already
+            }, 150);
 
         } catch (err) {
             console.error("DocumentNo generation failed:", err);
             DevExpress.ui.notify("Failed to generate document numbers.", "error", 3000);
+        } finally {
+            isHandlingFiles = false; // ✅ Reset
         }
     }
 
 
-
-
-
     function showFilePreview(file) {
         const preview = document.getElementById("preview");
+
+        // Avoid duplicate preview entries
+        if ([...preview.children].some(div => div.textContent === file.name)) {
+            return;
+        }
+
         const fileDiv = document.createElement("div");
         fileDiv.textContent = file.name;
         fileDiv.classList.add("file-preview-item");
         preview.appendChild(fileDiv);
     }
 
+
     function getNewDocumentNos(count) {
         return new Promise((resolve, reject) => {
             const url = `/api/LedgerDocumentsF/GetNewDocumentNos?count=${count}`;
-            console.log("📡 Requesting DocumentNos from:", url);
+            console.log("Requesting DocumentNos from:", url);
 
             $.get(url)
                 .done(function (data) {
@@ -955,16 +962,20 @@
             contentType: false,
             processData: false,
             success: function (response) {
+                console.log("Upload success:", response);
                 DevExpress.ui.notify(response.message, "success", 3000);
                 $("#documentsGrid").dxDataGrid("instance").refresh();
                 document.getElementById("preview").innerHTML = "";
                 selectedFiles = [];
                 document.getElementById("fileUploader").value = "";
                 
+                
             },
             error: function (xhr) {
+                console.error("Upload failed:", xhr.responseText);
                 console.error("Upload failed:", xhr);
                 DevExpress.ui.notify("Group upload failed.", "error", 3000);
+               
             }
         });
     }
@@ -1047,7 +1058,7 @@
 
 
 
-        $(document).ready(function () {
+    $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
@@ -1078,6 +1089,7 @@
 
     });
 
-            
+     document.addEventListener("DOMContentLoaded", setupDragDrop);
+
 
 </script>
