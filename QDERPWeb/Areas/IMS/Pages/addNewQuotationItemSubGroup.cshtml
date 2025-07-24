@@ -113,18 +113,23 @@
     }
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="quotationLineItem" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 @* <div class="sathish-container-top"> *@
 <div class="content-container-top">
     <div class="row">
         <div class="col-md-4">
             <div class="form-group">
-                <label for="costCenterComboBox" class="form-label" style="width: 30%;">Sub Group Code</label>
-                <div id="costCenterComboBox"></div>
+           @*      <label for="costCenterComboBox" class="form-label" style="width: 30%;">Sub Group Code</label>
+                <div id="costCenterComboBox"></div> *@
+                @(Html.DevExtreme().SelectBox()
+                        .ID("costCenterComboBox")
+                        .Label(new JS("formatMessage('Sub Group Code')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        )
             </div>
         </div>
 
@@ -141,17 +146,22 @@
                 .ID("mprNo")
                 .Label(new JS("formatMessage('MPR No')"))
                 .LabelMode(EditorLabelMode.Floating)
-
+                .ReadOnly(true)
                 )
         </div>
     </div>
 
-    <div class="row mt-2" style="display: flex;align-items: baseline;">
+    <div class="row" style="display: flex;">
         <div class="col-md-8">
 
             <div class="form-group">
-                <label id="CostCenterMaster" class="no-border-input" style="width: 166px;">Sub Group Notes:</label>
-                <div id="costCenterMaster1"></div>
+           @*    <label id="CostCenterMaster" class="no-border-input" style="width: 166px;"></label>
+              <div id="costCenterMaster1"></div> *@
+                @(Html.DevExtreme().SelectBox()
+                                .ID("costCenterMaster1")
+                                .Label(new JS("formatMessage('Sub Group Notes:')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                )
             </div>
 
         </div>
@@ -173,7 +183,7 @@
         </div>
     </div>
 
-    <div class="row mt-2" style="display: flex;align-items: baseline;">
+    <div class="row" style="display: flex;align-items: baseline;">
         <div class="col-md-8">
             @(Html.DevExtreme().TextBox()
                 .ID("subGroupRemarks")
@@ -610,7 +620,7 @@
                 rowRenderingMode: "virtual", // Optimizes row rendering
                 useNative: true // Use native scrolling for better performance
             },
-            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            height: "70vh", // Set a fixed height for the grid (this helps in showing vertical scrollbar)
             width: "100%" // Make grid responsive and take full width of the container
         });
     });

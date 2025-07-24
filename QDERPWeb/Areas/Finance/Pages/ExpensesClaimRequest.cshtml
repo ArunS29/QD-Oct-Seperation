@@ -927,7 +927,7 @@
         });
 
 
-        let paymentaccheadId;
+        let paymentaccheadId,accheadId;
         function dropDownBoxOnInput(e) {
             const ddbInstance = e.component;
             if (!ddbInstance.option("opened")) ddbInstance.open();
@@ -1427,8 +1427,8 @@
                             $("#VerifiedBytext").dxTextBox("instance").option("value", entry.VerifiedBy || "");
                             $("#IsApproved").dxCheckBox("instance").option("value", entry.IsApproved || false);
                             $("#ApprovedBytext").dxTextBox("instance").option("value", entry.ApprovedBy || "");
-                            $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPosted || false);
-                            $("#paidBytext").dxTextBox("instance").option("value", entry.PostedBy || "");
+                            $("#IsPaid").dxCheckBox("instance").option("value", entry.IsPaid || false);
+                            $("#paidBytext").dxTextBox("instance").option("value", entry.PaidBy || "");
                             var submittedDate = entry.SubmittedOn ? new Date(entry.SubmittedOn) : null;
                             var formattedsubmittedDate = submittedDate
                                 ? submittedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
@@ -1447,13 +1447,13 @@
                                 : "";
 
                             $("#ApprovedOntext").dxTextBox("instance").option("value", formattedApprovedDate);
-                            var postedDate = entry.PostedOn ? new Date(entry.PostedOn) : null;
+                            var postedDate = entry.PaidOn ? new Date(entry.PaidOn) : null;
                             var formattedPostedDate = postedDate
-                                ? approvedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
+                                ? postedDate.toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })
                                 : "";
 
                             $("#paidOntext").dxTextBox("instance").option("value", formattedPostedDate);
-                            // $("#GeneratedVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
+                            $("#GenerateVoucher").dxTextBox("instance").option("value", entry.PaymentVoucherNo);
                             // Disable DevExtreme buttons based on submission and verification date
                             const btnSubmit = $("#btnSubmit").dxButton("instance");
                             const btnVerify = $("#btnExpenseVerify").dxButton("instance");
@@ -1478,7 +1478,11 @@
 
                             }
 
+                            // ✅ Sync fields
+                            syncWorkflowFromFields();
 
+                            // ✅ Initialize popovers
+                            initWorkflowTippyPopovers();
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
@@ -1583,6 +1587,8 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
+                              isVoucherSaved = true; // Mark Updated step as done
+                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         DevExpress.ui.dialog.alert(
                             "Expense Claim Request Details updated Successfully.",
                             "Update Successful"
@@ -1640,6 +1646,8 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
+                           isVoucherSaved = true; // Mark Updated step as done
+                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         DevExpress.ui.dialog.alert(
                                 "Expenses Claim Request Details Updated Sucessfully.",
                                 "Data Saved Successfully"
@@ -1773,9 +1781,9 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                         isVoucherSaved = true; // Mark Updated step as done
-                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+                 
                          proceedWithSubmit();
+                              
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -1817,9 +1825,9 @@
                                 $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
                                 $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
                                 $("#IsSubmitted").dxCheckBox("instance").option("value", true);
-
-                                disableclaim();
                                 syncWorkflowFromFields();
+                                disableclaim();
+                                
                             });
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -1838,7 +1846,7 @@
         const data = grid.getDataSource().items();
         const claimRefNo = $("#VoucherNo").dxTextBox("instance").option("value");
             const accountHeadInstance = $("#ddAccountHead").dxDropDownBox("instance");
-            const selectedAccountHead = accountHeadInstance.option("value");
+            const selectedAccountHead = accheadId;
 
 
         const hasValidAmounts = data.some(row => {
@@ -2164,10 +2172,11 @@
         const verified = $("#IsVerified").dxCheckBox("instance").option("value") === true;
         const approved = $("#IsApproved").dxCheckBox("instance").option("value") === true;
 
-        if (approved) return 3;
-        if (verified) return 2;
-        if (submitted) return 1;
-
+        if (approved) return 4;
+        if (verified) return 3;
+        if (submitted) return 2;
+        if (isVoucherSaved) return 1; // If voucher is saved, consider it as submitted
+     
         return 0;
     }
 
@@ -2203,7 +2212,7 @@
             }
 
             // Final Approved state
-                        if (status === 3 && index === 3) {
+                        if (status === 4 && index === 4) {
                 el.classList.add("completed");
                 statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
@@ -2287,7 +2296,7 @@
         const submittedBy = $("#SubmittedBytext").dxTextBox("instance")?.option("value") || "N/A";
         const submittedOn = $("#SubmittedOnDate").dxTextBox("instance")?.option("value") || "N/A";
         const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
-        const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+        const verifiedOn = $("#VerifiedOntext").dxTextBox("instance")?.option("value") || "N/A";
         const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
         const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
 

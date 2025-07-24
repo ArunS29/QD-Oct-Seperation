@@ -97,6 +97,9 @@
         text-align: right;
     }
 
+    .button-alignment-down {
+        margin-top: -2px!important;
+    }
 </style>
 <div class="content-container-top">
 <div class="title" id="kpiCarousel">
@@ -680,9 +683,9 @@
                     { dataField: "VoucherTypeAndNo", area: "filter", caption: "Voucher No", visible: true },
 
                     // Hidden fields
-                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Test Income", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter, visible: false },
-                    { dataField: "ConvertedExpenses", area: "data", summaryType: "sum", caption: "Trans Expenses", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter, visible: false },
-                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Trans Grand Total", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter, visible: false },
+                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Test Income", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
+                    { dataField: "ConvertedExpenses", area: "data", summaryType: "sum", caption: "Trans Expenses", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
+                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Trans Grand Total", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
 
                     // Main fields to show
                     {
@@ -690,21 +693,21 @@
                         area: "data",
                         caption: "Income",
                         summaryType: "sum",
-                        format: { type: "fixedPoint", precision: 3 }
+                        format: { type: "fixedPoint", precision: 2 }
                     },
                     {
                         dataField: "ConvertedExpenses",
                         area: "data",
                         caption: "Expenses",
                         summaryType: "sum",
-                        format: { type: "fixedPoint", precision: 3 }
+                        format: { type: "fixedPoint", precision: 2 }
                     },
                     {
                         dataField: "ConvertedCostAmount",
                         area: "data",
                         caption: "Grand Total",
                         summaryType: "sum",
-                        format: { type: "fixedPoint", precision: 3 }
+                        format: { type: "fixedPoint", precision: 2 }
                     }
                 ],
                 store: data
@@ -903,11 +906,11 @@
             { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center Group", expanded: true },
             { dataField: "CostAllocationUnit", area: "row", caption: "Cost Unit", expanded: true },
             { dataField: "PL", area: "column", caption: "Income / Expense" },
-            { dataField: "Income", area: "data", summaryType: "sum", caption: "Income", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
+            { dataField: "Income", area: "data", summaryType: "sum", caption: "Income", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
             // Expenses
-            { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter },
+            { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
             // Grand Total
-            { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total", format: { type: "fixedPoint", precision: 3 }, customizeText: customFormatter }
+            { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter }
         ];
 
         // Extra filter fields
