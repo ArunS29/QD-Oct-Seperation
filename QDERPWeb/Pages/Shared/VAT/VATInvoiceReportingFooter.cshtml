@@ -43,8 +43,7 @@
         gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
         align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
-        margin-top: 0px;
+        margin: 0px 10px;
     }
 
     .button-alignment-down {
@@ -203,9 +202,30 @@
                 .DropDownOptions(options => options.Width(280))
                 .Items(items =>
                 {
-                    items.Add().Text("Invoice Collection Report").Icon("file").OnClick("navigateToDebtorsCollection");
-                    items.Add().Text("Sales Reporting with Line Details").Icon("file").OnClick("navigateToReportingInDetails");
+                    items.Add()
+                        .Text("Invoice Collection Report")
+                        .Icon("file")
+                        .Option("color", "#FF7043") // Orange
+                        .OnClick("navigateToDebtorsCollection");
+
+                    items.Add()
+                        .Text("Sales Reporting with Line Details")
+                        .Icon("file")
+                        .Option("color", "#00ACC1") // Cyan
+                        .OnClick("navigateToReportingInDetails");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
+
 
                 .ShowArrowIcon(false)
                 )

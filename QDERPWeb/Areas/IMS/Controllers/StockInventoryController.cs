@@ -1524,6 +1524,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalBalance,
                         i.AverageCostUnitPrice,
                         i.TotalStockValueByAvgCost,
+                        i.InventoryValue,
                     }).ToListAsync();
 
                     return Json(data);

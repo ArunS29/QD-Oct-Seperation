@@ -24,28 +24,30 @@ function showToastModal(type, title, message) {
         error: "❌"
     };
 
-    // Get elements
     const toast = document.getElementById("toastModal");
     const toastContent = document.getElementById("toastModalContent");
     const toastTitle = document.getElementById("toastTitle");
     const toastMessage = document.getElementById("toastMessage");
     const toastIcon = document.getElementById("toastIcon");
 
-    // Update content
+    toastContent.style.animation = "none";
+    void toastContent.offsetWidth;
+    toastContent.style.animation = "";
+
     toastTitle.innerText = title;
     toastMessage.innerText = message;
     toastIcon.innerText = iconMap[type] || "ℹ️";
 
-    // Change background class
     toastContent.className = `toast toast-${type}`;
 
-    // Show and auto-hide
     toast.style.display = "block";
     toastContent.style.display = "flex";
+
     setTimeout(() => {
         hideToastModal();
-    }, 500000);
+    }, 5000); // You had 500000ms (~8 mins), adjusted to 5 sec
 }
+
 
 function hideToastModal() {
     document.getElementById("toastModal").style.display = "none";

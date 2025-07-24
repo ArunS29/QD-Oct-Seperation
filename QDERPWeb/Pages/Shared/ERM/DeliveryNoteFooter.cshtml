@@ -124,9 +124,27 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Posting Of Cost Prices')"));
-                items.Add().Text(new JS("formatMessage('Posting of DN to Journal Books')"));
+                items.Add()
+                    .Text(new JS("formatMessage('Posting Of Cost Prices')"))
+                    .Option("color", "#00ACC1")  // Cyan
+                    .Icon("money");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Posting of DN to Journal Books')"))
+                    .Option("color", "#AB47BC")  // Purple
+                    .Icon("book");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             @* .OnItemClick("addNewDeliveryNotePosting") *@
             .ShowArrowIcon(false)
             )
@@ -137,12 +155,29 @@
             .Icon("add")
             .Text(new JS("formatMessage('Add')"))
             .DropDownOptions(options => options.Width(325))
-            .Items(items =>
+           .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Add New Delivery to Client')"));
-                items.Add().Text(new JS("formatMessage('Add New Delivery To Project')"));
+                items.Add()
+                    .Text(new JS("formatMessage('Add New Delivery to Client')"))
+                    .Option("color", "#34A853")  // Green
+                    .Icon("runner");
 
+                items.Add()
+                    .Text(new JS("formatMessage('Add New Delivery To Project')"))
+                    .Option("color", "#FBBC05")  // Yellow
+                    .Icon("runner");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("addNewDeliveryNote")
             .ShowArrowIcon(false)
             )

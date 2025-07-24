@@ -143,15 +143,23 @@
 		width: 100%;
 		overflow: hidden;
 	}
+
+	.titleCard-toggle1 {
+		display: none;
+	}
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="stockMovementReport" class="no-border-input"></div>
 	</div>
+</div> *@
+<div class="Head">
+	<div class="footer-fixed">
+		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
+	</div>
 </div>
-
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -183,7 +191,7 @@
 		.ElementAttr("class", "button-alignment-up")
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
 				.Items(items =>
 				{
@@ -200,7 +208,7 @@
 				})
 				.ItemTemplate(@<text>
             <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -248,12 +256,12 @@
 
 			});
 		})
-		.Height(680) // Fixed height for the grid
+		.Height("70vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
-		.Width("100%")
+		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))

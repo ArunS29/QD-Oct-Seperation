@@ -5,53 +5,6 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style type="text/css">
-    /* Container for each item */
-    .custom-dropdown-item {
-        display: flex;
-        align-items: flex-start;
-        padding: 0px 0px;
-        position: relative;
-        /* border-left: 4px solid transparent; */
-        transition: background 0.2s;
-    }
-
-        .custom-dropdown-item:hover {
-            background: var(--background-color); /* subtle hover */
-        }
-
-        /* Colored bar on the left */
-        .custom-dropdown-item .side-bar {
-            width: 4px;
-            height: 11%;
-            margin-right: 30px;
-            /* background-color: red; */
-            position: fixed;
-            z-index: 1000;
-            border-radius: 0% 50% 50% 0%;
-            transition: width 0.2s ease;
-        }
-
-        .custom-dropdown-item:hover .side-bar {
-            width: 8px;
-        }
-        /* Text content */
-        .custom-dropdown-item .item-content {
-            display: flex;
-            /* flex-direction: column; */
-            margin-left:10px;
-            gap: 10px;
-            align-items: center;
-        }
-
-        .custom-dropdown-item .item-title {
-            font-weight: bold;
-            color: #000;
-        }
-
-        .custom-dropdown-item .item-description {
-            font-size: 12px;
-            color: #888;
-        }
 
     #dataGrid .dx-datagrid-headers .dx-datagrid-action {
         text-align: center !important;
@@ -161,39 +114,33 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Template(@<text>
-                                                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                                         <path fill="var(--title-background-color)" d="M6 10V7a6 6 0 1 1 12 0v3" />
-                                                                                                         <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
-                                                                                                         <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
-                                                                                                     </svg>Set as Default Layout
+                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Template(@<text>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path fill="var(--title-background-color)" d="M6 10V7a6 6 0 1 1 12 0v3" />
+                        <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                        <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                    </svg>Set as Default Layout
 
-                                                                                                 </text>).OnClick("setDefaultLayoutClick");
-                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Template(@<text>
-                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--title-background-color)" viewBox="0 0 16 16">
-                                                                                                <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1l-3 3 3 3V5z" />
-                                                                                            </svg>Reset Layout
+                </text>).OnClick("setDefaultLayoutClick");
+                items.Add().Text(new JS("formatMessage('Reset Layout')")).Template(@<text>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--title-background-color)" viewBox="0 0 16 16">
+                        <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1l-3 3 3 3V5z" />
+                    </svg>Reset Layout
+                </text>).OnClick("resetLayoutClick");
+                items.Add().Text(new JS("formatMessage('Open Layout')")).Template(@<text>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path fill="var(--title-background-color)" d="M17 10V7a5 5 0 0 0-10 0" />
+                        <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                        <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                    </svg>Open Layout
+                </text>).OnClick("openLayoutClick");
 
-
-            </text>).OnClick("resetLayoutClick");
-                    items.Add().Text(new JS("formatMessage('Open Layout')")).Template(@<text>
-                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                               <path fill="var(--title-background-color)" d="M17 10V7a5 5 0 0 0-10 0" />
-                                                                                               <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
-                                                                                               <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
-                                                                                           </svg>Open Layout
-
-
-            </text>).OnClick("openLayoutClick");
-
-                    items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
-                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
-                                                                                               <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
-                                                                                               <path fill="#444" d="M17 7H7V5h10v2zM9 14h6v5H9z" />
-                                                                                           </svg>Save Layout
-
-
-            </text>).OnClick("saveLayoutClick");
+                items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                        <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
+                        <path fill="#444" d="M17 7H7V5h10v2zM9 14h6v5H9z" />
+                    </svg>Save Layout
+                </text>).OnClick("saveLayoutClick");
             })
             .ShowArrowIcon(false)
             )
@@ -377,7 +324,7 @@
                 })
                     .ItemTemplate(@<text>
                                        <div class="custom-dropdown-item">
-                                           <div style="background-color:<%- color %>; height:40%" class="side-bar"></div>
+                                           <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
                                            <div class="item-content">
                                                <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                                                <div>
@@ -418,7 +365,7 @@
                 })
                     .ItemTemplate(@<text>
                                        <div class="custom-dropdown-item">
-                                           <div style="background-color:<%- color %>; height:40%" class="side-bar"></div>
+                                           <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
                                            <div class="item-content">
                                                <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                                                <div>
@@ -457,7 +404,7 @@
                 })
                     .ItemTemplate(@<text>
                                        <div class="custom-dropdown-item">
-                                             <div style="background-color:<%- color %>; height:30%" class="side-bar"></div>
+                                             <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
                                            <div class="item-content">
                                                <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                                                <div>
