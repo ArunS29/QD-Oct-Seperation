@@ -599,63 +599,229 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult> GetVATInvoiceNo(DataSourceLoadOptions loadOptions)
-
+        public ActionResult<string> GetVATInvoiceNo()
         {
             try
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    string yearSuffix = DateTime.Now.ToString("yyyy"); // Get last two digits of the year
 
-                    // Get invoice abbreviation
-                    //var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
-                    //	.Select(c => c.EinvoiceAbbrv)
-                    //	.FirstOrDefaultAsync();
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-                    //if (string.IsNullOrEmpty(invoiceAbbrv))
-                    //	return BadRequest("Invoice abbreviation not found.");
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
 
-                    // Get last invoice number
-                    //var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
-                    //	.Where(i => i.InvoiceNo.StartsWith($"{invoiceAbbrv}{yearSuffix}-"))
-                    //	.OrderByDescending(i => i.InvoiceNo)
-                    //	.Select(i => i.InvoiceNo)
-                    //	.FirstOrDefaultAsync();
+                    // Now use defaultCompanyByte as needed
 
-                    var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
-                        .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
-                        .OrderByDescending(i => i.InvoiceNo)
-                        .Select(i => i.InvoiceNo)
+
+                    byte companyId = defaultCompanyByte;
+
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+
+                    if (company == null)
+                    {
+                        return NotFound("Company not found.");
+                    }
+
+                    string invoiceAbbrv = company.EinvoiceAbbrv;
+                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+                    DateTime invoiceDate = DateTime.Now;
+                    int NoOfDigitsInEInvoiceNo = company.NoOfDigitsInEinvoiceNo ?? 5; // 6 is the default if null
+
+
+
+                    // Step 4: Generate New Debit Note No
+                    string newDebitNoteNo = GetVATInvoiceNoAPI(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear,NoOfDigitsInEInvoiceNo);
+
+                    return Ok(newDebitNoteNo);
+                }
+                else
+                {
+                    return BadRequest("Tenant or DB Context not found.");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+        public string GetVATInvoiceNoAPI(string invoiceAbbr, int yearInDigit, DateTime invoiceDate, bool isResetByYear,int NoOfDigitsInEInvoiceNo)
+        {
+            string strYear = "";
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    int maxNumber = 0;
+
+                    var query = dbContext.Tbl20161VatinvoiceMasters.AsQueryable();
+
+                    if (isResetByYear)
+                    {
+                        query = query.Where(d => d.InvoiceDate.HasValue && d.InvoiceDate.Value.Year == invoiceDate.Year);
+                    }
+
+                    maxNumber = query
+     .Select(d => d.InvoiceNo)
+     .Where(no => !string.IsNullOrEmpty(no) && no.Length >= NoOfDigitsInEInvoiceNo)
+     .AsEnumerable() // Important to move to memory
+     .Select(no => int.TryParse(no.Substring(no.Length - NoOfDigitsInEInvoiceNo), out int number) ? number : 0)
+     .DefaultIfEmpty(0)
+     .Max();
+
+
+                    maxNumber += 1;
+
+                    // Prepare Year Part
+                    strYear = invoiceDate.Year.ToString();
+                    if (yearInDigit > 0 && yearInDigit <= 4)
+                    {
+                        strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                    }
+                    else if (yearInDigit <= 0)
+                    {
+                        strYear = "";
+                    }
+
+                    // Final Invoice No
+                    string newInvoiceNumber = $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "" : invoiceAbbr)}{strYear}-{maxNumber.ToString().PadLeft(NoOfDigitsInEInvoiceNo, '0')}";
+
+                    return newInvoiceNumber;
+                }
+                else
+                {
+                    throw new Exception("Tenant or DbContext not found");
+                }
+            }
+            catch (Exception ex)
+            {
+                // Fallback Invoice No in case of any error
+                strYear = invoiceDate.Year.ToString();
+                if (yearInDigit > 0 && yearInDigit <= 4)
+                {
+                    strYear = strYear.Substring(strYear.Length - yearInDigit, yearInDigit);
+                }
+                else
+                {
+                    strYear = "";
+                }
+
+                return $"{(string.IsNullOrWhiteSpace(invoiceAbbr) ? "" : invoiceAbbr)}-{strYear}-000001";
+            }
+        }
+
+
+
+        [HttpGet]
+        public async Task<ActionResult> GetVATCreditNoteNo(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    string yearSuffix = DateTime.Now.ToString("yy"); // e.g., "25"
+                    string creditNoteAbbrv = "CRN"; // Hardcoded abbreviation
+
+                    // Get last credit note number
+                    var lastCreditNoteNumber = await dbContext.Tbl20170VatcreditNoteMasters
+                        .Where(cn => cn.CreditNoteNo.StartsWith($"{creditNoteAbbrv}-{yearSuffix}-"))
+                        .OrderByDescending(cn => cn.CreditNoteNo)
+                        .Select(cn => cn.CreditNoteNo)
                         .FirstOrDefaultAsync();
 
-                    int newNumber = 1; // Default if no previous invoices exist
-                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    int newNumber = 1; // Default if no previous credit notes exist
+                    if (!string.IsNullOrEmpty(lastCreditNoteNumber))
                     {
-                        var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
+                        var match = Regex.Match(lastCreditNoteNumber, @"-(\d+)$");
                         if (match.Success)
                         {
                             newNumber = int.Parse(match.Groups[1].Value) + 1;
                         }
                     }
 
-                    // Generate new invoice number
-                    //string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
-                    string newInvoiceNumber = $"{yearSuffix}-{newNumber:D5}";
+                    // Generate new Credit Note number
+                    string newCreditNoteNumber = $"{creditNoteAbbrv}-{yearSuffix}-{newNumber:D5}";
 
-                    //  return Ok(new { InvoiceNumber = newInvoiceNumber });
-                    return Json(newInvoiceNumber);
+                    return Json(newCreditNoteNumber);
                 }
-
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
 
-
             return BadRequest("Failed to retrieve tenant and database context.");
         }
+
+        //[HttpGet]
+        //public async Task<ActionResult> GetVATInvoiceNoAPI(DataSourceLoadOptions loadOptions)
+
+        //{
+        //    try
+        //    {
+        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            string yearSuffix = DateTime.Now.ToString("yyyy"); // Get last two digits of the year
+
+        //            // Get invoice abbreviation
+        //            //var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
+        //            //	.Select(c => c.EinvoiceAbbrv)
+        //            //	.FirstOrDefaultAsync();
+
+        //            //if (string.IsNullOrEmpty(invoiceAbbrv))
+        //            //	return BadRequest("Invoice abbreviation not found.");
+
+        //            // Get last invoice number
+        //            //var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+        //            //	.Where(i => i.InvoiceNo.StartsWith($"{invoiceAbbrv}{yearSuffix}-"))
+        //            //	.OrderByDescending(i => i.InvoiceNo)
+        //            //	.Select(i => i.InvoiceNo)
+        //            //	.FirstOrDefaultAsync();
+
+        //            var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+        //                .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
+        //                .OrderByDescending(i => i.InvoiceNo)
+        //                .Select(i => i.InvoiceNo)
+        //                .FirstOrDefaultAsync();
+
+        //            int newNumber = 1; // Default if no previous invoices exist
+        //            if (!string.IsNullOrEmpty(lastInvoiceNumber))
+        //            {
+        //                var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
+        //                if (match.Success)
+        //                {
+        //                    newNumber = int.Parse(match.Groups[1].Value) + 1;
+        //                }
+        //            }
+
+        //            // Generate new invoice number
+        //            //string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
+        //            string newInvoiceNumber = $"{yearSuffix}-{newNumber:D5}";
+
+        //            //  return Ok(new { InvoiceNumber = newInvoiceNumber });
+        //            return Json(newInvoiceNumber);
+        //        }
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+
+
+        //    return BadRequest("Failed to retrieve tenant and database context.");
+        //}
 
         [HttpPost]
         public async Task<IActionResult> CreateNewInvoiceCounter()
@@ -1861,47 +2027,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
-        [HttpGet]
-        public async Task<ActionResult> GetVATCreditNoteNo(DataSourceLoadOptions loadOptions)
-        {
-            try
-            {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                {
-                    string yearSuffix = DateTime.Now.ToString("yy"); // e.g., "25"
-                    string creditNoteAbbrv = "CRN"; // Hardcoded abbreviation
-
-                    // Get last credit note number
-                    var lastCreditNoteNumber = await dbContext.Tbl20170VatcreditNoteMasters
-                        .Where(cn => cn.CreditNoteNo.StartsWith($"{creditNoteAbbrv}-{yearSuffix}-"))
-                        .OrderByDescending(cn => cn.CreditNoteNo)
-                        .Select(cn => cn.CreditNoteNo)
-                        .FirstOrDefaultAsync();
-
-                    int newNumber = 1; // Default if no previous credit notes exist
-                    if (!string.IsNullOrEmpty(lastCreditNoteNumber))
-                    {
-                        var match = Regex.Match(lastCreditNoteNumber, @"-(\d+)$");
-                        if (match.Success)
-                        {
-                            newNumber = int.Parse(match.Groups[1].Value) + 1;
-                        }
-                    }
-
-                    // Generate new Credit Note number
-                    string newCreditNoteNumber = $"{creditNoteAbbrv}-{yearSuffix}-{newNumber:D5}";
-
-                    return Json(newCreditNoteNumber);
-                }
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
-
-            return BadRequest("Failed to retrieve tenant and database context.");
-        }
-
         [HttpGet]
         public async Task<ActionResult> GetVatPurchaseDetail(string frmDate, string toDate)
         {
@@ -3610,20 +3735,22 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    // Step 1: Get company name from session
-                    var companyNameShort = HttpContext.Session.GetString("TenantName");
-                    if (string.IsNullOrEmpty(companyNameShort))
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
                     {
-                        return BadRequest("Company name not found in session.");
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
                     }
 
-                    // Step 2: Get company details using dbContext
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
                     var company = dbContext.Tbl901CompanyDetails
-                       .FirstOrDefault(c => c.CompanyNameShort.Contains(companyNameShort));
-
-
-                    //var company = dbContext.Tbl901CompanyDetails
-                    //                       .FirstOrDefault(c => c.CompanyNameShort == "Pulse Infotech");
+                   .FirstOrDefault(c => c.CompanyId == companyId);
 
 
                     if (company == null)
@@ -3655,9 +3782,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 return StatusCode(500, "Internal server error: " + ex.Message);
             }
         }
-
-
-
 
 
         private string GetNewDebitNoteNo(string invoiceAbbrv, int yearInDigit, DateTime invoiceDate, bool isResetByYear, ERPMasterWtDataContext dbContext)
