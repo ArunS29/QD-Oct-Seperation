@@ -166,7 +166,7 @@
             this.pageInfo2.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(427.8535F, 0F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(98.95834F, 23F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(107.2917F, 23F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.StylePriority.UseFont = false;
             this.pageInfo2.StylePriority.UseForeColor = false;

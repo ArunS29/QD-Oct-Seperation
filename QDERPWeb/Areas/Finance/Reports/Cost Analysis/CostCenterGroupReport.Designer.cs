@@ -122,6 +122,8 @@
             this.xrTable1 = new DevExpress.XtraReports.UI.XRTable();
             this.xrTableRow1 = new DevExpress.XtraReports.UI.XRTableRow();
             this.xrTableCell1 = new DevExpress.XtraReports.UI.XRTableCell();
+            this.xrPictureBox11 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox10 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel8 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel28 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel29 = new DevExpress.XtraReports.UI.XRLabel();
@@ -148,8 +150,6 @@
             this.xrLabel4 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel19 = new DevExpress.XtraReports.UI.XRLabel();
             this.GroupHeader3 = new DevExpress.XtraReports.UI.GroupHeaderBand();
-            this.xrPictureBox10 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox11 = new DevExpress.XtraReports.UI.XRPictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable3)).BeginInit();
@@ -190,7 +190,7 @@
             this.pageInfo2.Font = new DevExpress.Drawing.DXFont("Times New Roman", 8.25F);
             this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(420.3536F, 0F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(88.95828F, 23F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(101.9095F, 23F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.StylePriority.UseFont = false;
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
@@ -638,6 +638,24 @@
             this.xrTableCell1.StylePriority.UseBackColor = false;
             this.xrTableCell1.StylePriority.UseBorders = false;
             this.xrTableCell1.Weight = 0.05738559086048399D;
+            // 
+            // xrPictureBox11
+            // 
+            this.xrPictureBox11.LocationFloat = new DevExpress.Utils.PointFloat(855.0411F, 5.999985F);
+            this.xrPictureBox11.Name = "xrPictureBox11";
+            this.xrPictureBox11.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
+            this.xrPictureBox11.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox11.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            this.xrPictureBox11.StylePriority.UsePadding = false;
+            // 
+            // xrPictureBox10
+            // 
+            this.xrPictureBox10.LocationFloat = new DevExpress.Utils.PointFloat(726.7629F, 5.999985F);
+            this.xrPictureBox10.Name = "xrPictureBox10";
+            this.xrPictureBox10.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
+            this.xrPictureBox10.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox10.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            this.xrPictureBox10.StylePriority.UsePadding = false;
             // 
             // xrLabel8
             // 
@@ -1102,24 +1120,6 @@
             this.GroupHeader3.HeightF = 0F;
             this.GroupHeader3.Level = 2;
             this.GroupHeader3.Name = "GroupHeader3";
-            // 
-            // xrPictureBox10
-            // 
-            this.xrPictureBox10.LocationFloat = new DevExpress.Utils.PointFloat(726.7629F, 5.999985F);
-            this.xrPictureBox10.Name = "xrPictureBox10";
-            this.xrPictureBox10.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox10.SizeF = new System.Drawing.SizeF(18F, 18F);
-            this.xrPictureBox10.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox10.StylePriority.UsePadding = false;
-            // 
-            // xrPictureBox11
-            // 
-            this.xrPictureBox11.LocationFloat = new DevExpress.Utils.PointFloat(855.0411F, 5.999985F);
-            this.xrPictureBox11.Name = "xrPictureBox11";
-            this.xrPictureBox11.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox11.SizeF = new System.Drawing.SizeF(18F, 18F);
-            this.xrPictureBox11.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox11.StylePriority.UsePadding = false;
             // 
             // CostCenterGroupReport
             // 

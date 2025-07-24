@@ -165,6 +165,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
             };
             this.Bands[BandKind.Detail].Controls.Add(noDataLabel);
         }
+
         private void LoadCurrencySymbolAndImage()
         {
             try
