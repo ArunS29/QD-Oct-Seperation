@@ -17,7 +17,6 @@
         display: flex;
         justify-content: space-between;
         gap: 20px;
-        margin-bottom: 10px;
     }
 
     .form-field {
@@ -96,11 +95,11 @@
 
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="ClientContactList" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div class="formContainer">
 
     <div class="form-row">
@@ -297,14 +296,14 @@
                 )
         </div>
     </div>
-    <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
+    <div class="footer-fixed">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
             .Text("Save")
             .Icon("save")
             .Type(ButtonType.Success)
             .OnClick("saveOrUpdateClientList")
-            .ElementAttr("class", "black-text")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
             )
 
         @(Html.DevExtreme().Button()
@@ -313,7 +312,7 @@
             .Type(ButtonType.Danger)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("trash")
-            .ElementAttr("class", "black-text")
+                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
             )
 
         @(Html.DevExtreme().Button()
@@ -323,8 +322,8 @@
             .Type(ButtonType.Default)
             .OnClick("Goback")
             .StylingMode(ButtonStylingMode.Outlined)
-            .ElementAttr("class", "black-text")
-            )
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
     </div>
 
 

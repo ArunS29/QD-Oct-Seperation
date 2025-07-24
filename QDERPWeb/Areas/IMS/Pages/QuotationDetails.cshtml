@@ -2,9 +2,7 @@
 @model QD.ERP.Web.Areas.IMS.Pages.QuotationDetailsModel
 @{
 }
-
-<style>
-	.overlay {
+<style>.overlay {
 		display: none;
 		position: fixed;
 		top: 0;
@@ -34,7 +32,7 @@
 		height: 100%;
 	}
 
-	
+
 
 	.close-btn {
 		position: absolute;
@@ -145,25 +143,27 @@
 
 	.titleCard-toggle1 {
 		display: none;
-	}
-</style>
+	}</style>
+<input
+    id="formId"
+    value="frm201LedgerView"
+    type="hidden" />
 
-<input id="formId" value="frm201LedgerView" type="hidden" />
+
 @* <div class="title">
-	<div class="header-container">
-		<div id="Quotation" class="no-border-input"></div>
-	</div>
+    <div class="header-container">
+        <div id="Quotation" class="no-border-input"></div>
+    </div>
 </div> *@
 
 
 <div class="Head">
-	<div class="footer-fixed">
-		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
-	</div>
+    <div class="footer-fixed">
+        @await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
+    </div>
 </div>
-
 <div class="dx-fieldset horizontal-container">
-	@(Html.DevExtreme().DateBox()
+    @(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
 		.Label(new JS("formatMessage('Start Date')"))
 		.LabelMode(EditorLabelMode.Floating)
@@ -173,8 +173,7 @@
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(2)
 		)
-
-	@(Html.DevExtreme().DateBox()
+    @(Html.DevExtreme().DateBox()
 		.ID("todateBox")
 		.Label(new JS("formatMessage('End Date')"))
 		.LabelMode(EditorLabelMode.Floating)
@@ -184,9 +183,7 @@
 		.DisplayFormat("dd-MMM-yyyy")
 		.TabIndex(3)
 		)
-
-
-	@(Html.DevExtreme().DropDownButton()
+    @(Html.DevExtreme().DropDownButton()
 		.ID("ddBtnShowRecords")
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
@@ -211,28 +208,29 @@
 					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
 				})
 				.ItemTemplate(@<text>
-            <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
-                <div class="item-content">
-                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                    <div>
-                        <div class="item-title"><%- text %></div>
+        <div class="custom-dropdown-item">
+            <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+            <div class="item-content">
+                <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                <div>
+                    <div class="item-title">
+                        < %- text %>
                     </div>
                 </div>
             </div>
-        </text>)
+        </div>
+    </text>
+    )
 		)
-
 </div>
 <div class="dx-field ledgerResult">
-	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60124quotationItemDetail>()
+    @(Html.DevExtreme().DataGrid < QD.ERP.Web.DAL.Entities.Qry60124quotationItemDetail>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			
+
 			columns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quote No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			columns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quote No')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
 			columns.AddFor(m => m.QuoteDate).Caption(new JS("formatMessage('Quote Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
@@ -243,91 +241,23 @@
 			columns.AddFor(m => m.ItemPartNo).Caption(new JS("formatMessage('Item Part No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			columns.AddFor(m => m.ItemSize).Caption(new JS("formatMessage('Item Size')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			columns.AddFor(m => m.ItemBrand).Caption(new JS("formatMessage('Item Brand')")).Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.ItemMake).Caption(new JS("formatMessage('Item Make')")).Visible(true);
+			columns.AddFor(m => m.UnitRateMethod).Caption(new JS("formatMessage('Unit Rate Method')")).Visible(true);
+			columns.AddFor(m => m.QuotedUnitPrice).Caption(new JS("formatMessage('Quoted Unit Price')")).Visible(true);
+			columns.AddFor(m => m.LineTotalBeforeDiscount).Caption(new JS("formatMessage('Line Total Before Discount')")).Visible(true);
+			columns.AddFor(m => m.QuotedDiscount).Caption(new JS("formatMessage('Quoted Discount')")).Visible(true);
+			columns.AddFor(m => m.LineTotalAfterDiscount).Caption(new JS("formatMessage('Line Total After Discount')")).Visible(true);
+			columns.AddFor(m => m.LineTaxAmount).Caption(new JS("formatMessage('Line Tax Amount')")).Visible(true);
+			columns.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('Line Total With Tax')")).Visible(true);
+			columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Visible(true);
+			columns.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('MPR Date')")).Format("dd-MMM-yyyy").Visible(true);
 
-
-			columns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quote No')")).Visible(false);
-			columns.AddFor(m => m.QuoteDate).Caption(new JS("formatMessage('Quote Date')")).Format("dd-MMM-yyyy").Visible(false);
-			columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Visible(false);
-			columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Visible(false);
-			columns.AddFor(m => m.ClientRefNo).Caption(new JS("formatMessage('Client Ref No')")).Visible(false);
-			columns.AddFor(m => m.Attention).Caption(new JS("formatMessage('Attention')")).Visible(false);
-			columns.AddFor(m => m.SubjectTitle).Caption(new JS("formatMessage('Subject Title')")).Visible(false);
-			columns.AddFor(m => m.PaymentTerms).Caption(new JS("formatMessage('Payment Terms')")).Visible(false);
-			columns.AddFor(m => m.DeliveryPeriod).Caption(new JS("formatMessage('Delivery Period')")).Visible(false);
-			columns.AddFor(m => m.DeliveryTerms).Caption(new JS("formatMessage('Delivery Terms')")).Visible(false);
-			columns.AddFor(m => m.QuoteValidity).Caption(new JS("formatMessage('Quote Validity')")).Visible(false);
-			columns.AddFor(m => m.Rfqcode).Caption(new JS("formatMessage('RFQ Code')")).Visible(false);
-			columns.AddFor(m => m.ClientContactNo).Caption(new JS("formatMessage('Client Contact No')")).Visible(false);
-			columns.AddFor(m => m.ClientContactEmail).Caption(new JS("formatMessage('Client Contact Email')")).Visible(false);
-			columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Visible(false);
-			columns.AddFor(m => m.QuotationSummary).Caption(new JS("formatMessage('Quotation Summary')")).Visible(false);
-			columns.AddFor(m => m.QuoteSignatory).Caption(new JS("formatMessage('Quote Signatory')")).Visible(false);
-			columns.AddFor(m => m.QuoteIntro).Caption(new JS("formatMessage('Quote Intro')")).Visible(false);
-			columns.AddFor(m => m.ModeOfRequest).Caption(new JS("formatMessage('Mode Of Request')")).Visible(false);
-			columns.AddFor(m => m.TypeOfRequest).Caption(new JS("formatMessage('Type Of Request')")).Visible(false);
-			columns.AddFor(m => m.AdditionsText).Caption(new JS("formatMessage('Additions Text')")).Visible(false);
-			columns.AddFor(m => m.DiscountsText).Caption(new JS("formatMessage('Discounts Text')")).Visible(false);
-			columns.AddFor(m => m.QuoteDueDate).Caption(new JS("formatMessage('Quote Due Date')")).Format("dd-MMM-yyyy").Visible(false);
-			columns.AddFor(m => m.Project).Caption(new JS("formatMessage('Project')")).Visible(false);
-			columns.AddFor(m => m.SalesPersonName).Caption(new JS("formatMessage('Sales Person Name')")).Visible(false);
-			columns.AddFor(m => m.CompanyName).Caption(new JS("formatMessage('Company Name')")).Visible(false);
-			columns.AddFor(m => m.CompanyFullAddress).Caption(new JS("formatMessage('Company Full Address')")).Visible(false);
-			columns.AddFor(m => m.QuotedQuantity).Caption(new JS("formatMessage('Quoted Quantity')")).Visible(false);
-			columns.AddFor(m => m.UnitType).Caption(new JS("formatMessage('Unit Type')")).Visible(false);
-			columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Description')")).Visible(false);
-			columns.AddFor(m => m.QuotedUnitPrice).Caption(new JS("formatMessage('Quoted Unit Price')")).Visible(false);
-			columns.AddFor(m => m.QuotedTaxSlab).Caption(new JS("formatMessage('Quoted Tax Slab')")).Visible(false);
-			columns.AddFor(m => m.TaxRate).Caption(new JS("formatMessage('Tax Rate')")).Visible(false);
-			columns.AddFor(m => m.LineOrderNo).Caption(new JS("formatMessage('Line Order No')")).Visible(false);
-			columns.AddFor(m => m.LineTotalBeforeDiscount).Caption(new JS("formatMessage('Line Total Before Discount')")).Visible(false);
-			columns.AddFor(m => m.QuotedDiscount).Caption(new JS("formatMessage('Quoted Discount')")).Visible(false);
-			columns.AddFor(m => m.LineTotalAfterDiscount).Caption(new JS("formatMessage('Line Total After Discount')")).Visible(false);
-			columns.AddFor(m => m.LineTaxAmount).Caption(new JS("formatMessage('Line Tax Amount')")).Visible(false);
-			columns.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('Line Total With Tax')")).Visible(false);
-			columns.AddFor(m => m.UnitRateMethod).Caption(new JS("formatMessage('Unit Rate Method')")).Visible(false);
-			columns.AddFor(m => m.Expr1).Caption(new JS("formatMessage('Expr1')")).Visible(false);
-			columns.AddFor(m => m.QuoteRemarks).Caption(new JS("formatMessage('Quote Remarks')")).Visible(false);
-			columns.AddFor(m => m.AddlDescription).Caption(new JS("formatMessage('Additional Description')")).Visible(false);
-			columns.AddFor(m => m.QuoteChildId).Caption(new JS("formatMessage('Quote Child ID')")).Visible(false);
-			columns.AddFor(m => m.QuotedUom).Caption(new JS("formatMessage('Quoted UOM')")).Visible(false);
-			columns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Visible(false);
-			columns.AddFor(m => m.ClientAddress).Caption(new JS("formatMessage('Client Address')")).Visible(false);
-			columns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Visible(false);
-			columns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Visible(false);
-			columns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Visible(false);
-			columns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Visible(false);
-			columns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Visible(false);
-			columns.AddFor(m => m.SignatoryName).Caption(new JS("formatMessage('Signatory Name')")).Visible(false);
-			columns.AddFor(m => m.SignatoryPosition).Caption(new JS("formatMessage('Signatory Position')")).Visible(false);
-			columns.AddFor(m => m.SignatoryContact).Caption(new JS("formatMessage('Signatory Contact')")).Visible(false);
-			columns.AddFor(m => m.SignatoryEmail).Caption(new JS("formatMessage('Signatory Email')")).Visible(false);
-			columns.AddFor(m => m.QuoteTransport).Caption(new JS("formatMessage('Quote Transport')")).Visible(false);
-			columns.AddFor(m => m.QuoteDiscount).Caption(new JS("formatMessage('Quote Discount')")).Visible(false);
-			columns.AddFor(m => m.FinalTotal).Caption(new JS("formatMessage('Final Total')")).Visible(false);
-			columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPR No')")).Visible(false);
-			columns.AddFor(m => m.PlanNo).Caption(new JS("formatMessage('Plan No')")).Visible(false);
-			columns.AddFor(m => m.ItemSize).Caption(new JS("formatMessage('Item Size')")).Visible(false);
-			columns.AddFor(m => m.ItemPartNo).Caption(new JS("formatMessage('Item Part No')")).Visible(false);
-			columns.AddFor(m => m.ItemBrand).Caption(new JS("formatMessage('Item Brand')")).Visible(false);
-			columns.AddFor(m => m.ItemMake).Caption(new JS("formatMessage('Item Make')")).Visible(false);
-			columns.AddFor(m => m.SalesPersonContactNo).Caption(new JS("formatMessage('Sales Person Contact No')")).Visible(false);
-			columns.AddFor(m => m.SalesPersonEmail).Caption(new JS("formatMessage('Sales Person Email')")).Visible(false);
-			columns.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('MPR Date')")).Format("dd-MMM-yyyy").Visible(false);
-			columns.AddFor(m => m.GsdescriptionAr).Caption(new JS("formatMessage('GS Description (Arabic)')")).Visible(false);
-			columns.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Visible(false);
-			columns.AddFor(m => m.SalesOrderDate).Caption(new JS("formatMessage('Sales Order Date')")).Format("dd-MMM-yyyy").Visible(false);
-			columns.AddFor(m => m.QuoteSubmittedOn).Caption(new JS("formatMessage('Quote Submitted On')")).Format("dd-MMM-yyyy").Visible(false);
-			columns.AddFor(m => m.QuoteSubmittedBy).Caption(new JS("formatMessage('Quote Submitted By')")).Visible(false);
-			columns.AddFor(m => m.InventoryMasterGroupId).Caption(new JS("formatMessage('Inventory Master Group ID')")).Visible(false);
-			columns.AddFor(m => m.InventoryMasterGroup).Caption(new JS("formatMessage('Inventory Master Group')")).Visible(false);
-			columns.AddFor(m => m.SalesPersonUserId).Caption(new JS("formatMessage('Sales Person User ID')")).Visible(false);
-			columns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Visible(false);
 
 		})
 		.Height("73vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
+		.WordWrapEnabled(false)
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
@@ -367,8 +297,7 @@
 
 				items.Add().Column("QtyReceived")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText(@"
-	function(e) {
+			.CustomizeText(@"function(e) {
 	if (e.value === null || e.value === undefined) {
 	return '';
 	}
@@ -380,8 +309,7 @@
 	");
 				items.Add().Column("LineTotalWithTax")
 			.SummaryType(SummaryType.Sum)
-			.CustomizeText(@"
-	function(e) {
+			.CustomizeText(@"function(e) {
 	if (e.value === null || e.value === undefined) {
 	return '';
 	}
@@ -395,14 +323,9 @@
 			});
 		})
 		)
-
-	
-
 </div>
 <div id="invoiceErrorPopup"></div>
-
-<script>
-		 $(function () {
+<script>$(function () {
 	$("#Quotation").dxTextBox({
 				text: formatMessage("Quotation Details"),
 		readOnly: true,
@@ -607,5 +530,4 @@
 				}
 			];
 		}
-	}
-</script>
+	}</script>
