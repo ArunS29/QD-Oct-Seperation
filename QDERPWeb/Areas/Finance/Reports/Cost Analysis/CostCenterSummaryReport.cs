@@ -150,7 +150,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             }
 
             this.sqlDataSource1.Fill();
-            CreateNoDataLabel();
+            var data = this.sqlDataSource1.Result["qry20151CostAnalysisReport"];
+            if (data == null || data.Count() == 0)
+            {
+                this.sqlDataSource1 = null;
+                CreateNoDataLabel();
+            }
         }
         private void CreateNoDataLabel()
         {
