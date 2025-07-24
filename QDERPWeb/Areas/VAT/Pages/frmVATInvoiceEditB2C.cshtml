@@ -5516,7 +5516,7 @@
 				var selectedRowData = $("#invoicecurrecy-datagrid").dxDataGrid("instance").getSelectedRowsData();
 				// Get ReferenceNo from selected row
 				if (selectedRowData.length > 0) {
-								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
+								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId.toString();
 								ExchangeRate=selectedRowData[0].ExchangeRate;
 								$("#currencyexchangerate").dxNumberBox("instance").option("value", ExchangeRate);
 
