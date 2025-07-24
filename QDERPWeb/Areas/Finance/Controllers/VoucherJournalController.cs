@@ -170,47 +170,106 @@ namespace QDWEB.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 if (VE == null)
-            {
-                return BadRequest(new { success = false, message = "Invalid data received." });
-            }
+                {
+                    return BadRequest(new { success = false, message = "Invalid data received." });
+                }
 
-            try
-            {
+                try
+                {
                     // Add the new voucher entry to the table
                     dbContext.Tbl201VoucherEntryTemps.Add(VE);
-                await dbContext.SaveChangesAsync();
+                    await dbContext.SaveChangesAsync();
 
-                // Fetch voucher entries and join with account names
-                var qryListOfAccountlists = await dbContext.Tbl201VoucherEntryTemps
-                    .Where(p => p.VoucherNo == VE.VoucherNo) // Fix comparison operator
-                    .OrderBy(i => i.DrCr == "Dr" ? 0 : 1) // "Dr" entries first
-                    .Select(i => new VoucherEntryDisplayDTO
-                    {
-                        VoucherNo = i.VoucherNo,
-                        VoucherEntryNo = i.VoucherEntryNo,
-                        DrCr = i.DrCr,
-                        VoucherAmount = i.VoucherAmount,
-                        EntryNarration = i.EntryNarration,
-                        AccountHead = dbContext.Qry201ListOfAccounts
-                                              .Where(a => a.AccountId == i.AccountHead)
-                                              .Select(a => a.AccountHead)
-                                              .FirstOrDefault(), // Get AccountHead from ChartOfAccounts
-                        SysRemarks = i.SysRemarks,
-                        AddedBy = i.AddedBy,
-                        AddedOn = i.AddedOn,
-                    })
-                    .ToListAsync(); // Async execution
+                    // Fetch voucher entries and join with account names
+                    var qryListOfAccountlists = await dbContext.Tbl201VoucherEntryTemps
+                        .Where(p => p.VoucherNo == VE.VoucherNo) // Fix comparison operator
+                        .OrderBy(i => i.DrCr == "Dr" ? 0 : 1) // "Dr" entries first
+                        .Select(i => new VoucherEntryDisplayDTO
+                        {
+                            VoucherNo = i.VoucherNo,
+                            VoucherEntryNo = i.VoucherEntryNo,
+                            DrCr = i.DrCr,
+                            VoucherAmount = i.VoucherAmount,
+                            EntryNarration = i.EntryNarration,
+                            AccountHead = dbContext.Qry201ListOfAccounts
+                                                  .Where(a => a.AccountId == i.AccountHead)
+                                                  .Select(a => a.AccountHead)
+                                                  .FirstOrDefault(), // Get AccountHead from ChartOfAccounts
+                            SysRemarks = i.SysRemarks,
+                            AddedBy = i.AddedBy,
+                            AddedOn = i.AddedOn,
+                        })
+                        .ToListAsync(); // Async execution
 
-                return Json(DataSourceLoader.Load(qryListOfAccountlists.AsQueryable(), loadOptions));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
-            }
+                    return Json(DataSourceLoader.Load(qryListOfAccountlists.AsQueryable(), loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+        private async Task<string> GenerateNewVoucherNo(ERPMasterWtDataContext dbContext, byte companyId)
+        {
+            // Step 2: Get NoOfDigitsInVouchers
+            var companyConfig = await dbContext.Tbl901CompanyDetails02s
+                .Where(c => c.CompanyId == companyId)
+                .Select(c => new { c.NoOfDigitsInVouchers })
+                .FirstOrDefaultAsync();
+
+            byte configuredDigitCount = companyConfig?.NoOfDigitsInVouchers ?? 3;
+
+            // Step 3: Prepare voucher prefix
+            DateTime currentDate = DateTime.Now;
+            string yearPart = currentDate.Year.ToString().Substring(2); // "25"
+            string monthPart = currentDate.Month.ToString("00");        // "07"
+            string voucherPrefix = $"JV-{yearPart}-{monthPart}-";
+            string likePattern = voucherPrefix + "%";
+
+            int digitCountToUse = configuredDigitCount;
+            string strNewReceiptNo;
+
+            try
+            {
+                var existingVoucher = await dbContext.Tbl201VoucherEntries
+                    .Where(v => v.VoucherNo.StartsWith(voucherPrefix))
+                    .OrderByDescending(v => v.VoucherNo)
+                    .Select(v => v.VoucherNo)
+                    .FirstOrDefaultAsync();
+
+                if (!string.IsNullOrEmpty(existingVoucher))
+                {
+                    string numberPart = existingVoucher.Substring(voucherPrefix.Length);
+                    digitCountToUse = numberPart.Length;
+                }
+
+                var result = await dbContext.VoucherResults
+                    .FromSqlInterpolated($@"
+                SELECT MAX(CAST(RIGHT(VoucherNo, {digitCountToUse}) AS INT)) AS MaxVoucherNo
+                FROM Tbl201VoucherMaster
+                WHERE VoucherNo LIKE {likePattern}")
+                    .ToListAsync();
+
+                int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
+                int newVoucherNo = maxVoucherNo + 1;
+
+                string paddedNo = newVoucherNo.ToString().PadLeft(digitCountToUse, '0');
+                strNewReceiptNo = voucherPrefix + paddedNo;
+            }
+            catch
+            {
+                string fallback = "1".PadLeft(configuredDigitCount, '0');
+                strNewReceiptNo = voucherPrefix + fallback;
+            }
+
+            return strNewReceiptNo;
+        }
+
+
 
         [HttpPost]
         public async Task<ActionResult> SaveVoucher([FromBody] VoucherViewModel VM)
@@ -225,41 +284,24 @@ namespace QDWEB.Areas.Finance.Controllers
                 try
                 {
                     var strategy = dbContext.Database.CreateExecutionStrategy();
-
                     string newVoucherNo = null;
 
                     await strategy.ExecuteAsync(async () =>
                     {
                         using (var transaction = await dbContext.Database.BeginTransactionAsync())
                         {
-                            DateTime currentDate = DateTime.Now;
-                            string currentYear = currentDate.Year.ToString();
-                            string currentMonth = currentDate.Month.ToString("00");
-                            string voucherString = "JV-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
-                            string strNewReceiptNo;
+                            // 🔁 Use shared method to generate voucher number
+                            string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "0";
+                            byte.TryParse(defaultCompanyString, out byte companyId);
+                            newVoucherNo = await GenerateNewVoucherNo(dbContext, companyId);
 
-                            string likePattern = voucherString + "%";
-
-                            var result = await dbContext.VoucherResults
-                                .FromSqlInterpolated($@"
-                            SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                            FROM Tbl201VoucherEntry
-                            WHERE VoucherNo LIKE {likePattern}")
-                                .ToListAsync();
-
-                            int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-                            int journalNo = maxVoucherNo + 1;
-
-                            strNewReceiptNo = journalNo.ToString("D3");
-                            newVoucherNo = voucherString + strNewReceiptNo;
-
-                            // Set VoucherNo and resolve AccountId
+                            // ✅ Assign voucher number and resolve AccountId
                             foreach (var entry in VM.VoucherEntries)
                             {
                                 entry.VoucherNo = newVoucherNo;
                                 entry.VoucherEntryNo = 0;
 
-                                // Resolve AccountId from AccountHead
+                                // Convert AccountHead to AccountId
                                 entry.AccountHead = await dbContext.Tbl201ChartOfAccounts
                                     .Where(a => a.AccountHead == entry.AccountHead)
                                     .Select(a => a.AccountId)
@@ -274,7 +316,6 @@ namespace QDWEB.Areas.Finance.Controllers
                                 VoucherNarration = VM.VoucherMaster.VoucherNarration,
                                 BillRemarks = VM.VoucherMaster.BillRemarks,
                                 VoucherType = VM.VoucherMaster.VoucherType,
-                               
                                 basecurrencyid = VM.VoucherMaster.basecurrencyid,
                                 currencyid = VM.VoucherMaster.currencyid,
                                 currencyrate = VM.VoucherMaster.currencyrate
@@ -298,6 +339,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
 

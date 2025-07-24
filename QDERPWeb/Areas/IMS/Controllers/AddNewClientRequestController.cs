@@ -655,7 +655,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-				return Ok(new { success = true, message = "Purchase Request saved/updated successfully." });
+				return Ok(new { success = true, message = "Request Details Updated Successfully." });
 			}
 			catch (Exception ex)
 			{

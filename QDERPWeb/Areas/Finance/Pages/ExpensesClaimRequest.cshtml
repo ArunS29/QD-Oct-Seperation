@@ -1478,7 +1478,11 @@
 
                             }
 
+                            // ✅ Sync fields
+                            syncWorkflowFromFields();
 
+                            // ✅ Initialize popovers
+                            initWorkflowTippyPopovers();
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
@@ -1583,6 +1587,8 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
+                              isVoucherSaved = true; // Mark Updated step as done
+                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         DevExpress.ui.dialog.alert(
                             "Expense Claim Request Details updated Successfully.",
                             "Update Successful"
@@ -1640,6 +1646,8 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
+                           isVoucherSaved = true; // Mark Updated step as done
+                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         DevExpress.ui.dialog.alert(
                                 "Expenses Claim Request Details Updated Sucessfully.",
                                 "Data Saved Successfully"
@@ -1773,9 +1781,9 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                         isVoucherSaved = true; // Mark Updated step as done
-                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+                 
                          proceedWithSubmit();
+                              
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -1817,9 +1825,9 @@
                                 $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
                                 $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
                                 $("#IsSubmitted").dxCheckBox("instance").option("value", true);
-
-                                disableclaim();
                                 syncWorkflowFromFields();
+                                disableclaim();
+                                
                             });
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -2164,10 +2172,11 @@
         const verified = $("#IsVerified").dxCheckBox("instance").option("value") === true;
         const approved = $("#IsApproved").dxCheckBox("instance").option("value") === true;
 
-        if (approved) return 3;
-        if (verified) return 2;
-        if (submitted) return 1;
-
+        if (approved) return 4;
+        if (verified) return 3;
+        if (submitted) return 2;
+        if (isVoucherSaved) return 1; // If voucher is saved, consider it as submitted
+     
         return 0;
     }
 
@@ -2203,7 +2212,7 @@
             }
 
             // Final Approved state
-                        if (status === 3 && index === 3) {
+                        if (status === 4 && index === 4) {
                 el.classList.add("completed");
                 statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
@@ -2287,7 +2296,7 @@
         const submittedBy = $("#SubmittedBytext").dxTextBox("instance")?.option("value") || "N/A";
         const submittedOn = $("#SubmittedOnDate").dxTextBox("instance")?.option("value") || "N/A";
         const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
-        const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+        const verifiedOn = $("#VerifiedOntext").dxTextBox("instance")?.option("value") || "N/A";
         const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
         const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
 

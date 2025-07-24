@@ -1,6 +1,7 @@
 ﻿
 var dictionary = {
     "en": {
+        "Sub Group Notes:":"Sub Group Notes:",
         "Document Types":"Document Types",
         "Receive":"Receive",
         "Stock Availability":"Stock Availability",
@@ -3906,6 +3907,7 @@ var dictionary = {
  
     },
     ar: {
+        "Sub Group Notes:": "ملاحظات المجموعة الفرعية:",
         "Add New Debit Note Register": "إضافة سجل إشعار الخصم الجديد",
         "Add New Proforma Invoice Edit":"هذا هو النموذج الجديد في تحرير الصوت.",
         "ReceiptChildSlNo": "Receipt Child Sl No - رقم تسلسل استلام الفرع",
@@ -6880,6 +6882,7 @@ var dictionary = {
         "Type new Job Order Status Master && Add to the Existing List:": ":أدخل حالة أمر العمل الجديدة وأضفها إلى القائمة الحالية"
     },
     zh: {
+        "Sub Group Notes:": "子组备注：",
         "Add New Debit Note Register": "添加新的借项单登记",
         "Add New Proforma Invoice Edit": "添加新的形式发票编辑",
         "Registers": "登记簿",
@@ -9692,11 +9695,9 @@ var dictionary = {
         "Manpower Rentals": "人力租赁",
         "Tax Summary Report – Debit Notes": "税务汇总报告 - 借项通知单"
 
-
-
-
     },
     hi: {
+        "Sub Group Notes:": "उप समूह टिप्पणियाँ:",
         "Add New Debit Note Register": "नया डेबिट नोट रजिस्टर जोड़ें",
         "Add New Proforma Invoice Edit":"यह वॉयस एडिट में एक नया प्रोफार्मा है।",
         "Registers": "रजिस्टर",
@@ -12663,6 +12664,7 @@ var dictionary = {
         "Tax Summary Report – Debit Notes": "कर सारांश रिपोर्ट - डेबिट नोट्स"
     },
     ur: {
+        "Sub Group Notes:": "ذیلی گروپ نوٹس:",
         "Add New Debit Note Register": "نیا ڈیبٹ نوٹ رجسٹر شامل کریں",
         "Add New Proforma Invoice Edit": "نیا پروفارما انوائس ایڈٹ شامل کریں",
         "Registers": "رجسٹرز",
@@ -15718,6 +15720,7 @@ var dictionary = {
     },
 
     ko: {
+        "Sub Group Notes:": "서브 그룹 메모:",
         "Add New Debit Note Register": "새 직불 노트 등록 추가",
         "Add New Proforma Invoice Edit": "새 견적 송장 편집 추가",
         "Registers": "등록부",

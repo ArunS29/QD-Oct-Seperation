@@ -304,7 +304,7 @@ buttons.Add()
 								.Label(new JS("formatMessage('Amount')"))
 								.LabelMode(EditorLabelMode.Floating)
 								.ID("txtVoucherAmount")
-								.Value(null)
+								.Value(0)
 								.ValidationRules(rules =>
 								{
 									rules.AddRequired()
@@ -317,9 +317,11 @@ buttons.Add()
 								.Format("#,##0.00")
 								.InputAttr(new
 								{
+									 type = "number",
+									step = "0.01",
 									style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
-									type = "number",
-									step = "0.01"
+									maxLength = 16,
+									autocomplete = "off"
 								})
 								)
 			</div>
@@ -1500,6 +1502,8 @@ $(function () {
 					dataGrid.option("dataSource", response.data);
 					var button = $("#btnSave").dxButton("instance");
 					button.option("text", "Update");
+					$("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                    $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 				} else {
 					$("#dataGrid").dxDataGrid({
 						dataSource: response.data,
@@ -1882,6 +1886,8 @@ $(function () {
 					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 					var button = $("#btnSave").dxButton("instance");
 					button.option("text", "Update");
+					$("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                    $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 					
 					//   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
 					// Get accounthead-datagrid instance
