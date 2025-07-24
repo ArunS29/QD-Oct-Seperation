@@ -218,10 +218,32 @@
         .DropDownOptions(options => options.Width(220))
         .Items(items =>
         {
-            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Preview Journal EntryForm(with Employee Cost)')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Edit Posted Voucher')")).Icon("textdocument");
+            items.Add()
+                .Text(new JS("formatMessage('Preview Journal EntryForm')"))
+                .Option("color", "#4285F4") // Blue
+                .Icon("textdocument");
+
+            items.Add()
+                .Text(new JS("formatMessage('Preview Journal EntryForm(with Employee Cost)')"))
+                .Option("color", "#FBBC05") // Yellow
+                .Icon("textdocument");
+
+            items.Add()
+                .Text(new JS("formatMessage('Edit Posted Voucher')"))
+                .Option("color", "#EA4335") // Red
+                .Icon("textdocument");
         })
+        .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
         .OnItemClick("handlePreviewClick1")
         )
     @(Html.DevExtreme().Button()

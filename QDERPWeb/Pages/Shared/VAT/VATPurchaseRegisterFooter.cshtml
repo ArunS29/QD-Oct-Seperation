@@ -316,10 +316,33 @@
             .DropDownOptions(options => options.Width(335))
             .Items(items =>
             {
-                items.Add().Text("Tax Summary Report -Purchases").Icon("file");
-                items.Add().Text("Tax Summary Report-Purchases(in Arabic)").Icon("file");
-                items.Add().Text("VATPurchase & Expenses Report").Icon("file").OnClick("navigateToPurchase");
+                items.Add()
+                    .Text("Tax Summary Report -Purchases")
+                    .Icon("file")
+                    .Option("color", "#FF7043"); // Orange
+
+                items.Add()
+                    .Text("Tax Summary Report-Purchases(in Arabic)")
+                    .Icon("file")
+                    .Option("color", "#00ACC1"); // Cyan
+
+                items.Add()
+                    .Text("VATPurchase & Expenses Report")
+                    .Icon("file")
+                    .Option("color", "#AB47BC") // Purple
+                    .OnClick("navigateToPurchase");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
             )

@@ -206,7 +206,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // Create document object
                     var document = new Tbl20116LedgerDocument
                     {
+
                         DocumentNo = docNo,
+                        LedgerNo = form["LedgerNo"],
                         DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,
                         DocumentRefNo = form["DocumentRefNo"],
                         DocumentRemarks = form["DocumentRemarks"],
@@ -271,14 +273,29 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 var blobHelper = new AzureBlobHelper(connectionString, containerName);
 
-                // Normalize inputs for matching
-                var normalizedModule = module.Replace(" ", "_").Trim();
-                var normalizedFolderId = folderId.Trim();
+                // Normalize paths
+                string Clean(string val) => string.IsNullOrWhiteSpace(val) ? "" : val.Replace(" ", "_").Trim().ToLower();
+                var normalizedModule = Clean(module);
+                var normalizedFolderId = Clean(folderId);
+                var normalizedTenant = Clean(tenantName);
 
-                var matchingDocs = await dbContext.Tbl20116LedgerDocuments
+                // Build partial Azure path prefix
+                var azurePathPrefix = $"{normalizedTenant}/"; // Tenant root
+
+                // Optional: further narrow down to expected subfolder
+                // e.g., transaction_documents/module/folderId
+                // You can append further filtering here if your structure is consistent
+
+                var allBlobsInTenant = await blobHelper.ListBlobsAsync(azurePathPrefix);
+
+                var dbDocs = await dbContext.Tbl20116LedgerDocuments
                     .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
                                 d.AzurePath.Contains(normalizedModule) &&
                                 d.AzurePath.Contains(normalizedFolderId))
+                    .ToListAsync();
+
+                var matchingDocs = dbDocs
+                    .Where(d => allBlobsInTenant.Contains(d.AzurePath))
                     .Select(d => new
                     {
                         d.DocumentNo,
@@ -290,29 +307,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         d.DocumentNotificationDate,
                         d.DocumentStatus,
                         d.DocumentStatusRemarks,
-                        d.AzurePath
-                    })
-                    .ToListAsync();
+                        FileUrl = blobHelper.GetBlobSasUrl(d.AzurePath)
+                    });
 
-                var result = matchingDocs.Select(doc => new
-                {
-                    doc.DocumentNo,
-                    doc.DocumentType,
-                    doc.DocumentRefNo,
-                    doc.DocumentRemarks,
-                    doc.DocumentExpDate,
-                    doc.DocumentExpDateAr,
-                    doc.DocumentNotificationDate,
-                    doc.DocumentStatus,
-                    doc.DocumentStatusRemarks,
-                    FileUrl = blobHelper.GetBlobSasUrl(doc.AzurePath)
-                });
-
-                return Ok(result);
+                return Ok(matchingDocs);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in GetDocuments: {ex}");   
+                _logger.LogError($"Error in GetDocuments: {ex}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
@@ -420,10 +422,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             // Delete file from Azure Blob if it exists
             if (!string.IsNullOrEmpty(doc.AzurePath))
             {
-                // Safe delete
                 var blobHelper = new AzureBlobHelper(_configuration.GetConnectionString("AzureBlobStorage"), "client-files");
-                await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath);
+                await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath); // <-- AzurePath is blobPath
             }
+
 
 
             dbContext.Tbl20116LedgerDocuments.Remove(doc);

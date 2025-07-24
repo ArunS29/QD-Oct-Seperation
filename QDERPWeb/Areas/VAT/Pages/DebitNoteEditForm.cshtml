@@ -1743,7 +1743,7 @@
 <script>
 
 	let accid=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",supplierid=null,IsDirectApproval=true,IsDirectVerify=true,UnitCode=null;
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsAmend="false",supplierid=null,IsDirectApproval=true,IsDirectVerify=true,UnitCode=null;
 			  window.supplierid = 0; // must be global
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
@@ -1754,7 +1754,11 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
-					$(document).ready(function () {
+		$(document).ready(function () {
+			var urlParams = new URLSearchParams(window.location.search);
+			var IsEditflag = urlParams.get('IsEditflag');
+			IsCurrent = (IsEditflag || "").toString();
+			console.log(IsCurrent)
 			if (IsCurrent !== "true") {
 				$.ajax({
 					url: "/api/VATModule/GetNewDebitNoteNoApi",
@@ -1778,7 +1782,7 @@
 		});
 	
 
-			function InvoiceOPenToSave(data) {
+	function InvoiceOPenToSave(data) {
 			
 
 	    var InvoiceMaster = {
@@ -1830,15 +1834,16 @@
 
 		$(document).ready(function () {
 			var urlParams = new URLSearchParams(window.location.search);
-			var InvNo = urlParams.get('InvoiceNo');
-			var IsEditflag = urlParams.get('IsEditflag');
-			IsAmend = urlParams.get('IsAmend');
 			var DebitNoteNo		 = urlParams.get('DebitNoteNo');
-			
+			var IsEditflag = urlParams.get('IsEditflag');
+			var InvNo = urlParams.get('InvoiceNo');
+			IsAmend = urlParams.get('IsAmend');
 
-			IsCurrent = (IsEditflag || "").toString();
 
-			if (IsCurrent === "true") {
+
+		 IsCurrent = (IsEditflag || "").toString();
+		 console.log(IsCurrent)
+		if (IsCurrent === "true") {
 
 				$.ajax({
 					url: `/api/VATModule/GetDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
@@ -1850,29 +1855,29 @@
 						if (response && response.length > 0) {
 							var account = response[0];
 
-							console.log(account)
+							console.log(account);
 
 							$('#DebitNoteNo').dxTextBox("instance")?.option("value", account.DebitNoteNo);
-							PaymentMeansdataGridSelectionChanged({ selectedRowKeys: [account.PaymentMeansTypeCode] });
-							$('#VATSupplierName').dxDropDownBox("instance")?.option("value", account.SupplierCode);
+							dataGridSupplierNameSelectionChanged({ selectedRowKeys: [account.SupplierCode] });
 
+							//$('#ddlSupplierNameArabic').dxTextBox("instance")?.option("value", account.SupplierName);
 							$('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.DebitNoteDate);
-							$('#VATPurchaseVoucherNo').dxDropDownBox("instance")?.option("value", account.PurchaseVoucherNo);
+							dataGridPurhaseVoucherSelectionChanged({ selectedRowKeys: [account.PurchaseVoucherNo] });
+							$("#txtReferenceNo").dxTextBox("instance").option("value", account.ReferenceNo);
 							$('#SupplierInvoiceNo').dxTextBox("instance")?.option("value", account.SupplierBillNo);
-							
 							$('#InvoiceDate').dxDateBox("instance")?.option("value", account.SupplierBillDate);
-							//$('#ddlSupplierNameArabic').dxDropDownBox("instance")?.option("value", account.SupplierNameAr);
-						//	$("#txtReferenceNo").dxTextBox("instance").option("value", account.ReferenceNo);
-						//	$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
-						//	$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value",account.ItemReturns);
+							$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
+							dataGridItemReturnsSelectionChanged({ selectedRowKeys: [account.StoreCode] });
+
+
 							$("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
-							//PaymentMeansTypeCode: paymentmeanstypecode,
-			                $("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
-			                $("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
+							dataGridPurchaseAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount] });
+							dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode] });
 							$("#txtInvoiceNotes").dxTextArea("instance").option("value",account.DebitNoteRemarks);
 							$("#txtNotesinArabic").dxTextArea("instance").option("value",account.DebitNoteRemarksAr);
-							$("#ddlDivision").dxDropDownBox("instance").option("value",account.BranchCode);
-							$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value",account.CompanyId);
+
+							dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId] });
+							dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode] });
 
 											if(account.IsApproved==true)
 											{
@@ -1929,26 +1934,35 @@
 							console.log(account)
 
 							$('#DebitNoteNo').dxTextBox("instance")?.option("value", account.DebitNoteNo);
-							PaymentMeansdataGridSelectionChanged({ selectedRowKeys: [account.PaymentMeansTypeCode] });
-							$('#VATSupplierName').dxDropDownBox("instance")?.option("value", account.SupplierCode);
-
+							dataGridSupplierNameSelectionChanged({ selectedRowKeys: [account.SupplierCode] });
+							
+							//$('#ddlSupplierNameArabic').dxTextBox("instance")?.option("value", account.SupplierName);
 							$('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.DebitNoteDate);
-							$('#VATPurchaseVoucherNo').dxDropDownBox("instance")?.option("value", account.PurchaseVoucherNo);
+							dataGridPurhaseVoucherSelectionChanged({ selectedRowKeys: [account.PurchaseVoucherNo] });
+							$("#txtReferenceNo").dxTextBox("instance").option("value", account.ReferenceNo);
 							$('#SupplierInvoiceNo').dxTextBox("instance")?.option("value", account.SupplierBillNo);
-
 							$('#InvoiceDate').dxDateBox("instance")?.option("value", account.SupplierBillDate);
-							//$('#ddlSupplierNameArabic').dxDropDownBox("instance")?.option("value", account.SupplierNameAr);
-						//	$("#txtReferenceNo").dxTextBox("instance").option("value", account.ReferenceNo);
-						//	$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
-						//	$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value",account.ItemReturns);
+							$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
+							dataGridItemReturnsSelectionChanged({ selectedRowKeys: [account.StoreCode] });
+
+							
 							$("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
-							//PaymentMeansTypeCode: paymentmeanstypecode,
-							$("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
-							$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
+							dataGridPurchaseAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount] });
+							dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode] });
 							$("#txtInvoiceNotes").dxTextArea("instance").option("value",account.DebitNoteRemarks);
 							$("#txtNotesinArabic").dxTextArea("instance").option("value",account.DebitNoteRemarksAr);
-							$("#ddlDivision").dxDropDownBox("instance").option("value",account.BranchCode);
-							$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value",account.CompanyId);
+							
+							//PaymentMeansTypeCode: paymentmeanstypecode,
+							
+							//$("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
+							
+							//$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
+							dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId] });
+							dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode] });
+							//$("#ddlDivision").dxDropDownBox("instance").option("value",account.BranchCode);
+							
+							//$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value",account.CompanyId);
+
 
 
 							$.ajax({
@@ -3273,15 +3287,15 @@
 					}
 
 
-				 function dataGridCostCenterAccountHeadSelectionChanged(e) {
-				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-				const ddbInstance = $("#ddlCostCenterAccount").dxDropDownBox("instance");
+				function dataGridCostCenterAccountHeadSelectionChanged(e) {
+					const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+					const ddbInstance = $("#ddlCostCenterAccount").dxDropDownBox("instance");
 
-				if (selectedKey) {
-					ddbInstance.option("value", selectedKey);
-					 ddbInstance.close();
-				}
-		   }
+					if (selectedKey) {
+						ddbInstance.option("value", selectedKey);
+						 ddbInstance.close();
+					}
+			   }
 
 						 function dataGridDescriptionSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
@@ -3392,30 +3406,34 @@
 				dataGrid = e.component;
 			}
 
-			function dataGridSupplierNameSelectionChanged(e) {
+		function dataGridSupplierNameSelectionChanged(e) {
 			const selectedKey = e.selectedRowKeys[0];
 			const ddbInstance = $("#VATSupplierName").dxDropDownBox("instance");
 			acchead = selectedKey;
-			debugger;
+			
 			if (selectedKey) {
 				ddbInstance.option("value", selectedKey);
 				if (ddbInstance.option("opened")) {
 					ddbInstance.close();
 				}
-				var selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
-				// Get ReferenceNo from selected row
-				if (selectedRowData.length > 0) {
+				if(IsCurrent!="true" && IsAmend !="true") {
 
-					accheadid=selectedRowData[0].AccountHead;
-					supplierid=selectedRowData[0].AccountId;
+					var selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
+					// Get ReferenceNo from selected row
+					if (selectedRowData.length > 0) {
+
+						accheadid=selectedRowData[0].AccountHead;
+						supplierid=selectedRowData[0].AccountId;
 					
 					
 
 				} else {
-					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-					return;
+						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+						return;
 				}
 			}
+
+		}
 		}
 			function dataGridPurhaseVoucherInitialized(e) {
 
@@ -3423,7 +3441,7 @@
 
 			}
 
-			function dataGridPurhaseVoucherSelectionChanged(e) {
+		function dataGridPurhaseVoucherSelectionChanged(e) {
 
 			const selectedKey = e.selectedRowKeys[0];
 
@@ -3440,24 +3458,21 @@
 					ddbInstance.close();
 
 				}
+				if(IsCurrent!="true" && IsAmend !=="true") {
 
-				var selectedRowData = $("#purchase-datagrid").dxDataGrid("instance").getSelectedRowsData();
+					var selectedRowData = $("#purchase-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
-				// Get ReferenceNo from selected row
+					// Get ReferenceNo from selected row
 
-				if (selectedRowData.length > 0) {
+					if (selectedRowData.length > 0) {
+						
 
-
-				} else {
-
-					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-
-					return;
-
+					} else {
+						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+						return;
+					}
 				}
-
 			}
-
 		}
 
 		function dataGridDivisionHeadInitialized(e) {
@@ -3470,7 +3485,7 @@
 
 			const selectedKey = e.selectedRowKeys[0];
 
-			const ddbInstance = $("#ddlDivision").dxDropDownBox("instance");
+			const ddbInstance = $("#ddlDebitNoteDivision").dxDropDownBox("instance");
 
 			acchead = selectedKey;
 
@@ -3576,22 +3591,23 @@
 					ddbInstance.close();
 
 				}
+				if(IsCurrent!="true" && IsAmend !=="true")
+	{
+					var selectedRowData = $("#itemreturn-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
-				var selectedRowData = $("#itemreturn-datagrid").dxDataGrid("instance").getSelectedRowsData();
+					// Get ReferenceNo from selected row
 
-				// Get ReferenceNo from selected row
-
-				if (selectedRowData.length > 0) {
+					if (selectedRowData.length > 0) {
 
 
-				} else {
+					} else {
 
-					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
 
-					return;
+						return;
 
+					}
 				}
-
 			}
 
 		}
@@ -3607,7 +3623,7 @@
 
 			const selectedKey = e.selectedRowKeys[0];
 
-			const ddbInstance = $("#ddlGoodsGroup7").dxDropDownBox("instance");
+			const ddbInstance = $("#ddlDivision").dxDropDownBox("instance");
 
 			acchead = selectedKey;
 
@@ -3620,7 +3636,7 @@
 					ddbInstance.close();
 
 				}
-					if(IsCurrent!="true")
+				if(IsCurrent!="true" && IsAmend !=="true")
 					{
 				var selectedRowData = $("#companybranch-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
@@ -3670,22 +3686,23 @@
 					ddbInstance.close();
 
 				}
+				if(IsCurrent!="true" && IsAmend !=="true")
+	{
+					var selectedRowData = $("#purchaseaccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
 
-				var selectedRowData = $("#purchaseaccount-datagrid").dxDataGrid("instance").getSelectedRowsData();
+					// Get ReferenceNo from selected row
 
-				// Get ReferenceNo from selected row
-
-				if (selectedRowData.length > 0) {
+					if (selectedRowData.length > 0) {
 
 
-				} else {
+					} else {
 
-					DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
 
-					return;
+						return;
 
+					}
 				}
-
 			}
 
 		}

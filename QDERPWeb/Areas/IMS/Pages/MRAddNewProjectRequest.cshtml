@@ -2831,9 +2831,9 @@
 
 													columns: [
 														 { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-															{ dataField: "GroupCode", caption: "Group Code", width: 80 },
+															{ dataField: "GroupCode", caption: "Code", width: 80 },
 
-														{ dataField: "GroupName", caption: "Group Name", width: 200 }
+														{ dataField: "GroupName", caption: "Name", width: 200 }
 
 
 													],
@@ -2882,7 +2882,7 @@
 
 												let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup`; // Update this route if needed
 
-											   openModal(url, "");
+											   openModal(url, "Sub Group");
 
 											},
 
@@ -3062,7 +3062,7 @@
 
 												let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-												openModal(url, "");
+												openModal(url, "Goods And Service","75%","" );
 
 											},
 
@@ -3086,7 +3086,7 @@
 
 												let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
 
-												openModal(url, "");
+												openModal(url, "Goods And Service","75%","" );
 
 											},
 
@@ -3149,7 +3149,7 @@
 
 											placeholder: "Select Unit Rate Method",
 
-											dropDownOptions: { width: 600 },
+											dropDownOptions: { width: 200 },
 
 											contentTemplate: function (e) {
 
@@ -3167,13 +3167,14 @@
 
 													columns: [
 
-															{ dataField: "UnitCode", caption: "Code", width: 80 },
+															//{ dataField: "UnitCode", caption: "Code", width: 80 },
 
-														{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+													//	{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
 
-														{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+														//	{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
 
-														{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+														{ dataField: "UnitType", caption: "Unit Type", width: 150 }
+
 
 													],
 
@@ -3219,9 +3220,9 @@
 
 											onClick: function () {
 
-												let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+												let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
-											   openModal(url, "");
+											   openModal(url, "Unit Of Measure");
 
 											},
 
@@ -3422,7 +3423,7 @@
 				displayExpr: "GroupName",        // Text to be displayed
 				value: cellInfo.value || null,
 				placeholder: "Select Sub Group",
-				dropDownOptions: { width: 600 },
+				dropDownOptions: { width: 380 },
 				contentTemplate: function (e) {
 					return $("<div>").dxDataGrid({
 						dataSource: unitRates1,
@@ -3436,13 +3437,13 @@
 													placeholder: "Search..."
 							},
 							filterRow: { // column-wise filters
-													visible: true,
+													visible: false,
 													applyFilter: "auto"
 										},
 						columns: [
 							{ dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-							{ dataField: "GroupCode", caption: "Group Code", width: 80 },
-							{ dataField: "GroupName", caption: "Group Name", width: 200 }
+							{ dataField: "GroupCode", caption: "Code", width: 80 },
+							{ dataField: "GroupName", caption: "Name", width: 200 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							let selectedItem = selectedItems.selectedRowsData[0];
@@ -3465,7 +3466,7 @@
 				hint: "Add new item",
 				onClick: function () {
 					let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup`;
-					openModal(url, "");
+					openModal(url, "Sub Group");
 				},
 				width: 60,
 				height: 30
@@ -3573,7 +3574,7 @@
 													placeholder: "Search..."
 											},
 											filterRow: { // column-wise filters
-													visible: true,
+													visible: false,
 													applyFilter: "auto"
 										},
 
@@ -3649,7 +3650,7 @@
 
 										let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-										openModal(url, "");
+										openModal(url, "Goods And Service","75%","");
 
 									},
 
@@ -3673,7 +3674,7 @@
 
 										let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
 
-										openModal(url, "");
+										openModal(url, "Goods And Service","75%","");
 
 									},
 
@@ -3707,8 +3708,8 @@
 
 										// Open modal
 										let url = `/${tenantName}/IMS/DetailsDescriptionMR`;
-									let title = "VAT Details Description";
-									openModal(url, title);
+									let title = "Details Description";
+									openModal(url, title , "60%","60%");
 								}
 							}).appendTo(container);
 						}
@@ -3759,7 +3760,7 @@
 
 									placeholder: "Select Unit Rate Method",
 
-									dropDownOptions: { width: 600 },
+									dropDownOptions: { width: 200 },
 
 									contentTemplate: function (e) {
 
@@ -3776,24 +3777,24 @@
 											scrolling: { mode: "virtual" },
 												searchPanel: { // optional: global search box
 													visible: true,
-													width: 250,
+													width: 130,
 													placeholder: "Search..."
 											},
 											filterRow: { // column-wise filters
-													visible: true,
+													visible: false,
 													applyFilter: "auto"
 										},
 
 											columns: [
 
 
-												{ dataField: "UnitCode", caption: "Code", width: 80 },
+											//	{ dataField: "UnitCode", caption: "Code", width: 80 },
 
-												{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
+											//	{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
 
-												{ dataField: "UnitType", caption: "Unit Type", width: 150 },
+											//	{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
 
-												{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+												{ dataField: "UnitType", caption: "Unit Type", width: 150 }
 
 											],
 									onSelectionChanged: function (selectedItems) {
@@ -3824,9 +3825,9 @@
 
 									onClick: function () {
 
-										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+										let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
-										openModal(url, "");
+										openModal(url, "Unit Of Measure");
 
 									},
 

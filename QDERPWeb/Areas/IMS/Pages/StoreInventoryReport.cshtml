@@ -27,9 +27,6 @@
 		overflow: hidden;
 	}
 
-	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnColumnChooser,#btnRfqDetails,#btnAddNewRFQ)) {
-		display: none !important
-	}
 
 	#overlay-frame {
 		width: 100%;
@@ -144,14 +141,21 @@
 		width: 100%;
 		overflow: hidden;
 	}
+	.titleCard-toggle1 {
+		display: none;
+	}
 </style>
-
+<div class="Head">
+	<div class="footer-fixed">
+		@await Html.PartialAsync("/Pages/Shared/IMS/DetailsFooter.cshtml")
+	</div>
+</div>
 <input id="formId" value="frm201LedgerView" type="hidden" />
-<div class="title">
+@* <div class="title">
 	<div class="header-container">
 		<div id="storeInventoryReport" class="no-border-input"></div>
 	</div>
-</div>
+</div> *@
 @* <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry65315storeStockBalanceMaster>()
 		.ID("dataGrid")
@@ -250,7 +254,8 @@
 		.ShowRowLines(true)
 		.ColumnAutoWidth(true)
 		.WordWrapEnabled(true)
-		.Height(700)
+		.Height("83vh")
+		.Width("98%")
 		.Columns(columns =>
 		{
 			// Stock Details Band

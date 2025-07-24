@@ -3112,7 +3112,7 @@
 				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
 				{
 		dataField: "VATPercentage",
-		caption: formatMessage('VAT%'),
+		caption: formatMessage('VAT Description'),
 		width: 150,
 		editCellTemplate: function (cellElement, cellInfo) {
 			getTaxSlabData().done(function (dropdownData) {
@@ -3666,29 +3666,9 @@
 
 				   { dataField: "Discount", caption: formatMessage('Discount'), width: 150, cssClass: "center-header" },
 
-				   //{ dataField: "DiscountDetails", caption: "...", width: 50 },
-	// 				 {
-	// 	dataField: "DiscountDetails",
-	// 	caption: "...",
-	// 	cssClass: "center-header",
-	// 	width: 100,
-	// 	allowEditing: false,
-	// 	cellTemplate: function (container, options) {  // ✅ fixed here
-	// 		$("<div>").dxButton({
-	// 				icon: "fa fa-calculator", // or another valid icon
-	// 			hint: "VAT Calculator",
-	// 			stylingMode: "text",
-	// 			width: 60,
-	// 			onClick: function (e) {
-	// 				onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
-	// 			}
-	// 		}).appendTo(container);
-	// 	}
-	// }
-	// ,
 
 
-						   { dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+				   { dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
 				   //{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -3702,6 +3682,7 @@
 								let found = dropdownData.find(d => d.TaxSlabCode == options.data.VATPercentage);
 								container.text(found ? found.TaxCodeToDisplay : "");
 							});
+
 						},
 					   editCellTemplate: function (cellElement, cellInfo) {
 						   getTaxSlabData().done(function (dropdownData) {
@@ -3736,15 +3717,25 @@
 											   { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
 											   { dataField: "TaxRate", caption: "TaxRate", width: 80 }
 										   ],
-										   onSelectionChanged: function (selectedItems) {
-											   let selectedItem = selectedItems.selectedRowsData[0];
-											   if (selectedItem) {
-												   e.component.option("value", selectedItem.TaxSlabCode);
-												   cellInfo.setValue(selectedItem.TaxCodeToDisplay);
+											   onSelectionChanged: function (selectedItems) {
+	                                        	let selectedItem = selectedItems.selectedRowsData[0];
+	                                        	if (selectedItem) {
+	                                        		const taxSlabCode = selectedItem.TaxSlabCode;
+	                                        
+	                                        		// Convert to number safely
+	                                        		const parsedTaxSlabCode = taxSlabCode != null ? Number(taxSlabCode) : null;
+	                                        
+	                                        		// Check if within byte range
+	                                        		if (parsedTaxSlabCode === null || (parsedTaxSlabCode >= 0 && parsedTaxSlabCode <= 255)) {
+	                                        			e.component.option("value", parsedTaxSlabCode);
+	                                        			cellInfo.setValue(selectedItem.TaxCodeToDisplay);
+	                                        			e.component.close();
+	                                        		} else {
+	                                        			DevExpress.ui.notify("Invalid Tax Slab Code", "error", 3000);
+	                                        		}
+	                                        	}
+	                                        }
 
-												   e.component.close();
-											   }
-										   }
 									   });
 								   }
 							   });
@@ -3756,7 +3747,7 @@
 
 				   { dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150, cssClass: "center-header" },
 
-					   { dataField: "LineTotal", caption: formatMessage('Total'), width: 100, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+				   { dataField: "LineTotal", caption: formatMessage('Total'), width: 100, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
 				   { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -3888,11 +3879,10 @@
 			}).then(function(response) {
 
 				return response.map(item => ({
-				TaxSlab: item.PurchaseTaxSlabCode,
-				TaxRate:item.PurchaseTaxSlab,
-				TaxSlabCode:item.PurchaseTaxRate,
+			    TaxSlab:item.PurchaseTaxSlab,
+				TaxRate:item.PurchaseTaxRate,
+				TaxSlabCode:item.PurchaseTaxSlabCode,
 				TaxCodeToDisplay:item.PurchaseTaxInWords
-
 
 				}));
 			});
@@ -5844,7 +5834,7 @@
 			RetentionText: $("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
 			RetentionAmount: $("#currencyexchangerate4").dxNumberBox("instance").option("value")|| null,
 			CompanyId: $("#CompanyDivision").dxDropDownBox("instance").option("value")|| null,
-		 	//DeliveryNoteNos: $("#ddlDivision").dxTextBox("instance").option("value")|| null,
+		 	DeliveryNoteNos: $("#ddlDivision").dxTextBox("instance").option("value")|| null,
 		 	//ClientGrnreferenceNo:$("#ddlinvoicesubmittedon").dxTextBox("instance").option("value")|| null,
 			SupplierNameAr: $("#ddlSupplierArabicName").dxDropDownBox("instance").option("value")|| null
 

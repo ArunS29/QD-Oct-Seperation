@@ -565,6 +565,8 @@
         .Text(new JS("formatMessage('Show Records')"))
         .Icon("smalliconslayout")
         .Width(180)
+        .SplitButton(true)
+        .OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }")
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -581,7 +583,7 @@
                 })
                 .ItemTemplate(@<text>
             <div class="custom-dropdown-item">
-                <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
+                <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>

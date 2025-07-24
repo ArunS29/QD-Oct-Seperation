@@ -1341,8 +1341,8 @@ ContactRemarks:clientRemarks,
         var clientName = $('#txtClientName').dxTextBox("instance").option("value");
             var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
         let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}&clientCode=${encodeURIComponent(clientCode)}`;
-        let title = "";
-        openModal(url, title);
+            let title = "Client Status Update";
+        openModal(url, title ,"80%","90%");
 
     }
    
@@ -1354,7 +1354,7 @@ ContactRemarks:clientRemarks,
    // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
             var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
 
-    var title = `Contact List - ${clientName}`;
+    var title = `Contact List ${clientName}`;
     
     openModal(url, title);
 }

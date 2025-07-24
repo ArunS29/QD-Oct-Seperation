@@ -1793,7 +1793,7 @@
             this.xrLabel15.Multiline = true;
             this.xrLabel15.Name = "xrLabel15";
             this.xrLabel15.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel15.SizeF = new System.Drawing.SizeF(103.8574F, 63.625F);
+            this.xrLabel15.SizeF = new System.Drawing.SizeF(104.8574F, 63.625F);
             this.xrLabel15.StyleName = "DetailCaption1";
             this.xrLabel15.StylePriority.UseBackColor = false;
             this.xrLabel15.StylePriority.UseBorderColor = false;

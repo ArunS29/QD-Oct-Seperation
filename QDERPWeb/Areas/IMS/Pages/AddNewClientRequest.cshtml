@@ -886,8 +886,8 @@
 																)
 
 							</div>
-							<div class="col-6">
-								@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+					<div class="col-6">
+								@(Html.DevExtreme().DropDownBox()
 																.Label(new JS("formatMessage('Requested By(MPR Type):')"))
 																.DataSource(d => d.WebApi()
 																.Controller("AddNewClientRequest")
@@ -903,7 +903,7 @@
 																.OpenOnFieldClick(false)//
 																.ValueChangeEvent("input")
 																.HoverStateEnabled(true)
-																.Value(2)
+																.Value(1)
 																.ValueExpr("RequestedByCode")
 																.DisplayExpr("RequestedBy")
 																.OnInput("dropDownBoxOnInput")
@@ -1891,11 +1891,6 @@
 					})
 					)
 				}
-
-
-
-
-
 
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
 		{
@@ -2962,7 +2957,7 @@
 
 												let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-												openModal(url, "");
+												openModal(url, "Goods And Service");
 
 											},
 
@@ -2986,7 +2981,7 @@
 
 												let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
 
-												openModal(url, "");
+												openModal(url, "Goods And Service");
 
 											},
 

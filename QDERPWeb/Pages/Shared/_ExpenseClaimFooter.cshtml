@@ -236,11 +236,32 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text("Expense Claim Request").Icon("money");
-                    items.Add().Text("Petty Cash Request").Icon("product");
-                    items.Add().Text("Supplier Payment Request").Icon("money");
+                    items.Add()
+                    .Text(new JS("formatMessage('Expense Claim Request')"))
+                        .Option("color", "#FF7043")
+                        .Icon("money");
 
+                    items.Add()
+                        .Text(new JS("formatMessage('Petty Cash Request')"))
+                        .Option("color", "#00ACC1")
+                        .Icon("product");
+
+                    items.Add()
+                        .Text(new JS("formatMessage('Supplier Payment Request')"))
+                        .Option("color", "#AB47BC")
+                        .Icon("money");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("addExpenseButton_click")
                 .ShowArrowIcon(false)
                 )
