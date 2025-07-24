@@ -1755,9 +1755,11 @@
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
 		$(document).ready(function () {
-						console.log(IsCurrent)
-			if (IsCurrent !== "true" && IsAmend !=="true") 
-			{
+			var urlParams = new URLSearchParams(window.location.search);
+			var IsEditflag = urlParams.get('IsEditflag');
+			IsCurrent = (IsEditflag || "").toString();
+			console.log(IsCurrent)
+			if (IsCurrent !== "true") {
 				$.ajax({
 					url: "/api/VATModule/GetNewDebitNoteNoApi",
 					type: "GET",
@@ -1780,7 +1782,7 @@
 		});
 	
 
-			function InvoiceOPenToSave(data) {
+	function InvoiceOPenToSave(data) {
 			
 
 	    var InvoiceMaster = {
