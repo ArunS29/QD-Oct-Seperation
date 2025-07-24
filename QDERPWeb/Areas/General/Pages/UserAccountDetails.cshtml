@@ -455,10 +455,12 @@
                                 </div>
                             </div>
 
-
-                            <div class="container-fluid tab-container">
+                            <div class="container-fluid tab-container" id="vat-content">
+                                loadVATData
                                 <div class="card">
-                                    <div class="card-body">Content for VAT</div>
+                                    <div class="card-body">
+                                        <div id="VATgridContainer"></div> 
+                                    </div>
                                 </div>
                             </div>
 
@@ -1487,6 +1489,9 @@
             if (selectedText === "Master Module") {
                 loadMasterModuleData(selectedText);
             }
+              if (selectedText === "VAT") {
+                loadVATData(selectedText);
+            }
         }
 
         function loadFinanceData(selectedText) {
@@ -1532,6 +1537,67 @@
                                         }];
                                         updateItemVisibility(items, function () {
                                             $("#gridContainer").dxDataGrid("instance").refresh();
+                                        });
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
+                    mode: "multiple"
+                },
+                selection: {
+                    mode: "multiple"
+                },
+                showBorders: true
+            });
+        }
+
+
+           function loadVATData(selectedText) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            debugger;
+            $("#VATgridContainer").dxDataGrid({
+                dataSource: new DevExpress.data.CustomStore({
+                    key: "SlNo",
+                    load: function () {
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=${selectedText}`)
+                            .then(function (result) {
+                                return {
+                                    data: result.data,
+                                    totalCount: result.totalCount
+                                };
+                            });
+                    }
+                }),
+                remoteOperations: false,
+                height: 500,
+                columnAutoWidth: true,
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                columns: [
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxCheckBox({
+                                    value: options.value,
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            SlNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items, function () {
+                                            $("#VATgridContainer").dxDataGrid("instance").refresh();
                                         });
                                     }
                                 })
@@ -1644,10 +1710,10 @@
         //     // Add your logic here
         // }
 
-        function loadVATData() {
-            console.log("Loading VAT data...");
-            // Add your logic here
-        }
+        // function loadVATData() {
+        //     console.log("Loading VAT data...");
+        //     // Add your logic here
+        // }
 
         function loadHRData() {
             console.log("Loading Human Resources data...");
