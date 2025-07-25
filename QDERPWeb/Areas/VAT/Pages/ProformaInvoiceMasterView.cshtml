@@ -239,9 +239,10 @@
 </div>
 
 <div class="context-menu" id="contextMenu">
-	<div class="context-menu-item" onclick="viewInvoice()">
+	<div class="context-menu-item" onclick="viewInvoice('2025-000001')">
 		<i class="dx-icon-search"></i>Edit Proforma Invoice
 	</div>
+
 
 	<div class="context-menu-item" onclick="cancelInvoice()">
 		<i class="dx-icon-close"></i> Delete Proforma Invoice
@@ -264,6 +265,9 @@
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
 		.DisplayFormat("dd-MMM-yyyy")
+		.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+		.ShowClearButton(true) // shows clear (X) button
+		.ElementAttr("class", "dynamicFormatDateBox")
 		.TabIndex(2)
 		)
 
@@ -275,6 +279,9 @@
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
 		.DisplayFormat("dd-MMM-yyyy")
+		.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+		.ShowClearButton(true) // shows clear (X) button
+		.ElementAttr("class", "dynamicFormatDateBox")
 		.TabIndex(3)
 		)
 
@@ -314,6 +321,11 @@
         </text>)
 		)
 
+	@(Html.DevExtreme().CheckBox()
+		.ID("chkUseEffectiveDate")
+		.Text(new JS("formatMessage('Use Effective Date')"))
+		.Value(false)
+		)
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
@@ -599,6 +611,32 @@
 		");
 			});
 			});
+				// Add hidden columns for remaining model fields
+			columns.AddFor(m => m.ProformaInvoiceNo).Caption("Invoice No").Visible(false);
+			columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
+			columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
+			columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
+			columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
+			columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By (AR)").Visible(false);
+			columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
+			columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
+			columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+			columns.AddFor(m => m.VerifiedByAr).Caption("Verified By (AR)").Visible(false);
+			columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+			columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
+			columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+			columns.AddFor(m => m.ApprovedByAr).Caption("Approved By (AR)").Visible(false);
+			columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+			columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+			columns.AddFor(m => m.AddedByAr).Caption("Added By (AR)").Visible(false);
+			columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+			columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+			columns.AddFor(m => m.ModifiedByAr).Caption("Modified By (AR)").Visible(false);
+			columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+			columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
+			columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
+			columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+
 		})
 		@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
 		.Height("60vh") // <<< fixed height
@@ -703,7 +741,12 @@
 </div>
 
 <script>
-	
+		function onToolbarPreparing(e) {
+		// Remove/hide the column chooser button on initial load
+		e.toolbarOptions.items = e.toolbarOptions.items.filter(function (item) {
+			return item.name !== "columnChooserButton";
+		});
+	}
 	// $(document).ready(function () {
 	// 		ddBtnShowRecords_click("range")
 	// 	$(".limited-footer .btn-containerIvoiceEdit").each(function () {
@@ -755,29 +798,24 @@
 			return item.name !== "columnChooserButton";
 		});
 	}
-	// Assuming tenantName is already defined globally
-	let invoiceNoCr = null;
-	let IsEditCr = false;
-
-	function viewInvoice() {
-		if (!invoiceNoCr) {
+		function viewInvoice(proformaInvoiceNo) {
+		if (!proformaInvoiceNo) {
 			alert("Invoice number is not set.");
 			return;
 		}
 
 		IsEditCr = true;
 
-		// const params = new URLSearchParams({
-		// 	InvoiceNo: invoiceNoCr,
-		// 	IsEditflagCr: IsEditCr,
-		// 	modal: true If you want to explicitly include modal=true
-		// });
-
-		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?InvoiceNo=${encodeURIComponent(ProformaInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEditCr)}`;
-		   const title = "VAT Proforma Invoice Edit";
-		// openModal(url, title);
+		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?InvoiceNo=${encodeURIComponent(proformaInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEditCr)}`;
+		const title = "VAT Proforma Invoice Edit";
+		//openModal(url, title); // Assuming you have this function to open the modal
+			 window.location.href = url;
 	}
+
 	
+
+
+
 	$(function () {
 					$("#ProformaInvoiceMasterView").dxTextBox({
 						text: formatMessage("Proforma Invoice Master View"),
@@ -817,11 +855,15 @@
 		});
 	});
 
-	function ddBtnShowRecords_click(duration) {
+		function ddBtnShowRecords_click(duration) {
 		const frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		const toDateBox = $("#todateBox").dxDateBox("instance");
-		let frmDate = new Date(frmDateBox.option("value"));
-		let toDate = new Date(toDateBox.option("value"));
+
+		let frmDateVal = frmDateBox.option("value");
+		let toDateVal = toDateBox.option("value");
+
+		let frmDate = frmDateVal ? new Date(frmDateVal) : null;
+		let toDate = toDateVal ? new Date(toDateVal) : null;
 		const currentDate = new Date();
 
 		switch (duration) {
@@ -834,10 +876,13 @@
 				frmDate = toDate = dateObj;
 				break;
 			case 'week':
-				const dayOfWeek = currentDate.getDay();
-				const startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
-				frmDate = new Date(currentDate.setDate(startOfWeek));
-				toDate = new Date(currentDate.setDate(startOfWeek + 6));
+				const today = new Date();
+				const dayOfWeek = today.getDay(); // Sunday = 0
+				const startOfWeek = new Date(today);
+				startOfWeek.setDate(today.getDate() - (dayOfWeek || 7) + 1); // Monday as start
+				frmDate = startOfWeek;
+				toDate = new Date(startOfWeek);
+				toDate.setDate(startOfWeek.getDate() + 6);
 				break;
 			case 'tillmonth':
 				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -865,31 +910,38 @@
 				break;
 		}
 
-		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-		FromDate = frmDate;
-		ToDate = toDate;
+		// If dates are still null (cleared by user), handle gracefully
+		if (!frmDate || !toDate) {
+			DevExpress.ui.notify("Please select both Start Date and End Date.", "warning", 2000);
+			return;
+		}
+
+		// Format dates for server/API
+		const formattedFromDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		const formattedToDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+		// Update DateBoxes visually if needed
 		frmDateBox.option("value", frmDate);
 		toDateBox.option("value", toDate);
 
+		// API call
 		$.ajax({
 			url: '/api/VATModule/GetVatProformaDetails',
 			type: 'GET',
 			data: {
-				frmDate: frmDate,
-				toDate: toDate
+				frmDate: formattedFromDate,
+				toDate: formattedToDate
 			},
 			success: function (data) {
-				console.log("ShowData",data)
+				console.log("ShowData", data);
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-		
-
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
 		});
 	}
+
 	function formatDate(date) {
 		var d = new Date(date),
 			month = '' + (d.getMonth() + 1),
