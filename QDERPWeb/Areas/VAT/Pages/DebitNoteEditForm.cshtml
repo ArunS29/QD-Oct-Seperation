@@ -3321,7 +3321,7 @@
 		function dataGridSupplierNameSelectionChanged(e) {
 			const selectedKey = e.selectedRowKeys[0];
 			const ddbInstance = $("#VATSupplierName").dxDropDownBox("instance");
-			acchead = selectedKey;
+			supplierid = selectedKey;
 			
 			if (selectedKey) {
 				ddbInstance.option("value", selectedKey);
@@ -4757,7 +4757,7 @@
 			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
 	        PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
 			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
-			SupplierCode: supplierid,
+		    SupplierCode: supplierid,
 			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 			//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
 			ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
@@ -4769,7 +4769,7 @@
 			CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
 			DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
 			DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
-			BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
+			//BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
 			CompanyId:$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value")||null
 		};
 
