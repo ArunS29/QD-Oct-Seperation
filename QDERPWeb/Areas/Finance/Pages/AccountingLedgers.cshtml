@@ -1001,11 +1001,27 @@
 						columns.AddFor(m => m.BillNo).Caption(new JS("formatMessage('BillNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherModifiedOn).Caption(new JS("formatMessage('VoucherModifiedOn')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherModifiedBy).Caption(new JS("formatMessage('VoucherModifiedBy')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Alignment(HorizontalAlignment.Left).Visible(true);
+						columns.AddFor(m => m.SysRemarks)
+    .Caption(new JS("formatMessage('Remarks')"))
+    .Alignment(HorizontalAlignment.Left)
+    .Visible(true)
+    .CellTemplate(@<text>
+        <div title="<%- data.SysRemarks %>" class="narration-cell max-lines-1">
+            <%- data.SysRemarks %>
+        </div>
+    </text>);
 						columns.AddFor(m => m.VoucherType).Caption(new JS("formatMessage('VoucherType')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.MasterGroup).Caption(new JS("formatMessage('MasterGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.AccountGroup).Caption(new JS("formatMessage('AccountGroup')")).Alignment(HorizontalAlignment.Left).Visible(false);
-						columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('EntryNarration')")).Alignment(HorizontalAlignment.Left).Visible(false);
+						columns.AddFor(m => m.EntryNarration)
+    .Caption(new JS("formatMessage('EntryNarration')"))
+    .Alignment(HorizontalAlignment.Left)
+    .Visible(false)
+    .CellTemplate(@<text>
+        <div title="<%- data.EntryNarration %>" class="narration-cell max-lines-1">
+            <%- data.EntryNarration %>
+        </div>
+    </text>);
 						columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('AccountHead')")).Alignment(HorizontalAlignment.Left).Visible(false);
 						columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('VoucherEntryNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
