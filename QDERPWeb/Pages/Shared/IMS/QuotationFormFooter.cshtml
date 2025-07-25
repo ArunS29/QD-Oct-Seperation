@@ -48,20 +48,29 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Preview Quotation").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/O Discount Column)").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/o VAT)").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/o VAT & W/o TotalPrice)").Icon("folder");
-                    items.Add().Text("Preview Quotation(W/o VAT & W/o Discount)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Addl Details)").Icon("folder");
-                    items.Add().Text("Preview Quotation(Without Price)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Item Image)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Group Code)").Icon("folder");
-                    items.Add().Text("Preview Quotation(With Sub Group)").Icon("folder");
-                    items.Add().Text("Prepare Cost Sheet").Icon("money");
-
-
+                    items.Add().Text("Preview Quotation").Icon("folder").Option("color", "#FF7043");
+                    items.Add().Text("Preview Quotation(W/O Discount Column)").Icon("folder").Option("color", "#00ACC1");
+                    items.Add().Text("Preview Quotation(W/o VAT)").Icon("folder").Option("color", "#AB47BC");
+                    items.Add().Text("Preview Quotation(W/o VAT & W/o TotalPrice)").Icon("folder").Option("color", "#FBBC05");
+                    items.Add().Text("Preview Quotation(W/o VAT & W/o Discount)").Icon("folder").Option("color", "#EA4335");
+                    items.Add().Text("Preview Quotation(With Addl Details)").Icon("folder").Option("color", "#34A853");
+                    items.Add().Text("Preview Quotation(Without Price)").Icon("folder").Option("color", "#4285F4");
+                    items.Add().Text("Preview Quotation(With Item Image)").Icon("folder").Option("color", "#FF7043");
+                    items.Add().Text("Preview Quotation(With Group Code)").Icon("folder").Option("color", "#00ACC1");
+                    items.Add().Text("Preview Quotation(With Sub Group)").Icon("folder").Option("color", "#AB47BC");
+                    items.Add().Text("Prepare Cost Sheet").Icon("money").Option("color", "#34A853");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("handleQuatation")
                 )
     </div>

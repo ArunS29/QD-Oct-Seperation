@@ -251,11 +251,32 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text("Expense Claim Request").Icon("money");
-                    items.Add().Text("Petty Cash Request").Icon("product");
-                    items.Add().Text("Supplier Payment Request").Icon("money");
+                    items.Add()
+                        .Text(new JS("formatMessage('Expense Claim Request')"))
+                        .Option("color", "#34A853") // Green
+                        .Icon("money");
 
+                    items.Add()
+                        .Text(new JS("formatMessage('Petty Cash Request')"))
+                        .Option("color", "#FBBC05") // Yellow
+                        .Icon("product");
+
+                    items.Add()
+                        .Text(new JS("formatMessage('Supplier Payment Request')"))
+                        .Option("color", "#EA4335") // Red
+                        .Icon("money");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("addExpenseButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -273,9 +294,27 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Add Cash Receipts')")).Icon("money");
-                    items.Add().Text(new JS("formatMessage('Add Bank Receipts')")).Icon("product");
+                    items.Add()
+                        .Text(new JS("formatMessage('Add Cash Receipts')"))
+                        .Option("color", "#34A853") // Green
+                        .Icon("money");
+
+                    items.Add()
+                        .Text(new JS("formatMessage('Add Bank Receipts')"))
+                        .Option("color", "#FBBC05") // Yellow
+                        .Icon("product");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("addRecipitsButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -291,9 +330,27 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Add Cash Payment')")).Icon("money");
-                    items.Add().Text(new JS("formatMessage('Add Bank Payment')")).Icon("product");
+                    items.Add()
+                        .Text(new JS("formatMessage('Add Cash Payment')"))
+                        .Option("color", "#34A853")  // Green
+                        .Icon("money");
+
+                    items.Add()
+                        .Text(new JS("formatMessage('Add Bank Payment')"))
+                        .Option("color", "#FBBC05")  // Yellow
+                        .Icon("product");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("addPaymentButton_click")
                 .ShowArrowIcon(false)
                 )
@@ -309,10 +366,32 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add().Text(new JS("formatMessage('Add Purchase Voucher')")).Icon("add");
-                    items.Add().Text(new JS("formatMessage('Add Sales Voucher')")).Icon("add");
-                    items.Add().Text(new JS("formatMessage('Add Journal Voucher')")).Icon("add");
+                    items.Add()
+                        .Text(new JS("formatMessage('Add Purchase Voucher')"))
+                        .Option("color", "#4285F4")  // Blue
+                        .Icon("add");
+
+                    items.Add()
+                        .Text(new JS("formatMessage('Add Sales Voucher')"))
+                        .Option("color", "#34A853")  // Green
+                        .Icon("add");
+
+                    items.Add()
+                        .Text(new JS("formatMessage('Add Journal Voucher')"))
+                        .Option("color", "#FBBC05")  // Yellow
+                        .Icon("add");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("otherVoucherButton_click")
                 .ShowArrowIcon(false)
                 )

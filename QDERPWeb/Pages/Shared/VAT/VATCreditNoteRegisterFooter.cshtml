@@ -315,10 +315,22 @@
             .DropDownOptions(options => options.Width(285))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Tax Summary Report-Credit Notes')")).Icon("search");
-
-
+                items.Add()
+                    .Text(new JS("formatMessage('Tax Summary Report-Credit Notes')"))
+                    .Icon("search")
+                    .Option("color", "#4285F4"); // Blue
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("handleReportClick")
             .ShowArrowIcon(false)
 

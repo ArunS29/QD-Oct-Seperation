@@ -86,6 +86,14 @@
     .dx-button{
         height:100% !important;
     }
+
+    .footer-fixed {
+        bottom: 37px !important;
+    }
+
+    .titleCard-toggle1 {
+        display: none;
+    }
 </style>
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
@@ -373,11 +381,37 @@
             .OnRowRemoving("onjournalrowremoving")
             )
     </div>
+    <div class="col-md-2 col-sm-6 d-flex align-items-end justify-content-center" style="height:100px!important;">
+        @(Html.DevExtreme().TextBox()
+                .ID("journalvoucher")
+                .Value(null)
+                .ReadOnly(true))
+        @(Html.DevExtreme().Button()
+                .ID("btnPostJournal")
+                .Template(@<text>
+            <div class="text-center" style="line-height: 1;">
+                <div style="display: flex; flex-direction: column; align-items: center;">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--title-background-color)" viewBox="0 0 512 512">
+                        <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" />
+                    </svg>
+                    <div style="font-size: 13px; margin-top: 4px;">Post the Journal</div>
+                </div>
+            </div>
+        </text>)
+                .Height(80)
+                .Width("100%")
+                .OnClick("onPostJournalClick")
+                )
+    </div>
 
 
-    <div class="row g-3 align-items-end">
+    <div class="row g-3 align-items-end" style="display:none;">
         <!-- Submitted -->
         <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .Text(new JS("formatMessage('Submitted By')"))
+                        .ID("SubmittedBy")
+                        .ReadOnly(true))
                        @(Html.DevExtreme().TextBox()
                         .ID("SubmittedBytext")
                         .LabelMode(EditorLabelMode.Floating)
@@ -397,6 +431,10 @@
 
         <!-- Verified -->
         <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .Text(new JS("formatMessage('Verified By')"))
+                        .ID("VerifiedBy")
+                        .ReadOnly(true))
                         @(Html.DevExtreme().TextBox()
                         .ID("VerifiedBytext")
                         .LabelMode(EditorLabelMode.Floating)
@@ -416,6 +454,10 @@
 
         <!-- Approved -->
         <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .Text(new JS("formatMessage('Approved By')"))
+                        .ID("ApprovedBy")
+                        .ReadOnly(true))
                         @(Html.DevExtreme().TextBox()
                         .ID("ApprovedBytext")
                         .LabelMode(EditorLabelMode.Floating)
@@ -435,6 +477,10 @@
 
         <!-- Posted -->
         <div class="col-md-2 col-sm-6">
+            @(Html.DevExtreme().CheckBox()
+                        .Text(new JS("formatMessage('Posted By')"))
+                        .ID("PostedBy")
+                        .ReadOnly(true))
                         @(Html.DevExtreme().TextBox()
                         .ID("PostedBytext")
                         .LabelMode(EditorLabelMode.Floating)
@@ -453,24 +499,6 @@
         </div>
 
         <!-- Post Journal Button -->
-        <div class="col-md-2 col-sm-6 d-flex align-items-end justify-content-center" style="height:100px!important;">
-            @(Html.DevExtreme().Button()
-                        .ID("btnPostJournal")
-                        .Template(@<text>
-                <div class="text-center" style="line-height: 1;">
-                    <div style="display: flex; flex-direction: column; align-items: center;">
-                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="var(--title-background-color)" viewBox="0 0 512 512">
-                            <path d="M128 64c0-35.3 28.7-64 64-64L352 0l0 128c0 17.7 14.3 32 32 32l128 0 0 288c0 35.3-28.7 64-64 64l-256 0c-35.3 0-64-28.7-64-64l0-112 174.1 0-39 39c-9.4 9.4-9.4 24.6 0 33.9s24.6 9.4 33.9 0l80-80c9.4-9.4 9.4-24.6 0-33.9l-80-80c-9.4-9.4-24.6-9.4-33.9 0s-9.4 24.6 0 33.9l39 39L128 288l0-224zm0 224l0 48L24 336c-13.3 0-24-10.7-24-24s10.7-24 24-24l104 0zM512 128l-128 0L384 0 512 128z" />
-                        </svg>
-                        <div style="font-size: 13px; margin-top: 4px;">Post the Journal</div>
-                    </div>
-                </div>
-            </text>)
-                        .Height(80)
-                        .Width("100%")
-                        .OnClick("onPostJournalClick")
-                        )
-        </div>
 
     </div>
 
@@ -728,6 +756,8 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
+                                  isVoucherSaved = true; // Mark Updated step as done
+                             updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         DevExpress.ui.dialog.alert(
                             "Journal Register Details updated Successfully.",
                             "Update Successful"
@@ -1233,7 +1263,10 @@
                             btnlayout.repaint();
                             btnattach.option("disabled", false);
                         }
+                             syncWorkflowFromFields();
 
+                                // ✅ Initialize popovers
+                                initWorkflowTippyPopovers();
 
                         getchilddatas();
                     } else {
@@ -1898,7 +1931,7 @@
                             $("#SubmittedBy").dxCheckBox("instance").option("value", true);
                             $("#SubmittedBytext").dxTextBox("instance").option("value", submittedBy);
                             $("#SubmittedOnDate").dxTextBox("instance").option("value", formattedDate);
-
+                             syncWorkflowFromFields();
                             disable();
 
                         });
@@ -1941,7 +1974,7 @@
                             $("#VerifiedBy").dxCheckBox("instance").option("value", true);
                             $("#VerifiedBytext").dxTextBox("instance").option("value", submittedBy);
                             $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate);
-
+                                 syncWorkflowFromFields();
                             disable();
 
                         });
@@ -1982,7 +2015,7 @@
                             $("#ApprovedBy").dxCheckBox("instance").option("value", true);
                             $("#ApprovedBytext").dxTextBox("instance").option("value", submittedBy);
                             $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate);
-
+                             syncWorkflowFromFields();
                             disable();
 
                         });
@@ -2157,5 +2190,181 @@
             openModal(url, title);
         }
     }
+
+                 let isVoucherSaved = false;
+
+              function getWorkflowStatusFromFields() {
+            const submitted = $("#SubmittedBy").dxCheckBox("instance").option("value") === true;
+            const verified = $("#VerifiedBy").dxCheckBox("instance").option("value") === true;
+            const approved = $("#ApprovedBy").dxCheckBox("instance").option("value") === true;
+
+            if (approved) return 4;
+            if (verified) return 3;
+            if (submitted) return 2;
+            if (isVoucherSaved) return 1; // If voucher is saved, consider it as submitted
+
+            return 0;
+        }
+
+
+
+         function updateWorkflowVisual(status) {
+                const steps = [
+            { id: "step-update", icon: "fas fa-user" },
+            { id: "step-submit", icon: "fas fa-paper-plane" },
+            { id: "step-verify", icon: "fas fa-briefcase" },
+            { id: "step-approve", icon: "fas fa-file-alt" }
+        ];
+
+            steps.forEach((step, index) => {
+                const el = document.getElementById(step.id);
+                const statusMsg = el.querySelector(".step-status-msg");
+                const icon = el.querySelector("i");
+
+                el.classList.remove("completed", "current", "upcoming", "done");
+                icon.className = step.icon;
+
+                if (index < status) {
+                    el.classList.add("completed");
+                    statusMsg.textContent = "Done";
+                    icon.className = "fas fa-check-circle";
+                } else if (index === status && status < 3) {
+                    el.classList.add("current");
+                    statusMsg.textContent = "In Progress";
+                    icon.className = "fas fa-spinner fa-spin";
+                } else {
+                    el.classList.add("upcoming");
+                    statusMsg.textContent = "Pending";
+                }
+
+                // Final Approved state
+                            if (status === 4 && index === 4) {
+                    el.classList.add("completed");
+                    statusMsg.textContent = "Done";
+                    icon.className = "fas fa-check-circle";
+                }
+            });
+        }
+
+
+
+
+            function syncWorkflowFromFields() {
+                const status = getWorkflowStatusFromFields();
+                updateWorkflowVisual(status);
+            }
+
+        function attachWorkflowWatchers() {
+            $("#IsSubmitted").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#IsVerified").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#IsApproved").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+        }
+
+            $(function () {
+                setTimeout(() => {
+                    attachWorkflowWatchers();
+                    syncWorkflowFromFields();
+                     // bindWorkflowPopovers();
+                     initWorkflowTippyPopovers();
+
+                }, 300);
+            });
+
+
+        // function bindWorkflowPopovers() {
+        //     const verifiedBy = $("#VerifiedBytext").dxTextBox("instance").option("value") || "N/A";
+        //     const verifiedOn = $("#VerifiedDate").dxDateBox("instance")?.option("value") || "N/A";
+        //     const approvedBy = $("#ApprovedBytext").dxTextBox("instance").option("value") || "N/A";
+        //     const approvedOn = $("#ApprovedDate").dxDateBox("instance")?.option("value") || "N/A";
+
+        //     $("#verifiedByName").text(verifiedBy);
+        //     $("#verifiedOn").text(formatDate(verifiedOn));
+        //     $("#approvedByName").text(approvedBy);
+        //     $("#approvedOn").text(formatDate(approvedOn));
+
+        //     attachPopoverEvents("#circle-verify", "#verifyPopover");
+        //     attachPopoverEvents("#circle-approve", "#approvePopover");
+        // }
+
+        // function formatDate(date) {
+        //     if (!date) return "N/A";
+        //     const d = new Date(date);
+        //     return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+        // }
+
+        // function attachPopoverEvents(targetSelector, popoverSelector) {
+        //     const $target = $(targetSelector);
+        //     const $popover = $(popoverSelector);
+
+        //     $target.on("mouseenter", function (e) {
+        //         const offset = $target.offset();
+        //         $popover.css({
+        //             top: offset.top - $popover.outerHeight() - 10,
+        //             left: offset.left,
+        //             display: "block"
+        //         });
+        //     });
+
+        //     $target.on("mouseleave", function () {
+        //         $(popoverSelector).hide();
+        //     });
+        // }
+        function formatDate(date) {
+            if (!date) return "N/A";
+            const d = new Date(date);
+            return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+        }
+
+        function initWorkflowTippyPopovers() {
+            // 🧼 Clean up any old tippy instances
+            tippy.hideAll();
+            document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+            const submittedBy = $("#SubmittedBytext").dxTextBox("instance")?.option("value") || "N/A";
+            const submittedOn = $("#SubmittedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+            const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
+            const verifiedOn = $("#VerifiedOntext").dxTextBox("instance")?.option("value") || "N/A";
+            const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
+            const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
+
+            console.log("🧪 Tooltip data:", {
+                verifiedBy, verifiedOn, approvedBy, approvedOn
+            });
+
+            // 🟩 Verified Popover
+            tippy('#circle-verify', {
+                content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+                allowHTML: true,
+                followCursor: 'horizontal',
+                placement: 'top',
+                animation: 'shift-away',
+                theme: 'light-border',
+                trigger: 'mouseenter focus',
+                delay: [100, 100],
+            });
+
+            // 🟩 Approved Popover
+            tippy('#circle-approve', {
+                content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+                allowHTML: true,
+                followCursor: 'horizontal',
+                placement: 'top',
+                animation: 'shift-away',
+                theme: 'light-border',
+                trigger: 'mouseenter focus',
+                delay: [100, 100],
+
+            });
+                tippy('#circle-submit', {
+            content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+        }
+
         
 </script>

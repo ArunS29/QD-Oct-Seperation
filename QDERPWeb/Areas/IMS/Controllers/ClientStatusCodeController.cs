@@ -55,6 +55,45 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> BatchUpdate([FromBody] List<BatchUpdateModel> updates)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { message = "Invalid tenant", success = false });
+
+                foreach (var item in updates)
+                {
+                    var entity = await dbContext.Tbl30103ClientStatusCodes.FindAsync(item.key);
+                    if (entity == null) continue;
+
+                    // Only update the fields passed from client
+                    foreach (var kv in item.values)
+                    {
+                        if (kv.Key == "Status")
+                        {
+                            entity.Status = kv.Value?.ToString();
+                        }
+                    }
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                return Json(new { success = true, message = "Updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"🔥 Error in BatchUpdate: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Failed to save changes.", details = ex.Message });
+            }
+        }
+
+        public class BatchUpdateModel
+        {
+            public int key { get; set; }
+            public Dictionary<string, object> values { get; set; }
+        }
 
         [HttpPost]
         public IActionResult CreateClientCategory([FromBody] ClientStatusDisplayDTO vm)

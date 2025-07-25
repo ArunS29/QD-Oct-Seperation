@@ -1,6 +1,7 @@
 ﻿
 var dictionary = {
     "en": {
+        "Expense Claim Request":"Expense Claim Request",
         "Sub Group Notes:":"Sub Group Notes:",
         "Document Types":"Document Types",
         "Receive":"Receive",

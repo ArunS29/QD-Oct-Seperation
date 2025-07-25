@@ -111,11 +111,33 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Preview Credit Note").Icon("print");
-                    items.Add().Text("Preview Credit Note(Foreign Currency)").Icon("file");
-                    items.Add().Text("Credit Note Posting").Icon("folder").OnClick("navigateCreditInventoryCost");
+                    items.Add()
+                        .Text("Preview Credit Note")
+                        .Icon("print")
+                        .Option("color", "#FF7043"); // Orange
 
+                    items.Add()
+                        .Text("Preview Credit Note(Foreign Currency)")
+                        .Icon("file")
+                        .Option("color", "#00ACC1"); // Cyan
+
+                    items.Add()
+                        .Text("Credit Note Posting")
+                        .Icon("folder")
+                        .Option("color", "#AB47BC") // Purple
+                        .OnClick("navigateCreditInventoryCost");
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("handleCreditReportPrinting")
 
 

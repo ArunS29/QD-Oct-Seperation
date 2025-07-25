@@ -124,8 +124,22 @@
             .DropDownOptions(options => options.Width(370))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"));
+                items.Add()
+                    .Text(new JS("formatMessage('Add New Material Receipt-From Supplier')"))
+                    .Option("color", "#4285F4")  // Blue
+                    .Icon("box");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
             )

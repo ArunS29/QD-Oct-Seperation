@@ -143,12 +143,12 @@
             // 
             // pageInfo2
             // 
-            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(577.3455F, 2.333178F);
+            this.pageInfo2.LocationFloat = new DevExpress.Utils.PointFloat(577.3455F, 2.333171F);
             this.pageInfo2.Name = "pageInfo2";
-            this.pageInfo2.SizeF = new System.Drawing.SizeF(89.61908F, 15.49998F);
+            this.pageInfo2.SizeF = new System.Drawing.SizeF(109.6191F, 15.49998F);
             this.pageInfo2.StyleName = "PageInfo";
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.pageInfo2.TextFormatString = "Page {0} of {1}";
+            this.pageInfo2.TextFormatString = "Page No:{0} of {1}";
             // 
             // xrLabel9
             // 

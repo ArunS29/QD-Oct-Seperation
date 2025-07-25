@@ -46,16 +46,57 @@
                 .ShowArrowIcon(false)
                 .Items(items =>
                 {
-                    items.Add().Text("Preview Invoice").Icon("print");
-                    items.Add().Text("Preview Proforma Invoice(NewFormat)").Icon("file");
-                    items.Add().Text("Preview Invoice(English)").Icon("folder");
-                    items.Add().Text("Preview Invoices in Foreign Currency(English)").Icon("edit");
-                    items.Add().Text("Preview Invoices in (Foreign Currency)").Icon("upload");
-                    items.Add().Text("Preview Invoices in -with discount").Icon("upload");
-                    items.Add().Text("Preview Invoices in -withOut discount").Icon("upload");
-                    items.Add().Text("Upload Items From Excel").Icon("chart");
+                    items.Add()
+                        .Text("Preview Invoice")
+                        .Icon("print")
+                        .Option("color", "#FF7043"); // Orange
 
+                    items.Add()
+                        .Text("Preview Proforma Invoice(NewFormat)")
+                        .Icon("file")
+                        .Option("color", "#00ACC1"); // Cyan
+
+                    items.Add()
+                        .Text("Preview Invoice(English)")
+                        .Icon("folder")
+                        .Option("color", "#AB47BC"); // Purple
+
+                    items.Add()
+                        .Text("Preview Invoices in Foreign Currency(English)")
+                        .Icon("edit")
+                        .Option("color", "#FBBC05"); // Yellow
+
+                    items.Add()
+                        .Text("Preview Invoices in (Foreign Currency)")
+                        .Icon("upload")
+                        .Option("color", "#EA4335"); // Red
+
+                    items.Add()
+                        .Text("Preview Invoices in -with discount")
+                        .Icon("upload")
+                        .Option("color", "#34A853"); // Green
+
+                    items.Add()
+                        .Text("Preview Invoices in -withOut discount")
+                        .Icon("upload")
+                        .Option("color", "#4285F4"); // Blue
+
+                    items.Add()
+                        .Text("Upload Items From Excel")
+                        .Icon("chart")
+                        .Option("color", "#FF7043"); // Orange
                 })
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("addPrintButton_click")
                 )
     </div>
@@ -106,7 +147,7 @@
                 .ID("btnCreateVATInvoice")
                 .Text(new JS("formatMessage('Create VAT Invoice')"))
                 .Icon("add") // You can change this to a relevant icon
-        @* .OnClick("onCreateVATInvoiceClick") // JavaScript function to trigger the popup *@
+                .OnClick("onCreateVATInvoiceClick") // JavaScript function to trigger the popup
                 .ElementAttr(new { @class = "bold-button" })
                 )
     </div>

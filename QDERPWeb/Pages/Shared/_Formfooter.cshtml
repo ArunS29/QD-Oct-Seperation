@@ -395,9 +395,28 @@
                         .DropDownOptions(o => o.Width(220))
                         .Items(items =>
                         {
-                            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
-                            items.Add().Text("Preview Format 2").Icon("textdocument");
+                            items.Add()
+                                .Text(new JS("formatMessage('Preview Format 1')"))
+                                .Option("color", "#EA4335") // Red
+                                .Icon("textdocument");
+
+                            items.Add()
+                                .Text(new JS("formatMessage('Preview Format 2')"))
+                                .Option("color", "#34A853") // Green
+                                .Icon("textdocument");
                         })
+                        .ItemTemplate(@<text>
+                            <div class="custom-dropdown-item">
+                                <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                                <div class="item-content">
+                                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                                    <div>
+                                        <div class="item-title"><%- text %></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </text>)
+
                         .OnItemClick("handlePreviewClick"))
 
             @(Html.DevExtreme().Button()

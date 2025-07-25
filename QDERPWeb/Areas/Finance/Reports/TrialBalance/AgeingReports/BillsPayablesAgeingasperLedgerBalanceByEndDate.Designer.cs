@@ -1750,11 +1750,11 @@
             this.xrLabel12.BorderWidth = 2F;
             this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel12.ForeColor = System.Drawing.Color.DimGray;
-            this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(885.4108F, 0F);
+            this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(885.4109F, 0F);
             this.xrLabel12.Multiline = true;
             this.xrLabel12.Name = "xrLabel12";
             this.xrLabel12.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel12.SizeF = new System.Drawing.SizeF(93.39734F, 58.625F);
+            this.xrLabel12.SizeF = new System.Drawing.SizeF(94.39703F, 58.625F);
             this.xrLabel12.StyleName = "DetailCaption1";
             this.xrLabel12.StylePriority.UseBackColor = false;
             this.xrLabel12.StylePriority.UseBorderColor = false;
@@ -1781,7 +1781,7 @@
             this.xrLabel13.Multiline = true;
             this.xrLabel13.Name = "xrLabel13";
             this.xrLabel13.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel13.SizeF = new System.Drawing.SizeF(93.39728F, 58.625F);
+            this.xrLabel13.SizeF = new System.Drawing.SizeF(94.39728F, 58.625F);
             this.xrLabel13.StyleName = "DetailCaption1";
             this.xrLabel13.StylePriority.UseBackColor = false;
             this.xrLabel13.StylePriority.UseBorderColor = false;
@@ -1808,7 +1808,7 @@
             this.xrLabel15.Multiline = true;
             this.xrLabel15.Name = "xrLabel15";
             this.xrLabel15.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel15.SizeF = new System.Drawing.SizeF(106.7309F, 58.625F);
+            this.xrLabel15.SizeF = new System.Drawing.SizeF(104.7308F, 58.625F);
             this.xrLabel15.StyleName = "DetailCaption1";
             this.xrLabel15.StylePriority.UseBackColor = false;
             this.xrLabel15.StylePriority.UseBorderColor = false;
@@ -1831,11 +1831,11 @@
             this.xrLabel22.BorderWidth = 2F;
             this.xrLabel22.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel22.ForeColor = System.Drawing.SystemColors.WindowFrame;
-            this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(1178.936F, 0F);
+            this.xrLabel22.LocationFloat = new DevExpress.Utils.PointFloat(1176.936F, 0F);
             this.xrLabel22.Multiline = true;
             this.xrLabel22.Name = "xrLabel22";
             this.xrLabel22.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
-            this.xrLabel22.SizeF = new System.Drawing.SizeF(80.06372F, 58.625F);
+            this.xrLabel22.SizeF = new System.Drawing.SizeF(82.06372F, 58.625F);
             this.xrLabel22.StyleName = "DetailCaption1";
             this.xrLabel22.StylePriority.UseBackColor = false;
             this.xrLabel22.StylePriority.UseBorderColor = false;

@@ -104,11 +104,11 @@
         display: none;
     }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="ClientStatusUpdate" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div class="form-container">
 
 
@@ -211,19 +211,21 @@
             .OnKeyDown("onKeyDown")
             //.OnValueChanged("dropDownBoxValueChanged")
             .ContentTemplate(new TemplateName("GetStatusContentTemplate"))
-            )
-
-
-        <div class="plus-btn-wrapper">
-            @(Html.DevExtreme().Button()
-                .ID("btnAddStatus")
+            .Buttons(buttons =>
+            {
+                buttons.Add()
+                .Name("btnAddStatus")
+                .Location(TextEditorButtonLocation.After)
+                .Widget(w => w.Button()
+                .Type(ButtonType.Default)
                 .Icon("plus")
-                .Width("60")
                 .Hint(new JS("formatMessage('Add New Status')"))
-                .ElementAttr(new { @class = "inline-plus-button dx-button-mode-contained dx-button-normal" })
-                .OnClick("redirectToClientStatusCode")
-                )
-        </div>
+                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                .OnClick("redirectToClientStatusCode"));
+                buttons.Add()
+                .Name("dropDown");
+            }))
+        </div>  
     </div>
 
     <div class="  form-group-row " style="width:49.5%;">
@@ -237,11 +239,11 @@
             .DisplayFormat("dd-MMM-yyyy")
               )
     </div>
-    <div class="toolbar-buttons">
-        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("save").OnClick("saveOrUpdateClientStatus"))
-        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("save").OnClick("onSaveAndClose"))
-        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash").OnClick("onDeleteClient"))
-        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("back").OnClick("onBackToList"))
+    <div class="footer-fixed">
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save").OnClick("saveOrUpdateClientStatus"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).ElementAttr(new { @class = "dx-button-custom btn-save-close" }).Icon("save").OnClick("onSaveAndClose"))
+        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("back").ElementAttr(new { @class = "dx-button-custom btn-back" }).OnClick("onBackToList"))
     </div>
 
     @using (Html.DevExtreme().NamedTemplate("GetStatusContentTemplate"))
@@ -318,7 +320,7 @@
 <script>
     function redirectToClientStatusCode() {
         let url = `/${tenantName}/IMS/ClientStatusCode`;
-        let title = "";
+          let title = "Client Status";
         openModal(url, title);
         refreshClientCategorySelectBox()
     }
@@ -383,26 +385,26 @@
             }
         });
     }
-    $(function () {
-        $("#ClientStatusUpdate").dxTextBox({
-            text: formatMessage("Client Status Update"),
-            readOnly: true,
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textbox-heading");
-            }
-        });
-    });
+    // $(function () {
+    //     $("#ClientStatusUpdate").dxTextBox({
+    //         text: formatMessage("Client Status Update"),
+    //         readOnly: true,
+    //         onContentReady: function (e) {
+    //             $(e.element).addClass("dx-textbox-heading");
+    //         }
+    //     });
+    // });
     function onSaveClient() {
         debugger;
         DevExpress.ui.notify("Client Saved", "success", 1000);
     }
 
-    function onSaveAndClose() {
-           const statusValue = $("#GetStatusDropDown").dxDropDownBox("instance").option("value");
+       function onSaveAndClose() {
+        const statusValue = $("#GetStatusDropDown").dxDropDownBox("instance").option("value");
 
         // ✅ Check if Status is selected
         if (!statusValue) {
-              DevExpress.ui.notify("Status is required", "error", 2000);
+            DevExpress.ui.notify("Status is required", "error", 2000);
             return;
         }
 
@@ -411,14 +413,15 @@
             ReportedBy: $("#reportedBy").dxTextBox("instance").option("value"),
             ReportedOn: $("#reportedOn").dxDateBox("instance").option("value"),
             StatusRemarks: $("#reportRemarks").dxTextArea("instance").option("value"),
-            Status: $("#GetStatusDropDown").dxDropDownBox("instance").option("value"),
+            Status: statusValue,
             FollowupOn: $("#followUpOn").dxDateBox("instance").option("value")
         };
 
-             // Only include ClientStatusNo if it's a valid number greater than 0 (i.e. update)
-         if (!isNaN(parsedStatusNo) && parsedStatusNo > 0) {
-             data.ClientStatusNo = parsedStatusNo;
-         }
+        // ✅ Parse ClientStatusNo if exists
+        const parsedStatusNo = parseInt($("#statusId").dxTextBox("instance").option("value"));
+        if (!isNaN(parsedStatusNo) && parsedStatusNo > 0) {
+            data.ClientStatusNo = parsedStatusNo;
+        }
 
         $.ajax({
             url: '/api/ClientStatusUpdate/SaveOrUpdateClientStatusUpdate',
@@ -429,9 +432,10 @@
                 if (res.success) {
                     DevExpress.ui.notify(res.message, "success", 3000);
 
+                    // Set returned status ID
                     $("#statusId").dxTextBox("instance").option("value", res.lastClientStatusNo);
 
-                    // Refresh parent DataGrid with fresh data
+                    // Reload parent grid
                     if (window.parent && typeof window.parent.loadClientStatusGrid === "function") {
                         const clientCode = $("#GetClientDropDown").dxDropDownBox("instance").option("value");
                         if (clientCode) {
@@ -439,7 +443,7 @@
                         }
                     }
 
-                    // Close modal after a small delay to ensure grid refresh completes
+                    // Close modal after short delay
                     setTimeout(() => {
                         if (window.parent && typeof window.parent.closeModal === "function") {
                             window.parent.closeModal();
@@ -451,10 +455,11 @@
                 }
             },
             error: function (err) {
-                DevExpress.ui.notify("Save or update failed: " + err.responseText, "error", 3000);
+                DevExpress.ui.notify("Save or update failed: " + (err.responseText || err.statusText), "error", 3000);
             }
         });
     }
+
 
 
 
