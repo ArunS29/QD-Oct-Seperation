@@ -718,6 +718,65 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetItemSubGroup()
+        {
+            try
 
+
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var QuoteGroup = await dbContext.Tbl60107quotationChildItemGroups
+                       .Select(s => new
+                       {
+                           s.QuoteGroupItemSlNo,
+                           s.GroupName,
+                           s.GroupRemarks
+
+                       })
+                        .ToListAsync();
+
+                    return Json(QuoteGroup); // return raw data, paging/sorting done on client-side
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading data.", details = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata1(long QuoteChildId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (QuoteChildId == 0)
+                    return BadRequest("QuoteChildId is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Qry60102quotationChildren
+                        .Where(c => c.QuoteChildId == QuoteChildId)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
