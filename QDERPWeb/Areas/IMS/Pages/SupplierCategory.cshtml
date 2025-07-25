@@ -138,12 +138,12 @@
 
 </style>
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="SupplierCategory" class="no-border-title"></div>
     </div>
-</div>
-<div class="content-container-top" style="padding:20px;">
+</div> *@
+<div class="content-container-top" style="padding:10px;">
     <div class="form-group">
 
         @(
@@ -162,12 +162,13 @@
     </div>
 
     <div class="col-md-8">
-        <div class="form-group">
+        <div class="form-group" style="display:flex; gap:500px; width:150%; align-items:end; justify-content:space-between;">
             @(
                 Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Supplier Category Code:')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ID("txtCategoryCode")
+                .Width("100%")
                 .Value(null)
                         .ValidationRules(rules =>
                         {
@@ -175,28 +176,19 @@
                             .Message(new JS("formatMessage('Category Code is required')"));
                         })
                 )
+            @(Html.DevExtreme().Button()
+                        .ID("btnadd")
+                        .Text(new JS("formatMessage('ADD')"))
+                        .Height(40)
+                        .Width(178)
+                        .Icon("plus")
+                        .OnClick("function() { adddivmaster(); }")
+                        .ElementAttr(new { @class = "dx-button-add" })
+                        )
         </div>
     </div>
     <br />  
-    <div class="col-md-4">
-        <div class="form-group">
-            @(Html.DevExtreme().Button()
-                .ID("btnadd")
-                .Text(new JS("formatMessage('ADD')"))
-                .Height(40)
-                .Width(178)
-                .Icon("plus")
-                .OnClick("function() { adddivmaster(); }")
-                .ElementAttr(new { @class = "dx-button-add" })
-                )
-        </div>
-
-
-    </div>
-
     <div id="gridContainer"></div>
-
-
     <div id="gridContainer"></div>
     <br />
     <div class="form-group">
@@ -460,7 +452,7 @@
                 rowRenderingMode: "virtual", // Optimizes row rendering
                 useNative: true // Use native scrolling for better performance
             },
-            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            height: "60vh", // Set a fixed height for the grid (this helps in showing vertical scrollbar)
             width: "100%" // Make grid responsive and take full width of the container
         });
     });

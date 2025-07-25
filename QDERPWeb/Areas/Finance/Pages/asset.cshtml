@@ -850,7 +850,7 @@ bottom: -13px !important;
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                         .HeaderFilter(filter => filter.Visible(true))
-                        .Height(250)
+                        .Height("45vh")
                         .ColumnAutoWidth(true)
                         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -945,7 +945,7 @@ bottom: -13px !important;
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                         .HeaderFilter(filter => filter.Visible(true))
-                        .Height(250)
+                        .Height("45vh")
                         .ColumnAutoWidth(true)
                         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -1043,7 +1043,7 @@ bottom: -13px !important;
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                         .HeaderFilter(filter => filter.Visible(true))
-                        .Height(250)
+                        .Height("45vh")
                         .ColumnAutoWidth(true)
                         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -1105,6 +1105,18 @@ bottom: -13px !important;
 
     </div>
 
+@*                <div class="footer-fixed" style="display:flex;">
+                    <div class="col-md-1">
+                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("updateAsset"))
+                    </div>
+                    <div class="col-md-1">
+                      @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).Icon("save").OnClick("onSaveAndClose"))
+                    </div>
+                    <div class="col-md-1">
+                      @(Html.DevExtreme().Button().ID("btnBack").Text("Back").ElementAttr(new { @class = "dx-button-custom btn-back" }) .Icon("arrowleft").OnClick("goBackToAssetView"))
+                    </div>
+                </div>*@
+           
 <div class="form-container">
     <div class="footer-fixed">
         <div class="col-md-12">
@@ -1142,8 +1154,6 @@ bottom: -13px !important;
         </div>
     </div>
 </div>
-
-
 
 </div>
 
@@ -1679,9 +1689,6 @@ bottom: -13px !important;
             `/${tenantName}/Finance/AssetMaintanenceMaster`, // URL of the master form
             'popupWindow',
             'width=800,height=600,scrollbars=yes,resizable=yes'
-
-
-
         );
 
         // Monitor the popup window for closure
@@ -2077,7 +2084,7 @@ function redirectToAssetCategoryView() {
     }
      function redirectassetmaintanence() {
          let url = `/${tenantName}/Finance/AssetMaintanenceMaster`;
-        let title = "";
+        let title = "Asset Maintenance Master";
         openModal(url, title);
         refreshAssetMaintanenceSelectBox(); 
     }
