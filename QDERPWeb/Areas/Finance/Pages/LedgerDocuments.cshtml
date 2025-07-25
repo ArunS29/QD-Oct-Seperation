@@ -438,7 +438,6 @@
         </div>
     </div>
 
-    <!-- Bottom Button -->
     
 </div>
 
@@ -522,9 +521,20 @@
 
 
             columns: [
-                { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
 
-                    {
+                {
+                    caption: "S.No",
+                    width: 60,
+                    cellTemplate: function (container, options) {
+                        const rowIndex = options.rowIndex + 1;
+                        container.text(rowIndex);
+                    },
+                    allowSorting: false,
+                    allowFiltering: false
+                },
+                { dataField: "DocumentNo", caption: "Doc No", allowEditing: false, visible: false },
+
+                {
                     dataField: "FileUrl",
                     caption: "Document",
                     allowEditing: false,
@@ -791,6 +801,7 @@
 
 
     let selectedFiles = [];
+
     
     function setupDragDrop() {
         const dropZone = document.getElementById("dropZone");
@@ -847,8 +858,8 @@
     }
     let isHandlingFiles = false;
 
-    async function handleFiles(files) {
-        if (isHandlingFiles) return; // ⛔ prevent re-entry
+       async function handleFiles(files) {
+        if (isHandlingFiles) return;
         isHandlingFiles = true;
 
         try {
@@ -868,7 +879,6 @@
             if (validFiles.length === 0) return;
 
             const docNos = await getNewDocumentNos(validFiles.length);
-
             if (!docNos || docNos.length !== validFiles.length) {
                 DevExpress.ui.notify("Document number mismatch", "error", 3000);
                 return;
@@ -888,7 +898,7 @@
             console.error("DocumentNo generation failed:", err);
             DevExpress.ui.notify("Failed to generate document numbers.", "error", 3000);
         } finally {
-            isHandlingFiles = false; // ✅ Reset
+            isHandlingFiles = false;
         }
     }
 
