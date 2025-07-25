@@ -32,10 +32,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Register
             InitializeComponent();
             SetReportParameters(accountGroup, frmDate, toDate, tenantName, company_Name, company_address, logoImage, Company_Name_Ar, company_address_arb, isUseEffectiveDate);
             LoadCurrencySymbolAndImage();
+            sqlDataSource1.ConnectionOptions.CommandTimeout = 320;
             try
             {
                 sqlDataSource1.Fill();
-
+                sqlDataSource1.ConnectionOptions.CommandTimeout = 320;
                 // Apply filter after data load
                 if (!string.IsNullOrWhiteSpace(accountGroup))
                 {

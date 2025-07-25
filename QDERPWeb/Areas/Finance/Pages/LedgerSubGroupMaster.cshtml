@@ -97,6 +97,20 @@
     }
 
     }
+
+    .arabic-icon-inside {
+        position: absolute;
+        right: 10px;
+        bottom: 10px;
+        font-size: 16px;
+        color: #007bff;
+        z-index: 10;
+    }
+
+        .arabic-icon-inside:hover {
+            transform: scale(1.2);
+            color: #0056b3;
+        }
 </style>
 
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -120,17 +134,31 @@
                         )
         </div>
 
-        <!-- Sub Group Name (Arabic) -->
-        <div class="form-group col-lg-5 col-md-5 col-sm-12">
-            @(
-                        Html.DevExtreme().TextBox()
-                        .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
-                        .LabelMode(EditorLabelMode.Floating)
-                        .ID("txtSubGroupNameAr")
-                        .Value(null)
-                        )
+         <div class="form-group col-lg-4 col-md-6 col-sm-4 position-relative">
+          
+                <div style="flex-grow: 1;">
+                    @(
+                                        Html.DevExtreme().TextBox()
+                                        .Label(new JS("formatMessage('Sub Group Name (Arabic)')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .ID("txtSubGroupNameAr")
+                                        .Value(null)
+                                        )
+                <i class="fas fa-language arabic-icon-inside"
+                   onclick="convertToArabic()"></i>
+                </div>
+                @* <div>
+                    @(Html.DevExtreme().Button()
+                                        .ID("convertToArabic1")
+                                        .Width(45)
+                                        .Height(33)
+                                        .Icon("fas fa-language")
+                                        .ElementAttr(new { @class = "input-button" })
+                                        .OnClick("function() { convertToArabic(); }")
+                                        )
+                </div> *@
+       
         </div>
-
         <!-- Add Button -->
         <div class="form-group col-lg-2 col-md-2 col-sm-12 d-flex">
             @(
@@ -156,6 +184,54 @@
 </div>
 
 <script type="text/javascript">
+     async function convertToArabic() {
+
+        // Get the TextBox1 (input) instance
+
+        const textBox1Instance = $("#txtSubGroupName").dxTextBox("instance");
+
+        // Get the TextBox2 (output) instance
+
+        const textBox2Instance = $("#txtSubGroupNameAr").dxTextBox("instance");
+
+        // Ensure both instances are initialized
+
+        if (!textBox1Instance || !textBox2Instance) {
+
+            console.error("TextBox instances are not properly initialized.");
+
+            return;
+
+        }
+
+
+        // Get the value from TextBox1
+
+        const englishText = textBox1Instance.option("value");
+
+        // Validate input
+
+        if (!englishText || englishText.trim() === "") {
+
+            alert("Please enter text to translate.");
+
+            return;
+
+        }
+
+        // Perform translation
+
+        const arabicTranslation = await translateToArabic(englishText);
+
+        // Update TextBox2 with the Arabic translation
+
+        textBox2Instance.option("value", arabicTranslation);
+
+    }
+
+
+
+
 
     $(function () {
         $("#LedgerSubGroupMaster").dxTextBox({
