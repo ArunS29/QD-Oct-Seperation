@@ -7475,35 +7475,29 @@
 
 	function onCreateVATInvoiceClick() {
 		let invoiceNo = $('#InvoiceNo').dxTextBox("instance").option("value");
-		let invoiceIssuedDate = $('#InvoiceIssuedDateTime').dxTextBox("instance").option("value");
-
+		  let invoiceIssuedDate = $('#InvoiceIssuedDateTime').dxDateBox("instance").option("value");
+		  debugger;
 		if (!invoiceNo) {
 			alert("Invoice number is not set.");
 			return;
 		}
 
 		let proformaInvoiceNo = invoiceNo; // Assuming InvoiceNo = ProformaInvoiceNo
-
+		let IsEdit=true;
 		$.ajax({
-			url: `/${tenantName}/VAT/CreateVATInvoice`,
+			   url: '/api/VATModule/CreateVATInvoice',
 			type: "POST",
 			contentType: "application/json",
 			data: JSON.stringify({
-				ProformaInvoiceNo: proformaInvoiceNo,
-				InvoiceDate: invoiceIssuedDate
+				  ProformaInvoiceNo: proformaInvoiceNo,
+				  ProformaInvoiceDate: invoiceIssuedDate
 			}),
 			success: function (response) {
 				if (response.success) {
 					let newInvoiceNo = response.toInvoiceNo;
 					alert("Invoice created successfully: " + newInvoiceNo);
 
-					// Optional: redirect or open edit page
-					const params = new URLSearchParams({
-						InvoiceNo: newInvoiceNo,
-						IsEditflag: true,
-						modal: true
-					});
-					const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?${params.toString()}`;
+					const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 					window.location.href = url;
 				} else {
 					alert("Failed: " + response.message);
@@ -7666,5 +7660,8 @@
 			textBox.option("value", "");
 		}
 	}
+
+
+
 </script>
 
