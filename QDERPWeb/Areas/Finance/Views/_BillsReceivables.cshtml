@@ -50,6 +50,11 @@
         }
     }
 }
+<style>
+    .footer-fixed{
+        bottom:0px!important;
+    }
+</style>
 <div class="content-container-top" style="background-color:#909ead00;" >
 <div class="title">
     <div class="header-container">
@@ -314,7 +319,7 @@
 
             )
     </div>
-    <div>
+    <div class="footer-fixed">
         @await Html.PartialAsync("_BPRFooter")
     </div>
    

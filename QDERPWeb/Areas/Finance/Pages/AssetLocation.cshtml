@@ -12,7 +12,7 @@
 <style type="text/css">
     .card-container {
         background-color: white;
-        padding: 20px;
+        padding: 0px 20px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
@@ -67,12 +67,30 @@
         align-items: end;
         justify-content: flex-start;
         gap: 0px;
+        padding-bottom:20px;
     }
+
+    .footer-fixed {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        padding: 10px 20px;
+        border-top: 1px solid #ccc;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
 </style>
-<div class="title">
-    <div class="header-container">
-        <div id="AssetLocationManagement" class="no-border-input"></div>
+
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+
+        <i class="fas fa-map-marker-plus"></i>
     </div>
+    <h3 class="card-title-text">Asset Location Management</h3>
 </div>
 <div class="content-container-top">
     <div class="container4">
@@ -114,6 +132,14 @@
 
     </div>
     </div>
+</div>
+<div class="footer-fixed">
+    <button id="btnUpdate" class="btn btn-primary">
+        <i class="dx-icon-save"></i> Update
+    </button>
+    <button id="btnBack" class="btn btn-secondary">
+        <i class="dx-icon-arrowleft"></i> Back
+    </button>
 </div>
 
 <script type="text/javascript">
@@ -230,7 +256,7 @@ $(function () {
                 allowUpdating: true,  // Allow cell updates
                 allowAdding: false,   // No new rows
                 allowDeleting: true,  // Allow row deletion
-                useIcons: true, // Use icons for save/cancel
+                useIcons: false, // Use icons for save/cancel
                 texts: {
                     saveAll: "Update", // Custom text for save button
                     cancelAll: "Cancel All Changes" // Custom text for cancel button
@@ -302,33 +328,7 @@ $(function () {
                 visible: false,
                 applyFilter: "auto"
             },
-            toolbar: {
-                items: [
-                    {
-                        widget: "dxButton",
-                        options: {
-                            icon: "save",  // Icon for the Save button
-                            text: "Update",  // Text alongside the icon
-                            onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
-                            }
-                        },
-                        location: "after"
-                    },
-                  
-                    {
-                        widget: "dxButton", // Add the Back button
-                        options: {
-                            icon: "arrowleft", // You can choose another icon if you'd like
-                            text: "Back",
-                            onClick: function () {
-                                window.parent.closeModal(); // This closes the current window/tab
-                            }
-                        },
-                        location: "after"
-                    }
-                ]
-            },
+           
             onRowUpdated: function (e) {
                 // Show SweetAlert when a row is updated
                 Swal.fire({
@@ -417,4 +417,14 @@ $(function () {
                     DevExpress.ui.notify("Please fill required details!", "error", 2000);
         }
     }
+
+
+        $("#btnUpdate").on("click", function () {
+        $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all edits
+    });
+
+    $("#btnBack").on("click", function () {
+        window.parent.closeModal();  // Close modal
+    });
+
 </script>

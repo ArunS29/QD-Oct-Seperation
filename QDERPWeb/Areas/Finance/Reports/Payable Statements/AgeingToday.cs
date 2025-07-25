@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Drawing;
+using System.IO;
 using System.Text;
 using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
@@ -27,13 +28,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             string companyNameAr,
             string companyAddressArb,
             string username,
-            TenantDbContextHelper tenantDbContextHelper // ✅ Use helper instead of connection string
+            TenantDbContextHelper tenantDbContextHelper
         )
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb,username);
-            ConfigureDataSource(accountId); // ✅ Dynamically configure based on tenant
+            SetReportParameters(accountId, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressArb, username);
+            ConfigureDataSource(accountId, toDate); // ✅ include toDate for stored procedure
             LoadCurrencySymbolAndImage();
         }
 
@@ -42,8 +43,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             InitializeComponent();
         }
 
-        private void ConfigureDataSource(string accountId)
+        private void ConfigureDataSource(string accountId, DateTime toDate)
         {
+            // ✅ Step 1: Execute Stored Procedure First
+            ExecuteAgeingStoredProcedure(toDate);
+
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
 
@@ -65,13 +69,29 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             sqlDataSource1.Queries.Clear();
             sqlDataSource1.Queries.Add(query);
-
-            sqlDataSource1.RebuildResultSchema(); // Optional
-            sqlDataSource1.Fill(); // Important
+            sqlDataSource1.RebuildResultSchema();
+            sqlDataSource1.Fill();
 
             this.DataSource = sqlDataSource1;
-          this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
-           //his.DataMember = "";
+            this.DataMember = "qry205_017AgeingBillsPayableWtColumns";
+        }
+
+        private void ExecuteAgeingStoredProcedure(DateTime endDate)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                throw new Exception("Unable to get tenant context for stored procedure.");
+
+            using (var connection = new SqlConnection(tenant.ConnectionString))
+            {
+                connection.Open();
+                using (var command = new SqlCommand("sp20125AgeingPayableReports", connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
+            }
         }
 
         private void SetReportParameters(
@@ -114,6 +134,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string), false);
             AddOrUpdateParameter("CompanyAddressArb", companyAddressArb ?? "", typeof(string), false);
             AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
                 tenantLabel.Text = tenantName;
 
@@ -128,13 +149,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
             if (FindControl("xrLabelCompanyAddressArb", true) is XRLabel addressArbLabel)
                 addressArbLabel.Text = companyAddressArb;
+
             if (FindControl("xrLabelUserName", true) is XRLabel userLabel)
                 userLabel.Text = username;
-
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox && logoImage != null)
                 logoPictureBox.Image = logoImage;
         }
+
         private void LoadCurrencySymbolAndImage()
         {
             try
@@ -152,31 +174,24 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 using (var connection = new SqlConnection(connectionString))
                 {
                     connection.Open();
-
                     string sql = $@"
                         SELECT c.CurrencyImage, c.CurrencySymbol
                         FROM {tenant.schemaname}.tbl901CompanyDetails AS c
-                        INNER JOIN dbo.fn_GetDefaultCompanyDetails() AS f
-                            ON c.CompanyId = f.CompanyId";
+                        INNER JOIN dbo.fn_GetDefaultCompanyDetails() AS f ON c.CompanyId = f.CompanyId";
 
                     using (var command = new SqlCommand(sql, connection))
+                    using (var reader = command.ExecuteReader())
                     {
-                        using (var reader = command.ExecuteReader())
+                        if (reader.Read())
                         {
-                            if (reader.Read())
-                            {
-                                svgText = reader["CurrencyImage"]?.ToString()?.Trim('\uFEFF');
-                                currencySymbol = reader["CurrencySymbol"]?.ToString()?.Trim();
-                            }
+                            svgText = reader["CurrencyImage"]?.ToString()?.Trim('\uFEFF');
+                            currencySymbol = reader["CurrencySymbol"]?.ToString()?.Trim();
                         }
                     }
                 }
 
-                // Set currency symbol to label
                 if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel && !string.IsNullOrEmpty(currencySymbol))
-                {
                     currencyLabel.Text = currencySymbol;
-                }
 
                 if (string.IsNullOrWhiteSpace(svgText))
                 {
@@ -193,10 +208,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                         bitmap = svgDoc.Draw();
                     }
                 }
-                catch
-                {
-                    bitmap = null;
-                }
+                catch { bitmap = null; }
 
                 if (bitmap == null)
                 {
@@ -214,12 +226,14 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                         pictureBox.Sizing = ImageSizeMode.Normal;
                     }
                 }
+                AlignCurrencyWithAmount(bitmap);
             }
             catch
             {
                 SetCurrencyImageNull();
             }
         }
+
         private void SetCurrencyImageNull()
         {
             string[] pictureBoxNames = { "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9" };
@@ -234,8 +248,70 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             }
 
             if (FindControl("xrLabelCurrencySymbol", true) is XRLabel currencyLabel)
-            {
                 currencyLabel.Text = "";
+        }
+
+        private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
+        {
+            var fixedPictureBoxes = new[] {"xrPictureBox13", "xrPictureBox14", "xrPictureBox12S" };
+            foreach (var name in fixedPictureBoxes)
+            {
+                if (FindControl(name, true) is XRPictureBox picBox)
+                {
+                    picBox.Image = bitmap;
+                    picBox.Sizing = ImageSizeMode.StretchImage;
+                    picBox.WidthF = iconSize;
+                    picBox.HeightF = iconSize;
+                }
+            }
+            var pairs = new[]
+            {
+
+
+    new { Label = "xrLabel5",  Picture = "xrPictureBox2" },
+    new { Label = "xrLabel7",  Picture = "xrPictureBox4" },
+    new { Label = "xrLabel6",  Picture = "xrPictureBox5" },
+
+};
+
+            foreach (var p in pairs)
+            {
+                var label = FindControl(p.Label, true) as XRLabel;
+                var pictureBox = FindControl(p.Picture, true) as XRPictureBox;
+
+                if (label == null || pictureBox == null)
+                    continue;
+
+                pictureBox.Image = bitmap;
+                pictureBox.Sizing = ImageSizeMode.StretchImage;
+
+                label.BeforePrint += (s, e) =>
+                {
+                    var lbl = (XRLabel)s;
+
+                    using (var g = Graphics.FromImage(new Bitmap(1, 1)))
+                    using (var sysFont = new Font(lbl.Font.Name, lbl.Font.Size, (FontStyle)(int)lbl.Font.Style))
+                    {
+                        float iconHeight = lbl.Font.Size + 0.2f;// Match icon to font height
+                        float iconWidth = iconHeight;            // Keep square
+
+                        pictureBox.WidthF = iconWidth;
+                        pictureBox.HeightF = iconHeight;
+
+                        float posY = lbl.LocationF.Y + (lbl.HeightF - iconHeight) / 2f;
+
+                        var format = StringFormat.GenericTypographic;
+                        format.FormatFlags |= StringFormatFlags.MeasureTrailingSpaces;
+
+                        float textWidth = g.MeasureString(lbl.Text ?? "", sysFont, int.MaxValue, format).Width;
+                        float spaceWidth = g.MeasureString(" ", sysFont).Width;
+
+                        float rightEdge = lbl.LocationF.X + lbl.WidthF;
+                        float posX = rightEdge - textWidth - iconWidth - 5f - spaceWidth;
+
+                        pictureBox.LocationF = new PointF(posX, posY);
+                    }
+                };
             }
         }
 
