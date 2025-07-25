@@ -409,13 +409,29 @@
                 <div style="flex: 1; direction: rtl;">
 
 
-                    @(Html.DevExtreme().TextBox()
-                    .ID("ar_CompanyID")
-                    .Label("هوية الشركة")
-                    .LabelMode(EditorLabelMode.Floating)
-                    .ReadOnly(true)
-                    .StylingMode(EditorStylingMode.Outlined)
-                    .Width("100%"))
+                   
+
+
+
+                        <div style="direction: rtl; display:flex; align-items:end;">
+                            @(Html.DevExtreme().TextBox()
+                             .ID("ar_CompanyID")
+                             .Label("هوية الشركة")
+                             .LabelMode(EditorLabelMode.Floating)
+                             .ReadOnly(true)
+                             .StylingMode(EditorStylingMode.Outlined)
+                             .Width("100%"))
+
+                            @(Html.DevExtreme().Button()
+                             .ID("ar_CompanyButton")
+                             .Height(30)
+                             .Icon("fas fa-language")
+                             .OnClick("function() { translateFieldToArabic('CompanyID', 'ar_CompanyID'); }")
+                                                    )
+
+                        </div>
+
+
 
                     <div style="direction: rtl; display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
@@ -555,13 +571,28 @@
                             .Width("100%")
                             .Height(80))
 
-                            <!-- Full Address Arabic -->
-                            @(Html.DevExtreme().TextBox()
-                            .ID("FullAddressArabic")
-                            .Label("Full Address (Arabic)")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                            .Height(80))
+
+
+                                <div style="direction: rtl; display:flex; align-items:end;">
+                                    @(Html.DevExtreme().TextBox()
+                                      .ID("FullAddressArabic")
+                                      .Label("Full Address (Arabic)")
+                                      .LabelMode(EditorLabelMode.Floating)
+                                      .ReadOnly(true)
+                                      .StylingMode(EditorStylingMode.Outlined)
+                                      .Width("100%"))
+
+                                    @(Html.DevExtreme().Button()
+                                     .ID("FullAddressArabicButton")
+                                     .Height(30)
+                                     .Icon("fas fa-language")
+                                     .OnClick("function() { translateFieldToArabic('FullAddress', 'FullAddressArabic'); }")
+                                                                    )
+
+                                </div>
+
+
+
                         </div>
                         <div id="CompanyLogoPreview" class="preview-box" oncontextmenu="triggerUpload('CompanyLogoInput'); return false;">
                             <span>No image data for logo</span>
@@ -638,8 +669,8 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("GroupVAT")
                         .Label("Group VAT No")
-                        .MaxLength(10)
-                        .Mask("0000000000")
+                        .MaxLength(15)
+                        .Mask("000000000000000")
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
 
@@ -1140,6 +1171,7 @@
 
         </text>);
                 })
+                .OnSelectionChanged("onTabChanged")
             )
     </div>
     <div style="margin: 10px; display: flex; justify-content:flex-start;">
@@ -1327,6 +1359,33 @@
                 return;
             }
 
+
+
+                 // Logo, Seal, LetterHead
+                if (company.CompanyLogo) {
+                    $("#CompanyLogoPreview").html(`<img src="data:image/png;base64,${company.CompanyLogo}" alt="Logo" style="max-width:100%; height:auto;">`);
+                } else {
+                    $("#CompanyLogoPreview").html(`<span>Right click to upload logo</span>`);
+                }
+                if (company.CompanySeal) {
+                    $("#CompanySealPreview").html(`<img src="data:image/png;base64,${company.CompanySeal}" alt="Seal" style="max-width:100%; height:auto;">`);
+                } else {
+                    $("#CompanySealPreview").html(`<span>Right click to upload seal</span>`);
+                }
+                if (company.LetterHead) {
+                    $("#imgBox1").html(`<img src="data:image/png;base64,${company.LetterHead}" alt="LetterHead" style="max-width:100%; height:auto;">`);
+                } else {
+                    $("#imgBox1").html(`<span>No Image Data</span>`);
+                }
+
+
+
+
+
+
+
+
+
             // English Fields
             $("#CompanyID").dxTextBox("instance").option("value", company.CompanyId);
             $("#CompanyName").dxTextBox("instance").option("value", company.CompanyName);
@@ -1380,28 +1439,86 @@
             $("#ar_Province").dxTextBox("instance").option("value", company.SellerProvinceAr);
             $("#ar_District").dxTextBox("instance").option("value", company.SellerNeighborhoodAr);
 
-            // Logo, Seal, LetterHead
-            if (company.CompanyLogo) {
-                $("#CompanyLogoPreview").html(`<img src="data:image/png;base64,${company.CompanyLogo}" alt="Logo" style="max-width:100%; height:auto;">`);
-            } else {
-                $("#CompanyLogoPreview").html(`<span>Right click to upload logo</span>`);
-            }
-            if (company.CompanySeal) {
-                $("#CompanySealPreview").html(`<img src="data:image/png;base64,${company.CompanySeal}" alt="Seal" style="max-width:100%; height:auto;">`);
-            } else {
-                $("#CompanySealPreview").html(`<span>Right click to upload seal</span>`);
-            }
-            if (company.LetterHead) {
-                $("#imgBox1").html(`<img src="data:image/png;base64,${company.LetterHead}" alt="LetterHead" style="max-width:100%; height:auto;">`);
-            } else {
-                $("#imgBox1").html(`<span>No Image Data</span>`);
-            }
+           
 
             updateNavButtons();
         }).fail(function (error) {
             DevExpress.ui.notify("Failed to load company details.", "error", 4000);
         });
     }
+
+
+        //for tab onchange of ID Details ,Obselete, Other//آخر
+        function onTabChanged(e) {
+            const addedItem = e.addedItems?.[0];
+            const selectedTabText = addedItem?.text;
+
+            if (!selectedTabText) return;
+
+            if (["ID Details", "Other//آخر"].includes(selectedTabText)) {
+                if (companyIds.length > 0) {
+                    loadCompanyDetail(companyIds[currentCompanyIndex]);
+                } else {
+                    $.getJSON("/api/CompanyDetails/GetAllCompanyIds", function (ids) {
+                        companyIds = ids || [];
+                        if (companyIds.length === 0) {
+                            DevExpress.ui.notify("No company records found.", "error", 3000);
+                            return;
+                        }
+                        currentCompanyIndex = 0;
+                        loadCompanyDetail(companyIds[0]);
+                    });
+                }
+            } else if (selectedTabText === "Obselete") {
+                if (companyIds.length > 0) {
+                    loadObseleteCompanyDetails(companyIds[currentCompanyIndex]);
+                } else {
+                    $.getJSON("/api/CompanyDetails/GetAllCompanyIds", function (ids) {
+                        companyIds = ids || [];
+                        if (companyIds.length === 0) {
+                            DevExpress.ui.notify("No company records found.", "error", 3000);
+                            return;
+                        }
+                        currentCompanyIndex = 0;
+                        loadObseleteCompanyDetails(companyIds[0]);
+                    });
+                }
+            }
+        }
+
+            //For data fetching to Obselete
+            function loadObseleteCompanyDetails(companyId) {
+            $.getJSON(`/api/CompanyDetails/GetAllCompanyDetails1?companyId=${companyId}`, function (data) {
+                const company = data.data?.[0];
+                if (!company) {
+                    DevExpress.ui.notify("No data found for Obselete tab", "warning", 3000);
+                    return;
+                }
+
+                
+                $("#CompanyID1").dxTextBox("instance").option("value", company.CompanyId);
+                $("#CompanyName1").dxTextBox("instance").option("value", company.CompanyName);
+                $("#StreetName1").dxTextBox("instance").option("value", company.StreetName);
+                $("#AdditionalAddress1").dxTextBox("instance").option("value", company.AdditionalAddress);
+                $("#ShortName1").dxTextBox("instance").option("value", company.ShortName);
+                    $("#CompanyCity").dxTextBox("instance").option("value", company.CompanyCity);
+
+                $("#CompanyID_Ar").dxTextBox("instance").option("value", company.CompanyId_Ar);
+                $("#CompanyName_Ar").dxTextBox("instance").option("value", company.CompanyNameAr);
+                $("#StreetName_Ar").dxTextBox("instance").option("value", company.StreetName_Ar);
+                $("#AdditionalAddress_Ar").dxTextBox("instance").option("value", company.AdditionalAddress_Ar);
+                $("#ShortName_Ar").dxTextBox("instance").option("value", company.CompanyShortNameAr_);
+                $("#CompanyCity_Ar").dxTextBox("instance").option("value", company.CompanyCityAr);
+
+            }).fail(function () {
+                DevExpress.ui.notify("Error loading Obselete company details", "error", 3000);
+            });
+        }
+
+
+
+
+
 
     // --- Save Handler ---
     function onSaveCompanyClick() {
@@ -1533,6 +1650,9 @@
             $(`#ar_${en}1`).on("click", function () { translateFieldToArabic(en, ar); });
         }
     });
+
+
+
         function onAttachmentButton(mus = "Musharaf"){
             console.log(mus);
         }
