@@ -13,7 +13,7 @@
     /* Card container styling (matching DivMaster) */
     .card-container {
         background-color: white; /* Light blue background similar to DivMaster */
-        padding: 20px;
+        padding: 0px 20px;
         border-radius: 8px;
         box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow for the card */
     }
@@ -27,6 +27,7 @@
         align-items: end;
         justify-content: flex-start;
         gap: 0px;
+        padding-bottom: 20px;
     }
     /* Textbox and DataGrid Row Styles */
     .dx-datagrid .dx-row {
@@ -106,6 +107,19 @@
     .playIcon {
         display: none;
     }
+
+    .footer-fixed {
+        position: fixed;
+        bottom: 0;
+        width: 100%;
+        background-color: #fff;
+        padding: 10px 20px;
+        border-top: 1px solid #ccc;
+        z-index: 1000;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
 </style>
 @* <div class="title">
     <div class="header-container">
@@ -160,6 +174,14 @@
             </div>
         </div>
     </div>
+</div>
+<div class="footer-fixed">
+    <button id="btnUpdate" class="btn btn-primary">
+        <i class="dx-icon-save"></i> Update
+    </button>
+    <button id="btnBack" class="btn btn-secondary">
+        <i class="dx-icon-arrowleft"></i> Back
+    </button>
 </div>
 <script type="text/javascript">
     $(function () {
@@ -307,33 +329,7 @@
                 visible: false,
                 applyFilter: "auto"
             },
-            toolbar: {
-                items: [
-                    {
-                        widget: "dxButton",
-                        options: {
-                            icon: "save",
-                            text: "Update",
-                            onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").saveEditData();
-                            }
-                        },
-                        location: "after"
-                    },
-                
-                    {
-                        widget: "dxButton", // Add the Back button
-                        options: {
-                            icon: "arrowleft", // You can choose another icon if you'd like
-                            text: "Back",
-                            onClick: function () {
-                                 window.parent.closeModal();// This closes the current window/tab
-                            }
-                        },
-                        location: "after"
-                    }
-                ]
-            },
+           
             onRowUpdated: function () {
                 Swal.fire({
                     icon: 'success',
@@ -452,6 +448,12 @@ function addAssetCategory() {
             });
         });
 
+                    $("#btnUpdate").on("click", function () {
+            $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all edits
+        });
 
+        $("#btnBack").on("click", function () {
+            window.parent.closeModal();  // Close modal
+        });
 
 </script>

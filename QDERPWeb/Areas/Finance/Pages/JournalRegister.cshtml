@@ -379,22 +379,22 @@
             </div>
         </div>
 
-        <!-- BALANCE -->
-        <div id="cardBalance" class="titleCard-card cool-blue">
-            <div class="header">Balance</div>
+        <div id="cardVoucher" class="titleCard-card cool-blue">
+            <div class="header">Total Vouchers</div>
             <div class="value-block">
                 <div class="value-slider">
-                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
-                    <span>0.00</span>
-                    <span>0.00</span>
+                    <span><i class="fa-solid fa-book"></i> 0</span>
+                    <span><i class="fa-solid fa-book"></i> 0</span>
+                    <span><i class="fa-solid fa-book"></i> 0</span>
+
                 </div>
             </div>
             <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
             @* <div class="bar"><span style="width:50%"></span></div> *@
             <div class="overlay">
-                <div class="detail">Verified: 0.00</div>
-                <div class="detail">Approved: 0.00</div>
-                <div class="detail">Posted: 0.00</div>
+                <div class="detail"><i class="fa-solid fa-book"></i> Today: 0</div>
+                <div class="detail"><i class="fa-solid fa-book"></i> This Week: 0</div>
+                <div class="detail"><i class="fa-solid fa-book"></i> This Month: 0</div>
             </div>
         </div>
 
@@ -631,8 +631,18 @@
                                    </text>)
                     .Visible(true);
                 columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+                    .HeaderCellTemplate(@<text>
+                                             <div class="debit-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                    </text>)
     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                 columns.AddFor(m => m.CrAmountTotal).Caption(new JS("formatMessage('Cr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
+                    .HeaderCellTemplate(@<text>
+                                             <div class="credit-header" style="font-weight: bold;">
+                                                 <%= column.caption %>
+                                             </div>
+                                         </text>)
     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
                 columns.AddFor(m => m.IsSubmittedToFinance).Caption(new JS("formatMessage('Is Submitted To Finance')")).Alignment(HorizontalAlignment.Center)
             .CellTemplate(@<text>
@@ -710,7 +720,9 @@
                         $(e.element).addClass("dx-textbox-heading");
                 }
                 });
+                    
         getJournalOnLoad();
+            
         var contextMenu = $("#contextMenu");
         var contextMenuContent = $("#contextMenuContent");
         // Apply the custom context menu plugin
@@ -1022,6 +1034,9 @@
             success: function (data) {
                 // Bind the data to the DataGrid
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                     injectCurrencyToCards();
+                        injectHeaderSVG();
+                     updateCards(data);
                 // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
             },
             error: function () {
@@ -1054,6 +1069,9 @@
             success: function (data) {
                 // Bind the data to the DataGrid
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                     injectCurrencyToCards();
+                        injectHeaderSVG();
+                             updateCards(data);
                 // DevExpress.ui.notify("Data fetched successfully", "success", 2000);
             },
             error: function () {
@@ -1154,6 +1172,9 @@
             success: function (data) {
                 // Bind the data to the DataGrid
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+                     injectHeaderSVG();
+                                injectCurrencyToCards();
+                                 updateCards(data);
                 DevExpress.ui.notify("Data fetched successfully", "success", 2000);
             },
             error: function () {
@@ -1286,6 +1307,181 @@
                 else if (height <= 60) classToAdd = "max-lines-2";
                 else if (height <= 90) classToAdd = "max-lines-4";
                 else classToAdd = "max-lines-8";
+    }
+
+        function injectHeaderSVG() {
+            $.ajax({
+                url: '/api/AccountingLedgers/GetCurrencyIcon',
+                type: 'GET',
+                success: function (response) {
+                    debugger;
+                    let svgIcon = response.Icon;
+                    if (!svgIcon) return;
+
+                    // Set default width/height for SVG if needed
+                    if (svgIcon.startsWith("<svg")) {
+                        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+                    } else {
+                        // If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+                        svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+                    }
+
+                    let $grid = $('#dataGrid');
+                    let gridInstance = $grid.dxDataGrid("instance");
+                    if (!gridInstance) return;
+
+                    $grid.find(".dx-header-row td").each(function () {
+                        const $cell = $(this);
+
+                        const $debitHeader = $(".debit-header");
+                        const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                        $debitHeader.data("original-text", debitText);
+                        $debitHeader.html(`
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                ${svgIcon}
+                                <span style="font-weight: bold;">${debitText}</span>
+                            </div>
+                        `);
+
+                        const $creditHeader = $(".credit-header");
+                        const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                        $creditHeader.data("original-text", creditText);
+                        $creditHeader.html(`
+                            <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                ${svgIcon}
+                                <span style="font-weight: bold;">${creditText}</span>
+                            </div>
+                        `);
+
+                        
+                    });
+                },
+                error: function (xhr) {
+                    console.error("Failed to load currency icon:", xhr.responseText);
+                }
+            });
+        }
+
+        function injectCurrencyToCards() {
+            $.ajax({
+                url: "/api/AccountingLedgers/GetCurrencyIcon",
+                method: "GET",
+                success: function (response) {
+                    debugger;
+                    if (!response || !response.Icon) return;
+
+                    const icon = response.Icon.trim();
+
+
+
+                    // Inject into Debit
+                    $('#cardDebit .value-slider span').each(function () {
+                        $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                    });
+
+                    // Inject into Credit
+                    $('#cardCredit .value-slider span').each(function () {
+                        $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                    });
+                },
+                error: function (err) {
+                    console.error("Failed to load currency icon:", err);
+                }
+            });
+        }
+            function updateCards(data) {
+                const now = new Date();
+
+                const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+                const thisWeekStart = new Date(today);
+                thisWeekStart.setDate(today.getDate() - today.getDay());
+                const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+
+                let totalDr = 0, totalCr = 0;
+                let todayDr = 0, weekDr = 0, monthDr = 0;
+                let todayCr = 0, weekCr = 0, monthCr = 0;
+
+                // For vouchers
+                const uniqueVoucherToday = new Set();
+                const uniqueVoucherWeek = new Set();
+                const uniqueVoucherMonth = new Set();
+
+                data.forEach(item => {
+                    if (!item.JournalEntryDate) return;
+
+                    const voucherDate = new Date(item.JournalEntryDate);
+                    const dateOnly = new Date(voucherDate.getFullYear(), voucherDate.getMonth(), voucherDate.getDate());
+
+                    const dr = parseFloat(item.DrAmountTotal || 0);
+                    const cr = parseFloat(item.CrAmountTotal || 0);
+
+                    totalDr += dr;
+                    totalCr += cr;
+
+                    // VoucherNo might be null or duplicated, handle uniquely
+                    const voucherNo = item.JournalRefNo;
+
+                    if (+dateOnly === +today) {
+                        todayDr += dr;
+                        todayCr += cr;
+                        if (voucherNo) uniqueVoucherToday.add(voucherNo);
+                    }
+
+                    if (dateOnly >= thisWeekStart && dateOnly <= today) {
+                        weekDr += dr;
+                        weekCr += cr;
+                        if (voucherNo) uniqueVoucherWeek.add(voucherNo);
+                    }
+
+                    if (dateOnly >= thisMonthStart && dateOnly <= today) {
+                        monthDr += dr;
+                        monthCr += cr;
+                        if (voucherNo) uniqueVoucherMonth.add(voucherNo);
+                    }
+                });
+
+                const format = num => num.toLocaleString(undefined, {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+
+                // ========== Update Total Debit Card ==========
+                $("#cardDebit .value-slider span").eq(0).html(format(todayDr));
+                $("#cardDebit .value-slider span").eq(1).html(format(weekDr));
+                $("#cardDebit .value-slider span").eq(2).html(format(monthDr));
+                $("#cardDebit .overlay .detail").eq(0).html(`Today: ${format(todayDr)}`);
+                $("#cardDebit .overlay .detail").eq(1).html(`This Week: ${format(weekDr)}`);
+                $("#cardDebit .overlay .detail").eq(2).html(`This Month: ${format(monthDr)}`);
+
+                // ========== Update Total Credit Card ==========
+                $("#cardCredit .value-slider span").eq(0).html(format(todayCr));
+                $("#cardCredit .value-slider span").eq(1).html(format(weekCr));
+                $("#cardCredit .value-slider span").eq(2).html(format(monthCr));
+                $("#cardCredit .overlay .detail").eq(0).html(`Today: ${format(todayCr)}`);
+                $("#cardCredit .overlay .detail").eq(1).html(`This Week: ${format(weekCr)}`);
+                $("#cardCredit .overlay .detail").eq(2).html(`This Month: ${format(monthCr)}`);
+
+                // ========== Update Total VoucherNo Card ==========
+                const totalTodayVouchers = uniqueVoucherToday.size;
+                const totalWeekVouchers = uniqueVoucherWeek.size;
+                const totalMonthVouchers = uniqueVoucherMonth.size;
+
+                $("#cardVoucher .value-slider span").eq(0).html(`<i class="fa-solid fa-book"></i> Today: ${totalTodayVouchers}`);
+                $("#cardVoucher .value-slider span").eq(1).html(`<i class="fa-solid fa-book"></i> This Week: ${totalWeekVouchers}`);
+                $("#cardVoucher .value-slider span").eq(2).html(`<i class="fa-solid fa-book"></i> This Month: ${totalMonthVouchers}`);
+
+                $("#cardVoucher .overlay .detail").eq(0).html(`<i class="fa-solid fa-book"></i> Today: ${totalTodayVouchers}`);
+                $("#cardVoucher .overlay .detail").eq(1).html(`<i class="fa-solid fa-book"></i> This Week: ${totalWeekVouchers}`);
+                $("#cardVoucher .overlay .detail").eq(2).html(`<i class="fa-solid fa-book"></i> This Month: ${totalMonthVouchers}`);
+        }
+
+
+        // Utility: check if two dates are the same (ignoring time)
+        function isSameDate(d1, d2) {
+            return d1.getFullYear() === d2.getFullYear() &&
+                   d1.getMonth() === d2.getMonth() &&
+                   d1.getDate() === d2.getDate();
+        }
 
                 $(".narration-cell").addClass(classToAdd);
             }
