@@ -2739,6 +2739,8 @@
 			function initializeDataGrid(rowData) {
 
 				let grid = $("#B2BdataGrid").dxDataGrid({
+					focusedRowEnabled: true,
+
 					dataSource: rowData,
 					keyExpr: "LineOrderNo",
 					// âœ… your columns, editing, dropdowns, and templates go here, unchanged
@@ -2828,7 +2830,12 @@
 													height: 300,
 
 													scrolling: { mode: "virtual" },
-
+													searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 300,
+										placeholder: "Search..."
+										},
 													columns: [
 														 { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
 															{ dataField: "GroupCode", caption: "Code", width: 80 },
@@ -2989,6 +2996,12 @@
 													height: 300, // âœ… Add fixed height to enable scrolling
 
 													scrolling: { mode: "virtual" },
+													searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 300,
+										placeholder: "Search..."
+										},
 
 													columns: [
 
@@ -3102,7 +3115,37 @@
 
 							},
 
-							{ dataField: "Descriptions", caption: "...", width: 50 },
+
+									{
+				dataField: "Descriptions",
+				caption: "...",
+				   cssClass: "center-header",
+				width: 90,
+				allowEditing: true,
+						cellTemplate: function (container, options) {
+
+
+						$("<div>").dxButton({
+							icon: "user", // Built-in DevExtreme icon
+							hint: "Edit IMS Details Description",
+							stylingMode: "text",
+
+							width: 60,
+								onClick: function () {
+							const gsCode = options.data.Gscode;
+						console.log("GSCode:", gsCode);
+							const MprchildSlNo = options.data.MprchildSlNo;
+
+						window.currentDescriptionCell = options;
+
+										let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
+						let title = "Details Description";
+
+						openModal(url, title);
+					}
+						}).appendTo(container);
+					}
+					},
 
 							{
 
@@ -3164,6 +3207,12 @@
 													height: 300,
 
 													scrolling: { mode: "virtual" },
+													searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 300,
+										placeholder: "Search..."
+										},
 
 													columns: [
 
@@ -3245,6 +3294,13 @@
 
 							{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
 							{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 },
+							{ dataField: "AddlDescription", visible: false },
+		{ dataField: "ItemReqPurpose", visible: false },
+		{ dataField: "ItemReqPriority", visible: false },
+		{ dataField: "ItemReqExpectedDate", visible: false },
+		{ dataField: "ItemRemarks", visible: false },
+			{ dataField: "DeliveryPeriod", visible: false },
+		{ dataField: "PlanNo", visible: false },
 							{
 		type: "buttons",
 		caption: "Delete",
@@ -3432,13 +3488,11 @@
 						height: 300,
 						scrolling: { mode: "virtual" },
 							searchPanel: { // optional: global search box
-													visible: true,
-													width: 250,
-													placeholder: "Search..."
-							},
-							filterRow: { // column-wise filters
-													visible: false,
-													applyFilter: "auto"
+						searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 300,
+										placeholder: "Search..."
 										},
 						columns: [
 							{ dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
@@ -3568,14 +3622,11 @@
 
 											scrolling: { mode: "virtual" },
 
-											searchPanel: { // optional: global search box
-													visible: true,
-													width: 250,
-													placeholder: "Search..."
-											},
-											filterRow: { // column-wise filters
-													visible: false,
-													applyFilter: "auto"
+											searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 300,
+										placeholder: "Search..."
 										},
 
 											columns: [
@@ -3689,32 +3740,34 @@
 						}
 
 					},
+	{
+				dataField: "Descriptions",
+				caption: "...",
+				   cssClass: "center-header",
+				width: 90,
+				allowEditing: true,
+						cellTemplate: function (container, options) {
+								// const quoteChildId = options.data.ItemNo;
+						$("<div>").dxButton({
+							icon: "user", // Built-in DevExtreme icon
+							hint: "Edit IMS Details Description",
+							stylingMode: "text",
 
-											{
-					dataField: "Descriptions",
-					caption: "...",
-					   cssClass: "center-header",
-					width: 90,
-					allowEditing: true,
-							cellTemplate: function (container, options) {
-							$("<div>").dxButton({
-								icon: "user", // Built-in DevExtreme icon
-								hint: "Edit IMS Details Description",
-								stylingMode: "text",
-								width: 60,
+							width: 60,
 								onClick: function () {
-									// Save context
-									window.currentDescriptionCell = options;
+							const gsCode = options.data.Gscode;
+						console.log("GSCode:", gsCode);
 
-										// Open modal
-										let url = `/${tenantName}/IMS/DetailsDescriptionMR`;
-									let title = "Details Description";
-									openModal(url, title , "60%","60%");
-								}
-							}).appendTo(container);
-						}
-						},
+						window.currentDescriptionCell = options;
 
+							let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
+						let title = "Details Description";
+
+						openModal(url, title);
+					}
+						}).appendTo(container);
+					}
+					},
 					{
 
 						dataField: "UnitRateMethod",
@@ -3775,14 +3828,11 @@
 											height: 300,
 
 											scrolling: { mode: "virtual" },
-												searchPanel: { // optional: global search box
-													visible: true,
-													width: 130,
-													placeholder: "Search..."
-											},
-											filterRow: { // column-wise filters
-													visible: false,
-													applyFilter: "auto"
+												searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 300,
+										placeholder: "Search..."
 										},
 
 											columns: [
@@ -3850,6 +3900,13 @@
 
 					{ dataField: "LineTotal", caption: formatMessage(' Line Total'), width: 150 },
 					{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 },
+					{ dataField: "AddlDescription", visible: false },
+	{ dataField: "ItemReqPurpose", visible: false },
+	{ dataField: "ItemReqPriority", visible: false },
+	{ dataField: "ItemReqExpectedDate", visible: false },
+	{ dataField: "ItemRemarks", visible: false },
+		{ dataField: "DeliveryPeriod", visible: false },
+	{ dataField: "PlanNo", visible: false },
 	{
 			type: "buttons",
 			caption: "Delete",
@@ -3948,7 +4005,15 @@
 	UnitRateMethod:null,
 	QtyRequested: 0,
 	ExpectedUnitRate: 0,
-	LineTotal: 0
+	LineTotal: 0,
+
+	AddlDescription: null,
+				ItemReqPurpose: null,
+				ItemReqPriority: null,
+				ItemReqExpectedDate: null,
+				ItemRemarks: null,
+				DeliveryPeriod: null,
+				PlanNo: null
 		};
 
 		// Efficient insert without replacing entire dataSource
@@ -5799,7 +5864,36 @@
 					}
 				}
 
+	function receiveModalFieldData(modalData) {
+				console.log("📦 Received from modal:", modalData); // ✅ Step 1: Log
 
+				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+				if (!window.currentDescriptionCell) {
+					console.warn("❌ No currentDescriptionCell found");
+					return;
+				}
+
+				const key = window.currentDescriptionCell.key;
+				console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+				const rowIndex = grid.getRowIndexByKey(key);
+				if (rowIndex === -1) {
+					console.warn("❌ Could not find rowIndex for key", key);
+					return;
+				}
+
+				let rowData = grid.getDataSource().items()[rowIndex];
+				console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+				for (const [field, value] of Object.entries(modalData)) {
+					rowData[field] = value;
+					grid.cellValue(rowIndex, field, value);
+				}
+
+				console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+				grid.repaintRows([rowIndex]);
+				DevExpress.ui.notify("Details saved", "success", 1500);
+			}
 
 
 		$("#btnSave").on("click", function (e) {
@@ -5837,7 +5931,7 @@
 				TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
 			};
 
-			let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+				const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
 
 			if (!children || children.length === 0) {
 				DevExpress.ui.notify("No child records to save.", "error", 3000);

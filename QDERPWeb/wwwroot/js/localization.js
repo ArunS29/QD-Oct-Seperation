@@ -1,6 +1,14 @@
 ﻿
 var dictionary = {
     "en": {
+        "Code": "Code",
+        "Sub Group Name": "Sub Group Name",
+        "Notes": "Notes",
+        "Item Group Code": "Item Group Code",
+
+
+        "Inventory Ledger": "Inventory Ledger",
+        "Cost Ledger Account": "Cost Ledger Account",
         "Expense Claim Request":"Expense Claim Request",
         "Sub Group Notes:":"Sub Group Notes:",
         "Document Types":"Document Types",
@@ -6085,6 +6093,8 @@ var dictionary = {
         "Additional Number": "رقم إضافي",
         "Building No": "رقم المبنى",
         "Client City": "مدينة العميل",
+        "Inventory Ledger": "دفتر الأستاذ للمخزون",
+        "Cost Ledger Account": "حساب دفتر الأستاذ للتكلفة",
         "Address-Additional Address (Arabic)": "العنوان-العنوان الإضافي (بالعربية)",
         "Supplier Address - Additional Address": "عنوان المورد - عنوان إضافي",
         "Supplier VAT Number": "رقم ضريبة القيمة المضافة للمورد",
