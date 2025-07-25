@@ -47,14 +47,6 @@
         margin-top: 8px;
     }
 
-    .limited-footer {
-        margin-top: 20px;
-        padding: 15px;
-        background-color: #ffffff;
-        border-top: 1px solid #e0e0e0;
-        border-radius: 0 0 12px 12px;
-    }
-
     .context-menuInvoice {
         position: absolute;
         background: #fff;
@@ -616,6 +608,7 @@
 
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridSelectionChanged")
+                            .OnRowClick("dataGridRowClicked")
                         .OnInitialized("dataGridInitialized")
                         .HeaderFilter(p => p.Visible(true))
                         .FilterRow(f => f.Visible(false))
@@ -683,6 +676,16 @@
         function dataGridInitialized(e) {
             dataGrid = e.component;
         }
+
+            function dataGridRowClicked(e) {
+        const selectedKey = e.key;
+        const ddbInstance = $("#stockGroupDropDownBox").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            ddbInstance.close();
+        }
+    }
 
 
 

@@ -3747,10 +3747,15 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     // Now use defaultCompanyByte as needed
 
+
                     byte companyId = defaultCompanyByte;
 
                     var company = dbContext.Tbl901CompanyDetails
-                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
+                
+
 
 
                     if (company == null)

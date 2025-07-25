@@ -631,7 +631,6 @@
 
     function adddivmaster() {
         
-        debugger;
         var GroupCode = $("#costCenterComboBox").dxSelectBox("instance").option("value");
         var GroupName = $("#costCenterMaster1").dxSelectBox("instance").option("value");
         var QuotationNo = $("#quotationNo").dxTextBox("instance").option("value");
@@ -693,12 +692,11 @@
                             text: response.message,
                             confirmButtonText: 'OK'
                         });
-                        // Clear inputs
-                        // $("#txtClientCategory").dxTextBox("instance").option("value", "");
-                        // $("#txtNumberOfDays").dxNumberBox("instance").option("value", null);
-                        // $("#chkEmployeeDocument").dxCheckBox("instance").option("value", false);
-
-                        // Optionally, you can reload the data grid to reflect the newly added branch
+                             // ✅ Clear all fields except Mprno
+                            $("#costCenterComboBox").dxSelectBox("instance").reset();
+                            $("#costCenterMaster1").dxSelectBox("instance").reset();
+                            $("#subGroupRemarks").dxTextBox("instance").reset();
+                            $("#schLedgerActive").dxSwitch("instance").option("value", false);
                         $("#gridContainer").dxDataGrid("instance").refresh();
                     } else {
                         Swal.fire({
