@@ -233,7 +233,7 @@
 		<i class="dx-icon-edit"></i> Edit Invoice
 	</div>
 	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
+		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Debit Note)
 	</div>
 	<div class="context-menu-item" onclick="UnlockInvoice()">
 		<i class="dx-icon-unlocked"></i> Unlock The Bill
@@ -1401,7 +1401,7 @@
 		});
 	});
 
-	// Cancel Amend - Posted in Invoice Debit note
+
 	function cancelInvoice() {
 		if (!invoiceNo) {
 			alert("InvoiceNo is required.");
@@ -1421,7 +1421,7 @@
 			"Invoice is not Posted"
 		);
 	}
-	else if (response.DebitInvoiceNo!="" && response.IsPosted === true)
+	else if (response.DebitInvoiceNo!=null && response.IsPosted === true)
 	{
 		DevExpress.ui.dialog.alert(
 			"Invoice is already Issued with full Debit Note,Please review the Invoice & Debit Note Details.",
@@ -1459,6 +1459,9 @@
 			}
 		});
 	}
+
+
+
 
 
 

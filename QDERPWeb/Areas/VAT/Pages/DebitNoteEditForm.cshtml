@@ -1083,45 +1083,7 @@
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATDebitNoteEditFooter.cshtml")
 		</div>
 
-		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-								.ID("paymentmeans-datagrid")
-								.DataSource(d => d.WebApi()
-								.Controller("VATModule")
-								.LoadAction("GetPaymentMeans")
-								.LoadMode(DataSourceLoadMode.Raw)
-								.Key("PaymentMeansTypeCode")
-								)
-								.WordWrapEnabled(true)
-								.ShowBorders(true)
-								.ShowColumnHeaders(true)
-
-								.SearchPanel(sp => sp.HighlightSearchText(false))
-								.Selection(sl => sl.Mode(SelectionMode.Single))
-								.OnSelectionChanged("PaymentMeansdataGridSelectionChanged")
-								.OnInitialized("CommondataGridInitialized")
-								.HeaderFilter(p => p.Visible(false))
-								.ShowBorders(true)
-								.HoverStateEnabled(true)
-								.Paging(p => p.PageSize(15))
-								@*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
-								.FilterRow(f => f.Visible(true))
-								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-								.Height(200)
-								.WordWrapEnabled(true)
-								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-								.Columns(columns =>
-								{
-									// columns.Add().DataField("OpeningBalanceDrCr");
-									columns.Add().DataField("PaymentMeansTypeCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
-									columns.Add().DataField("PaymentMeansType").Caption(new JS("formatMessage('PaymentMeans Type')")).Alignment(HorizontalAlignment.Center);
-
-
-
-								})
-								)
-		}
+	
 		@using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
 		{
 			@(Html.DevExtreme().List()
@@ -1754,35 +1716,7 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
-		$(document).ready(function () {
-			var urlParams = new URLSearchParams(window.location.search);
-			var IsEditflag = urlParams.get('IsEditflag');
-			IsCurrent = (IsEditflag || "").toString();
-			console.log(IsCurrent)
-			if (IsCurrent !== "true") {
-				$.ajax({
-					url: "/api/VATModule/GetNewDebitNoteNoApi",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
-						InvoiceOPenToSave(data);
-						const invoiceBox = $("#DebitNoteNo").dxTextBox("instance");
-						if (invoiceBox) {
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			}
-		});
-	
-
-	function InvoiceOPenToSave(data) {
+			function InvoiceOPenToSave(data) {
 			
 
 	    var InvoiceMaster = {
@@ -3192,28 +3126,6 @@
 			});
 		}
 
-		
-
-
-		  function PaymentMeansdataGridSelectionChanged(e) {
-				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-				const ddbInstance = $("#ddpaymentmeans").dxDropDownBox("instance");
-
-				if (selectedKey) {
-					ddbInstance.option("value", selectedKey);
-						ddbInstance.close();
-				}
-				var selectedRowData = $("#paymentmeans-datagrid").dxDataGrid("instance").getSelectedRowsData();
-				  if (selectedRowData.length > 0) {
-								paymentmeanstypecode = selectedRowData[0].PaymentMeansTypeCode;
-
-							} else {
-								DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-								return;
-							}
-
-			}
-
 			  function ClientCodedataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
@@ -3409,7 +3321,7 @@
 		function dataGridSupplierNameSelectionChanged(e) {
 			const selectedKey = e.selectedRowKeys[0];
 			const ddbInstance = $("#VATSupplierName").dxDropDownBox("instance");
-			acchead = selectedKey;
+			supplierid = selectedKey;
 			
 			if (selectedKey) {
 				ddbInstance.option("value", selectedKey);
@@ -4845,7 +4757,7 @@
 			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
 	        PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
 			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
-			SupplierCode: supplierid,
+		    SupplierCode: supplierid,
 			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 			//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
 			ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
@@ -4857,7 +4769,7 @@
 			CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
 			DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
 			DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
-			BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
+			//BranchCode:$("#ddlDivision").dxDropDownBox("instance").option("value")||null,
 			CompanyId:$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value")||null
 		};
 
@@ -5796,10 +5708,32 @@
 							}
 						}
 					});
-
-
 				}
-		
+
+
+	$(document).ready(function () {
+					if (IsCurrent !== "true" && IsAmend !=="true") {
+					$.ajax({
+						url: "/api/VATModule/GetNewDebitNoteNoApi",
+						type: "GET",
+						success: function (data) {
+							console.log("Success:", data);
+							InvoiceOPenToSave(data);
+							const invoiceBox = $("#DebitNoteNo").dxTextBox("instance");
+							if (invoiceBox) {
+								invoiceBox.option("value", data || "");
+							} else {
+								console.warn("Invoice TextBox not initialized.");
+							}
+						},
+						error: function (xhr, status, error) {
+							console.error("Error loading Payment Accounts:", error);
+							DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+						}
+					});
+				}
+			});
+
 
 </script>
 

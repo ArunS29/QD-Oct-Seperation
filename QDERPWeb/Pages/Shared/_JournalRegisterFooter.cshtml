@@ -145,22 +145,106 @@
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width(50)
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("rowproperties").OnClick("showSubmenu");
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width(50)
+                .Text(new JS("formatMessage('Layout')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Template(@<text>
+                                                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                         <path fill="var(--title-background-color)" d="M6 10V7a6 6 0 1 1 12 0v3" />
+                                                                                                         <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                                         <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                                     </svg>Set as Default Layout
+
+            </text>).OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Template(@<text>
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--title-background-color)" viewBox="0 0 16 16">
+                                                                                                <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1l-3 3 3 3V5z" />
+                                                                                            </svg>Reset Layout
+
+
+            </text>).OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Template(@<text>
+                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                               <path fill="var(--title-background-color)" d="M17 10V7a5 5 0 0 0-10 0" />
+                                                                                               <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                               <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                           </svg>Open Layout
+
+
+                    </text>).OnClick("openLayoutClick");
+
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
+                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                               <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
+                                                                                               <path fill="#444" d="M17 7H7V5h10v2zM9 14h6v5H9z" />
+                                                                                           </svg>Save Layout
+
+
+            </text>).OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("rowHeightProperties")
+                .Icon("") // fallback to standard icon if "rowproperties" not working
+                .Width(50)
+                .Text(new JS("formatMessage('Set Row Height')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                items.Add()
+                .Text("Short (1 Line)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Short
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('30'); }");
+
+                items.Add()
+                .Text("Medium (2 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Medium
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('60'); }");
+
+                items.Add()
+                .Text("Tall (4 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Tall
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('90'); }");
+
+                items.Add()
+                .Text("Extra Tall (8 Lines)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                @for (var i = 1; i <= 8; i++)
+                        {
+                            var y = 1 + (i - 1) * 2;
+                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                        }
+            </svg> Extra Tall
+        </text>)
+                .OnClick("function() { ChangeRowHeight('130'); }");
+                })
+                .ShowArrowIcon(false)
+                )
     </div>
 
     <div class="btn-container">

@@ -5,6 +5,7 @@ using System.Globalization;
 using System.IO;
 using System.Numerics;
 using System.Text;
+using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
@@ -621,8 +622,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     byte companyId = defaultCompanyByte;
 
-
-
                     var company = dbContext.Tbl901CompanyDetails
                    .FirstOrDefault(c => c.CompanyId == companyId);
 
@@ -641,9 +640,9 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
 
                     // Step 4: Generate New Debit Note No
-                    string newDebitNoteNo = GetVATInvoiceNoAPI(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear,NoOfDigitsInEInvoiceNo);
+                    string newInvoiceNo = GetVATInvoiceNoAPI(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear,NoOfDigitsInEInvoiceNo);
 
-                    return Ok(newDebitNoteNo);
+                    return Ok(newInvoiceNo);
                 }
                 else
                 {
@@ -3135,7 +3134,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     if (debitNoteMaster == null && IsPosted == true)
                     {
-                        debitNoteMaster = null;
+                        DebitInvoiceNo = null;
                         // Call the stored procedure (6 parameters only)
                         var result = dbContext.Database.ExecuteSqlRaw(
                             "EXEC sp201_85InsertDebiteNoteFromPurchase @p0, @p1, @p2, @p3",
@@ -4996,54 +4995,157 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        //[HttpPost]
+        //public async Task<IActionResult> CreateVATInvoice(Tbl20181ProformaInvoiceMaster aTbl20181ProformaInvoiceMasters)
+        //{
+        //    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        try
+        //        {
+
+        //            string yearSuffix = DateTime.Now.ToString("yyyy"); // Get last two digits of the year
+
+        //            var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+        //                .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
+        //                .OrderByDescending(i => i.InvoiceNo)
+        //                .Select(i => i.InvoiceNo)
+        //                .FirstOrDefaultAsync();
+
+        //            int newNumber = 1; // Default if no previous invoices exist
+        //            if (!string.IsNullOrEmpty(lastInvoiceNumber))
+        //            {
+        //                var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
+        //                if (match.Success)
+        //                {
+        //                    newNumber = int.Parse(match.Groups[1].Value) + 1;
+        //                }
+        //            }
+
+        //            // Generate new invoice number
+        //            //string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
+        //            string ToInvoiceNo = $"{yearSuffix}-{newNumber:D5}";
+        //            var AddedBy = HttpContext.Session.GetString("UserName");
+        //            string InvoiceUUID = Guid.NewGuid().ToString();
+        //            long? InvoiceCounterValue = 0;
+        //            string InvoiceTransactionCode = "0100000";
+        //            DateTime AddedOn = DateTime.Now;
+        //            // Call the stored procedure with SerialNumber
+        //            var result = await dbContext.Database.ExecuteSqlRawAsync(
+        //                "EXEC sp201_65InsertInvoiceFromProforma @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7", aTbl20181ProformaInvoiceMasters.ProformaInvoiceNo, ToInvoiceNo, aTbl20181ProformaInvoiceMasters.ProformaInvoiceDate, AddedBy, AddedOn, InvoiceUUID, InvoiceCounterValue, InvoiceTransactionCode);
+
+        //            return Ok(new { success = true, message = "Line item deleted successfully." });
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+        //        }
+        //    }
+
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+        //}
+
+
         [HttpPost]
-        public async Task<IActionResult> CreateVATInvoice(string ProformaInvoiceNo, DateTime InvoiceDate)
+        public async Task<IActionResult> CreateVATInvoice([FromBody] JsonElement json)
         {
+            string proformaInvoiceNo = null;
+            DateTime? proformaInvoiceDate = null;
+
+            try
+            {
+                if (json.TryGetProperty("ProformaInvoiceNo", out var pino))
+                    proformaInvoiceNo = pino.GetString();
+
+                if (json.TryGetProperty("ProformaInvoiceDate", out var pidate))
+                    proformaInvoiceDate = pidate.ValueKind == JsonValueKind.String
+                        ? DateTime.Parse(pidate.GetString())
+                        : pidate.GetDateTime();
+            }
+            catch
+            {
+                return BadRequest(new { success = false, message = "Invalid input format." });
+            }
+
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
+                    //string yearSuffix = DateTime.Now.ToString("yyyy");
 
-                    string yearSuffix = DateTime.Now.ToString("yyyy"); // Get last two digits of the year
+                    //var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
+                    //    .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
+                    //    .OrderByDescending(i => i.InvoiceNo)
+                    //    .Select(i => i.InvoiceNo)
+                    //    .FirstOrDefaultAsync();
 
-                    var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
-                        .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
-                        .OrderByDescending(i => i.InvoiceNo)
-                        .Select(i => i.InvoiceNo)
-                        .FirstOrDefaultAsync();
+                    //int newNumber = 1;
+                    //if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    //{
+                    //    var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
+                    //    if (match.Success)
+                    //        newNumber = int.Parse(match.Groups[1].Value) + 1;
+                    //}
 
-                    int newNumber = 1; // Default if no previous invoices exist
-                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
                     {
-                        var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
-                        if (match.Success)
-                        {
-                            newNumber = int.Parse(match.Groups[1].Value) + 1;
-                        }
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
                     }
 
-                    // Generate new invoice number
-                    //string newInvoiceNumber = $"{invoiceAbbrv}{yearSuffix}-{newNumber:D5}";
-                    string ToInvoiceNo = $"{yearSuffix}-{newNumber:D5}";
-                    var AddedBy = HttpContext.Session.GetString("UserName");
-                    string InvoiceUUID = Guid.NewGuid().ToString();
-                    long? InvoiceCounterValue = 0;
-                    string InvoiceTransactionCode = "0100000";
-                    DateTime AddedOn = DateTime.Now;
-                    // Call the stored procedure with SerialNumber
-                    var result = await dbContext.Database.ExecuteSqlRawAsync(
-                        "EXEC sp201_65InsertInvoiceFromProforma @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7", ProformaInvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn, InvoiceUUID, InvoiceCounterValue, InvoiceTransactionCode);
+                    // Now use defaultCompanyByte as needed
 
-                    return Ok(new { success = true, message = "Line item deleted successfully." });
+
+                    byte companyId = defaultCompanyByte;
+
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+
+                    if (company == null)
+                    {
+                        return NotFound("Company not found.");
+                    }
+
+                    string invoiceAbbrv = company.EinvoiceAbbrv;
+                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+                    DateTime invoiceDate = DateTime.Now;
+                    int NoOfDigitsInEInvoiceNo = company.NoOfDigitsInEinvoiceNo ?? 5; // 6 is the default if null
+
+
+
+                    // Step 4: Generate New Debit Note No
+                    string newInvoiceNo = GetVATInvoiceNoAPI(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, NoOfDigitsInEInvoiceNo);
+
+                    string toInvoiceNo = newInvoiceNo;
+                    string addedBy = HttpContext.Session.GetString("UserName");
+                    string invoiceUUID = Guid.NewGuid().ToString();
+                    DateTime addedOn = DateTime.Now;
+                    long? invoiceCounterValue = 0;
+                    string invoiceTransactionCode = "0100000";
+
+                    await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_65InsertInvoiceFromProforma @p0,@p1,@p2,@p3,@p4,@p5,@p6,@p7",
+                        proformaInvoiceNo, toInvoiceNo, proformaInvoiceDate, addedBy, addedOn, invoiceUUID, invoiceCounterValue, invoiceTransactionCode
+                    );
+
+                    return Ok(new { success = true, toInvoiceNo = toInvoiceNo });
                 }
                 catch (Exception ex)
                 {
-                    return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+                    return StatusCode(500, new { success = false, message = ex.Message });
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         public static string GetTLVBase64(string sellerName, string vatNumber, DateTime? timeStamp)

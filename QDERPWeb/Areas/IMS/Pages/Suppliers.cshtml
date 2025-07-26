@@ -244,7 +244,7 @@
                         let supplierCode = e.row.data.SupplierCode;
                         let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
                             let url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
-                            let title = `Edit Client - ${supplierCode}`;
+                            let title = `Edit Supplier  ${supplierCode}`;
                         openModal(url, title);
                     }
                 }];
