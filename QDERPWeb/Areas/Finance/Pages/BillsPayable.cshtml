@@ -708,6 +708,60 @@
         });
     }
 
+        function refreshKpiCards() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
 
+        if (!data || data.length === 0) {
+            console.warn("No data to calculate KPIs.");
+            return;
+        }
+
+        // Initialize totals
+        let totalBalance = 0;
+        let totalInvoiced = 0;
+        let totalReceived = 0;
+
+        data.forEach(item => {
+            totalBalance += item.ConvertedBalance || 0;
+            totalInvoiced += item.ConvertedReceivableAmount || 0;
+            totalReceived += item.ConvertedReceived || 0;
+        });
+
+        // Update BALANCE card
+        const balanceSpans = document.querySelectorAll("#cardBalance .value-slider span");
+        if (balanceSpans.length >= 3) {
+            balanceSpans[0].innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="..."/></svg>${totalBalance.toFixed(2)}`;
+            balanceSpans[1].textContent = totalBalance.toFixed(2);
+            balanceSpans[2].textContent = totalBalance.toFixed(2);
+        }
+
+        // Update DEBIT (Invoiced) card
+        const debitSpans = document.querySelectorAll("#cardDebit .value-slider span");
+        if (debitSpans.length >= 3) {
+            debitSpans[0].innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="..."/></svg>${totalInvoiced.toFixed(2)}`;
+            debitSpans[1].textContent = totalInvoiced.toFixed(2);
+            debitSpans[2].textContent = totalInvoiced.toFixed(2);
+        }
+
+        // Update CREDIT (Received) card
+        const creditSpans = document.querySelectorAll("#cardCredit .value-slider span");
+        if (creditSpans.length >= 3) {
+            creditSpans[0].innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="..."/></svg>${totalReceived.toFixed(2)}`;
+            creditSpans[1].textContent = totalReceived.toFixed(2);
+            creditSpans[2].textContent = totalReceived.toFixed(2);
+        }
+    }
+
+    // Call on grid ready
+    $(function () {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+
+        grid.option("onContentReady", function () {
+            refreshKpiCards();
+        });
+
+        grid.getDataSource().on("changed", refreshKpiCards);
+    });
   
 </script>
