@@ -154,7 +154,16 @@
                 .Label("Plan No")
 
                 .LabelMode(EditorLabelMode.Floating))
+
     </div>
+</div>
+@(Html.DevExtreme().Button()
+        .ID("btnApplyAndClose")
+        .Text("Apply & Close")
+        .Icon("check")
+        .OnClick("applyAndClose"))
+
+</div>
 </div>
 
 <script>
@@ -182,7 +191,7 @@
 
         function loadClientDetails(GSCode) {
        $.ajax({
-            url: `/api/AddNewClientRequest/GetdataByGSCode?GSCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/RequestforQuotationList/GetdataByGSCode?GSCode=${encodeURIComponent(GSCode)}`,
             type: 'GET',
             dataType: 'json',
             success: function (res)  {
@@ -227,7 +236,7 @@
 
         $.ajax({
 
-            url: `/api/AddNewClientRequest/GetGSCodeDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/RequestforQuotationList/GetGSCodeDescription?gsCode=${encodeURIComponent(GSCode)}`,
             type: "GET",
             success: function (data) {
                 $("#DetailedDescription").dxTextArea("instance").option("value", data);
@@ -245,7 +254,7 @@
         }
 
         $.ajax({
-            url: `/api/AddNewClientRequest/GetGSCodeDetailedDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/RequestforQuotationList/GetGSCodeDetailedDescription?gsCode=${encodeURIComponent(GSCode)}`,
             type: "GET",
             success: function (data) {
                 $("#DetailedDescription").dxTextArea("instance").option("value", data);
@@ -263,14 +272,7 @@
         return {
             GSCode: GSCode,
             AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            ItemReqPurpose: $("#PurposeOfRequest").dxTextBox("instance").option("value"),
-            ItemReqPriority: $("#PriorityOfRequest").dxSelectBox("instance").option("value"),
-            ItemReqExpectedDate: $("#ExpectedDate").dxDateBox("instance").option("value"),
-            ItemRemarks: $("#Remarks").dxTextBox("instance").option("value"),
-           // ItemSize: $("#Size").dxTextBox("instance").option("value"),
-           // ItemMake: $("#Manufacturer").dxTextBox("instance").option("value"),
-           // ItemBrand: $("#Brand").dxTextBox("instance").option("value"),
-          //  ItemPartNo: $("#PartNo").dxTextBox("instance").option("value"),
+            QuotationRemarks: $("#Remarks").dxTextBox("instance").option("value"),
             DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
             PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
         };
@@ -285,13 +287,10 @@
     };
        function applyAndClose() {
         const modalData = {
-            AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            PlanNo: $("#PlanNo").dxTextBox("instance").option("value"),
+             AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            QuotationRemarks: $("#Remarks").dxTextBox("instance").option("value"),
             DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
-            ItemReqPurpose: $("#PurposeOfRequest").dxTextBox("instance").option("value"),
-            ItemReqPriority: $("#PriorityOfRequest").dxSelectBox("instance").option("value"),
-            ItemReqExpectedDate: $("#ExpectedDate").dxDateBox("instance").option("value"),
-            ItemRemarks: $("#Remarks").dxTextBox("instance").option("value")
+            PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
         };
 
         console.log("📤 Sending to parent:", modalData);

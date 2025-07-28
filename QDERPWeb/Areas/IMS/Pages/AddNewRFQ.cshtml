@@ -4886,6 +4886,53 @@ hideAllButtonsExcept([
 					}
 				});
 			}
+$("#btnCreatePo").on("click", function () {
+    const rfqNo = $("#RFQNo").dxTextBox("instance").option("value");
+    const tenantName = window.tenantName || "defaultTenant";
+
+    if (!rfqNo) {
+        DevExpress.ui.notify("RFQ No is missing.", "error", 2000);
+        return;
+    }
+
+    // Step 1: Check if RFQ is approved
+    $.get(`/api/RequestforQuotationList/CheckIfApproved?Rfqno=${encodeURIComponent(rfqNo)}`)
+        .done(function (isApproved) {
+            if (!isApproved) {
+                DevExpress.ui.notify("RFQ is not approved.", "error", 3000);
+                return;
+            }
+
+            DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this RFQ?", "Confirmation")
+                .done(function (dialogResult) {
+                    if (!dialogResult) return;
+
+                    // Step 2: Create PO
+                    $.ajax({
+                        url: "/api/RequestforQuotationList/CreatePOFromRFQ",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(rfqNo),
+                        success: function (res) {
+                            if (res.success) {
+                                DevExpress.ui.notify("Purchase Order created: " + res.poNo, "success", 2000);
+
+                                // Step 3: Redirect to PO page
+                                window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&RFQNo=${encodeURIComponent(rfqNo)}&mode=edit`;
+                            } else {
+                                DevExpress.ui.notify(res.message || "Failed to create Purchase Order.", "error", 3000);
+                            }
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Server error while creating Purchase Order.", "error", 3000);
+                        }
+                    });
+                });
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
+        });
+});
 
 
 			$("#btnPostToLedgers").on("click", function (e) {
