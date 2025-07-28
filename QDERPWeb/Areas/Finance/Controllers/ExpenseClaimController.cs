@@ -1028,7 +1028,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 }
 
                 dbContext.SaveChanges();
-                return Ok();
+                return Ok(child);
             }
 
             return Unauthorized(); // or BadRequest("Tenant context could not be resolved");

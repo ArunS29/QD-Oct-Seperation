@@ -1,4 +1,202 @@
 ﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
+<script src="https://unpkg.com/@@popperjs/core@2"></script>
+<script src="https://unpkg.com/tippy.js@6"></script>
+<style>
+    .workflow-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        /* padding: 16px 0; */
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
+        gap: 10px;
+        height: 48px;
+    }
+
+    /* FIXED: Single full connector line behind steps */
+    .workflow-line {
+        position: absolute;
+        top: 19px;
+        /* right: 10px; */
+        left: 25px;
+        width: 97%;
+        height: 2px;
+        background: #d1d5db;
+        z-index: 0;
+        pointer-events: none;
+        transition: background 0.3s ease;
+    }
+
+    .workflow-step {
+        padding-right: 20px;
+        padding-left: 20px;
+        /* flex: 1; */
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+        z-index: 1;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        z-index: 2;
+        transition: background 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-label {
+        /* margin-top: 6px; */
+        font-weight: 500;
+        font-size: 12px;
+        color: #4b5563;
+        transition: color 0.3s ease;
+    }
+
+    .step-status-msg {
+        margin-top: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #9ca3af;
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: all 0.3s ease;
+    }
+
+    /* Status-based Colors */
+    .workflow-step.completed .step-circle {
+        background: #10b981;
+    }
+
+    .workflow-step.completed .step-label,
+    .workflow-step.completed .step-status-msg {
+        color: #10b981;
+    }
+
+    .workflow-step.current .step-circle {
+        background: #3b82f6;
+    }
+
+    .workflow-step.current .step-label {
+        color: #3b82f6;
+    }
+
+    .workflow-step.current .step-status-msg {
+        color: #3b82f6;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background: #d1d5db;
+    }
+
+    .workflow-step.upcoming .step-label,
+    .workflow-step.upcoming .step-status-msg {
+        color: #9ca3af;
+    }
+
+    /* Optional: Hover Animation */
+    .workflow-step:hover .step-circle {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    .workflow-step.completed .step-circle {
+        background-color: #4caf50;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .workflow-step.current .step-circle {
+        background-color: #ffc107;
+        color: black;
+        animation: pulse 1s infinite;
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background-color: #e0e0e0;
+        color: #888;
+    }
+
+    .workflow-step.done .step-circle {
+        background-color: #2196f3;
+        color: white;
+    }
+
+    @@keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255,193,7, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(255,193,7, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(255,193,7, 0);
+        }
+    }
+
+    .popover-box {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        font-size: 13px;
+        display: none;
+        z-index: 9999;
+        white-space: nowrap;
+    }
+</style>
+<div class="WorkFlow">
+    <div class="workflow-container">
+        <div class="workflow-line"></div>
+
+        <div class="workflow-step" id="step-update">
+            <div class="step-circle"><i class="fas fa-user"></i></div>
+            <div class="step-label">Updated</div>
+            <div class="step-status-msg">In Progress</div>
+        </div>
+        <div class="workflow-step" id="step-verify">
+            <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
+            <div class="step-label">Verified</div>
+            <div class="step-status-msg">Waiting</div>
+        </div>
+        <div class="workflow-step" id="step-approve">
+            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+            <div class="step-label">Approved</div>
+            <div class="step-status-msg">Pending</div>
+        </div>
+        @* <div class="workflow-step" id="step-approve">
+            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+            <div class="step-label">Posted</div>
+            <div class="step-status-msg">Pending</div>
+        </div> *@
+
+        <div id="verifyPopover" class="popover-box">
+            Verified by: <span id="verifiedByName"></span><br>
+            On: <span id="verifiedOn"></span>
+        </div>
+        <div id="approvePopover" class="popover-box">
+            Approved by: <span id="approvedByName"></span><br>
+            On: <span id="approvedOn"></span>
+        </div>
+    </div>
+</div>
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
 
 

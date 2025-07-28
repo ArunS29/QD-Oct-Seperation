@@ -192,7 +192,9 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("UserId").Caption(new JS("formatMessage('User Id')"));
+                                columns.Add().DataField("UserId")
+                            .Caption(new JS("formatMessage('User Id')"))
+                            .Width(60);
                                 columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')")).Alignment(HorizontalAlignment.Center);
                             })
                             )
@@ -504,7 +506,7 @@
                     confirmButtonText: 'OK'
                 });
             },
-            height: "70%",
+            height: "60%",
             width: "100%"
         });
     });

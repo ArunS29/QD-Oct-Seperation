@@ -21,7 +21,7 @@
         display: none;
     }
 	.footer-fixed{
-		bottom:35px!important;
+		bottom:42px!important;
 	}
 </style>
 
@@ -1384,6 +1384,7 @@ buttons.Add()
 					// Check if both VerifiedOnDate and ApprovedOntext have values
 					if (formattedDate && formattedApprovedDate) {
 						disableEditing();
+						syncWorkflowFromFields
 					}
 				}
 			},

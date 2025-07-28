@@ -507,6 +507,10 @@
 	td {
 		padding:1px;
 	}
+	.footer-fixed
+	{
+		bottom:35px!important;
+	}
 </style>
 
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
@@ -1390,6 +1394,11 @@
 
 							</td>
 							<td colspan="2">
+
+								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+										                      .ID("VerifiedBy")
+																.Value(null) // Default value
+												.Disabled(true))
 								@(Html.DevExtreme().TextBox()
 																.Label(new JS("formatMessage('Verified By')"))
 																.LabelMode(EditorLabelMode.Floating)
@@ -1565,7 +1574,10 @@
 
 							<td>
 
-
+								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
+										                      .ID("ApprovedBy")
+																.Value(null) // Default value
+												.Disabled(true))
 								@(Html.DevExtreme().TextBox()
 																.Label(new JS("formatMessage('Approved By')"))
 																.LabelMode(EditorLabelMode.Floating)
@@ -2144,7 +2156,7 @@
 		<div class="dx-field ledgerResult">
 			@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
-							.Height("45vh")
+							.Height("42vh")
 							.RemoteOperations(false)
 							.Columns(columns =>
 							{
@@ -4522,10 +4534,10 @@
 						cssClass: "center-header",
 
 					width: 200,
-  cellTemplate: function(container, options) {
-        // Show the text, not the code
-        container.text(options.data.UnitRateMethodText || "");
-    },
+  // cellTemplate: function(container, options) {
+  //       // Show the text, not the code
+  //       container.text(options.data.UnitRateMethodText || "");
+  //   },
 					editCellTemplate: function (cellElement, cellInfo) {
 
 						getUnitRateMethods().done(function (unitRates) {
@@ -7281,10 +7293,8 @@
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
-							  DevExpress.ui.dialog.alert(
-						"Invoice Details updated Successfully.",
-						"Update successful"
-					);
+								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
+							 
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -7495,11 +7505,7 @@
 										console.error("Error fetching grid data:", error);
 									}
 								});
-
-							  DevExpress.ui.dialog.alert(
-						"Invoice Details updated Successfully.",
-						"Update successful"
-					);
+								DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 						history.back();
 						},
 						error: function (xhr) {
@@ -7534,7 +7540,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+				DevExpress.ui.notify("Failed to load account details.", "error", 2000);
 				}
 			});
 		});
@@ -7551,7 +7557,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.notify("Failed to load account details.", "error", 2000);
 				}
 			});
 		});
@@ -7837,6 +7843,7 @@
 					}
 					else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+						
 					}
 					btnVerifydisableEditing();
 				},
@@ -8027,19 +8034,10 @@
 						debugger;
 					    if(response.IsDirect == true)
 						{
-	                        DevExpress.ui.dialog.alert(
-								"VAT Invoice has been posted to the Accounting Books.",
-								"Invoice Posted Successfully."
-							)
+							DevExpress.ui.notify("VAT Invoice has been posted to the Accounting Books.", "success", 2000);
 								
 						}
-							// else if(response.IsPosted == true)
-							// {
-							// 		 DevExpress.ui.dialog.alert(
-							// 		"This VAT Credit Note is already posted to your ledgers.",
-							// 		"Credit Note Posted Already."
-							// 	)
-							// }
+							
 						else 
 						{
 								   DevExpress.ui.dialog.custom({
@@ -9447,24 +9445,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
         });
     }
 
-        function loadCurrencyGridOnOpen(e) {
-        debugger;
-        const dropDown = e.component;
-        const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
-
-        if (!baseCurrencyId) return;
-
-        const grid = $("#currency-datagrid").dxDataGrid("instance");
-        if (!grid) return;
-
-        DevExpress.data.AspNet.createStore({
-            key: "CurrencyExchangeId",
-            loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
-        }).load().done(data => {
-            grid.option("dataSource", data);
-            dropDown.option("dataSource", data);
-        });
-    }
+     
 
 </script>
 

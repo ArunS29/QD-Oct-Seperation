@@ -339,6 +339,31 @@
     .title {
         background: transparent !important;
     }
+
+    .narration-cell {
+        white-space: normal;
+        word-break: break-word;
+        overflow: hidden;
+        padding: 4px 6px;
+        line-height: 1.4em;
+    }
+
+    .max-lines-1 {
+        max-height: calc(1.4em * 1);
+    }
+
+    .max-lines-2 {
+        max-height: calc(1.4em * 2);
+    }
+
+    .max-lines-4 {
+        max-height: calc(1.4em * 4);
+    }
+
+    .max-lines-8 {
+        max-height: calc(1.4em * 8);
+    }
+
 </style>
 <input id="formId" value="frm20128JournalRegisterMain" type="hidden" />
 <div class="title" id="kpiCarousel">
@@ -597,7 +622,14 @@
             .Caption(new JS("formatMessage('Journal Entry Date')")).Alignment(HorizontalAlignment.Center).Format(format => format
             .Type(Format.ShortDate)    // Custom type format
             .Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }")).Visible(true);
-                columns.AddFor(m => m.JournalVoucherNarration).Caption(new JS("formatMessage('Journal Voucher Narration')")).Alignment(HorizontalAlignment.Center).Visible(true);
+                    columns.AddFor(m => m.JournalVoucherNarration)
+                    .Caption(new JS("formatMessage('Journal Voucher Narration')"))
+                    .CellTemplate(@<text>
+                                       <div title="<%- data.JournalVoucherNarration %>" class="narration-cell max-lines-1">
+                                           <%- data.JournalVoucherNarration %>
+                                       </div>
+                                   </text>)
+                    .Visible(true);
                 columns.AddFor(m => m.DrAmountTotal).Caption(new JS("formatMessage('Dr Amount Total')")).Alignment(HorizontalAlignment.Right).Visible(true)
                     .HeaderCellTemplate(@<text>
                                              <div class="debit-header" style="font-weight: bold;">
@@ -1259,6 +1291,23 @@
             dataGrid.focus(dataGrid.getRowElement(focusedIndex));
         }
     }
+              function ChangeRowHeight(height) {
+                const grid = $("#dataGrid").dxDataGrid("instance");
+
+                // Set row height
+                $(".dx-datagrid-rowsview .dx-row").css("height", height + "px");
+
+                // Remove previous line-limit classes
+                $(".narration-cell").removeClass("max-lines-1 max-lines-2 max-lines-4 max-lines-8");
+
+                // Apply based on height
+                let classToAdd = "";
+
+                if (height <= 30) classToAdd = "max-lines-1";
+                else if (height <= 60) classToAdd = "max-lines-2";
+                else if (height <= 90) classToAdd = "max-lines-4";
+                else classToAdd = "max-lines-8";
+    }
 
         function injectHeaderSVG() {
             $.ajax({
@@ -1432,8 +1481,11 @@
             return d1.getFullYear() === d2.getFullYear() &&
                    d1.getMonth() === d2.getMonth() &&
                    d1.getDate() === d2.getDate();
-        }
-
         
+
+                $(".narration-cell").addClass(classToAdd);
+        };
+         
+
 </script>
 

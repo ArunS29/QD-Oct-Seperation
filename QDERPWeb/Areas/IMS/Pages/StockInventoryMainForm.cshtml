@@ -203,12 +203,14 @@
     .RemoteOperations(false)
     .Columns(columns =>
     {
+            columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true);
         columns.AddFor(m => m.Gscode)
                 .Caption(new JS("formatMessage('Stock Code')"))
             .Width(120);
         columns.AddFor(m => m.Gsdescrpition)
                 .Caption(new JS("formatMessage('Description')"))
-            .Width(280); columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
+            .Width(280);
+            columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
         columns.AddFor(m => m.ItemPartNo)
                 .Caption(new JS("formatMessage('Item Part No')"))
             .Width(150);

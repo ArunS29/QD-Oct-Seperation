@@ -9,7 +9,9 @@
 
 
 <style>
-
+    .dx-button{
+        background-color:none!important;
+    }
     /* Ensure tab text is styled properly */
     .dx-tabpanel .dx-tab {
         color: black !important; /* Set the tab text color to black */
@@ -147,6 +149,40 @@
         color: var(--title-background-color);
         padding: 10px;
     }
+    .dx-texteditor-input {
+    border: 0px !important; 
+}
+.footer-fixed {
+bottom: -13px !important;
+}
+  /* Modal Content */
+        .modal-content {
+            margin: 5% auto;
+            position: absolute;
+            top: 40%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 50%!important;
+            max-width: 1400px;
+            height: 90%;
+            max-height: 800px;
+            background: white;
+            border-radius: 8px;
+            padding: 0;
+            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+            overflow: hidden; /* Prevents content overflow */
+        }
+         .modal {
+            display: none; /* Hidden by default */
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%!important;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+        }
 </style>
 
 <div class="dx-card-header minimal-header">
@@ -814,7 +850,7 @@
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                         .HeaderFilter(filter => filter.Visible(true))
-                        .Height(250)
+                        .Height("45vh")
                         .ColumnAutoWidth(true)
                         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -909,7 +945,7 @@
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                         .HeaderFilter(filter => filter.Visible(true))
-                        .Height(250)
+                        .Height("45vh")
                         .ColumnAutoWidth(true)
                         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -1007,7 +1043,7 @@
                         .AllowColumnResizing(true)   // Enable column resizing
                         .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                         .HeaderFilter(filter => filter.Visible(true))
-                        .Height(250)
+                        .Height("45vh")
                         .ColumnAutoWidth(true)
                         .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
                         .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
@@ -1069,28 +1105,55 @@
 
     </div>
 
-    <div class="form-container">
-        <div class="footer-buttons">
-            <div class="col-md-12">
-                <div class="row">
+@*                <div class="footer-fixed" style="display:flex;">
                     <div class="col-md-1">
-                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").OnClick("updateAsset"))
-                    </div>
-                    @*<div class="col-md-2">
-                    @(Html.DevExtreme().Button().ID("btnSaveClose").Text("Save & Close").Icon("check").OnClick("function() { saveAndClose(); }"))
-                    </div> *@
-                    <div class="col-md-1">
-                      @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").Icon("save").OnClick("onSaveAndClose"))
+                        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Update").Icon("refresh").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("updateAsset"))
                     </div>
                     <div class="col-md-1">
-                      @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").OnClick("goBackToAssetView"))
+                      @(Html.DevExtreme().Button().ID("btDelete").Text("Save & Close").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).Icon("save").OnClick("onSaveAndClose"))
                     </div>
+                    <div class="col-md-1">
+                      @(Html.DevExtreme().Button().ID("btnBack").Text("Back").ElementAttr(new { @class = "dx-button-custom btn-back" }) .Icon("arrowleft").OnClick("goBackToAssetView"))
+                    </div>
+                </div>*@
+           
+<div class="form-container">
+    <div class="footer-fixed">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-1">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnUpdate")
+                        .Text("Update")
+                        .Icon("refresh")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Default) // Use .Success, .Danger, .Normal etc.
+                        .OnClick("updateAsset"))
+                </div>
+
+                <div class="col-md-1"style="width:160px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btDelete")
+                        .Text("Save & Close")
+                        .Icon("save")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Success)
+                        .OnClick("onSaveAndClose"))
+                </div>
+
+                <div class="col-md-1"style="width:160px;">
+                    @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text("Back")
+                        .Icon("arrowleft")
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .Type(ButtonType.Normal) // or .Back if you have custom behavior
+                        .OnClick("goBackToAssetView"))
                 </div>
             </div>
         </div>
     </div>
-
-
+</div>
 
 </div>
 
@@ -1626,9 +1689,6 @@
             `/${tenantName}/Finance/AssetMaintanenceMaster`, // URL of the master form
             'popupWindow',
             'width=800,height=600,scrollbars=yes,resizable=yes'
-
-
-
         );
 
         // Monitor the popup window for closure
@@ -1999,12 +2059,18 @@
 
   
 
-    function redirectToAssetCategoryView() {
-        let url = `/${tenantName}/Finance/AssetCategoryView`;
-        let title = "";
-        openModal(url, title);
-        refreshAssetCategorySelectBox()
-    }
+function redirectToAssetCategoryView() {
+    let url = `/${tenantName}/Finance/AssetCategoryView`;
+    let title = "";
+    let modalOptions = {
+        width: "500px",
+        height: "90%"
+    };
+
+    openModal(url, title, modalOptions);
+    refreshAssetCategorySelectBox();
+}
+
     function redirectToAssetLocationMaster() {
         let url = `/${tenantName}/Finance/AssetLocation`;
         let title = "";
@@ -2021,7 +2087,7 @@
     }
      function redirectassetmaintanence() {
          let url = `/${tenantName}/Finance/AssetMaintanenceMaster`;
-        let title = "";
+        let title = "Asset Maintenance Master";
         openModal(url, title);
         refreshAssetMaintanenceSelectBox(); 
     }

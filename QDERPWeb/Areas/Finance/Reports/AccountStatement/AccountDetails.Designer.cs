@@ -45,8 +45,6 @@
             this.xrLabel18 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel10 = new DevExpress.XtraReports.UI.XRLabel();
             this.pageInfo2 = new DevExpress.XtraReports.UI.XRPageInfo();
-            this.xrPictureBox12 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox11 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel8 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel6 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel7 = new DevExpress.XtraReports.UI.XRLabel();
@@ -76,9 +74,6 @@
             this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel9 = new DevExpress.XtraReports.UI.XRLabel();
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
-            this.xrPictureBox5 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox4 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox6 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel14 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel4 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrFooterNote = new DevExpress.XtraReports.UI.XRLabel();
@@ -166,20 +161,6 @@
             this.pageInfo2.StylePriority.UseTextAlignment = false;
             this.pageInfo2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
             this.pageInfo2.TextFormatString = "Page No:{0} of {1}";
-            // 
-            // xrPictureBox12
-            // 
-            this.xrPictureBox12.LocationFloat = new DevExpress.Utils.PointFloat(767.3079F, 0F);
-            this.xrPictureBox12.Name = "xrPictureBox12";
-            this.xrPictureBox12.SizeF = new System.Drawing.SizeF(12.15277F, 18.22917F);
-            this.xrPictureBox12.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            // 
-            // xrPictureBox11
-            // 
-            this.xrPictureBox11.LocationFloat = new DevExpress.Utils.PointFloat(628.5798F, 0F);
-            this.xrPictureBox11.Name = "xrPictureBox11";
-            this.xrPictureBox11.SizeF = new System.Drawing.SizeF(12.15277F, 18.22917F);
-            this.xrPictureBox11.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
             // 
             // xrLabel8
             // 
@@ -690,9 +671,6 @@
             // ReportFooter
             // 
             this.ReportFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox5,
-            this.xrPictureBox4,
-            this.xrPictureBox6,
             this.xrLabel14,
             this.xrLabel4,
             this.xrFooterNote,
@@ -702,33 +680,6 @@
             this.xrLabelTotal});
             this.ReportFooter.HeightF = 121.0001F;
             this.ReportFooter.Name = "ReportFooter";
-            // 
-            // xrPictureBox5
-            // 
-            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(702.2008F, 43.16652F);
-            this.xrPictureBox5.Name = "xrPictureBox5";
-            this.xrPictureBox5.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox5.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
-            this.xrPictureBox5.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox5.StylePriority.UsePadding = false;
-            // 
-            // xrPictureBox4
-            // 
-            this.xrPictureBox4.LocationFloat = new DevExpress.Utils.PointFloat(747.4892F, 3F);
-            this.xrPictureBox4.Name = "xrPictureBox4";
-            this.xrPictureBox4.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox4.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
-            this.xrPictureBox4.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox4.StylePriority.UsePadding = false;
-            // 
-            // xrPictureBox6
-            // 
-            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(632.1943F, 2.999974F);
-            this.xrPictureBox6.Name = "xrPictureBox6";
-            this.xrPictureBox6.Padding = new DevExpress.XtraPrinting.PaddingInfo(0, 0, 0, 0, 100F);
-            this.xrPictureBox6.SizeF = new System.Drawing.SizeF(23.83337F, 18F);
-            this.xrPictureBox6.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox6.StylePriority.UsePadding = false;
             // 
             // xrLabel14
             // 
@@ -1147,8 +1098,6 @@
             // PageFooter
             // 
             this.PageFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox11,
-            this.xrPictureBox12,
             this.xrLabel8,
             this.xrLabel6,
             this.xrLabel7});
@@ -1230,9 +1179,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel24;
         private DevExpress.XtraReports.UI.XRLabel xrLabel25;
         private DevExpress.XtraReports.UI.XRLabel xrLabel26;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox5;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox4;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox6;
         private DevExpress.XtraReports.UI.XRLabel xrLabel18;
         private DevExpress.XtraReports.UI.XRLabel xrLabel2;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox1;
@@ -1252,8 +1198,6 @@
         private DevExpress.XtraReports.UI.XRLabel xrLabel34;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox9;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox10;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox11;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox12;
         private DevExpress.XtraReports.UI.XRLine xrLine5;
         private DevExpress.XtraReports.UI.PageFooterBand PageFooter;
     }

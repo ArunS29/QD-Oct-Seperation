@@ -37,7 +37,6 @@
     }
 
     .form-container1 {
-        margin: 15px;
         width: 99%;
         padding: 5px;
         border-radius: 1px;
@@ -52,7 +51,6 @@
         display: flex;
         gap: 10px;
         padding: 10px;
-        margin-bottom: 15px;
         width: 100%;
     }
 
@@ -161,7 +159,7 @@
         width: 100%;
         box-sizing: border-box;
     }
-
+   
     .form-card1 {
         width: 50%;
         display: flex;
@@ -286,6 +284,9 @@
      #goToTopBtn { 
        z-index: 100; 
      } 
+      .layout-container{
+         background: var(--background-color)
+     }
 </style>
 
 <div class="dx-card-container">
@@ -300,7 +301,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(240)
                 .Items(item =>
                 {
                     item.Add()
@@ -344,6 +345,7 @@
                             .Label(new JS("formatMessage('PO Date')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
+                            .DisplayFormat("dd-MMM-yyyy")
                             .Value(DateTime.Now)
                             .Width("100%"))
                         </td>
@@ -371,21 +373,37 @@
                                 .Option("searchMode", "contains")   // ✅ This sets searchMode manually
                                 .ShowClearButton(true)
                                 .OnValueChanged("onSupplierChanged")
-                                )
+                                .Buttons(buttons => {
+								// Clear Button
+								buttons.Add()
+									.Name("clear");
 
-                                <div style="margin-left: 5px;display:flex;">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddSupplier")
-                                    .Icon("plus")
-                                    .OnClick("redirecttoClientLeadmaster1")
-                                    .Hint("Add Supplier")) 
-                                    @(Html.DevExtreme().Button()
-                                    .ID("EditSupplier")
-                                    .Icon("edit")
-                                    .OnClick("editSelectedSupplier")
-                                    .Hint("Edit Supplier"))
-                                </div>
-                            </div>
+								// Add Client Button
+								buttons.Add()
+									.Name("AddSupplier")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										.OnClick("redirecttoClientLeadmaster1")
+									);
+
+								// Edit Client Button
+								buttons.Add()
+									.Name("btnEditClient")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+											.OnClick("editSelectedSupplier")
+									);
+									  buttons.Add()
+									   .Name("dropDown");
+							})
+						)
+                                                           </div>
                         </td>
                         <td>
                             @(Html.DevExtreme().TextBox()
@@ -412,23 +430,29 @@
                             .ID("SupplierQuoteDate")
                             .Label(new JS("formatMessage('Supplier Quote Date:')"))
                             .LabelMode(EditorLabelMode.Floating)
+                            .DisplayFormat("dd-MMM-yyyy")
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
                         <td>
                             <div style="display: flex; align-items:end;">
-                                @(Html.DevExtreme().TextBox()
-                                .ID("AttentionTo")
-                                .Label(new JS("formatMessage('Attention To:')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .StylingMode(EditorStylingMode.Outlined)
-                                .Width("100%"))
-                                <div style="margin-left: 5px;">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddAttentionTo")
-                                    .Icon("plus")
-                                    .Hint("Add Attention"))
-                                </div>
+                              @(Html.DevExtreme().TextBox()
+                                    .ID("AttentionTo")
+                                    .Label(new JS("formatMessage('Attention To:')"))
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .Width("calc(100% - 40px)")
+                                    .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                            .Name("AddAttention")
+                                            .Location(TextEditorButtonLocation.After)
+                                            .Widget(w => w.Button()
+                                                .Type(ButtonType.Default)
+                                                .Icon("plus")
+                                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                            );
+                                    })
+                            )
                             </div>
                         </td>
                         <td>
@@ -479,13 +503,19 @@
                                 .ValueExpr("ProjectId")
                                 .DisplayExpr("ProjectDescription")
                                 .SearchEnabled(true)
+                                     .Buttons(buttons =>
+                                        {
+                                            buttons.Add()
+                                                .Name("AddProject")
+                                                .Location(TextEditorButtonLocation.After)
+                                                .Widget(w => w.Button()
+                                                    .Type(ButtonType.Default)
+                                                    .Icon("plus")
+                                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                );
+                                        })
                                 )
-                                <div style="margin-left: 5px;">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddProject")
-                                    .Icon("plus")
-                                    .Hint("Add Project"))
-                                </div>
+                              
                             </div>
                         </td>
                         <td>
@@ -536,7 +566,7 @@
 
         </text>);
                     item.Add().Title(new JS("formatMessage('Order Details')")).Icon("detailslayout").Text(new JS("formatMessage('Order Details')")).Template(@<text>
-            <div class="dx-card layout-container">
+            <div class="layout-container">
                 <!-- Subject and Po Summary -->
                 <div class="form-row">
                     <div class="form-column">
@@ -603,11 +633,13 @@
                     </div>
                 </div>
             </div>
+            
 
 
         </text>);
                     item.Add().Text(new JS("formatMessage('Shipping Details')")).Icon("home").Title(new JS("formatMessage('Shipping Details')")).Template(@<text>
-            <div style="display: flex; gap: 15px;  padding: 15px; border-radius: 6px;">
+           <div class="layout-container">
+            <div style="display: flex; gap: 15px; border-radius: 6px;">
 
                 <!-- Left Card -->
                 <div style=" padding: 10px;flex: 1; display: flex; flex-direction: column; gap: 10px;">
@@ -706,11 +738,12 @@
                     </div>
                 </div>
             </div>
+            </div>
 
         </text>);
                     item.Add().Text(new JS("formatMessage('Approvals')")).Icon("user").Title(new JS("formatMessage('Approvals')")).Template(@<text>
-            <div class="form-container">
-                <div class="dx-card p-3">
+                     <div class="layout-container">
+                <div class="p-3" style="height:180px;">
                     <table class=" table-borderless w-100">
                         <tbody>
                             <tr>
@@ -742,7 +775,7 @@
 
         </text>);
                     item.Add().Text(new JS("formatMessage('Branch / Division')")).Icon("user").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
-            <div style="display: flex; gap: 15px;padding: 15px;">
+            <div class="layout-container" style="display: flex; gap: 15px;padding: 15px;">
 
                 <!-- Branch & Divisions -->
                 <div style="padding: 10px; border-radius: 6px; flex: 1;">
@@ -781,24 +814,30 @@
                         </div>
                         <div style="flex: 1; display: flex; align-items: flex-end;">
                             <div style="width: 100%;">
-                                @(Html.DevExtreme().SelectBox()
-                                .ID("POCategory")
-                                .DataSource(d => d.Mvc()
-                                .Controller("PurchaseOrders")
-                                .LoadAction("GetPOCategories")
-                                )
-                                .ValueExpr("POCategoryCode")
-                                .DisplayExpr("POCategoryName")
-                                .Label(new JS("formatMessage('P.O. Category:')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%")
-                                )
-                            </div>
-                            <div style="margin-left: 5px;">
-                                @(Html.DevExtreme().Button()
-                                .ID("AddAPOCategory")
-                                .Icon("plus")
-                                .Hint("Add POCategory"))
+                               @(Html.DevExtreme().SelectBox()
+                                    .ID("POCategory")
+                                    .DataSource(d => d.Mvc()
+                                        .Controller("PurchaseOrders")
+                                        .LoadAction("GetPOCategories")
+                                    )
+                                    .ValueExpr("POCategoryCode")
+                                    .DisplayExpr("POCategoryName")
+                                    .Label(new JS("formatMessage('Purchase Order Category')"))
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .Width("100%")
+                                    .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                            .Name("AddAPOCategory")
+                                            .Location(TextEditorButtonLocation.After)
+                                            .Widget(w => w.Button()
+                                                .Type(ButtonType.Default)
+                                                .Icon("plus")
+                                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                            );
+                                    })
+                                        )
+
                             </div>
                         </div>
                     </div>
@@ -1016,7 +1055,7 @@
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
         .DataSource(new JS("window.itemGridDataSource"))
-        .Height("65vh")
+        .Height("47vh")
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
