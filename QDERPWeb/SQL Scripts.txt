@@ -2045,4 +2045,8 @@ Where PurchaseVoucherNo = @PurchaseVoucherNo
 
 END
 
- 
+ --Boolean Based Approve new Concept in Web told SajuSir (IMS) -25/07/25
+ ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
+    IsEnableRFQWorkflow       BIT NOT NULL DEFAULT 1,
+    IsEnableReceiptWorkflow   BIT NOT NULL DEFAULT 1;

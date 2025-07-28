@@ -169,11 +169,27 @@
     </div>
 
     <div id="gridContainer"></div>
+    <br />
+    <div class="form-group">
+        @(Html.DevExtreme().Button()
+                .ID("btnback")
+                .Text(new JS("formatMessage('Back')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("arrowleft")
+                .OnClick("btnbackbt")
+                )
+    </div>
 </div>
 @* </div> *@
 
 
 <script type="text/javascript">
+      function btnbackbt() {
+
+                    window.parent.closeModal();
+                  }
+
     $(function () {
         var updatedRows = []; // To store the updated rows
         var searchPanelVisible = false; // Track the visibility of the search panel
