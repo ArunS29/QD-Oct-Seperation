@@ -17,6 +17,7 @@
         background-color: #f9f9f9;
         transition: background-color 0.3s ease;
         margin-bottom: 15px;
+        max-height: 320px;
     }
 
     .drag-over {
@@ -417,7 +418,7 @@
 
                 <!-- Right Column: Preview -->
                 <div id="preview"
-                     style="flex: 1; min-width: 350px; min-height: 390px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
+                     style="flex: 1; min-width: 300px; min-height: 390px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
                     <!-- File previews will appear here -->
                 </div>
             </div>
@@ -438,7 +439,6 @@
         </div>
     </div>
 
-    <!-- Bottom Button -->
     
 </div>
 
@@ -522,9 +522,16 @@
 
 
             columns: [
-                { dataField: "DocumentNo", caption: "Doc No", allowEditing: false },
 
-                    {
+                {
+                    dataField: "SerialNo",
+                    caption: "S.No",
+                    width: 60,
+
+                },
+                { dataField: "DocumentNo", caption: "Doc No", allowEditing: false, visible: false },
+
+                {
                     dataField: "FileUrl",
                     caption: "Document",
                     allowEditing: false,
@@ -663,19 +670,33 @@
                 width: 180,
                 buttons: [
                     {
-                        name: "edit", // built-in edit
-                        hint: "Edit"
+                        name: "edit", // built-in
+                        hint: "Edit",
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // 👈 preview first
+
+                            const grid = $("#documentsGrid").dxDataGrid("instance");
+                            grid.editRow(e.row.rowIndex);
+                        }
                     },
                     {
-                        name: "delete", // built-in delete
-                        hint: "Delete"
+                        name: "delete", // built-in
+                        hint: "Delete",
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // 👈 preview first
+
+                            const grid = $("#documentsGrid").dxDataGrid("instance");
+                            grid.deleteRow(e.row.rowIndex);
+                        }
                     },
                     {
                         hint: "Preview",
-                        icon: "fas fa-eye", // Font Awesome
-                        onClick: function (e) {
-                            e.event.stopPropagation(); // prevent row click
-                            openPreviewDialog(e.row.data);
+                        icon: "fas fa-eye",
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // safe here
                         },
                         visible: function (e) {
                             return !e.row.isEditing;
@@ -685,14 +706,18 @@
                     {
                         hint: "Download",
                         icon: "fas fa-download",
-                        onClick: function (e) {
-                            e.event.stopPropagation(); // prevent row click
+                        onClick: async function (e) {
+                            e.event.stopPropagation();
+                            await openPreviewDialog(e.row.data); // safe here
+
                             const fileUrl = e.row.data.FileUrl;
                             if (fileUrl) {
                                 const a = document.createElement("a");
                                 a.href = fileUrl;
                                 a.download = "";
+                                document.body.appendChild(a);
                                 a.click();
+                                document.body.removeChild(a);
                             }
                         },
                         visible: function (e) {
@@ -791,6 +816,7 @@
 
 
     let selectedFiles = [];
+
     
     function setupDragDrop() {
         const dropZone = document.getElementById("dropZone");
@@ -847,8 +873,8 @@
     }
     let isHandlingFiles = false;
 
-    async function handleFiles(files) {
-        if (isHandlingFiles) return; // ⛔ prevent re-entry
+       async function handleFiles(files) {
+        if (isHandlingFiles) return;
         isHandlingFiles = true;
 
         try {
@@ -868,7 +894,6 @@
             if (validFiles.length === 0) return;
 
             const docNos = await getNewDocumentNos(validFiles.length);
-
             if (!docNos || docNos.length !== validFiles.length) {
                 DevExpress.ui.notify("Document number mismatch", "error", 3000);
                 return;
@@ -888,7 +913,7 @@
             console.error("DocumentNo generation failed:", err);
             DevExpress.ui.notify("Failed to generate document numbers.", "error", 3000);
         } finally {
-            isHandlingFiles = false; // ✅ Reset
+            isHandlingFiles = false;
         }
     }
 
@@ -992,7 +1017,7 @@
     }
 
 
-    function openPreviewDialog(doc) {
+    async function openPreviewDialog(doc) {
         const preview = document.getElementById("preview");
         preview.innerHTML = "";
 
@@ -1004,7 +1029,7 @@
 
         const fileName = decodeURIComponent(url.split('/').pop().split('?')[0]);
         const ext = fileName.split('.').pop().toLowerCase();
-        const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp"].includes(ext);
+        const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext);
         const isPdf = ["pdf"].includes(ext);
         const isOffice = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext);
 
@@ -1012,7 +1037,21 @@
         let previewAvailable = true;
 
         if (isImage) {
-            previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 300px;" />`;
+            if (ext === "svg") {
+                try {
+                    const response = await fetch(url);
+                    const svgText = await response.text();
+                    previewContent = `
+                        <div style="max-width: 100%; max-height: 300px; overflow: auto;">
+                            ${svgText}
+                        </div>
+                    `;
+                } catch (err) {
+                    previewContent = `<div>Unable to preview SVG file.</div>`;
+                }
+            } else {
+                previewContent = `<img src="${url}" alt="${fileName}" style="max-width: 100%; max-height: 300px;" />`;
+            }
         } else if (isPdf) {
             const encodedUrl = encodeURIComponent(url); // Important!
             previewContent = `

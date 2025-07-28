@@ -2078,7 +2078,10 @@ function redirectToAssetCategoryView() {
         refreshAssetLocationSelectBox();
     }
     function redirectToAssetDocuments() {
-        let url = `/${tenantName}/Finance/frm20112AssetDocuments`;
+        var sAccountID = $('#txtacctledno').dxTextBox("instance").option("value");
+        var module = "Assets";
+        var isMaster = false;
+        let url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
         let title = "";
         openModal(url, title);
     }
