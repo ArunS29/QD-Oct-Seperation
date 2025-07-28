@@ -679,24 +679,29 @@ function updateTrialBalanceChartByGroup(pivotGridInstance) {
         grouped[key].credit += item.CrAmount || 0;
     });
 
+    const allValues = Object.values(grouped).flatMap(item => [item.debit || 0, item.credit || 0]);
+    const maxValue = Math.max(...allValues);
+
     const finalData = Object.values(grouped).map(item => {
-    const debit = item.debit || 0;
-    const credit = item.credit || 0;
-    const total = debit + credit;
+        const debit = item.debit || 0;
+        const credit = item.credit || 0;
 
-    const showDebit = debit >= credit;
-    const percentage = total > 0 ? ((Math.max(debit, credit) / total) * 100).toFixed(2) + "%" : "";
+        const showDebit = debit >= credit;
+        const amountToCompare = showDebit ? debit : credit;
 
-    return {
-        ...item,
-        debitVisible: showDebit ? debit : 0,
-        creditVisible: !showDebit ? credit : 0,
-        visiblePercentage: percentage
-    };
-});
+        const percentage = maxValue > 0 ? ((amountToCompare / maxValue) * 100).toFixed(2) + "%" : "";
+
+        return {
+            ...item,
+            debitVisible: showDebit ? debit : 0,
+            creditVisible: !showDebit ? credit : 0,
+            visiblePercentage: percentage
+        };
+    });
 
     $("#pivotChartContainer").dxChart("instance").option("dataSource", finalData);
 }
+
 
 
 
