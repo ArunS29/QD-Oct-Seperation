@@ -386,50 +386,53 @@
 <script>
 
     $(document).ready(function () {
-            var urlParams = new URLSearchParams(window.location.search);
+        debugger;
+    var urlParams = new URLSearchParams(window.location.search);
     var ItemNo = urlParams.get('ItemNo') ?? '';
     var Gsdescrpition = urlParams.get('Gsdescrpition') ?? '';
     var GsdescriptionAr = urlParams.get('GsdescriptionAr') ?? '';
-    var ItemPartNo = urlParams.get('ItemPartNo') ?? '';
-    var CostPrice = urlParams.get('CostPrice') ?? 1;
-    var GssellingRate = urlParams.get('GssellingRate') ?? 1;
-    var ReorderQty = urlParams.get('ReorderQty') ?? 1;
-              // var IsEditflag = urlParams.get('IsEditflag');
-   
-    if(ReorderQty=="null")
-    {
-       ReorderQty = 1
-    }
-    else if(CostPrice=="null")
-    {
-        CostPrice = 1
+    let CostPrice = urlParams.get('CostPrice');
+    let GssellingRate = urlParams.get('GssellingRate');
+    let ReorderQty = urlParams.get('ReorderQty');
+    let ItemPartNo = urlParams.get('ItemPartNo');
 
+    CostPrice = isNaN(CostPrice) ? 1 : CostPrice;
+    GssellingRate = isNaN(GssellingRate) ? 1 : GssellingRate;
+    ReorderQty = isNaN(ReorderQty) ? 1 : ReorderQty;
+
+    if (ReorderQty === null || ReorderQty === "null") {
+        ReorderQty = 1;
     }
-    else if(GssellingRate=="null")
+    if (CostPrice === null || CostPrice === "null") {
+        CostPrice = 1;
+    }
+    if (GssellingRate === null || GssellingRate === "null") {
+        GssellingRate = 1;
+    }
+    if (ItemPartNo === null || ItemPartNo === "null") {
+        ItemPartNo = "";
+    }
+    if(GsdescriptionAr==="null")
     {
-        GssellingRate = 1
-
+        GsdescriptionAr="";
     }
-                // IsCurrent=IsEditflag.toString();
 
-                // // console.log("Iseditflag",IsEditflag)
-                // if (IsCurrent === "true") {
-               
+                     // let gCode = $("#txtGoodsCode7").dxTextBox("instance").option("value");
+                     // if(gCode!="")
+                     // {
                      $("#txtGoodsCode7").dxTextBox("instance").option("value",ItemNo);
                      $("#txtItemPartNo4").dxTextBox("instance").option("value",ItemPartNo);
                      $("#txtDescription8").dxTextArea("instance").option("value",Gsdescrpition);
-                      $("#txtDescriptionArabic").dxTextArea("instance").option("value",GsdescriptionAr);
+                     $("#txtDescriptionArabic").dxTextArea("instance").option("value",GsdescriptionAr);
 
-                           $("#packingUnit").dxNumberBox("instance").option("value", ReorderQty ?? 1);
-                           $("#sellingRate").dxNumberBox("instance").option("value", GssellingRate ?? 1);
-                           $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
+                     $("#packingUnit").dxNumberBox("instance").option("value", ReorderQty ?? 1);
+                     $("#sellingRate").dxNumberBox("instance").option("value", GssellingRate ?? 1);
+                     $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
 
-                     
-               
-                     //dataGridAccountHeadSelectionChanged({ selectedRowKeys: [Gsdescrpition]});
+                     // }
+                     // else{
 
-           // }
-
+                     // }
 
         });
 
@@ -519,7 +522,7 @@
 
     async function convertDescriptionToArabic() {
         const englishBox = $("#txtDescription8").dxTextArea("instance");
-        const arabicBox = $("#txtDescriptionArabic").dxTextBox("instance");
+        const arabicBox = $("#txtDescriptionArabic").dxTextArea("instance");
 
         if (!englishBox || !arabicBox) {
             console.error("TextBox/TextArea not initialized.");
@@ -544,7 +547,7 @@
 
     async function convertDetailedDescToArabic() {
         const englishBox = $("#txtDetailedDescription").dxTextArea("instance");
-        const arabicBox = $("#txtDetailedDescriptionArabic").dxTextBox("instance");
+        const arabicBox = $("#txtDetailedDescriptionArabic").dxTextArea("instance");
 
         if (!englishBox || !arabicBox) {
             console.error("TextBox/TextArea not initialized.");
@@ -627,12 +630,12 @@
         window.history.back();
     }
 
-    function onSaveClicked($form, shouldClose) {
-        const gsCodeInput = $form.find("#txtGoodsCode7").dxTextBox("instance").option("value");
-        const description = $form.find("#txtDescription8").dxTextArea("instance").option("value");
+        function onSaveClicked() {
+        const gsCodeInput = $("#txtGoodsCode7").dxTextBox("instance").option("value");
+        const description = $("#txtDescription8").dxTextArea("instance").option("value");
 
-        const goodsCodeValidator = $form.find("#txtGoodsCode7").dxValidator("instance");
-        const descriptionValidator = $form.find("#txtDescription8").dxValidator("instance");
+        const goodsCodeValidator = $("#txtGoodsCode7").dxValidator("instance");
+        const descriptionValidator = $("#txtDescription8").dxValidator("instance");
 
         const goodsCodeValid = goodsCodeValidator?.validate().isValid;
         const descriptionValid = descriptionValidator?.validate().isValid;
@@ -644,19 +647,20 @@
 
         const formData = {
             GSCode: gsCodeInput,
-            GSGroupID: parseInt($form.find("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")),
-            ItemPartNo: $form.find("#txtItemPartNo4").dxTextBox("instance").option("value"),
+            GSGroupID: parseInt($("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")) || 0,
+            ItemPartNo: $("#txtItemPartNo4").dxTextBox("instance").option("value"),
             GSDescrpition: description,
-            GSDescriptionAr: $form.find("#txtDescriptionArabic").dxTextBox("instance").option("value"),
-            GSUoM: parseInt($form.find("#ddlUnitMeasure9").dxDropDownBox("instance").option("value")),
-            GSPackingUnit: parseInt($form.find("#packingUnit").dxNumberBox("instance").option("value")),
-            GSSellingRate: parseFloat($form.find("#sellingRate").dxNumberBox("instance").option("value")),
-            CostPrice: parseFloat($form.find("#txtCostPrice3").dxNumberBox("instance").option("value")),
-            GSDetailedDesc: $form.find("#txtDetailedDescription").dxTextArea("instance").option("value"),
-            GSDetailedDescAr: $form.find("#txtDetailedDescriptionArabic").dxTextBox("instance").option("value")
+            GSDescriptionAr: $("#txtDescriptionArabic").dxTextArea("instance").option("value"),
+            GSUoM: parseInt($("#ddlUnitMeasure9").dxDropDownBox("instance").option("value")) || 0,
+            GSPackingUnit: parseInt($("#packingUnit").dxNumberBox("instance").option("value")) || 0,
+            GSSellingRate: parseFloat($("#sellingRate").dxNumberBox("instance").option("value")) || 0,
+            CostPrice: parseFloat($("#txtCostPrice3").dxNumberBox("instance").option("value")) || 0,
+            GSDetailedDesc: $("#txtDetailedDescription").dxTextArea("instance").option("value"),
+            GSDetailedDescAr: $("#txtDetailedDescriptionArabic").dxTextArea("instance").option("value")
         };
 
         $.ajax({
+
             type: "POST",
             url: `/api/VATModule/SaveGoodsAndServices`,
             data: JSON.stringify(formData),
@@ -664,14 +668,9 @@
             success: function (response) {
                 DevExpress.ui.notify(response.message || "Saved successfully.", "success", 2000);
 
-                if (!gsCodeInput && response.gscode) {
-                    $form.find("#txtGoodsCode7").dxTextBox("instance").option("value", response.gscode);
-                }
-
-                if (shouldClose) {
-                    setTimeout(() => {
-                        window.history.back(); 
-                    }, 2000); 
+                // Set GSCode if it was generated by backend and not manually entered
+                if (!gsCodeInput?.trim() && response.gscode) {
+                    $("#txtGoodsCode7").dxTextBox("instance").option("value", response.gscode);
                 }
             },
             error: function (xhr) {
@@ -680,6 +679,7 @@
             }
         });
     }
+
 
     
 

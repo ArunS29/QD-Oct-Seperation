@@ -631,7 +631,15 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         return NotFound("Company not found.");
                     }
 
-                    string invoiceAbbrv = company.EinvoiceAbbrv;
+                    string invoiceAbbrv = "";
+                    if (company.IsUseEinvoiceAbbrv == true)
+                    {
+                        invoiceAbbrv = company.EinvoiceAbbrv;
+                    }
+                    else
+                    {
+                        invoiceAbbrv = "";
+                    }
                     int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
                     bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
                     DateTime invoiceDate = DateTime.Now;
@@ -2932,38 +2940,51 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     {
                         return NotFound(new { Message = "Invoice not found." });
                     }
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-                    string yearSuffix = DateTime.Now.ToString("yy"); // Get last two digits of the year
-
-                    // Get invoice abbreviation
-                    //var invoiceAbbrv = await dbContext.Tbl901CompanyDetails
-                    //    .Select(c => c.EinvoiceAbbrv)
-                    //    .FirstOrDefaultAsync();
-
-
-                    // Get last invoice number
-                    var lastInvoiceNumber = await dbContext.Tbl20161VatinvoiceMasters
-                    .Where(i => i.InvoiceNo.StartsWith($"{yearSuffix}-"))
-                    .OrderByDescending(i => i.InvoiceNo)
-                    .Select(i => i.InvoiceNo)
-                    .FirstOrDefaultAsync();
-
-                    int newNumber = 1; // Default if no previous invoices exist
-                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
                     {
-                        var match = Regex.Match(lastInvoiceNumber, @"-(\d+)$");
-                        if (match.Success)
-                        {
-                            newNumber = int.Parse(match.Groups[1].Value) + 1;
-                        }
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
                     }
 
-                    // Generate new invoice number
+                    // Now use defaultCompanyByte as needed
 
-                    string newInvoiceNumber = $"{yearSuffix}-{newNumber:D5}";
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+
+                    if (company == null)
+                    {
+                        return NotFound("Company not found.");
+                    }
+
+                    string invoiceAbbrv = "";
+                    if (company.IsUseEinvoiceAbbrv == true)
+                    {
+                        invoiceAbbrv = company.EinvoiceAbbrv;
+                    }
+                    else
+                    {
+                        invoiceAbbrv = "";
+                    }
+                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+                    DateTime invoiceDate = DateTime.Now;
+                    int NoOfDigitsInEInvoiceNo = company.NoOfDigitsInEinvoiceNo ?? 5; // 6 is the default if null
+
+
+
+                    // Step 4: Generate New Debit Note No
+                    string newInvoiceNo = GetVATInvoiceNoAPI(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear, NoOfDigitsInEInvoiceNo);
 
                     // Extract values from the fetched invoice
-                    string ToInvoiceNo = newInvoiceNumber; // You can generate or assign this as needed
+                    string ToInvoiceNo = newInvoiceNo; // You can generate or assign this as needed
                     DateTime InvoiceDate = invoice.InvoiceDate ?? DateTime.Now;
                     string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
                     DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
@@ -5111,8 +5132,15 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     {
                         return NotFound("Company not found.");
                     }
-
-                    string invoiceAbbrv = company.EinvoiceAbbrv;
+                    string invoiceAbbrv = "";
+                    if (company.IsUseEinvoiceAbbrv==true)
+                    {
+                        invoiceAbbrv = company.EinvoiceAbbrv;
+                    }
+                    else
+                    {
+                        invoiceAbbrv = "";
+                    }
                     int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
                     bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
                     DateTime invoiceDate = DateTime.Now;
@@ -5407,6 +5435,28 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetRevenueDefaultEntry(string voucherGroupId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                voucherGroupId = "A015";
+                var accountId = dbContext.Tbl201ChartOfAccounts
+                    .Where(a => a.AccountGroupId == voucherGroupId && (a.IsDefaultForCash ?? false))
+                    .Max(a => a.AccountId);
+
+             
+                return Ok(new
+                {
+                    Status = "Default",
+                    AccountID = accountId
+                });
+            }
+
+            return BadRequest("Invalid tenant context");
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> GetDefalutCompanyBranch()
         {
             try
@@ -5535,7 +5585,172 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> UpdateToProformaUnlocktheBil(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
 
+                    var records = dbContext.Tbl20181ProformaInvoiceMasters
+                  .Where(x => x.ProformaInvoiceNo == invoiceNo)
+                  .ToList();
+
+                    foreach (var record in records)
+                    {
+                        record.IsApproved = false;
+                        record.IsVerified = false;
+                    }
+
+                    dbContext.SaveChanges();
+
+
+                    return Ok(new
+                    {
+                        Message = "Unlocak the bill successfully.",
+
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> InsertProformaCloneEInvoice(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Fetch the invoice master details using the given InvoiceNo
+                    var invoice = await dbContext.Tbl20181ProformaInvoiceMasters
+                                                 .FirstOrDefaultAsync(i => i.ProformaInvoiceNo == InvoiceNo);
+
+                    if (invoice == null)
+                    {
+                        return NotFound(new { Message = "Invoice not found." });
+                    }
+
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+
+                    if (company == null)
+                    {
+                        return NotFound("Company not found.");
+                    }
+
+                    string invoiceAbbrv = company.InvoiceAbbrv;
+                    int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
+
+                    bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
+
+                    DateTime invoiceDate = DateTime.Now;
+
+
+
+                    // Step 4: Generate New Debit Note No
+                    string newProformaInvoiceNo = GetNewProformaInvoiceNo(invoiceAbbrv, invoiceYearDigits, invoiceDate, isResetInvoiceInYear);
+
+                    // Extract values from the fetched invoice
+                    string ToInvoiceNo = newProformaInvoiceNo; // You can generate or assign this as needed
+                    DateTime InvoiceDate = invoice.ProformaInvoiceDate ?? DateTime.Now;
+                    string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
+                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
+
+
+                    // Execute the stored procedure
+                    var result = dbContext.Database.ExecuteSqlRaw(
+                        "EXEC sp201_63InsertDuplicateProformaInvoice @p0,@p1,@p2,@p3,@p4",
+                        InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn);
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Purchase Invoice cloned successfully.",
+                        VoucherVerifiedBy = User.Identity?.Name ?? "System"
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public IActionResult DeleteProformaInvoiceMasterView(string proformaInvoiceNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return StatusCode(500, "Unable to retrieve database context for the current tenant.");
+            }
+
+            if (string.IsNullOrWhiteSpace(proformaInvoiceNo))
+            {
+                return BadRequest("Invoice number is required.");
+            }
+
+            try
+            {
+                var masterRecord = dbContext.Tbl20181ProformaInvoiceMasters
+                    .FirstOrDefault(x => x.ProformaInvoiceNo == proformaInvoiceNo);
+
+                if (masterRecord == null)
+                {
+                    return NotFound("Proforma invoice not found.");
+                }
+
+                // Get related child records
+                var childRecords = dbContext.Tbl20182ProformaInvoiceChildren
+                    .Where(x => x.ProformaInvoiceNo == proformaInvoiceNo)
+                    .ToList();
+
+                // Remove child records
+                if (childRecords.Any())
+                {
+                    dbContext.Tbl20182ProformaInvoiceChildren.RemoveRange(childRecords);
+                }
+
+                // Remove master record
+                dbContext.Tbl20181ProformaInvoiceMasters.Remove(masterRecord);
+
+                dbContext.SaveChanges();
+
+                return Ok(new { Message = "Proforma invoice deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception if logging is implemented
+                return StatusCode(500, $"An error occurred while deleting the proforma invoice. Details: {ex.Message}");
+            }
+        }
 
 
     }
