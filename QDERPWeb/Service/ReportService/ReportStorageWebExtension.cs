@@ -207,5 +207,31 @@ namespace QD.ERP.Web.Service.ReportService
                 throw new InvalidOperationException("An error occurred while retrieving report URLs.", ex);
             }
         }
+
+        public async Task<byte[]> GetDefaultLayoutAsync(string url)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(url))
+                    throw new ArgumentException("Report name cannot be empty.");
+
+                if (ReportsFactory.Reports.ContainsKey(url))
+                {
+                    Console.WriteLine($"Fetching default layout from code for report: {url}");
+                    using var ms = new MemoryStream();
+                    using XtraReport report = ReportsFactory.Reports[url]();
+                    report.SaveLayoutToXml(ms);
+                    return ms.ToArray();
+                }
+
+                throw new Exception($"Default layout for report '{url}' not found in ReportsFactory.");
+            }
+            catch (Exception ex)
+            {
+                Console.Error.WriteLine($"Error in GetDefaultLayoutAsync: {ex.Message}");
+                throw;
+            }
+        }
+
     }
 }

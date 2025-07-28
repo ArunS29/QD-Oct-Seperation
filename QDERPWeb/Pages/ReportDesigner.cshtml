@@ -1,67 +1,44 @@
 ﻿@page
-
 @using DevExpress.AspNetCore
-
-@using QD.ERP.Web.Areas.Finance.Reports
-
-@using QD.ERP.Web.Reports
-
 @model QD.ERP.Web.Pages.ReportDesignerModel
 
 <link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
 <script src="~/js/reporting.designer.part.bundle.js"></script>
 
-<!-- DevExpress Report Designer -->
 @(Html.DevExpress().ReportDesigner("reportDesigner")
-
     .Height("50em")
-
     .Width("105em")
-
     .Bind(Model.Report)
-
 )
 
 <!-- Reset Button -->
-<a href="javascript:void(0);" id="btnReset" class="btn-reset-report" data-tooltip="Reset Report Designer">
+<a href="javascript:void(0);" id="btnReset" class="btn-reset-report" data-tooltip="Reset to Original Layout">
     <span class="btn-text">Reset Report</span>
     <i class="fa fa-sync-alt"></i>
 </a>
 
 <style>
-
-    /* Reset Report Button */
-
     .btn-reset-report {
         position: fixed;
-        top: 30px; /* Positioning below the designer button */
-
-        right: 250px; /* Positioning from the right */
-
+        top: 30px;
+        right: 250px;
         background-color: transparent;
-        border: 1px solid #28a745; /* Border color */
-
-        padding: 5px 15px; /* Padding */
-
+        border: 1px solid #28a745;
+        padding: 5px 15px;
         font-size: 14px;
-        color: #28a745; /* Button color */
-
-        border-radius: 15px; /* Curved edges */
-
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Shadow */
-
+        color: #28a745;
+        border-radius: 15px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
         cursor: pointer;
-        z-index: 9999; /* Ensure it stays on top */
-
+        z-index: 9999;
         transition: all 0.3s ease;
         display: flex;
         align-items: center;
-        height: 35px; /* Height */
+        height: 35px;
     }
 
         .btn-reset-report .btn-text {
-            margin-right: 10px; /* Space between text and icon */
-
+            margin-right: 10px;
             font-weight: bold;
         }
 
@@ -69,17 +46,11 @@
             font-size: 16px;
         }
 
-        /* Change on Hover */
-
         .btn-reset-report:hover {
-            background-color: rgba(40, 167, 69, 0.1); /* Light green background on hover */
-
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3); /* Larger shadow */
-
-            color: #218838; /* Darker color on hover */
+            background-color: rgba(40, 167, 69, 0.1);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+            color: #218838;
         }
-
-        /* Tooltip Styling */
 
         .btn-reset-report[data-tooltip]:hover::after {
             content: attr(data-tooltip);
@@ -93,21 +64,12 @@
             border-radius: 5px;
             font-size: 12px;
             white-space: nowrap;
-            opacity: 0;
+            opacity: 1;
             pointer-events: none;
             transition: opacity 0.3s ease;
-            opacity: 1;
         }
 
-    .container {
-        display: none !important;
-    }
-
-    .frame {
-        display: none !important;
-    }
-
-    .footerContainer {
+    .container, .frame, .footerContainer, .playIcon {
         display: none !important;
     }
 
@@ -119,23 +81,68 @@
     .mainContainer {
         margin-top: 1em;
     }
-    .playIcon {
-        display: none;
-    }
 </style>
 
 <script>
+    // Add "Set as Default" button to Report Designer toolbar
+    window.onload = function () {
+        const interval = setInterval(() => {
+            const designer = $("#reportDesigner").dxReportDesigner("instance");
+            if (!designer) return;
 
-    // Function to reload the page (reset the Report Designer)
+            const menu = designer.option("menuActions");
+            const alreadyExists = menu.some(action => action.text === "Set as Default");
+            if (!alreadyExists) {
+                menu.push({
+                    text: "Set as Default",
+                    imageClassName: "dxrd-image-save",
+                    imageTemplateName: "dxrd-svg-save",
+                    hasSeparator: true,
+                    visible: true,
+                    disabled: false,
+                    click: function () {
+                        const reportUrl = designer.option("reportUrl");
+                        designer.SaveReportLayout().done(function (layoutXml) {
+                            const base64Layout = btoa(unescape(encodeURIComponent(layoutXml)));
+                            fetch("/api/report/default/set", {
+                                method: "POST",
+                                headers: { "Content-Type": "application/json" },
+                                body: JSON.stringify({
+                                    reportName: reportUrl,
+                                    layoutBase64: base64Layout
+                                })
+                            }).then(res => {
+                                if (!res.ok) throw new Error("Save failed");
+                                DevExpress.ui.notify("Default layout saved successfully", "success", 3000);
+                            }).catch(err => {
+                                DevExpress.ui.notify("Error saving default layout", "error", 3000);
+                            });
+                        });
+                    }
+                });
+                designer.option("menuActions", menu);
+            }
+            clearInterval(interval);
+        }, 1000);
+    };
 
-    function resetReportDesigner() {
+    // Reset to Default Button
+    document.getElementById("btnReset").addEventListener("click", function () {
+        if (confirm("Reset this report to the original layout from code?")) {
+            const designer = $("#reportDesigner").dxReportDesigner("instance");
+            const reportName = designer.option("reportUrl");
 
-        location.reload();  // This will reload the page
-
-    }
-
-    // Attach the reset function to the reset button
-
-    document.getElementById("btnReset").addEventListener("click", resetReportDesigner);
+            fetch(`/api/report/default/reset?reportName=${encodeURIComponent(reportName)}`, {
+                method: "GET"
+            }).then(res => {
+                if (!res.ok) throw new Error("Failed to load original layout");
+                return res.text();
+            }).then(layoutXml => {
+                designer.OpenReport(layoutXml);
+                DevExpress.ui.notify("Reset to original layout complete", "success", 3000);
+            }).catch(err => {
+                DevExpress.ui.notify("Failed to reset layout", "error", 3000);
+            });
+        }
+    });
 </script>
-

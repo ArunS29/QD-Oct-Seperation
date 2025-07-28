@@ -17,9 +17,22 @@
     var currentReportName = '@Model.ReportName';
 
     function onDocumentViewerReady(s, e) {
-        s.preview.zoom(1); // 100% zoom
-         s.SetFullScreenMode(true); // 🚀 This triggers full screen
+        s.preview.zoom(1.5); // Set zoom level
+
+        // Ask the user
+        const wantsFullscreen = confirm("Would you like to view the report in fullscreen mode?");
+
+        if (wantsFullscreen) {
+            const viewerContainer = document.querySelector(".dxrd-preview-wrapper");
+            if (viewerContainer && viewerContainer.requestFullscreen) {
+                viewerContainer.requestFullscreen().catch(err => {
+                    console.warn("Fullscreen request failed:", err);
+                });
+            }
+        }
     }
+
+
 
     function openEmailPopup() {
         const popup = document.getElementById("emailPopup");
@@ -50,7 +63,7 @@
 
 <button class="btn btn-primary send-email-btn" onclick="openEmailPopup()">📧 Send Email</button>
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
-    .Height("62em")
+    .Height("82em")
     
     .ClientSideEvents(events => events.DocumentReady("onDocumentViewerReady"))
     .Bind(Model.Report)
@@ -177,9 +190,9 @@
 
     .btn-edit-report {
         position: fixed;
-        top: 30px; /* Positioning from the top */
+        top: 14px; /* Positioning from the top */
 
-        right: 20px; /* Positioning from the right */
+        right: 4px; /* Positioning from the right */
 
         background-color: transparent;
         border: 1px solid #007bff; /* Border to make it rectangular */
@@ -224,11 +237,11 @@
 
     /* Floating Close Button */
 
-    .btn-close-report {
+    .send-email-btn {
         position: fixed;
-        top: 30px; /* Positioning from the top */
+        top: 14px; /* Positioning from the top */
 
-        left: 11px; /* Adjusting position from the right (so it doesn't overlap with Open Designer button) */
+        left: 4px; /* Adjusting position from the right (so it doesn't overlap with Open Designer button) */
 
         background-color: transparent;
         border: 1px solid #dc3545; /* Border to make it rectangular */
