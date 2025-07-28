@@ -138,24 +138,23 @@
             </div>
         </div>
 
-        <!-- BALANCE -->
-        <div id="cardBalance" class="titleCard-card cool-blue">
-                <div class="header">Total depreciated</div>
-            <div class="value-block">
-                <div class="value-slider">
-                    <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
-                    <span>0.00</span>
-                    <span>0.00</span>
+            <div id="cardVoucher" class="titleCard-card cool-blue">
+                <div class="header">Total Vouchers</div>
+                <div class="value-block">
+                    <div class="value-slider">
+                        <span><i class="fa-solid fa-truck"></i> 0</span>
+                        <span><i class="fa-solid fa-truck"></i> 0</span>
+                        <span><i class="fa-solid fa-truck"></i> 0</span>
+                    </div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+                <div class="overlay">
+                    <div class="detail"><i class="fa-solid fa-truck"></i> Today: 0</div>
+                    <div class="detail"><i class="fa-solid fa-truck"></i> This Week: 0</div>
+                    <div class="detail"><i class="fa-solid fa-truck"></i> This Month: 0</div>
                 </div>
             </div>
-            <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
-            @* <div class="bar"><span style="width:50%"></span></div> *@
-            <div class="overlay">
-                <div class="detail">Today: 0.00</div>
-                <div class="detail">This Week: 0.00</div>
-                <div class="detail">This Month: 0.00</div>
-            </div>
-        </div>
+
 
         <!-- DEBIT -->
         <div id="cardDebit" class="titleCard-card deep-purple">
@@ -600,7 +599,7 @@
         .OnInitialized("onGridInitialized")
         .OnOptionChanged("onGridOptionChanged")
         .OnOptionChanged("handleGridOptionChanged")
-
+        .OnContentReady("function(e) { handleGridContentReady(e); }")
         .Width("100%")
         )
 </div>
@@ -717,6 +716,7 @@
                                 success: function (response) {
                                     DevExpress.ui.dialog.alert(response.message || "Voucher deleted successfully.", "Success");
                                     $("#dataGrid").dxDataGrid("instance").refresh();
+                                    injectHeaderSVG();
                                 },
                                 error: function (xhr) {
                                     console.error("Error deleting voucher:", xhr.responseText);
@@ -901,6 +901,183 @@
 
         });
     }
+
+    function handleGridContentReady(e){
+
+          injectHeaderSVG();
+
+
+    }
+         function updateCards(data) {
+        const now = new Date();
+        const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        const thisWeekStart = new Date(today);
+        thisWeekStart.setDate(today.getDate() - today.getDay());
+        const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+        const thisYearStart = new Date(today.getFullYear(), 0, 1);
+
+        let totalDr = 0, totalCr = 0;
+        let todayDr = 0, weekDr = 0, monthDr = 0, yearDr = 0;
+        let todayCr = 0, weekCr = 0, monthCr = 0, yearCr = 0;
+
+        const uniqueVoucherToday = new Set();
+        const uniqueVoucherWeek = new Set();
+        const uniqueVoucherMonth = new Set();
+        const uniqueVoucherYear = new Set();
+
+        data.forEach(item => {
+            if (!item.PurchaseDate) return;
+
+            const voucherDate = new Date(item.PurchaseDate);
+            const dateOnly = new Date(voucherDate.getFullYear(), voucherDate.getMonth(), voucherDate.getDate());
+
+            const dr = parseFloat(item.ValueOfProperty || 0);
+            const cr = parseFloat(item.CreditAmount || 0);
+
+            totalDr += dr;
+            totalCr += cr;
+
+            const voucherNo = item.ClaimRefNo;
+
+            if (+dateOnly === +today) {
+                todayDr += dr;
+                todayCr += cr;
+                if (voucherNo) uniqueVoucherToday.add(voucherNo);
+            }
+
+            if (dateOnly >= thisWeekStart && dateOnly <= today) {
+                weekDr += dr;
+                weekCr += cr;
+                if (voucherNo) uniqueVoucherWeek.add(voucherNo);
+            }
+
+            if (dateOnly >= thisMonthStart && dateOnly <= today) {
+                monthDr += dr;
+                monthCr += cr;
+                if (voucherNo) uniqueVoucherMonth.add(voucherNo);
+            }
+
+            if (dateOnly >= thisYearStart && dateOnly <= today) {
+                yearDr += dr;
+                yearCr += cr;
+                if (voucherNo) uniqueVoucherYear.add(voucherNo);
+            }
+        });
+
+        const format = num => num.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+
+        // ========== Update Total Debit Card ==========
+        $("#cardDebit .value-slider span").eq(0).html(format(todayDr));
+        $("#cardDebit .value-slider span").eq(1).html(format(weekDr));
+        $("#cardDebit .value-slider span").eq(2).html(format(monthDr));
+        if ($("#cardDebit .value-slider span").length < 4) {
+            $("#cardDebit .value-slider").append(`<span>${format(yearDr)}</span>`);
+        } else {
+            $("#cardDebit .value-slider span").eq(3).html(format(yearDr));
+        }
+
+        $("#cardDebit .overlay .detail").eq(0).html(`Today: ${format(todayDr)}`);
+        $("#cardDebit .overlay .detail").eq(1).html(`This Week: ${format(weekDr)}`);
+        $("#cardDebit .overlay .detail").eq(2).html(`This Month: ${format(monthDr)}`);
+        if ($("#cardDebit .overlay .detail").length < 4) {
+            $("#cardDebit .overlay").append(`<div class="detail">This Year: ${format(yearDr)}</div>`);
+        } else {
+            $("#cardDebit .overlay .detail").eq(3).html(`This Year: ${format(yearDr)}`);
+        }
+
+        // ========== Update Total Credit Card ==========
+        $("#cardCredit .value-slider span").eq(0).html(format(todayCr));
+        $("#cardCredit .value-slider span").eq(1).html(format(weekCr));
+        $("#cardCredit .value-slider span").eq(2).html(format(monthCr));
+        if ($("#cardCredit .value-slider span").length < 4) {
+            $("#cardCredit .value-slider").append(`<span>${format(yearCr)}</span>`);
+        } else {
+            $("#cardCredit .value-slider span").eq(3).html(format(yearCr));
+        }
+
+        $("#cardCredit .overlay .detail").eq(0).html(`Today: ${format(todayCr)}`);
+        $("#cardCredit .overlay .detail").eq(1).html(`This Week: ${format(weekCr)}`);
+        $("#cardCredit .overlay .detail").eq(2).html(`This Month: ${format(monthCr)}`);
+        if ($("#cardCredit .overlay .detail").length < 4) {
+            $("#cardCredit .overlay").append(`<div class="detail">This Year: ${format(yearCr)}</div>`);
+        } else {
+            $("#cardCredit .overlay .detail").eq(3).html(`This Year: ${format(yearCr)}`);
+        }
+
+        // ========== Voucher Summary Helper ==========
+        function getVoucherStatus(voucherSet, startDate, endDate) {
+            let approved = 0, posted = 0;
+            voucherSet.forEach(voucherNo => {
+                const filtered = data.filter(item =>
+                    item.ClaimRefNo === voucherNo &&
+                    item.ClaimDate &&
+                    new Date(item.ClaimDate) >= startDate &&
+                    new Date(item.ClaimDate) <= endDate
+                );
+                if (filtered.some(x => x.IsApproved)) approved++;
+                if (filtered.some(x => x.IsPaid)) posted++;
+            });
+            return {
+                total: voucherSet.size,
+                approved,
+                posted
+            };
+        }
+
+        const todayStatus = getVoucherStatus(uniqueVoucherToday, today, today);
+        const weekStatus = getVoucherStatus(uniqueVoucherWeek, thisWeekStart, today);
+        const monthStatus = getVoucherStatus(uniqueVoucherMonth, thisMonthStart, today);
+        const yearStatus = getVoucherStatus(uniqueVoucherYear, thisYearStart, today);
+
+        let totalCount = 0, approvedCount = 0, postedCount = 0;
+        const countedVouchers = new Set();
+
+        data.forEach(item => {
+            if (!item.ClaimRefNo) return;
+            totalCount++;
+            if (!countedVouchers.has(item.ClaimRefNo)) {
+                const matching = data.filter(x => x.ClaimRefNo === item.ClaimRefNo);
+                if (matching.some(x => x.IsApproved)) approvedCount++;
+                if (matching.some(x => x.IsPaid)) postedCount++;
+                countedVouchers.add(item.ClaimRefNo);
+            }
+        });
+
+        // ========== Update Voucher Card ==========
+        const icon = `<i class="fa-solid fa-truck-ramp-box"></i>`;
+        const vs = $("#cardVoucher .value-slider");
+        vs.children().eq(0).html(`${icon} Today: ${todayStatus.total}`);
+        vs.children().eq(1).html(`${icon} This Week: ${weekStatus.total}`);
+        vs.children().eq(2).html(`${icon} This Month: ${monthStatus.total}`);
+        if (vs.children().length < 4) {
+            vs.append(`<span>${icon} This Year: ${yearStatus.total}</span>`);
+        } else {
+            vs.children().eq(3).html(`${icon} This Year: ${yearStatus.total}`);
+        }
+
+        const ov = $("#cardVoucher .overlay");
+        ov.children().eq(0).html(`${icon} Total: ${totalCount}`);
+        ov.children().eq(1).html(`${icon} Approved: ${approvedCount}`);
+        ov.children().eq(2).html(`${icon} Paid: ${postedCount}`);
+        if (ov.children().length < 4) {
+            ov.append(`<div class="detail">${icon} This Year: ${yearStatus.total}</div>`);
+        } else {
+            ov.children().eq(3).html(`${icon} This Year: ${yearStatus.total}`);
+        }
+    }
+
+
+
+
+        // Utility: check if two dates are the same (ignoring time)
+        function isSameDate(d1, d2) {
+            return d1.getFullYear() === d2.getFullYear() &&
+                   d1.getMonth() === d2.getMonth() &&
+                   d1.getDate() === d2.getDate();
+        }
 </script>
 
 

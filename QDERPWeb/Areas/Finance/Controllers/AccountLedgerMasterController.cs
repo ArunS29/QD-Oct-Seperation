@@ -480,98 +480,84 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             try
             {
-                // Fetch the tenant and DbContext based on the current tenant context
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     return StatusCode(500, new { success = false, message = "Tenant context could not be determined." });
                 }
 
-                // Check if 'data' is null or invalid
                 if (chartAccount == null)
-                {
                     return BadRequest("Invalid data.");
-                }
 
-                // Validate individual properties are not null
                 if (chartAccount.AccountId == null || chartAccount.OpeningBalance == null || chartAccount.OpeningBalanceDrCr == null)
-                {
                     return BadRequest("Missing required fields.");
-                }
 
-                // Assign values from the model
                 string accountID = chartAccount.AccountId;
                 decimal? openingBalance = chartAccount.OpeningBalance;
                 string openingBalanceDrCr = chartAccount.OpeningBalanceDrCr;
 
-                // Remove the 'SYS-OP-' prefix from both DebitAccount and CreditAccount if they have it
                 string debitAccount = accountID.Replace("SYS-OP-", "");
                 string creditAccount = "L00503";
-                //accountID.Replace("SYS-OP-", "");  // Remove 'SYS-OP-' from CreditAccount as well
-
-                // Get today's date
                 var todayDate = DateTime.Now;
 
-                // Get the AccountBooksOpeningDate (assuming CompanyId is 1)
                 var accountBooksOpeningDate = await dbContext.Tbl901CompanyDetails02s
                                                             .Where(c => c.CompanyId == 1)
                                                             .Select(c => c.AccountBooksOpeningDate)
                                                             .FirstOrDefaultAsync();
 
-                // If AccountBooksOpeningDate is null, return an error
                 if (accountBooksOpeningDate == null)
-                {
                     return NotFound("AccountBooksOpeningDate not found.");
-                }
 
-                // Calculate the voucher date
                 var voucherDate = accountBooksOpeningDate.Value.AddDays(-1);
 
-                // Transaction handling to ensure consistency
-                using (var transaction = await dbContext.Database.BeginTransactionAsync())
+                // ✅ Check if VoucherNo already exists
+                var existingVoucher = await dbContext.Tbl201VoucherEntries
+                                                     .FirstOrDefaultAsync(v => v.VoucherNo == accountID);
+
+                if (existingVoucher != null)
                 {
-                    try
+                    // ✅ Update existing record
+                    existingVoucher.VoucherAmount = openingBalance;
+                   
+
+                    await dbContext.SaveChangesAsync();
+
+                    return Json(new { success = true, message = "Opening balance updated successfully." });
+                }
+                else
+                {
+                    // ✅ Insert using stored procedure inside transaction
+                    using (var transaction = await dbContext.Database.BeginTransactionAsync())
                     {
-                        // Execute the stored procedure
-                        await dbContext.Database.ExecuteSqlRawAsync(
-                            "EXEC sp20115InsertOpeningBalanceVoucher @VoucherNo, @VoucherDate, @DebitAccount, @CreditAccount, @AddedBy, @AddedOn, @TotalAmount",
-                            new SqlParameter("@VoucherNo", accountID),
-                            new SqlParameter("@VoucherDate", voucherDate),
-                            new SqlParameter("@DebitAccount", debitAccount),
-                            new SqlParameter("@CreditAccount", creditAccount),
-                            new SqlParameter("@AddedBy", "admin"),
-                            new SqlParameter("@AddedOn", todayDate),
-                            new SqlParameter("@TotalAmount", openingBalance)
-                        );
+                        try
+                        {
+                            await dbContext.Database.ExecuteSqlRawAsync(
+                                "EXEC sp20115InsertOpeningBalanceVoucher @VoucherNo, @VoucherDate, @DebitAccount, @CreditAccount, @AddedBy, @AddedOn, @TotalAmount",
+                                new SqlParameter("@VoucherNo", accountID),
+                                new SqlParameter("@VoucherDate", voucherDate),
+                                new SqlParameter("@DebitAccount", debitAccount),
+                                new SqlParameter("@CreditAccount", creditAccount),
+                                new SqlParameter("@AddedBy", "admin"),
+                                new SqlParameter("@AddedOn", todayDate),
+                                new SqlParameter("@TotalAmount", openingBalance)
+                            );
 
-                        // Save changes
-                        //await dbContext.SaveChangesAsync();
-
-                        // Commit the transaction if everything goes well
-                        await transaction.CommitAsync();
-
-                        // Return success response
-                        return Json(new { success = true, message = "Opening balance voucher inserted successfully." });
-                    }
-                    catch (Exception ex)
-                    {
-                        // Rollback the transaction in case of an error
-                        await transaction.RollbackAsync();
-
-                        // Log the error for debugging
-                        // _logger.LogError($"Error inserting opening balance voucher: {ex.Message}");
-
-                        // Return error response with exception message
-                        return StatusCode(500, new { success = false, message = "An error occurred: " + ex.Message });
+                            await transaction.CommitAsync();
+                            return Json(new { success = true, message = "Opening balance voucher inserted successfully." });
+                        }
+                        catch (Exception ex)
+                        {
+                            await transaction.RollbackAsync();
+                            return StatusCode(500, new { success = false, message = "An error occurred during insertion: " + ex.Message });
+                        }
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Catch any unexpected exceptions and log them
-                // _logger.LogError($"Unexpected error: {ex.Message}");
-                return StatusCode(500, new { success = false, message = "An unexpected error occurred." });
+                return StatusCode(500, new { success = false, message = "An unexpected error occurred: " + ex.Message });
             }
         }
+
 
         [HttpPost("InsertOrUpdate")]
         public IActionResult InsertOrUpdate([FromBody] Tbl201ChartOfAccount chartAccount, string AccountGroupID)
