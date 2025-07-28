@@ -2156,7 +2156,7 @@
 		<div class="dx-field ledgerResult">
 			@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
-							.Height("45vh")
+							.Height("42vh")
 							.RemoteOperations(false)
 							.Columns(columns =>
 							{
@@ -9445,24 +9445,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
         });
     }
 
-        function loadCurrencyGridOnOpen(e) {
-        debugger;
-        const dropDown = e.component;
-        const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
-
-        if (!baseCurrencyId) return;
-
-        const grid = $("#currency-datagrid").dxDataGrid("instance");
-        if (!grid) return;
-
-        DevExpress.data.AspNet.createStore({
-            key: "CurrencyExchangeId",
-            loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
-        }).load().done(data => {
-            grid.option("dataSource", data);
-            dropDown.option("dataSource", data);
-        });
-    }
+     
 
 </script>
 
