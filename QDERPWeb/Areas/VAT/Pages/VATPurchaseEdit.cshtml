@@ -3683,13 +3683,13 @@
 					   caption: formatMessage('VAT Description'),
 					   cssClass: "center-header",
 					   width: 200,
-					     cellTemplate: function (container, options) {
-							getTaxSlabData().done(function (dropdownData) {
-								let found = dropdownData.find(d => d.TaxSlabCode == options.data.VATPercentage);
-								container.text(found ? found.TaxCodeToDisplay : "");
-							});
+					 //     cellTemplate: function (container, options) {
+						// 	getTaxSlabData().done(function (dropdownData) {
+						// 		let found = dropdownData.find(d => d.TaxSlabCode == options.data.VATPercentage);
+						// 		container.text(found ? found.TaxCodeToDisplay : "");
+						// 	});
 
-						},
+						// },
 					   editCellTemplate: function (cellElement, cellInfo) {
 						   getTaxSlabData().done(function (dropdownData) {
 							   $("<div>").appendTo(cellElement).dxDropDownBox({
