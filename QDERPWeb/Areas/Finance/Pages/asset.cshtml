@@ -1426,7 +1426,7 @@ bottom: -13px !important;
 
     function addScheduledTypeRow() {
         const ledgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
-        const maintenanceReading = $("#txtMaintenanceReading").dxNumberBox("instance").option("value");
+        var maintenanceReading = $("#txtMaintenanceReading").dxNumberBox("instance").option("value");
 
         if (!ledgerNo) {
             DevExpress.ui.notify("Asset Ledger No is required", "error", 3000);
@@ -1436,7 +1436,7 @@ bottom: -13px !important;
         const newRow = {
             AssetLedgerNo: ledgerNo,
             MaintenanceTypeId: 1,
-            MaintenanceReading: maintenanceReading,
+            MaintenanceReading: maintenanceReading != null ? maintenanceReading.toString() : null,  // Ensure it's a string
             MaintenanceDate: new Date().toISOString(),
             ReminderDate: new Date().toISOString(),
             IsMaintenanceDone: false,
