@@ -844,7 +844,8 @@
 								@(Html.DevExtreme().CheckBox()
 															.Text(new JS("formatMessage('Show VAT in Report')"))
 															.ID("ShowVATinReport")
-															.Value(null) // Default value
+															.Width("40%")
+															.Value(null)
 															)
 							</td>
 
@@ -1849,7 +1850,7 @@
 					.Columns(columns =>
 					{
 
-						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("ProjectSubUnitName").Caption(new JS("formatMessage('Project Unit Name')")).Alignment(HorizontalAlignment.Center).Width(360);
 
 					})
 					)

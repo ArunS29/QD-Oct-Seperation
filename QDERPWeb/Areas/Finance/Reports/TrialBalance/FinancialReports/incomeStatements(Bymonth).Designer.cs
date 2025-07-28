@@ -212,8 +212,8 @@
             this.xrLabel14.BackColor = System.Drawing.Color.Transparent;
             this.xrLabel14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[Parameters.CompanyName]\n\n\n")});
-            this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Times New Roman", 10F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel14.ForeColor = System.Drawing.Color.Black;
+            this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Arial", 8F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel14.ForeColor = System.Drawing.SystemColors.WindowFrame;
             this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(0F, 5F);
             this.xrLabel14.Multiline = true;
             this.xrLabel14.Name = "xrLabel14";

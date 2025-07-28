@@ -843,6 +843,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
         [HttpGet]
+        public IActionResult IMSCalculator(decimal amount)
+        {
+            // Use the amount value in your logic/view
+            ViewBag.Amount = amount;
+            return PartialView("~/Areas/IMS/Pages/IMSDiscountCalculator.cshtml");
+        }
+        [HttpGet]
         public async Task<IActionResult> CheckIfApproved(string QuoteNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

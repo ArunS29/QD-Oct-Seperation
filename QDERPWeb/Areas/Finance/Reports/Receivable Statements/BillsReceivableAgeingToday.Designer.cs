@@ -172,9 +172,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
-            this.xrPictureBox10 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox9 = new DevExpress.XtraReports.UI.XRPictureBox();
-            this.xrPictureBox8 = new DevExpress.XtraReports.UI.XRPictureBox();
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel24 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel13 = new DevExpress.XtraReports.UI.XRLabel();
@@ -1711,9 +1708,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             // ReportFooter
             // 
             this.ReportFooter.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrPictureBox10,
-            this.xrPictureBox9,
-            this.xrPictureBox8,
             this.xrLabel2,
             this.xrLabel24,
             this.xrLabel13,
@@ -1728,33 +1722,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
             this.xrLabel5});
             this.ReportFooter.HeightF = 69.0389F;
             this.ReportFooter.Name = "ReportFooter";
-            // 
-            // xrPictureBox10
-            // 
-            this.xrPictureBox10.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrPictureBox10.LocationFloat = new DevExpress.Utils.PointFloat(576.8152F, 2F);
-            this.xrPictureBox10.Name = "xrPictureBox10";
-            this.xrPictureBox10.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
-            this.xrPictureBox10.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox10.StylePriority.UseBorderDashStyle = false;
-            // 
-            // xrPictureBox9
-            // 
-            this.xrPictureBox9.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrPictureBox9.LocationFloat = new DevExpress.Utils.PointFloat(469.9257F, 3.067596F);
-            this.xrPictureBox9.Name = "xrPictureBox9";
-            this.xrPictureBox9.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
-            this.xrPictureBox9.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox9.StylePriority.UseBorderDashStyle = false;
-            // 
-            // xrPictureBox8
-            // 
-            this.xrPictureBox8.BorderDashStyle = DevExpress.XtraPrinting.BorderDashStyle.Dot;
-            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(370.1853F, 4.067596F);
-            this.xrPictureBox8.Name = "xrPictureBox8";
-            this.xrPictureBox8.SizeF = new System.Drawing.SizeF(11.97F, 14.08F);
-            this.xrPictureBox8.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
-            this.xrPictureBox8.StylePriority.UseBorderDashStyle = false;
             // 
             // xrLabel2
             // 
@@ -2152,9 +2119,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox2;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox4;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox3;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox10;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox9;
-        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox8;
         private DevExpress.XtraReports.UI.XRLabel xrLabel53;
         private DevExpress.XtraReports.UI.XRLabel xrLabel54;
         private DevExpress.XtraReports.UI.XRLabel xrLabel55;
