@@ -4996,15 +4996,58 @@ function syncSupVATNumbers(e) {
       }
 
 
-        function GoToAttachment() {
+    function GoToAttachment() {
+        var button = $("#btnSave").dxButton("instance");
+        var buttonText = button ? button.option("text") : "";
+
+        console.log("Button Text:", buttonText); // Debugging to check button text
+
+        // Close popup ONLY IF the button text is NOT "Update"
+        if (buttonText !== "Update") {
+            DevExpress.ui.dialog.alert(
+                "Not allowed to Add Attachments. Please first save AccountHead",
+                "Data Not Found"
+            );
+            return;
+        }
+
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
         var module = "Ledger Account";
-        var isMaster = true;
+        var isMaster = false;
+        var openingBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
+        var dropDown = $('#ddlAccountGroup').dxDropDownBox("instance");
+        var isAssetGroupText = dropDown.option("displayValue");
 
+        // If it's an array (common in DropDownBox), convert to string
+        if (Array.isArray(isAssetGroupText)) {
+            isAssetGroupText = isAssetGroupText[0] || "";
+        }
 
+        var isAssetGroupMatch = (isAssetGroupText || "").toLowerCase().includes("asset");
 
-            window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
+        console.log("Display Text:", isAssetGroupText);
+        console.log("Asset Group Match:", isAssetGroupMatch);
+
+       
+        console.log("Opening Balance:", openingBalance);
+        
+
+        // Set module based on asset group or opening balance
+        if (isAssetGroupMatch) {
+            isMaster = true;
+            module = "Fixed Assets";
+        } else if (openingBalance > 0 && !isAssetGroupMatch) {
+            isMaster = false;
+            module = "Ledger Account";
+        } else if (openingBalance <= 0 && !isAssetGroupMatch) {
+            isMaster = true;
+            module = "Ledger Account";
+        }
+
+        // Redirect
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
     }
+
 
      function onPostButtonClick(e) {
     

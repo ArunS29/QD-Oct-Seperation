@@ -274,6 +274,11 @@
             <div class="step-label">Approved</div>
             <div class="step-status-msg">Pending</div>
         </div>
+        @* <div class="workflow-step" id="step-approve">
+            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
+            <div class="step-label">Posted</div>
+            <div class="step-status-msg">Pending</div>
+        </div> *@
 
         <div id="verifyPopover" class="popover-box">
             Verified by: <span id="verifiedByName"></span><br>
@@ -331,7 +336,7 @@
                 .Text(new JS("formatMessage('Attach')"))
                 .Width(132)
                 .Icon("link")
-                              //.OnClick("onAttachButtonClick")
+                .OnClick("onAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>

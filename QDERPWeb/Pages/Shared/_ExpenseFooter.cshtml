@@ -1040,15 +1040,7 @@
                 }
             });
         }
-    function onAttachmentButtonClick() {
-        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        var voucherType = $("#VoucherNo").dxTextBox("instance").option("value");
-        console.log(voucherType)
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Ledger Documents";
-        openModal(url, title);
-    }
-
+    
 
 
 </script>

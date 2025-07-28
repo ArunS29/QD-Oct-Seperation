@@ -402,6 +402,10 @@
 		.context-menu-itemInvoice:not(:last-child) {
 			border-bottom: 1px solid #e0e0e0;
 		}
+		.footer-fixed
+	{
+		bottom:35px!important;
+	}
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -1960,7 +1964,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height("45vh")
+									.Height("39vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -6432,7 +6436,7 @@ openModal(url, title);
 		};
 	});
 
-
+										
 										// ✅ Now safely initialize the grid here
 										initializeDataGrid(rowData);
 									},
@@ -6440,6 +6444,8 @@ openModal(url, title);
 										console.error("Error fetching grid data:", error);
 									}
 								});
+									 isVoucherSaved = true; // Mark Updated step as done
+								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 						  DevExpress.ui.dialog.alert(
 					"Credit Note Details updated Successfully.",
 					"Update successful"
@@ -6948,6 +6954,8 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 						).done(() => {
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+														initWorkflowTippyPopovers();
+
 						});
 					}
 					else {
@@ -7040,6 +7048,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 							disableEditing();
 							$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 							$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+														initWorkflowTippyPopovers();
 
 							if (IsDirect === true) {
 								$("#VerifiedBy").dxCheckBox("instance").option("value", true);
@@ -7685,6 +7694,126 @@ $(document).ready(function () {
 					});
 				}
 
+					          let isVoucherSaved = false;
 
+       function getWorkflowStatusFromFields() {
+        const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
+        const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+
+        if (approved) return 3; // Final state
+        if (verified) return 2;
+        if (isVoucherSaved) return 1;
+
+        return 0;
+    }
+
+
+     function updateWorkflowVisual(status) {
+        const steps = [
+            { id: "step-update", icon: "fas fa-user" },
+            { id: "step-verify", icon: "fas fa-briefcase" },
+            { id: "step-approve", icon: "fas fa-file-alt" }
+        ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = "In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = "Pending";
+            }
+
+            // Final Approved state
+            if (status === 3 && index === 2) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+        function attachWorkflowWatchers() {
+            $("#VerifiedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+            $("#ApprovedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+        }
+
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+
+
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+
+        const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
+        const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
+        const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
+
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+    }
+
+     
 </script>
 
