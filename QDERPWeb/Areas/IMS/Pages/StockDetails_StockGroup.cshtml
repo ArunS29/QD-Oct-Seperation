@@ -131,6 +131,11 @@
     .playIcon {
         display: none;
     }
+
+
+    .dx-button{
+        background: #98AFC7 !important;
+    }
     </style>
 
 @* <div class="title">
@@ -354,7 +359,7 @@
                     .Text(new JS("formatMessage('Add')"))
                     .Type(ButtonType.Success)
                      .ElementAttr(new { @class = "custom-ui-button" })
-                    .Width(60)
+                     .Width(100)
                     )
             </td>
         </tr> 
@@ -365,94 +370,6 @@
     <table style="width:100%;">
         <tr>
             <td>
-            @*    @(Html.DevExtreme().DataGrid<Tbl20165GoodsAndServicesGroup>()
-                    .ID("dataGrid")
-                    .DataSource(ds => ds.Mvc()
-                    .Controller("StockInventory")
-                    .LoadAction("GoodsServicesData")
-                    .UpdateAction("UpdateGoodsService")
-                    .Key("GsgroupId")
-                    )
-                    .RemoteOperations(false)
-                    .Height(400)
-
-                    .Editing(editing =>
-                    {
-                        editing.Mode(GridEditMode.Row);
-                        editing.AllowUpdating(true);
-                        editing.UseIcons(true);
-                           
-                    })
-                                .Columns(columns =>
-                    {
-                        columns.AddFor(m => m.GsgroupId)
-                        .Caption(new JS("formatMessage('Code')"))
-                        .Visible(false)
-                        .Alignment(HorizontalAlignment.Center)
-                        .AllowEditing(false); // Optional
-                        columns.AddFor(m => m.GsgroupCode)
-                        .Caption(new JS("formatMessage('Code')"))
-                        .Alignment(HorizontalAlignment.Center)
-                        .AllowEditing(false); // Optional
-
-                        columns.AddFor(m => m.GsgroupName)
-                        .Caption(new JS("formatMessage('GS Group')"))
-                        .Alignment(HorizontalAlignment.Center);
-
-                        columns.AddFor(m => m.GsgroupNameAr)
-                        .Caption(new JS("formatMessage('GS Group (In Arabic)')"))
-                        .Alignment(HorizontalAlignment.Center);
-
-                        columns.AddFor(m => m.Gscategory)
-                        .Caption(new JS("formatMessage('Category')"))
-                        .Alignment(HorizontalAlignment.Center);
-
-              
-
-                                    columns.AddFor(m => m.InventoryMasterGroupId)
-                                    .Caption(new JS("formatMessage('Inventory Master Groups')"))
-                                    .Width(200)
-                                    .Lookup(lookup => lookup
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("StockInventory")
-                                    .LoadAction("GetInventoryMasterGroups")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("InventoryMasterGroupId")
-                                    )
-                                    .ValueExpr("InventoryMasterGroupId")     // Must match the value in your model
-                                    .DisplayExpr("InventoryMasterGroup")     // The user-friendly name
-                                    );
-
-
-                        columns.AddFor(m => m.IsServicesGroup)
-                        .Caption(new JS("formatMessage('Is Services?')"))
-                        .Alignment(HorizontalAlignment.Center)
-                        .DataType(GridColumnDataType.Boolean)
-                        .CellTemplate(new JS(
-                    @"function(container, options) {
-                var data = options.data;
-                $('<input>', {
-                type: 'checkbox',
-                checked: data.IsServicesGroup,
-                change: function(e) {
-                onIsServicesChanged(data.GsgroupId, e.target.checked);
-                }
-                }).appendTo(container);
-                }"));
-                                
-                    })
-                    .ShowColumnLines(true)
-                    .ShowRowLines(true)
-                    .RowAlternationEnabled(true)
-                    .ShowColumnHeaders(true)
-                    .ColumnAutoWidth(true)
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(fixing => fixing.Enabled(true))
-                    .GroupPanel(groupPanel => groupPanel.Visible(false))
-                    .ShowBorders(true)
-                    )  *@
-
                @(Html.DevExtreme().DataGrid()
                                 .ID("dataGrid")
                                         .KeyExpr("GsgroupId")
@@ -485,7 +402,7 @@
                                 })
 
 
-                              .OnRowUpdating("onProjectUpdating")                       // Handles saving
+                              .OnRowUpdating("onProjectUpdating")                   
                                 .Columns(columns =>
                                 {
                                     columns.Add().DataField("GsgroupId").Caption("Code").Visible(false).Alignment(HorizontalAlignment.Center).AllowEditing(false);
@@ -561,8 +478,25 @@
             </td>
         </tr>
     </table>
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
+
+
+    <div class="footer-fixed" style="display:flex; justify-content: space-between;">
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+                .ID("btnUpdate")
+                .Text(new JS("formatMessage('Update')"))
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                )
+        </div>
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
+        </div>
     </div>
 
 

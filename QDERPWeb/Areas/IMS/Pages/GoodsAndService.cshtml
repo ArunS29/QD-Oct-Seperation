@@ -250,12 +250,9 @@
         </div>
 
         </div>
-    <div class="Head">
-        <div class="limited-footer">
-            @await Html.PartialAsync("InventoryModuleFooter")
 
-        </div> 
-       @*  <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
+        <div class="footer-fixed" style="display:flex; gap:80px;">
+        
             @(Html.DevExtreme().Button()
                 .ID("btnSave")
                 .Text("Save")
@@ -263,7 +260,7 @@
                 .Type(ButtonType.Success)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .OnClick("onSaveClientMasterClick")
-                .ElementAttr("style", "color: black;")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save" })
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnSaveandClose")
@@ -272,35 +269,28 @@
                 .Type(ButtonType.Success)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .OnClick("onSaveClientMasterClick")
-                .ElementAttr("style", "color: black;")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
                 )
 
-            @(Html.DevExtreme().Button()
-                .ID("btnDelete")
-                .Text(new JS("formatMessage('Delete')"))
-                .Type(ButtonType.Danger)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("trash")
-                .ElementAttr("style", "color: black;")
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btnPrint")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .Type(ButtonType.Default)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .ElementAttr("style", "color: black;")
-                )
+         
             @(Html.DevExtreme().Button()
                 .ID("btnBack")
                 .Text(new JS("formatMessage('Back')"))
                 .Icon("arrowleft")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Outlined)
-                .ElementAttr("style", "color: black;")
+                        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                        )
+            @(Html.DevExtreme().Button()
+                .ID("btnDelete")
+                .Text(new JS("formatMessage('Delete')"))
+                .Type(ButtonType.Danger)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("trash")
+                        .ElementAttr(new { @class = "dx-button-custom btn-delete" })
                 )
-        </div> *@
-    </div>
+        </div> 
+
     @using (Html.DevExtreme().NamedTemplate("GoodsandServicesContentTemplate"))
     {
         @(Html.DevExtreme().DataGrid()
@@ -739,14 +729,13 @@ function bindGoodsAndServiceData() {
     }
 }
 
-// Call this function on page load (for direct navigation)
-$(function () {
-    bindGoodsAndServiceData();
-});
-function Unitofmeasure(){
-        window.location.href=`/${tenantName}/IMS/UnitOfMeasure`;
-       
-}
-// If your modal loads content via AJAX, make sure to call bindGoodsAndServiceData() after the modal content is loaded.// After modal content is loaded:
+        $(function () {
+            bindGoodsAndServiceData();
+        });
+        function Unitofmeasure(){
+                const url = `/${tenantName}/IMS/UnitOfMeasure`;
+                const title = "Unit Of Measure";
+                        openModal(url, title ,"","75%");
+        }
 
 </script>

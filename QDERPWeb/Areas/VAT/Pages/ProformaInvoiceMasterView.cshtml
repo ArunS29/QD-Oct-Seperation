@@ -148,10 +148,11 @@
 		z-index: 1000;
 	}
 
+
 	.context-menu-item {
 		/* display: flex; */
 		align-items: center;
-		padding: 10px 15px;
+		padding: 10px 15px; 
 		font-size: 14px;
 		cursor: pointer;
 		transition: background 0.2s ease-in-out;
@@ -239,16 +240,14 @@
 </div>
 
 <div class="context-menu" id="contextMenu">
-	<div class="context-menu-item" onclick="viewInvoice('2025-000001')">
-		<i class="dx-icon-search"></i>Edit Proforma Invoice
+	<div class="context-menu-item" onclick="viewInvoice()">
+		<i class="dx-icon-edit"></i> Edit Proforma Invoice
 	</div>
-
-
-	<div class="context-menu-item" onclick="cancelInvoice()">
+	<div class="context-menu-item" onclick="DeleteProformaInvoice()">
 		<i class="dx-icon-close"></i> Delete Proforma Invoice
 	</div>
-	<div class="context-menu-item" onclick="unlockInvoice()">
-		<i class="dx-icon-file"></i> Unlock Proforma Invoice
+	<div class="context-menu-item" onclick="UnlockInvoice()">
+		<i class="dx-icon-unlocked"></i> Unlock Proforma Invoice
 	</div>
 	<div class="context-menu-item" onclick="cloneEInvoice()">
 		<i class="dx-icon-copy"></i> Duplicate Proforma Invoice
@@ -498,7 +497,8 @@
 		.ColumnAutoWidth(true)
 		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.Width("98%")
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		@* .WordWrapEnabled(true) *@
+		//.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
@@ -709,7 +709,26 @@
 		});
 	});
 
-		function ddBtnShowRecords_click(duration) {
+		
+	// Assuming tenantName is already defined globally
+	let invoiceNo = null,InvoiceStatus=null;
+	let IsEdit = false;
+
+	function viewInvoice() {
+		if (!invoiceNo) {
+			alert("Invoice number is not set.");
+			return;
+		}
+
+		IsEdit = true;
+
+		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?ProformaInvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+	
+		window.location.href = url; // Navigate to the page
+
+	}
+
+	function ddBtnShowRecords_click(duration) {
 		const frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		const toDateBox = $("#todateBox").dxDateBox("instance");
 
@@ -1081,5 +1100,166 @@
 
 
 
+
+	
+
+	// Start "Today" count immediately
+	animateCount(countEls[0], counts[0]);
+
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  // Change background class
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  // Animate count
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// Auto-start animation for "Today"
+	animateCount(countEls[0], counts[0]);
+
+	function UnlockInvoice() {
+
+			if (InvoiceStatus === "Posted") {
+		DevExpress.ui.notify(
+			"This Proforma Invoice is already made as VAT Invoice, Please Delete the VAT Invoice and Continue",
+			"error",
+			3000
+		);
+		return;
+	          }
+
+		DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Purchase Bill?", "Confirm Unlock")
+			.done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+						url: '/api/VATModule/UpdateToProformaUnlocktheBil',
+						method: 'POST',
+						data: { invoiceNo: invoiceNo },
+						success: function (response) {
+							if (response) {
+
+								DevExpress.ui.notify("Proforma Invoice has been unlocked successfully.", "success",2000);
+								// Optionally refresh the grid or perform additional actions
+							} else {
+								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
+							}
+						},
+						error: function () {
+							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
+						}
+					});
+				}
+			});
+	}
+
+
+		function DeleteProformaInvoice() {
+		if (InvoiceStatus=="Approved") {
+			DevExpress.ui.notify("Proforma Invoice is already approved, You cannot delete the Approved Invoice", "error", 2000);
+			return;
+		}
+
+		DevExpress.ui.dialog.confirm("You are about to delete the Proforma Invoice from the Register,Click yes if you would like to continue.", "Delete Confirmation")
+			.done(function (dialogResult) {
+				if (dialogResult) {
+					// Using jQuery AJAX
+					$.ajax({
+						url: '/api/VATModule/DeleteProformaInvoiceMasterView',
+						type: 'POST',
+						data: { proformaInvoiceNo: invoiceNo },
+						success: function (response) {
+							DevExpress.ui.notify(response.message || "Proforma Invoice has been successfully removed from the database", "success", 2000);
+							// Refresh grid or UI
+							if (typeof refreshGrid === "function") {
+								refreshGrid();
+							}
+						},
+						error: function (xhr) {
+							let errorMessage = xhr.responseJSON?.message || "Error deleting invoice.";
+							DevExpress.ui.notify(errorMessage, "error", 3000);
+						}
+					});
+				}
+			});
+	}
+		function refreshGrid() {
+		$("#dataGrid").dxDataGrid("instance").refresh();
+	}
+
+
+
+
+
+	 function cloneEInvoice() {
+
+		if (!invoiceNo) {
+			alert("InvoiceNo is required.");
+			return;
+		}
+
+			DevExpress.ui.dialog.confirm("You are about to Duplicate this Proforma Invoice,Are you Sure want to Continue?", "Confirm Duplication.")
+			.done(function (dialogResult) {
+				if (dialogResult) {
+					$.ajax({
+						//url: `/api/VATModule/UpdateToPurchaseUnlocktheBil?InvoiceNo=${encodeURIComponent(vno)}&IsDirectVerify=${encodeURIComponent(IsDirectVerify)}`,
+						url: '/api/VATModule/InsertProformaCloneEInvoice',
+						method: 'POST',
+						data: { invoiceNo: invoiceNo },
+						success: function (response) {
+							if (response) {
+
+								DevExpress.ui.notify("Proforma Invoice has been successfully added to the database.","success", 2000);
+								// Optionally refresh the grid or perform additional actions
+								$("#dataGrid").dxDataGrid("instance").refresh();
+							} else {
+								DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
+							}
+						},
+						error: function () {
+							DevExpress.ui.notify("Server error while unlocking the invoice.", "error", 3000);
+						}
+					});
+				}
+			});
+	}
+
+
+		$(function () {
+		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+			width: 600,
+			height: 400,
+			showTitle: true,
+			title: "Details",
+			visible: false,
+			dragEnabled: true,
+			closeOnOutsideClick: true,
+			contentTemplate: function () {
+				return $("<div>").attr("id", "popupFormContent");
+			}
+		}).dxPopup("instance");
+		var contextMenu = $("#contextMenu");
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+		$("#dataGrid").customizeGridContextMenu();
+		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			var rowIndex = $(this).index();
+			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+			invoiceNo = rowData.ProformaInvoiceNo;
+			InvoiceStatus = rowData.InvoiceStatus;
+			console.log("Proforma",rowData);
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
 
 </script>

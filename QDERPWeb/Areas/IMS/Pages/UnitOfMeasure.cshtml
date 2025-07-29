@@ -28,7 +28,6 @@
         .dx-field {
             display: flex;
             flex-direction: column;
-            gap: 5px;
             margin-left:10px;
         }
 
@@ -226,7 +225,7 @@
             .AllowColumnResizing(true)
             .Paging(p => p.Enabled(false))
             .HeaderFilter(filter => filter.Visible(false))
-            .Height(330)
+            .Height("45vh")
             .SearchPanel(p => p.HighlightSearchText(true)) 
             .FilterRow(filterRow => filterRow.Visible(false))
             .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -243,25 +242,33 @@
     </div>
 
 
-    <div class="Head">
-        <div class="limited-footer">
-            @await Html.PartialAsync("InventoryModuleFooter")
+        <div class="footer-fixed" style="display:flex; gap:20px;">
+            <div class="btn-container">
+                @(Html.DevExtreme().Button()
+                                .ID("btnSave")
+                                .Text(new JS("formatMessage('Save')"))
+                                .Type(ButtonType.Normal)
+                                .StylingMode(ButtonStylingMode.Outlined)
+                                .Icon("save")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                                )
+
+            </div>
+            <div class="btn-container">
+
+                @(Html.DevExtreme().Button()
+                                .ID("btnBack")
+                                .Text(new JS("formatMessage('Back')"))
+                                .Icon("arrowleft")
+                                                   // .OnClick("onBackButtonClick")
+                        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                        )
+            </div>
         </div>
-    </div>
 </body>
 </html>
 <script>
      $(document).ready(function () {
-
-        $(".limited-footer .btn-container").each(function () {
-
-            if (!$(this).find("#btnSave, #btnBack").length) {
-                $(this).remove();
-            }
-
-        });
-
-        // Handle Back button click
         $(document).on('click', '#btnBack', function () {
             window.parent.closeModal();
         });

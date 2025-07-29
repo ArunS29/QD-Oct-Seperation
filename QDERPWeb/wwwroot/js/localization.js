@@ -1,6 +1,12 @@
 ﻿
 var dictionary = {
+
     "en": {
+        "Cash/Creditors Account":"Cash/Creditors Account",
+        "ID": "ID",
+        "Code": "Code",
+        "Category":"Category",
+
         "Code": "Code",
         "Sub Group Name": "Sub Group Name",
         "Notes": "Notes",
@@ -5341,6 +5347,10 @@ var dictionary = {
         "Cost Center Summary Reports": "تقارير ملخص مركز التكلفة",
         "Cost Center Detailed Reports": "تقارير تفصيلية لمركز التكلفة",
         "PropertyNo": "رقم العقار",
+       "Cash/Creditors Account": "حساب نقدي / الدائنين",
+        "ID": "المعرف",
+       "Code": "الرمز",
+        "Category": "الفئة",
         "Asset Register": "سجل الأصول",
         "Created By": "تم الإنشاء بواسطة",
         "Modified On": "تم التعديل في",

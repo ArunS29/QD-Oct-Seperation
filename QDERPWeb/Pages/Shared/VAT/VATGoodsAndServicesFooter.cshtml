@@ -155,7 +155,8 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .ElementAttr(new { @class = "bold-button" })
+            .OnClick("onSaveClicked")// Apply custom CSS class
                                                          // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
             )
 

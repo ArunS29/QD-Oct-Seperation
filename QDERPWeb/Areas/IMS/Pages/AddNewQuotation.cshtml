@@ -5913,8 +5913,8 @@ AddlDescription: null,
       url: `/api/AddNewQuotation/SubmitQuotation?QuoteNo=${encodeURIComponent(quoteNo)}`,
       contentType: "application/json",
       success: function (response) {
-        DevExpress.ui.dialog.alert("Quotation has been submitted for approval.", "Submit Successful")
-          .done(() => {
+       DevExpress.ui.notify("Quotation has been submitted for approval.", "success", 3000);
+         
             const preparedByBox = $("#ddPreparedby").dxDropDownBox("instance");
             if (preparedByBox && response.VoucherApprovedBy) {
               preparedByBox.option("value", response.VoucherApprovedBy);
@@ -5922,7 +5922,7 @@ AddlDescription: null,
               preparedByBox.repaint();                // re-render the UI :contentReference[oaicite:2]{index=2}
             }
             // Optionally: location.reload();
-          });
+         
       },
       error: function () {
         $btn.prop("disabled", false);
@@ -6006,7 +6006,8 @@ AddlDescription: null,
           approvedByBox.repaint();              // update display text
         }
 
-        DevExpress.ui.dialog.alert(response.message, "Verified");
+       DevExpress.ui.notify("Quotation has been verified and processed for Approval.", "success", 3000);
+
       } else {
         DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
         verifyButton.option("disabled", false);
@@ -6090,16 +6091,14 @@ AddlDescription: null,
                     }
                 }
 
-                DevExpress.ui.dialog.alert(response.Message, "Approved")
-                    .done(() => {
-                        hideAllButtonsExcept([
-                            "btnPrint",
-                            "ddButtonLayout",
-                            "btnBack",
-                            "btnAttach"
-                        ]);
-                      
-                    });
+           DevExpress.ui.notify("Quotation has been Approved.", "success", 3000);
+hideAllButtonsExcept([
+    "btnPrint",
+    "ddButtonLayout",
+    "btnBack",
+    "btnAttach"
+]);
+
             } else {
                 DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
                 approveBtn.option("disabled", false);

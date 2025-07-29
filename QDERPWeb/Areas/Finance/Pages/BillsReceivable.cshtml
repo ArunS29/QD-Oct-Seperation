@@ -697,7 +697,68 @@
 
         });
     }
+    function refreshKpiCards() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        if (!grid) return;
+
+        const dataSource = grid.getDataSource();
+        const data = dataSource.items();
+
+        // Check if grid data is actually loaded
+        if (!data || !Array.isArray(data) || data.length === 0) {
+            console.warn("Grid data not ready for KPI calculation.");
+            return;
+        }
+
+        let totalBalance = 0;
+        let totalInvoiced = 0;
+        let totalReceived = 0;
+
+        data.forEach(item => {
+            totalBalance += item?.ConvertedBalance || 0;
+            totalInvoiced += item?.ConvertedReceivableAmount || 0;
+            totalReceived += item?.ConvertedReceived || 0;
+        });
+
+        const format = (val) => val.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+
+        // Balance Card
+        const balanceSpans = document.querySelectorAll("#cardBalance .value-slider span");
+        if (balanceSpans.length >= 3) {
+            balanceSpans[0].innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="..."/></svg> ${format(totalBalance)}`;
+            balanceSpans[1].textContent = format(totalBalance);
+            balanceSpans[2].textContent = format(totalBalance);
+        }
+
+        // Debit Card
+        const debitSpans = document.querySelectorAll("#cardDebit .value-slider span");
+        if (debitSpans.length >= 3) {
+            debitSpans[0].innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="..."/></svg> ${format(totalInvoiced)}`;
+            debitSpans[1].textContent = format(totalInvoiced);
+            debitSpans[2].textContent = format(totalInvoiced);
+        }
+
+        // Credit Card
+        const creditSpans = document.querySelectorAll("#cardCredit .value-slider span");
+        if (creditSpans.length >= 3) {
+            creditSpans[0].innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="..."/></svg> ${format(totalReceived)}`;
+            creditSpans[1].textContent = format(totalReceived);
+            creditSpans[2].textContent = format(totalReceived);
+        }
+    }
 
 
+       $(function () {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+
+        grid.option("onContentReady", function () {
+            const data = grid.getDataSource().items();
+
+            if (data && data.length > 0) {
+                refreshKpiCards(data); // pass data directly
+            }
+
+        });
+    });
 </script>
 

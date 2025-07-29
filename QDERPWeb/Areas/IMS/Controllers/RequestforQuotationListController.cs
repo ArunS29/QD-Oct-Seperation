@@ -68,6 +68,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalBeforeTax,
                         i.TotalDiscount,
                         i.TotalAfterDiscount,
+
                     }).ToListAsync();
 
                     return Json(data);
@@ -906,6 +907,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 int nextNumber = maxNumber + 1;
                 string newPoNo = $"{basePrefix}{nextNumber.ToString().PadLeft(noOfDigits, '0')}";
+                // ✅ Step 4: Mark RFQ child items as IsWonForPO = 1 (so SP will insert them)
+                List<Tbl60702rfqchild> rfqChildren = await dbContext.Tbl60702rfqchildren
+      .Where(c => c.Rfqno == rfqNo)
+      .ToListAsync();
+
+                foreach (var item in rfqChildren)
+                {
+                    item.IsWonForPo = true;
+                }
+                await dbContext.SaveChangesAsync();
 
                 // Step 4: Execute stored procedure to insert PO from RFQ
                 await dbContext.Database.ExecuteSqlRawAsync(
@@ -1003,6 +1014,68 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { Message = "Invalid tenant.", Success = false });
 
+        }
+
+        //Detailed Description
+        [HttpGet]
+        public async Task<IActionResult> GetdataByGSCode(string GSCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (string.IsNullOrEmpty(GSCode))
+                    return BadRequest("GSCode  is required.");
+
+                try
+                {
+
+                    var client = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(c => c.Gscode == GSCode)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("GS data not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetGSData: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public IActionResult GetGSCodeDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var description = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.Gsdescrpition)
+                    .FirstOrDefault();
+
+                return Ok(description ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
+        }
+
+        [HttpGet]
+        public IActionResult GetGSCodeDetailedDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var detailedDesc = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.GsdetailedDesc)
+                    .FirstOrDefault();
+
+                return Ok(detailedDesc ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
         }
     }
 }

@@ -9,7 +9,7 @@
 		display: none;
 	}
     .ledgerResult {
-        overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+        overflow-x: auto;
         width: 100%;
     }
     .dx-tabpanel .dx-tab {
@@ -106,30 +106,6 @@
     .select-box {
         width: 20vh;
     }
-
-    .imagecontainer {
-        background-color: #e0f7fa;
-        border: 1px solid #90caf9;
-        height: 200px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        overflow: hidden;
-        position: relative;
-    }
-
-        .imagecontainer img {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-        }
-
-        .imagecontainer span {
-            color: #555;
-            font-style: italic;
-            position: absolute;
-        }
 
     .flex-row {
         display: flex;
@@ -463,9 +439,9 @@
 							.Label(new JS("formatMessage('RFQ Remarks:')"))
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
-							.RtlEnabled(true) // Enables right-to-left text direction
-							.Spellcheck(true) // Enables browser-based spell checking
-							.MaxLength(500) // Sets maximum character limit
+							.RtlEnabled(true) 
+							.Spellcheck(true) 
+							.MaxLength(500) 
   )
 
                         <div class="d-flex gap-1 mt-1">
@@ -1309,6 +1285,7 @@
 		function initializeDataGrid(rowData) {
 
 			let grid = $("#B2BdataGrid").dxDataGrid({
+				focusedRowEnabled: true,
 				dataSource: rowData,
 				keyExpr: "LineOrderNo",
 				// âœ… your columns, editing, dropdowns, and templates go here, unchanged
@@ -1429,6 +1406,12 @@
 												height: 300, // âœ… Add fixed height to enable scrolling
 
 												scrolling: { mode: "virtual" },
+												searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 
 												columns: [
 
@@ -1542,7 +1525,36 @@
 
 						},
 
-						{ dataField: "Descriptions", caption: "...", width: 50 },
+						{
+					dataField: "Descriptions",
+					caption: "...",
+					   cssClass: "center-header",
+					width: 90,
+					allowEditing: true,
+							cellTemplate: function (container, options) {
+
+
+							$("<div>").dxButton({
+								icon: "user", // Built-in DevExtreme icon
+								hint: "Edit IMS Details Description",
+								stylingMode: "text",
+
+								width: 60,
+									onClick: function () {
+								const gsCode = options.data.Gscode;
+							console.log("GSCode:", gsCode);
+								const MprchildSlNo = options.data.MprchildSlNo;
+
+							window.currentDescriptionCell = options;
+
+											let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
+							let title = "Details Description";
+
+							openModal(url, title);
+						}
+							}).appendTo(container);
+						}
+						},
 
 						{
 
@@ -1606,7 +1618,12 @@
 												height: 300,
 
 												scrolling: { mode: "virtual" },
-
+												searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 												columns: [
 
 														{ dataField: "UnitCode", caption: "Code", width: 80 },
@@ -1928,6 +1945,12 @@
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+										searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 
 										columns: [
 
@@ -2041,7 +2064,34 @@
 
 				},
 
-				{ dataField: "Descriptions", caption: "...", width: 50 },
+						{
+				dataField: "Descriptions",
+				caption: "...",
+				   cssClass: "center-header",
+				width: 90,
+				allowEditing: true,
+						cellTemplate: function (container, options) {
+								// const quoteChildId = options.data.ItemNo;
+						$("<div>").dxButton({
+							icon: "user", // Built-in DevExtreme icon
+							hint: "Edit IMS Details Description",
+							stylingMode: "text",
+
+							width: 60,
+								onClick: function () {
+							const gsCode = options.data.Gscode;
+						console.log("GSCode:", gsCode);
+
+						window.currentDescriptionCell = options;
+
+							let url = `/${tenantName}/IMS/DetailedDescriptionRFQ?gsCode=${encodeURIComponent(gsCode)}`;
+						let title = "Details Description";
+
+						openModal(url, title);
+					}
+						}).appendTo(container);
+					}
+					},
 
 				{
 
@@ -2104,6 +2154,12 @@
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+										searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 
 										columns: [
 
@@ -2174,7 +2230,13 @@
 
 				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150 },
 				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150 },
-					{
+
+				{ dataField: "AddlDescription", visible: false },
+		{ dataField: "QuotationRemarks", visible: false },
+		{ dataField: "DeliveryPeriod", visible: false },
+		{ dataField: "PlanNo", visible: false },
+	
+		{
 			type: "buttons",
 			caption: "Delete",
 			width: 80,
@@ -2272,7 +2334,13 @@
 	UnitPrice:0.00,
 	LineTotalBeforeTax:0.00,
 	ItemDiscount:0,
-	LineTotalAfterDisc:0.00
+	LineTotalAfterDisc:0.00,
+
+
+	AddlDescription: null,
+				QuotationRemarks: null,
+				DeliveryPeriod: null,
+				PlanNo: null
 			};
 
 			// Efficient insert without replacing entire dataSource
@@ -3062,16 +3130,7 @@
 						readOnly: true
 					});
 				});
-				$(function () {
-					$("#ProformaInvoiceEditForm").dxTextBox({
-						text: formatMessage("Proforma Invoice Edit Form"),
-						readOnly: true,
-						onContentReady: function(e) {
-						$(e.element).addClass("dx-textcolor-heading");
-						}
-
-					});
-				});
+				
 				$(function () {
 					$("#OpeningBalance").dxTextBox({
 						text: formatMessage("Opening Balance:"),
@@ -4579,7 +4638,8 @@
                 contentType: "application/json",
                 success: function (response) {
 					//disableEditing();
-                    DevExpress.ui.dialog.alert("RFQ has been submitted for Approval.", "Submit Successful");
+                  DevExpress.ui.notify("RFQ has been submitted for Approval.", "success", 3000);
+
                     // Update UI elements as needed
                 },
                 error: function (xhr, status, error) {
@@ -4654,7 +4714,8 @@
 		contentType: "application/json",
 		success: function(response) {
 		  if (response?.message) {
-			DevExpress.ui.dialog.alert(response.message, "Verified");
+			DevExpress.ui.notify("RFQ has been Verified and processed for Approval.", "success", 3000);
+
 		  } else {
 			DevExpress.ui.notify("Verification failed: No valid response.", "error", 2000);
 			verifyBtn.option("disabled", false);
@@ -4735,15 +4796,14 @@
 		  }
 
 		  if (response?.Message) {
-			DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
-			  hideAllButtonsExcept([
-				"btnPrint3",
-				"ddButtonLayout",
-				"btnBack",
-				"btnCreatePo"
-			  ]);
-			  // Optional: reload or refresh other UI components
-			});
+		DevExpress.ui.notify("RFQ has been Approved.", "success", 3000);
+hideAllButtonsExcept([
+  "btnPrint3",
+  "ddButtonLayout",
+  "btnBack",
+  "btnCreatePo"
+]);
+
 		  } else {
 			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 			approveBtn.option("disabled", false);
@@ -4793,6 +4853,53 @@
 					}
 				});
 			}
+$("#btnCreatePo").on("click", function () {
+    const rfqNo = $("#RFQNo").dxTextBox("instance").option("value");
+    const tenantName = window.tenantName || "defaultTenant";
+
+    if (!rfqNo) {
+        DevExpress.ui.notify("RFQ No is missing.", "error", 2000);
+        return;
+    }
+
+    // Step 1: Check if RFQ is approved
+    $.get(`/api/RequestforQuotationList/CheckIfApproved?Rfqno=${encodeURIComponent(rfqNo)}`)
+        .done(function (isApproved) {
+            if (!isApproved) {
+                DevExpress.ui.notify("RFQ is not approved.", "error", 3000);
+                return;
+            }
+
+            DevExpress.ui.dialog.confirm("Do you want to create a Purchase Order from this RFQ?", "Confirmation")
+                .done(function (dialogResult) {
+                    if (!dialogResult) return;
+
+                    // Step 2: Create PO
+                    $.ajax({
+                        url: "/api/RequestforQuotationList/CreatePOFromRFQ",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(rfqNo),
+                        success: function (res) {
+                            if (res.success) {
+                                DevExpress.ui.notify("Purchase Order created: " + res.poNo, "success", 2000);
+
+                                // Step 3: Redirect to PO page
+                                window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&RFQNo=${encodeURIComponent(rfqNo)}&mode=edit`;
+                            } else {
+                                DevExpress.ui.notify(res.message || "Failed to create Purchase Order.", "error", 3000);
+                            }
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Server error while creating Purchase Order.", "error", 3000);
+                        }
+                    });
+                });
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
+        });
+});
 
 
 			$("#btnPostToLedgers").on("click", function (e) {
@@ -5331,7 +5438,7 @@
 	text: formatMessage("Request for Quotation(RFQ) Edit"),
 		readOnly: true,
 		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
+		$(e.element).addClass("dx-textcolor-heading");
 		}
 		});
 	});

@@ -277,114 +277,44 @@
 
 <script>
 
-function uploadItemsToMaterialRequests() {
-    debugger;
+function preparePayload(items) {
+    return items.map((item, index) => ({
+        ...item,
+     //   GSCode: item.GSCode || `AUTO-GS-${index + 1}`, // Generate GSCode if missing
+	   SlNo: index + 1, // Assign a unique SlNo value
+       
+		 GSCode: item.GSCode && item.GSCode.trim(),
+        ItemSize: item.ItemSize ? String(item.ItemSize) : null // Convert ItemSize to string
+    }));
+}
 
-    const selectedGSGroupId = $("#StockGroup").dxDropDownBox("instance").option("value");
-    const requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+function uploadItemsToMaterialRequests() {
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
     const items = dataSource?.items() ?? [];
 
-    if (!selectedGSGroupId) {
-        DevExpress.ui.notify("Please select a Stock Group.", "error", 3000);
-        return;
-    }
+    const preparedItems = preparePayload(items);
 
-    if (!requestNo) {
-        DevExpress.ui.notify("Request No is required.", "error", 3000);
-        return;
-    }
+    const requestBody = {
+        GSGroupCode: "MTRL",
+        RequestNo: "SR-ENQ-2025-17111",
+        Items: preparedItems,
+        GSGroupID: 1
+    };
 
-    if (items.length === 0) {
-        DevExpress.ui.notify("No items to upload.", "error", 3000);
-        return;
-    }
+    console.log("📦 Final Payload to UploadStock:", requestBody);
 
-    getGSGroupCode(selectedGSGroupId)
-        .then(GSGroupCode => {
-            if (!GSGroupCode) {
-                DevExpress.ui.notify("GSGroupCode not found.", "error", 3000);
-                return;
-            }
-
-            const cleanedItems = items.map(item => ({
-                GSDescription: item.GSDescription,
-                GsdescriptionAr: item.GsdescriptionAr,
-                GsuomDesc: item.GsuomDesc || item.GSUoM,
-                RequestQty: item.RequestQty,
-                UnitPrice: item.UnitPrice,
-                PlanNo: item.PlanNo,
-                Manufacturer: item.Manufacturer,
-                DeliveryPeriod: item.DeliveryPeriod,
-                Remarks: item.Remarks,
-                ItemSize: item.ItemSize,
-                ItemPartNo: item.ItemPartNo,
-                ItemBrand: item.ItemBrand,
-                ItemColor: item.ItemColor,
-                ItemDimension: item.ItemDimension,
-                ItemThickness: item.ItemThickness
-            }));
-
-            const requestBody = {
-                GSGroupCode: selectedGSGroupId,
-                RequestNo: requestNo,
-                Items: cleanedItems
-            };
-
-            uploadStockData(requestBody, grid, requestNo);
-        })
-        .catch(error => {
-            console.error("❌ GetGSGroupCode error:", error);
-            DevExpress.ui.notify("Failed to get GSGroupCode: " + error, "error", 3000);
-        });
-}
-
-// 🔹 Reusable Function to get GSGroupCode
-function getGSGroupCode(gsgroupId) {
-    return new Promise((resolve, reject) => {
-        $.ajax({
-            url: `/api/InventoryUpload/GetGSGroupCode?gsgroupId=${gsgroupId}`,
-            method: "GET",
-            success: resolve,
-            error: function (xhr) {
-                const msg = xhr.responseText || xhr.statusText || "Unknown error";
-                reject(msg);
-            }
-        });
-    });
-}
-
-// 🔹 Reusable Function to upload stock
-function uploadStockData(requestBody, grid, requestNo) {
     $.ajax({
         url: "/api/InventoryUpload/UploadStock",
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(requestBody),
         success: function (result) {
-            if (result.success) {
-                DevExpress.ui.notify("Stock uploaded and GSCode generated successfully ✅", "success", 3000);
-                grid.refresh();
-
-                const tenantName = window.location.pathname.split("/")[1];
-                setTimeout(() => {
-                    window.location.href = `/${tenantName}/IMS/AddNewClientRequest?requestNo=${encodeURIComponent(requestNo)}`;
-                }, 1000);
-            } else {
-                DevExpress.ui.notify(result.message || "Upload failed", "error", 3000);
-            }
+            DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
         },
         error: function (xhr) {
-            let errorMessage = "Unknown error";
-            try {
-                const response = JSON.parse(xhr.responseText);
-                errorMessage = response.message || errorMessage;
-            } catch {
-                errorMessage = xhr.statusText || errorMessage;
-            }
-            console.error("❌ UploadStock error:", xhr);
-            DevExpress.ui.notify("Upload failed: " + errorMessage, "error", 3000);
+            console.error("UploadStock error:", xhr);
+            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
         }
     });
 }
@@ -449,9 +379,45 @@ function uploadStockData(requestBody, grid, requestNo) {
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
 
+            // Validate the data
+            const validatedData = jsonData.filter((row, index) => {
+                const errors = [];
+
+                // Validate GSDescription
+                if (!row.GSDescription || row.GSDescription.trim() === "") {
+                    errors.push(`Row ${index + 1}: GSDescription is required.`);
+                }
+
+                // Validate RequestQty
+                if (!row.RequestQty || isNaN(row.RequestQty) || row.RequestQty <= 0) {
+                    errors.push(`Row ${index + 1}: RequestQty must be a positive number.`);
+                }
+
+                // Validate UnitPrice
+                if (row.UnitPrice !== undefined && (isNaN(row.UnitPrice) || row.UnitPrice < 0)) {
+                    errors.push(`Row ${index + 1}: UnitPrice cannot be negative.`);
+                }
+
+                // Log errors if any
+                if (errors.length > 0) {
+                    console.error(errors.join("\n"));
+                    DevExpress.ui.notify(errors.join("<br>"), "error", 5000);
+                    return false; // Exclude invalid rows
+                }
+
+                return true; // Include valid rows
+            });
+
+            if (validatedData.length === 0) {
+                DevExpress.ui.notify("No valid data found in the uploaded file.", "error", 3000);
+                return;
+            }
+
+            // Populate the grid with validated data
             const dataGrid = $("#Datagrid").dxDataGrid("instance");
             if (dataGrid) {
-                dataGrid.option("dataSource", jsonData);
+                dataGrid.option("dataSource", validatedData);
+                DevExpress.ui.notify("Data successfully loaded into the grid.", "success", 3000);
             } else {
                 DevExpress.ui.notify("Grid not found", "error", 3000);
             }
@@ -460,6 +426,35 @@ function uploadStockData(requestBody, grid, requestNo) {
         reader.readAsArrayBuffer(file);
     });
 	
+	function validateGridData() {
+    const grid = $("#Datagrid").dxDataGrid("instance");
+    const dataSource = grid?.getDataSource();
+    const items = dataSource?.items() ?? [];
+
+    const stockGroupCode = $("#StockGroup").dxDropDownBox("instance").option("value");
+    const lastNoInStockGroup = 1000; // Replace with the actual value from the server
+    const lastNoInUnit = 10; // Replace with the actual value from the server
+
+    return items.map((item, index) => {
+        // Generate GSCode if missing
+        if (!item.GSCode) {
+            item.GSCode = `${stockGroupCode}-${String(lastNoInStockGroup + index + 1).padStart(5, "0")}`;
+        }
+
+        // Generate UnitCode if missing
+        if (!item.UnitCode) {
+            item.UnitCode = `UNIT-${lastNoInUnit + index + 1}`;
+        }
+
+        // Ensure ItemSize is a string
+        if (item.ItemSize && typeof item.ItemSize !== "string") {
+            item.ItemSize = String(item.ItemSize);
+        }
+
+        return item; // Include all rows without validation
+    });
+}
+
 </script>
 <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
