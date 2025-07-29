@@ -47,14 +47,6 @@
         margin-top: 8px;
     }
 
-    .limited-footer {
-        margin-top: 20px;
-        padding: 15px;
-        background-color: #ffffff;
-        border-top: 1px solid #e0e0e0;
-        border-radius: 0 0 12px 12px;
-    }
-
     .context-menuInvoice {
         position: absolute;
         background: #fff;
@@ -211,12 +203,14 @@
     .RemoteOperations(false)
     .Columns(columns =>
     {
+            columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true);
         columns.AddFor(m => m.Gscode)
                 .Caption(new JS("formatMessage('Stock Code')"))
             .Width(120);
         columns.AddFor(m => m.Gsdescrpition)
                 .Caption(new JS("formatMessage('Description')"))
-            .Width(280); columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
+            .Width(280);
+            columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
         columns.AddFor(m => m.ItemPartNo)
                 .Caption(new JS("formatMessage('Item Part No')"))
             .Width(150);
@@ -616,6 +610,7 @@
 
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridSelectionChanged")
+                            .OnRowClick("dataGridRowClicked")
                         .OnInitialized("dataGridInitialized")
                         .HeaderFilter(p => p.Visible(true))
                         .FilterRow(f => f.Visible(false))
@@ -683,6 +678,16 @@
         function dataGridInitialized(e) {
             dataGrid = e.component;
         }
+
+            function dataGridRowClicked(e) {
+        const selectedKey = e.key;
+        const ddbInstance = $("#stockGroupDropDownBox").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            ddbInstance.close();
+        }
+    }
 
 
 

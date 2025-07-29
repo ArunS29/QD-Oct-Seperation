@@ -123,7 +123,7 @@
   <data name="xrLabel14.ExpressionBindings" xml:space="preserve">
     <value>Iif(
     Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]) == 0,
-    '-',
+    '0.00',
     Iif(
         Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]) &lt; 0,
         [CurrencySymbole] + '-' + FormatString('{0:N2}', Abs(Sum(Iif([ConvertedAmount] &gt; 0, [ConvertedAmount], 0)) - Sum([ConvertedCrAmount]))),

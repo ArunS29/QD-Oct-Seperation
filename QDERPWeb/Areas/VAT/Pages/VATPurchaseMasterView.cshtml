@@ -233,7 +233,7 @@
 		<i class="dx-icon-edit"></i> Edit Invoice
 	</div>
 	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
+		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Debit Note)
 	</div>
 	<div class="context-menu-item" onclick="UnlockInvoice()">
 		<i class="dx-icon-unlocked"></i> Unlock The Bill
@@ -295,7 +295,7 @@
 				})
 				.ItemTemplate(@<text>
             <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -1401,7 +1401,7 @@
 		});
 	});
 
-	// Cancel Amend - Posted in Invoice Debit note
+
 	function cancelInvoice() {
 		if (!invoiceNo) {
 			alert("InvoiceNo is required.");
@@ -1413,6 +1413,7 @@
 			url: `/api/VATModule/InsertAmendEInvoiceDebit?InvoiceNo=${encodeURIComponent(invoiceNo)}`,
 			type: 'POST',
 			success: function (response) {
+				console.log(response)
 				DebitNoteNo=response.DebitNoteNo;
 					if (response.IsPosted == null) {
 		DevExpress.ui.dialog.alert(
@@ -1420,13 +1421,13 @@
 			"Invoice is not Posted"
 		);
 	}
-	// else if (response.DebitInvoiceNo!=null && response.IsPosted === true)
-	// {
-	// 	DevExpress.ui.dialog.alert(
-	// 		"Invoice is already Issued with full Debit Note,Please review the Invoice & Debit Note Details.",
-	// 		"Invoice is already Debit Note Issued."
-	// 	);
-	// }
+	else if (response.DebitInvoiceNo!=null && response.IsPosted === true)
+	{
+		DevExpress.ui.dialog.alert(
+			"Invoice is already Issued with full Debit Note,Please review the Invoice & Debit Note Details.",
+			"Invoice is already Debit Note Issued."
+		);
+	}
 		else if (response.IsPosted === true) {
 		DevExpress.ui.dialog.custom({
 			title: "Cancel/Amend Confirmation",
@@ -1458,6 +1459,9 @@
 			}
 		});
 	}
+
+
+
 
 
 

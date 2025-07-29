@@ -193,17 +193,24 @@
 	 	</div>
 
 
-	<div class="client-field" style="align-items:end;display: flex;">
+	<div class="client-field">
 		@(Html.DevExtreme().TextBox()
 				.ID("txtClientName")
 				.Label("Client Name:")
 				.LabelMode(EditorLabelMode.Floating)
-				.Width("90%"))
-		@(Html.DevExtreme().Button()
-				.ID("ClientName12")
-				.Icon("fas fa-text-height")
-				.Width("10%"))
-
+				.ReadOnly(true)
+				.Width("90%")
+				.Buttons(buttons =>
+				{
+					buttons.Add()
+					.Name("ClientName12")
+					.Location(TextEditorButtonLocation.After)
+					.Widget(w => w.Button()
+					.Type(ButtonType.Default)
+					.Icon("fas fa-text-height")
+					.ElementAttr(new { @class = "custom-hover-button add-hover" })
+					);
+				}))
 		   </div>
 				</div>
 
@@ -228,6 +235,7 @@
 					columns.Add().Caption(new JS("formatMessage('Client ContactSlNo')")).DataField("ClientContactSlNo").Visible(false);
 					columns.Add().Caption(new JS("formatMessage('Location')")).DataField("ContactLocation");
 					columns.Add().Caption(new JS("formatMessage('Division')")).DataField("ContactDivision");
+					columns.Add().Caption(new JS("formatMessage('Add')")).DataField("ContactDivision");
 				}
 				) )
 	</div>

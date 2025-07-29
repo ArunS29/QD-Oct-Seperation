@@ -120,6 +120,17 @@
                 items.Add().Text(new JS("formatMessage('Add New Store Request')")).Icon("cart");
                 items.Add().Text(new JS("formatMessage('Add New Project Request')")).Icon("event");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("addNewMaterialRequest")
             .ShowArrowIcon(false)
             )

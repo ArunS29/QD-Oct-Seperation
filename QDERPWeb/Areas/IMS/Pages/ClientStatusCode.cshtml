@@ -52,29 +52,14 @@
         font-weight: bold !important;
     }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="JournalVoucherEntry" class="no-border-input"></div>
     </div>
-</div>
-
-<div id="costAllocationPopup" style="display:none;">
-    <div style="margin-bottom:10px">
-        @(Html.DevExtreme().Button()
-            .ID("btnSaveCostAllocation")
-            .Icon("save")
-            .Text(new JS("formatMessage('Save')"))
-            .OnClick("function() { saveCostAllocation(); }")
-            )
-    </div>
-</div>
-
-
+</div> *@
 
 <div>
-    <h2 id="Clientstatus1" style="text-align: center;">Client Status</h2>
-    <div class="dx-fieldset horizontal-container">
-
+    <div style="display:flex; align-items:end;">
         @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Status & Add  to the Existing List:')"))
             .LabelMode(EditorLabelMode.Floating)
@@ -82,8 +67,6 @@
             .Value("")
             .Width("60%")
             )
-   
-
        
         @(Html.DevExtreme().Button()
             .ID("btnVoucherEntry")
@@ -125,7 +108,7 @@
 
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(true))
-        .Height(500)
+        .Height("60vh")
         .ColumnAutoWidth(true)
         .FilterRow(filterRow => filterRow.Visible(false))
         .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -152,20 +135,17 @@
         })
         .OnRowUpdating("onUnitRowUpdating")
         )
-       
-
-        
 </div>
+    
 
-
-<div class="container1">
-    <div class="card-footer">
-        <div class="dx-fieldset horizontal-container1 mt-2" style="display: flex; justify-content: space-between; width:100%; ">
+<div class="footer-fixed" style="display:flex; gap:10px:">
             <div>
                 @(Html.DevExtreme().Button()
                                 .ID("btnUpdate")
                                 .Text(new JS("formatMessage('Update')"))
                                 .Icon("arrowleft")
+                                .OnClick("saveGridChanges")
+                                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
                                )
             </div>
             <div>
@@ -173,11 +153,9 @@
                 @(Html.DevExtreme().Button()
                 .ID("btnBack")
                 .Text(new JS("formatMessage('Back')"))
-                .Icon("arrowleft")
+                .Icon("back")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
                 .OnClick("GoBack"))
-            </div>
-        </div>
-
     </div>
 </div>
 
@@ -270,5 +248,40 @@
                        $("#Clientstatus1").text(
                             formatMessage("Client Status"));
       });
+          function saveGridChanges() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const changes = grid.option("editing.changes");
+
+        if (!changes || changes.length === 0) {
+            DevExpress.ui.notify("No changes to save.", "info", 2000);
+            return;
+        }
+
+        const updatePayload = changes.map(change => {
+            return {
+                key: change.key,
+                values: change.data
+            };
+        });
+
+        $.ajax({
+            url: "/ClientStatusCode/BatchUpdate",
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(updatePayload),
+            success: function (response) {
+                if (response.success) {
+                    DevExpress.ui.notify(response.message, "success", 2000);
+                    grid.refresh(); // refresh to reflect changes
+                } else {
+                    DevExpress.ui.notify(response.message || "Save failed.", "error", 3000);
+                }
+            },
+            error: function (xhr) {
+                console.error("❌ Batch update error:", xhr);
+                DevExpress.ui.notify("Something went wrong while saving.", "error", 3000);
+            }
+        });
+    }
 
 </script>

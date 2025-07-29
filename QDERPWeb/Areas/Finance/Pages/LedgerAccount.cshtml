@@ -268,7 +268,9 @@
         /* flex-wrap: wrap;
         gap: 10px; */
     }
-
+    #chatbot-container{
+        display:none;
+    }
    
 
     .containerLedgerAccount{
@@ -283,6 +285,9 @@
     }
     .dx-popup-title.dx-toolbar{
         background-color:  var(--title-background-color) !important;
+    }
+    .footer-fixed{
+        bottom: 0px !important;
     }
         </style>
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -347,6 +352,16 @@
 
                 <!-- 🔹 Row 2 -->
                 <div class="row g-3 align-items-end ">
+
+                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
+                        @(Html.DevExtreme().TextBox()
+                                                .ID("txtAccountHead")
+                                                .Label(new JS("formatMessage('Account Head Name')"))
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .TabIndex(3)
+                                                .ValidationRules(v => v.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
+                                                .OnFocusOut("txtAccountHeadFocusOut"))
+                    </div>
                     <div class="form-group col-lg-6 col-md-6 col-sm-12 position-relative">
                         @(Html.DevExtreme().TextBox()
                                                 .ID("txtAccountHeadAr")
@@ -358,16 +373,6 @@
                         <i class="fas fa-language arabic-icon-inside"
                            onclick="convertToArabic()"></i>
                     </div>
-                    <div class="form-group col-lg-6 col-md-6 col-sm-12">
-                        @(Html.DevExtreme().TextBox()
-                                                .ID("txtAccountHead")
-                                                .Label(new JS("formatMessage('Account Head Name')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .TabIndex(3)
-                                                .ValidationRules(v => v.AddRequired().Message(new JS("formatMessage('Account Head Name cannot be empty')")))
-                                                .OnFocusOut("txtAccountHeadFocusOut"))
-                    </div>
-                  
                 </div>
             </div>
 
@@ -4991,15 +4996,58 @@ function syncSupVATNumbers(e) {
       }
 
 
-        function GoToAttachment() {
+    function GoToAttachment() {
+        var button = $("#btnSave").dxButton("instance");
+        var buttonText = button ? button.option("text") : "";
+
+        console.log("Button Text:", buttonText); // Debugging to check button text
+
+        // Close popup ONLY IF the button text is NOT "Update"
+        if (buttonText !== "Update") {
+            DevExpress.ui.dialog.alert(
+                "Not allowed to Add Attachments. Please first save AccountHead",
+                "Data Not Found"
+            );
+            return;
+        }
+
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
         var module = "Ledger Account";
-        var isMaster = true;
+        var isMaster = false;
+        var openingBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
+        var dropDown = $('#ddlAccountGroup').dxDropDownBox("instance");
+        var isAssetGroupText = dropDown.option("displayValue");
 
+        // If it's an array (common in DropDownBox), convert to string
+        if (Array.isArray(isAssetGroupText)) {
+            isAssetGroupText = isAssetGroupText[0] || "";
+        }
 
+        var isAssetGroupMatch = (isAssetGroupText || "").toLowerCase().includes("asset");
 
-            window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
+        console.log("Display Text:", isAssetGroupText);
+        console.log("Asset Group Match:", isAssetGroupMatch);
+
+       
+        console.log("Opening Balance:", openingBalance);
+        
+
+        // Set module based on asset group or opening balance
+        if (isAssetGroupMatch) {
+            isMaster = true;
+            module = "Fixed Assets";
+        } else if (openingBalance > 0 && !isAssetGroupMatch) {
+            isMaster = false;
+            module = "Ledger Account";
+        } else if (openingBalance <= 0 && !isAssetGroupMatch) {
+            isMaster = true;
+            module = "Ledger Account";
+        }
+
+        // Redirect
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
     }
+
 
      function onPostButtonClick(e) {
     
@@ -5261,11 +5309,7 @@ function syncSupVATNumbers(e) {
                 BillingContactPersonTitle: bBillingTitle,
                 BillingBankAccount: bBillingPayment,
                 SupplierAddress: obAddress,
-                SupplierVATNo:String(obVATNo),
-                RecordCreatedBy:CreatedBy,
-                RecordCreatedOn:CreatedOn,
-                RecordModifiedBy: ModifiedBy,
-               RecordModifiedOn:ModifiedOn
+                SupplierVATNo:String(obVATNo)
             };
 
             console.log(data);

@@ -420,7 +420,7 @@ td {
 .footer-fixed {
     width: -webkit-fill-available;
     position: fixed;
-    bottom: 35px!important;
+     bottom: 0px!important; 
     height: 60px;
     background: #ffffff;
     z-index: 999;

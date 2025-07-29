@@ -105,23 +105,45 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width("100%")
-            .Text(new JS("formatMessage('Layout')"))
-            .ElementAttr(new { style = "display: none;" })
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width(50)
+                .Text(new JS("formatMessage('Layout')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Template(@<text>
+                                                                                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                                         <path fill="var(--title-background-color)" d="M6 10V7a6 6 0 1 1 12 0v3" />
+                                                                                                         <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                                         <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                                     </svg>Set as Default Layout
 
+            </text>).OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Template(@<text>
+                                                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--title-background-color)" viewBox="0 0 16 16">
+                                                                                                <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1l-3 3 3 3V5z" />
+                                                                                            </svg>Reset Layout
+                                                                                        </text>).OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Template(@<text>
+                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                               <path fill="var(--title-background-color)" d="M17 10V7a5 5 0 0 0-10 0" />
+                                                                                               <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                                                                                               <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                                                                                           </svg>Open Layout
+                                                                                       </text>).OnClick("openLayoutClick");
+
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
+                                                                                           <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                                                                                               <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
+                                                                                               <path fill="#444" d="M17 7H7V5h10v2zM9 14h6v5H9z" />
+                                                                                           </svg>Save Layout
+                                                                                       </text>).OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
                 .ID("rowHeightProperties")
@@ -131,48 +153,52 @@
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add()
-                    .Text("Short (1 Line)")
-                    .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
-            </svg> Short
-        </text>)
+                items.Add()
+                .Text("Short (1 Line)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Short
+                           </text>)
                 .OnClick("function() { ChangeRowHeight('30'); }");
-                    items.Add()
-                    .Text("Medium (2 Lines)")
-                    .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
-                <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-            </svg> Medium
-        </text>)
+
+                items.Add()
+                .Text("Medium (2 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Medium
+                           </text>)
                 .OnClick("function() { ChangeRowHeight('60'); }");
-                    items.Add()
-                    .Text("Tall (4 Lines)")
-                    .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
-                <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
-                <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
-            </svg> Tall
-        </text>)
+
+                items.Add()
+                .Text("Tall (4 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Tall
+                           </text>)
                 .OnClick("function() { ChangeRowHeight('90'); }");
-                    items.Add()
-                    .Text("Extra Tall (8 Lines)")
-                    .Template(@<text>
+
+                items.Add()
+                .Text("Extra Tall (8 Lines)")
+                .Template(@<text>
             <svg width="20" height="20" viewBox="0 0 20 20">
                 @for (var i = 1; i <= 8; i++)
-                                            {
-                                var y = 1 + (i - 1) * 2;
-                                <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
-                            }
+                        {
+                            var y = 1 + (i - 1) * 2;
+                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                        }
             </svg> Extra Tall
         </text>)
-                        .OnClick("function() { ChangeRowHeight('130'); }");
-                 })
-                .ShowArrowIcon(false))
+                .OnClick("function() { ChangeRowHeight('130'); }");
+                })
+                .ShowArrowIcon(false)
+                )
     </div>
 
     <div class="btn-container">
@@ -240,13 +266,53 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('All Vouchers')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Payments')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Receipts')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Client Receivables')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Supplier Payables')")).OnClick("onVoucherSelection");
-                items.Add().Text(new JS("formatMessage('Other Vouchers')")).OnClick("onVoucherSelection");
+            items.Add()
+                    .Text(new JS("formatMessage('All Vouchers')"))
+                    .Option("color", "#4285F4") // Blue
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Payments')"))
+                    .Option("color", "#34A853") // Green
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Receipts')"))
+                    .Option("color", "#FBBC05") // Yellow
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Client Receivables')"))
+                    .Option("color", "#EA4335") // Red
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Supplier Payables')"))
+                    .Option("color", "#AB47BC") // Purple
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Other Vouchers')"))
+                    .Option("color", "#00ACC1") // Cyan
+                    .Icon("voucher")
+                    .OnClick("onVoucherSelection");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .ShowArrowIcon(true)
             )
     </div>
@@ -476,6 +542,59 @@
                 reader.readAsText(file);
             }
         });
+            function setDefaultLayoutClick(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const form = $('#formId').val();
+
+        if (!grid) {
+            DevExpress.ui.notify("Grid not found", "error", 2000);
+            return;
+        }
+
+        const layout = grid.state();
+        //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
+        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
+
+        // console.log("JSON Layout:", layoutJson);
+        console.log("XML Layout:", layoutJson); // Comment if not needed
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                layout: layoutJson, // or use layoutXml if backend expects XML
+                form: form
+            }),
+            success: function (data) {
+                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+            },
+            error: function (xhr) {
+                console.error("SaveLayout error:", xhr.responseText);
+                DevExpress.ui.notify("Error while saving data", "error", 2000);
+            }
+        });
+    }
+
+        function resetLayoutClick(e) {
+            var grid = $("#dataGrid").dxDataGrid("instance");
+            var form = $('#formId').val();
+            $.ajax({
+                url: '/api/Utility/SaveLayout',  // API endpoint
+                type: 'POST',
+                data: {
+                    layout: null,
+                    form: form
+                },
+                success: function (data) {
+                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+                    grid.state({});
+                },
+                error: function () {
+                    DevExpress.ui.notify("Error while saving data", "error", 2000);
+                }
+            });
+        }
         function saveLayoutClick(e) {
             var grid = $("#dataGrid").dxDataGrid("instance");
             var layout = grid.state();
@@ -560,47 +679,7 @@
                 }
             });
         }
-        function setDefaultLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2);
-            console.log(layoutJson);
 
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: layoutJson,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
-        function resetLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: null,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                    grid.state({});
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
         // Footer Group Pannel button click event
         function toggleGroupPanel() {
             var dataGrid = $("#dataGrid").dxDataGrid("instance");

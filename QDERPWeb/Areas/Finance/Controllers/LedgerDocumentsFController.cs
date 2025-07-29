@@ -107,7 +107,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized("Invalid tenant context.");
-
+               
                 var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
                 if (string.IsNullOrWhiteSpace(tenantName))
                     return Unauthorized("Tenant name not found in session.");
@@ -160,7 +160,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         .Select(c => (DateTime?)c.JournalEntryDate)
                         .FirstOrDefaultAsync();
 
-                    voucherDate = task1 ?? task2 ?? task3;
+                    DateTime? task4 = await dbContext.Tbl201ChartOfAccounts
+                       .Where(c => c.AccountId == folderId)
+                       .Select(c => (DateTime?)c.RecordCreatedOn)
+                       .FirstOrDefaultAsync();
+
+                    DateTime? task5 = await dbContext.Tbl20105AssetMasters
+                       .Where(c => c.AssetLedgerNo == folderId)
+                       .Select(c => (DateTime?)c.AddedOn)
+                       .FirstOrDefaultAsync();
+
+                    voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
 
                 }
 
@@ -202,11 +212,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         var hijri = new HijriCalendar();
                         hijriDate = $"{hijri.GetYear(expDate.Value)}/{hijri.GetMonth(expDate.Value):D2}/{hijri.GetDayOfMonth(expDate.Value):D2}";
                     }
-
+                    var addedBy = HttpContext.Session.GetString("UserName") ?? "System";
                     // Create document object
                     var document = new Tbl20116LedgerDocument
                     {
+
                         DocumentNo = docNo,
+                        LedgerNo = form["LedgerNo"],
                         DocumentType = short.TryParse(form["DocumentType"], out var docType) ? docType : (short?)null,
                         DocumentRefNo = form["DocumentRefNo"],
                         DocumentRemarks = form["DocumentRemarks"],
@@ -216,7 +228,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         AzurePath = azurePath,
                         DocumentStatus = 1,
                         DocumentStatusRemarks = "Active",
-                        AddedBy = User.Identity?.Name ?? "system",
+                        AddedBy = addedBy,
                         AddedOn = DateTime.UtcNow
                     };
 
@@ -249,73 +261,74 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> GetDocuments(string folderId, string module)
-        {
-            try
+            public async Task<IActionResult> GetDocuments(string folderId, string module)
             {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
-                    return Unauthorized("Invalid tenant context.");
-
-                var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized("Tenant name not found in session.");
-
-                if (string.IsNullOrWhiteSpace(module) || string.IsNullOrWhiteSpace(folderId))
-                    return BadRequest("Both module and folderId are required.");
-
-                // Azure Blob configuration
-                var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
-                var containerName = "client-files";
-                if (string.IsNullOrWhiteSpace(connectionString) || string.IsNullOrWhiteSpace(containerName))
-                    return StatusCode(500, "Azure Blob configuration is missing.");
-
-                var blobHelper = new AzureBlobHelper(connectionString, containerName);
-
-                // Normalize inputs for matching
-                var normalizedModule = module.Replace(" ", "_").Trim();
-                var normalizedFolderId = folderId.Trim();
-
-                var matchingDocs = await dbContext.Tbl20116LedgerDocuments
-                    .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
-                                d.AzurePath.Contains(normalizedModule) &&
-                                d.AzurePath.Contains(normalizedFolderId))
-                    .Select(d => new
-                    {
-                        d.DocumentNo,
-                        d.DocumentType,
-                        d.DocumentRefNo,
-                        d.DocumentRemarks,
-                        d.DocumentExpDate,
-                        d.DocumentExpDateAr,
-                        d.DocumentNotificationDate,
-                        d.DocumentStatus,
-                        d.DocumentStatusRemarks,
-                        d.AzurePath
-                    })
-                    .ToListAsync();
-
-                var result = matchingDocs.Select(doc => new
+                try
                 {
-                    doc.DocumentNo,
-                    doc.DocumentType,
-                    doc.DocumentRefNo,
-                    doc.DocumentRemarks,
-                    doc.DocumentExpDate,
-                    doc.DocumentExpDateAr,
-                    doc.DocumentNotificationDate,
-                    doc.DocumentStatus,
-                    doc.DocumentStatusRemarks,
-                    FileUrl = blobHelper.GetBlobSasUrl(doc.AzurePath)
-                });
+                    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                        return Unauthorized("Invalid tenant context.");
 
-                return Ok(result);
+                    var tenantName = HttpContext.Session.GetString("TenantName")?.Trim();
+                    if (string.IsNullOrWhiteSpace(tenantName))
+                        return Unauthorized("Tenant name not found in session.");
+
+                    if (string.IsNullOrWhiteSpace(module) || string.IsNullOrWhiteSpace(folderId))
+                        return BadRequest("Both module and folderId are required.");
+
+                    // Azure Blob configuration
+                    var connectionString = _configuration.GetConnectionString("AzureBlobStorage");
+                    var containerName = "client-files";
+                    if (string.IsNullOrWhiteSpace(connectionString) || string.IsNullOrWhiteSpace(containerName))
+                        return StatusCode(500, "Azure Blob configuration is missing.");
+
+                    var blobHelper = new AzureBlobHelper(connectionString, containerName);
+
+                    // Normalize paths
+                    string Clean(string val) => string.IsNullOrWhiteSpace(val) ? "" : val.Replace(" ", "_").Trim().ToLower();
+                    var normalizedModule = Clean(module);
+                    var normalizedFolderId = Clean(folderId);
+                    var normalizedTenant = Clean(tenantName);
+
+                    // Build partial Azure path prefix
+                    var azurePathPrefix = $"{normalizedTenant}/"; // Tenant root
+
+                    // Optional: further narrow down to expected subfolder
+                    // e.g., transaction_documents/module/folderId
+                    // You can append further filtering here if your structure is consistent
+
+                    var allBlobsInTenant = await blobHelper.ListBlobsAsync(azurePathPrefix);
+
+                    var dbDocs = await dbContext.Tbl20116LedgerDocuments
+                        .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
+                                    d.AzurePath.Contains(normalizedModule) &&
+                                    d.AzurePath.Contains(normalizedFolderId))
+                        .ToListAsync();
+
+                    var matchingDocs = dbDocs
+                        .Where(d => allBlobsInTenant.Contains(d.AzurePath))
+                        .Select((d, index) => new
+                        {
+                            SerialNo = index + 1,
+                            d.DocumentNo,
+                            d.DocumentType,
+                            d.DocumentRefNo,
+                            d.DocumentRemarks,
+                            d.DocumentExpDate,
+                            d.DocumentExpDateAr,
+                            d.DocumentNotificationDate,
+                            d.DocumentStatus,
+                            d.DocumentStatusRemarks,
+                            FileUrl = blobHelper.GetBlobSasUrl(d.AzurePath)
+                        });
+
+                    return Ok(matchingDocs);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetDocuments: {ex}");
+                    return StatusCode(500, $"An error occurred: {ex.Message}");
+                }
             }
-            catch (Exception ex)
-            {
-                _logger.LogError($"Error in GetDocuments: {ex}");   
-                return StatusCode(500, $"An error occurred: {ex.Message}");
-            }
-        }
 
         [HttpPut]
         public async Task<IActionResult> UpdateDocumentEntry([FromBody] Tbl20116LedgerDocument doc)
@@ -324,10 +337,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized("Invalid tenant context.");
-
+               
                 var existing = await dbContext.Tbl20116LedgerDocuments
                     .FirstOrDefaultAsync(d => d.DocumentNo == doc.DocumentNo);
-
+                var addedBy = HttpContext.Session.GetString("UserName") ?? "System";
                 if (existing == null)
                     return NotFound($"Document with DocumentNo {doc.DocumentNo} not found.");
 
@@ -338,7 +351,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 existing.DocumentExpDate = doc.DocumentExpDate;
                 existing.DocumentExpDateAr = doc.DocumentExpDateAr;
                 existing.DocumentNotificationDate = doc.DocumentNotificationDate;
-                existing.ModifiedBy = User?.Identity?.Name ?? "system";
+                existing.ModifiedBy = addedBy;
                 existing.ModifiedOn = DateTime.UtcNow;
 
                 await dbContext.SaveChangesAsync();
@@ -420,10 +433,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             // Delete file from Azure Blob if it exists
             if (!string.IsNullOrEmpty(doc.AzurePath))
             {
-                // Safe delete
                 var blobHelper = new AzureBlobHelper(_configuration.GetConnectionString("AzureBlobStorage"), "client-files");
-                await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath);
+                await blobHelper.DeleteFileFromAzureAsync(doc.AzurePath); // <-- AzurePath is blobPath
             }
+
 
 
             dbContext.Tbl20116LedgerDocuments.Remove(doc);
@@ -470,7 +483,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
+        [HttpGet]
+        public ActionResult LedgerDocuments(string ReferenceNo, string ModuleType, string isMaster)
+        {
+            ViewBag.ReferenceNo = ReferenceNo;
+            ViewBag.ModuleType = ModuleType;
+            ViewBag.IsMaster = isMaster;
 
+            return PartialView("~/Areas/Finance/Pages/LedgerDocuments.cshtml");
+        }
 
     }
 }

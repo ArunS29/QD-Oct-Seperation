@@ -812,32 +812,20 @@
                                 </div>
 								 <div class="col-md-6">
                                @(Html.DevExtreme().SelectBox()
-    .ID("ddQuoteValidity")
-    .DataSource(new[] {
-        "1 Day", "2 Days", "3 Days", "5 Days", "7 Days", "10 Days", "15 Days",
-        "1 Week", "2 Weeks", "3 Weeks",
-        "1 Month", "2 Months", "3 Months", "5 Months"
-    })
-    .Placeholder("Select Reminder Period")
-    .ShowClearButton(true)
-    .SearchEnabled(true)
-    .Label(new JS("formatMessage('Quote Validity:')"))
+									.ID("ddQuoteValidity")
+									.DataSource(new[] {
+										"1 Day", "2 Days", "3 Days", "5 Days", "7 Days", "10 Days", "15 Days",
+										"1 Week", "2 Weeks", "3 Weeks",
+										"1 Month", "2 Months", "3 Months", "5 Months"
+									})
+									.Placeholder("Select Reminder Period")
+									.ShowClearButton(true)
+									.SearchEnabled(true)
+									.Label(new JS("formatMessage('Quote Validity:')"))
 									.LabelMode(EditorLabelMode.Floating)
 									.Width("100%")
 )
- </div>
-								 <!-- Remarks TextArea -->
-								<div class="row">
-									<div class="col-12">
-										@(Html.DevExtreme().TextArea()
-										.ID("Remarks")
-										.Label(new JS("formatMessage('Remarks:')"))
-										.LabelMode(EditorLabelMode.Floating)
-										.Width("100%")
-										.Height(80)
-										)
-									</div>
-								</div>
+	 </div>
                             </div>
                         </div>
                     </div>
@@ -967,17 +955,19 @@
                                     .OnKeyDown("onKeyDown")
                                     //.OnValueChanged("dropDownBoxValueChanged")
                                     .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
-                                    )
-									
-						@(Html.DevExtreme().Button()
-												.ID("AddPreparedBy")
-												.Icon("plus")
-												.Hint("Add Sales Person")
-												.Width(40)
-												.ElementAttr("style", "margin-top:25px;")
-												.OnClick("AddPreparedBy")
-												)
-					
+									   .Buttons(buttons =>
+									   {
+										   buttons.Add()
+										   .Name("AddPreparedBy")
+										   .Location(TextEditorButtonLocation.After)
+										   .Widget(w => w.Button()
+										   .Type(ButtonType.Default)
+										   .Icon("plus")
+										   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+											.OnClick("AddPreparedBy"));
+										   buttons.Add()
+										   .Name("dropDown");
+									   }))
                                 </td>
 
                                 <!-- Verified By SelectBox -->
@@ -1666,6 +1656,9 @@
                         })
                         )
 }
+<input type="file" id="fileInput" style="display: none;" />
+<div id="cardPopover"></div>
+<div id="CalcardPopover"></div>
 <script>
 
 	function onOpened(e) {
@@ -1749,22 +1742,22 @@
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "";
+		const title = "Quotation Type Of Request";
 		openModal(url, title);
 	}
 	function AddQuoteStatus() {
 		const url = `/${tenantName}/IMS/AddNewQuotationStatus`;
-		const title = "";
+		const title = "Quotation Status";
 		openModal(url, title);
 	}
 	function redirecttosalespersonmaster() {
 		const url = `/${tenantName}/VAT/SalesPersonMaster`;
-		const title = "";
+		const title = "Sales Master";
 		openModal(url, title);
 	}
 	function redirecttoClientLeadmaster() {
 		const url = `/${tenantName}/IMS/ClientLeadMaster`;
-		const title = "";
+		const title = "Client Master";
 		openModal(url, title);
 	}
 	function dataGridSelectionChanged3(e) {
@@ -2213,6 +2206,12 @@
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+																						searchPanel: {
+visible: true,
+highlightCaseSensitive: true,
+width: 300,
+placeholder: "Search..."
+},
 
 										columns: [
 
@@ -2332,25 +2331,35 @@ $("<div>").dxButton({
 
 				//{ dataField: "Descriptions", caption: "...", width: 50 },
 			{
-    dataField: "Descriptions",
-    caption: "...",
-    width: 50,
-    allowEditing: false,
-    cellTemplate: function (container, options) {
-        const quoteChildId = options.data.QuoteChildId; // ✅ Get QuoteChildId from row
-        const url = `/${tenantName}/IMS/IMSDetailsDescription?quoteChildId=${encodeURIComponent(quoteChildId)}`;
+				dataField: "Descriptions1",
+				caption: "...",
+				   cssClass: "center-header",
+				width: 90,
+				allowEditing: true,
+						cellTemplate: function (container, options) {
+						
+							
+						$("<div>").dxButton({
+							icon: "user", // Built-in DevExtreme icon
+							hint: "Edit IMS Details Description",
+							stylingMode: "text",
 
-        $("<div>")
-            .addClass("dx-link")
-            .text("...")
-            .css({ cursor: "pointer", color: "#337ab7", textDecoration: "underline" })
-            .on("click", function () {
-                openModal(url, ""); // ✅ Open the page with QuoteChildId
-            })
-            .appendTo(container);
-    }
-},
+							width: 60,
+								onClick: function () {
+							const gsCode = options.data.Gscode;
+						console.log("GSCode:", gsCode);
+							const QuoteChildId = options.data.QuoteChildId;
 
+						window.currentDescriptionCell = options;
+
+										let url = `/${tenantName}/IMS/DetailedDescriptionQuotation?QuoteChildId=${encodeURIComponent(QuoteChildId)}&gsCode=${encodeURIComponent(gsCode)}`;
+						let title = "Details Description";
+
+						openModal(url, title);
+					}
+						}).appendTo(container);
+					}
+					},
 				{
 
 					dataField: "UnitRateMethod",
@@ -2412,6 +2421,12 @@ $("<div>").dxButton({
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+																						searchPanel: {
+visible: true,
+highlightCaseSensitive: true,
+width: 300,
+placeholder: "Search..."
+},
 
 										columns: [
 
@@ -2489,8 +2504,45 @@ $("<div>").dxButton({
 				{ dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
 
 				{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
+				{
+    dataField: "Descriptions",
+    caption: "...",
+    width: 50,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        const quoteChildId = options.data.QuoteChildId; // ✅ Get QuoteChildId from row
+        const url = `/${tenantName}/IMS/IMSDetailsDescription?quoteChildId=${encodeURIComponent(quoteChildId)}`;
+
+        $("<div>")
+            .addClass("dx-link")
+            .text("...")
+            .css({ cursor: "pointer", color: "#337ab7", textDecoration: "underline" })
+            .on("click", function () {
+                openModal(url, ""); // ✅ Open the page with QuoteChildId
+            })
+            .appendTo(container);
+    }
+},
 				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit price'), width: 150 },
 				{ dataField: "QuotedDiscount", caption: formatMessage('Quoted Discount'), width: 150 },
+								{
+						dataField: "DiscountDetails",
+						caption: "...",
+						cssClass: "center-header",
+						width: 100,
+						allowEditing: false,
+						cellTemplate: function (container, options) {  // ✅ fixed here
+							$("<div>").dxButton({
+								icon: "calculate", // or another valid icon
+								hint: "Open Discount Calculator",
+								stylingMode: "text",
+								width: 30,
+								onClick: function (e) {
+									onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+								}
+							}).appendTo(container);
+						}
+					},
 				{
 
 					dataField: "QuotedTaxSlab",
@@ -2552,6 +2604,12 @@ $("<div>").dxButton({
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+																						searchPanel: {
+visible: true,
+highlightCaseSensitive: true,
+width: 300,
+placeholder: "Search..."
+},
 
 										columns: [
 
@@ -2900,6 +2958,12 @@ $("<div>").dxButton({
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+																						searchPanel: {
+visible: true,
+highlightCaseSensitive: true,
+width: 300,
+placeholder: "Search..."
+},
 
 										columns: [
 
@@ -3022,111 +3086,32 @@ $("<div>").dxButton({
 				},
 
 				//{ dataField: "Descriptions", caption: "...", width: 50 },
-				{
-					dataField: "Descriptions",
-						cssClass: "center-header",
-					caption: "...",
-					width: 80,
-					allowEditing: false,
-						cellTemplate: function (container, options) {
-			const buttonId = `popover-btn-${options.rowIndex}`;
-			const popoverId = `popover-${options.rowIndex}`;
-				const url = `/${tenantName}/VAT/CreditDetailDescription`;
-			$("<div>")
-				.attr("id", buttonId)
-				.appendTo(container)
-				.dxButton({
-						icon: "user",
-					onClick: function () {
-						$(`#${popoverId}`).dxPopover("instance").show(`#${buttonId}`);
-					}
-				});
+				 {
+    dataField: "Descriptions1",
+    caption: "...",
+    cssClass: "center-header",
+    width: 90,
+    allowEditing: true,
+    cellTemplate: function (container, options) {
+        $("<div>").dxButton({
+            icon: "user", // DevExtreme built-in icon
+            hint: "Edit IMS Details Description",
+            stylingMode: "text",
+            width: 60,
+            onClick: function () {
+                const gsCode = options.data.Gscode || options.data.GSCode;
+                console.log("GSCode:", gsCode);
 
-			// Add a hidden div for popover content
-			$("<div>")
-				.attr("id", popoverId)
-				.appendTo("body") // Append to body so it's not restricted to grid layout
-				.dxPopover({
-					width: 900,
-					height: "auto",
-					position: "bottom",
-					showTitle: true,
-					title: "VAT Description",
-							contentTemplate: function () {
-						const formHtml = `
-		<div class="form-wrapper">
-			<div class="form-group">
-				<div class="top-buttons">
-					<div id="btnUseDetailedDesc"></div>
-					<div id="btnUseItemDesc"></div>
-				</div>
-			</div>
-			<table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
-				<tr>
-					<td colspan="4">
-						<div id="DetailedDescription"></div>
-					</td>
-				</tr>
-				<tr>
-					<td colspan="3">
-						<div style="display: flex; align-items: end; gap: 10px;">
-							<div id="DetailedDescriptionArabic"></div>
-							<div id="btnConvertDescription"></div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td><div id="ServiceStartDate"></div></td>
-					<td><div id="ServiceEndDate"></div></td>
-					<td><div id="ExpiryDate"></div></td>
-				</tr>
-				<tr>
-					<td><div id="CostAllocationEmployees"></div></td>
-					<td><div id="CostAllocationProperty"></div></td>
-					<td><div id="BatchLotNo"></div></td>
-				</tr>
-				<tr>
-					<td><div id="DiscountText"></div></td>
-					<td>
-						<div style="display: flex; align-items: end; gap: 10px;">
-							<div id="btnConvertDiscount"></div>
-							<div id="DiscountTextArabic"></div>
-						</div>
-					</td>
-					<td><div id="Remarks"></div></td>
-				</tr>
-			</table>
-		</div>
-						`;
+                window.currentDescriptionCell = options;
 
-						const $container = $("<div>").html(formHtml);
+                const url = `/${tenantName}/IMS/DetailedDescriptionQuotation?gsCode=${encodeURIComponent(gsCode)}`;
+                const title = "Details Description";
 
-						// Initialize DevExtreme controls after rendering
-						setTimeout(function () {
-							$("#btnUseDetailedDesc").dxButton({ text: "Use Detailed Description" });
-							$("#btnUseItemDesc").dxButton({ text: "Use Item Description" });
-							$("#DetailedDescription").dxTextBox({ label: "Detailed Description", labelMode: "outside", width: "100%" });
-							$("#DetailedDescriptionArabic").dxTextBox({ label: "Detailed Description (Arabic)", labelMode: "outside", width: "98%", height: 100 });
-							//$("#DetailedDescription").dxTextBox("instance").option("value",Gsdescrpition);
-							$("#btnConvertDescription").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn("DetailedDescription", "DetailedDescriptionArabic"); } });
-							$("#ServiceStartDate").dxDateBox({ label: "Service Start Date", labelMode: "outside" });
-							$("#ServiceEndDate").dxDateBox({ label: "Service End Date", labelMode: "outside" });
-							$("#ExpiryDate").dxDateBox({ label: "Expiry Date", labelMode: "outside", width: "100%" });
-							$("#CostAllocationEmployees").dxSelectBox({ label: "Cost Allocation for Employees", labelMode: "outside", width: "100%", placeholder: "Select Employees" });
-							$("#CostAllocationProperty").dxSelectBox({ label: "Cost Allocation for Property/Equipments", labelMode: "outside", width: "100%", placeholder: "Select Property/Equipments" });
-							$("#BatchLotNo").dxTextBox({ label: "Batch/Lot No", labelMode: "outside", width: "100%" });
-							$("#DiscountText").dxTextBox({ label: "Discount Text", labelMode: "outside", width: "100%" });
-							$("#btnConvertDiscount").dxButton({ icon: "fas fa-language", onClick: function () { convertToArabicbtn2("DiscountText", "DiscountTextArabic"); } });
-							$("#DiscountTextArabic").dxTextBox({ label: "Discount Text (Arabic)", labelMode: "outside", width: "100%" });
-							$("#Remarks").dxTextBox({ label: "Remarks", labelMode: "outside" });
-						}, 0);
-
-						return $container;
-					}
-				});
-		}
-
-				},
+                openModal(url, title);
+            }
+        }).appendTo(container);
+    }
+	},
 				{
 
 					dataField: "UnitRateMethod",
@@ -3188,6 +3173,12 @@ $("<div>").dxButton({
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+																						searchPanel: {
+visible: true,
+highlightCaseSensitive: true,
+width: 300,
+placeholder: "Search..."
+},
 
 										columns: [
 
@@ -3252,9 +3243,48 @@ $("<div>").dxButton({
 				{ dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
 
 				{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
+				{
+    dataField: "Descriptions",
+    caption: "...",
+    width: 50,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        const quoteChildId = options.data.QuoteChildId; // ✅ Get QuoteChildId from row
+        const url = `/${tenantName}/IMS/IMSDetailsDescription?quoteChildId=${encodeURIComponent(quoteChildId)}`;
+
+        $("<div>")
+            .addClass("dx-link")
+            .text("...")
+            .css({ cursor: "pointer", color: "#337ab7", textDecoration: "underline" })
+            .on("click", function () {
+                openModal(url, ""); // ✅ Open the page with QuoteChildId
+            })
+            .appendTo(container);
+    }
+},
+
+			
 				{ dataField: "QuotedUnitPrice", caption: formatMessage('Unit price'), width: 150 },
 
 				{ dataField: "QuotedDiscount", caption: formatMessage('Quoted Discount'), width: 150 },
+								{
+						dataField: "DiscountDetails",
+						caption: "...",
+						cssClass: "center-header",
+						width: 50,
+						allowEditing: false,
+						cellTemplate: function (container, options) {  // ✅ fixed here
+							$("<div>").dxButton({
+								icon: "fa fa-calculator", // or another valid icon
+								hint: "IMS Calculator",
+								stylingMode: "text",
+								width: 30,	
+								onClick: function (e) {
+									onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+								}
+							}).appendTo(container);
+						}
+					},
 				{
 
 					dataField: "QuotedTaxSlab",
@@ -3316,6 +3346,12 @@ $("<div>").dxButton({
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+																						searchPanel: {
+visible: true,
+highlightCaseSensitive: true,
+width: 300,
+placeholder: "Search..."
+},
 
 										columns: [
 
@@ -3357,6 +3393,14 @@ $("<div>").dxButton({
 				{ dataField: "TotalCostOfItem", caption: formatMessage('Total Cost'), width: 150 },
 				{ dataField: "ItemProfitOrLoss", caption: formatMessage('Profit or Loss'), width: 150 },
 				{ dataField: "QuoteChildId", caption: formatMessage('QuoteChildId'), width: 150 },
+				{ dataField: "AddlDescription", visible: false },
+	{ dataField: "QuoteRemarks", visible: false },
+	{ dataField: "QuoteGroupCode", visible: false },
+	{ dataField: "DeliveryPeriod", visible: false },
+	{ dataField: "PlanNo", visible: false },
+		{ dataField: "QuoteGroupItemSlNo", visible: false },
+	{ dataField: "ClientItemLineRefNo", visible: false },
+
 							{
 		type: "buttons",
 		caption: "Delete",
@@ -3492,7 +3536,15 @@ $("<div>").dxButton({
 			LineTaxAmount: 0.00,
 			LineTotalWithTax: 0,
 			TotalCostOfItem: 0.00,
-			ItemProfitOrLoss: 0.00
+			ItemProfitOrLoss: 0.00,
+
+AddlDescription: null,
+			QuoteRemarks: null,
+			QuoteGroupCode: null,
+			DeliveryPeriod: null,
+			PlanNo: null,
+			QuoteGroupItemSlNo: null,
+			ClientItemLineRefNo: null
 		};
 
 		// Efficient insert without replacing entire dataSource
@@ -5335,7 +5387,36 @@ $("<div>").dxButton({
 	}
 
 
+	function receiveModalFieldData(modalData) {
+		console.log("📦 Received from modal:", modalData); // ✅ Step 1: Log
 
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (!window.currentDescriptionCell) {
+			console.warn("❌ No currentDescriptionCell found");
+			return;
+		}
+
+		const key = window.currentDescriptionCell.key;
+		console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+		const rowIndex = grid.getRowIndexByKey(key);
+		if (rowIndex === -1) {
+			console.warn("❌ Could not find rowIndex for key", key);
+			return;
+		}
+
+		let rowData = grid.getDataSource().items()[rowIndex];
+		console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+		for (const [field, value] of Object.entries(modalData)) {
+			rowData[field] = value;
+			grid.cellValue(rowIndex, field, value);
+		}
+
+		console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+		grid.repaintRows([rowIndex]);
+		DevExpress.ui.notify("Details saved", "success", 1500);
+	}
 
 	$("#btnSave").on("click", function (e) {
 		const $btn = $(this).dxButton("instance");
@@ -5399,7 +5480,7 @@ $("<div>").dxButton({
 				QuoteValidity: $("#ddQuoteValidity").dxSelectBox("instance").option("value") || null,
 			};
 
-			let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
 
 			if (!children || children.length === 0) {
 				DevExpress.ui.notify("No child records to save.", "error", 3000);
@@ -5832,8 +5913,8 @@ $("<div>").dxButton({
       url: `/api/AddNewQuotation/SubmitQuotation?QuoteNo=${encodeURIComponent(quoteNo)}`,
       contentType: "application/json",
       success: function (response) {
-        DevExpress.ui.dialog.alert("Quotation has been submitted for approval.", "Submit Successful")
-          .done(() => {
+       DevExpress.ui.notify("Quotation has been submitted for approval.", "success", 3000);
+         
             const preparedByBox = $("#ddPreparedby").dxDropDownBox("instance");
             if (preparedByBox && response.VoucherApprovedBy) {
               preparedByBox.option("value", response.VoucherApprovedBy);
@@ -5841,7 +5922,7 @@ $("<div>").dxButton({
               preparedByBox.repaint();                // re-render the UI :contentReference[oaicite:2]{index=2}
             }
             // Optionally: location.reload();
-          });
+         
       },
       error: function () {
         $btn.prop("disabled", false);
@@ -5925,7 +6006,8 @@ $("<div>").dxButton({
           approvedByBox.repaint();              // update display text
         }
 
-        DevExpress.ui.dialog.alert(response.message, "Verified");
+       DevExpress.ui.notify("Quotation has been verified and processed for Approval.", "success", 3000);
+
       } else {
         DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
         verifyButton.option("disabled", false);
@@ -6009,16 +6091,14 @@ $("<div>").dxButton({
                     }
                 }
 
-                DevExpress.ui.dialog.alert(response.Message, "Approved")
-                    .done(() => {
-                        hideAllButtonsExcept([
-                            "btnPrint",
-                            "ddButtonLayout",
-                            "btnBack",
-                            "btnAttach"
-                        ]);
-                      
-                    });
+           DevExpress.ui.notify("Quotation has been Approved.", "success", 3000);
+hideAllButtonsExcept([
+    "btnPrint",
+    "ddButtonLayout",
+    "btnBack",
+    "btnAttach"
+]);
+
             } else {
                 DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
                 approveBtn.option("disabled", false);
@@ -6579,28 +6659,28 @@ $("<div>").dxButton({
 
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = "";
+		const title = "Signatories";
 		openModal(url, title);
 	}
 
 	function AddReqUnit() {
 		const url = `/${tenantName}/IMS/ProjectSubUnits`;
-		const title = "";
+		const title = "Project SUb Unit";
 		openModal(url, title);
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "";
+		const title = "Quotation Mode Of Request";
 		openModal(url, title);
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "";
+		const title = "Quotation Type Of Request";
 		openModal(url, title);
 	}
 	 function AddNewClient(){
 				const url = `/${tenantName}/IMS/ClientLeadMaster`;
-  const title = "";
+  const title = "Client Master";
 				  openModal(url, title);
   }
 	$(function () {
@@ -6659,7 +6739,7 @@ function onClientContactClick() {
             encodeURIComponent(clientCode) + '&clientName=' +
             encodeURIComponent(clientName);
 
-        openModal(url, '');
+        openModal(url, 'Client Contact List');
     });
 }
 
@@ -6719,5 +6799,61 @@ function saveField(fieldName, dxId,name) {
         }
     });
 }
+	function onCardClick(cellElement) {
+				const popover = $("#cardPopover").dxPopover("instance");
+
+				// Set the new target element for the popover
+				popover.option("target", cellElement);
+
+				if (popover.option("visible")) {
+					popover.hide();
+				} else {
+					popover.show();
+				}
+			}
+
+				function onCalCardClick(cellElement) {
+					const popover = $("#CalcardPopover").dxPopover("instance");
+
+				// Set the new target element for the popover
+				popover.option("target", cellElement);
+
+				if (popover.option("visible")) {
+					popover.hide();
+				} else {
+					popover.show();
+				}
+			}
+						$(function () {
+				$("#CalcardPopover").dxPopover({
+					width: 450,
+					position: "bottom",
+					showEvent: "", // Manual control
+					hideEvent: "", // Manual control
+					hideOnOutsideClick: true,
+					contentTemplate: function (contentElement) {
+						contentElement.empty();
+						// Get the latest amount value from somewhere accessible
+						let amount = window.currentAmount || 0; // Use a global variable or a shared scope
+
+						$.ajax({
+							url: `/api/Quotation/IMSCalculator?amount=${encodeURIComponent(amount)}`,
+							type: 'GET',
+							success: function (data) {
+								contentElement.html(data);
+							},
+							error: function () {
+								contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+							}
+						});
+					}
+				});
+			});
+					$("#popupContainer").dxPopup({
+					title: "Discount Calculator",
+					width: 450,
+					height: 419.056,
+					contentTemplate: () => $("#calculatorWrapper")
+				});
 
 </script>

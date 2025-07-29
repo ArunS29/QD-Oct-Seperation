@@ -20,6 +20,9 @@
     .titleCard-toggle1 {
         display: none;
     }
+	.footer-fixed{
+		bottom:42px!important;
+	}
 </style>
 
 <div class="content-container-top">
@@ -321,9 +324,11 @@ buttons.Add()
 										.TabIndex(11)
 										.InputAttr(new
 										{
-											style = "font-family: Inter; font-size: 11pt;  color: maroon; text-align: right;",
-											type = "number",
-											step = "0.01"
+											 type = "number",
+											step = "0.01",
+											style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+											maxLength = 16,
+											autocomplete = "off"
 										})
 
 										)
@@ -1379,6 +1384,7 @@ buttons.Add()
 					// Check if both VerifiedOnDate and ApprovedOntext have values
 					if (formattedDate && formattedApprovedDate) {
 						disableEditing();
+						syncWorkflowFromFields
 					}
 				}
 			},
@@ -1425,6 +1431,8 @@ buttons.Add()
 					dataGrid.option("dataSource", response.data);
 					var button = $("#btnSave").dxButton("instance");
 					button.option("text", "Update");
+					$("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 				} else {
 					$("#dataGrid").dxDataGrid({
 						dataSource: response.data,
@@ -1680,6 +1688,8 @@ buttons.Add()
 					 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 					  var button = $("#btnSave").dxButton("instance");
 					 button.option("text", "Update");
+					 $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
+                   $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
 					var voucherNoTextBox = $("#VoucherNo").dxTextBox("instance");
 					voucherNoTextBox.option("readOnly", true);
 					 //   DevExpress.ui.notify("Data saved successfully!", "success", 2000);
@@ -3618,6 +3628,18 @@ buttons.Add()
     }
 
 	function onAttachmentButtonClick() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var rowCount = dataGrid.getVisibleRows().length;
+		var dataSource = dataGrid.option("dataSource");
+
+		if (rowCount === 0 || rowCount === null) {
+			DevExpress.ui.dialog.alert(
+				"Not allow to Add Attachments. Please enter some transactions.",
+				"Data Not Found"
+			).done(function () {
+
+			});
+		} else {
 			var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
 			var voucherNo = voucherNoBox.option("value");
 
@@ -3628,6 +3650,7 @@ buttons.Add()
 			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
 			const title = "Transaction Documents";
 			openModal(url, title);
+		}
 	}
 	function onReferenceDropdownOpened(e) {
         const grid = $("#ReferenceGrid").dxDataGrid("instance");

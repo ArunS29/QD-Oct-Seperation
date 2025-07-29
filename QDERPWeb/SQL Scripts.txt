@@ -1971,3 +1971,82 @@ END
 
 
 
+--Insert Debit Note from Purchase (VAT) -23/07/25
+
+
+CREATE PROCEDURE [dbo].[sp201_85InsertDebiteNoteFromPurchase]
+ 
+	(
+ 
+	@PurchaseVoucherNo as varchar(20),
+ 
+	@DebitNoteNo as varchar(20),
+ 
+	@AddedBy varchar(20),
+ 
+	@AddedOn datetime
+ 
+	)
+ 
+AS
+ 
+BEGIN
+ 
+	-- SET NOCOUNT ON added to prevent extra result sets from
+ 
+	-- interfering with SELECT statements.
+ 
+SET NOCOUNT ON;
+
+-- Insert Debit Note Master
+
+INSERT into tbl20172VATDebitNoteMaster
+ 
+(DebitNoteNo, DebitNoteDate, SupplierBillNo, SupplierCode, ReferenceNo,
+ 
+AddedBy, AddedOn, CompanyID, DebitNoteEffectiveDate,
+ 
+RevenueAccount, CostCenterCode,
+ 
+PurchaseVoucherNo, InvoicePeriod, SupplierBillDate,  
+ 
+BranchCode, InventoryEffectiveDate)
+
+SELECT  @DebitNoteNo, DATEADD(dd, DATEDIFF(dd, 0, Getdate()), 0), PurchaseBillNo, SupplierCode, ReferenceNo,
+ 
+@AddedBy, @AddedOn, CompanyID, PurchaseEffectiveDate,
+ 
+PurchaseLedgerAccountNo, CostCenterCode,
+ 
+PurchaseVoucherNo, PurchasePeriod, PurchaseBillDate,
+ 
+BranchCode, InventoryEffectiveDate
+ 
+FROM         tbl20166VATPurchaseMaster
+ 
+Where PurchaseVoucherNo = @PurchaseVoucherNo
+
+-- Insert Debit Note Child
+ 
+Insert Into tbl20173VATDebitNoteChild
+ 
+(DebitNoteNo, ItemCode, UoM, QuantityDebited, UnitsToDebited, UnitRateMethod,
+ 
+UnitRate, DetailedDescription, TaxSlabCode, TaxAmount, Discount)
+
+SELECT  @DebitNoteNo, ItemCode, UoM, QuantityInvoiced, UnitsToBill, UnitRateMethod,
+ 
+UnitRate, DetailedDescription, TaxSlabCode, TaxAmount, Discount
+ 
+FROM         tbl20167VATPurchaseChild
+ 
+Where PurchaseVoucherNo = @PurchaseVoucherNo
+
+
+END
+
+ --Boolean Based Approve new Concept in Web told SajuSir (IMS) -25/07/25
+ ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
+    IsEnableRFQWorkflow       BIT NOT NULL DEFAULT 1,
+    IsEnableReceiptWorkflow   BIT NOT NULL DEFAULT 1;

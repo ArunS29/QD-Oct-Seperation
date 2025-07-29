@@ -375,12 +375,42 @@
         .DropDownOptions(options => options.Width(280))
         .Items(items =>
         {
-            items.Add().Text(new JS("formatMessage('Preview Claim/Request')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Preview Claim/Request Form (wt VAT)')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Preview Claim/Request Form (Detailed)')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Payment Advice(Supplier Payments)')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Claim /Request Form Entry Checking')")).Icon("textdocument");
+            items.Add()
+                .Text(new JS("formatMessage('Preview Claim/Request')"))
+                .Option("color", "#4285F4")
+                .Icon("textdocument");
+
+            items.Add()
+                .Text(new JS("formatMessage('Preview Claim/Request Form (wt VAT)')"))
+                .Option("color", "#FBBC05")
+                .Icon("textdocument");
+
+            items.Add()
+                .Text(new JS("formatMessage('Preview Claim/Request Form (Detailed)')"))
+                .Option("color", "#34A853")
+                .Icon("textdocument");
+
+            items.Add()
+                .Text(new JS("formatMessage('Payment Advice(Supplier Payments)')"))
+                .Option("color", "#EA4335")
+                .Icon("textdocument");
+
+            items.Add()
+                .Text(new JS("formatMessage('Claim /Request Form Entry Checking')"))
+                .Option("color", "#AB47BC")
+                .Icon("textdocument");
         })
+        .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
         .OnItemClick("handlePreviewClick")
         )
 
@@ -1010,15 +1040,7 @@
                 }
             });
         }
-    function onAttachmentButtonClick() {
-        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        var voucherType = $("#VoucherNo").dxTextBox("instance").option("value");
-        console.log(voucherType)
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-        const title = "Ledger Documents";
-        openModal(url, title);
-    }
-
+    
 
 
 </script>

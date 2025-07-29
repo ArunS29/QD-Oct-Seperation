@@ -9,18 +9,18 @@
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
-        padding: 16px 0;
+        /* padding: 16px 0; */
         background: #fff;
         border-radius: 12px;
         box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
         gap: 10px;
-        height: 68px;
+        height: 53px;
     }
 
     /* FIXED: Single full connector line behind steps */
     .workflow-line {
         position: absolute;
-        top: 32px;
+        top: 19px;
         /* right: 10px; */
         left: 25px;
         width: 97%;
@@ -299,6 +299,13 @@
         white-space: nowrap;
     }
 
+    .dx-fieldset {
+        margin: 0px !important;
+    }
+
+    .dx-button {
+        height: 35px !important;
+    }
 </style>
 
 
@@ -375,10 +382,27 @@
         .DropDownOptions(options => options.Width(220))
         .Items(items =>
         {
-            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
-            items.Add().Text(new JS("formatMessage('Preview Format 2')")).Icon("textdocument");
+            items.Add()
+                .Text(new JS("formatMessage('Preview Format 1')"))
+                .Option("color", "#EA4335")  // Red
+                .Icon("textdocument");
 
+            items.Add()
+                .Text(new JS("formatMessage('Preview Format 2')"))
+                .Option("color", "#34A853")  // Green
+                .Icon("textdocument");
         })
+        .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
         .OnItemClick("handlePreviewClick1")
         )
 
@@ -901,6 +925,7 @@
                         $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
                         $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
                     });
+                    initWorkflowTippyPopovers();
                 }
                 else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -1130,6 +1155,7 @@
                             $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
                         }
                     });
+                    initWorkflowTippyPopovers();
                 } else {
                     DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
                 }
@@ -1275,7 +1301,19 @@
     }
 
 
-        function onAttachmentButtonClick() {
+    function onAttachmentButtonClick() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.dialog.alert(
+                "Not allow to Add Attachments. Please enter some transactions.",
+                "Data Not Found in Grid"
+            ).done(function () {
+
+            });
+        } else {
             var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             var voucherNo = voucherNoBox.option("value");
 
@@ -1286,6 +1324,7 @@
             const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
             const title = "Transaction Documents";
             openModal(url, title);
+        }
     }
 
 

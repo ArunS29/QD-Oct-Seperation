@@ -208,7 +208,7 @@
      )
      .LabelMode(EditorLabelMode.Floating)
      .ID("GetProjectDropDown")
-     .Width(900)
+     .Width(600)
      @*  .ShowClearButton(true)
                  .AcceptCustomValue(true) *@
      .OpenOnFieldClick(false)//
@@ -219,7 +219,7 @@
      .OnInput("dropDownBoxOnInput")
      .OnOpened("onOpened")
      .TabIndex(1)
-     .Width("100%")
+     .Width("60%")
      .OnKeyDown("onKeyDown")
      //.OnValueChanged("dropDownBoxValueChanged")
      .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
@@ -289,7 +289,7 @@
                 .Template(@<text>
             <div class="form-container">
                 <div class="form-row">
-                    <div class="col-md-6" style="">
+                    <div class="col-md-6">
                         @(Html.DevExtreme().DateBox().ID("ClientVisitedOn").Label(new JS("formatMessage('Client Visited On')"))
                         .LabelMode(EditorLabelMode.Floating).DisplayFormat("dd-MMM-yyyy"))
                     </div>
@@ -447,7 +447,7 @@
 
                      
 
-                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;padding:8px;">
+                <div class="form-group" style="display: flex; justify-content: flex-end; width: 100%;">
                     @(Html.DevExtreme().Button()
                     .ID("btnAddRepotStatus")
                     .Text(new JS("formatMessage('Add Report Status')"))
@@ -599,23 +599,23 @@
                  )
                  .WordWrapEnabled(true)
                  .ShowBorders(true)
-                 @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                 .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                 .OnSelectionChanged("dataGridSelectionChanged1")
-                 .OnInitialized("dataGridInitialized1")
-                 .HeaderFilter(p => p.Visible(true))
-                 .ShowBorders(true)
-                 .HoverStateEnabled(true)
-                 .Paging(p => p.PageSize(15))
-                 //.FilterRow(f => f.Visible(true))//
-                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                 .Height(345)
-                 .Selection(s => s.Mode(SelectionMode.Single))
-                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                 .Columns(columns =>
-                 {
-                                columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('ID')"));
-                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')"));
+   @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+   .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged1")
+                    .OnInitialized("dataGridInitialized1")
+                    .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    //.FilterRow(f => f.Visible(true))//
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(80);
+                        columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')")).Width(80);
                                 columns.Add().DataField("ClientCategory").Caption(new JS("formatMessage('Category')"));
 
 
@@ -649,7 +649,7 @@
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                     columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId");
+                         columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId").Alignment(HorizontalAlignment.Center).Width(95);
                      columns.Add().DataField("AccountHead");
 
 
@@ -683,7 +683,7 @@
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                     columns.Add().Caption(new JS("formatMessage('Code')")).DataField("SalesPersonCode");
+                         columns.Add().Caption(new JS("formatMessage('Code')")).DataField("SalesPersonCode").Alignment(HorizontalAlignment.Center).Width(80);
                      columns.Add().DataField("SalesPersonName");
 
 
@@ -775,7 +775,7 @@
         url: `/api/ClientLeadMaster/GetClientByCode?clientCode=${cleanClientCode}`,
         type: 'GET',
         success: function (data) {
-              $("#btnSave").dxButton("instance").option("text", "Update");
+                 $("#btnSave").dxButton("instance").option("text", formatMessage("Update"));
             console.log("binddata:",data);
             if (data) {
                 $('#txtClientCode').dxTextBox("instance").option("value", data.ClientCode);
@@ -1341,8 +1341,8 @@ ContactRemarks:clientRemarks,
         var clientName = $('#txtClientName').dxTextBox("instance").option("value");
             var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
         let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}&clientCode=${encodeURIComponent(clientCode)}`;
-        let title = "";
-        openModal(url, title);
+            let title = "Client Status Update";
+        openModal(url, title ,"80%","90%");
 
     }
    
@@ -1354,7 +1354,7 @@ ContactRemarks:clientRemarks,
    // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
             var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
 
-    var title = `Contact List - ${clientName}`;
+    var title = `Contact List ${clientName}`;
     
     openModal(url, title);
 }

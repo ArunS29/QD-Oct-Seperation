@@ -1478,7 +1478,11 @@
 
                             }
 
+                            // ✅ Sync fields
+                            syncWorkflowFromFields();
 
+                            // ✅ Initialize popovers
+                            initWorkflowTippyPopovers();
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
@@ -1583,6 +1587,8 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
+                              isVoucherSaved = true; // Mark Updated step as done
+                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         DevExpress.ui.dialog.alert(
                             "Expense Claim Request Details updated Successfully.",
                             "Update Successful"
@@ -1640,6 +1646,8 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
+                           isVoucherSaved = true; // Mark Updated step as done
+                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                         DevExpress.ui.dialog.alert(
                                 "Expenses Claim Request Details Updated Sucessfully.",
                                 "Data Saved Successfully"
@@ -1773,9 +1781,9 @@
                 dataType: "json",
                 success: function (response) {
                     if (response.success) {
-                         isVoucherSaved = true; // Mark Updated step as done
-                         updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+                 
                          proceedWithSubmit();
+                              
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -1817,9 +1825,9 @@
                                 $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
                                 $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
                                 $("#IsSubmitted").dxCheckBox("instance").option("value", true);
-
-                                disableclaim();
                                 syncWorkflowFromFields();
+                                disableclaim();
+                                
                             });
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
@@ -1935,24 +1943,83 @@
                     SelectedAccountHead:selectedAccountHead,
                     SelectedPaymentType:selectedPaymentType// JS Date object ⟶ ISO is fine
                 }),
-                    success: function (result) {
-                           // ✅ Update UI fields with result
-                    $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
-                    $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
-                    $("#paidOntext").dxTextBox("instance").option("value", result.PaidOn);
-                    disableclaim();
-                    DevExpress.ui.notify("Voucher saved and claim marked as paid.", "success", 2500);
+                    success: async function (result) {
+                    //  Update UI fields with result
+                        $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
+                        $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
+                        $("#paidOntext").dxTextBox("instance").option("value", result.PaidOn);
+                        disableclaim();
 
+                        // Bind Attachments from Expense to Voucher 
+                        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+                        var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+                        var voucherType ="Expense ClaimRequest"
+                        // 1. Get Documents
+                        const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}`);
+                        const documents = await getDocRes.json();
+                        if (!documents.length) {
+                            DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+                            return;
+                        }
+                        // 2. Generate DocumentNo to each documents
+                        const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+                        const newDocNos = await docNoRes.json();
+                        if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+                            DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+                            return;
+                        }
+                        // 3. Reupload each document to AddDocumentsEntry
+                        const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
+
+                        const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
+                        const isMaster = false;
+
+                        for (let i = 0; i < documents.length; i++) {
+                            const doc = documents[i];
+                            const newDocNo = newDocNos[i];
+
+                            try {
+                                const fileResponse = await fetch(doc.FileUrl);
+                                const blob = await fileResponse.blob();
+
+                                const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+                                const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+
+                                const formData = new FormData();
+                                formData.append("file", new File([blob], safeFileName)); // no docNo prefix
+                                formData.append("DocumentNo", newDocNo);
+                                formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+                                formData.append("DocumentType", doc.DocumentType ?? "1");
+                                formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+                                formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+                                formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+                                formData.append("LedgerNo", generateNo); // new folder id
+
+
+                                const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}`, {
+                                    method: "POST",
+                                    body: formData
+                                });
+
+                                const uploadResult = await uploadRes.json();
+                                console.log("Uploaded document:", uploadResult);
+                            } catch (uploadError) {
+                                console.error("Error re-uploading document:", uploadError);
+                            }
+                        }
+                        DevExpress.ui.notify("Voucher saved and claim marked as paid with Attachments.", "success", 2500);
+
+
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Could not finalize the payment: " + xhr.responseText, "error", 4000);
+                            console.log(xhr.responseText);
+                    }
+                    });
                 },
-                error: function (xhr) {
-                    DevExpress.ui.notify("Could not finalize the payment: " + xhr.responseText, "error", 4000);
-                        console.log(xhr.responseText);
-                }
-            });
-        },
 
-                    error: function () {
-                        DevExpress.ui.notify("Failed to generate voucher number.", "error", 2000);
+                error: function () {
+                    DevExpress.ui.notify("Failed to generate voucher number.", "error", 2000);
                     }
                 });
             },
@@ -2140,13 +2207,24 @@
         }
 
     function onAttachmentButtonClick() {
+        // const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
+        const hasValidAmounts = data.some(row => {
+            return (row.ClaimedAmount && row.ClaimedAmount > 0) || (row.ApprovedAmount && row.ApprovedAmount > 0);
+        });
+
+        if (!hasValidAmounts) {
+            DevExpress.ui.dialog.alert("Data Not found in the Claimed and  Approved Amount in Grid", "Can't Enable Attachment");
+            return;
+        }
         // Get Voucher No safely
         const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
         const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
 
 
 
-        var voucherType ="Expense ClaimRequest"
+        var voucherType ="Expense ClaimRequest";
         // Log and build URL
         console.log("Voucher No:", voucherNo);
         console.log("Voucher Type:", voucherType);
@@ -2164,10 +2242,11 @@
         const verified = $("#IsVerified").dxCheckBox("instance").option("value") === true;
         const approved = $("#IsApproved").dxCheckBox("instance").option("value") === true;
 
-        if (approved) return 3;
-        if (verified) return 2;
-        if (submitted) return 1;
-
+        if (approved) return 4;
+        if (verified) return 3;
+        if (submitted) return 2;
+        if (isVoucherSaved) return 1; // If voucher is saved, consider it as submitted
+     
         return 0;
     }
 
@@ -2203,7 +2282,7 @@
             }
 
             // Final Approved state
-                        if (status === 3 && index === 3) {
+                        if (status === 4 && index === 4) {
                 el.classList.add("completed");
                 statusMsg.textContent = "Done";
                 icon.className = "fas fa-check-circle";
@@ -2287,7 +2366,7 @@
         const submittedBy = $("#SubmittedBytext").dxTextBox("instance")?.option("value") || "N/A";
         const submittedOn = $("#SubmittedOnDate").dxTextBox("instance")?.option("value") || "N/A";
         const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
-        const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+        const verifiedOn = $("#VerifiedOntext").dxTextBox("instance")?.option("value") || "N/A";
         const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
         const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
 

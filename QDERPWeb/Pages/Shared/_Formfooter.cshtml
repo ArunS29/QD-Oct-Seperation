@@ -357,7 +357,7 @@
                         .Icon("save")
                         .Width(180)
                         .Hint("Click to save")
-                        .ElementAttr(new { @class = "dx-button-custom btn-save" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-save  white-icon" }))
 
             @(Html.DevExtreme().Button()
                         .ID("btnSaveAndClose")
@@ -365,49 +365,68 @@
                         .Icon("save")
                         .Width(180)
                         .Hint("Click to save and close")
-                        .ElementAttr(new { @class = "dx-button-custom btn-save-close" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-save-close  white-icon" }))
 
             @(Html.DevExtreme().Button()
                         .ID("btnBack")
                         .Text(new JS("formatMessage('Back')"))
-                        .Icon("arrowleft")
+                        .Icon("back")
                         .Width(180)
                         .Hint("Click to back")
                         .OnClick("onBackButtonClick")
-                        .ElementAttr(new { @class = "dx-button-custom btn-back" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-back  white-icon" }))
 
             @(Html.DevExtreme().Button()
                         .ID("btnAttach")
                         .Text(new JS("formatMessage('Attach')"))
-                        .Icon("link")
+                        .Icon("attach")
                         .Hint("Click to attach")
                         .Width(180)
                         .OnClick("onAttachmentButtonClick")
-                        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-attach  white-icon" }))
 
             @(Html.DevExtreme().DropDownButton()
                         .ID("btnPreview1")
                         .Text(new JS("formatMessage('Preview')"))
-                        .Icon("fullscreen")
+                        .Icon("eyeopen")
                         .Hint("Click to Preview")
-                        .ElementAttr(new { @class = "dx-button-custom btn-preview" })
+                        .ElementAttr(new { @class = "dx-button-custom btn-preview  white-icon" })
                         .Width(180)
                         .DropDownOptions(o => o.Width(220))
                         .Items(items =>
                         {
-                            items.Add().Text(new JS("formatMessage('Preview Format 1')")).Icon("textdocument");
-                            items.Add().Text("Preview Format 2").Icon("textdocument");
+                            items.Add()
+                                .Text(new JS("formatMessage('Preview Format 1')"))
+                                .Option("color", "#EA4335") // Red
+                                .Icon("textdocument");
+
+                            items.Add()
+                                .Text(new JS("formatMessage('Preview Format 2')"))
+                                .Option("color", "#34A853") // Green
+                                .Icon("textdocument");
                         })
+                        .ItemTemplate(@<text>
+                            <div class="custom-dropdown-item">
+                                <div style="background-color:<%- color %>; height:90%" class="side-bar"></div>
+                                <div class="item-content">
+                                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                                    <div>
+                                        <div class="item-title"><%- text %></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </text>)
+
                         .OnItemClick("handlePreviewClick"))
 
             @(Html.DevExtreme().Button()
                         .ID("btnDelete")
                         .Text("Delete")
-                        .Icon("close")
+                        .Icon("trash")
                         .Width(180)
                         .Hint("Click to delete")
                         .OnClick("onDeleteButtonClick")
-                        .ElementAttr(new { @class = "dx-button-custom btn-delete" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-delete white-icon" }))
 
             @(Html.DevExtreme().Button()
                         .ID("btnVerify")
@@ -416,7 +435,7 @@
                         .Hint("Click to Verify")
                         .Width(180)
                         .OnClick("onVerifyButtonClick")
-                        .ElementAttr(new { @class = "dx-button-custom btn-verify" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-verify white-icon" }))
 
             @(Html.DevExtreme().Button()
                         .ID("btnApprove")
@@ -425,7 +444,7 @@
                         .Hint("Click to Approve")
                         .Width(180)
                         .OnClick("onApproveButtonClickWithAnimation")
-                        .ElementAttr(new { @class = "dx-button-custom btn-approve" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-approve white-icon" }))
 
             @(Html.DevExtreme().Button()
                         .ID("btnVoucherColumnChooser")
@@ -434,7 +453,7 @@
                         .Hint("Click to column chooser")
                         .Width(210)
                         .OnClick("showColumnChooser")
-                        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+                        .ElementAttr(new { @class = "dx-button-custom btn-attach white-icon" }))
         </div>
     </div>
 </div>
@@ -1328,30 +1347,43 @@
     }
 
         function onAttachmentButtonClick() {
-            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-            var voucherNo = voucherNoBox.option("value");
 
-            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-            var voucherType = voucherTypeBox.option("value");
-            const isMaster = false;
-            console.log(voucherType)
-            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
-            const title = "Transaction Documents";
-            openModal(url, title);
-        }
-    function onAttachButtonReady(e) {
-        const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-        const voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var rowCount = dataGrid.getVisibleRows().length;
+            var dataSource = dataGrid.option("dataSource");
 
-        if (voucherNoBox && voucherTypeBox) {
-            const voucherNo = voucherNoBox.option("value");
-            const voucherType = voucherTypeBox.option("value");
+            if (rowCount === 0 || rowCount === null) {
+                DevExpress.ui.dialog.alert(
+                    "Not allow to Add Attachments. Please enter some transactions.",
+                    "Data Not Found"
+                ).done(function () {
 
-            if (voucherNo && voucherType) {
-                updateAttachButtonUI(voucherNo, voucherType);
+                });
+            } else {
+                // Retrieve the unique identifier for the row
+                var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); 
+                var voucherType = voucherTypeBox.option("value");
+                const isMaster = false;
+                console.log(voucherType)
+                const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+                const title = "Transaction Documents";
+                openModal(url, title);
             }
         }
-    }
+        //  $(document).ready(function () {
+        //     const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        //     const voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+
+        //     if (voucherNoBox && voucherTypeBox) {
+        //         const voucherNo = voucherNoBox.option("value");
+        //         const voucherType = voucherTypeBox.option("value");
+
+        //         if (voucherNo && voucherType) {
+        //             updateAttachButtonUI(voucherNo, voucherType);
+        //         }
+        //     }
+        // });
 
 
    

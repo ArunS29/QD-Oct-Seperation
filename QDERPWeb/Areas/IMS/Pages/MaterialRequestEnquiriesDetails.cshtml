@@ -309,7 +309,7 @@
 		})
 		.ItemTemplate(@<text>
             <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:9%" class="side-bar"></div>
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
                 <div class="item-content">
                     <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
                     <div>
@@ -321,200 +321,201 @@
 		)
 
 </div>
-<div class="dx-field ledgerResult" >
-	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60604purchaseRequestViewMaster>()
-				.ID("dataGrid")
-				.RemoteOperations(false)
-				.DataSource(new JS("[]"))
-				.Columns(columns =>
+	<div class="dx-field ledgerResult" >
+		@(
+			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60604purchaseRequestViewMaster>()
+					.ID("dataGrid")
+					.RemoteOperations(false)
+					.DataSource(new JS("[]"))
+					.Columns(columns =>
+					{
+				// Grid Band: Bills Receivable
+				columns.Add().Caption(new JS("formatMessage('Request/Enquiries Details')")).Columns(band =>
 				{
-			// Grid Band: Bills Receivable
-			columns.Add().Caption(new JS("formatMessage('Request/Enquiries Details')")).Columns(band =>
-			{
-				band.AddFor(m => m.RequestEnquiry).Caption(new JS("formatMessage('Material Request/ Enquiry')")).Alignment(HorizontalAlignment.Left).Width(250);
-				band.AddFor(m => m.RequestEnquiry).Caption(new JS("formatMessage('Material Request/ Enquiry')")).Alignment(HorizontalAlignment.Left).GroupIndex(0); 
-				band.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Request No')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.MprrevisionNo).Caption(new JS("formatMessage('Rev No')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('Request Date')")).Alignment(HorizontalAlignment.Right).Format("dd-MMM-yyyy").AllowEditing(true);
-				band.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested By')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.PurchaseRequestStatus).Caption(new JS("formatMessage('Purchase Request Status')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>)
-		.Visible(true);
-				band.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>)
-		.Visible(true);
-				band.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>)
-		.Visible(true);
-				band.AddFor(m => m.IsCancelled).Caption(new JS("formatMessage('Is Cancelled')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
-			.CellTemplate(@<text>
-		<div class="dx-icon">
-			<%= data.IsCancelled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
-		</div>
-	</text>
-		)
-				.Visible(true);
-				});
+					band.AddFor(m => m.RequestEnquiry).Caption(new JS("formatMessage('Material Request/ Enquiry')")).Alignment(HorizontalAlignment.Left).Width(250);
+					band.AddFor(m => m.RequestEnquiry).Caption(new JS("formatMessage('Material Request/ Enquiry')")).Alignment(HorizontalAlignment.Left).GroupIndex(0); 
+					band.AddFor(m => m.Mprno).Caption(new JS("formatMessage('Request No')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.MprrevisionNo).Caption(new JS("formatMessage('Rev No')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('Request Date')")).Alignment(HorizontalAlignment.Right).Format("dd-MMM-yyyy").AllowEditing(true);
+					band.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested By')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.PurchaseRequestStatus).Caption(new JS("formatMessage('Purchase Request Status')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.IsSubmitted).Caption(new JS("formatMessage('Is Submitted')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsSubmitted ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>)
+			.Visible(true);
+					band.AddFor(m => m.IsVerified).Caption(new JS("formatMessage('Is Verified')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsVerified ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>)
+			.Visible(true);
+					band.AddFor(m => m.IsApproved).Caption(new JS("formatMessage('Is Approved')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsApproved ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>)
+			.Visible(true);
+					band.AddFor(m => m.IsCancelled).Caption(new JS("formatMessage('Is Cancelled')")).Alignment(HorizontalAlignment.Center).AllowEditing(true)
+				.CellTemplate(@<text>
+			<div class="dx-icon">
+				<%= data.IsCancelled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+			</div>
+		</text>
+			)
+					.Visible(true);
+					});
 						
-						columns.Add().Caption(new JS("formatMessage('RFQ')")).Columns(band =>
-						{
-				band.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No of Items')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.NoOfRfqissued).Caption(new JS("formatMessage('No of RFQ Issued')")).Alignment(HorizontalAlignment.Center);
+							columns.Add().Caption(new JS("formatMessage('RFQ')")).Columns(band =>
+							{
+					band.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No of Items')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.NoOfRfqissued).Caption(new JS("formatMessage('No of RFQ Issued')")).Alignment(HorizontalAlignment.Center);
 
-			           });
+						   });
 			
-				columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
-	         {
-				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-						function(e) {
-						if (e.value === null || e.value === undefined) {
-						return ''; // Return empty string for null/undefined
-						}
-						return Number(e.value).toLocaleString(undefined, {
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2
-						});
-						}");
-						band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-						function(e) {
-						if (e.value === null || e.value === undefined) {
-						return ''; // Return empty string for null/undefined
-						}
-						return Number(e.value).toLocaleString(undefined, {
-						minimumFractionDigits: 2,
-						maximumFractionDigits: 2
-						});
-						}");
-			});
+					columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
+				 {
+					band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
+							function(e) {
+							if (e.value === null || e.value === undefined) {
+							return ''; // Return empty string for null/undefined
+							}
+							return Number(e.value).toLocaleString(undefined, {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+							});
+							}");
+							band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
+							function(e) {
+							if (e.value === null || e.value === undefined) {
+							return ''; // Return empty string for null/undefined
+							}
+							return Number(e.value).toLocaleString(undefined, {
+							minimumFractionDigits: 2,
+							maximumFractionDigits: 2
+							});
+							}");
+				});
 
-				columns.Add().Caption(new JS("formatMessage('Sales Order Details')")).Columns(band =>
-	     {
-				band.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center);
+					columns.Add().Caption(new JS("formatMessage('Sales Order Details')")).Columns(band =>
+			 {
+					band.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center);
+					band.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center);
 
-			});
+				});
 
-				// Add hidden columns for remaining model fields
-				columns.AddFor(m => m.TypeOfMpr).Caption("Type Of MPR").Visible(false);
-				columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-				columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
-				columns.AddFor(m => m.ModeOfRequestId).Caption("Mode Of Request ID").Visible(false);
-				columns.AddFor(m => m.TypeOfRequestId).Caption("Type Of Request ID").Visible(false);
-				columns.AddFor(m => m.Mprremarks).Caption("MPR Remarks").Visible(false);
-				columns.AddFor(m => m.ModeOfRequest).Caption("Mode Of Request ").Visible(false);
-				columns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request ").Visible(false);
-				columns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
-				columns.AddFor(m => m.ClientCategory).Caption("Client Category").Visible(false);
-				columns.AddFor(m => m.StoreName).Caption("Store Name").Visible(false);
-				columns.AddFor(m => m.CompanyName).Caption("Company Name").Visible(false);
-				columns.AddFor(m => m.Project).Caption("Project").Visible(false);
-				columns.AddFor(m => m.RequestedBy).Caption("Requestor Name").Visible(false);
-				columns.AddFor(m => m.RequesterContact).Caption("Requester Contact").Visible(false);
-				columns.AddFor(m => m.RequesterContactEmail).Caption("Requester Contact Email").Visible(false);
-				columns.AddFor(m => m.Department).Caption("Department").Visible(false);
-				columns.AddFor(m => m.DepartmentCode).Caption("Department Code").Visible(false);
-				columns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Visible(false);
-				columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Visible(false);
-				columns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Visible(false);
-				columns.AddFor(m => m.PurposeOfRequest).Caption("Purpose Of Request").Visible(false);
-				columns.AddFor(m => m.Remarks).Caption("Remarks").Visible(false);
-				columns.AddFor(m => m.Priority).Caption("Priority").Visible(false);
-				columns.AddFor(m => m.TotalRequestCost).Caption("Total Request Cost").Visible(false);
+					// Add hidden columns for remaining model fields
+					columns.AddFor(m => m.TypeOfMpr).Caption("Type Of MPR").Visible(false);
+					columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
+					columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
+					columns.AddFor(m => m.ModeOfRequestId).Caption("Mode Of Request ID").Visible(false);
+					columns.AddFor(m => m.TypeOfRequestId).Caption("Type Of Request ID").Visible(false);
+					columns.AddFor(m => m.Mprremarks).Caption("MPR Remarks").Visible(false);
+					columns.AddFor(m => m.ModeOfRequest).Caption("Mode Of Request ").Visible(false);
+					columns.AddFor(m => m.TypeOfRequest).Caption("Type Of Request ").Visible(false);
+					columns.AddFor(m => m.ClientName).Caption("Client Name").Visible(false);
+					columns.AddFor(m => m.ClientCategory).Caption("Client Category").Visible(false);
+					columns.AddFor(m => m.StoreName).Caption("Store Name").Visible(false);
+					columns.AddFor(m => m.CompanyName).Caption("Company Name").Visible(false);
+					columns.AddFor(m => m.Project).Caption("Project").Visible(false);
+					columns.AddFor(m => m.RequestedBy).Caption("Requestor Name").Visible(false);
+					columns.AddFor(m => m.RequesterContact).Caption("Requester Contact").Visible(false);
+					columns.AddFor(m => m.RequesterContactEmail).Caption("Requester Contact Email").Visible(false);
+					columns.AddFor(m => m.Department).Caption("Department").Visible(false);
+					columns.AddFor(m => m.DepartmentCode).Caption("Department Code").Visible(false);
+					columns.AddFor(m => m.ClientRefNo).Caption("Client Ref No").Visible(false);
+					columns.AddFor(m => m.ProjectDescription).Caption("Project Description").Visible(false);
+					columns.AddFor(m => m.ProjectMasterCode).Caption("Project Master Code").Visible(false);
+					columns.AddFor(m => m.PurposeOfRequest).Caption("Purpose Of Request").Visible(false);
+					columns.AddFor(m => m.Remarks).Caption("Remarks").Visible(false);
+					columns.AddFor(m => m.Priority).Caption("Priority").Visible(false);
+					columns.AddFor(m => m.TotalRequestCost).Caption("Total Request Cost").Visible(false);
 
-				columns.AddFor(m => m.BidClosingDate).Caption("Bid Closing Date").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.BidReminderOn).Caption("Bid Reminder On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.QuoteSubmittedOn).Caption("Quote Submitted On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.BidClosingDate).Caption("Bid Closing Date").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.BidReminderOn).Caption("Bid Reminder On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.QuoteSubmittedOn).Caption("Quote Submitted On").Format("dd-MMM-yyyy").Visible(false);
 
-				columns.AddFor(m => m.Comments).Caption("BID Status").Visible(false);
-				columns.AddFor(m => m.ExpectedDate).Caption("Expected Date").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.Comments).Caption("BID Status").Visible(false);
+					columns.AddFor(m => m.ExpectedDate).Caption("Expected Date").Format("dd-MMM-yyyy").Visible(false);
 
-				columns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
-				columns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group ID").Visible(false);
-				columns.AddFor(m => m.SalesPersonCode).Caption("Sales Person Code").Visible(false);
-				columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
-				columns.AddFor(m => m.SalesPersonUserId).Caption("Sales Person User ID").Visible(false);
+					columns.AddFor(m => m.InventoryMasterGroup).Caption("Inventory Master Group").Visible(false);
+					columns.AddFor(m => m.InventoryMasterGroupId).Caption("Inventory Master Group ID").Visible(false);
+					columns.AddFor(m => m.SalesPersonCode).Caption("Sales Person Code").Visible(false);
+					columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
+					columns.AddFor(m => m.SalesPersonUserId).Caption("Sales Person User ID").Visible(false);
 
-				columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-				columns.AddFor(m => m.AddedOn).Caption("Added On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-				columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-				columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.PreparedBy).Caption("Prepared By").Visible(false);
-				columns.AddFor(m => m.PreparedOn).Caption("Prepared On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.RequesterName).Caption("Requester Name").Visible(false);
-				columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-				columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-				columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Format("dd-MMM-yyyy").Visible(false);
-				columns.AddFor(m => m.ProjectSubUnitName).Caption("Requesting Project Unit").Visible(false);
-				columns.AddFor(m => m.CancelledBy).Caption("CancelledBy").Visible(false);
-				columns.AddFor(m => m.CancelledOn).Caption("CancelledOn").Format("dd-MMM-yyyy").Visible(false);
-			columns.AddFor(m => m.ExpectedVatrate).Caption("Expected VAT Rate").Visible(false);
+					columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+					columns.AddFor(m => m.AddedOn).Caption("Added On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.PreparedBy).Caption("Prepared By").Visible(false);
+					columns.AddFor(m => m.PreparedOn).Caption("Prepared On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.RequesterName).Caption("Requester Name").Visible(false);
+					columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
+					columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Format("dd-MMM-yyyy").Visible(false);
+					columns.AddFor(m => m.ProjectSubUnitName).Caption("Requesting Project Unit").Visible(false);
+					columns.AddFor(m => m.CancelledBy).Caption("CancelledBy").Visible(false);
+					columns.AddFor(m => m.CancelledOn).Caption("CancelledOn").Format("dd-MMM-yyyy").Visible(false);
+				columns.AddFor(m => m.ExpectedVatrate).Caption("Expected VAT Rate").Visible(false);
 
+				})
+
+			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
+			.OnToolbarPreparing("onToolbarPreparing")
+			.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
+			.Height("60vh") // <<< fixed height
+			.ColumnAutoWidth(true)
+			.OnRowPrepared("onRowPrepared")
+			.Width("99%")
+			.WordWrapEnabled(true)
+			//.OnCellClick("function(e) {handleCellClick(e);}")
+			.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+			.AllowColumnReordering(true)
+			.AllowColumnResizing(true)
+		 .Editing(editing => editing
+			.Mode(GridEditMode.Row))
+			.ColumnFixing(fixing => fixing.Enabled(true))
+			.HeaderFilter(filter => filter.Visible(false))
+			.Grouping(grouping => grouping.AutoExpandAll(true))
+			.FilterRow(filterRow => filterRow.Visible(false))
+			.GroupPanel(groupPanel => groupPanel.Visible(false))
+			.ShowBorders(true)
+			.ShowRowLines(true)
+			.OnContextMenuPreparing("onContextMenuPreparing")
+
+			.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+	.Pager(pager =>
+	{
+		pager.ShowPageSizeSelector(true);
+		pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+		pager.ShowNavigationButtons(true);
+		pager.Visible(true);
+	})
+			.Summary(summary =>
+			{
+				summary.GroupItems(items =>
+				{
+					items.Add().Column("RequestEnquiry")
+				.SummaryType(SummaryType.Count)
+				.ShowInGroupFooter(false) // set true if you want it at footer
+				.DisplayFormat("{0}");
+				});
 			})
 
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
-		.OnToolbarPreparing("onToolbarPreparing")
-		.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
-		.Height("60vh") // <<< fixed height
-		.ColumnAutoWidth(true)
-		.Width("99%")
-		.WordWrapEnabled(true)
-		//.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
-		.AllowColumnReordering(true)
-		.AllowColumnResizing(true)
-	 .Editing(editing => editing
-        .Mode(GridEditMode.Row))
-		.ColumnFixing(fixing => fixing.Enabled(true))
-		.HeaderFilter(filter => filter.Visible(false))
-		.Grouping(grouping => grouping.AutoExpandAll(true))
-		.FilterRow(filterRow => filterRow.Visible(false))
-		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.ShowBorders(true)
-		.ShowRowLines(true)
-		.OnContextMenuPreparing("onContextMenuPreparing")
-
-		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
-.Pager(pager =>
-{
-    pager.ShowPageSizeSelector(true);
-    pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
-    pager.ShowNavigationButtons(true);
-    pager.Visible(true);
-})
-		.Summary(summary =>
-		{
-			summary.GroupItems(items =>
-			{
-				items.Add().Column("RequestEnquiry")
-			.SummaryType(SummaryType.Count)
-			.ShowInGroupFooter(false) // set true if you want it at footer
-			.DisplayFormat("{0}");
-			});
-		})
 
 
-
-		)
-</div>
+			)
+	</div>
 
 <ul id="submenu" class="custom-submenu">
 	<li id="addCreditNote">Add new e-Invoice Credit Note</li>
@@ -1158,7 +1159,7 @@
 						let Mprno = e.row.data.Mprno;
 						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
 						let url = `/${tenantName}/IMS/MPRRevisionHistory?Mprno=${Mprno}`;
-						let title = `MPRRevisionHistory - ${Mprno}`;
+							let title = `Material Request Revised History - ${Mprno}`;
 						openModal(url, title);
 						
 					}
@@ -1187,8 +1188,8 @@
 			method: 'POST',
 			success: function (response) {
 				if (response.success) {
-					DevExpress.ui.notify(response.message, 'success', 2000);
-					$("#dataGrid").dxDataGrid("instance").refresh();
+						 DevExpress.ui.notify(response.message, "success", 2000);
+						ddBtnShowRecords_click('range');
 				} else {
 					DevExpress.ui.notify(response.message, 'error', 3000);
 				}
@@ -1381,4 +1382,12 @@ $(document).ready(function () {
 		// Auto-start animation for "Today"
 		animateCount(countEls[0], counts[0]);
 
+			 function onRowPrepared(e) {
+			if (e.rowType === "data" && e.data.IsCancelled) {
+				e.rowElement.css({
+					"color": "rgb(192, 0, 0)",           
+					"background-color": "rgb(255, 191, 190)"
+				});
+			}
+		}
 </script>

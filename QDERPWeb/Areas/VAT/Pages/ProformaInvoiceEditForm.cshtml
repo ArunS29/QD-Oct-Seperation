@@ -367,7 +367,9 @@
 		background-color: #e6f7ff;
 		border-color: #91d5ff;
 	}
-
+	.footer-fixed{
+		bottom:35px!important;
+	}
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -717,10 +719,14 @@
 														.LoadMode(DataSourceLoadMode.Raw)
 														.Key("IncomeLedger")
 														)
+														.ValidationRules(rules =>
+														{
+															rules.AddRequired()
+															.Message(new JS("formatMessage('Revenue Account should be entered')"));
+														})
 
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddlGoodsGroup2")
-														.Value("Income - Trading")
 														.ShowClearButton(true)
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
@@ -1310,6 +1316,7 @@
 			@(
 							Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
+							.Height("39vh")
 							.RemoteOperations(false)
 							.Columns(columns =>
 							{
@@ -1550,46 +1557,7 @@
 					)
 		}
 
-		@using (Html.DevExtreme().NamedTemplate("ClientCodeContentTemplate"))
-		{
-			@(Html.DevExtreme().DataGrid()
-					.ID("clientcode-datagrid")
-					.DataSource(d => d.WebApi()
-					.Controller("VATModule")
-					.LoadAction("GetClientCode")
-					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("AccountHead")
-					)
-					.WordWrapEnabled(true)
-					.ShowBorders(true)
-					.ShowColumnHeaders(true)
-					.FilterRow(f => f.Visible(false))
-					.SearchPanel(sp => sp.HighlightSearchText(true))
-					.Selection(sl => sl.Mode(SelectionMode.Single))
-					.OnSelectionChanged("ClientCodedataGridSelectionChanged")
-					.OnInitialized("ClientCodedataGridInitialized")
-					.OnRowPrepared("onClientCodeRowPrepared")
-					.HeaderFilter(p => p.Visible(false))
-					.ShowBorders(true)
-					.HoverStateEnabled(true)
-					.Paging(p => p.PageSize(15))
-
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
-					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-					.Columns(columns =>
-					{
-						// columns.Add().DataField("OpeningBalanceDrCr");
-						columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("VatregistrationNo").Caption("Client VAT No").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("ReferenceNo").Caption("ReferenceNo").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("IsLedgerObselete").Caption("IsLedgerObselete").Alignment(HorizontalAlignment.Center);
-
-
-					})
-					)
-		}
+		
 		@using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -1617,12 +1585,56 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("AccountId")
+					.Caption(new JS("formatMessage('Account Code')"))
+					.Alignment(HorizontalAlignment.Center);
 
+						columns.Add().DataField("AccountHead")
+					.Caption(new JS("formatMessage('Client Name')"))
+					.Alignment(HorizontalAlignment.Center);
 					})
+
 					)
 		}
+
+		@using (Html.DevExtreme().NamedTemplate("ClientNameArContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("clientname-datagridar")
+					.DataSource(d => d.WebApi()
+					.Controller("VATModule")
+					.LoadAction("GetProformaClientName")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("AccountHead")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+					.ShowColumnHeaders(false)
+					.FilterRow(f => f.Visible(true))
+					.SearchPanel(sp => sp.HighlightSearchText(true))
+					.Selection(sl => sl.Mode(SelectionMode.Single))
+					.OnSelectionChanged("ClientNameArdataGridSelectionChanged")
+					.OnInitialized("ClientCodedataGridInitialized")
+					.HeaderFilter(p => p.Visible(true))
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(200)
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("AccountId")
+					.Caption(new JS("formatMessage('Account Code')"))
+					.Alignment(HorizontalAlignment.Center);
+
+						columns.Add().DataField("AccountHeadArabic")
+					.Caption(new JS("formatMessage('Client Name Arabic')"))
+					.Alignment(HorizontalAlignment.Center);
+					})
+
+					)
+				}
 		
 		@using (Html.DevExtreme().NamedTemplate("ClientNameContent"))
 		{
@@ -1787,7 +1799,6 @@
 {
 	@(
 						Html.DevExtreme().DataGrid()
-
 														.ID("accounthead-datagrid1")
 														.DataSource(d => d.WebApi()
 														.Controller("VATModule")
@@ -2599,7 +2610,7 @@
 
 
 <input type="file" id="fileInput" style="display: none;" />
-
+<div id="CalcardPopover"></div>
 <!-- Modal Structure -->
 
 <script>
@@ -2625,7 +2636,7 @@
 
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null;
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null,rowIx=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -2730,9 +2741,9 @@
 
 			$(document).ready(function () {
 			var urlParams = new URLSearchParams(window.location.search);
-					var InvoiceNo = urlParams.get('InvoiceNo');
+		    var InvoiceNo = urlParams.get('ProformaInvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
-
+			debugger;
 				IsCurrent=IsEditflag.toString();
 
 				// console.log("Iseditflag",IsEditflag)
@@ -2747,55 +2758,56 @@
 						if (response && response.length > 0) {
 							var account = response[0];
 
-
-
-							$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
-								ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
-							ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
-
-								$('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
-							$('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
-							$('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
-							dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
-							$('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
-								$('#UUID').dxTextBox("instance")?.option("value", account.InvoiceUuid);
-								dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
-								dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
-
-									$('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.RemarksInEn);
-										$('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.RemarksInAr);
-									  $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
-
-									   $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
-										 $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
-										 $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
-										 $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
-										 $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
-										 $('#DeliveryNotes').dxTextBox("instance")?.option("value", account.DeliveryNoteNos);
-											 $('#ClientGRNReference').dxTextBox("instance")?.option("value", account.ClientGrnreferenceNo);
-											 $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
-											 $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
-											 $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
-											 $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
-											 $('#SellerOtherSellerId').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
-											//dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyExchangeId]});
-											//dataGridTaxCurrencyHeadSelectionChanged({ selectedRowKeys: [account.TaxCurrencyCode]});
-											dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
-											dataGridSalesPersonHeadSelectionChanged({ selectedRowKeys: [account.InvoiceSalesPerson]});
-											dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
-											dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.SellerOtherIdtype]});
-											dataGridPreparedByHeadSelectionChanged({ selectedRowKeys: [account.InvoicePreparedBy]});
-											dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
-											dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
+						   	 accheadid=account.ClientCode;
+	                         $("#ProjectDeptContractNo").dxTextBox("instance").option("value", account.ReferenceNo);
+	                         $("#DeliveryNotes").dxTextBox("instance").option("value", account.DeliveryNoteNos);
+	                         $("#SESReference").dxTextBox("instance").option("value", account.DeliveryNotes);
+	                         $("#LessAdvance").dxTextBox("instance").option("value", account.AdvanceText);
+	                         $('#InvoiceNo').dxTextBox("instance").option("value", account.ProformaInvoiceNo);
+	                         $("#LessAdvanceAr").dxTextBox("instance").option("value", account.AdvanceTextAr);
+	                         $("#LessRetention").dxTextBox("instance").option("value", account.RetentionText);
+	                         $("#LessAdvanceAr2").dxTextBox("instance").option("value", account.RetentionTextAr);
+	                         $("#InvoiceSubmittedBy").dxTextBox("instance").option("value", account.InvoiceSubmittedBy);
+	                         
+	                         // DateBoxes
+	                         $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value", account.ProformaIsnvoiceDate);
+	                         $("#SupplyDate").dxDateBox("instance").option("value", account.InvoiceEffectiveDate);
+	                         $("#PODate").dxDateBox("instance").option("value", account.Podate);
+	                         $("#InvoiceDueDate").dxDateBox("instance").option("value", account.InvoiceDueDate);
+	                         $("#EffectiveDate").dxDateBox("instance").option("value", account.InvoiceEffectiveDate); // Used again for save
+	                         $("#InvoiceStartDate").dxDateBox("instance").option("value", account.InvoiceStartDate);
+	                         $("#InvoiceEndDate").dxDateBox("instance").option("value", account.InvoiceEndDate);
+	                         $("#InvoiceSubmittesOn").dxDateBox("instance").option("value", account.InvoiceSubmittedOn);
+	                         
+	                         // DropDownBoxes
+	                         $("#ddclientname").dxDropDownBox("instance").option("value", account.BuyerName);
+	                         $("#ddlClientNameAr").dxDropDownBox("instance").option("value", account.BuyerNameAr);
+	                         $("#ddlCategoryId").dxDropDownBox("instance").option("value", account.TaxCategoryId);
+	                         $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value", account.CostCenterCode);
+	                         $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value", account.RevenueAccount);
+	                         $("#ddlbranch").dxDropDownBox("instance").option("value", account.CompanyId);
+	                         $("#ddlSalesPerson").dxDropDownBox("instance").option("value", account.InvoiceSalesPerson);
+	                         $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value", account.InvoicePreparedBy);
+	                         $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value", account.InvoiceCheckedBy);
+	                         $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value", account.InvoiceApprovedBy);
+	                         
+	                         // TextAreas
+	                         $("#txtInvoiceNotes").dxTextArea("instance").option("value", account.RemarksInEn);
+	                         $("#txtNotesinArabic").dxTextArea("instance").option("value", account.RemarksInAr);
+	                         
+	                         // NumberBoxes
+	                         $("#currencyexchangerate").dxNumberBox("instance").option("value", account.ExchangeRate);
+	                         $("#currencyexchangerate3").dxNumberBox("instance").option("value", account.AdvanceAmount);
+	                         $("#currencyexchangerate5").dxNumberBox("instance").option("value", account.RetentionAmount);
 
 											if(account.IsApproved==true)
 											{
 												disableEditing();
 											}
-								        else if(account.IsPosted==true)
-	{
-					btnPostToLedgerdisableEditing();
-	}
+								            else if(account.IsPosted==true)
+	                                        {
+	                                        	btnPostToLedgerdisableEditing();
+	                                        }
 
 											 var button = $("#btnSave").dxButton("instance");
 											 button.option("text", "Update");
@@ -3236,7 +3248,7 @@
 				onEditorPreparing: function (e) {
 			if (e.parentType === "dataRow" && ["QuantityInvoiced", "UnitRate", "Discount"].includes(e.dataField)) {
 				e.editorOptions.onValueChanged = function (args) {
-
+				
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
 						let rowIndex = e.row.rowIndex;
 						rowIx=rowIndex;
@@ -3560,7 +3572,7 @@
 
 				{
 
-					dataField: "DescriptionDetails",
+					dataField: "UnitRateMethod",
 
 					caption: formatMessage('Unit Rate Method'),
 
@@ -3644,8 +3656,8 @@
 
 												if (rowIndex !== -1) {
 
-													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
-
+													grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
+													//grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
 												}
 
 												e.component.close();
@@ -3697,7 +3709,25 @@
 
 				{ dataField: "Discount", caption: formatMessage('Discount'),cssClass: "center-header", width: 150 },
 
-				{ dataField: "DiscountDetails", caption: "...",cssClass: "center-header", width: 50 },
+				//{ dataField: "DiscountDetails", caption: "...",cssClass: "center-header", width: 50 },
+				{
+		                     dataField: "DiscountDetails",
+		                     caption: "...",
+		                     cssClass: "center-header",
+		                     width: 100,
+		                     allowEditing: false,
+		                     cellTemplate: function (container, options) {  // ✅ fixed here
+		                     	$("<div>").dxButton({
+		                     		icon: "preferences", // or another valid icon
+		                     		hint: "VAT Calculator",
+		                     		stylingMode: "text",
+		                     		width: 30,
+		                     		onClick: function (e) {
+		                     			onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+		                     		}
+		                     	}).appendTo(container);
+		                     }
+	            },
 
 				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), cssClass: "center-header",width: 150 },
 
@@ -4228,7 +4258,9 @@
 
 												  if (rowIndex !== -1) {
 
-														  grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
+													  //grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+													  grid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDesc);
+													 // DescriptionDetailsText
 													  UnitCode=selectedItem.UnitCode;
 
 												  }
@@ -4637,7 +4669,7 @@
 						});
 					}
 
-						  function ClientNamedataGridSelectionChanged(e) {
+			    function ClientNamedataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientname").dxDropDownBox("instance");
 		
@@ -4652,6 +4684,31 @@
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
 									accheadid = selectedRowData[0].AccountId;
+									let accheadAr = selectedRowData[0].AccountHeadArabic;
+								   $("#ddlClientNameAr").dxDropDownBox("instance").option("value", selectedRowData[0].AccountHeadArabic);
+									
+								} else {
+									DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+									return;
+								}
+				}
+		   }
+
+
+			 function ClientNameArdataGridSelectionChanged(e) {
+				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+				const ddbInstance = $("#ddlClientNameAr").dxDropDownBox("instance");
+
+				if (selectedKey) {
+					ddbInstance.option("value", selectedKey);
+					 ddbInstance.close();
+				}
+				if(IsCurrent!="true")
+				{
+
+		 var selectedRowData = $("#clientname-datagridar").dxDataGrid("instance").getSelectedRowsData();
+								// Get ReferenceNo from selected row
+								if (selectedRowData.length > 0) {
 
 								} else {
 									DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -6265,6 +6322,7 @@
 			e.editorOptions.onValueChanged = function (args) {
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
+						  rowIx=rowIndex;
 					debugger;
 				let newValue = args.value;
 
@@ -6296,6 +6354,9 @@
 				grid.cellValue(rowIndex, "Discount",discount);
 				grid.cellValue(rowIndex, "Qty", qty);
 				grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+
+				  // Store value for use in popover
+				 window.currentAmount = amount.toFixed(2);
 			};
 		}
 	}
@@ -6418,10 +6479,13 @@
 										console.error("Error fetching grid data:", error);
 									}
 								});
-								  DevExpress.ui.dialog.alert(
-							"Proforma Invoice Details updated Successfully.",
-							"Update successful"
-						);
+
+								  DevExpress.ui.notify(
+							"Proforma Invoice Details updated Successfully.","success",2000);
+
+								   isVoucherSaved = true; // Mark Updated step as done
+								  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+								  
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6904,6 +6968,7 @@
 							).done(() => {
 								$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 								$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+								  initWorkflowTippyPopovers();
 							});
 						}
 						else {
@@ -6995,7 +7060,7 @@
 								disableEditing();
 								$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 								$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
-
+								  initWorkflowTippyPopovers();
 								if (IsDirect === true) {
 									$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 									$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
@@ -7138,7 +7203,7 @@
 
 
 
-				  function dataCategoryIDGridSelectionChanged(e) {
+					function dataCategoryIDArGridSelectionChanged(e) {
 						const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 							const ddbInstance = $("#ddlInvTypeAr").dxDropDownBox("instance");
 
@@ -7160,7 +7225,7 @@
 
 					}
 
-					  function dataCategoryIDArGridSelectionChanged(e) {
+						function dataCategoryIDGridSelectionChanged(e) {
 						const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 							const ddbInstance = $("#ddlCategoryId").dxDropDownBox("instance");
 
@@ -7475,35 +7540,34 @@
 
 	function onCreateVATInvoiceClick() {
 		let invoiceNo = $('#InvoiceNo').dxTextBox("instance").option("value");
-		let invoiceIssuedDate = $('#InvoiceIssuedDateTime').dxTextBox("instance").option("value");
+		  let invoiceIssuedDate = $('#InvoiceIssuedDateTime').dxDateBox("instance").option("value");
 
+			  var RevenueAccountValidator = $("#ddlGoodsGroup2").dxValidator("instance");
+				var RevenueAccountValidation = RevenueAccountValidator.validate();
+
+		  if(RevenueAccountValidation.isValid)
+		{
 		if (!invoiceNo) {
 			alert("Invoice number is not set.");
 			return;
 		}
 
 		let proformaInvoiceNo = invoiceNo; // Assuming InvoiceNo = ProformaInvoiceNo
-
+		let IsEdit=true;
 		$.ajax({
-			url: `/${tenantName}/VAT/CreateVATInvoice`,
+			   url: '/api/VATModule/CreateVATInvoice',
 			type: "POST",
 			contentType: "application/json",
 			data: JSON.stringify({
-				ProformaInvoiceNo: proformaInvoiceNo,
-				InvoiceDate: invoiceIssuedDate
+				  ProformaInvoiceNo: proformaInvoiceNo,
+				  ProformaInvoiceDate: invoiceIssuedDate
 			}),
 			success: function (response) {
 				if (response.success) {
 					let newInvoiceNo = response.toInvoiceNo;
 					alert("Invoice created successfully: " + newInvoiceNo);
 
-					// Optional: redirect or open edit page
-					const params = new URLSearchParams({
-						InvoiceNo: newInvoiceNo,
-						IsEditflag: true,
-						modal: true
-					});
-					const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?${params.toString()}`;
+					const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 					window.location.href = url;
 				} else {
 					alert("Failed: " + response.message);
@@ -7513,6 +7577,7 @@
 				alert("Server error: " + xhr.responseText);
 			}
 		});
+	  }
 	}
 
 
@@ -7666,5 +7731,202 @@
 			textBox.option("value", "");
 		}
 	}
+
+							let isVoucherSaved = false;
+
+		 function getWorkflowStatusFromFields() {
+		  const verified = $("#VerifiedBy").dxCheckBox("option", "value") === true;
+		  const approved = $("#ApprovedBy").dxCheckBox("option", "value") === true;
+
+		  if (approved) return 3; // Final state
+		  if (verified) return 2;
+		  if (isVoucherSaved) return 1;
+
+		  return 0;
+	  }
+
+
+	   function updateWorkflowVisual(status) {
+		  const steps = [
+			  { id: "step-update", icon: "fas fa-user" },
+			  { id: "step-verify", icon: "fas fa-briefcase" },
+			  { id: "step-approve", icon: "fas fa-file-alt" }
+		  ];
+
+		  steps.forEach((step, index) => {
+			  const el = document.getElementById(step.id);
+			  const statusMsg = el.querySelector(".step-status-msg");
+			  const icon = el.querySelector("i");
+
+			  el.classList.remove("completed", "current", "upcoming", "done");
+			  icon.className = step.icon;
+
+			  if (index < status) {
+				  el.classList.add("completed");
+				  statusMsg.textContent = "Done";
+				  icon.className = "fas fa-check-circle";
+			  } else if (index === status && status < 3) {
+				  el.classList.add("current");
+				  statusMsg.textContent = "In Progress";
+				  icon.className = "fas fa-spinner fa-spin";
+			  } else {
+				  el.classList.add("upcoming");
+				  statusMsg.textContent = "Pending";
+			  }
+
+			  // Final Approved state
+			  if (status === 3 && index === 2) {
+				  el.classList.add("completed");
+				  statusMsg.textContent = "Done";
+				  icon.className = "fas fa-check-circle";
+			  }
+		  });
+	  }
+
+
+
+
+		  function syncWorkflowFromFields() {
+			  const status = getWorkflowStatusFromFields();
+			  updateWorkflowVisual(status);
+		  }
+
+		  function attachWorkflowWatchers() {
+			  $("#VerifiedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+			  $("#ApprovedBy").dxCheckBox("option", "onValueChanged", syncWorkflowFromFields);
+		  }
+
+		  $(function () {
+			  setTimeout(() => {
+				  attachWorkflowWatchers();
+				  syncWorkflowFromFields();
+				   // bindWorkflowPopovers();
+				   initWorkflowTippyPopovers();
+
+			  }, 300);
+		  });
+
+
+	  function formatDate(date) {
+		  if (!date) return "N/A";
+		  const d = new Date(date);
+		  return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+	  }
+
+	  function initWorkflowTippyPopovers() {
+		  // 🧼 Clean up any old tippy instances
+		  tippy.hideAll();
+		  document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+
+		  const verifiedBy = $("#VerifiedBytext").dxTextBox("instance")?.option("value") || "N/A";
+		  const verifiedOn = $("#VerifiedOnDate").dxTextBox("instance")?.option("value") || "N/A";
+		  const approvedBy = $("#ApprovedBytext").dxTextBox("instance")?.option("value") || "N/A";
+		  const approvedOn = $("#ApprovedOntext").dxTextBox("instance")?.option("value") || "N/A";
+
+		  console.log("🧪 Tooltip data:", {
+			  verifiedBy, verifiedOn, approvedBy, approvedOn
+		  });
+
+		  // 🟩 Verified Popover
+		  tippy('#circle-verify', {
+			  content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+			  allowHTML: true,
+			  followCursor: 'horizontal',
+			  placement: 'top',
+			  animation: 'shift-away',
+			  theme: 'light-border',
+			  trigger: 'mouseenter focus',
+			  delay: [100, 100],
+		  });
+
+		  // 🟩 Approved Popover
+		  tippy('#circle-approve', {
+			  content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+			  allowHTML: true,
+			  followCursor: 'horizontal',
+			  placement: 'top',
+			  animation: 'shift-away',
+			  theme: 'light-border',
+			  trigger: 'mouseenter focus',
+			  delay: [100, 100],
+		  });
+	  }
+
+
+		  function applyDiscount() {
+		  const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		  debugger;
+		  // Get values from UI
+		  const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+		  const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
+
+		  // Get required values from grid for the specific row
+		  const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
+		  const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
+			let vatRateStr = grid.cellValue(rowIx, "VATPercentage") || "0%";
+		  let vatRate = parseFloat(vatRateStr.toString().replace("%", "")) / 100;
+
+		  // Calculate the raw amount
+		  let amount = qty * unitPrice;
+
+		  // Apply discount, ensure it doesn't go negative
+		  let discountedAmount = amount - discount;
+		  if (discountedAmount < 0) discountedAmount = 0;
+
+		  // VAT and total calculations
+		  let vatValue = discountedAmount * vatRate;
+		  let totalValue = discountedAmount + vatValue;
+
+		  // Update the grid values
+			  grid.cellValue(rowIx, "Discount", discount);
+			  grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
+		  grid.cellValue(rowIx, "LineTotal", totalValue);
+
+	  }
+
+		function onCalCardClick(cellElement) {
+						const popover = $("#CalcardPopover").dxPopover("instance");
+
+					// Set the new target element for the popover
+					popover.option("target", cellElement);
+
+					if (popover.option("visible")) {
+						popover.hide();
+					} else {
+						popover.show();
+					}
+				}
+
+		  $(function () {
+		  $("#CalcardPopover").dxPopover({
+			  width: 550,
+			  position: "bottom",
+			  showEvent: "", // Manual control
+			  hideEvent: "", // Manual control
+			  hideOnOutsideClick: true,
+			  contentTemplate: function (contentElement) {
+				  contentElement.empty();
+							 debugger;
+				  // Get the latest amount value from somewhere accessible
+				  let amount = window.currentAmount || 0; // Use a global variable or a shared scope
+
+				  $.ajax({
+					  url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
+					  type: 'GET',
+					  success: function (data) {
+						  contentElement.html(data);
+					  },
+					  error: function () {
+						  contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+					  }
+				  });
+			  }
+		  });
+	  });
+
+		
+
+
+
 </script>
 

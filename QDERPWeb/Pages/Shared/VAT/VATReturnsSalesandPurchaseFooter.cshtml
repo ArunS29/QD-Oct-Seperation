@@ -167,9 +167,29 @@
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text("VAT Returns Form").Icon("file").Option("reportType", "vatReturns");
-            items.Add().Text("VAT Summary Report ▸").Icon("file").OnClick("showSubmenu10");
+            items.Add()
+                .Text("VAT Returns Form")
+                .Icon("file")
+                .Option("color", "#FF7043") // Orange
+                .Option("reportType", "vatReturns");
+
+            items.Add()
+                .Text("VAT Summary Report ▸")
+                .Icon("file")
+                .Option("color", "#00ACC1") // Cyan
+                .OnClick("showSubmenu10");
         })
+        .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
         .OnItemClick("handleReportClick") // Handles non-submenu items
         .ShowArrowIcon(false)
         )

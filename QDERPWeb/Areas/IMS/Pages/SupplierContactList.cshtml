@@ -17,7 +17,7 @@
         display: flex;
         justify-content: space-between;
         gap: 20px;
-        margin-bottom: 10px;
+        margin-bottom: 8px;
     }
 
     .form-field {
@@ -94,12 +94,12 @@
     }
 
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="SupplierContactList" class="no-border-title"></div>
     </div>
-</div>
-<div class="formContainer" style="padding: 20px;">
+</div> *@
+<div class="formContainer" style="padding: 10px;">
 
     <div class="form-row">
         <div class="form-field">
@@ -177,37 +177,6 @@
         </div>
     </div>
 
-    @* <div class="form-row">
-        <div class="form-field" style="display: flex; align-items: end;">
-            @(Html.DevExtreme().TextBox()
-                .ID("division")
-                .Value("")
-                .Width("100%")
-               .Label(new JS("formatMessage('Division / Branch')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
-            @(Html.DevExtreme().Button()
-                .Icon("folder") // built-in person icon
-
-                .Type(ButtonType.Normal)
-                )
-        </div>
-        <div class="form-field" style="display: flex; align-items: end;">
-            @(Html.DevExtreme().TextBox()
-                .ID("location")
-                .Value("")
-                .Width("100%")
-               .Label(new JS("formatMessage('Location')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg")
-                )
-            @(Html.DevExtreme().Button()
-                .Icon("map") // built-in person icon
-                .Type(ButtonType.Normal)
-                )
-        </div>
-    </div>
- *@
     <div class="form-row">
         <div class="form-field" style="display: flex; align-items: end;">
             @(Html.DevExtreme().TextBox()
@@ -292,14 +261,14 @@
                 )
         </div>
     </div>
-    <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
+    <div class="footer-fixed" style=" display:flex; gap: 10px;">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
             .Text(new JS("formatMessage('Save')"))
             .Icon("save")
             .Type(ButtonType.Success)
             .OnClick("saveOrUpdateSupplierContact")
-            .ElementAttr("class", "black-text")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
             )
 
         @(Html.DevExtreme().Button()
@@ -308,7 +277,7 @@
             .Type(ButtonType.Danger)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("trash")
-            .ElementAttr("class", "black-text")
+                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
             )
 
         @(Html.DevExtreme().Button()
@@ -318,8 +287,8 @@
                 .OnClick("Goback")
             .Type(ButtonType.Default)
             .StylingMode(ButtonStylingMode.Outlined)
-            .ElementAttr("class", "black-text")
-            )
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
     </div>
 
 

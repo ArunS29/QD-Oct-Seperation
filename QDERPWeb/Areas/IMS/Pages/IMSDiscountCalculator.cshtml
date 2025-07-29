@@ -1,0 +1,151 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.IMSDiscountCalculatorModel
+@{
+}
+<style>
+    <style >
+    .calculator-wrapper {
+        background-color: #6c6c6c;
+        padding: 15px;
+        width: 450px;
+        height: 419.056px;
+        font-family: "Segoe UI", sans-serif;
+        color: white;
+        overflow: hidden;
+        box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        justify-content: start;
+        gap: 12px;
+    }
+
+    .white-box .dx-texteditor-input {
+        background-color: white !important;
+        color: black !important;
+    }
+
+    .white-button .dx-button-content {
+        background-color: white !important;
+        color: black !important;
+        font-weight: 600;
+    }
+
+    .percentage-button .dx-button {
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        height: 36px;
+        width: 80px;
+    }
+
+    .ok-button .dx-button {
+        height: 36px;
+        padding: 0 12px;
+        background-color: white !important;
+        color: black !important;
+        border: 1px solid #ccc;
+        font-weight: bold;
+    }
+
+    .form-row {
+        display: flex;
+        gap: 10px;
+        align-items: flex-end;
+    }
+
+    .percentage-grid {
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        gap: 8px;
+        margin-top: auto;
+    }
+
+    .label {
+        font-size: 14px;
+        margin-bottom: 4px;
+    }
+
+    .percent-symbol {
+        font-size: 18px;
+        padding-left: 4px;
+    }
+</style>
+
+<div class="calculator-wrapper">
+
+    <!-- 🧾 Total Amount -->
+    <div>
+        @(Html.DevExtreme().NumberBox()
+                .Label("Total Amount")
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("totalAmount")
+                .Min(0)
+                .ShowSpinButtons(true)
+                .Value(0)
+                )
+    </div>
+
+    <!-- 💸 Discount + OK button -->
+    <div class="form-row">
+        <div style="flex: 1;">
+            @(Html.DevExtreme().NumberBox()
+                        .Label("Discount")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("discount")
+                        .Min(0)
+                        .ShowSpinButtons(true)
+                        .Value(0)
+                        )
+        </div>
+        <div class="ok-button">
+            @(Html.DevExtreme().Button()
+                        .ID("okButton")
+                        .Text("OK")
+                        .OnClick("applyDiscount")
+                        .Width(70)
+                        )
+        </div>
+    </div>
+
+    <!-- 📉 Enter % of Discount -->
+    <div class="form-row">
+        <div style="flex: 1;">
+            @(Html.DevExtreme().NumberBox()
+                        .Label("Enter % of Discount")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("discountPercent")
+                        .Min(0)
+                        .ShowSpinButtons(true)
+                        .Format("#0.00000")
+                        .Value(0)
+                        )
+        </div>
+        <div class="percent-symbol">%</div>
+    </div>
+
+    <!-- 🔢 Percentage Buttons Grid -->
+    <div class="percentage-grid">
+        @foreach (var percent in new[] { 5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55, 60, 65, 70, 75, 80, 85, 90, 95, 100 })
+        {
+            <div class="white-button percentage-button">
+                @(Html.DevExtreme().Button()
+                            .Text($"{percent} %")
+                            .OnClick($"function() {{ setDiscount({percent}) }}")
+                            )
+             </div>
+                }
+    </div>
+
+</div>
+<script>
+     $("#totalAmount").dxNumberBox("instance").option("value",@ViewBag.Amount);
+
+    function setDiscount(percent) {
+        debugger;
+        const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
+        const discountValue = total * (percent / 100);
+        $("#discount").dxNumberBox("instance").option("value", discountValue.toFixed(2));
+    }
+
+</script>

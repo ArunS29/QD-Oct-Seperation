@@ -8,9 +8,9 @@
 }
 @{
     var enteredBy = HttpContext.Session.GetString("UserName");
-    var enteredOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+    var enteredOn = DateTime.Now.ToString("dd-MMM-yyyy");
     var modifiedBy = HttpContext.Session.GetString("UserName");
-    var modifiedOn = DateTime.Now.ToString("yyyy-MM-dd HH:mm");
+    var modifiedOn = DateTime.Now.ToString("dd-MMM-yyyy");
 }
 <style>
     .form-tablee {
@@ -489,14 +489,11 @@
                 </style>
                 <div class="maindiv">
                     <table class="form-table">
-                        <!-- Detailed Description -->
-                        <tr>
-                            <th colspan="6" id="DetailedDescriptionLabel"></th>
-                        </tr>
                         <tr>
                             <td colspan="6">
                             @(Html.DevExtreme().TextArea()
                                 .ID("DetailedDescription")
+                                .Label(new JS("formatMessage('Detailed Description : ')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%"))
                             </td>
@@ -659,16 +656,7 @@
 
 
                     </table>
-
-
                     <table class="form-table">
-
-                        <!-- Detailed Description Arabic -->
-                        <tr class="flex-row" style="padding-bottom: 0px;">
-                            <th colspan="6" class="flex-row" id="DetailedDescriptionInArabic"></th>
-
-                        </tr>
-
                         <tr>
                             <td colspan="6" style="display:flex; align-items:end;">
                             @(Html.DevExtreme().Button()
@@ -680,15 +668,15 @@
                                 )
                             @(Html.DevExtreme().TextArea()
                                 .ID("ArabicDescription")
+                                .Label(new JS("formatMessage('Detailed Description: (in Arabic) ')"))
                                 .Width("100%")
                                 .LabelMode(EditorLabelMode.Floating)
                                 )
-
                             </td>
                         </tr>
 
                         <!-- Item Code & Attributes -->
-                        <tr class="flex-row" style="margin-top: 15px;">
+                        <tr class="flex-row" style="margin-top: 6px;">
                             <td>
                             @(Html.DevExtreme().TextBox()
                                 .ID("ItemPartNo")
@@ -747,9 +735,8 @@
                             <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
                             @(Html.DevExtreme().CheckBox()
                             .ID("ItemDiscontinued")
-                            .Value(true))
+                            .Value(true))   
                         </td>
-                        
                         </tr>
                     </table>
                 </div>

@@ -120,33 +120,30 @@
     <div class="btn-container">
 
         @(Html.DevExtreme().DropDownButton()
-
                 .ID("btnPrint1")
-
                 .Text(new JS("formatMessage('Print')"))
-
                 .Icon("print")
-
                 .ElementAttr(new { @class = "bold-button" })
-
                 .DropDownOptions(options => options.Width(230))
-
                 .ShowArrowIcon(false)
-
                 .Items(items =>
-
                 {
-
-                    items.Add().Text("Custom request Designs").Icon("print");
-
-                    items.Add().Text("Preview Request").Icon("file");
-
-                    items.Add().Text("Preview Request(With Expected Unit Price)").Icon("folder");
-
+                    items.Add().Text("Custom request Designs").Icon("print").Option("color", "#FF7043");
+                    items.Add().Text("Preview Request").Icon("file").Option("color", "#00ACC1");
+                    items.Add().Text("Preview Request(With Expected Unit Price)").Icon("folder").Option("color", "#AB47BC");
                 })
-
+                .ItemTemplate(@<text>
+                    <div class="custom-dropdown-item">
+                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                        <div class="item-content">
+                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                            <div>
+                                <div class="item-title"><%- text %></div>
+                            </div>
+                        </div>
+                    </div>
+                </text>)
                 .OnItemClick("handleCreditReportPrinting")
-
                 )
     </div>
 

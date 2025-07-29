@@ -124,9 +124,27 @@
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Posting Of Cost Prices')"));
-                items.Add().Text(new JS("formatMessage('Posting of DN to Journal Books')"));
+                items.Add()
+                    .Text(new JS("formatMessage('Posting Of Cost Prices')"))
+                    .Option("color", "#00ACC1")  // Cyan
+                    .Icon("money");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Posting of DN to Journal Books')"))
+                    .Option("color", "#AB47BC")  // Purple
+                    .Icon("book");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             @* .OnItemClick("addNewDeliveryNotePosting") *@
             .ShowArrowIcon(false)
             )
@@ -139,12 +157,37 @@
             .DropDownOptions(options => options.Width(325))
             .Items(items =>
             {
-                items.Add().Text(new JS("formatMessage('Add New Delivery to Client')"));
-                items.Add().Text(new JS("formatMessage('Add Material Issued To Store(Consumption)')"));
-                items.Add().Text(new JS("formatMessage('Add Material Issued To Project(Consumption)')"));
-                items.Add().Text(new JS("formatMessage('Add Store Transfers')"));
+                items.Add()
+                    .Text(new JS("formatMessage('Add New Delivery to Client')"))
+                    .Option("color", "#34A853")  // Green
+                    .Icon("runner");
 
+                items.Add()
+                    .Text(new JS("formatMessage('Add Material Issued To Store(Consumption)')"))
+                    .Option("color", "#FBBC05")  // Yellow
+                    .Icon("box");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Add Material Issued To Project(Consumption)')"))
+                    .Option("color", "#00ACC1")  // Cyan
+                    .Icon("box");
+
+                items.Add()
+                    .Text(new JS("formatMessage('Add Store Transfers')"))
+                    .Option("color", "#4285F4")  // Blue
+                    .Icon("export");
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("addNewDeliveryNote")
             .ShowArrowIcon(false)
             )

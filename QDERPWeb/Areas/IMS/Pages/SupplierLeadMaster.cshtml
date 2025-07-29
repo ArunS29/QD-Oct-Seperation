@@ -35,10 +35,8 @@
     }
 
     .form-container1 {
-        margin: 15px;
         width: 98%;
-        padding: 5px; /* Optional: Add some padding inside the border */
-        border-radius: 1px; /* Optional: Rounded corners */
+        border-radius: 1px; 
     }
 
     .form-container {
@@ -49,8 +47,8 @@
     .form-row {
         display: flex;
         gap: 10px;
-        padding: 10px;
-        margin-bottom: 15px;
+        padding: 3px;
+        margin-bottom: 10px;
     }
 
 
@@ -184,16 +182,16 @@
     }
 
 </style>
-<meta charset="UTF-8">
+@* <meta charset="UTF-8">
 <div class="title">
     <div class="header-container">
         <div id="SupplierMaster" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div class="form-container1">
 
     <div class="col-md-12">
-        <div class="outline-container p-3" ">
+        <div class="outline-container p-2">
 
             <div class="row">
 
@@ -227,12 +225,23 @@
             .OnInput("dropDownBoxOnInput")
             .OnOpened("onOpened")
             .TabIndex(1)
-            .Width("100%")
+            .Width("60%")
             .OnKeyDown("onKeyDown")
             //.OnValueChanged("dropDownBoxValueChanged")
             .ContentTemplate(new TemplateName("GetSupplierCategoryContentTemplate"))
-            )
-        @(Html.DevExtreme().Button().ID("btnAddAccount").Icon("plus").ElementAttr("class", "button-alignment-up button-group").OnClick("redirectToSupplierCategory"))
+                                                .Buttons(buttons =>
+                                                {
+                                                    buttons.Add()
+                                                    .Name("btnAddAccount")
+                                                    .Location(TextEditorButtonLocation.After)
+                                                    .Widget(w => w.Button()
+                                                    .Type(ButtonType.Default)
+                                                    .Icon("plus")
+                                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                    .OnClick("redirectToSupplierCategory"));
+                                                    buttons.Add()
+                                                    .Name("dropDown");
+                                                }))
                     </div>
                 </div>
 
@@ -452,7 +461,7 @@
                     .AllowColumnResizing(true)   // Enable column resizing
                     .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
                     .HeaderFilter(filter => filter.Visible(true))
-                    .Height(250)
+                    .Height("55vh")
                     .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto)) // ✅ Enables inline filter inputs
                     .OnContextMenuPreparing("onClientsGridContextMenu1") 
                     .ColumnAutoWidth(true)
@@ -516,7 +525,7 @@
                     .AllowColumnResizing(true)
                     .ColumnFixing(fixing => fixing.Enabled(true))
                     .HeaderFilter(filter => filter.Visible(true))
-                    .Height(250)
+                    .Height("55vh")
                     .ColumnAutoWidth(true)
                     .FilterRow(filterRow => filterRow.Visible(false))
                     .GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -570,20 +579,18 @@
                             .HeaderFilter(p => p.Visible(true))
                             .ShowBorders(true)
                             .HoverStateEnabled(true)
+                            .ShowColumnHeaders(true)
                             .Paging(p => p.PageSize(15))
-                            //.FilterRow(f => f.Visible(false))//
+                            .FilterRow(f => f.Visible(false))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Height(345)
-                            .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto))
                             .Selection(s => s.Mode(SelectionMode.Single))
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                    columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')"));
-                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')"));
-                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')"));
-
-
+                                    columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(80);
+                                    columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center).Width(300);
                             })
                             )
         }
@@ -600,8 +607,7 @@
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
-                            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .Selection(sl => sl.Mode(SelectionMode.Single))  
                             .OnSelectionChanged("dataGridSelectionChanged2")
                             .OnInitialized("dataGridInitialized2")
                             .HeaderFilter(p => p.Visible(true))
@@ -615,38 +621,31 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId");
-                                columns.Add().Caption(new JS("formatMessage('Cash/Creditors Account')")).DataField("AccountHead");
+                                    columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId").Alignment(HorizontalAlignment.Center).Width(95);
+                                    columns.Add().Caption(new JS("formatMessage('Cash/Creditors Account')")).DataField("AccountHead");
 
 
 
                             })
                             )
         }
-<div class="form-container">
-    <div class="footer-buttons">
-        <div class="col-md-12">
-            <div class="row">
-                <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").OnClick("onSaveSupplierMasterClick"))
-        @* .OnClick("onSaveClientMasterClick")  .OnClick("function() { saveAndClose(); }") *@
+
+ <div class="footer-fixed" style="display:flex; gap:100px;">
+                <div>
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("check").OnClick("onSaveSupplierMasterClick"))
                 </div>
-                <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").OnClick("onSaveAndClose")
+                <div>
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).ElementAttr(new { @class = "dx-button-custom btn-save-close" }).Icon("check").OnClick("onSaveAndClose")
         )
                 </div>
-                <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).Icon("trash"))
+                <div>
+        @(Html.DevExtreme().Button().ID("btnDelete").ElementAttr(new { @class = "dx-button-custom btn-delete" }).Text(new JS("formatMessage('Delete')")).Icon("trash"))
                 </div>
-                <div class="col-md-2">
-        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).Icon("arrowleft").OnClick("Goback")
-        )
+                <div>
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("Goback"))
                 </div>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
+ </div>
+  
 
 <script type="text/html" id="deleteTemplate">
     <a href="javascript:void(0);" onclick="deleteRow(this)">Delete</a>
@@ -1125,7 +1124,7 @@
         // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
         var url = `/${tenantName}/IMS/SupplierContactList?supplierCode=${encodeURIComponent(supplierCode)}&supplierName=${encodeURIComponent(supplierName)}`;
 
-        var title = `Contact List - ${supplierName}`;
+        var title = `Contact List  ${supplierName}`;
 
         openModal(url, title);
     }
@@ -1145,7 +1144,7 @@
 
       function redirectToSupplierCategory() {
         const url = `/${tenantName}/IMS/SupplierCategory`;
-        const title = "Add Supplier Category";
+        const title = "Supplier Category";
 
         openModal(url, title);
     }
@@ -1209,7 +1208,7 @@
 
             function addAttachFiles(){
                               const url = `/${tenantName}/IMS/IMSLedgerDocument`;
-                        const title = "";
+                        const title = "Ledger Documents";
                             openModal(url, title);
                     }
                         function Goback() {

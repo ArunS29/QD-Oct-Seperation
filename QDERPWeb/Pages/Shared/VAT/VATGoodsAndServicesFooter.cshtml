@@ -155,7 +155,8 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+            .ElementAttr(new { @class = "bold-button" })
+            .OnClick("onSaveClicked")// Apply custom CSS class
                                                          // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
             )
 
@@ -183,19 +184,60 @@
             .ShowArrowIcon(false)
             .Items(items =>
             {
-                items.Add().Text("Print Regular TAX Invoice").Icon("print");
-                items.Add().Text("Print Simplified TAX Invoice").Icon("file");
-                items.Add().Text("Additional Formats").Icon("folder");
-                items.Add().Text("Edit Sales Voucher").Icon("edit");
-                items.Add().Text("Upload Items from Excel").Icon("upload").OnClick("navigateInventoryListtoUpload");
                 items.Add()
-                .Text("Profit On Sale")
-                .Icon("chart")
-                .OnClick("navigateToLoss");
+                    .Text("Print Regular TAX Invoice")
+                    .Icon("print")
+                    .Option("color", "#FF7043"); // Orange
 
-                items.Add().Text("Invoice Cost Posting").Icon("money").OnClick("navigateToInvoiceCostPosting");
-                items.Add().Text("Advance / Prepayment Adjustments").Icon("wallet");
+                items.Add()
+                    .Text("Print Simplified TAX Invoice")
+                    .Icon("file")
+                    .Option("color", "#00ACC1"); // Cyan
+
+                items.Add()
+                    .Text("Additional Formats")
+                    .Icon("folder")
+                    .Option("color", "#AB47BC"); // Purple
+
+                items.Add()
+                    .Text("Edit Sales Voucher")
+                    .Icon("edit")
+                    .Option("color", "#FBBC05"); // Yellow
+
+                items.Add()
+                    .Text("Upload Items from Excel")
+                    .Icon("upload")
+                    .Option("color", "#EA4335") // Red
+                    .OnClick("navigateInventoryListtoUpload");
+
+                items.Add()
+                    .Text("Profit On Sale")
+                    .Icon("chart")
+                    .Option("color", "#34A853") // Green
+                    .OnClick("navigateToLoss");
+
+                items.Add()
+                    .Text("Invoice Cost Posting")
+                    .Icon("money")
+                    .Option("color", "#4285F4") // Blue
+                    .OnClick("navigateToInvoiceCostPosting");
+
+                items.Add()
+                    .Text("Advance / Prepayment Adjustments")
+                    .Icon("wallet")
+                    .Option("color", "#AB47BC"); // Purple
             })
+            .ItemTemplate(@<text>
+                <div class="custom-dropdown-item">
+                    <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                        <div>
+                            <div class="item-title"><%- text %></div>
+                        </div>
+                    </div>
+                </div>
+            </text>)
             .OnItemClick("addPrintButton_click")
             )
     </div>

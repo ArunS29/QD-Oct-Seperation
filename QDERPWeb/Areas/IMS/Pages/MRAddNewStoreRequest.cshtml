@@ -789,7 +789,6 @@
 															.Label(new JS("formatMessage('Cost Center:')"))
 															.ID("txtCostCenter")
 															.LabelMode(EditorLabelMode.Floating)
-															.Width("121%")
 															)
 							</td>
 						</tr>
@@ -825,7 +824,7 @@
 															)
 							</td>
 
-							<td colspan="1">
+							<td colspan="1" style="display:flex;gap: 5px;" >
 								@(Html.DevExtreme().DateBox()
 															.Label(new JS("formatMessage('Expected Date:')"))
 															.ID("txtExpectedDate")
@@ -834,14 +833,11 @@
 														
 															.LabelMode(EditorLabelMode.Floating)
 															)
-							</td>
-
-							<td colspan="1">
-								<!-- Added 'white-space: normal;' to allow text wrapping -->
 								@(Html.DevExtreme().CheckBox()
 															.Text(new JS("formatMessage('Show VAT in Report')"))
 															.ID("ShowVATinReport")
-															.Value(null) // Default value
+															.Width("40%")
+															.Value(null)
 															)
 							</td>
 
@@ -2678,6 +2674,8 @@
 	function initializeDataGrid(rowData) {
 
 		let grid = $("#B2BdataGrid").dxDataGrid({
+			focusedRowEnabled: true,
+
 			dataSource: rowData,
 			keyExpr: "LineOrderNo",
 			// âœ… your columns, editing, dropdowns, and templates go here, unchanged
@@ -2767,6 +2765,12 @@
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+										searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 
 										columns: [
 											{ dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
@@ -2928,6 +2932,12 @@
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+										searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 
 										columns: [
 
@@ -3041,7 +3051,35 @@
 
 				},
 
-				{ dataField: "Descriptions", caption: "...", width: 50 },
+					{
+				dataField: "Descriptions",
+				caption: "...",
+				   cssClass: "center-header",
+				width: 90,
+				allowEditing: true,
+						cellTemplate: function (container, options) {
+						
+							
+						$("<div>").dxButton({
+							icon: "user", // Built-in DevExtreme icon
+							hint: "Edit IMS Details Description",
+							stylingMode: "text",
+
+							width: 60,
+								onClick: function () {
+							const gsCode = options.data.Gscode;
+						console.log("GSCode:", gsCode);
+							const MprchildSlNo = options.data.MprchildSlNo;
+
+						window.currentDescriptionCell = options;
+                      let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
+						let title = "Details Description";
+
+						openModal(url, title);
+					}
+						}).appendTo(container);
+					}
+					},
 
 				{
 
@@ -3103,6 +3141,12 @@
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+										searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 
 										columns: [
 
@@ -3183,6 +3227,13 @@
 
 				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
 				{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 },
+				{ dataField: "AddlDescription", visible: false },
+	// { dataField: "ItemReqPurpose", visible: false },
+	// { dataField: "ItemReqPriority", visible: false },
+	// { dataField: "ItemReqExpectedDate", visible: false },
+	// { dataField: "ItemRemarks", visible: false },
+	// 	{ dataField: "DeliveryPeriod", visible: false },
+	// { dataField: "PlanNo", visible: false },
 				{
 		type: "buttons",
 		caption: "Delete",
@@ -3369,15 +3420,12 @@
 										selection: { mode: "single" },
 										height: 300,
 										scrolling: { mode: "virtual" },
-										searchPanel: { // optional: global search box
+										searchPanel: {
 													visible: true,
-													width: 250,
+													highlightCaseSensitive: true,
+													width: 300,
 													placeholder: "Search..."
-										},
-										filterRow: { // column-wise filters
-													visible: true,
-													applyFilter: "auto"
-										},
+													},
 											columns: [
 											{ dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
 											{ dataField: "GroupCode", caption: "Group Code", width: 80 },
@@ -3505,15 +3553,12 @@
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
-										searchPanel: { // optional: global search box
+										searchPanel: {
 													visible: true,
-													width: 250,
+													highlightCaseSensitive: true,
+													width: 300,
 													placeholder: "Search..."
-										},
-										filterRow: { // column-wise filters
-													visible: true,
-													applyFilter: "auto"
-										},
+													},
 
 										columns: [
 
@@ -3627,27 +3672,31 @@
 
 				},
 
-					{
+						{
 			dataField: "Descriptions",
 			caption: "...",
 			   cssClass: "center-header",
 			width: 90,
 			allowEditing: true,
 					cellTemplate: function (container, options) {
+							// const quoteChildId = options.data.ItemNo;
 					$("<div>").dxButton({
 						icon: "user", // Built-in DevExtreme icon
 						hint: "Edit IMS Details Description",
 						stylingMode: "text",
-						width: 60,
-						onClick: function () {
-							// Save context
-							window.currentDescriptionCell = options;
 
-								// Open modal
-								let url = `/${tenantName}/IMS/DetailsDescriptionMR`;
-							let title = "VAT Details Description";
-							openModal(url, title);
-						}
+						width: 60,
+							onClick: function () {
+						const gsCode = options.data.Gscode;
+					console.log("GSCode:", gsCode);
+
+					window.currentDescriptionCell = options;
+
+						let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
+					let title = "Details Description";
+
+					openModal(url, title);
+				}
 					}).appendTo(container);
 				}
 				},
@@ -3712,15 +3761,12 @@
 										height: 300,
 
 										scrolling: { mode: "virtual" },
-										searchPanel: { // optional: global search box
+										searchPanel: {
 													visible: true,
-													width: 250,
+													highlightCaseSensitive: true,
+													width: 300,
 													placeholder: "Search..."
-										},
-										filterRow: { // column-wise filters
-													visible: true,
-													applyFilter: "auto"
-										},
+													},
 
 										columns: [
 
@@ -3788,6 +3834,13 @@
 
 				{ dataField: "LineTotal", caption: formatMessage(' Line Total'), width: 150 },
 				{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 },
+				{ dataField: "AddlDescription", visible: false },
+	{ dataField: "ItemReqPurpose", visible: false },
+	{ dataField: "ItemReqPriority", visible: false },
+	{ dataField: "ItemReqExpectedDate", visible: false },
+	{ dataField: "ItemRemarks", visible: false },
+		{ dataField: "DeliveryPeriod", visible: false },
+	{ dataField: "PlanNo", visible: false },
 				{
 		type: "buttons",
 		caption: "Delete",
@@ -3884,7 +3937,15 @@
 	UnitRateMethod:null,
 	QtyRequested: 0,
 	ExpectedUnitRate: 0,
-	LineTotal: 0
+	LineTotal: 0,
+
+AddlDescription: null,
+			ItemReqPurpose: null,
+			ItemReqPriority: null,
+			ItemReqExpectedDate: null,
+			ItemRemarks: null,
+			DeliveryPeriod: null,
+			PlanNo: null
 		};
 
 		// Efficient insert without replacing entire dataSource
@@ -5720,7 +5781,36 @@
 		}
 	}
 
+	function receiveModalFieldData(modalData) {
+		console.log("📦 Received from modal:", modalData); // ✅ Step 1: Log
 
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		if (!window.currentDescriptionCell) {
+			console.warn("❌ No currentDescriptionCell found");
+			return;
+		}
+
+		const key = window.currentDescriptionCell.key;
+		console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+		const rowIndex = grid.getRowIndexByKey(key);
+		if (rowIndex === -1) {
+			console.warn("❌ Could not find rowIndex for key", key);
+			return;
+		}
+
+		let rowData = grid.getDataSource().items()[rowIndex];
+		console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+		for (const [field, value] of Object.entries(modalData)) {
+			rowData[field] = value;
+			grid.cellValue(rowIndex, field, value);
+		}
+
+		console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+		grid.repaintRows([rowIndex]);
+		DevExpress.ui.notify("Details saved", "success", 1500);
+	}
 
 
 	$("#btnSave").on("click", function (e) {
@@ -5757,7 +5847,7 @@
 			StoreCode: $("#ddStoreCodeDropDown").dxDropDownBox("instance").option("value") || null,
 		};
 
-		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
 
 		if (!children || children.length === 0) {
 			DevExpress.ui.notify("No child records to save.", "error", 3000);
@@ -6167,9 +6257,12 @@ $("#btnBack").on("click", function (e) {
 					url: `/api/AddNewClientRequest/SubmitMPR?mprNo=${encodeURIComponent(mprNo)}`,
 					contentType: "application/json",
 					success: function (response) {
-						//disableEditing();
-						DevExpress.ui.dialog.alert("Material Purchase Request has been submitted for Approval.", "Submit Successful");
-						// Update UI elements as needed
+							 DevExpress.ui.notify("Material Purchase Request has been submitted for Approval.", "success", 3000);
+
+							const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
+							if (approvedByBox && response.VoucherApprovedBy) {
+								approvedByBox.option("value", response.VoucherApprovedBy);
+							}
 					},
 					error: function (xhr, status, error) {
 						$btn.prop('disabled', false);
@@ -6243,10 +6336,12 @@ $("#btnBack").on("click", function (e) {
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.message) {
-					DevExpress.ui.dialog.alert(
-						response.message,
-						"Verified"
-					);
+									console.log("verifier",response.VoucherApprovedBy);
+			    const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+		        if (approvedByBox) {
+			    approvedByBox.option("value", response.VoucherApprovedBy);
+		           }
+						DevExpress.ui.notify(response.message, "success", 3000);
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
@@ -6320,14 +6415,23 @@ $("#btnBack").on("click", function (e) {
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
-								hideAllButtonsExcept([
-							"btnPrint1",
-							"ddButtonLayout",
-							"btnBack",
-							"btnAttach"
-						]);
-					});
+				// ✅ Only set dropdown if approval is truly successful
+			if (response.VoucherApprovedBy) {
+				const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
+				if (approvedByBox) {
+					approvedByBox.option("value", response.VoucherApprovedBy);
+				}
+			}
+
+		DevExpress.ui.notify(response.Message, "success", 3000);
+
+				// ✅ Hide buttons as needed
+				hideAllButtonsExcept([
+					"btnPrint1",
+					"ddButtonLayout",
+					"btnBack",
+					"btnAttach"
+				]);
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
