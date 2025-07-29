@@ -5019,8 +5019,8 @@ $("#btnBack").on("click", function (e) {
 					contentType: "application/json",
 					success: function (response) {
 						//disableEditing();
-						DevExpress.ui.dialog.alert("Material Receipt has been submitted for Approval.", "Submit Successful");
-						// Update UI elements as needed
+	DevExpress.ui.notify("Material Receipt has been submitted for Approval.", "success", 3000);
+							// Update UI elements as needed
 					},
 					error: function (xhr, status, error) {
 						$btn.prop('disabled', false);
@@ -5030,14 +5030,6 @@ $("#btnBack").on("click", function (e) {
 			}
 		});
 	});
-
-
-
-
-
-
-
-
 
 
 	$("#btnVerify").on("click", function (e) {
@@ -5094,10 +5086,8 @@ $("#btnBack").on("click", function (e) {
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.message) {
-					DevExpress.ui.dialog.alert(
-						response.message,
-						"Verified"
-					);
+						DevExpress.ui.notify("Material Receipt has been Verified and processed for approval.", "success", 3000);
+
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
@@ -5180,15 +5170,15 @@ $("#btnBack").on("click", function (e) {
 		  }
 
 		  if (response?.Message) {
-			DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
-			  hideAllButtonsExcept([
-				"btnPrint3",
-				"ddButtonLayout",
-				"btnBack",
-				"btnCreatePo"
-			  ]);
-			  // Optionally: reload or refresh UI
-			});
+				DevExpress.ui.notify("Material Receipt has been Approved.", "success", 3000);
+					hideAllButtonsExcept([
+						"btnPrint",
+	                   "ddButtonLayout",
+                     	"btnBack",
+                     	"btnAttach"
+					]);
+		
+		
 		  } else {
 			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 			approveBtn.option("disabled", false);

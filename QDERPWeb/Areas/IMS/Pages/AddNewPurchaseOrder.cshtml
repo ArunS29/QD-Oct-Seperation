@@ -6,7 +6,13 @@
 
 <style>
     
-
+ .custom-btn-size {
+    height: 70px !important;
+    min-height: 70px !important;
+    line-height: 70px !important;
+    width: 70px !important;
+    min-width: 70px !important;
+}
     .ledgerResult {
         overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
         width: 100%;
@@ -50,7 +56,6 @@
     .form-row {
         display: flex;
         gap: 10px;
-        padding: 10px;
         width: 100%;
     }
 
@@ -64,15 +69,6 @@
         display: flex;
         align-items: center;
         gap: 10px;
-    }
-
-    .dx-textbox .dx-texteditor-input,
-    .dx-numberbox .dx-texteditor-input,
-    .dx-selectbox .dx-texteditor-input {
-    }
-
-    .dx-button {
-        margin-left: 5px;
     }
 
     .dx-selectbox {
@@ -96,12 +92,6 @@
         justify-content: start;
         align-items: center;
         margin: 15px;
-    }
-
-    .button-group {
-        align-items: center;
-        justify-content: center;
-        padding: 8px;
     }
 
     .form-row.border-outline {
@@ -252,20 +242,20 @@
     /*     display: none !important; */
     /* } */
 
-    .footer-fixed .btn-container:not(:has(
+    /* .footer-fixed .btn-container:not(:has(
     #btnSave,
     #btnSaveAndClose, 
     #btnBack,
     #btnAttach,
     #btnPrint4,
     #btnDelete,
-    #btnVerify,
+    #btnVerify, 
     #btnApprove ,
     #btnSubmit,
     #btnAddNew,
     #ddButtonLayout )) {
         display: none !important 
-     } 
+     }  */
 
     /* .bodyContainer { */
     /*     display: flex; */
@@ -562,80 +552,106 @@
                         </td>
                     </tr>
                 </table>
-            </div>
+            </div>  
 
         </text>);
                     item.Add().Title(new JS("formatMessage('Order Details')")).Icon("detailslayout").Text(new JS("formatMessage('Order Details')")).Template(@<text>
             <div class="layout-container">
                 <!-- Subject and Po Summary -->
                 <div class="form-row">
-                    <div class="form-column">
-                        <div class="field-header">
-                            <label id="Subject1" for="Subject" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('Subject')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
-                        @(Html.DevExtreme().TextBox()
+                    <div class="form-column" style="display:flex; flex-direction: row; align-items:end;">
+                        @(Html.DevExtreme().TextArea()
                         .ID("Subject")
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .Label(new JS("formatMessage('Subject:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                         .ElementAttr("style", "height: 70px!important;")
                         .Width("100%")
                         )
+                         @(Html.DevExtreme().Button()
+                        .ID("AddSupplier")
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("upload")
+                       .OnClick("function() { saveField('ReportSubject', 'Subject' ,'Subject'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("EditSupplier")
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
                     </div>
-                    <div class="form-column">
-                        <div class="field-header">
-                            <label id="PoSummary1" for="PoSummary" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('PoSummary')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                    <div class="form-column" style="display:flex;flex-direction: row;align-items:end;">
                         @(Html.DevExtreme().TextArea()
                         .ID("PoSummary")
-                        .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .ElementAttr("style", "height: 70px!important;")
+                         .Label(new JS("formatMessage('Po Summary:')"))
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
+                         @(Html.DevExtreme().Button()
+                        .ID("Addsummary")
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("upload")
+                        .OnClick("function() { saveField('ReportSummary', 'PoSummary',' summary'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("Editsummary")
+                            .ElementAttr("class", "custom-btn-size")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
                     </div>
                 </div>
 
                 <!-- Po Introduction and Thanks Notes -->
                 <div class="form-row">
-                    <div class="form-column">
-                        <div class="field-header">
-                            <label id="PoIntroduction1" for="PoIntro" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('PoIntro')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
-                        @(Html.DevExtreme().TextBox()
-                        .ID("PoIntro")
-                        .LabelMode(EditorLabelMode.Hidden)
-                        .Width("100%")
-                        )
-                    </div>
-                    <div class="form-column">
-                        <div class="field-header">
-                            <label id="ThanksNotes1" for="Thanks" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid" onclick="setDefaultValue('Thanks')">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                    <div class="form-column" style="display:flex;flex-direction: row;align-items:end;">
                         @(Html.DevExtreme().TextArea()
-                        .ID("Thanks")
-                        .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .ID("PoIntro")
+                         .Label(new JS("formatMessage('Po Introduction:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                         .ElementAttr("style", "height:70px!important;")
                         .Width("100%")
                         )
+                         @(Html.DevExtreme().Button()
+                        .ID("Addintro")
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("upload")
+                        .OnClick("function() { saveField('ReportIntroduction', 'PoIntro',' Introduction'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("Editintro")
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
+                    </div>
+                    <div class="form-column" style="display:flex;flex-direction: row;align-items:end;">
+                        @(Html.DevExtreme().TextArea()
+                        .ID("Thanks")   
+                        .ElementAttr("style", "height: 70px!important; ")
+                         .Label(new JS("formatMessage('Thanks Notes:')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width("100%")
+                        )
+
+                         @(Html.DevExtreme().Button()
+                        .ID("Addthanks")
+                     
+                         .ElementAttr("class", "custom-btn-size")
+                        .Icon("upload")
+                      .OnClick("function() { saveField('ReportThanksNote','Thanks',' Thanks'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("Editthanks")
+                       
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
                     </div>
                 </div>
             </div>
-            
-
-
         </text>);
                     item.Add().Text(new JS("formatMessage('Shipping Details')")).Icon("home").Title(new JS("formatMessage('Shipping Details')")).Template(@<text>
            <div class="layout-container">
@@ -702,7 +718,6 @@
 
                 <!-- Right Card -->
                 <div style="padding: 10px; flex: 1; display: flex; flex-direction: column; gap: 10px;">
-
                     <!-- PoSummary 1 -->
                     <div>
                         <div style="display: flex; justify-content: space-between; align-items: center;">
@@ -949,8 +964,8 @@
         </text>);
 
                     item.Add().Text(new JS("formatMessage('Signatories')")).Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
-            <div class="form-container">
-                <div class="dx-card p-3">
+            <div class="layout-container">
+                <div class="p-3">
                     <table class=" table-borderless w-100">
                         <thead>
                             <tr>
@@ -1052,6 +1067,7 @@
             )
 
     </div>
+    <div>
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
         .DataSource(new JS("window.itemGridDataSource"))
@@ -1099,6 +1115,7 @@
         .ShowRowLines(true)
         .OnEditorPreparing("onEditorPreparing")
         )
+        </div>
 </div>
 @using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
 {
@@ -1128,10 +1145,9 @@
             )
 }
 
-
-        <div class="footer-fixed">
-            @await Html.PartialAsync("/Pages/Shared/InventoryModuleFooter.cshtml")
-        </div>
+<div class="footer-fixed">
+			@await Html.PartialAsync("/Pages/Shared/IMS/PurchaseOrderEditFooter.cshtml")
+		</div>
 
 
 <script>
@@ -1187,6 +1203,10 @@
     //             $("#SupplierEmail").dxTextBox("instance").option("value", selectedItem.ContactEmail || "");
     //     }
     // }
+    
+				$("#btnBack").on("click", function (e) {
+						 window.location.href = `/${tenantName}/IMS/PurchaseOrders`;
+				});
 
         function onSupplierChanged(e) {
         const supplierCode = e.value;
@@ -1228,14 +1248,14 @@
 
         const tenantName = window.tenantName || "defaultTenant";
         const url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${encodeURIComponent(selectedSupplierCode)}`;
-        const title = "Edit Supplier";
+        const title = "Supplier Master";
 
         openModal(url, title);
     }
 
         function redirecttoClientLeadmaster1(){
             const url = `/${tenantName}/IMS/SupplierLeadMaster`;
-        const title = "";
+        const title = "Supplier Master";
             openModal(url, title);
     }
        function isDxInitialized($el, widgetName) {
@@ -1304,8 +1324,6 @@
         });
     });
             var dataGridInstance;
-
-        
 
         $(function () {
 
@@ -1377,7 +1395,7 @@
 
                                     value: cellInfo.value,
 
-                                    dropDownOptions: { width: 800 },
+                                    dropDownOptions: { width: 530 },
 
                                     onValueChanged: function (e) {
 
@@ -1419,10 +1437,15 @@
 
                                             keyExpr: "GSCode",
 
-                                            height: 300, // ✅ Add fixed height to enable scrolling
+                                            height: 300, 
 
                                             scrolling: { mode: "virtual" },
-
+                                            searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
                                             columns: [
 
                                                 { dataField: "GSCode", caption: "Code", width: 80 },
@@ -1430,8 +1453,6 @@
                                                 { dataField: "GSDescrpition", caption: "Description", width: 300 },
 
                                                 { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-
-
 
                                             ],
 
@@ -1489,9 +1510,9 @@
                                     icon: "plus",
                                     hint: "Add new item",
                                     onClick: function () {
-                                        let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+                                        let url = `/${tenantName}/IMS/GoodsAndService`; // ✅ No query parameters
                                         let title = "Goods and Services";
-                                        openModal(url, title); // Opens the form in a modal
+                                        openModal(url, title,"75%",""); // Opens the form in a modal
                                         // Or use: window.location.href = url; if navigating directly
                                     },
                                     width: 60,
@@ -1510,9 +1531,9 @@
                                     onClick: function () {
 
                                         //let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-                                      let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+                                      let url = `/${tenantName}/IMS/GoodsAndService?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
                                                 let title = "Goods and Services";
-                                                        openModal(url, title);
+                                                        openModal(url, "Goods And Service" ,"75%","");
                                         //window.location.href = url;
 
                                     },
@@ -1545,7 +1566,7 @@
 
                         // Open modal
                         let url = `/${tenantName}/VAT/VATDetailsDescription`;
-                        let title = "VAT Details Description";
+                        let title = "Details Description";
                         openModal(url, title);
                     }
                 }).appendTo(container);
@@ -1608,6 +1629,12 @@
                                             height: 300,
 
                                             scrolling: { mode: "virtual" },
+                                            searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 300,
+													placeholder: "Search..."
+													},
 
                                             columns: [
 
@@ -1655,10 +1682,9 @@
 
                                     onClick: function () {
 
-                                        let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+                                        let url = `/${tenantName}/IMS/UnitOfMeasure`; 
                                          let title = "Unit of Measure";
-                                        openModal(url, title);
-                                        //window.location.href = url;
+                                          openModal(url, title,"70%","70%");
 
                                     },
 
@@ -1709,9 +1735,15 @@
                             keyExpr: "TaxSlabCode",
                             height: 300,
                             scrolling: { mode: "virtual" },
+                            searchPanel: {
+									visible: true,
+									highlightCaseSensitive: true,
+									width: 300,
+									placeholder: "Search..."
+									},
                             columns: [
                                 { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-                                { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+                                { dataField: "TaxRate", caption: "TaxRate", width: 150 }
                             ],
                             onSelectionChanged: function (selectedItems) {
                                 let selectedItem = selectedItems.selectedRowsData[0];
@@ -2640,7 +2672,61 @@ setDxFieldValue("approvedBy2", data.approvedBy);
             });
         }
     });
+    function saveField(fieldName, dxId,name) {
+    let instance = null;
 
-         
+    try {
+        instance = $("#" + dxId).dxTextBox("instance");
+    } catch (e) {
+        // Not a TextBox, try TextArea next
+    }
+
+    if (!instance) {
+        try {
+            instance = $("#" + dxId).dxTextArea("instance");
+        } catch (e) {
+            console.error(`Neither dxTextBox nor dxTextArea initialized for: ${dxId}`);
+            DevExpress.ui.dialog.alert("Component not initialized: " + dxId, "Error");
+            return;
+        }
+    }
+    const value = instance.option("value");
+
+    $.ajax({
+        url: "/api/PurchaseOrders/SaveReportAttribute",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            reportNo: "IMS-PO-001",
+            field: fieldName,
+            value: value
+        }),
+        success: function () {
+            DevExpress.ui.notify(`PO ${name} has been set as default.`, "success", 2000);
+        },
+        error: function (xhr) {
+            DevExpress.ui.dialog.alert("Failed to save data", "Error");
+            console.error("Save error:", xhr.responseText);
+        }
+    });
+}
+   $(function () {
+    $.ajax({
+        url: "/api/PurchaseOrders/GetReportAttributes?reportNo=IMS-PO-001", // ✅ fixed missing quote
+        type: "GET",
+        success: function (data) {
+            console.log("Loaded:", data);
+
+            $("#Subject").dxTextArea("instance")?.option("value", data.ReportSubject || "");
+            $("#PoSummary").dxTextArea("instance")?.option("value", data.ReportSummary || "");
+            $("#PoIntro").dxTextArea("instance")?.option("value", data.ReportIntroduction || "");
+            $("#Thanks").dxTextArea("instance")?.option("value", data.ReportThanksNote || "");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading report data:", error);
+        }
+    });
+});
+       
 
 </script>

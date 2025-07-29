@@ -2156,7 +2156,7 @@
 		<div class="dx-field ledgerResult">
 			@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 							.ID("B2BdataGrid")
-							.Height("45vh")
+							.Height("42vh")
 							.RemoteOperations(false)
 							.Columns(columns =>
 							{
@@ -3996,9 +3996,9 @@
                     });
                 }
             },
-				{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
+			{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
             { dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,allowEditing: false },
+			{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,allowEditing: false },
             { dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 					{
 		dataField: "DiscountDetails",
@@ -4057,7 +4057,7 @@
 	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
 	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
 	grid.cellValue(rowIndex, "QuantityInvoiced", qty);
-	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+	//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
 
                         }
@@ -4099,7 +4099,7 @@
 	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
 	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
 	grid.cellValue(rowIndex, "QuantityInvoiced", qty);
-	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+	//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
 
                                 }
@@ -4146,8 +4146,9 @@
                  	}
 					else
 					{
-							let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
+					    let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
 						let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+			            let TotalAmtBeforeDiscount = e.dataField === "CalcLineAmountBeforeDiscount" ? newValue : grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount") || 0;
 
 						// VAT rate handling
 						let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
@@ -4167,7 +4168,7 @@
 						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
 						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
 						grid.cellValue(rowIndex, "Unit Price",unitPrice);
-						grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+						grid.cellValue(rowIndex, "Total Before Discount",TotalAmtBeforeDiscount);
 						grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
 						grid.cellValue(rowIndex, "Discount",discount);
 						grid.cellValue(rowIndex, "Qty", qty);
@@ -4411,10 +4412,11 @@
 								onClick: function () {
 
 									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-						         /*  let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`;  */// Example add page
-											let url = `/${tenantName}/VAT/VATGoodsandServices`;
-											let title = "";
-													openModal(url, title);
+
+						          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+								  let title = "Goods and Services";
+								  openModal(url, title);
+
 									//window.location.href = url;
 
 								},
@@ -5287,37 +5289,35 @@
 										console.log("ClientData",selectedRowData[0])
 								  let  accheadname = selectedRowData[0].BillingName;
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
-										 ClientCity= selectedRowData[0].ClientCity;
+										ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;
-			var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
-												// Set the value
-			var fullAddress = [ClientPostalCode,ClientAddressSt, ClientCity].filter(Boolean).join(", ");
-			dropDownBox.option("value", fullAddress);
-		    ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
+			                            var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
+			                            									// Set the value
+			                            var fullAddress = [ClientPostalCode,ClientAddressSt, ClientCity,selectedRowData[0].ClientBuildingNumber].filter(Boolean).join(", ");
+			                            dropDownBox.option("value", fullAddress);
+		                                ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
 										  // DevExtreme widgets
-	$("#GroupVATNo").dxTextBox("instance").option("value", selectedRowData[0].ClientGroupVatnumber);
-	$("#ClientVATNo").dxTextBox("instance").option("value", selectedRowData[0].VatregistrationNo);
-    $("#ClientNameArabic").dxTextBox("instance").option("value", selectedRowData[0].AccountHeadArabic);
-	$("#ClientOtherID").dxTextBox("instance").option("value", selectedRowData[0].ClientOtherId);
-	dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].ClientOtherIdtype]});
+	                                    $("#GroupVATNo").dxTextBox("instance").option("value", selectedRowData[0].ClientGroupVatnumber);
+	                                    $("#ClientVATNo").dxTextBox("instance").option("value", selectedRowData[0].VatregistrationNo);
+                                        $("#ClientNameArabic").dxTextBox("instance").option("value", selectedRowData[0].AccountHeadArabic);
+	                                    $("#ClientOtherID").dxTextBox("instance").option("value", selectedRowData[0].ClientOtherId);
+	                                    dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].ClientOtherIdtype]});
 
-
-	// Assuming these are standard inputs
-		$("#StreetName").dxTextBox("instance").option("value", selectedRowData[0].ClientAddressStreet);
-		$("#StreetNameArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientAddressStreetAr);
-		$("#AdditionalAddress").dxTextBox("instance").option("value", selectedRowData[0].ClientAdditionalStreet);
-			$("#AdditionalAddressArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientAdditionalStreetAr);
-    $("#BuildingNumber").dxTextBox("instance").option("value", selectedRowData[0].ClientBuildingNumber);
-    $("#ClientCity").dxTextBox("instance").option("value", selectedRowData[0].ClientCity);
-		$("#ClientCityArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientCityAr);
-		$("#AdditionalNumber").dxTextBox("instance").option("value", selectedRowData[0].ClientAdditionalNumber);
-		$("#Province").dxTextBox("instance").option("value", selectedRowData[0].ClientProvince);
-    $("#ProvinceArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientProvinceAr);
-			$("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].ClientPostalCode);
-		$("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
-			$("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhoodAr);
-				$("#CountryCodeNumeric").dxDropDownBox("instance").option("value", selectedRowData[0].ClientCountryCode);
-				$("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
+		                                $("#StreetName").dxTextBox("instance").option("value", selectedRowData[0].ClientAddressStreet);
+		                                $("#StreetNameArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientAddressStreetAr);
+		                                $("#AdditionalAddress").dxTextBox("instance").option("value", selectedRowData[0].ClientAdditionalStreet);
+			                            $("#AdditionalAddressArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientAdditionalStreetAr);
+                                        $("#BuildingNumber").dxTextBox("instance").option("value", selectedRowData[0].ClientBuildingNumber);
+                                        $("#ClientCity").dxTextBox("instance").option("value", selectedRowData[0].ClientCity);
+		                                $("#ClientCityArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientCityAr);
+		                                $("#AdditionalNumber").dxTextBox("instance").option("value", selectedRowData[0].ClientAdditionalNumber);
+		                                $("#Province").dxTextBox("instance").option("value", selectedRowData[0].ClientProvince);
+                                        $("#ProvinceArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientProvinceAr);
+			                            $("#PostalCode").dxTextBox("instance").option("value", selectedRowData[0].ClientPostalCode);
+		                                $("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
+			                            $("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhoodAr);
+				                        $("#CountryCodeNumeric").dxDropDownBox("instance").option("value", selectedRowData[0].ClientCountryCode);
+				                        $("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 
 
 
@@ -7001,7 +7001,7 @@
 
 					//Discount
 						function onEditorPreparing(e) {
-		if (e.parentType === "dataRow" &&
+		     if (e.parentType === "dataRow" &&
 				(e.dataField === "QuantityInvoiced" ||
 				 e.dataField === "UnitRate" ||
 			// e.dataField === "VATPercentage" ||
@@ -7028,6 +7028,7 @@
 				
 				let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
 				let discount = e.dataField === "Discount" ? newValue : grid.cellValue(rowIndex, "Discount") || 0;
+			    let TotalAmtBeforeDiscount = e.dataField === "CalcLineAmountBeforeDiscount" ? newValue : grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount") || 0;
 
 				// VAT rate handling
 				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
@@ -7047,7 +7048,7 @@
 				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
 				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
 				grid.cellValue(rowIndex, "Unit Price",unitPrice);
-				grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
+				grid.cellValue(rowIndex, "Total Before Discount",TotalAmtBeforeDiscount);
 				grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
 				grid.cellValue(rowIndex, "Discount",discount);
 				grid.cellValue(rowIndex, "Qty", qty);
@@ -9469,24 +9470,25 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
         });
     }
 
-        function loadCurrencyGridOnOpen(e) {
-        debugger;
-        const dropDown = e.component;
-        const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
+     
 
-        if (!baseCurrencyId) return;
 
-        const grid = $("#currency-datagrid").dxDataGrid("instance");
-        if (!grid) return;
+	$(async function () {
+			try {
+					const result = await fetch('/api/VATModule/GetPettyCashAccount');
+				const data = await result.json();
 
-        DevExpress.data.AspNet.createStore({
-            key: "CurrencyExchangeId",
-            loadUrl: `/api/Utility/GetCurrencyListWithRates?baseCurrencyId=${baseCurrencyId}`
-        }).load().done(data => {
-            grid.option("dataSource", data);
-            dropDown.option("dataSource", data);
-        });
-    }
+				if (data && data.AccountID) {
+					// Set default value to DropDownBox
+					const dropDownBox = $("#ddclientcode").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("value", data.AccountID);
+					}
+				}
+			} catch (err) {
+				console.error("Failed to load default client code:", err);
+			}
+		});
 
 </script>
 

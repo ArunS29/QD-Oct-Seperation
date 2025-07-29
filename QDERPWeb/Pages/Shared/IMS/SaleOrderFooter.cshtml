@@ -109,22 +109,23 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+                .ID("btnSalesOrderDetails")
+                .Icon("overflow")
+                .Text(new JS("formatMessage('Sales Order Details')"))
+                .OnClick("btnSalesOrderDetail")
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
             .ID("btnAddSalesOrder")
-            .Icon("folder")
+            .Icon("plus")
             .Text(new JS("formatMessage('Add New Sales Order')"))
             .OnClick("AddNewSalesOrder")
             )
 
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSalesOrderDetails")
-            .Icon("overflow")
-            .Text(new JS("formatMessage('Sales Order Details')"))
-            .OnClick("btnSalesOrderDetail")
-            )
 
-    </div>
 
    
 </div>

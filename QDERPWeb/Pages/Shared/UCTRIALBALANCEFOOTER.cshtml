@@ -19,7 +19,7 @@
         gap: 10px; /* Adds spacing between buttons */
         justify-content: start; /* Aligns buttons to the left */
         align-items: center; /* Vertically centers the buttons */
-        margin: 15px;
+        margin: 0px;
         margin-top: 0px;
     }
 
@@ -105,6 +105,29 @@
         .btn-container:hover .dx-dropdownbutton .dx-button-text {
             display: inline-block;
         }
+
+    .menuBtn {
+        border: 1px solid #ddd;
+        padding: 3px;
+        border-radius: 4px;
+    }
+
+        .menuBtn:hover {
+            border: 1px solid #337ab7;
+        }
+
+    .button-alignment-down .menuReports {
+        margin-top: 23px;
+    }
+
+    .button-group {
+        margin-left: -10px !important;
+    }
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc; /* Border between rows */
+        margin-bottom: 50px;
+    }
 </style>
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
@@ -157,7 +180,7 @@
 
             )
     </div>
-    <div class="btn-container">
+    @* <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnFinancialReports")
             .Type(ButtonType.Normal)
@@ -167,19 +190,19 @@
             .Width(180)
             .OnClick("toggleMenuReports")
             )
-    </div>
+    </div> *@
 
-    <div class="btn-container" id="menuContainer" style="display:none; position:absolute; z-index:1000;"> 
-         @(Html.DevExtreme().Menu() 
+    <div class="btn-container menuBtn">
+        @(Html.DevExtreme().Menu() 
              .ID("menuReports1") 
              .DataSource(new[] { 
         new {
-         text = "Reports", 
+         text = "Financial Reports", 
          icon = "doc", 
          items = new[] { 
          new {
        text = "Account Group Report", 
-        icon = "search",
+        icon = "home",
          items = new[] { 
         new { text = "Account Group", icon = "chart-line" }, 
          new { text = "Account Group Report(with subGroups)", icon = "chart-line" }, 
@@ -187,7 +210,7 @@
      }, 
       new { 
       text = "Trial Balance Report", 
-      icon = "search", 
+      icon = "chart", 
        items = new[] {
       new { text = "Trial Balance", icon = "chart-line" }, 
       new { text = "Trial Balance (Export Format)", icon = "chart-line" }, 
@@ -197,7 +220,7 @@
        }, 
          new { 
       text = "Income Statements", 
-        icon = "search", 
+        icon = "cart", 
     items = new[] { 
        new { text = "Income Statements", icon = "chart-line" }, 
      new { text = "Income Statements(By Month)", icon = "chart-line" }, 
@@ -206,7 +229,7 @@
     }, 
      new {
        text = "Balance Sheet", 
-      icon = "search",
+      icon = "chart",
        items = new[] { 
      new { text = "Balance Sheet", icon = "chart-line" }, 
       new { text = "Balance Sheet(Horizondal Format)", icon = "chart-line" }, 
@@ -214,14 +237,14 @@
       }, 
         new { 
          text = "Cash Inflow & Outflow Reports", 
-         icon = "search", 
+         icon = "money", 
          items = new[] {
      new { text = "Cash Flow Statements", icon = "chart-line" }, 
     } 
     }, 
       new { 
     text = "Ageing Report", 
-    icon = "search", 
+    icon = "product", 
   items = new[] { 
        new { text = "Bills Receivable- Ageing (By End Date)", icon = "chart-line" },
      new { text = "Bills Receivable- Ageing as per Ledger Balance(By End Date)", icon = "chart-line" }, 
@@ -235,7 +258,7 @@
          },
         new {
       text = "Cost Reports",
-        icon = "search", 
+        icon = "monney", 
        items = new[] { 
         new { text = "Property Allocation Report", icon = "chart-line" }, 
         } 

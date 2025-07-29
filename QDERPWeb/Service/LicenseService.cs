@@ -19,7 +19,7 @@ namespace QD.ERP.Web.Service
         {
             var licenseInfo = await _dbContext.CustomerDetails
                 .AsNoTracking()
-                .FirstOrDefaultAsync(c => c.CompanyName.ToLower() == companyName.ToLower());
+                .FirstOrDefaultAsync(c => c.TenantName.ToLower() == companyName.ToLower());
 
             return licenseInfo;
         }

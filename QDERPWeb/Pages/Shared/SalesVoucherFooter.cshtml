@@ -1301,7 +1301,19 @@
     }
 
 
-        function onAttachmentButtonClick() {
+    function onAttachmentButtonClick() {
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.dialog.alert(
+                "Not allow to Add Attachments. Please enter some transactions.",
+                "Data Not Found in Grid"
+            ).done(function () {
+
+            });
+        } else {
             var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             var voucherNo = voucherNoBox.option("value");
 
@@ -1312,6 +1324,7 @@
             const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
             const title = "Transaction Documents";
             openModal(url, title);
+        }
     }
 
 

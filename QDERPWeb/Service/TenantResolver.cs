@@ -48,7 +48,7 @@ namespace QD.ERP.Web.Service
 
             // Fetch tenant metadata from ERPCommonContext
             var company = await _dbContext.CustomerDetails
-                .FirstOrDefaultAsync(p => p.CompanyName.ToLower() == tenantName.ToLower());
+                .FirstOrDefaultAsync(p => p.TenantName.ToLower() == tenantName.ToLower());
 
             if (company == null)
                 return null;
@@ -58,7 +58,8 @@ namespace QD.ERP.Web.Service
                 Name = company.CompanyName.ToLower(),
                 Id = Convert.ToInt32(company.CompanyId),
                 ConnectionString = company.ConnectionStringOnline,
-                schemaname = company.schemaname
+                schemaname = company.schemaname,
+                TenantName = company.TenantName.ToLower(),
             };
 
             // Fetch logo from tenant-specific database
@@ -101,7 +102,7 @@ namespace QD.ERP.Web.Service
                     tenant.DefaultcompanyName = companyInfo.CompanyName;
                     tenant.CompanyTextColor = companyInfo.CompanyTextColor.ToString();
                     tenant.currencytype = companyInfo.CurrencyType.ToString();
-
+                    tenant.TenantName = tenant.TenantName.ToString();
                     var currency = tenantDbContext
                     .Tbl20169CurrencyExchanges    // or whatever your DbSet is called
                     .FirstOrDefault(c => c.CurrencyMasterCode == companyInfo.CurrencyType);

@@ -15,23 +15,6 @@
         width: 100%;
     }
 
-    .dx-tabpanel .dx-tab {
-        color: black !important;
-        font-weight: bold;
-        font-size: 14px;
-        padding: 10px 15px;
-    }
-
-
-        .dx-tabpanel .dx-tab.dx-selection {
-            background-color: lightblue;
-            color: white !important;
-        }
-        
-    .dx-tabpanel {
-    }
-
-
     .mainContainer {
         overflow-x: hidden;
     }
@@ -45,6 +28,7 @@
     .form-container {
         width: 100%;
         border-radius: 1px;
+            background: var(--background-color);
     }
 
     .form-row {
@@ -65,11 +49,6 @@
         display: flex;
         align-items: center;
         gap: 10px;
-    }
-
-    .dx-textbox .dx-texteditor-input,
-    .dx-numberbox .dx-texteditor-input,
-    .dx-selectbox .dx-texteditor-input {
     }
 
     .dx-button {
@@ -195,15 +174,6 @@
         display: flex;
     }
 
-    .dx-card {
-        background: var(--background-color);
-    }
-
-
-    /* .limited-footer .btn-container:not(:has(#ddButtonLayout,#btnMoveDown,#btnMoveUp,#btnSave,#btnSaveAndClose,#btnPrint1,#btnAddNew,#btnDelete,#btnBack,#btnSubmit,#btnVerify,#btnApprove,#btnStockAvailability)) { */
-    /*     display: none !important; */
-    /* } */
-
     .dx-dropDownBox.dx-invalid .dx-texteditor-input {
         border-color: red !important;
         border-width: 2px;
@@ -231,7 +201,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
 
-        @(Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+        @(Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(300)
                 .Items(item =>
                 {
                     item.Add()
@@ -239,7 +209,7 @@
                 .Icon("folder")
                 .Text("Sales Order Details")
                 .Template(@<text>
-            <div class="dx-card p-3">
+            <div class="p-3">
                 <table style="table-layout: fixed; width:100%;">
                     <colgroup>
                         <col style="width: 20%;" />
@@ -270,7 +240,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("SalesOrderDate")
                             .Value(DateTime.Today)
-                            .DateSerializationFormat("yyyy-MM-dd")  // ✅ Ensure consistent format
+                            .DateSerializationFormat("dd-MMM-yyyy")  // ✅ Ensure consistent format
                             .Label("Sales Order Date")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -279,11 +249,13 @@
 
                         </td>
                         <td>
-                            <div style="display: flex; align-items: flex-end;">
                                 <div style="flex: 1;">
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .ID("ClientNames")
-
+                                    .ValueChangeEvent("input")
+							        .HoverStateEnabled(true)
+                                    .OnInput("dropDownBoxOnInput")
+                                    .OnOpened("onOpened")
                                     .ValueExpr("ClientCode")
                                     .DisplayExpr("ClientName")
                                     .DataSource(ds => ds
@@ -302,25 +274,36 @@
                                     .Message("Client Name is required");
                                     })
                                     .ContentTemplate(new TemplateName("ClientDropDownTemplate"))
+                                     .Buttons(buttons => {
+								// Clear Button
+								buttons.Add()
+									.Name("clear");
 
-                                    )
+								// Add Client Button
+								buttons.Add()
+									.Name("AddClient")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										.OnClick("AddClients")
+									);
 
-
-                                </div>
-                                <div style="margin-left: 5px;">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("EditClient")
-                                    .Icon("edit")
-                                    .Hint("Add Client")
-                                    .OnClick("EditClients")
-                                    )
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddClient")
-                                    .Icon("plus")
-                                    .Hint("Add Client")
-                                    .OnClick("AddClients")
-                                    )
-                                </div>
+								// Edit Client Button
+								buttons.Add()
+									.Name("EditClient")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+											.OnClick("EditClients")
+									);
+									  buttons.Add()
+									   .Name("dropDown");
+							})
+						)
                             </div>
                         </td>
                     </tr>
@@ -395,8 +378,12 @@
                         <td>
                             <div class="row g-2">
                                 <div class="col-md-4" style="display: flex; align-items: flex-end;">
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .ID("Project")
+                                    .ValueChangeEvent("input")
+							        .HoverStateEnabled(true)
+                                    .OnInput("dropDownBoxOnInput")
+                                    .OnOpened("onOpened")
                                     .Label("Project:")
                                     .ValueExpr("ProjectId")
                                     .DisplayExpr("ProjectDescription")
@@ -411,20 +398,28 @@
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
                                     .ContentTemplate(new TemplateName("ProjectDropDownTemplate"))
-                                    )
-
-                                    <div style="margin-left: 5px;">
-                                        @(Html.DevExtreme().Button()
-                                        .ID("AddProject")
+                                    .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                        .Name("AddProject")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                        .Type(ButtonType.Default)
                                         .Icon("plus")
-                                        .Hint("Add Project")
-                                        .OnClick("AddProject")
-                                        )
-                                    </div>
+                                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                            .OnClick("AddProject"));
+                                        buttons.Add()
+                                        .Name("dropDown");
+                                    }))
+                                   
                                 </div>
                                 <div class="col-md-4" style="display: flex; align-items: flex-end;">
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .ID("TypeOFSalesOrder")
+                                    .ValueChangeEvent("input")
+							.HoverStateEnabled(true)
+                           .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
                                     .ValueExpr("TypeOfRequestId")
                                     .DisplayExpr("TypeOfRequest")
                                     .DataSource(ds => ds
@@ -438,14 +433,21 @@
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
-                                    .ContentTemplate(new TemplateName("typeofSalesOrderDropDownTemplate")))
-                                    <div style="margin-left: 5px;">
-                                        @(Html.DevExtreme().Button()
-                                        .ID("AddSalesOrder")
-                                        .Icon("plus")
-                                        .Hint("Add Sales Order")
-                                        )
-                                    </div>
+                                    .ContentTemplate(new TemplateName("typeofSalesOrderDropDownTemplate"))
+                                     .Buttons(buttons =>
+                                        {
+                                            buttons.Add()
+                                            .Name("AddSalesOrder")
+                                            .Location(TextEditorButtonLocation.After)
+                                            .Widget(w => w.Button()
+                                            .Type(ButtonType.Default)
+                                            .Icon("plus")
+                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                              );
+                                            buttons.Add()
+                                            .Name("dropDown");
+                                        }))
+                                   
                                 </div>
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
@@ -465,15 +467,19 @@
 
         </text>);
                     item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
-            <div class="dx-card p-3">
+            <div class="p-3">
                 <table style="width: 100%; vertical-align: top;">
                     <tr>
                         <!-- Left: Signatories -->
                         <td style="width: 50%; vertical-align: top;">
                             <div style="font-weight: bold;">Signatories:</div>
                             <div class="mb-3" style="display:flex;">
-                                @(Html.DevExtreme().DropDownBox()
+                                @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                 .ID("preparedBy")
+                                .ValueChangeEvent("input")
+							    .HoverStateEnabled(true)
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
                                 .ValueExpr("SignatoryId")
                                 .DisplayExpr("SignatoryName")
                                 .DataSource(ds => ds
@@ -487,13 +493,21 @@
                                 .ShowDropDownButton(true)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
-                                .ContentTemplate(new TemplateName("SignatoriesDropDownTemplate")))
-                                @(Html.DevExtreme().Button()
-                                .ID("Signatories")
-                                .Icon("plus")
-                                .Hint("Add Sales Order")
-                                .OnClick("Signatorynew")
-                                )
+                                .DropDownOptions(o => o.Width(340))
+                                .ContentTemplate(new TemplateName("SignatoriesDropDownTemplate"))
+                                 .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                        .Name("Signatories")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                        .Type(ButtonType.Default)
+                                        .Icon("plus")
+                                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                            .OnClick("Signatorynew"));
+                                        buttons.Add()
+                                        .Name("dropDown");
+                                    }))
                             </div>
                             <div>
                                 @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))<br />
@@ -554,7 +568,7 @@
         </text>);
                     item.Add().Text("Branch / Divisions").Icon("user").Title("Branch / Divisions").Template(@<text>
 
-            <div class="dx-card p-3" style="padding:10px;">
+            <div class="p-3" style="padding:10px;">
                 <table style="width: 100%; vertical-align: top;">
                     <tr>
                         <!-- LEFT SIDE -->
@@ -562,9 +576,13 @@
                             <!-- Company Branch -->
                             <div class="mt-3" style="display: flex; align-items: flex-end;">
 
-                                @(Html.DevExtreme().DropDownBox()
+                                @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                 .ID("CompanyBranch")
                                 .ValueExpr("CompanyId")
+                                .ValueChangeEvent("input")
+							.HoverStateEnabled(true)
+                           .OnInput("dropDownBoxOnInput")
+.OnOpened("onOpened")
                                 .DisplayExpr("CompanyName")
                                 .DataSource(ds => ds
                                 .Mvc()
@@ -587,9 +605,13 @@
                             </div>
                             <!-- Sales Person + Add Button -->
                             <div class="mt-3" style="display: flex; align-items: flex-end;">
-                                @(Html.DevExtreme().DropDownBox()
+                                @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                 .ID("SalesPerson")
                                 .StylingMode(EditorStylingMode.Outlined)
+                                .ValueChangeEvent("input")
+							.HoverStateEnabled(true)
+                           .OnInput("dropDownBoxOnInput")
+.OnOpened("onOpened")
                                 .ValueExpr("SalesPersonCode")
                                 .DisplayExpr("SalesPersonName")
                                 .DataSource(ds => ds
@@ -602,20 +624,30 @@
                                 .Label("Sales Person")
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
-                                .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate")))
+                                .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate"))
 
-                                <div class="ms-1">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddSalesPerson")
-                                    .Icon("plus")
-                                    .Hint("Add Sales Person")
-                                    .Height(36))
-                                </div>
+                                 .Buttons(buttons =>
+                                    {
+                                        buttons.Add()
+                                        .Name("AddSalesPerson")
+                                        .Location(TextEditorButtonLocation.After)
+                                        .Widget(w => w.Button()
+                                        .Type(ButtonType.Default)
+                                        .Icon("plus")
+                                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                           );
+                                        buttons.Add()
+                                        .Name("dropDown");
+                                    }))
                             </div>
 
                             <!-- Inventory Group Master -->
-                            @(Html.DevExtreme().DropDownBox()
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .ID("InventoryGroup")
+                            .ValueChangeEvent("input")
+							.HoverStateEnabled(true)
+                           .OnInput("dropDownBoxOnInput")
+.OnOpened("onOpened")
                             .ValueExpr("InventoryMasterGroupId")
                             .DisplayExpr("InventoryMasterGroup")
                             .DataSource(ds => ds
@@ -633,9 +665,13 @@
 
 
                             <!-- Cost Center Master -->
-                            @(Html.DevExtreme().DropDownBox()
+                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .ID("CostCenter")
                             .ValueExpr("CostAllocationUnitId")
+                            .ValueChangeEvent("input")
+							.HoverStateEnabled(true)
+                           .OnInput("dropDownBoxOnInput")
+.OnOpened("onOpened")
                             .DisplayExpr("CostAllocationMasterGroup")
                             .DataSource(ds => ds
                             .Mvc()
@@ -709,12 +745,12 @@
     </div>
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
-        .Height("65vh")
+        .Height("40vh")
         .DataSource(new JS("window.itemGridDataSource"))
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
-        )
+        )   
         .Columns(columns =>
         {
             columns.Add().DataField("SalesOrderChildId").Visible(false).AllowEditing(false);
@@ -771,12 +807,6 @@
         .ColumnAutoWidth(true)
         .Width("100%")
         .WordWrapEnabled(true)
-        .OnCellClick("function(e) { handleCellClick(e); }") // ✅ allow editing on click
-        .ColumnChooser(columnChooser => columnChooser
-        .Enabled(true)
-        .Title(new JS("formatMessage('Show/Hide Column')"))
-        .Mode(GridColumnChooserMode.DragAndDrop)
-        )
         .AllowColumnReordering(true)
         @* .OnRowUpdating("onRowUpdating") *@
         .AllowColumnResizing(true)
@@ -853,15 +883,15 @@
                         )
                         .Height(300)
                         .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
+                        .Selection(s => s.Mode(SelectionMode.Single))  
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("ClientCode").Caption("Client Code");
+                            columns.Add().DataField("ClientCode").Caption("Client Code").Width(80);
                             columns.Add().DataField("ClientName").Caption("Client Name");
                         })
-                        .OnSelectionChanged("onClientSelected")  // Trigger onClientSelected on row selection
+                        .OnSelectionChanged("onClientSelected")  
                     )
 }
 
@@ -878,7 +908,7 @@
                             )
                             .Height(300)
                             .ShowBorders(true)
-                            .FilterRow(f => f.Visible(true))
+                            .FilterRow(f => f.Visible(false))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
                             .Columns(columns =>
@@ -902,12 +932,12 @@
                         )
                         .Height(300)
                         .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("TypeOfRequestId").Caption("Type Of Request Id");
+                            columns.Add().DataField("TypeOfRequestId").Caption("Id").Width(80);
                             columns.Add().DataField("TypeOfRequest").Caption("Type Of Request");
                         })
                         .OnSelectionChanged("onCodeSelected1")
@@ -926,14 +956,15 @@
                                 .Key("SignatoryId")
                         )
                         .Height(300)
+                        .Width(300)
                         .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("SignatoryId").Caption("Signatory Id");
-                            columns.Add().DataField("SignatoryName").Caption("Signatory Name");
+                            columns.Add().DataField("SignatoryId").Caption("Id");
+                            columns.Add().DataField("SignatoryName").Caption("Name");
                         })
                         .OnSelectionChanged("onCodesignatory")
                     )
@@ -951,13 +982,13 @@
                                             )
                         .Height(300)
                         .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("CompanyId").Caption("Company ID");
-                            columns.Add().DataField("CompanyName").Caption("Company Name");
+                            columns.Add().DataField("CompanyId").Caption("ID").Width(80);
+                            columns.Add().DataField("CompanyName").Caption("Name");
                         })
                         .OnSelectionChanged("onCompanyBranch")
                     )
@@ -975,13 +1006,13 @@
                          )
                         .Height(300)
                         .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("SalesPersonCode").Caption("Sales Person Code");
-                            columns.Add().DataField("SalesPersonName").Caption("Sales Person Name");
+                            columns.Add().DataField("SalesPersonCode").Caption("Code").Width(100);
+                            columns.Add().DataField("SalesPersonName").Caption("Name");
                         })
                         .OnSelectionChanged("onSalesPersonName")
                     )
@@ -1000,13 +1031,13 @@
                          )
                         .Height(300)
                         .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("InventoryMasterGroupId").Caption("Inventory Master Group Id");
-                            columns.Add().DataField("InventoryMasterGroup").Caption("Inventory Master Group");
+                            columns.Add().DataField("InventoryMasterGroupId").Caption("Group Id").Width(80);
+                            columns.Add().DataField("InventoryMasterGroup").Caption("Master Group");
                         })
                         .OnSelectionChanged("onMasterGroup")
                     )
@@ -1025,7 +1056,7 @@
                          )
                         .Height(300)
                         .ShowBorders(true)
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
@@ -1538,13 +1569,13 @@
         return;
     }
     const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${encodeURIComponent(selectedClientCode)}`;
-    const title = "";
+    const title = "Client Master";
     openModal(url, title);
 }
         //add new client
          function AddClients(){
                 const url = `/${tenantName}/IMS/ClientLeadMaster`;
-                const title = "";
+                const title = "Client Master";
                     openModal(url, title);
             }   
             // function EditClients(){
@@ -1555,14 +1586,14 @@
             ////AddnewProject
          function AddProject(){
                 const url = `/${tenantName}/IMS/Projects`;
-                const title = "";
+                const title = "Project";
                     openModal(url, title);
             }
 
               ////Addnewsignatory
          function Signatorynew(){
                 const url = `/${tenantName}/IMS/Signatories`;
-                const title = "";
+                const title = "Signatories";
                     openModal(url, title);
             }
 
@@ -2357,5 +2388,20 @@ $(document).ready(function () {
 
 		console.log('End permission handling');
 	});
+    
+		function dropDownBoxOnInput(e) {
+			const ddbInstance = e.component;
+			if (!ddbInstance.option("opened")) ddbInstance.open();
 
+
+			const text = ddbInstance.option("text");
+			if (dataGrid) {
+				dataGrid.option("searchPanel.text", text);
+			}
+		}
+        	  function onOpened(e) {
+			setTimeout(() => {
+				e.component.focus();
+			});
+		}
 </script>

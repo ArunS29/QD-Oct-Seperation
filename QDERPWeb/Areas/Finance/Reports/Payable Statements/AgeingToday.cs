@@ -84,6 +84,17 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
             using (var connection = new SqlConnection(tenant.ConnectionString))
             {
                 connection.Open();
+
+                // Step 1: Execute sp20125AgeingPayableReportsWtAdvances
+                using (var command = new SqlCommand("sp20124AgeingReports", connection))
+                {
+                    command.CommandType = System.Data.CommandType.StoredProcedure;
+                    command.Parameters.AddWithValue("@EndDate", endDate);
+                    command.CommandTimeout = 120;
+                    command.ExecuteNonQuery();
+                }
+
+                // Step 2: Execute sp20125AgeingPayableReports
                 using (var command = new SqlCommand("sp20125AgeingPayableReports", connection))
                 {
                     command.CommandType = System.Data.CommandType.StoredProcedure;
@@ -93,6 +104,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
                 }
             }
         }
+
 
         private void SetReportParameters(
             string accountId,
@@ -253,7 +265,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Payable_Statements
 
         private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            var fixedPictureBoxes = new[] {"xrPictureBox13", "xrPictureBox14", "xrPictureBox12S" };
+            var fixedPictureBoxes = new[] { "xrPictureBox13", "xrPictureBox14", "xrPictureBox12S" };
             foreach (var name in fixedPictureBoxes)
             {
                 if (FindControl(name, true) is XRPictureBox picBox)

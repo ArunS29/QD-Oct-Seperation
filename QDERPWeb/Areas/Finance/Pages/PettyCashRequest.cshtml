@@ -1937,13 +1937,69 @@
                     SelectedAccountHead:selectedAccountHead,
                     SelectedPaymentType:selectedPaymentType// JS Date object ⟶ ISO is fine
                 }),
-                    success: function (result) {
+                    success: async function (result) {
                            // ✅ Update UI fields with result
                     $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
                     $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
                     $("#paidOntext").dxTextBox("instance").option("value", result.PaidOn);
                     disableclaim();
-                    DevExpress.ui.notify("Voucher saved and claim marked as paid.", "success", 2500);
+                    var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+                    var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+                    var voucherType ="Petty CashRequest"
+                    // 1. Get Documents
+                    const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}`);
+                    const documents = await getDocRes.json();
+                    if (!documents.length) {
+                        DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+                        return;
+                    }
+                    // 2. Generate DocumentNo to each documents
+                    const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+                    const newDocNos = await docNoRes.json();
+                    if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+                        DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+                        return;
+                    }
+                    // 3. Reupload each document to AddDocumentsEntry
+                    const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
+
+                    const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
+                    const isMaster = false;
+
+                    for (let i = 0; i < documents.length; i++) {
+                        const doc = documents[i];
+                        const newDocNo = newDocNos[i];
+
+                        try {
+                            const fileResponse = await fetch(doc.FileUrl);
+                            const blob = await fileResponse.blob();
+
+                            const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+                            const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+
+                            const formData = new FormData();
+                            formData.append("file", new File([blob], safeFileName)); // no docNo prefix
+                            formData.append("DocumentNo", newDocNo);
+                            formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+                            formData.append("DocumentType", doc.DocumentType ?? "1");
+                            formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+                            formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+                            formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+                            formData.append("LedgerNo", generateNo); // new folder id
+
+
+                            const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}`, {
+                                method: "POST",
+                                body: formData
+                            });
+
+                            const uploadResult = await uploadRes.json();
+                            console.log("Uploaded document:", uploadResult);
+                        } catch (uploadError) {
+                            console.error("Error re-uploading document:", uploadError);
+                        }
+                    }
+                    DevExpress.ui.notify("Voucher saved and claim marked as paid with Attachments.", "success", 2500);
 
                 },
                 error: function (xhr) {
@@ -2143,6 +2199,16 @@
 
         function onAttachmentButtonClick() {
             // Get Voucher No safely
+            const grid = $("#dataGrid").dxDataGrid("instance");
+            const data = grid.getDataSource().items();
+            const hasValidAmounts = data.some(row => {
+                return (row.ClaimedAmount && row.ClaimedAmount > 0) || (row.ApprovedAmount && row.ApprovedAmount > 0);
+            });
+
+            if (!hasValidAmounts) {
+                DevExpress.ui.dialog.alert("Data Not found in the Claimed and  Approved Amount in Grid", "Can't Enable Attachment");
+                return;
+            }
             const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
 
