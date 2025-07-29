@@ -106,6 +106,7 @@
                         .Label(new JS("formatMessage('Cheque No')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ChequeNo")
+                        .MaxLength(20) 
                         .Value(null)
                         .ValidationRules(rules => {
                             rules.AddRequired().Message(new JS("formatMessage('ChequeNo is required')"));
@@ -214,6 +215,7 @@
                         .Value(0)
                         .ShowSpinButtons(true)
                         .Min(0)
+                        .Max(99999999) 
                         .Format("###,###,###,##0.00")
                         .InputAttr(new { type = "number", step = "1.00", maxLength = 16, autocomplete = "off" })
                         .Step(1)
