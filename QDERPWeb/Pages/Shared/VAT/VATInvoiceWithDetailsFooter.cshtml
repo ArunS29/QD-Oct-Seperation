@@ -1,383 +1,244 @@
-﻿<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-<link rel="stylesheet" href="https://unpkg.com/tippy.js@6/dist/tippy.css" />
-<script src="https://unpkg.com/@@popperjs/core@2"></script>
-<script src="https://unpkg.com/tippy.js@6"></script>
-<style>
-    .workflow-container {
-        position: relative;
+﻿
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<style type="text/css">
+
+    /* Button Styling */
+    .dx-button {
+        background-color: #909ead00 !important;
+        border: 1px solid #d6e4f0 !important;
+        border-radius: 4px !important;
+        padding: 6px 12px !important; /* Reduced button padding */
+        font-size: 14px !important;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important;
+        transition: all 0.2s ease-in-out !important;
+        height: 39px !important; /* Fixed height */
+    }
+
+        /* Hover Effect for Button */
+        .dx-button:hover {
+            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
+            border-color: #86b7fe !important; /* Highlight border */
+        }
+
+    .dx-icon {
+        font-size: 20px !important; /* Adjust size if needed */
+        color: gray !important; /* Adjust color if needed */
+    }
+
+    .dx-button-content {
         display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        /* padding: 16px 0; */
-        background: #fff;
-        border-radius: 12px;
-        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
-        gap: 10px;
-        height: 48px;
-    }
-
-    /* FIXED: Single full connector line behind steps */
-    .workflow-line {
-        position: absolute;
-        top: 19px;
-        /* right: 10px; */
-        left: 25px;
-        width: 97%;
-        height: 2px;
-        background: #d1d5db;
-        z-index: 0;
-        pointer-events: none;
-        transition: background 0.3s ease;
-    }
-
-    .workflow-step {
-        padding-right: 20px;
-        padding-left: 20px;
-        /* flex: 1; */
-        text-align: center;
-        position: relative;
-        transition: all 0.3s ease;
-        z-index: 1;
-    }
-
-    .step-circle {
-        width: 36px;
-        height: 36px;
-        margin: 0 auto;
-        border-radius: 50%;
-        background: #d1d5db;
-        display: flex;
-        align-items: center;
         justify-content: center;
-        color: #fff;
-        font-size: 14px;
-        z-index: 2;
-        transition: background 0.3s ease;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+        align-items: center;
     }
 
-    .step-label {
-        /* margin-top: 6px; */
-        font-weight: 500;
-        font-size: 12px;
-        color: #4b5563;
-        transition: color 0.3s ease;
+    .dx-dropdownbutton .dx-button-content {
+        padding: 0 !important;
     }
 
-    .step-status-msg {
-        margin-top: 4px;
-        font-size: 11px;
-        font-weight: 500;
-        color: #9ca3af;
-        opacity: 0;
-        transform: translateY(-4px);
-        transition: all 0.3s ease;
+    /* .modalTitle{ */
+    /*     display:none; */
+    /* } */
+    .horizontal-container {
+        display: flex;
+        gap: 10px; /* Adds spacing between buttons */
+        justify-content: start; /* Aligns buttons to the left */
+        align-items: center; /* Vertically centers the buttons */
+        margin: 15px;
+        margin-top: 0px;
     }
 
-    /* Status-based Colors */
-    .workflow-step.completed .step-circle {
-        background: #10b981;
+    .button-alignment-down {
+        margin-top: 23px;
     }
 
-    .workflow-step.completed .step-label,
-    .workflow-step.completed .step-status-msg {
-        color: #10b981;
+    .button-group {
+        margin-left: 1px !important;
     }
 
-    .workflow-step.current .step-circle {
-        background: #3b82f6;
-    }
 
-    .workflow-step.current .step-label {
-        color: #3b82f6;
-    }
-
-    .workflow-step.current .step-status-msg {
-        color: #3b82f6;
-        opacity: 1;
-        transform: translateY(0);
-    }
-
-    .workflow-step.upcoming .step-circle {
-        background: #d1d5db;
-    }
-
-    .workflow-step.upcoming .step-label,
-    .workflow-step.upcoming .step-status-msg {
-        color: #9ca3af;
-    }
-
-    /* Optional: Hover Animation */
-    .workflow-step:hover .step-circle {
-        transform: scale(1.05);
-        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
-    }
-
-    .workflow-step.completed .step-circle {
-        background-color: #4caf50;
-        color: white;
-        transition: all 0.3s ease;
-    }
-
-    .workflow-step.current .step-circle {
-        background-color: #ffc107;
-        color: black;
-        animation: pulse 1s infinite;
-    }
-
-    .workflow-step.upcoming .step-circle {
-        background-color: #e0e0e0;
-        color: #888;
-    }
-
-    .workflow-step.done .step-circle {
-        background-color: #2196f3;
-        color: white;
-    }
-
-    @@keyframes pulse {
-        0% {
-            box-shadow: 0 0 0 0 rgba(255,193,7, 0.7);
-        }
-
-        70% {
-            box-shadow: 0 0 0 10px rgba(255,193,7, 0);
-        }
-
-        100% {
-            box-shadow: 0 0 0 0 rgba(255,193,7, 0);
-        }
-    }
-
-    .popover-box {
-        position: absolute;
-        background-color: #fff;
-        border: 1px solid #ccc;
-        padding: 8px 12px;
-        border-radius: 6px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
-        font-size: 13px;
+    /* Custom styles for context menu */
+    .context-menu {
         display: none;
-        z-index: 9999;
-        white-space: nowrap;
+        position: absolute;
+        background-color: white;
+        border: 1px solid #ccc;
+        box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+    }
+
+    .context-menu-item {
+        padding: 0px, 15px,10px 15px;
+        cursor: pointer;
+    }
+
+    .ledgerResult {
+        margin: 15px !important;
+    }
+
+    #rowHeightMenu {
+        position: absolute;
+        top: 100px; /* Adjust positioning as per your design */
+        left: 300px; /* Adjust positioning as per your design */
+        display: none; /* Keep it hidden until needed */
+    }
+
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 90%;
+        height: 90%;
+        max-height: 800px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden; /* Prevents content overflow */
+    }
+
+    .update-button {
+        font-weight: bold;
+        padding: 10px 20px;
+        background-color: #e0e7f0;
+        border-radius: 6px;
+    }
+
+
+    .multiline-button .dx-button-text {
+        white-space: normal;
     }
 </style>
-<div class="WorkFlow">
-    <div class="workflow-container">
-        <div class="workflow-line"></div>
 
-        <div class="workflow-step" id="step-update">
-            <div class="step-circle"><i class="fas fa-user"></i></div>
-            <div class="step-label">Updated</div>
-            <div class="step-status-msg">In Progress</div>
-        </div>
-        <div class="workflow-step" id="step-verify">
-            <div class="step-circle" id="circle-verify"><i class="fas fa-briefcase"></i></div>
-            <div class="step-label">Verified</div>
-            <div class="step-status-msg">Waiting</div>
-        </div>
-        <div class="workflow-step" id="step-approve">
-            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
-            <div class="step-label">Approved</div>
-            <div class="step-status-msg">Pending</div>
-        </div>
-        @* <div class="workflow-step" id="step-approve">
-            <div class="step-circle" id="circle-approve"><i class="fas fa-file-alt"></i></div>
-            <div class="step-label">Posted</div>
-            <div class="step-status-msg">Pending</div>
-        </div> *@
-
-        <div id="verifyPopover" class="popover-box">
-            Verified by: <span id="verifiedByName"></span><br>
-            On: <span id="verifiedOn"></span>
-        </div>
-        <div id="approvePopover" class="popover-box">
-            Approved by: <span id="approvedByName"></span><br>
-            On: <span id="approvedOn"></span>
-        </div>
-    </div>
-</div>
-<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;gap:10px">
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnSave")
-                .Text(new JS("formatMessage('Update')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
-                )
-
-    </div>
-    <div class="btn-containers">
-
-        @(Html.DevExtreme().Button()
-                .ID("btnSaveAndClose")
-                .Text(new JS("formatMessage('Save and Close')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
-                )
-    </div>
-    <div class="btn-containers">
-
-        @(Html.DevExtreme().Button()
-                .ID("btnBack")
-                .Text(new JS("formatMessage('Back')"))
-                .Icon("arrowleft")
-                                   // .OnClick("onBackButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-back" })
-                )
-    </div>
-
-    <div class="btn-containers">
+<div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
+    <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-                .ID("btnPrint22")
-                .Text(new JS("formatMessage('Print Invoice')"))
-                .Icon("print")
-                .Width(132)
-                .ElementAttr(new { @class = "bold-button" })
-                .DropDownOptions(options => options.Width(345))
-                .ShowArrowIcon(false)
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width("100%")
+                .Text(new JS("formatMessage('Layout')"))
+               @*  .ElementAttr(new { style = "display: none;" }) *@
+                .DropDownOptions(options => options.Width(230))
                 .Items(items =>
                 {
-                    items.Add()
-                        .Text("Preview Invoice")
-                        .Icon("print")
-                        .Option("color", "#FF7043"); // Orange
 
-                    items.Add()
-                        .Text("Preview Proforma Invoice(NewFormat)")
-                        .Icon("file")
-                        .Option("color", "#00ACC1"); // Cyan
+                    // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
 
-                    items.Add()
-                        .Text("Preview Invoice(English)")
-                        .Icon("folder")
-                        .Option("color", "#AB47BC"); // Purple
+                    // items.Add().Text(new JS("formatMessage('Set Row Height')")).Icon("").OnClick("showSubmenu");
 
-                    items.Add()
-                        .Text("Preview Invoices in Foreign Currency(English)")
-                        .Icon("edit")
-                        .Option("color", "#FBBC05"); // Yellow
-
-                    items.Add()
-                        .Text("Preview Invoices in (Foreign Currency)")
-                        .Icon("upload")
-                        .Option("color", "#EA4335"); // Red
-
-                    items.Add()
-                        .Text("Preview Invoices in -with discount")
-                        .Icon("upload")
-                        .Option("color", "#34A853"); // Green
-
-                    items.Add()
-                        .Text("Preview Invoices in -withOut discount")
-                        .Icon("upload")
-                        .Option("color", "#4285F4"); // Blue
-
-                    items.Add()
-                        .Text("Upload Items From Excel")
-                        .Icon("chart")
-                        .Option("color", "#FF7043"); // Orange
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
                 })
-                .ItemTemplate(@<text>
-                    <div class="custom-dropdown-item">
-                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
-                        <div class="item-content">
-                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                            <div>
-                                <div class="item-title"><%- text %></div>
-                            </div>
-                        </div>
-                    </div>
-                </text>)
-                .OnItemClick("addPrintButton_click")
+                .ShowArrowIcon(false)
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("rowHeightProperties")
+                .Icon("") // fallback to standard icon if "rowproperties" not working
+                .Width("100%")
+                .Text(new JS("formatMessage('Set Row Height')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                items.Add()
+                .Text("Short (1 Line)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Short
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('30'); }");
+
+                items.Add()
+                .Text("Medium (2 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Medium
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('60'); }");
+
+                items.Add()
+                .Text("Tall (4 Lines)")
+                .Template(@<text>
+                               <svg width="20" height="20" viewBox="0 0 20 20">
+                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
+                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
+                               </svg> Tall
+                           </text>)
+                .OnClick("function() { ChangeRowHeight('90'); }");
+
+                items.Add()
+                .Text("Extra Tall (8 Lines)")
+                .Template(@<text>
+            <svg width="20" height="20" viewBox="0 0 20 20">
+                @for (var i = 1; i <= 8; i++)
+                        {
+                            var y = 1 + (i - 1) * 2;
+                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
+                        }
+            </svg> Extra Tall
+        </text>)
+                .OnClick("function() { ChangeRowHeight('130'); }");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnPrint")
+                .Icon("print")
+                .Text(new JS("formatMessage('Print')"))
+                .ElementAttr(new { style = "display: none;" })
+                .Width("100%")
+                .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
                 )
     </div>
 
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnDelete")
-                .Text(new JS("formatMessage('Delete')"))
-                .Icon("close")
-                               //  .OnClick("onDeleteButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-delete" })
-                )
-    </div>
-
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnVerify")
-                .Text(new JS("formatMessage('Verify')"))
-                .Icon("check")
-                               // .OnClick("onVerifyButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-verify" })
-
-                )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnApprove")
-                .Text(new JS("formatMessage('Approve')"))
-                .Icon("user")
-                              //   .OnClick("onApproveButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-approve" })
-                )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnAddNew")
-                .Text(new JS("formatMessage('Add New Item')"))
-                .Icon("plus")
-                              // .OnClick("addNewRow") // Attach function
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-    </div>
-
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-                .ID("btnCreateVATInvoice")
-                .Text(new JS("formatMessage('Create VAT Invoice')"))
-                .Icon("add") // You can change this to a relevant icon
-                .OnClick("onCreateVATInvoiceClick") // JavaScript function to trigger the popup
-                .ElementAttr(new { @class = "bold-button" })
-                )
-    </div>
-
-
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveDown")
-            .Text(new JS("formatMessage('Move Down')"))
-            .Type(ButtonType.Normal)
-            .Width(40)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("arrowdown") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
-    <div class="btn-containers">
-        @(Html.DevExtreme().Button()
-            .ID("btnMoveUp")
-            .Text(new JS("formatMessage('Move Up')"))
-            .Type(ButtonType.Normal)
-            .Width(40)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("arrowup") // Change the icon to an up/down arrow option
-            .ElementAttr(new { @class = "bold-button" })
-            )
-    </div>
-
-   
 
   
 
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btntoggleGroupPanel")
+                .Icon("hierarchy")
+                .Width("100%")
+                .Text(new JS("formatMessage('Group')"))
+                .ElementAttr(new { style = "display: none;" })
+                .OnClick("toggleGroupPanel")
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnColumnChooser")
+                .Icon("columnchooser")
+                .Width("100%")
+                .Text(new JS("formatMessage('Column Chooser')"))
+                .ElementAttr(new { style = "display: none;" })
+                .OnClick("showColumnChooser")
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnToggleHeaderFilter")
+                .Text(new JS("formatMessage('Toggle Filter')"))
+              @*   .ElementAttr(new { style = "display: none;" }) *@
+                .Icon("filter")
+                .OnClick("toggleHeaderFilter")
+                )
+
+    </div>
+
+
+  
 
 
     <!-- Hidden anchor for submenu positioning -->
@@ -385,6 +246,9 @@
 
     <!-- Submenu placeholder -->
     <div id="additionalFormatsSubmenu"></div>
+
+
+
 
 </div>
 
@@ -495,170 +359,6 @@
             openModal(url, title);
         }
 
-     function exportGridToPDF() {
-        const { jsPDF } = window.jspdf;
-        const doc = new jsPDF('l', 'mm', 'a4'); // 'l' for landscape, 'mm' for millimeters, 'a4' for A4 size
-
-        // Get the instance of the DataGrid
-        var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-        // Extract headers
-        var headers = dataGrid.getVisibleColumns().map(column => column.caption);
-
-        // Extract data and calculate sums
-        var creditSum = 0;
-        var debitSum = 0;
-        var data = dataGrid.getVisibleRows().map(row => {
-            return dataGrid.getVisibleColumns().map(column => {
-                let value = row.data[column.dataField];
-                if (column.dataType === 'date' && value) {
-                    // Format date as dd-MMM-yyyy
-                    let date = new Date(value);
-                    let day = String(date.getDate()).padStart(2, '0');
-                    let month = date.toLocaleString('default', { month: 'short' });
-                    let year = date.getFullYear();
-                    return `${day}-${month}-${year}`;
-                }
-                if (column.dataField === 'CrAmount') {
-                    creditSum += value || 0;
-                }
-                if (column.dataField === 'DrAmount') {
-                    debitSum += value || 0;
-                }
-                return value;
-            });
-        });
-
-        // Generate PDF
-        doc.autoTable({
-            head: [headers],
-            body: data,
-            styles: { overflow: 'linebreak' },
-            theme: 'grid',
-            tableWidth: 'auto', // Adjust table width to fit the page
-            columnStyles: {
-                0: { cellWidth: 'wrap' }, // Adjust the first column width
-                // Add more column styles if needed
-            },
-            margin: { top: 10, right: 10, bottom: 30, left: 10 }, // Adjust margins if needed
-            didDrawPage: function (data) {
-                // Remove the "DataGrid Export" text
-                // doc.setFontSize(10);
-                // doc.text('DataGrid Export', data.settings.margin.left, 10);
-
-                // Add footer
-                var pageCount = doc.internal.getNumberOfPages();
-                doc.setFontSize(8);
-                doc.text(`Page ${data.pageNumber} of ${pageCount}`, data.settings.margin.left, doc.internal.pageSize.height - 20);
-
-                // Add sum of credit and debit, and row count
-                doc.text(`Total Rows: ${dataGrid.getVisibleRows().length}`, data.settings.margin.left, doc.internal.pageSize.height - 15);
-                doc.text(`Total Credit: ${creditSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 50, doc.internal.pageSize.height - 15);
-                doc.text(`Total Debit: ${debitSum.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`, data.settings.margin.left + 150, doc.internal.pageSize.height - 15);
-            }
-        });
-
-        // Open PDF in a new window
-        var string = doc.output('datauristring');
-        var newWindow = window.open();
-        newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
-    }
-
-
-
-        // Hide context menu on click outside
-        
-
-        function toggleHeaderFilter() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-            isHeaderFilterEnabled = !isHeaderFilterEnabled;
-            dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
-        }
-        $(document).on("click", function () {
-            var contextMenu = $("#contextMenu");
-            contextMenu.hide();
-            var $submenu = $('#submenuContainer');
-            $submenu.hide(); // Hide the submenu popup
-        });
-
-        // Handle the file selection
-        $("#loadLayoutInput").on("change", function (event) {
-            const dataGrid = $("#dataGrid").dxDataGrid("instance");
-            const file = event.target.files[0];
-
-            if (file) {
-                const reader = new FileReader();
-
-                reader.onload = function (e) {
-                    try {
-                        // Parse the JSON string from the file
-                        const layout = JSON.parse(e.target.result);
-
-                        // Restore the grid state
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the file is valid JSON.");
-                    }
-                };
-
-                // Read the file as text
-                reader.readAsText(file);
-            }
-        });
-        function saveLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-            //console.log(layoutJson);
-            // Create a Blob from the JSON string
-            const blob = new Blob([layoutJson], { type: "application/json" });
-            // Create a URL for the Blob
-            const url = URL.createObjectURL(blob);
-            // Create a link element
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "grid-layout.json"; // Set the file name for download
-            // Append the link to the body (needed for Firefox)
-            document.body.appendChild(a);
-            // Programmatically click the link to trigger the download
-            a.click();
-            // Clean up by removing the link and revoking the Object URL
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            //DevExpress.ui.notify("Layout", "success", 600);
-        }
-        function openLayoutClick(e) {
-            // Create an input element dynamically
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "application/json";
-
-            // When a file is selected
-            input.addEventListener("change", function (event) {
-                const file = event.target.files[0];
-                if (!file) return;
-
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        const layout = JSON.parse(e.target.result);
-                        const grid = $("#dataGrid").dxDataGrid("instance");
-                        grid.state(layout);
-                        //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                    } catch (error) {
-                        DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                    }
-                };
-
-                reader.readAsText(file);
-            });
-
-            // Trigger the file input click event
-            input.click();
-        }
-
         function loadGridState() {
             var form = $('#formId').val();
             // Call the API to get the grid state
@@ -690,74 +390,6 @@
                     console.error("Error loading grid state:", error);
                 }
             });
-        }
-        function setDefaultLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2);
-            console.log(layoutJson);
-
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: layoutJson,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
-        function resetLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: null,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                    grid.state({});
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
-        // Footer Group Pannel button click event
-        function toggleGroupPanel() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var isVisible = dataGrid.option("groupPanel.visible");
-            dataGrid.option("groupPanel.visible", !isVisible);
-        }
-        function showColumnChooser() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
-
-            if (isColumnChooserVisible) {
-                dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
-            } else {
-                dataGrid.option("columnChooser.enabled", true); // Enable the column chooser
-                dataGrid.showColumnChooser(); // Show the column chooser
-            }
-        }
-
-
-
-        // Footer Filter row button click event
-        function toggleFilterRow() {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var currentVisibility = grid.option("filterRow.visible");
-
-            grid.option("filterRow.visible", !currentVisibility); // Toggle FilterRow visibility
         }
 
         // Footer Recipits button event
@@ -872,42 +504,6 @@
             openModal(url, title);
         }
 
-        // function addPaymentButton_click(e) {
-        //      let url = "";
-        //      let title = "Payments";
-        //      switch (e.itemData.text) {
-        //          case formatMessage('New Standard Tax Invoice(B2B Invoice)'):
-
-        //            DevExpress.ui.dialog.confirm(
-        //             "This option will create a New STANDARD TAX INVOICE (B2B)"
-        //             "After Creating the Invoice, you cannot remove or delete the Invoice".
-        //             "You can cancel only thru CREDIT NOTE."
-        //             "Click Yes if you want to continue.. or Click No to exit this option.",
-        //             "Confirm Creating new STANDARD TAX Invoice?"
-        //         ).done(function (dialogResult) {
-        //             if (dialogResult) {
-        //                 onConfirm(); // Proceed only if the user clicks "Yes"
-        //                  url = `/${tenantName}/Finance/frm20161VATInvoiceEdit`;
-        //             }
-        //         });
-
-        //              title = formatMessage('New Standard Tax Invoice(B2B Invoice)');
-        //              break;
-
-        //               case formatMessage('New Simplified Tax Invoice(B2C Invoice)'):
-        //              url = `/${tenantName}/Finance/frmVATInvoiceEditB2C`;
-
-        //              title = formatMessage('New Simplified Tax Invoice(B2C Invoice)');
-        //              break;
-
-        //          default:
-        //              console.log("Clicked item: ", e.itemData.text);
-        //              return;
-        //      }
-        //     openModal(url, title);
-        // }
-
-
         function addPaymentButton_click(e) {
        // let url = "";
         let title = "Payments";
@@ -938,7 +534,7 @@
 
                DevExpress.ui.dialog.confirm(
                 "<div style='white-space: pre-wrap;'>"
-                + "This option will create a New STANDARD TAX INVOICE (B2B).\n"
+                + "This option will create a New STANDARD TAX INVOICE (B2C).\n"
                 + "After creating the invoice, you cannot remove or delete the invoice.\n"
                 + "You can cancel only through a CREDIT NOTE.\n"
                 + "Click Yes if you want to continue, or click No to exit this option."
@@ -970,31 +566,6 @@
             }
         }
 
-
-
-
-        function ChangeRowHeight(newHeight) {
-            // Update the row height
-            $("#dataGrid .dx-data-row").css("height", newHeight + "px");
-            closeSubmenu();
-        }
-        function showSubmenu(e) {
-            e.event.stopPropagation();
-            var $submenu = $('#submenuContainer');
-            var $target = $(e.event.target).closest('.dx-item-content');
-            var offset = $target.offset();
-            var elementWidth = $target.outerWidth();
-
-            // Position submenu with a slight margin (e.g., 5px)
-            $submenu.css({
-                'width': 180,
-                'position': 'absolute',
-                'top': offset.top,
-                'left': offset.left + elementWidth + 5, // Add margin
-                'display': 'block'
-            });
-        }
-
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
@@ -1023,20 +594,6 @@
                 reader.readAsText(file);
             }
         });
-        // function addReportsButton_click(e) {
-        //     var selectedText = e.itemData.text; // Get selected item text
-
-
-        //     if (selectedText === "Account Statements") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountReport"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account With Narration") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountWithNarration"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account Export Formate") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountExportFormatReport"; // Pass the report name
-        //     } else if (selectedText === "Statement Of Account Export Formate[Landscape]") {
-        //         window.location.href = "/DocumentViewer?reportName=AccountExportLandscapeReport"; // Pass the report name
-        //     }
-        // }
 
 
         function AccountGroupsOrdering() {
@@ -1046,41 +603,79 @@
         }
         function showSubmenu8(e) {
             e.event.stopPropagation();
-            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            hideAllSubmenus(); // Hide others first
+
             var $submenu = $('#submenuContainer8');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
-            var submenuWidth = $submenu.outerWidth();
 
-            // Calculate left-side positioning
-                var leftPos = offset.left - submenuWidth - 533;
+            // Always position to the right of the button
+            const submenuWidth = 273;
+            const topPos = offset.top + $target.outerHeight() + 5;
+            const leftPos = offset.left + $target.outerWidth() + 10;
 
-            // Prevent submenu from going off-screen on the left
-            if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
-            }
-
-            // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': submenuWidth + 'px',
                 'position': 'absolute',
-                'top': offset.top,
-                'left': leftPos,
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
                 'display': 'block',
                 'background': '#fff',
-                'border': '1px solid #ccc',
-                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-                'padding': '5px'
+                'border-radius':'8px',
+                'padding': '5px',
+                'z-index': 9999
             });
 
-            // Click outside to close
-            $(document).on("click", function (event) {
-                if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu8").on("click.submenu8", function (event) {
+                if (!$(event.target).closest('#submenuContainer8, .dx-item-content').length) {
                     $submenu.hide();
-                    $(document).off("click");
+                    $(document).off("click.submenu8");
                 }
             });
-        }
+    }
+
+
+    // function showSubmenu8(e) {
+    //     e.event.stopPropagation();
+    //     hideAllSubmenus(); // Hide all submenus before showing the selected one
+    //     var $submenu = $('#submenuContainer8');
+    //     var $target = $(e.event.target).closest('.dx-item-content');
+    //     var offset = $target.offset();
+    //     var submenuWidth = $submenu.outerWidth();
+
+    //     // Calculate left-side positioning
+    //         var leftPos = offset.left - submenuWidth - 533;
+
+    //     // Prevent submenu from going off-screen on the left
+    //     if (leftPos < 0) {
+    //         leftPos = offset.left + $target.outerWidth() + 350; // Move it to the right if not enough space
+    //     }
+
+    //     // Position submenu
+    //     $submenu.css({
+    //         'width': 250,
+    //         'position': 'absolute',
+    //         'top': offset.top,
+    //         'left': leftPos,
+    //         'display': 'block',
+    //         'background': '#fff',
+    //         'border': '1px solid #ccc',
+    //         'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
+    //         'padding': '5px'
+    //     });
+
+    //     // Click outside to close
+    //     $(document).on("click", function (event) {
+    //         if (!$(event.target).closest('#submenuContainer4, .dx-item-content').length) {
+    //             $submenu.hide();
+    //             $(document).off("click");
+    //         }
+    //     });
+    // }
 
 
             function showSubmenu10(e) {
@@ -1122,44 +717,78 @@
             }
 
 
-            function showSubmenu9(e) {
+        //     function showSubmenu9(e) {
+        //     e.event.stopPropagation();
+        //     hideAllSubmenus(); // Hide all submenus before showing the selected one
+        //     var $submenu = $('#submenuContainer9');
+        //     var $target = $(e.event.target).closest('.dx-item-content');
+        //     var offset = $target.offset();
+        //     var submenuWidth = $submenu.outerWidth();
+
+        //     // Calculate left-side positioning
+        //     var leftPos = offset.left - submenuWidth + 533;
+
+        //     // Prevent submenu from going off-screen on the left
+        //     if (leftPos < 0) {
+        //         leftPos = offset.left + $target.outerWidth() - 47; // Move it to the right if not enough space
+        //     }
+
+        //     // Position submenu
+        //     $submenu.css({
+        //         'width': 250,
+        //         'position': 'absolute',
+        //         'top': offset.top,
+        //         'left': leftPos,
+        //         'display': 'block',
+        //         'background': '#fff',
+        //        'border-radius':'8px',
+        //         'padding': '5px'
+        //     });
+
+        //     // Click outside to close
+        //     $(document).on("click", function (event) {
+        //         if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
+        //             $submenu.hide();
+        //             $(document).off("click");
+        //         }
+        //     });
+        // }
+         function showSubmenu9(e) {
             e.event.stopPropagation();
-            hideAllSubmenus(); // Hide all submenus before showing the selected one
+            hideAllSubmenus(); // Hide others first
+
             var $submenu = $('#submenuContainer9');
             var $target = $(e.event.target).closest('.dx-item-content');
             var offset = $target.offset();
-            var submenuWidth = $submenu.outerWidth();
 
-            // Calculate left-side positioning
-            var leftPos = offset.left - submenuWidth + 533;
+            // Always position to the right of the button
+            const submenuWidth = 180;
+            const topPos = offset.top + $target.outerHeight() + 5;
+            const leftPos = offset.left + $target.outerWidth()  - 47;
 
-            // Prevent submenu from going off-screen on the left
-            if (leftPos < 0) {
-                leftPos = offset.left + $target.outerWidth() + 5; // Move it to the right if not enough space
-            }
-
-            // Position submenu
             $submenu.css({
-                'width': 250,
+                'width': submenuWidth + 'px',
                 'position': 'absolute',
-                'top': offset.top,
-                'left': leftPos,
+                'top': topPos + 'px',
+                'left': leftPos + 'px',
                 'display': 'block',
                 'background': '#fff',
-                'border': '1px solid #ccc',
-                'box-shadow': '2px 2px 5px rgba(0,0,0,0.2)',
-                'padding': '5px'
+                'border-radius':'8px',
+                'padding': '5px',
+                'z-index': 9999
             });
 
-            // Click outside to close
-            $(document).on("click", function (event) {
+            // Optional: Add animation
+            // $submenu.hide().css({ top: topPos, left: leftPos }).fadeIn(150);
+
+            // Close on outside click only once
+            $(document).off("click.submenu").on("click.submenu", function (event) {
                 if (!$(event.target).closest('#submenuContainer5, .dx-item-content').length) {
                     $submenu.hide();
-                    $(document).off("click");
+                    $(document).off("click.submenu");
                 }
             });
-        }
-
+    }
         function showSubmenu6(e) {
             e.event.stopPropagation();
             hideAllSubmenus(); // Hide all submenus before showing the selected one
@@ -1478,7 +1107,7 @@
                         {text:"Print Regular Tax Invoice - without Signatories(with symbols)"},
                          {text:"Print Regular Tax Invoice - wt Document Level Discount"},
                       { text: "Print Regular Tax Invoice -  (Format 06)" },
-                   
+
                     { text: "Design 02 (W/o Signatories)" },
                     { text: "Design 02 (With Signatories)" }
                 ],
@@ -1497,7 +1126,7 @@
 
 
          // Function to determine if Simplified Invoice printing should be disabled
-   
+
         });
         ////Credit Note Function for reports
 
@@ -1617,24 +1246,6 @@
             }
         }
 
-        // Example handler function for debit note
-        // function handleDebitNotePrinting(itemText) {
-        //         const DebitNoBox = $("#DebitNoteNo").dxTextBox("instance");
-        //         const debitNoteNo = DebitNoBox.option("value");
-
-        //         if (!debitNoteNo) {
-        //             alert("debitNoteNo is required.");
-        //         return;
-        //     }
-
-        //     Assume all debit notes are not approved or apply same logic as other reports
-        //     window.open(
-        //             `/${tenantName}/VoucherViewer?reportName=DebitNoteInvoice&invoiceNo=${encodeURIComponent(debitNoteNo)}&skipPreview=true&watermark=Draft Copy&isApproved=false`,
-        //         '_blank',
-        //         'width=1200,height=800,scrollbars=yes,resizable=yes'
-        //     );
-        // }
-            // <script>
             // Handles all report printing logic
         function handleReportPrinting2(e) {
             const debitNoteBox = $("#DebitNoteNo").dxTextBox("instance");
@@ -1690,6 +1301,89 @@
                 }
             }
 
+
+
+    $(document).ready(function () {
+            console.log('Start permission handling');
+            // Form ID
+            var formId = "frm20162VATInvoiceMasterView";
+
+            // Call the API to get permissions
+            $.ajax({
+                url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+                type: 'GET',
+                contentType: 'application/json',
+                success: function (response) {
+                    console.log("API Response:", response); // Log the API response
+
+                    if (response.success && response.permissions) {
+                        // Default visibility and enable status for buttons
+                        var controlStates = {
+                            "ddButtonLayout": { "Visible": true, "Enabled": false },
+                            "btnPrint": { "Visible": true, "Enabled": false },
+                            "btnToggleSearch": { "Visible": true, "Enabled": false },
+                            "btntoggleGroupPanel": { "Visible": true, "Enabled": false },
+                            "btnInvoiceDetails": { "Visible": true, "Enabled": false },
+                            "btntoggleGroupPanel": { "Visible": true, "Enabled": false },
+                            "ddReports": { "Visible": true, "Enabled": false },
+                            "ddButtonPayment": { "Visible": true, "Enabled": false },
+                            "btnColumnChooser": { "Visible": true, "Enabled": false }
+
+                        };
+
+
+                        // Check for full access
+                        var fullAccess = response.permissions.find(p =>
+                            p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                        );
+
+                        if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                            // Grant full access: make all controls visible and enabled
+                            Object.keys(controlStates).forEach(key => {
+                                controlStates[key] = { "Visible": true, "Enabled": true };
+                            });
+                        } else {
+                            // Update states based on specific permissions for each control
+                            Object.keys(controlStates).forEach(key => {
+                                var controlPermission = response.permissions.find(p =>
+                                    p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                                );
+                                if (controlPermission) {
+                                    controlStates[key] = {
+                                        "Visible": controlPermission.ItemVisible || false,
+                                        "Enabled": controlPermission.ItemEnabled || false
+                                    };
+                                }
+                            });
+                        }
+
+                        console.log("Control States:", controlStates); // Log the control states
+
+                        // Dynamically update button visibility and enabled state
+                        Object.keys(controlStates).forEach(key => {
+                            var button = document.getElementById(key);
+                            if (button) {
+                                // Handle visibility
+                                button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+                                // Handle enable/disable state
+                                button.disabled = !controlStates[key].Enabled;
+                                console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                            } else {
+                                console.warn(`Button with ID "${key}" not found in the DOM.`);
+                            }
+                        });
+                    } else {
+                        console.warn("Failed to fetch permissions or no permissions available.");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching permissions:", error);
+                    alert('An error occurred while fetching permissions. Please try again.');
+                }
+            });
+            showColumnChooser();
+            console.log('End permission handling');
+        });
 
 
 </script>

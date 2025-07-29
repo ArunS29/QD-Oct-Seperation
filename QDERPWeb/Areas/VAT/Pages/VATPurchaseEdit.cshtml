@@ -507,9 +507,18 @@
 			background: #f0f0f0;
 		}
 
+
+		.context-menu-itemInvoice.disabled {
+			pointer-events: none;
+			opacity: 0.5;
+			cursor: not-allowed;
+		}
+
+
 	.footer-fixed {
 		bottom: 35px !important;
 	}
+
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -603,7 +612,7 @@
 														.ShowClearButton(true)
 														.DropDownOptions(d => d.Width(800))
 														.ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
-														.OnFocusIn("onSupplierDropDownFirstClick")
+													@* 	.OnFocusIn("onSupplierDropDownFirstClick") *@
 														.Width("100%")
 														.Buttons(buttons =>
 														{
@@ -3002,7 +3011,7 @@
 								hint: "Add new item",
 								onClick: function () {
 									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
-									let title = "Goods and Services";
+									let title = "";
 									openModal(url, title); // Opens the form in a modal
 									// Or use: window.location.href = url; if navigating directly
 								},
@@ -3023,7 +3032,7 @@
 
 									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
 								  let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
-											let title = "Goods and Services";
+											let title = "";
 													openModal(url, title);
 									//window.location.href = url;
 
@@ -3110,7 +3119,7 @@
 				},
 					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
 				{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-				// { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
+				 { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
 				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 				// { dataField: "DiscountDetails", caption: "...", width: 50 },
 				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
@@ -3294,7 +3303,7 @@
 					   dataField: "SNo",
 
 					   caption: "#",
-					   cssClass: "center-header",
+					
 					   width: 100,
 
 					   allowEditing: false // Prevent manual editing
@@ -3306,8 +3315,7 @@
 					   dataField: "ItemCode",
 
 					   caption: formatMessage('Item Code'),
-					   cssClass: "center-header",
-
+					
 					   width: 200
 
 				   },
@@ -3666,7 +3674,7 @@
 
 						   { dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150, cssClass: "center-header" },
 
-					   // { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
+					    { dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 185, cssClass: "center-header", format: { type: "fixedPoint", precision: 2 } },
 
 				   { dataField: "Discount", caption: formatMessage('Discount'), width: 150, cssClass: "center-header" },
 
@@ -6419,6 +6427,8 @@
 							"Approved"
 						).done(() => {
 							disableEditing();
+								  disableContextMenuAfterApproval(); // << Add this line here
+
 							$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 							$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
 								initWorkflowTippyPopovers();
@@ -6440,6 +6450,13 @@
 				}
 			});
 		}
+			function disableContextMenuAfterApproval() {
+		// Option 1: Hide the context menu completely
+		$("#contextMenu").hide();
+
+		// Option 2: Disable all items inside it (visually and functionally)
+		$("#contextMenu .context-menu-itemInvoice").addClass("disabled").css("pointer-events", "none").css("opacity", "0.5");
+	}
 
 	$("#btnPostToLedgers").on("click", function (e) {
 				const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -6743,16 +6760,17 @@
 	}
 
 
-		function onEditClientClick() {
-		const clientId = $("#ddclientcode").dxDropDownBox("option", "value");
+							function onEditClientClick() {
+		var clientId = $("#ddclientcode").dxDropDownBox("option", "value");
 
 		if (!clientId) {
-			DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Supplier");
+			DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Client to edit");
 			return;
 		}
 
-		showLedgerAccountEditPopup(clientId);
+		showLedgerAccountEditPopup(clientId); // your existing edit logic
 	}
+
 
 	function showLedgerAccountEditPopup(accheadid) {
 		console.log("Opening Edit Supplier popup for ID:", accheadid);
@@ -6772,6 +6790,7 @@
 			iframe.src = url;
 		}, 300);
 	}
+
 
 
 
