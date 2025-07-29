@@ -225,7 +225,7 @@
             .OnInput("dropDownBoxOnInput")
             .OnOpened("onOpened")
             .TabIndex(1)
-            .Width("100%")
+            .Width("60%")
             .OnKeyDown("onKeyDown")
             //.OnValueChanged("dropDownBoxValueChanged")
             .ContentTemplate(new TemplateName("GetSupplierCategoryContentTemplate"))
@@ -579,20 +579,18 @@
                             .HeaderFilter(p => p.Visible(true))
                             .ShowBorders(true)
                             .HoverStateEnabled(true)
+                            .ShowColumnHeaders(true)
                             .Paging(p => p.PageSize(15))
-                            //.FilterRow(f => f.Visible(false))//
+                            .FilterRow(f => f.Visible(false))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Height(345)
-                            .FilterRow(filterRow => filterRow.Visible(true).ApplyFilter(GridApplyFilterMode.Auto))
                             .Selection(s => s.Mode(SelectionMode.Single))
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                    columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')"));
-                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')"));
-                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')"));
-
-
+                                    columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(80);
+                                    columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center).Width(300);
                             })
                             )
         }
@@ -623,8 +621,8 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId");
-                                columns.Add().Caption(new JS("formatMessage('Cash/Creditors Account')")).DataField("AccountHead");
+                                    columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId").Alignment(HorizontalAlignment.Center).Width(95);
+                                    columns.Add().Caption(new JS("formatMessage('Cash/Creditors Account')")).DataField("AccountHead");
 
 
 

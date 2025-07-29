@@ -2713,8 +2713,6 @@
 													placeholder: "Search..."
 													},
 
-
-													scrolling: { mode: "virtual" },
 														columns: [
 														 { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
 															{ dataField: "GroupCode", caption: "Group Code", width: 80 },
@@ -6858,17 +6856,15 @@ $("#btnAddNew").on("click", function (e) {
 					contentType: "application/json",
 					success: function (response) {
 						// ✅ Show alert and bind dropdown only after clicking OK
-						DevExpress.ui.dialog.alert(
-							"Material Purchase Request has been submitted for Approval.",
-							"Submit Successful"
-						).done(() => {
+						 DevExpress.ui.notify("Material Purchase Request has been submitted for Approval.", "success", 3000);
+
+					
 							// ✅ Bind dropdown before reload
 							const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
 							if (approvedByBox && response.VoucherApprovedBy) {
 								approvedByBox.option("value", response.VoucherApprovedBy);
 							}
-							//location.reload(); // ✅ Reload the page
-						});
+						
 					},
 					error: function (xhr, status, error) {
 						$btn.prop('disabled', false);
@@ -6940,7 +6936,7 @@ $("#btnAddNew").on("click", function (e) {
 		if (approvedByBox) {
 			approvedByBox.option("value", response.VoucherApprovedBy);
 		}
-						DevExpress.ui.dialog.alert(response.message,"Verified");
+						DevExpress.ui.notify(response.message, "success", 3000);
 						//location.reload();
 					} else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -7021,16 +7017,15 @@ $("#btnAddNew").on("click", function (e) {
 				}
 			}
 
-			DevExpress.ui.dialog.alert(response.Message, "Approved").done(() => {
+		DevExpress.ui.notify(response.Message, "success", 3000);
+
+				// ✅ Hide buttons as needed
 				hideAllButtonsExcept([
 					"btnPrint1",
 					"ddButtonLayout",
 					"btnBack",
 					"btnAttach"
 				]);
-
-				//location.reload();
-			});
 		} else {
 			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 		}
