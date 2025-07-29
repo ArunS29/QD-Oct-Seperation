@@ -1,8 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -1594,6 +1593,80 @@ public async Task<IActionResult> GetOrderStatus(string pono)
     return Ok(new { success = true, orderStatus = po.OrderStatus });
 }
 
+        [HttpPost]
+        public IActionResult SaveReportAttribute([FromBody] ReportAttributeUpdateModel model)
+        {
+            if (model == null || string.IsNullOrEmpty(model.ReportNo) || string.IsNullOrEmpty(model.Field))
+            {
+                return BadRequest(new { message = "Invalid input data" });
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var record = dbContext.Tbl90112ReportAttributes
+                    .FirstOrDefault(r => r.ReportNo == model.ReportNo);
+
+                if (record == null)
+                    return NotFound(new { message = "Report not found." });
+
+                // Update only the requested field
+                switch (model.Field)
+                {
+                    case "ReportSubject":
+                        record.ReportSubject = model.Value;
+                        break;
+                    case "ReportSummary":
+                        record.ReportSummary = model.Value;
+                        break;
+                    case "ReportIntroduction":
+                        record.ReportIntroduction = model.Value;
+                        break;
+                    case "ReportThanksNote":
+                        record.ReportThanksNote = model.Value;
+                        break;
+                    default:
+                        return BadRequest(new { message = "Invalid field name." });
+                }
+
+                dbContext.SaveChanges();
+                return Ok(new { message = "Field updated successfully." });
+            }
+
+            return Unauthorized();
+        }
+        [HttpGet]
+        public IActionResult GetReportAttributes(string reportNo)
+        {
+            if (string.IsNullOrEmpty(reportNo))
+                return BadRequest(new { message = "Report number is required." });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var result = dbContext.Tbl90112ReportAttributes
+                    .Where(r => r.ReportNo == reportNo)
+                    .Select(r => new
+                    {
+                        r.ReportSubject,
+                        r.ReportSummary,
+                        r.ReportIntroduction,
+                        r.ReportThanksNote
+                    })
+                    .FirstOrDefault();
+
+                if (result == null)
+                    return NotFound(new { message = "No report found" });
+
+                return Json(result);
+            }
+
+            return Unauthorized();
+        }
+        public class ReportAttributeUpdateModel
+        {
+            public string ReportNo { get; set; }       // Always "IMS-QTN-01"
+            public string Field { get; set; }          // e.g., "ReportSubject"
+            public string Value { get; set; }          // The new value
+        }
         [HttpGet]
         public IActionResult CheckIfApproved(string pono)
         {
