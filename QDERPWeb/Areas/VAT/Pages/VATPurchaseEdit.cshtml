@@ -6315,16 +6315,16 @@
 			$.ajax({
 				type: "POST",
 				//url: "/api/VATModule/VerifyVoucher",
-				url: `/api/VATModule/VerifyVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
+					url: `/api/VATModule/PurchaseVerifyVoucher?InvoiceNo=${encodeURIComponent(vno)}`,
 
 				contentType: "application/json",
 				dataType: "json",
 				data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
 				success: function (response) {
 					if (response && response.Message) {
-						DevExpress.ui.dialog.alert(
-							"VAT Invoice has been Verified.",
-							"Verified"
+						DevExpress.ui.notify(
+							"VAT Invoice has been Verified.","success",2000
+						
 						).done(() => {
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
