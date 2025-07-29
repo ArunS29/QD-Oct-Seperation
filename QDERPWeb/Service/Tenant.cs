@@ -16,5 +16,6 @@
         public string currencyID { get; set; }
 
         public string baseCurrencyname { get; set; }
+        public string TenantName { get; set; }
     }
 }
