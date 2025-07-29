@@ -275,6 +275,7 @@ buttons.Add()
                                 autocomplete = "off"
                             })
                             .ElementAttr(new { @class = "white-box" })
+                            .Max(99999999)
                             )
                     </div>
 
@@ -364,6 +365,7 @@ buttons.Add()
                             .ID("txtCurrencyRate")
                             .Value(1)
                             .Min(0)
+                            .Max(99999)
                              .TabIndex(7)
                             .Format("#,##0.00")
                             .InputAttr(new
@@ -4182,7 +4184,7 @@ function onAccountHeadRowPrepared(e) {
     }
 }
     $(document).ready(function () {
-        $.get("/api/VoucherMaster/GetDefaultPaymentAccount", function (data) {
+        $.get("/api/VoucherMaster/GetDefaultReceivingAccount", function (data) {
             if (data && data.AccountId) {
                 paymentaccheadname = data.AccountHead;
                 paymentaccheadId = data.AccountId;

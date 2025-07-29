@@ -246,7 +246,7 @@ buttons.Add()
                                                
                                                 .Format("###,###,###,##0.00")  // Numeric format with thousands separator and two decimal places
                                                 .InputAttr(new { type = "number", step = "0.01", style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;", maxLength = 16, autocomplete = "off" })
-
+                                                .Max(99999999)
                                                 .ElementAttr(new { @class = "white-box" })
 
                                                 )
@@ -343,6 +343,7 @@ buttons.Add()
                                                 .ID("txtCurrencyRate")
                                                 .Value(1)
                                                 .Min(0)
+                                                .Max(99999)
                                                 .TabIndex(10)
                                                 .Format("#,##0.00")
                                                 .InputAttr(new

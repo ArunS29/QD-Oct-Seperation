@@ -183,7 +183,7 @@
 				)
 	</div>
 </div> *@
-<div class="container5">
+
 
 	
 
@@ -270,6 +270,7 @@
 					.DataSource(new object[] { })
 					.Columns(columns =>
 					{
+						columns.AddFor(m => m.EmployeeAllocationId).Caption("EmployeeAllocation Id").DataField("EmployeeAllocationId").Width(100).AllowEditing(false).Visible(false);
 						columns.AddFor(m => m.EmpAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
 							columns.AddFor(m => m.EmployeeNo)
 							.DataField("EmployeeId")
@@ -380,9 +381,7 @@
 				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
 				.ShowBorders(true)
 				.Width("100%")
-				.Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)) // Enable selection
-				.Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
-				// Add Summary
+				.Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true).AllowDeleting(true).UseIcons(true))
 				.Summary(s => s
 				.TotalItems(items =>
 				{
@@ -1153,7 +1152,7 @@
 					}
 
 					if (deletedRowIndex > 0) {
-							const previousRow = allRows[deletedRowIndex + 1];
+							const previousRow = allRows[deletedRowIndex - 1];
 							const currentRow = allRows[deletedRowIndex];
 							const EmployeeAllocationId = currentRow.EmployeeAllocationId;;
 
