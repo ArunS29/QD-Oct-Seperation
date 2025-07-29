@@ -989,3 +989,6 @@ dx-item-content dx-list-item-content:hover{
 .dx-overlay-shader{
     background-color: rgba(0, 0, 0, 0.5) !important;
 }
+.dx-popup-content {
+    background-color: var(--background-color);
+}

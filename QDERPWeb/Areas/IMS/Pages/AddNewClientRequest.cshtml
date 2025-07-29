@@ -1616,8 +1616,8 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().Caption(new JS("formatMessage('Tax Code')")).DataField("PurchaseTaxSlabCode");
-						columns.Add().Caption(new JS("formatMessage('Tax Slab')")).DataField("PurchaseTaxSlab");
+						columns.Add().Caption(new JS("formatMessage('Code')")).DataField("PurchaseTaxSlabCode").Width(80);
+						columns.Add().Caption(new JS("formatMessage('Slab')")).DataField("PurchaseTaxSlab");
 
 
 
@@ -1651,8 +1651,8 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().Caption(new JS("formatMessage('Branch Code')")).DataField("CompanyId");
-						columns.Add().Caption(new JS("formatMessage('Branch/Division Name')")).DataField("CompanyName");
+						columns.Add().Caption(new JS("formatMessage('Code')")).DataField("CompanyId").Width(80);
+						columns.Add().Caption(new JS("formatMessage('Name')")).DataField("CompanyName");
 
 
 
@@ -1718,7 +1718,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().Caption(new JS("formatMessage('ID')")).DataField("InventoryMasterGroupId");
+						columns.Add().Caption(new JS("formatMessage('ID')")).DataField("InventoryMasterGroupId").Width(80);
 						columns.Add().Caption(new JS("formatMessage('Inventory Master Group')")).DataField("InventoryMasterGroup");
 					})
 					)
@@ -1784,9 +1784,9 @@
 							.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 							.Columns(columns =>
 							{
-								columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(150);
+								columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-								columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+								columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center);
 
 							})
 							)
