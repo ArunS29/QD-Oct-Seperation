@@ -48,7 +48,7 @@ namespace QD.ERP.Web.Service
 
             // Fetch tenant metadata from ERPCommonContext
             var company = await _dbContext.CustomerDetails
-                .FirstOrDefaultAsync(p => p.CompanyName.ToLower() == tenantName.ToLower());
+                .FirstOrDefaultAsync(p => p.TenantName.ToLower() == tenantName.ToLower());
 
             if (company == null)
                 return null;
