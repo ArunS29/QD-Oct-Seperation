@@ -526,8 +526,8 @@
 																		.OpenOnFieldClick(false)
 																		.ValueChangeEvent("input")
 																		.HoverStateEnabled(true)
-																		.ValueExpr("AccountHeadArabic")
-																		.DisplayExpr("AccountId")
+																        .ValueExpr("AccountId")
+																		.DisplayExpr("AccountHeadArabic")
 																		.Width("100%")
 																		.TabIndex(4)
 																		.DropDownOptions(o => o.Width(1000))
@@ -1523,6 +1523,10 @@
 		<div class="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATProformaInvoiceEditFooter.cshtml")
 		</div>
+		<div id="loader" style="display: none;">
+			@* <span>Loading...</span> <!-- Or use a spinner icon --> *@
+			<i class="fa fa-spinner fa-spin" style="font-size: 24px;"></i>
+		</div>
 		@using (Html.DevExtreme().NamedTemplate("PaymentmeansContentTemplate"))
 		{
 			@(Html.DevExtreme().DataGrid()
@@ -1575,7 +1579,7 @@
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-					.ShowColumnHeaders(false)
+					.ShowColumnHeaders(true)
 					.FilterRow(f => f.Visible(true))
 					.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
@@ -1610,11 +1614,11 @@
 					.Controller("VATModule")
 					.LoadAction("GetProformaClientName")
 					.LoadMode(DataSourceLoadMode.Raw)
-					.Key("AccountHead")
+					.Key("AccountId")
 					)
 					.WordWrapEnabled(true)
 					.ShowBorders(true)
-					.ShowColumnHeaders(false)
+					.ShowColumnHeaders(true)
 					.FilterRow(f => f.Visible(true))
 					.SearchPanel(sp => sp.HighlightSearchText(true))
 					.Selection(sl => sl.Mode(SelectionMode.Single))
@@ -4473,24 +4477,31 @@
 
 
 			// Fetch dropdown data (same API can be used if needed)
-		 function getDropdownData() {
-			return $.ajax({
-				url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-				method: "GET",
-				dataType: "json"
-			}).then(function(response) {
-				console.log("GsData",response)
-				return response.map(item => ({
-					GSCode: item.Gscode,
-					GSDescrpition: item.Gsdescrpition,
-					GsdescriptionAr:item.GsdescriptionAr,
-					ItemPartNo: item.ItemPartNo,
-					CostPrice: item.CostPrice,
-					GSSellingRate: item.GssellingRate,
-					ReorderQty:item.ReorderQty
-				}));
-			});
-		}
+				function getDropdownData() {
+		// Show loader before AJAX call
+		$("#loader").show();
+
+		return $.ajax({
+			url: "/api/VATModule/GetGoodsAndServices", // API endpoint
+			method: "GET",
+			dataType: "json"
+		}).then(function(response) {
+			console.log("GsData", response);
+			return response.map(item => ({
+				GSCode: item.Gscode,
+				GSDescrpition: item.Gsdescrpition,
+				GsdescriptionAr: item.GsdescriptionAr,
+				ItemPartNo: item.ItemPartNo,
+				CostPrice: item.CostPrice,
+				GSSellingRate: item.GssellingRate,
+				ReorderQty: item.ReorderQty
+				
+			}));
+		}).always(function () {
+			// Hide loader after AJAX call finishes (success or error)
+			$("#loader").hide();
+		});
+	}
 		function getUnitRateMethods() {
 			return $.ajax({
 				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -4685,12 +4696,12 @@
 				if(IsCurrent!="true")
 				{
 						
-		 var selectedRowData = $("#clientname-datagrid").dxDataGrid("instance").getSelectedRowsData();
+		                        var selectedRowData = $("#clientname-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
 									accheadid = selectedRowData[0].AccountId;
 									let accheadAr = selectedRowData[0].AccountHeadArabic;
-								   $("#ddlClientNameAr").dxDropDownBox("instance").option("value", selectedRowData[0].AccountHeadArabic);
+								   $("#ddlClientNameAr").dxDropDownBox("instance").option("value", accheadAr);
 									
 								} else {
 									DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -5074,21 +5085,21 @@
 
 
 									  // Assuming these are standard inputs
-	$("#OurStreetName").val(selectedRowData[0].SellerAddressStreet);
-	$("#OurStreetNameArabic").val(selectedRowData[0].SellerAddressStreetAr);
-	$("#OurAdditionalAddress").val(selectedRowData[0].SellerAdditionalStreet);
-	$("#OurAdditionalAddressArabic").val(selectedRowData[0].SellerAdditionalStreetAr);
-	$("#OurBuildingNumber").val(selectedRowData[0].SellerBuildingNumber);
-	$("#OurClientCity").val(selectedRowData[0].SellerCity);
-	$("#OurClientCityArabic").val(selectedRowData[0].SellerCityAr);
-	$("#OurAdditionalNumber").val(selectedRowData[0].SellerAdditionalNumber);
-	$("#OurProvince").val(selectedRowData[0].SellerProvince);
-	$("#OurProvinceArabic").val(selectedRowData[0].SellerProvinceAr);
-	$("#OurPostalCode").val(selectedRowData[0].SellerPostalCode);
-
-	// Fix incorrect value assignments
-	$("#OurDistrict").val(selectedRowData[0].SellerNeighborhood); // was incorrectly using Arabic version key
-	$("#OurDistrictArabic").val(selectedRowData[0].SellerNeighborhoodAr); // was incorrectly using country code key
+	                                   $("#OurStreetName").val(selectedRowData[0].SellerAddressStreet);
+	                                   $("#OurStreetNameArabic").val(selectedRowData[0].SellerAddressStreetAr);
+	                                   $("#OurAdditionalAddress").val(selectedRowData[0].SellerAdditionalStreet);
+	                                   $("#OurAdditionalAddressArabic").val(selectedRowData[0].SellerAdditionalStreetAr);
+	                                   $("#OurBuildingNumber").val(selectedRowData[0].SellerBuildingNumber);
+	                                   $("#OurClientCity").val(selectedRowData[0].SellerCity);
+	                                   $("#OurClientCityArabic").val(selectedRowData[0].SellerCityAr);
+	                                   $("#OurAdditionalNumber").val(selectedRowData[0].SellerAdditionalNumber);
+	                                   $("#OurProvince").val(selectedRowData[0].SellerProvince);
+	                                   $("#OurProvinceArabic").val(selectedRowData[0].SellerProvinceAr);
+	                                   $("#OurPostalCode").val(selectedRowData[0].SellerPostalCode);
+	                                   
+	                                   // Fix incorrect value assignments
+	                                   $("#OurDistrict").val(selectedRowData[0].SellerNeighborhood); // was incorrectly using Arabic version key
+	                                   $("#OurDistrictArabic").val(selectedRowData[0].SellerNeighborhoodAr); // was incorrectly using country code key
 
 				} else {
 
