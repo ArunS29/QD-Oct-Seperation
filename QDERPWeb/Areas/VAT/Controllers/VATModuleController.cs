@@ -5753,6 +5753,95 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<ActionResult> DebitVerifyVoucher(string DebitNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(DebitNoteNo))
+                    {
+                        return BadRequest(new { Message = "Debit number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20172VatdebitNoteMasters.FirstOrDefault(v => v.DebitNoteNo == DebitNoteNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Debit not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsVerified = true;
+                    voucher.VerifiedOn = DateTime.Now;
+                    voucher.VerifiedBy = UserName;
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "DebitNoteNo verified successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PurchaseVerifyVoucher(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Voucher number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20166VatpurchaseMasters.FirstOrDefault(v => v.PurchaseVoucherNo == InvoiceNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Voucher not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsVerified = true;
+                    voucher.VerifiedOn = DateTime.Now;
+                    voucher.VerifiedBy = UserName;
+
+                    dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        Message = "Voucher verified successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+
     }
 }
 
