@@ -244,4 +244,6 @@ public partial class Tbl901CompanyDetail
 
     public string OurCloudDriveLocation { get; set; }
     public string CurrencyImage { get; set; }
+    public bool AllowDataModeSelection { get; set; }
+
 }
