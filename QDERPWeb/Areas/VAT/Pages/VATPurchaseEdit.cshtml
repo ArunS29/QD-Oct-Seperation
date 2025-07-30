@@ -1203,6 +1203,98 @@
 						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 
+						<td style="width: 30%;">
+							@(Html.DevExtreme().DropDownBox()
+														.Label(new JS("formatMessage('Invoice Currency')"))
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetInvoiceCurrency")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("CurrencyExchangeId"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ddlGoodsGroup3")
+														.ShowClearButton(true)
+														.Value("Saudi Arabian Riyals")
+														.AcceptCustomValue(true)
+														.OpenOnFieldClick(false)
+														.ValueChangeEvent("input")
+														.HoverStateEnabled(true)
+														.ValueExpr("CurrencyExchangeId")
+														.DisplayExpr("CurrencyName")
+														.OnInput("dropDownBoxOnInput")
+														.OnOpened("onOpened")
+														.TabIndex(1)
+														.DropDownOptions(o => o.Width(1000))
+														.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
+														.Width("100%")
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("btnAddInvoiceCurrency")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("edit") // Use "plus" or any other if needed
+															.Hint("Edit Description")
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.OnClick("CurrencyClick")); // 👈 your existing handler
+
+															buttons.Add().Name("dropDown");
+														}))
+							   						</td>
+
+						<td style="width: 30%;">
+							@(Html.DevExtreme().DropDownBox()
+														.Label(new JS("formatMessage('Tax Currency')"))
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetTaxCurrency")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("CurrencyExchangeId"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ddlGoodsGroup4")
+														.ShowClearButton(true)
+														.Value("Saudi Arabian Riyals")
+														.AcceptCustomValue(true)
+														.OpenOnFieldClick(false)
+														.ValueChangeEvent("input")
+														.HoverStateEnabled(true)
+														.ValueExpr("CurrencyExchangeId")
+														.DisplayExpr("CurrencyName")
+														.OnInput("dropDownBoxOnInput")
+														.OnOpened("onOpened")
+														.TabIndex(1)
+														.Disabled(true) // Entire DropDownBox is disabled
+														.DropDownOptions(o => o.Width(1000))
+														.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+														.Width("100%")
+														.Buttons(buttons =>
+														{
+															buttons.Add()
+															.Name("btnEditTaxCurrency")
+															.Location(TextEditorButtonLocation.After)
+															.Widget(w => w.Button()
+															.Type(ButtonType.Default)
+															.Icon("edit")
+															.Disabled(true) // Button is also disabled
+															.ElementAttr(new { @class = "custom-hover-button add-hover" })
+															.OnClick("CurrencySClick"));
+
+															buttons.Add().Name("dropDown");
+														}))
+							   						</td>
+						<td>
+							@(Html.DevExtreme().NumberBox()
+														.ID("currencyexchangerate")
+														.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.Min(1)
+														.Step(1)
+														.ShowSpinButtons(true)
+														.Value(1)
+														.Width("100%")
+														)
+						</td>
 								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessAdvance")
@@ -2675,31 +2767,115 @@
 
 }
 
+
+@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+
+												.ID("invoicecurrecy-datagrid")
+											.DataSource(d => d.WebApi()
+											.Controller("VATModule")
+													.LoadAction("GetInvoiceCurrency")
+											.LoadMode(DataSourceLoadMode.Raw)
+													///   .Key("AccountHead") //salary paid entry
+													.Key("CurrencyExchangeId")
+
+											)
+											.WordWrapEnabled(true)
+											.ShowBorders(true)
+											.SearchPanel(sp => sp.HighlightSearchText(true))
+											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+											.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
+											.OnInitialized("dataGridInvoiceCurrencyHeadInitialized")
+																									 // .HeaderFilter(p => p.Visible(true))
+											.ShowBorders(true)
+											.HoverStateEnabled(true)
+											.Paging(p => p.PageSize(15))
+											.FilterRow(f => f.Visible(true))
+											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+											.Height(345)
+											.Selection(s => s.Mode(SelectionMode.Single))
+											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+											.Columns(columns =>
+											{
+												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+											})
+
+										)
+
+}
+@using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+
+													.ID("taxcurrecy-datagrid")
+												.DataSource(d => d.WebApi()
+												.Controller("VATModule")
+														.LoadAction("GetTaxCurrency")
+												.LoadMode(DataSourceLoadMode.Raw)
+														///   .Key("AccountHead") //salary paid entry
+														.Key("CurrencyExchangeId")
+
+												)
+												.WordWrapEnabled(true)
+												.ShowBorders(true)
+												.SearchPanel(sp => sp.HighlightSearchText(true))
+												.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+												.OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
+												.OnInitialized("dataGridTaxCurrencyHeadInitialized")
+																									 // .HeaderFilter(p => p.Visible(true))
+												.ShowBorders(true)
+												.HoverStateEnabled(true)
+												.Paging(p => p.PageSize(15))
+												.FilterRow(f => f.Visible(true))
+												.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+												.Height(345)
+												.Selection(s => s.Mode(SelectionMode.Single))
+												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+												.Columns(columns =>
+												{
+													columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+												})
+
+											)
+
+}
+
 <input type="file" id="fileInput" style="display: none;" />
 <div id="CalcardPopover"></div>
 <script>
 		var hasSupplierAlertShown = false;
 
-		function onSupplierDropDownFirstClick(e) {
-			if (!hasSupplierAlertShown) {
-				e.component.blur(); // temporarily stop the dropdown from opening
+		// function onSupplierDropDownFirstClick(e) {
+		// 	if (!hasSupplierAlertShown) {
+		// 		e.component.blur(); // temporarily stop the dropdown from opening
 
-				DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Supplier to edit").done(function () {
-					hasSupplierAlertShown = true;
-					// Now open the dropdown manually after alert
-					setTimeout(function () {
-						e.component.focus(); // this will re-trigger dropdown after alert
-					}, 100);
-				});
-			}
+		// 		DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Supplier to edit").done(function () {
+		// 			hasSupplierAlertShown = true;
+		// 			// Now open the dropdown manually after alert
+		// 			setTimeout(function () {
+		// 				e.component.focus(); // this will re-trigger dropdown after alert
+		// 			}, 100);
+		// 		});
+		// 	}
+		// }
+
+
+			  function onClientCodeRowPrepared(e) {
+		console.log("Row Prepared", e.data); // See row data in console
+		if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
+			e.rowElement.css("background-color", "#ffcccc");
 		}
+	}
 
-
-		  function onClientCodeRowPrepared(e) {
-			if (e.rowType === "data" && e.data.IsLedgerObselete === true) {
-				e.rowElement.css("background-color", "#ffcccc"); // light red
-			}
-		}
 
 
 		function navigateToLedgerAccountForm() {
@@ -3137,7 +3313,7 @@
 						let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
 						if (selectedItem) {
 							cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-						
+						    e.component.option("value", selectedItem.TaxSlabCode); // update dropdown value
 							let grid = $("#B2BdataGrid").dxDataGrid("instance");
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
@@ -3706,6 +3882,7 @@
 									   let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
 									   if (selectedItem) {
 										   cellInfo.setValue(selectedItem.TaxCodeToDisplay);
+											e.component.option("value", selectedItem.TaxSlabCode);
 										   let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 										   let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 										   let TaxSlabCode = selectedItem.TaxSlabCode;
@@ -3987,6 +4164,7 @@
 									    let ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										let ClientCity= selectedRowData[0].ClientCity;
 										let ClientPostalCode=selectedRowData[0].ClientPostalCode;
+										let IsLedgerObselete=selectedRowData[0].IsLedgerObselete;
 			var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
 												// Set the value
 			var fullAddress = [ClientPostalCode,ClientAddressSt, ClientCity].filter(Boolean).join(", ");
@@ -4013,7 +4191,13 @@
 			$("#District").dxTextBox("instance").option("value", selectedRowData[0].SupplierNeighborhood);
 				$("#DistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].SupplierNeighborhoodAr);
 
-			
+			                 if(IsLedgerObselete==true)
+							 {
+								   DevExpress.ui.notify(
+					               "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.","error",3000
+
+					                );
+							 }
 
 								} else {
 									DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -4190,8 +4374,11 @@
 				var selectedRowData = $("#invoicecurrecy-datagrid").dxDataGrid("instance").getSelectedRowsData();
 				// Get ReferenceNo from selected row
 				if (selectedRowData.length > 0) {
-								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId;
-
+								
+								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId.toString();
+								console.log("Type:", typeof InvoiceCurrencyExchangeId);
+								ExchangeRate=selectedRowData[0].ExchangeRate;
+								$("#currencyexchangerate").dxNumberBox("instance").option("value", ExchangeRate);
 
 
 				} else {
@@ -7669,6 +7856,19 @@
 				trigger: 'mouseenter focus',
 				delay: [100, 100],
 			});
+		}
+
+			function CurrencyClick() {
+
+				let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+				let title = "Currency Master";
+				openModal(url, title);
+	    }
+		function CurrencySClick() {
+
+				let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+					let title = "Currency Master";
+				openModal(url, title);
 		}
 
 

@@ -2,11 +2,10 @@
 @model QD.ERP.Web.Areas.Finance.Views._JournalEntryCostAllocationModel
 
 @{
-    // Layout = null;
+    Layout = null;
     string voucherNo = ViewBag.VoucherNo;
     string drCr = ViewBag.DrCr;
     string accountHead = ViewBag.AccountHead;
-    string accountId = ViewBag.AccountID;
     string voucherAmount = ViewBag.VoucherAmount;
     long voucherEntryNo = ViewBag.VoucherEntryNo;
     double? voucherAmountParsed = null;
@@ -40,6 +39,12 @@
     #costdataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
         text-align: center !important;
     }
+
+    .dx-popup-title.dx-toolbar {
+        background-color: deepskyblue !important;
+        color: white !important;
+    }
+
 
     .horizontal-container {
         display: flex;
@@ -93,323 +98,431 @@
         font-weight: bold;
     }
 
+    .popup-content-container {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        width: 100%;
+        overflow: hidden;
+        box-sizing: border-box;
+        padding: 10px;
+        background-color: white !important;
+    }
+
+    /* This controls row layout inside the popup */
+    .horizontal-container {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+
+        .horizontal-container .dx-field {
+            flex: 1 1 200px;
+            min-width: 200px;
+            box-sizing: border-box;
+        }
+
+    /* For the DataGrid section to take available space and shrink */
+    .ledgerResult {
+        flex: 1 1 auto;
+        min-height: 0;
+        overflow: auto;
+    }
+
+    /* Prevent popup content overflow */
+    .dx-popup-content {
+        overflow: hidden !important;
+    }
+
+    .fixed-footer-toolbar {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        z-index: 1050;
+        background-color: #fff;
+        border-top: 1px solid #dee2e6;
+        padding: 10px 20px;
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        box-shadow: 0 -1px 8px rgba(0, 0, 0, 0.05);
+    }
+
+    .bold-button .dx-button-text {
+        font-weight: 600;
+    }
+
+    /* Common button base style */
+    .bold-button.dx-button {
+        font-weight: 600;
+        border-radius: 6px;
+        transition: all 0.2s ease;
+        color: #fff; /* White text */
+    }
+
+    /* Save and Close - Blue */
+    #btnCostmasterSaveAndClose .dx-button-content {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+    #btnCostmasterSaveAndClose:hover .dx-button-content {
+        background-color: #0056b3;
+        border-color: #0056b3;
+    }
+
+    /* Delete - Red */
+    #btnCostDelete .dx-button-content {
+        background-color: #dc3545;
+        border-color: #dc3545;
+    }
+
+    #btnCostDelete:hover .dx-button-content {
+        background-color: #a71d2a;
+        border-color: #a71d2a;
+    }
+
+    /* Back - Gray */
+    #btncostBack .dx-button-content {
+        background-color: #6c757d;
+        border-color: #6c757d;
+    }
+
+    #btncostBack:hover .dx-button-content {
+        background-color: #495057;
+        border-color: #495057;
+    }
+
+    /* Add New Cost Center - Green */
+    #btnaddcost .dx-button-content {
+        background-color: #28a745;
+        border-color: #28a745;
+    }
+
+    #btnaddcost:hover .dx-button-content {
+        background-color: #1e7e34;
+        border-color: #1e7e34;
+    }
+
+    .dx-popup-content-container {
+        background-color: white !important;
+    }
 </style>
 <div class="container5">
 
-    <div class="title">
-        <div class="header-container" style="gap:10px;padding:10px">
-            <i class="fa-duotone fa-solid fa-clipboard" style="font-size: 1.5rem; color: goldenrod;"></i>
-            <div id="CostAllocationPopup" class="no-border-title">Cost Allocation</div>
-        </div>
-    </div>
 
+    <div class="popup-content-container">
+        <!-- Inputs and DataGrid Combined -->
+        <div class="container2">
+            <div class="d-flex flex-wrap align-items-end gap-3" style="margin-left:15px;">
 
-    <!-- Inputs and DataGrid Combined -->
-    <div class="container2">
-        <div class="dx-fieldset horizontal-container ">
-
-            @(Html.DevExtreme().SelectBox()
-                .ID("DrCr")
-                .Label(new JS("formatMessage('Dr/Cr')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .DataSource(new[] { drCr })
-                .Value(drCr)
-                .Width(150)
-                .ReadOnly(true)
-                )
-
-            <!-- DevExtreme Popup -->
-            @(Html.DevExtreme().TextBox()
-                .ID("Textbox")
-                .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .Value(voucherNo)
-                .Width(250)
-                .ReadOnly(true)
-                )
-
-
-            @(Html.DevExtreme().NumberBox()
-                .ID("CostAmount")
-                .Label(new JS("formatMessage('Amount')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .Value(voucherAmountParsed)
-                .ShowSpinButtons(true)
-                .ReadOnly(true)
-                .Format("#,##0.00")
-                )
-            <div>
-                @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-                    .ID("Approvedcost").ReadOnly(true)
-
-                    )
-                @(Html.DevExtreme().TextBox()
-                    @* .Label(new JS("formatMessage('Approved By')")) *@
-                    @* .LabelMode(EditorLabelMode.Floating) *@
-                    .ID("ApprovedBycost")
-                    .Value(null) // Default value
-                    .ReadOnly(true)
-                    )
-            </div>
-            @(Html.DevExtreme().TextBox()
-                .Label(new JS("formatMessage('Approved On')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .ID("ApprovedOncost")
-                .Value(null) // Default value
-                .ReadOnly(true)
-                )
-
-        </div>
-        <div class="dx-fieldset horizontal-container ">
-            @(Html.DevExtreme().SelectBox()
-                .ID("CostAllocationExpense")
-                .Label(new JS("formatMessage('Account Head')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .DataSource(new[] { accountHead }) // Only the selected AccountHead
-                .Value(accountHead) // Pre-selected value
-                .ReadOnly(true) // Make the dropdown read-onlyr
-                .Width(250)
-                )
-        </div>
-        <div class="dx-field ledgerResult" style="padding-top:20px">
-            @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20128JournalRegisterCostAllocation>()
-                    .ID("costdataGrid")
-
-                    .RemoteOperations(false)
-                    .RowAlternationEnabled(true)
-                    .DataSource(new object[] { })
-                    .Columns(columns =>
-                    {
-                        columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(false).AllowEditing(false);
-                        columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-                        columns.AddFor(m => m.CostAllocationUnitId)
-                    .DataField("CostAllocationUnit")
-                    .Caption("Cost Allocated (Projects/Jobs)")
-                    .Width(500)
-                    .AllowEditing(true)
-                    // Normal Grid Mode
-                    .CellTemplate(@<text>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    <span class="account-head-span">
-                        <%- data.CostAllocationUnit ? data.CostAllocationUnit : 'Common Overheads' %>
-                    </span>
-                    <div style="display: flex; gap: 0px;">
-                        @(Html.DevExtreme().Button()
-                        .ID("btnAddcost_" + new JS("data.rowIndex"))
-                        .Icon("plus")
-                        @* .OnClick("onAddCost") *@
-                        .Hint("Add Cost Allocation")
-                        .Width(60)
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("btnEditcost_" + new JS("data.rowIndex"))
-                        .Icon("edit")
-                        @* .OnClick("onEditCost") *@
-                        .Hint("Edit Cost Allocation")
-                        .Width(60)
-                        )
-                    </div>
-                </div>
-            </text>)
-                // Edit Mode
-                .EditCellTemplate(@<text>
-                <div style="display: flex; justify-content: space-between; align-items: center;">
-                    @(Html.DevExtreme().DropDownBox()
-                    .DataSource(d => d.WebApi().Controller("CostAllocation")
-                    .LoadAction("GetCostAllocationUnits")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("CostAllocationUnitId"))
-                    .LabelMode(EditorLabelMode.Floating)
-                    .ID("Costgriddropdown_{rowIndex}")
-                    .ShowClearButton(false)
-                    .AcceptCustomValue(true)
-                    .OpenOnFieldClick(false)
-                    .HoverStateEnabled(true)
-                    .OnValueChanged("gridBox_valueChanged")
-                    .ValueExpr("CostAllocationUnitId")
-                    .DisplayExpr("CostAllocationUnit")
-                    .Placeholder("Select Cost Allocation")
-                    .Width(350)
-                    .DropDownOptions(o => o.Width(800))
-                    .Value(new JS("data.CostAllocationUnitId || 'ADMIN-0001'"))
-                    .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
-                    )
-
-                    <div style="display: flex; ">
-                        @(Html.DevExtreme().Button()
-                        .ID("btnAddcost_" + new JS("data.rowIndex"))
-                        .Icon("plus")
-                        @* .OnClick("onAddCost") *@
-                        .Hint("Add Cost Allocation")
-                        .Width(60)
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("btnEditcost_" + new JS("data.rowIndex"))
-                        .Icon("edit")
-                        @* .OnClick("onEditCost") *@
-                        .Hint("Edit Cost Allocation")
-                        .Width(60)
-                        )
-                    </div>
+                <div style="min-width: 60px; max-width: 80px;">
+                    @(Html.DevExtreme().SelectBox()
+                                        .ID("DrCr")
+                                        .Label(new JS("formatMessage('Dr/Cr')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .DataSource(new[] { drCr })
+                                        .Value(drCr)
+                                        .ReadOnly(true)
+                                        )
                 </div>
 
-            </text>);
-                        columns.AddFor(m => m.EffectiveDate)
-                    .Caption("Effective Date")
-                    .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
-                    .AllowEditing(true)
-                    // Normal Grid Mode
-                    .CellTemplate(@<text>
-                <span>
-                    <%- data.EffectiveDate ? DevExpress.localization.formatDate(new Date(data.EffectiveDate), "dd-MMM-yyyy") : DevExpress.localization.formatDate(new Date(), "dd-MMM-yyyy") %>
-                </span>
-            </text>)
-                // Edit Mode
-                .EditCellTemplate(@<text>
-                @(Html.DevExtreme().DateBox()
-                .Type(DateBoxType.Date)
-                .Value(new JS("data.EffectiveDate ? new Date(data.EffectiveDate) : new Date()")) // Default to today
-                .OnValueChanged("setEffectiveDate") // Pass full data object
-                .DisplayFormat("dd-MMM-yyyy")
-                )
-            </text>);
-                        columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-                        columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+                <div style="min-width: 200px; max-width: 250px;">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("Textbox")
+                                        .Label(new JS("formatMessage('Cost Allocation for the Expenses')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Value(voucherNo)
+                                        .ReadOnly(true)
+                                        )
+                </div>
 
-                    })
-                //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
-                .AllowColumnReordering(true) // Enable column reordering
-                .AllowColumnResizing(true)   // Enable column resizing
-                .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
-                .HeaderFilter(filter => filter.Visible(true))
-                .ColumnAutoWidth(true)
-                .Height(250)
-                .ColumnAutoWidth(true)
-                .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
-                .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
-                .ShowBorders(true)
-                .Width("100%")
-                .Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)) // Enable selection
-                .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
-                // Add Summary
-                .Summary(s => s
-                .TotalItems(items =>
-                {
-                    items.Add()
-                    .Column("VoucherAmount") // The column for which summary is shown
-                    .SummaryType(SummaryType.Sum) // Calculates the sum
-                    .ValueFormat("#,##0.00") // Format the value
-                    .DisplayFormat(" {0}"); // Display format
-
-                })
-                )
-
-                )
-        </div>
+                <div style="min-width: 120px; max-width: 150px;">
+                    @(Html.DevExtreme().NumberBox()
+                                        .ID("CostAmount")
+                                        .Label(new JS("formatMessage('Amount')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Value(voucherAmountParsed)
+                                        .ShowSpinButtons(true)
+                                        .ReadOnly(true)
+                                        .Format("#,##0.00")
+                                        )
+                </div>
 
 
 
-        @*  <div id="footerTotals" style="display: flex; justify-content: space-between; background-color: #F5F5F5; color: white; padding: 5px 10px; margin-top: -3px; font-size: 14px;">
-        <div style="flex: 6;">&nbsp;</div> <!-- Aligns with Dr/Cr column -->
-        <div style="flex: 5;">&nbsp;</div> <!-- Aligns with Account Head column -->
-        <!-- TextBox for Debit -->
-        <div style="flex: none; text-align: right;">
-        @(Html.DevExtreme().NumberBox()
-        .ID("totalAmountTextbox")
-        .Value(voucherAmountParsed)
-        .ReadOnly(true)
-        .Width("60%")
-        .Format("#,##0.00")
-        .InputAttr(new { style = "text-align: right;" })
-        )
-        </div>
+                <div style="min-width: 320px; max-width: 350px;">
+                    @(Html.DevExtreme().SelectBox()
+                                        .ID("CostAllocationExpense")
+                                        .Label(new JS("formatMessage('Account Head')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .DataSource(new[] { accountHead })
+                                        .Value(accountHead)
+                                        .ReadOnly(true)
+                                        )
+                </div>
+                <div style="min-width: 180px; max-width: 200px;">
+                    @(Html.DevExtreme().CheckBox()
+                                        .ID("Approvedcost")
+                                        .Text(new JS("formatMessage('Approved By')"))
+                                        .ReadOnly(true)
+                                        )
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("ApprovedBycost")
+                                        .Value(null)
+                                        .ReadOnly(true)
+                                        .Label("")
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        )
+                </div>
 
-        <div style="flex: 2;">&nbsp;</div> <!-- Aligns with Entry Narration and Remarks columns -->
-        </div> *@
-    </div>
-
-
-    <div class="container2">
-        <div class="dx-fieldset horizontal-container mt-2" style="padding:5px;">
-
-
-            @(Html.DevExtreme().Button()
-                .ID("btnCostSaveAndClose")
-                .Text("Save and Close")
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-
-            @(Html.DevExtreme().Button()
-                .ID("btnCostDelete")
-                .Text("Delete")
-                .Icon("close")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btncostBack")
-                .Text("Back")
-                .Icon("arrowleft")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                .OnClick("closeParentModal")
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btnaddcost")
-                .Text("Add New Cost Center")
-                .Icon("plus")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-        </div>
-        @using (Html.DevExtreme().NamedTemplate("JournalcostAllocationDropdownContentTemplate"))
-        {
-            @(
-                Html.DevExtreme().DataGrid()
-                .ID("costAllocationDropdownGrid")
-                .DataSource(d => d.WebApi()
-                .Controller("CostAllocation")
-                .LoadAction("GetCostAllocationUnits")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("CostAllocationUnit")
-                )
-                .WordWrapEnabled(true)
-                .ShowBorders(true)
-                .SearchPanel(sp => sp.HighlightSearchText(true))
-                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-
-                .SelectedRowKeys(new JS(@"component.option(""value"")"))
-                .OnSelectionChanged(@<text>
-            function(selectedItems) {
-            var keys = selectedItems.selectedRowKeys;
-            component.option("value", keys);
-            console.log(keys);
-            }
-        </text>)
-
-
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .Columns(columns =>
-                    {
-                        columns.Add().Caption("Cost Allocation UnitID").DataField("CostAllocationUnitId");
-                        columns.Add().Caption("Cost Allocation Unit").DataField("CostAllocationUnit");
-                        columns.Add().Caption("Cost Allocation Group").DataField("CostAllocationGroup");
-                        columns.Add().Caption("Is Disabled").DataField("IsDisabled")
-                    .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsDisabled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                <div style="min-width: 160px; max-width: 180px;">
+                    @(Html.DevExtreme().TextBox()
+                                        .ID("ApprovedOncost")
+                                        .Label(new JS("formatMessage('Approved On')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Value(null)
+                                        .ReadOnly(true)
+                                        )
+                </div>
             </div>
-        </text>);
-                    })
-                )
-        }
+
+
+
+            <div class="dx-field ledgerResult" style="padding-top:20px">
+                @(
+                                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Tbl20128JournalRegisterCostAllocation>()
+                                .ID("costdataGrid")
+
+                                .RemoteOperations(false)
+                                .RowAlternationEnabled(true)
+                                .DataSource(new object[] { })
+                                .Columns(columns =>
+                                {
+                                    columns.AddFor(m => m.CostAllocationId).Caption("CostAllocation Id").DataField("CostAllocationId").Width(100).Visible(false).AllowEditing(false);
+                                    columns.AddFor(m => m.CostAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(60).AllowEditing(false);
+                                    columns.AddFor(m => m.CostAllocationUnitId)
+                                    .DataField("CostAllocationUnit")
+                                    .Caption("Cost Allocated (Projects/Jobs)")
+                                    .Width(500)
+                                    .AllowEditing(true)
+                                                        // Normal Grid Mode
+                                    .CellTemplate(@<text>
+                                                       <div style="display: flex; justify-content: space-between; align-items: center;">
+                                                           <span class="account-head-span">
+                                                               <%- data.CostAllocationUnit ? data.CostAllocationUnit : 'Common Overheads' %>
+                                                           </span>
+                                                           <div style="display: flex; gap: 0px;">
+                                @(Html.DevExtreme().Button()
+                                                            .ID("btnAddcost_" + new JS("data.rowIndex"))
+                                                            .Icon("plus")
+                                                                          @* .OnClick("onAddCost") *@
+                                                            .Hint("Add Cost Allocation")
+                                                            .Width(60)
+                                                            )
+                                @(Html.DevExtreme().Button()
+                                                            .ID("btnEditcost_" + new JS("data.rowIndex"))
+                                                            .Icon("edit")
+                                                                          @* .OnClick("onEditCost") *@
+                                                            .Hint("Edit Cost Allocation")
+                                                            .Width(60)
+                                                            )
+                            </div>
+                        </div>
+                    </text>)
+                                    // Edit Mode
+                                    .EditCellTemplate(@<text>
+                                                           <div style="display: flex; justify-content: space-between; align-items: center;">
+                            @(Html.DevExtreme().DropDownBox()
+                                                    .DataSource(d => d.WebApi().Controller("CostAllocation")
+                                                    .LoadAction("GetCostAllocationUnits")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                    .Key("CostAllocationUnitId"))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .ID("Costgriddropdown_{rowIndex}")
+                                                    .ShowClearButton(false)
+                                                    .AcceptCustomValue(true)
+                                                    .OpenOnFieldClick(false)
+                                                    .HoverStateEnabled(true)
+                                                    .OnValueChanged("gridBox_valueChanged")
+                                                    .ValueExpr("CostAllocationUnitId")
+                                                    .DisplayExpr("CostAllocationUnit")
+                                                    .Placeholder("Select Cost Allocation")
+                                                    .Width(400)
+                                                    .DropDownOptions(o => o.Width(800))
+                                                    .Value(new JS("data.CostAllocationUnitId || 'ADMIN-0001'"))
+                                                    .ContentTemplate(new TemplateName("JournalcostAllocationDropdownContentTemplate"))
+                                                    )
+
+                            <div style="display: flex; ">
+                                @(Html.DevExtreme().Button()
+                                                            .ID("btnAddcost_" + new JS("data.rowIndex"))
+                                                            .Icon("plus")
+                                                                          @* .OnClick("onAddCost") *@
+                                                            .Hint("Add Cost Allocation")
+                                                            .Width(70)
+                                                            )
+                                @(Html.DevExtreme().Button()
+                                                            .ID("btnEditcost_" + new JS("data.rowIndex"))
+                                                            .Icon("edit")
+                                                                          @* .OnClick("onEditCost") *@
+                                                            .Hint("Edit Cost Allocation")
+                                                            .Width(70)
+                                                            )
+                            </div>
+                        </div>
+
+                    </text>);
+                                    columns.AddFor(m => m.EffectiveDate)
+                                    .Caption("Effective Date")
+                                    .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
+                                    .AllowEditing(true)
+                                    .Width(95)
+                                               // Normal Grid Mode
+                                    .CellTemplate(@<text>
+                                                       <span>
+                                                           <%- data.EffectiveDate ? DevExpress.localization.formatDate(new Date(data.EffectiveDate), "dd-MMM-yyyy") : DevExpress.localization.formatDate(new Date(), "dd-MMM-yyyy") %>
+                                                       </span>
+                                                   </text>)
+                                    // Edit Mode
+                                    .EditCellTemplate(@<text>
+                        @(Html.DevExtreme().DateBox()
+                                            .Type(DateBoxType.Date)
+                                            .Value(new JS("data.EffectiveDate ? new Date(data.EffectiveDate) : new Date()")) // Default to today
+                                            .OnValueChanged("setEffectiveDate") // Pass full data object
+                                            .DisplayFormat("dd-MMM-yyyy")
+                                            )
+                    </text>);
+                                    columns.AddFor(m => m.AmountAllocated)
+                                    .Caption("Amount")
+                                    .DataField("VoucherAmount")
+                                    .DataType(GridColumnDataType.Number)
+                                    .Alignment(HorizontalAlignment.Right)
+                                    .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+
+                                    columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
+
+                                })
+                                   //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
+                                .AllowColumnReordering(true) // Enable column reordering
+                                .AllowColumnResizing(true)   // Enable column resizing
+                                .ColumnFixing(fixing => fixing.Enabled(true)) // Allow column fixing (pinning)
+                                .HeaderFilter(filter => filter.Visible(false))
+                                .ColumnAutoWidth(true)
+                                .Height(250)
+                                .ColumnAutoWidth(true)
+                                .FilterRow(filterRow => filterRow.Visible(false)) // Initially hide the FilterRow
+                                .GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
+                                .ShowBorders(true)
+                                .ElementAttr("style", "min-width: 100px; max-width: 100%; flex: 1 1 auto;")
+                                                                                                            // Enable selection
+                                .Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true).AllowDeleting(true).UseIcons(true))
+                                                                                                                                                               // Add Summary
+                                .Summary(s => s
+                                .TotalItems(items =>
+                                {
+                                    items.Add()
+                                    .Column("VoucherAmount") // The column for which summary is shown
+                                    .SummaryType(SummaryType.Sum) // Calculates the sum
+                                    .ValueFormat("#,##0.00") // Format the value
+                                    .DisplayFormat(" {0}"); // Display format
+
+                                })
+                                )
+
+
+                                )
+            </div>
+
+        </div>
+
+
+        <div class="container2">
+            <!-- Floating Fixed Footer Buttons -->
+            <div class="fixed-footer-toolbar">
+                @(Html.DevExtreme().Button()
+                                .ID("btnCostmasterSaveAndClose")
+                                .Text("Save and Close")
+                                .Type(ButtonType.Normal)
+                                .StylingMode(ButtonStylingMode.Outlined)
+                                .Icon("save")
+                                .ElementAttr(new { @class = "bold-button me-2" })
+                                )
+
+                @(Html.DevExtreme().Button()
+                                .ID("btnCostDelete")
+                                .Text("Delete")
+                                .Icon("close")
+                                .ElementAttr(new { @class = "bold-button me-2" })
+                                )
+
+                @(Html.DevExtreme().Button()
+                                .ID("btncostBack")
+                                .Text("Back")
+                                .Icon("arrowleft")
+                                .ElementAttr(new { @class = "bold-button me-2" })
+                                .OnClick("closeParentModal")
+                                )
+
+                @(Html.DevExtreme().Button()
+                                .ID("btnaddcost")
+                                .Text("Add New Cost Center")
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "bold-button" })
+                                )
+            </div>
+            @using (Html.DevExtreme().NamedTemplate("JournalcostAllocationDropdownContentTemplate"))
+            {
+                @(
+                            Html.DevExtreme().DataGrid()
+                            .ID("costAllocationDropdownGrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("CostAllocation")
+                            .LoadAction("GetCostAllocationUnits")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CostAllocationUnit")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+
+                            .SelectedRowKeys(new JS(@"component.option(""value"")"))
+                            .OnSelectionChanged(@<text>
+                function(selectedItems) {
+                var keys = selectedItems.selectedRowKeys;
+                component.option("value", keys);
+                console.log(keys);
+                }
+            </text>)
+
+
+                        .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .Columns(columns =>
+                            {
+                                columns.Add().Caption("Cost Allocation UnitID").DataField("CostAllocationUnitId");
+                                columns.Add().Caption("Cost Allocation Unit").DataField("CostAllocationUnit");
+                                columns.Add().Caption("Cost Allocation Group").DataField("CostAllocationGroup");
+                                columns.Add().Caption("Is Disabled").DataField("IsDisabled")
+                            .CellTemplate(@<text>
+                                               <div class="dx-icon">
+                                                   <%= data.IsDisabled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
+                                               </div>
+                                           </text>);
+                            })
+                            )
+                        }
+        </div>
     </div>
     @*  <li onclick="confirmDelete()">
     <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete Line Items
@@ -440,60 +553,105 @@
     //     }
     // });
 
-
-
-
     $(document).ready(function () {
-        const journalChildNo = parseInt('@voucherEntryNo'.trim(), 10);
-        const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-        const drCr = '@drCr';
-        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
-        $.ajax({
-            url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?journalChildNo=${journalChildNo}`,
-            type: 'GET',
-            success: function (data) {
-                if (data && data.length > 0) {
-                    costdataGrid.option('dataSource', data);
-                } else {
-                    // No data found – insert a default row
-                    const defaultRow = [{
+            const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+            const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+            const drCr = '@drCr';
+            const accountHead = '@accountHead';
+            const voucherno = '@voucherNo'; // You declared this in your message
+            const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+
+            $.ajax({
+                url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                type: 'GET',
+                success: function (data) {
+                    if (data && data.length > 0) {
+                        costdataGrid.option('dataSource', data);
+                    } else {
+                        // Check if account is cost-allocated
+                        $.ajax({
+                            type: "GET",
+                            url: "/api/CostAllocation/CheckCostAllocation",
+                            data: { AccountHead: accountHead },
+                            success: function (response) {
+                                if (response.isAllocated) {
+                                    // Create default row for backend insertion
+                                    const newRow = {
+                                        CostAllocationId: 0,
+                                        CostAllocDrCr: drCr,
+                                        CostAllocationUnitId:  'ADMIN-0001',
+                                        EffectiveDate: new Date(),
+                                        AmountAllocated: initialVoucherAmount.toFixed(2),
+                                        CostAllocRemarks: null,
+                                        VoucherEntryId: VoucherEntryId,
+                                        VoucherNo: voucherno
+                                    };
+
+                                    // Save to backend
+                                    $.ajax({
+                                        type: "POST",
+                                        url: "/api/JournalEntryEdit/InsertDefaultCostAllocation",
+                                        data: JSON.stringify(newRow),
+                                        contentType: "application/json",
+                                        success: function (insertedResponse) {
+                                            // After successful insert, fetch updated data
+                                            $.ajax({
+                                                url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                                type: 'GET',
+                                                success: function (refreshedData) {
+                                                    costdataGrid.option('dataSource', refreshedData);
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+                                                }
+                                            });
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 4000);
+                                        }
+                                    });
+                                }
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to check cost allocation eligibility.", "error", 4000);
+                            }
+                        });
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
+                }
+            });
+
+
+
+
+            $('#CostAmount').dxNumberBox({
+                valueChanged: function (e) {
+                    const newVoucherAmount = e.value.toFixed(2);
+                    const updatedData = [{
                         DrCr: drCr,
                         EffectiveDate: new Date().toISOString(),
-                        VoucherAmount: initialVoucherAmount.toFixed(2),
-                        Remarks: '',
-                        // default fallback value
+                        VoucherAmount: newVoucherAmount,
+                        Remarks: ''
                     }];
-                    costdataGrid.option('dataSource', defaultRow);
+                    costdataGrid.option('dataSource', updatedData);
                 }
-            },
-            error: function () {
-                DevExpress.ui.notify("Failed to load cost allocation data.", "error", 4000);
+            });
+
+            // Function to format the EffectiveDate
+            function formatEffectiveDate(dateString) {
+                if (!dateString) return 'N/A'; // Handle null or empty dates
+
+                const dateObj = new Date(dateString);
+                const options = { day: 'numeric', month: 'short', year: 'numeric' };
+                return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
             }
-        });
-
-        $('#CostAmount').dxNumberBox({
-            valueChanged: function (e) {
-                const newVoucherAmount = e.value.toFixed(2);
-                const updatedData = [{
-                    DrCr: drCr,
-                    EffectiveDate: new Date().toISOString(),
-                    VoucherAmount: newVoucherAmount,
-                    Remarks: ''
-                }];
-                costdataGrid.option('dataSource', updatedData);
-            }
-        });
-
-        // Function to format the EffectiveDate
-        function formatEffectiveDate(dateString) {
-            if (!dateString) return 'N/A'; // Handle null or empty dates
-
-            const dateObj = new Date(dateString);
-            const options = { day: 'numeric', month: 'short', year: 'numeric' };
-            return dateObj.toLocaleDateString('en-GB', options).replace(/ /g, '-');
-        }
     });
+
+
+
 
 
 
@@ -555,7 +713,7 @@
                 grid.cellValue(rowIndex, "CostAllocationUnit", selectedRowData.CostAllocationUnit); // Reflect change
             }
 
-           
+
 
         }
 
@@ -568,7 +726,7 @@
     // function dataGridSelectionChanged(e) {
     //     var selectedData = e.selectedRowsData[0];
     //     if (!selectedData) return;
-    
+
     //     var dataGrid = $("#costdataGrid").dxDataGrid("instance");
     //     var focusedRowIndex = dataGrid.option("focusedRowIndex");
 
@@ -592,59 +750,64 @@
     //           e.component.collapseAll();
     //       }
     //   }
-
-
-    $("#btnCostSaveAndClose").dxButton("instance").option("onClick", function () {
+    $("#btnCostmasterSaveAndClose").dxButton("instance").option("onClick", function () {
         let grid = $("#costdataGrid").dxDataGrid("instance");
         let allRowsData = grid.getDataSource().items();
-        let journalchildno = parseInt('@voucherEntryNo'.trim(), 10);
+        let voucherchildno = parseInt('@voucherEntryNo'.trim(), 10);
         let voucherno = '@voucherNo';
-        
+        let expectedVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0; // Parsed from Razor
 
+        // Sum the VoucherAmount from all rows
+        let totalAmount = allRowsData.reduce((sum, row) => sum + (parseFloat(row.VoucherAmount) || 0), 0);
+
+        // Compare rounded to 2 decimals
+        if (Math.abs(totalAmount - expectedVoucherAmount) > 0.01) {
+            DevExpress.ui.dialog.alert(
+                `The total allocated amount (${totalAmount.toFixed(2)}) does not match the voucher amount (${expectedVoucherAmount.toFixed(2)}). Please adjust the cost allocations.`,
+                "Amount Mismatch"
+            );
+            return; // Stop execution
+        }
+
+        // Prepare data for submission
         let costAllocations = allRowsData.map(row => ({
-            CostAllocationId: row.CostAllocationId || 0, // 0 if it's a new record
+            CostAllocationId: row.CostAllocationId || 0,
             CostAllocDrCr: row.DrCr,
             CostAllocationUnitId: row.CostAllocationUnitId,
             EffectiveDate: row.EffectiveDate ? new Date(row.EffectiveDate).toISOString() : null,
             AmountAllocated: row.VoucherAmount,
             CostAllocRemarks: row.Remarks,
-            JournalChildNo: journalchildno,
+            JournalChildNo: voucherchildno,
             VoucherNo: voucherno
         }));
 
-
-        // Optional: validate before sending
-
+        // Submit to backend
         $.ajax({
             type: "POST",
-            url: "/api/JournalEntryEdit/SaveCostAllocations", // adjust area/controller path if needed
+            url: "/api/JournalEntryEdit/SaveCostAllocations",
             contentType: "application/json",
             data: JSON.stringify(costAllocations),
             success: function (response) {
-                
-                Closepopup();
                 DevExpress.ui.dialog.alert(
                     "Cost Allocation Details updated Successfully.",
                     "Update Successful"
                 ).then(function () {
-                    setTimeout(function () {
+                   setTimeout(function () {
                         loadLedgerGridData('@voucherNo');
-                    }, 500);
-                    if (popupInstances[journalchildno]) {
-                        popupInstances[journalchildno].hide();
+                   }, 500);
+                    if (popupInstances[voucherchildno]) {
+                        popupInstances[voucherchildno].hide();
                     }
-                });
 
-                //     window.location.reload();
-                // CostAllocationPopup.hide();
-                // Hide the popup
-                
+                });
             },
             error: function (xhr) {
                 DevExpress.ui.notify("Error saving data: " + xhr.responseText, "error", 4000);
             }
         });
     });
+
+
 
 
     // function dropDownBoxOnInput(e) {
@@ -703,98 +866,135 @@
     // });
 
 
-    $(document).ready(function () {
-        setTimeout(function () {
-            let btnInstance = $("#btnCostDelete").dxButton("instance");
-            if (btnInstance) {
-                btnInstance.on("click", function () {
-                    DevExpress.ui.dialog.confirm("You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
-                        .done(function (result) {
-                            if (result) {
-                                resetCostDataGrid();
-                            }
-                        });
-                });
-            } else {
-                console.error("btnCostDelete instance not found.");
-            }
-        }, 500);
-    });
+    // $(document).ready(function () {
+    //     setTimeout(function () {
+    //         let btnInstance = $("#btnCostDelete").dxButton("instance");
+    //         if (btnInstance) {
+    //             btnInstance.on("click", function () {
+    //                 DevExpress.ui.dialog.confirm("You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
+    //                     .done(function (result) {
+    //                         if (result) {
+    //                            confirmDelete();
+    //                         }
+    //                     });
+    //             });
+    //         } else {
+    //             console.error("btnCostDelete instance not found.");
+    //         }
+    //     }, 500);
+    // });
 
     // Function to reset the DataGrid
-    function resetCostDataGrid() {
-        
-        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+    // function resetCostDataGrid() {
 
-        if (costdataGrid) {
-            costdataGrid.option('dataSource', []); // Clear the grid data
-        }
+    //     const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
-        reinitializeGrid();
-    }
+    //     if (costdataGrid) {
+    //         costdataGrid.option('dataSource', []); // Clear the grid data
+    //     }
 
-    // Function to reinitialize the grid
-    function reinitializeGrid() {
-        const initialVoucherAmount = $("#CostAmount").dxNumberBox("instance")?.option("value") || 0;
-        const drcr = $("#DrCr").dxSelectBox("instance")?.option("value") || "";
+    //     reinitializeGrid();
+    // }
 
-        const costData = [
-            {
-                DrCr: drcr,
-                EffectiveDate: new Date().toLocaleDateString('en-GB', {
-                    day: 'numeric',
-                    month: 'short',
-                    year: 'numeric',
-                }),
-                VoucherAmount: initialVoucherAmount.toFixed(2),
-                Remarks: ''
-            }
-        ];
+    // // Function to reinitialize the grid
+    // function reinitializeGrid() {
+    //     const initialVoucherAmount = $("#CostAmount").dxNumberBox("instance")?.option("value") || 0;
+    //     const drcr = $("#DrCr").dxSelectBox("instance")?.option("value") || "";
 
-        const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+    //     const costData = [
+    //         {
+    //             DrCr: drcr,
+    //             EffectiveDate: new Date().toLocaleDateString('en-GB', {
+    //                 day: 'numeric',
+    //                 month: 'short',
+    //                 year: 'numeric',
+    //             }),
+    //             VoucherAmount: initialVoucherAmount.toFixed(2),
+    //             Remarks: ''
+    //         }
+    //     ];
 
-        if (costdataGrid) {
-            costdataGrid.option('dataSource', costData);
-        }
-    }
+    //     const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
 
-
-
-    function confirmDelete() {
-        var dataGrid = $("#costdataGrid").dxDataGrid("instance");
-        var selectedRows = dataGrid.getSelectedRowKeys();
-
-        if (selectedRows.length === 0) {
-            DevExpress.ui.dialog.alert("Please select at least one row to delete.", "Warning");
-            return;
-        }
-
-        DevExpress.ui.dialog.confirm("You are about to delete this line entry Item for the Cost Allocated. Delete Line Item.", "Confirm Deletion").done(function (dialogResult) {
-            if (dialogResult) {
-                selectedRows.forEach(function (key) {
-                    dataGrid.getDataSource().store().remove(key).done(function () {
-                        dataGrid.refresh();
-                    }).fail(function (error) {
-                        console.error("Error deleting row:", error);
-                    });
-                });
-            }
-        });
-    }
+    //     if (costdataGrid) {
+    //         costdataGrid.option('dataSource', costData);
+    //     }
+    // }
 
 
 
-    $(document).ready(function () {
-        let dataGrid = $("#costdataGrid").dxDataGrid("instance");
+    // function confirmDelete() {
+    //     const dataGrid = $("#costdataGrid").dxDataGrid("instance");
 
-        // Handle right-click (context menu event)
-        dataGrid.option("onContextMenuPreparing", function (e) {
-            if (e.row && e.target === "content") { // Ensure right-click is on a row, not the header
-                e.event.preventDefault(); // Prevent the default browser context menu
-                confirmDelete(e.row.data); // Show delete confirmation
-            }
-        });
-    });
+    //     const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+    //     const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+    //     const drCr = '@drCr';
+    //     const voucherno = '@voucherNo';
+
+
+    //             // Step 1: Delete all by VoucherNo
+    //             $.ajax({
+    //                 type: "POST",
+    //                 url: "/api/CostAllocation/DeleteByVoucherNo",
+    //                 contentType: "application/json",
+    //                 data: JSON.stringify({ voucherNo: voucherno }),
+    //                 success: function () {
+    //                     // Step 2: Insert default row
+    //                     const newRow = {
+    //                         CostAllocationId: 0,
+    //                         CostAllocDrCr: drCr,
+    //                         CostAllocationUnitId: 'ADMIN-0001',
+    //                         EffectiveDate: new Date(),
+    //                         AmountAllocated: initialVoucherAmount.toFixed(2),
+    //                         CostAllocRemarks: null,
+    //                         VoucherEntryId: VoucherEntryId,
+    //                         VoucherNo: voucherno
+    //                     };
+
+    //                     $.ajax({
+    //                         type: "POST",
+    //                         url: "/api/CostAllocation/InsertDefaultCostAllocation",
+    //                         contentType: "application/json",
+    //                         data: JSON.stringify(newRow),
+    //                         success: function () {
+    //                             // Step 3: Refresh grid
+    //                             $.ajax({
+    //                                 url: `/api/CostAllocation/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+    //                                 type: 'GET',
+    //                                 success: function (refreshedData) {
+    //                                     dataGrid.option('dataSource', refreshedData);
+    //                                 },
+    //                                 error: function () {
+    //                                     DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+    //                                 }
+    //                             });
+    //                         },
+    //                         error: function () {
+    //                             DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+    //                         }
+    //                     });
+    //                 },
+    //                 error: function () {
+    //                     DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
+    //                 }
+    //             });
+
+    // }
+
+
+
+
+    // $(document).ready(function () {
+    //     let dataGrid = $("#costdataGrid").dxDataGrid("instance");
+
+    //     // Handle right-click (context menu event)
+    //     dataGrid.option("onContextMenuPreparing", function (e) {
+    //         if (e.row && e.target === "content") { // Ensure right-click is on a row, not the header
+    //             e.event.preventDefault(); // Prevent the default browser context menu
+    //             confirmDelete(e.row.data); // Show delete confirmation
+    //         }
+    //     });
+    // });
 
     function setEffectiveDate(e) {
         var $dataGrid = $("#costdataGrid");
@@ -804,7 +1004,6 @@
             dataGrid.selectRows(e.value, false);
         }
         if (e.value) {
-            
             let grid = $("#costdataGrid").dxDataGrid("instance");
             let rowIndex = e.element.closest("tr").index(); // Get the edited row index
             let rowData = grid.getVisibleRows()[rowIndex].data;
@@ -818,52 +1017,506 @@
         }
     }
 
-    function closeParentModal() {
-        const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
-if (!voucherEntryNo) {
-    console.warn("VoucherEntryNo not found in hidden field.");
-    return;
-}
+        function closeParentModal() {
+            const voucherEntryNo = $("#CurrentVoucherEntryNo").val();
+            if (!voucherEntryNo) {
+                console.warn("VoucherEntryNo not found in hidden field.");
+                return;
+            }
 
-const popup = popupInstances[voucherEntryNo];
-if (popup) {
-    popup.hide();
-} else {
-    console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
-}
-    }
+            const popup = popupInstances[voucherEntryNo];
+            if (popup) {
+                popup.hide();
+            } else {
+                console.warn("No popup instance found for VoucherEntryNo:", voucherEntryNo);
+            }
+        }
+
 
     $(document).ready(function () {
-        var costDataGrid = $("#costdataGrid").dxDataGrid({
-            onRowUpdating: function (e) {
-                let costAmount = $("#CostAmount").dxNumberBox("instance").option("value"); // Get CostAmount value
-                let newAmount = e.newData.VoucherAmount; // New value entered in the grid
-                let oldAmount = e.oldData.VoucherAmount; // Previously loaded value
-                let dataSource = $("#costdataGrid").dxDataGrid("instance").option("dataSource");
+        const dataGrid = $("#costdataGrid").dxDataGrid("instance");
+           dataGrid.option("onRowUpdating", function (e) {
+                debugger;
+                        const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+                        const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+                        const drCr = '@drCr';
+                        const accountHead = '@accountHead';
+                        const voucherno = '@voucherNo'; // You declared this in your message
 
-                if (newAmount > oldAmount) {
-                    // Prevent increasing the amount, reset to old value
-                    e.newData.VoucherAmount = oldAmount;
+                    const oldData = e.oldData;
+                    const newData = e.newData;
+
+                    const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount);
+                    const originalAmount = parseFloat(oldData.VoucherAmount);
+
+                    // Check if VoucherAmount changed
+                    const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
+                    if (updatedAmount <=  0 ) {
+                        DevExpress.ui.notify("Negative or invalid voucher amounts are not allowed.", "warning", 3000);
+                        e.cancel = true;
+                        return;
+                    }
+
+
+                    // Prevent increasing the amount
+                    if (isVoucherAmountChanged && updatedAmount > originalAmount) {
+                        DevExpress.ui.notify("Updated amount cannot be greater than the original amount.", "warning", 3000);
+                        e.cancel = true;
+                        return;
+                    }
+
+                    // Cancel default update — we'll do it manually
                     e.cancel = true;
-                    // DevExpress.ui.notify("Amount cannot be increased! Resetting to " + oldAmount, "error", 2000);
+
+                    // Case 1: Amount changed and is lower than original — split
+                    if (isVoucherAmountChanged && updatedAmount < originalAmount) {
+                        const remainingAmount = originalAmount - updatedAmount;
+
+                        const adjustOldRow = {
+                            CostAllocationId: oldData.CostAllocationId,
+                            VoucherAmount: updatedAmount,
+                            CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
+                            CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+                            EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+                        };
+
+                                                const newRow = {
+                                                    CostAllocationId: 0,
+                                                    CostAllocDrCr: drCr,
+                                                    CostAllocationUnitId:  'ADMIN-0001',
+                                                    EffectiveDate: new Date(),
+                                                    AmountAllocated: remainingAmount.toFixed(2),
+                                                    CostAllocRemarks: null,
+                                                    VoucherEntryId: VoucherEntryId,
+                                                    VoucherNo: voucherno
+                                                };
+
+                        // Update old amount first
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/JournalEntryEdit/UpdateCostAllocationWithFields",
+                            contentType: "application/json",
+                            data: JSON.stringify(adjustOldRow),
+                            success: function () {
+                                // Insert new row
+                                $.ajax({
+                                    type: "POST",
+                                    url: "/api/JournalEntryEdit/InsertDefaultCostAllocation",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(newRow),
+                                    success: function (refreshedData) {
+                                        $.ajax({
+                                                url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                                type: 'GET',
+                                                success: function (refreshedData) {
+                                                    dataGrid.option('dataSource', refreshedData);
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+                                                }
+                                        });
+                                    },
+                                    error: function () {
+                                        DevExpress.ui.notify("Failed to insert new cost allocation.", "error", 3000);
+                                    }
+                                });
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to update original cost allocation.", "error", 3000);
+                            }
+                        });
+                    }
+                    // Case 2: Other fields updated — update existing row directly
+                    else {
+                        const updateRow = {
+                            CostAllocationId: oldData.CostAllocationId,
+                            VoucherAmount: updatedAmount,
+                            CostAllocRemarks: newData.Remarks ?? oldData.Remarks,
+                            CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+                            EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/JournalEntryEdit/UpdateCostAllocationWithFields",
+                            contentType: "application/json",
+                            data: JSON.stringify(updateRow),
+                            success:  function () {
+
+                               $.ajax({
+                                                url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                                type: 'GET',
+                                                success: function (Data) {
+                                                     dataGrid.option('dataSource', Data);
+                                                    dataGrid.refresh(); // ✅ Fix: Properly call refresh
+                                                    dataGrid.cancelEditData(); // ✅ Fix: Exit edit mode
+                                                },
+                                                error: function () {
+                                                    DevExpress.ui.notify("Failed to refresh cost allocation data after insert.", "error", 4000);
+                                                }
+                               });
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to update cost allocation.", "error", 3000);
+                            }
+                        });
+                    }
+           });
+           dataGrid.option("onRowRemoving", function (e) {
+               debugger;
+                const rowData = e.data;
+                const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+                const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+                const drCr = '@drCr';
+                const voucherno = '@voucherNo';
+
+                e.cancel = true; // Cancel default deletion — we handle it manually
+
+                const allRows = dataGrid.option("dataSource");
+
+                if (allRows.length === 1) {
+                    // Only one row - call confirmDelete
+                    confirmDelete();
                     return;
                 }
 
-                if (newAmount < oldAmount) {
-                    let balanceAmount = oldAmount - newAmount; // Calculate the remaining balance
+                const deletedRowIndex = allRows.findIndex(row => row.CostAllocationId === rowData.CostAllocationId);
+                if (deletedRowIndex == 0) {
+                    const previousRow = allRows[deletedRowIndex + 1];
+                    const currentRow = allRows[deletedRowIndex];
+                    const CostAllocationId = currentRow.CostAllocationId;;
 
-                    // Add new row with the balance amount
-                    let newRow = { ...e.oldData, CostAllocationUnit: "Common Overheads", CostAllocationUnitId: "ADMIN-0001", VoucherAmount: balanceAmount, CostAllocationId: 0, Remarks: null, EffectiveDate: new Date() };
 
-                    // Add the new row to the grid
-                    dataSource.push(newRow);
-                    $("#costdataGrid").dxDataGrid("instance").option("dataSource", dataSource);
-                    // DevExpress.ui.notify("Balance amount of " + balanceAmount + " added as a new row.", "success", 2000);
+                    const updatedPreviousRow = {
+                        CostAllocationId: previousRow.CostAllocationId,
+                        VoucherAmount: parseFloat(previousRow.VoucherAmount) + parseFloat(rowData.VoucherAmount),
+                        CostAllocRemarks: previousRow.CostAllocRemarks,
+                        CostAllocationUnitId: previousRow.CostAllocationUnitId,
+                        EffectiveDate: previousRow.EffectiveDate
+                    };
+
+                    // Step 1: Update previous row
+                    $.ajax({
+                           type: "POST",
+                            url: `/api/JournalEntryEdit/DeleteCostAllocation?costAllocationId=${CostAllocationId}`,
+                            contentType: "application/json",
+
+                        success: function () {
+                            // Step 2: Delete selected row
+                            $.ajax({
+                                    type: "POST",
+                                    url: "/api/JournalEntryEdit/UpdateCostAllocationWithFields",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(updatedPreviousRow),
+                                success: function () {
+                                    // Step 3: Refresh grid
+                                    $.ajax({
+                                        url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                        type: 'GET',
+                                        success: function (refreshedData) {
+                                            dataGrid.option('dataSource', refreshedData);
+                                            dataGrid.refresh();
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Failed to refresh cost allocation data after deletion.", "error", 4000);
+                                        }
+                                    });
+                                },
+                                error: function () {
+                                    DevExpress.ui.notify("Failed to delete selected cost allocation row.", "error", 3000);
+                                }
+                            });
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Failed to update previous row with merged amount.", "error", 3000);
+                        }
+                    });
+                } else {
+                    // DevExpress.ui.notify("Cannot merge the first row with any previous entry.", "warning", 3000);
                 }
-            }
-        }).dxDataGrid("instance");
+
+                if (deletedRowIndex > 0) {
+                    const previousRow = allRows[deletedRowIndex - 1];
+                    const currentRow = allRows[deletedRowIndex];
+                    const CostAllocationId = currentRow.CostAllocationId;;
+
+
+                    const updatedPreviousRow = {
+                        CostAllocationId: previousRow.CostAllocationId,
+                        VoucherAmount: parseFloat(previousRow.VoucherAmount) + parseFloat(rowData.VoucherAmount),
+                        CostAllocRemarks: previousRow.CostAllocRemarks,
+                        CostAllocationUnitId: previousRow.CostAllocationUnitId,
+                        EffectiveDate: previousRow.EffectiveDate
+                    };
+
+                    // Step 1: Update previous row
+                    $.ajax({
+                           type: "POST",
+                            url: `/api/JournalEntryEdit/DeleteCostAllocation?costAllocationId=${CostAllocationId}`,
+                            contentType: "application/json",
+
+                        success: function () {
+                            // Step 2: Delete selected row
+                            $.ajax({
+                                    type: "POST",
+                                    url: "/api/JournalEntryEdit/UpdateCostAllocationWithFields",
+                                    contentType: "application/json",
+                                    data: JSON.stringify(updatedPreviousRow),
+                                success: function () {
+                                    // Step 3: Refresh grid
+                                    $.ajax({
+                                        url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                        type: 'GET',
+                                        success: function (refreshedData) {
+                                            dataGrid.option('dataSource', refreshedData);
+                                            dataGrid.refresh();
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Failed to refresh cost allocation data after deletion.", "error", 4000);
+                                        }
+                                    });
+                                },
+                                error: function () {
+                                    DevExpress.ui.notify("Failed to delete selected cost allocation row.", "error", 3000);
+                                }
+                            });
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Failed to update previous row with merged amount.", "error", 3000);
+                        }
+                    });
+                } else {
+                    // DevExpress.ui.notify("Cannot merge the first row with any previous entry.", "warning", 3000);
+                }
+           });
+            setTimeout(function () {
+                let btnInstance = $("#btnCostDelete").dxButton("instance");
+                if (btnInstance) {
+                    btnInstance.on("click", function () {
+                        DevExpress.ui.dialog.confirm("You are about to reset Cost allocation details for the voucher entry. Are you sure you want to reset the Cost Allocation?", "Are you sure?")
+                            .done(function (result) {
+                                if (result) {
+                                   confirmDelete();
+                                }
+                            });
+                    });
+                } else {
+                    console.error("btnCostDelete instance not found.");
+                }
+            }, 500);
+
+        function confirmDelete() {
+                const dataGrid = $("#costdataGrid").dxDataGrid("instance");
+
+                const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+                const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+                const drCr = '@drCr';
+                const voucherno = '@voucherNo';
+
+
+                // Step 1: Delete all by VoucherNo
+                $.ajax({
+                    type: "POST",
+                    url: "/api/JournalEntryEdit/DeleteByVoucherNo",
+                    contentType: "application/json",
+                    data: JSON.stringify({ voucherNo: voucherno }),
+                    success: function () {
+                        // Step 2: Insert default row
+                        const newRow = {
+                            CostAllocationId: 0,
+                            CostAllocDrCr: drCr,
+                            CostAllocationUnitId: 'ADMIN-0001',
+                            EffectiveDate: new Date(),
+                            AmountAllocated: initialVoucherAmount.toFixed(2),
+                            CostAllocRemarks: null,
+                            VoucherEntryId: VoucherEntryId,
+                            VoucherNo: voucherno
+                        };
+
+                        $.ajax({
+                            type: "POST",
+                            url: "/api/JournalEntryEdit/InsertDefaultCostAllocation",
+                            contentType: "application/json",
+                            data: JSON.stringify(newRow),
+                            success: function () {
+                                // Step 3: Refresh grid
+                                $.ajax({
+                                    url: `/api/JournalEntryEdit/GetCostAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+                                    type: 'GET',
+                                    success: function (refreshedData) {
+                                        dataGrid.option('dataSource', refreshedData);
+                                    },
+                                    error: function () {
+                                        DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+                                    }
+                                });
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+                            }
+                        });
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
+                    }
+                });
+
+        }
+
+
+
     });
 
+
+
+    //     function onCostAmountChanged(e) {
+    //     debugger;
+
+    //     const grid = $("#costdataGrid").dxDataGrid("instance");
+    //     let dataSource = grid.option("dataSource");
+
+    //     const drCr = '@drCr';
+    //     const oldValue = parseFloat(e.previousValue) || 0;
+    //     const newValue = parseFloat(e.value);
+    //     const balance = oldValue - newValue;
+
+    //     if (newValue > oldValue) {
+    //         DevExpress.ui.notify("Allocated amount cannot exceed the voucher amount.", "error", 3000);
+    //         grid.cellValue(e.row.rowIndex, "VoucherAmount", oldValue);
+    //         return;
+    //     }
+
+    //     // ✅ Use visible rows and row.rowIndex to get actual row data
+    //     const visibleRows = grid.getVisibleRows();
+    //     const currentRow = visibleRows[e.row.rowIndex];
+    //     const rowData = currentRow?.data;
+
+    //     if (rowData) {
+    //         rowData.VoucherAmount = newValue;
+    //     }
+
+    //     // ✅ Add balance row if needed
+    //     if (balance > 0.01) {
+    //         const newRow = {
+    //             ...rowData,
+    //             DrCr: drCr,
+    //             CostAllocationUnit: "Common Overheads",
+    //             CostAllocationUnitId: "ADMIN-0001",
+    //             VoucherAmount: balance,
+    //             CostAllocationId: 0,
+    //             Remarks: null,
+    //             EffectiveDate: new Date()
+    //         };
+
+    //         dataSource.push(newRow);
+    //     }
+
+    //     // ✅ Rebind data and refresh
+    //     grid.option("dataSource", dataSource);
+    //     grid.refresh();
+    // }
+
+    // function onCostAllocationRowUpdating(e) {
+    //     debugger;
+    //         const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+    //         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+    //         const drCr = '@drCr';
+    //         const accountHead = '@accountHead';
+    //         const voucherno = '@voucherNo'; // You declared this in your message
+    //         const costdataGrid = $('#costdataGrid').dxDataGrid('instance');
+    //     const oldData = e.oldData;
+    //     const newData = e.newData;
+
+    //     const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount);
+    //     const originalAmount = parseFloat(oldData.VoucherAmount);
+
+    //     // Check if VoucherAmount changed
+    //     const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
+
+    //     // Prevent increasing the amount
+    //     if (isVoucherAmountChanged && updatedAmount > originalAmount) {
+    //         DevExpress.ui.notify("Updated amount cannot be greater than the original amount.", "warning", 3000);
+    //         e.cancel = true;
+    //         return;
+    //     }
+
+    //     // Cancel default update — we'll do it manually
+    //     e.cancel = true;
+
+    //     // Case 1: Amount changed and is lower than original — split
+    //     if (isVoucherAmountChanged && updatedAmount < originalAmount) {
+    //         const remainingAmount = originalAmount - updatedAmount;
+
+    //         const adjustOldRow = {
+    //             CostAllocationId: oldData.CostAllocationId,
+    //             VoucherAmount: updatedAmount,
+    //             CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
+    //             CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+    //             EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+    //         };
+
+    //                                 const newRow = {
+    //                                     CostAllocationId: 0,
+    //                                     CostAllocDrCr: drCr,
+    //                                     CostAllocationUnitId:  'ADMIN-0001',
+    //                                     EffectiveDate: new Date(),
+    //                                     AmountAllocated: remainingAmount.toFixed(2),
+    //                                     CostAllocRemarks: null,
+    //                                     VoucherEntryId: VoucherEntryId,
+    //                                     VoucherNo: voucherno
+    //                                 };
+
+    //         // Update old amount first
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+    //             contentType: "application/json",
+    //             data: JSON.stringify(adjustOldRow),
+    //             success: function () {
+    //                 // Insert new row
+    //                 $.ajax({
+    //                     type: "POST",
+    //                     url: "/api/CostAllocation/InsertDefaultCostAllocation",
+    //                     contentType: "application/json",
+    //                     data: JSON.stringify(newRow),
+    //                     success: function (refreshedData) {
+    //                         costdataGrid.option('dataSource', refreshedData);
+    //                     },
+    //                     error: function () {
+    //                         DevExpress.ui.notify("Failed to insert new cost allocation.", "error", 3000);
+    //                     }
+    //                 });
+    //             },
+    //             error: function () {
+    //                 DevExpress.ui.notify("Failed to update original cost allocation.", "error", 3000);
+    //             }
+    //         });
+    //     }
+    //     // Case 2: Other fields updated — update existing row directly
+    //     else {
+    //         const updateRow = {
+    //             CostAllocationId: oldData.CostAllocationId,
+    //             VoucherAmount: updatedAmount,
+    //             CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
+    //             CostAllocationUnitId: newData.CostAllocationUnitId ?? oldData.CostAllocationUnitId,
+    //             EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
+    //         };
+
+    //         $.ajax({
+    //             type: "POST",
+    //             url: "/api/CostAllocation/UpdateCostAllocationWithFields",
+    //             contentType: "application/json",
+    //             data: JSON.stringify(updateRow),
+    //             success: function (refreshedData) {
+    //                 DevExpress.ui.notify("Cost allocation updated.", "success", 3000);
+    //                costdataGrid.option('dataSource', refreshedData);
+    //             },
+    //             error: function () {
+    //                 DevExpress.ui.notify("Failed to update cost allocation.", "error", 3000);
+    //             }
+    //         });
+    //     }
+    // }
 
 
 

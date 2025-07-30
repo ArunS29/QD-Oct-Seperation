@@ -2,6 +2,10 @@
 @using DevExtreme.AspNet.Mvc
 @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
+     var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
 }
 
 <style>
@@ -426,7 +430,30 @@
                                                         .ShowSpinButtons(true)
                                                         .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }))
                         </div>
-
+                        <div class="col-md-2">
+                           @(Html.DevExtreme().DropDownBox()
+                            .ID("ddlBaseCurrency")
+                            .DataSource(d => d.WebApi()
+                                .Controller("Utility")
+                                .LoadAction("GetCurrencyList")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("CurrencyExchangeId")
+                            )
+                            .ValueExpr("CurrencyExchangeId")
+                            .DisplayExpr("CurrencyName")
+                            // now use your renamed variable
+                            .Value(baseCurrencyIdnew)
+                            .Label(new JS("formatMessage('Base Currency')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(false)
+                            .DropDownOptions(o => o.Width(300))
+                            .ReadOnly(true)
+    
+                            .ElementAttr(new { @class = "custom-disabled-selectbox" })
+                        )
+                        </div>
                         <div class="col-md-3">
                             @(Html.DevExtreme().DropDownBox()
                                                         .DataSource(d => d.WebApi()
