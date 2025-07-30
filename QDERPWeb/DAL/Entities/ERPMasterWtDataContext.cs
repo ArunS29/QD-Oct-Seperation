@@ -17,6 +17,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public DbSet<SupplierOutstanding> SupplierOutstandings { get; set; }
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
+    public virtual DbSet<FinancialSummaryReport> FinancialSummaryReports { get; set; }
 
     public virtual DbSet<Language> Languages { get; set; }
     public virtual DbSet<TblUserAccessWeb> TblUserAccessWebs { get; set; }
@@ -3447,6 +3448,11 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
         modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
 
+        modelBuilder.Entity<FinancialSummaryReport>(entity =>
+        {
+            entity.HasNoKey(); // required for views or tables without PK
+            entity.ToTable("FinancialSummaryReport"); // actual table or view name
+        });
 
         //modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
         modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
