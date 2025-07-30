@@ -1705,7 +1705,6 @@
 
 
 <!-- Modal Structure -->
-
 <script>
 
 	let accid=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
@@ -1721,9 +1720,9 @@
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
 			function InvoiceOPenToSave(data) {
-			
 
-	    var InvoiceMaster = {
+
+		var InvoiceMaster = {
 		DebitNoteNo:data,
 		DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
 		PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
@@ -1820,7 +1819,7 @@
 											if(account.IsApproved==true)
 											{
 												disableEditing();
-												
+
 											}
 											else if(account.IsPosted==true)
 											{
@@ -1834,7 +1833,7 @@
 									dataType: 'json',
 								success: function (response) {
 										console.log("DebitGrid",response)
-					
+
 										let rowData = response.map((item, index) => ({
 										SNo: index + 1,
 										...item
@@ -1873,7 +1872,7 @@
 
 							$('#DebitNoteNo').dxTextBox("instance")?.option("value", account.DebitNoteNo);
 							dataGridSupplierNameSelectionChanged({ selectedRowKeys: [account.SupplierCode] });
-							
+
 							//$('#ddlSupplierNameArabic').dxTextBox("instance")?.option("value", account.SupplierName);
 							$('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.DebitNoteDate);
 							dataGridPurhaseVoucherSelectionChanged({ selectedRowKeys: [account.PurchaseVoucherNo] });
@@ -1883,22 +1882,22 @@
 							$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
 							dataGridItemReturnsSelectionChanged({ selectedRowKeys: [account.StoreCode] });
 
-							
+
 							$("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
 							dataGridPurchaseAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount] });
 							dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode] });
 							$("#txtInvoiceNotes").dxTextArea("instance").option("value",account.DebitNoteRemarks);
 							$("#txtNotesinArabic").dxTextArea("instance").option("value",account.DebitNoteRemarksAr);
-							
+
 							//PaymentMeansTypeCode: paymentmeanstypecode,
-							
+
 							//$("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
-							
+
 							//$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
 							dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId] });
 							dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode] });
 							//$("#ddlDivision").dxDropDownBox("instance").option("value",account.BranchCode);
-							
+
 							//$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value",account.CompanyId);
 
 
@@ -2426,7 +2425,7 @@
 			};
 
 
-	
+
 
 
 			 var dataGridInstance;
@@ -3160,7 +3159,7 @@
 								return;
 							}
 					}
-				
+
 			}
 
 
@@ -3326,7 +3325,7 @@
 			const selectedKey = e.selectedRowKeys[0];
 			const ddbInstance = $("#VATSupplierName").dxDropDownBox("instance");
 			supplierid = selectedKey;
-			
+
 			if (selectedKey) {
 				ddbInstance.option("value", selectedKey);
 				if (ddbInstance.option("opened")) {
@@ -3340,8 +3339,8 @@
 
 						accheadid=selectedRowData[0].AccountHead;
 						supplierid=selectedRowData[0].AccountId;
-					
-					
+
+
 
 				} else {
 						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -3381,7 +3380,7 @@
 					// Get ReferenceNo from selected row
 
 					if (selectedRowData.length > 0) {
-						
+
 
 					} else {
 						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -3527,7 +3526,7 @@
 			}
 
 		}
-			
+
 
 		function dataGridCompanyBranchHeadInitialized(e) {
 
@@ -3575,9 +3574,9 @@
 		}
 
 
-		
 
-		
+
+
 
 		function dataGridPurchaseAccountInitialized(e) {
 
@@ -4362,9 +4361,11 @@
 			  window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
 			  window.parent.$("#popupContainer").dxPopup("instance").hide();
 		   }
-		   
+		   function GoToAttachment(){
+			   window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
+		   }
 			function onPostButtonClick(e) {
-			
+
 			var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
 
 			// Format the AccountId with the desired prefix
@@ -4742,13 +4743,13 @@
 	}
 
 
-	
+
 
 	 $("#btnSave").on("click", function (e) {
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
-		
+
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -4757,9 +4758,9 @@
 		var InvoiceMaster = {
 			DebitNoteNo: $('#DebitNoteNo').dxTextBox("instance").option("value") || null,
 			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
-	        PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
+			PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
 			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
-		    SupplierCode: supplierid,
+			SupplierCode: supplierid,
 			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 			//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
 			ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
@@ -4767,7 +4768,7 @@
 			ItemReturns:$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value")||null,
 			DebitNoteEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value") || null,
 		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
-		    RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
+			RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
 			CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
 			DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
 			DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
@@ -5216,16 +5217,16 @@
 			$.ajax({
 				type: "POST",
 				//url: "/api/VATModule/VerifyVoucher",
-				url: `/api/VATModule/CreditVerifyVoucher?CreditNoteNo=${encodeURIComponent(vno)}`,
+				url: `/api/VATModule/DebitVerifyVoucher?DebitNoteNo=${encodeURIComponent(vno)}`,
 
 				contentType: "application/json",
 				dataType: "json",
-				data: JSON.stringify({ CreditNoteNo: vno }), // Send as JSON in request body
+				data: JSON.stringify({ DebitNoteNo: vno }), // Send as JSON in request body
 				success: function (response) {
 					if (response && response.Message) {
-						DevExpress.ui.dialog.alert(
-							"VAT Invoice has been Verified.",
-							"Verified"
+						DevExpress.ui.notify(
+							"VAT Invoice has been Verified.","success",2000
+
 						).done(() => {
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -5338,7 +5339,7 @@
 			});
 		}
 
-		  
+
 
 		$("#btnPostToLedgers").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -5468,9 +5469,9 @@
 			});
 		}
 
-		
 
-		
+
+
 
 
 
@@ -5480,9 +5481,6 @@
 
 
 			
-
-		dialog.show(); // Show the dialog
-	});
 
 	function handleFileSelection() {
 		const fileInput = document.getElementById("fileInput");
@@ -5586,7 +5584,7 @@
 
 
 
-	
+
 
 
 		function disableEditing() {
@@ -5846,4 +5844,3 @@
 
 
 </script>
-

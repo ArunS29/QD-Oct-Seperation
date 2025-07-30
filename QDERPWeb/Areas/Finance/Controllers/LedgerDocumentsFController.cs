@@ -198,9 +198,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             .Select(c => (DateTime?)c.PurchaseVoucherDate)
                             .FirstOrDefaultAsync();
 
+                        DateTime? task4 = await dbContext.Tbl20172VatdebitNoteMasters
+                            .Where(c => c.DebitNoteNo == folderId)
+                            .Select(c => (DateTime?)c.DebitNoteDate)
+                            .FirstOrDefaultAsync();
 
+                        DateTime? task5 = await dbContext.Tbl20181ProformaInvoiceMasters
+                            .Where(c => c.ProformaInvoiceNo == folderId)
+                            .Select(c => (DateTime?)c.ProformaInvoiceDate)
+                            .FirstOrDefaultAsync();
 
-                        voucherDate = task1 ?? task2 ?? task3;
+                        voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
 
                     }
                 }
