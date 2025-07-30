@@ -15,6 +15,11 @@ function closeModal() {
     document.getElementById("modalIframe").src = ""; // Clear iframe on close
 }
 
+document.addEventListener("keydown", function (event) {
+    if (event.key === "Escape") {
+        closeModal();
+    }
+});
 
 function showToastModal(type, title, message) {
     const iconMap = {

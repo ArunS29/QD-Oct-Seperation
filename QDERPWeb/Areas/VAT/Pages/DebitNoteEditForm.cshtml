@@ -5287,7 +5287,6 @@
 					if (response && response.Message) {
 						DevExpress.ui.notify(
 							"VAT Invoice has been Verified.","success",2000
-
 						).done(() => {
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");

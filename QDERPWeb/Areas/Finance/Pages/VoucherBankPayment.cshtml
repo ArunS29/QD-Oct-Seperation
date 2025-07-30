@@ -218,6 +218,7 @@
                                                 .ID("txtVoucherAmount")
                                                 .Value(0)
                                                 .TabIndex(5)
+                                                .Max(99999999)
                                                 .ValidationRules(rules =>
                                                 {
                                                     rules.AddRequired().Message("Voucher Amount Cannot be Zero Or Negative");
@@ -327,6 +328,7 @@
                                                 .ID("txtCurrencyRate")
                                                 .Value(1)
                                                 .Min(0)
+                                                .Max(99999)
                                                 .TabIndex(7)
                                                 .Format("#,##0.00")
                                                 .InputAttr(new

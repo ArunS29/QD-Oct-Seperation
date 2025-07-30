@@ -385,6 +385,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingMaster.ClaimModifiedOn = now;
                     existingMaster.PaymentType = model.PaymentType;
                     existingMaster.PaymentAccount = model.PaymentAccount;
+                    existingMaster.Priority = model.Priority;
                     dbContext.Tbl20102ExpenseClaimMasters.Update(existingMaster);
                 }
                 else
@@ -400,6 +401,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         ClaimerId = claimerId,
                         PaymentType = model.PaymentType,
                         PaymentAccount = model.PaymentAccount,
+                        Priority = model.Priority,
                         ClaimCreatedBy = userName,
                         ClaimCreatedOn = now,
                         FundRequestTypeId = model.FundRequestTypeId
@@ -684,6 +686,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         x.ClaimRefNo,
                                         x.ClaimDate,
                                         x.ProjectClaimedFor,
+                                        x.Priority,
                                         x.ClaimRemarks,
                                         x.IsSubmittedToFinance,
                                         x.SubmittedBy,
@@ -1276,7 +1279,70 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(new { success = true });
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateVoucheronload([FromBody] ExpenseClaimViewModel model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
+           
+
+            try
+            {
+                // Get user session data
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                byte claimerId = Convert.ToByte(userIdStr); // ✅ Convert string to byte
+
+                string userName = HttpContext.Session.GetString("UserName");
+                DateTime now = DateTime.Now;
+                // Check if master record exists
+                var existingMaster = await dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefaultAsync(m => m.ClaimRefNo == model.ClaimRefNo);
+
+                if (existingMaster != null)
+                {
+                    // ✅ Update master record
+                    existingMaster.ClaimDate = model.ClaimDate;
+                    existingMaster.ClaimEffectiveDate = model.ClaimEffectiveDate;
+                    existingMaster.ProjectClaimedFor = model.ProjectClaimedFor;
+                    existingMaster.ClaimRemarks = model.ClaimRemarks;
+                    existingMaster.ClaimModifiedBy = userName;
+                    existingMaster.ClaimModifiedOn = now;
+                    existingMaster.PaymentType = model.PaymentType;
+                    existingMaster.PaymentAccount = model.PaymentAccount;
+                    dbContext.Tbl20102ExpenseClaimMasters.Update(existingMaster);
+                }
+                else
+                {
+                    // ✅ Insert new master
+                    var newMaster = new Tbl20102ExpenseClaimMaster
+                    {
+                        ClaimRefNo = model.ClaimRefNo,
+                        ClaimDate = model.ClaimDate,
+                        ClaimEffectiveDate = model.ClaimEffectiveDate,
+                        ProjectClaimedFor = model.ProjectClaimedFor,
+                        ClaimRemarks = model.ClaimRemarks,
+                        ClaimerId = claimerId,
+                        PaymentType = model.PaymentType,
+                        PaymentAccount = model.PaymentAccount,
+                        ClaimCreatedBy = userName,
+                        ClaimCreatedOn = now,
+                        FundRequestTypeId = model.FundRequestTypeId
+                    };
+
+                    dbContext.Tbl20102ExpenseClaimMasters.Add(newMaster);
+                }
+
+                await dbContext.SaveChangesAsync();
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
 
     }
 }

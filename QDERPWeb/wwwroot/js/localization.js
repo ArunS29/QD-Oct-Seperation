@@ -1,6 +1,12 @@
 ﻿
 var dictionary = {
+
     "en": {
+        "Cash/Creditors Account":"Cash/Creditors Account",
+        "ID": "ID",
+        "Code": "Code",
+        "Category":"Category",
+
         "Code": "Code",
         "Sub Group Name": "Sub Group Name",
         "Notes": "Notes",
@@ -2289,6 +2295,7 @@ var dictionary = {
         "GCC Countries": "GCC Countries",
         "Others Countries": "Others Countries",
         "Exports Revenue": "Exports Revenue",
+        "Exports":"Exports",
         "VAT Amount Classified": "VAT Amount Classified",
         "Domestic Standard Rated Tax": "Domestic Standard Rated Tax",
         "Domestic Zero Rated Tax": "Domestic Zero Rated Tax",
@@ -3917,6 +3924,7 @@ var dictionary = {
     },
     ar: {
         "Sub Group Notes:": "ملاحظات المجموعة الفرعية:",
+        "Exports": "الصادرات",
         "Add New Debit Note Register": "إضافة سجل إشعار الخصم الجديد",
         "Add New Proforma Invoice Edit":"هذا هو النموذج الجديد في تحرير الصوت.",
         "ReceiptChildSlNo": "Receipt Child Sl No - رقم تسلسل استلام الفرع",
@@ -5339,6 +5347,10 @@ var dictionary = {
         "Cost Center Summary Reports": "تقارير ملخص مركز التكلفة",
         "Cost Center Detailed Reports": "تقارير تفصيلية لمركز التكلفة",
         "PropertyNo": "رقم العقار",
+       "Cash/Creditors Account": "حساب نقدي / الدائنين",
+        "ID": "المعرف",
+       "Code": "الرمز",
+        "Category": "الفئة",
         "Asset Register": "سجل الأصول",
         "Created By": "تم الإنشاء بواسطة",
         "Modified On": "تم التعديل في",
@@ -6894,6 +6906,7 @@ var dictionary = {
     },
     zh: {
         "Sub Group Notes:": "子组备注：",
+        "Exports": "出口",
         "Add New Debit Note Register": "添加新的借项单登记",
         "Add New Proforma Invoice Edit": "添加新的形式发票编辑",
         "Registers": "登记簿",
@@ -9709,6 +9722,7 @@ var dictionary = {
     },
     hi: {
         "Sub Group Notes:": "उप समूह टिप्पणियाँ:",
+        "Exports": "निर्यात",
         "Add New Debit Note Register": "नया डेबिट नोट रजिस्टर जोड़ें",
         "Add New Proforma Invoice Edit":"यह वॉयस एडिट में एक नया प्रोफार्मा है।",
         "Registers": "रजिस्टर",
@@ -12676,6 +12690,7 @@ var dictionary = {
     },
     ur: {
         "Sub Group Notes:": "ذیلی گروپ نوٹس:",
+        "Exports": "برآمدات",
         "Add New Debit Note Register": "نیا ڈیبٹ نوٹ رجسٹر شامل کریں",
         "Add New Proforma Invoice Edit": "نیا پروفارما انوائس ایڈٹ شامل کریں",
         "Registers": "رجسٹرز",
@@ -15732,6 +15747,7 @@ var dictionary = {
 
     ko: {
         "Sub Group Notes:": "서브 그룹 메모:",
+        "Exports": "수출",
         "Add New Debit Note Register": "새 직불 노트 등록 추가",
         "Add New Proforma Invoice Edit": "새 견적 송장 편집 추가",
         "Registers": "등록부",

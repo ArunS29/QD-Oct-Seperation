@@ -1,4 +1,18 @@
-﻿using System.Data;
+﻿using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.XtraPrinting.BarCode;
+using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.Areas.Finance.Models;
+using QD.ERP.Web.Areas.VAT.Models;
+using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
+using QRCoder;
+using System.Data;
 using System.Data.SqlClient;
 using System.Dynamic;
 using System.Globalization;
@@ -8,18 +22,6 @@ using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
-using DevExpress.DataProcessing.InMemoryDataProcessor;
-using DevExpress.XtraPrinting.BarCode;
-using DevExtreme.AspNet.Data;
-using DevExtreme.AspNet.Mvc;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using QD.ERP.Web.Areas.Finance.Models;
-using QD.ERP.Web.Areas.VAT.Models;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Service;
-using QRCoder;
 using static QD.ERP.Web.Service.UserAccessService;
 
 
@@ -34,11 +36,14 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VATModuleController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public VATModuleController(ILogger<VATModuleController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public VATModuleController(ILogger<VATModuleController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+           
         }
 
         //[HttpGet]
@@ -319,17 +324,23 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn);
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+             module: "VAT > Purchase Clone EInvoice",
+             actionDetail: $"Saved voucher: {newPurchaseVoucherNo}",
+             documentNo: newPurchaseVoucherNo
+         );
                     return Ok(new
                     {
                         Message = "Purchase Invoice cloned successfully.",
                         VoucherVerifiedBy = User.Identity?.Name ?? "System"
+
                     });
                 }
                 catch (Exception ex)
                 {
                     return BadRequest(new { Message = ex.Message });
                 }
+
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
@@ -518,6 +529,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
+                    var resultWithVAT = new List<ExpandoObject>();
                     var result = await dbContext.Tbl20164GoodsAndServicesMasters
                     .Select(g => new
                     {
@@ -532,12 +544,42 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         g.StoreCode,
                         g.MaxQty,
                         g.MinQty,
-                        g.GsuoM
+                        g.GsuoM,
+                        g.GspackingUnit
+
 
                     })
                     .ToListAsync();
 
-                    return Ok(result);
+                    foreach (var gridDetails in result)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
+                   .Where(x => x.UnitCode == gridDetails.GsgroupId)
+                   .Select(x => x.UnitDesc)
+                   .FirstOrDefault();
+
+
+                        // Add new dynamic column
+                        dict["UnitRateMethod"] = UnitRateMethodDesc;
+                    
+
+                        //dict["VAT"] = vatValue;
+                        //dict["TotalVAT"] = totalValue;
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Ok(resultWithVAT);
                 }
             }
             catch (Exception ex) { throw ex; }
@@ -1042,6 +1084,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(CM);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+            module: "VAT > Cost Allocation",
+            actionDetail: $"Saved Cost Allocation: {CM.Gscode}",
+            documentNo: CM.Gscode
+                );
                     return Ok(new { success = true, message = "Data inserted successfully!" });
                 }
                 catch (Exception ex)
@@ -1156,6 +1203,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+module: "VAT > Goods and Services",
+actionDetail: $"Saved Goods and Services: {model.Gscode}",
+documentNo: model.Gscode
+);
                     return Ok(new { success = true, message = "Saved successfully!", gscode = model.Gscode });
                 }
                 catch (Exception ex)
@@ -1447,7 +1499,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpPost]
-        public ActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
+        public IActionResult AddUom(string unitType, string unitDesc, string unitDescAr)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -1483,7 +1535,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                 dbContext.Tbl40111PropertyUnitCodes.Add(newUom);
                 dbContext.SaveChanges();
-
+                 _userActionLogger.LogAsync(
+module: "VAT> UOM ",
+actionDetail: $"Saved voucher: {unitType}",
+documentNo: unitType
+).Wait();
                 return Json(new { success = true, unitCode = newUom.UnitCode });
             }
 
@@ -1491,7 +1547,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         }
         //Unitofmeasure
         [HttpPost]
-        public ActionResult UpdateUom(byte unitCode, string unitType, string unitDesc, string unitDescAr)
+        public IActionResult UpdateUom(byte unitCode, string unitType, string unitDesc, string unitDescAr)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -1529,7 +1585,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 existing.UnitDescAr = unitDescAr;
 
                 dbContext.SaveChanges();
-
+                 _userActionLogger.LogAsync(
+module: "VAT Update UOM> ",
+actionDetail: $"Saved voucher: {unitType}",
+documentNo: unitType
+);
                 return Json(new { success = true, message = "Unit updated successfully." });
             }
 
@@ -1548,6 +1608,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     dbContext.Tbl40111PropertyUnitCodes.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(
+                        module: "VAT UOM> ",
+                        actionDetail: $"Deleted UOM: {record.UnitType}",
+                        documentNo: record.UnitType
+                    ).Wait();
                     return Ok();
                 }
 
@@ -1663,7 +1728,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
-
+                    string SignatoryId = Convert.ToString(model.SignatoryId);
+                    await _userActionLogger.LogAsync(
+    module: "VAT UOM> ",
+    actionDetail: $"Save SignatoryID: {model.SignatoryId}",
+    documentNo: SignatoryId
+);
                     return Ok(new { success = true, message = "Saved successfully", id = model.SignatoryId });
                 }
                 catch (Exception ex)
@@ -1705,7 +1775,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     voucher.VerifiedBy = UserName;
 
                     dbContext.SaveChanges();
-
+                    
+                    await _userActionLogger.LogAsync(
+    module: "VAT> Sales Verify Voucher",
+    actionDetail: $"Verify VoucherNo: {InvoiceNo}",
+    documentNo: InvoiceNo
+);
                     return Ok(new
                     {
                         Message = "Voucher verified successfully.",
@@ -1757,7 +1832,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+  module: "VAT> Sales Approve Voucher",
+  actionDetail: $"Approve VoucherNo: {InvoiceNo}",
+  documentNo: InvoiceNo
+);
                     return Ok(new
                     {
                         Message = "InvoiceNo verified successfully.",
@@ -1820,6 +1899,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Sales Post Invoice",
+actionDetail: $"Post InvoiceNo: {InvoiceNo}",
+documentNo: InvoiceNo
+);
                     IsDirect = true;
 
                     if (IsDirectApproval == true)
@@ -1837,6 +1921,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         // Example, replace with actual data if needed
                         //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
                     });
+                   
                 }
                 catch (Exception ex)
                 {
@@ -2343,7 +2428,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     voucher.VerifiedBy = UserName;
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Credit Note Verify",
+actionDetail: $"Credit Note Verify Number: {CreditNoteNo}",
+documentNo: CreditNoteNo
+);
                     return Ok(new
                     {
                         Message = "CreditNoteNo verified successfully.",
@@ -2395,7 +2484,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     //}
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Credit Note Approve",
+actionDetail: $"Credit Note Approve Number: {CreditNoteNo}",
+documentNo: CreditNoteNo
+);
                     return Ok(new
                     {
                         Message = "CreditNoteNo approved successfully.",
@@ -2448,7 +2541,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Debit Note Verify",
+actionDetail: $"Debit Note Verify Number: {DebitNoteNo}",
+documentNo: DebitNoteNo
+);
                     return Ok(new
                     {
                         Message = "InvoiceNo verified successfully.",
@@ -2509,6 +2606,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
                     }
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Credit Note Post",
+actionDetail: $"Debit Note Post Number: {CreditNoteNo}",
+documentNo: CreditNoteNo
+);
                     IsDirect = true;
 
                     if (IsDirectApproval == true)
@@ -2546,7 +2648,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
 
                     var qrySupplierCodeList = dbContext.Qry201710vatsundryCreditorsAndCashAccs
-                      .Where(x => x.IsLedgerObselete == null || x.IsLedgerObselete == false)
+                      //.Where(x => x.IsLedgerObselete == null || x.IsLedgerObselete == false)
                          //x => x.RecordStatus == "Record Complete" &&
                          .Select(i => new
                          {
@@ -2579,7 +2681,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                              i.SupplierProvinceAr,
                              i.SupplierNeighborhood,
                              i.SupplierNeighborhoodAr,
-                             i.SupplierCountryCode
+                             i.SupplierCountryCode,
+                             i.IsLedgerObselete
                          });
 
                     return Json(await DataSourceLoader.LoadAsync(qrySupplierCodeList, loadOptions));
@@ -2997,7 +3100,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn, InvoiceUUID, InvoiceCounterValue);
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Sales Clone EInvoice",
+actionDetail: $"Clone EInvoiceNo: {InvoiceNo}",
+documentNo: InvoiceNo
+);
                     return Ok(new
                     {
                         Message = "Invoice cloned successfully.",
@@ -3080,7 +3187,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Sales Amend EInvoice",
+actionDetail: $"Sales Amend EInvoiceNo: {InvoiceNo}",
+documentNo: InvoiceNo
+);
                     return Ok(new
                     {
                         Message = "Invoice Amended successfully.",
@@ -3168,6 +3279,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Purchase Amend EInvoice",
+actionDetail: $"Purchase Amend EInvoiceNo: {InvoiceNo}",
+documentNo: InvoiceNo
+);
 
                     return Ok(new
                     {
@@ -4346,7 +4462,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     //}
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Purchase Approve Voucher",
+actionDetail: $"Purchase Approve VoucherNo: {InvoiceNo}",
+documentNo: InvoiceNo
+);
                     return Ok(new
                     {
                         Message = "InvoiceNo verified successfully.",
@@ -4407,6 +4527,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Purchase Post Invoice",
+actionDetail: $"Purchase Post InvoiceNo: {InvoiceNo}",
+documentNo: InvoiceNo
+);
                     IsDirect = true;
 
                     if (IsDirectApproval == true)
@@ -4477,6 +4602,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Debit Post Invoice",
+actionDetail: $"Debit Post InvoiceNo: {DebitNoteNo}",
+documentNo: DebitNoteNo
+);
                     IsDirect = true;
 
                     if (IsDirectApproval == true)
@@ -4632,7 +4762,12 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     // Call the stored procedure with SerialNumber
                     var result = await dbContext.Database.ExecuteSqlRawAsync(
                         "EXEC sp201_61DeleteVATInvoiceChild @p0", InvoiceChildSlNo);
-
+                    string InvChildSlNo = InvoiceChildSlNo.ToString();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Delete sales invoice child",
+actionDetail: $"Sales invoice child number: {InvChildSlNo}",
+documentNo: InvChildSlNo
+);
                     return Ok(new { success = true, message = "Line item deleted successfully." });
                 }
                 catch (Exception ex)
@@ -4666,7 +4801,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Purchase To Unlock the Bill",
+actionDetail: $"Purchase Bill Number: {invoiceNo}",
+documentNo: invoiceNo
+);
 
                     return Ok(new
                     {
@@ -4764,7 +4903,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Debit Note To Unlock the Bill",
+actionDetail: $"Debit Bill No: {invoiceNo}",
+documentNo: invoiceNo
+);
 
                     return Ok(new
                     {
@@ -4839,7 +4982,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn);
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Delete Debit Note Einvoice",
+actionDetail: $"Debit EInvoice No: {InvoiceNo}",
+documentNo: InvoiceNo
+);
                     return Ok(new
                     {
                         Message = "Purchase Invoice cloned successfully.",
@@ -5604,7 +5751,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                     }
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Proforma To Unlock the Bill",
+actionDetail: $"Proforma Bill No: {invoiceNo}",
+documentNo: invoiceNo
+);
 
                     return Ok(new
                     {
@@ -5688,7 +5839,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn);
 
                     dbContext.SaveChanges();
-
+                    await _userActionLogger.LogAsync(
+module: "VAT> Proforma Clone EInvoice",
+actionDetail: $"Proforma Clone EInvoiceNo: {InvoiceNo}",
+documentNo: InvoiceNo
+);
                     return Ok(new
                     {
                         Message = "Purchase Invoice cloned successfully.",
@@ -5742,6 +5897,11 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 dbContext.Tbl20181ProformaInvoiceMasters.Remove(masterRecord);
 
                 dbContext.SaveChanges();
+                 _userActionLogger.LogAsync(
+module: "VAT> Delete ProformaInvoice Master View",
+actionDetail: $"Proforma Invoice No: {proformaInvoiceNo}",
+documentNo: proformaInvoiceNo
+).Wait();
 
                 return Ok(new { Message = "Proforma invoice deleted successfully." });
             }
@@ -5750,6 +5910,153 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 // Log the exception if logging is implemented
                 return StatusCode(500, $"An error occurred while deleting the proforma invoice. Details: {ex.Message}");
             }
+        }
+
+
+        [HttpPost]
+        public async Task<ActionResult> DebitVerifyVoucher(string DebitNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(DebitNoteNo))
+                    {
+                        return BadRequest(new { Message = "Debit number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20172VatdebitNoteMasters.FirstOrDefault(v => v.DebitNoteNo == DebitNoteNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Debit not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsVerified = true;
+                    voucher.VerifiedOn = DateTime.Now;
+                    voucher.VerifiedBy = UserName;
+
+                    dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT>Debit Verify Voucher",
+actionDetail: $"Debit Verify Voucher Number: {DebitNoteNo}",
+documentNo: DebitNoteNo
+);
+                    return Ok(new
+                    {
+                        Message = "DebitNoteNo verified successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> PurchaseVerifyVoucher(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Voucher number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20166VatpurchaseMasters.FirstOrDefault(v => v.PurchaseVoucherNo == InvoiceNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Voucher not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsVerified = true;
+                    voucher.VerifiedOn = DateTime.Now;
+                    voucher.VerifiedBy = UserName;
+
+                    dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT>Purchase Verify Voucher",
+actionDetail: $"Purchase Verify Voucher Number: {InvoiceNo}",
+documentNo: InvoiceNo
+);
+                    return Ok(new
+                    {
+                        Message = "Voucher verified successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpGet]
+        public IActionResult GetGoodsAndServicesDetails(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = dbContext.Tbl20164GoodsAndServicesMasters
+                                          .Where(x => x.Gscode == gsCode)
+                                          .ToList();
+                    var resultWithVAT = new List<ExpandoObject>();
+                    foreach (var gridDetails in result)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = gridDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(gridDetails);
+                        }
+
+                        var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
+                   .Where(x => x.UnitCode == gridDetails.GsgroupId)
+                   .Select(x => x.UnitDesc)
+                   .FirstOrDefault();
+
+
+                        // Add new dynamic column
+                        dict["UnitRateMethod"] = UnitRateMethodDesc;
+
+
+                        //dict["VAT"] = vatValue;
+                        //dict["TotalVAT"] = totalValue;
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Ok(resultWithVAT); // ✅ Move this inside the try block
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return BadRequest(new { Message = "Unable to access tenant database context." }); // ✅ Handle TryGet failure
         }
 
 

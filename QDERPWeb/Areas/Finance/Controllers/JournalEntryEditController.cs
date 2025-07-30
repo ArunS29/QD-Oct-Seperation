@@ -424,7 +424,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public IActionResult SaveemployeeAllocations([FromBody] List<Tbl20129JournalRegisterEmployeeAllocation> allocations)
+        public IActionResult SaveEmployeeAllocations([FromBody] List<Tbl20129JournalRegisterEmployeeAllocation> allocations)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -433,16 +433,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             if (allocations == null || !allocations.Any())
             {
-                return BadRequest("No cost allocation data received.");
+                return BadRequest("No property allocation data received.");
             }
 
             string userName = HttpContext.Session.GetString("UserName");
             DateTime now = DateTime.Now;
-            var journalChildNo = allocations.First().JournalChildNo;
+            var voucherEntryId = allocations.First().JournalChildNo;
 
-            // Fetch all existing allocations for the JournalChildNo
+            // Fetch all existing allocations for the VoucherEntryId
             var existingAllocations = dbContext.Tbl20129JournalRegisterEmployeeAllocations
-                .Where(x => x.JournalChildNo == journalChildNo)
+                .Where(x => x.JournalChildNo == voucherEntryId)
                 .ToList();
 
             foreach (var allocation in allocations)
@@ -453,103 +453,102 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 if (existing != null && allocation.EmployeeAllocationId > 0)
                 {
                     // Update existing record
-                    existing.EmpAllocDrCr = allocation.EmpAllocDrCr;
                     existing.EmployeeNo = allocation.EmployeeNo;
                     existing.EffectiveDate = allocation.EffectiveDate;
                     existing.AmountAllocated = allocation.AmountAllocated;
                     existing.CostAllocRemarks = allocation.CostAllocRemarks;
                     existing.VoucherNo = allocation.VoucherNo;
+                    existing.EmpAllocDrCr = allocation.EmpAllocDrCr;
+                    existing.LedgerAccountNo = allocation.LedgerAccountNo;
                     existing.ModifiedBy = userName;
                     existing.ModifiedOn = now;
                 }
                 else
                 {
-                    // New insert
+                    // Insert new record
                     dbContext.Tbl20129JournalRegisterEmployeeAllocations.Add(new Tbl20129JournalRegisterEmployeeAllocation
                     {
-                        EmpAllocDrCr = allocation.EmpAllocDrCr,
                         EmployeeNo = allocation.EmployeeNo,
                         EffectiveDate = allocation.EffectiveDate,
                         AmountAllocated = allocation.AmountAllocated,
                         CostAllocRemarks = allocation.CostAllocRemarks,
                         JournalChildNo = allocation.JournalChildNo,
                         VoucherNo = allocation.VoucherNo,
+                        EmpAllocDrCr = allocation.EmpAllocDrCr,
+                        LedgerAccountNo = allocation.LedgerAccountNo,
                         EnteredBy = userName,
                         EnteredOn = now
                     });
                 }
             }
 
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "Property allocations saved successfully." });
+        }
+        [HttpPost]
+        public IActionResult SavePropertyAllocations([FromBody] List<Tbl20130JournalRegisterPropertyAllocation> allocations)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (allocations == null || !allocations.Any())
+            {
+                return BadRequest("No property allocation data received.");
+            }
+
+            string userName = HttpContext.Session.GetString("UserName");
+            DateTime now = DateTime.Now;
+            var voucherEntryId = allocations.First().JournalChildNo;
+
+            // Fetch all existing allocations for the VoucherEntryId
+            var existingAllocations = dbContext.Tbl20130JournalRegisterPropertyAllocations
+                .Where(x => x.JournalChildNo == voucherEntryId)
+                .ToList();
+
+            foreach (var allocation in allocations)
+            {
+                var existing = dbContext.Tbl20130JournalRegisterPropertyAllocations
+                    .FirstOrDefault(x => x.PropertyAllocationId == allocation.PropertyAllocationId);
+
+                if (existing != null && allocation.PropertyAllocationId > 0)
+                {
+                    // Update existing record
+                    existing.PropertyNo = allocation.PropertyNo;
+                    existing.EffectiveDate = allocation.EffectiveDate;
+                    existing.AmountAllocated = allocation.AmountAllocated;
+                    existing.PropertyAllocRemarks = allocation.PropertyAllocRemarks;
+                    existing.VoucherNo = allocation.VoucherNo;
+                    existing.PropertyAllocDrCr = allocation.PropertyAllocDrCr;
+                    existing.LedgerAccountNo = allocation.LedgerAccountNo;
+                    existing.ModifiedBy = userName;
+                    existing.ModifiedOn = now;
+                }
+                else
+                {
+                    // Insert new record
+                    dbContext.Tbl20130JournalRegisterPropertyAllocations.Add(new Tbl20130JournalRegisterPropertyAllocation
+                    {
+                        PropertyNo = allocation.PropertyNo,
+                        EffectiveDate = allocation.EffectiveDate,
+                        AmountAllocated = allocation.AmountAllocated,
+                        PropertyAllocRemarks = allocation.PropertyAllocRemarks,
+                        JournalChildNo = allocation.JournalChildNo,
+                        VoucherNo = allocation.VoucherNo,
+                        PropertyAllocDrCr = allocation.PropertyAllocDrCr,
+                        LedgerAccountNo = allocation.LedgerAccountNo,
+                        EnteredBy = userName,
+                        EnteredOn = now
+                    });
+                }
+            }
 
             dbContext.SaveChanges();
 
-
-
-            return Ok();
+            return Ok(new { success = true, message = "Property allocations saved successfully." });
         }
-        [HttpPost]
-        public IActionResult SavepropertyAllocations([FromBody] List<Tbl20130JournalRegisterPropertyAllocation> allocations)
-        {
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant." });
-			}
-
-			if (allocations == null || !allocations.Any())
-			{
-				return BadRequest("No cost allocation data received.");
-			}
-			string userName = HttpContext.Session.GetString("UserName");
-			DateTime now = DateTime.Now;
-			var journalChildNo = allocations.First().JournalChildNo;
-
-			// Fetch all existing allocations for the JournalChildNo
-			var existingAllocations = dbContext.Tbl20130JournalRegisterPropertyAllocations
-				.Where(x => x.JournalChildNo == journalChildNo)
-				.ToList();
-
-			foreach (var allocation in allocations)
-			{
-				var existing = dbContext.Tbl20130JournalRegisterPropertyAllocations
-					.FirstOrDefault(x => x.PropertyAllocationId == allocation.PropertyAllocationId);
-
-				if (existing != null && allocation.PropertyAllocationId > 0)
-				{
-					// Update existing record
-					existing.PropertyAllocDrCr = allocation.PropertyAllocDrCr;
-					existing.PropertyNo = allocation.PropertyNo;
-					existing.EffectiveDate = allocation.EffectiveDate;
-					existing.AmountAllocated = allocation.AmountAllocated;
-					existing.PropertyAllocRemarks = allocation.PropertyAllocRemarks;
-					existing.VoucherNo = allocation.VoucherNo;
-					existing.ModifiedBy = userName;
-					existing.ModifiedOn = now;
-				}
-				else
-				{
-					// New insert
-					dbContext.Tbl20130JournalRegisterPropertyAllocations.Add(new Tbl20130JournalRegisterPropertyAllocation
-					{
-						PropertyAllocDrCr = allocation.PropertyAllocDrCr,
-						PropertyNo = allocation.PropertyNo,
-						EffectiveDate = allocation.EffectiveDate,
-						AmountAllocated = allocation.AmountAllocated,
-						PropertyAllocRemarks = allocation.PropertyAllocRemarks,
-						JournalChildNo = allocation.JournalChildNo,
-						VoucherNo = allocation.VoucherNo,
-						EnteredBy = userName,
-						EnteredOn = now
-					});
-				}
-			}
-
-
-			dbContext.SaveChanges();
-
-
-
-			return Ok();
-		}
 
         [HttpGet]
         public IActionResult GetCostAllocationByJournalChildNo(long journalChildNo)
@@ -598,7 +597,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetCostAllocationsBydatagrid(long journalChildNo)
+        public IActionResult GetCostAllocationsBydatagrid(long voucherEntryId)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -609,7 +608,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                           join unit in dbContext.Tbl201CostAllocationUnits
                               on alloc.CostAllocationUnitId equals unit.CostAllocationUnitId into gj
                           from unit in gj.DefaultIfEmpty()
-                          where alloc.JournalChildNo == journalChildNo
+                          where alloc.JournalChildNo == voucherEntryId
                           select new
                           {
                               CostAllocationId = alloc.CostAllocationId,
@@ -624,7 +623,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Json(result);
         }
         [HttpGet]
-        public IActionResult GetEmployeeAllocationsBydatagrid(long journalChildNo)
+        public IActionResult GetEmployeeAllocationsBydatagrid(long voucherEntryId)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -635,14 +634,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                           join unit in dbContext.Tbl101Employees
                               on alloc.EmployeeNo equals unit.EmployeeId into gj
                           from unit in gj.DefaultIfEmpty()
-                          where alloc.JournalChildNo == journalChildNo
+                          where alloc.JournalChildNo == voucherEntryId
                           select new
                           {
-                              EmployeeNo = unit.EmployeeId,
-                              EmployeeID = alloc.EmployeeNo,
-                              DrCr = alloc.EmpAllocDrCr,
-                              EmployeeName = unit.EmployeeName,
                               EmployeeAllocationId = alloc.EmployeeAllocationId,
+                              DrCr = alloc.EmpAllocDrCr,
+                              EmployeeName = unit != null ? unit.EmployeeName : "",
+                              EmployeeNo = alloc.EmployeeNo,
                               EffectiveDate = alloc.EffectiveDate,
                               VoucherAmount = alloc.AmountAllocated,
                               Remarks = alloc.CostAllocRemarks
@@ -650,33 +648,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(result);
         }
-		[HttpGet]
-		public IActionResult GetPropertyAllocationsBydatagrid(long journalChildNo)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant." });
-			}
+        [HttpGet]
+        public IActionResult GetPropertyAllocationsBydatagrid(long voucherEntryId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
-			var result = (from alloc in dbContext.Tbl20130JournalRegisterPropertyAllocations
-						  join unit in dbContext.Tbl40101PropertyMasters
-							  on alloc.PropertyNo equals unit.PropertyNo into gj
-						  from unit in gj.DefaultIfEmpty()
-						  where alloc.JournalChildNo == journalChildNo
-						  select new
-						  {
-							  PropertyAllocationId = alloc.PropertyAllocationId,
-							  DrCr = alloc.PropertyAllocDrCr,
-							  PropertyDescription = unit != null ? unit.PropertyDescription : " ",
-							  PropertyNo = alloc.PropertyNo,
-							  EffectiveDate = alloc.EffectiveDate,
-							  VoucherAmount = alloc.AmountAllocated,
-							  Remarks = alloc.PropertyAllocRemarks
-						  }).ToList();
+            var result = (from alloc in dbContext.Tbl20130JournalRegisterPropertyAllocations
+                          join unit in dbContext.Tbl40101PropertyMasters
+                              on alloc.PropertyNo equals unit.PropertyNo into gj
+                          from unit in gj.DefaultIfEmpty()
+                          where alloc.JournalChildNo == voucherEntryId
+                          select new
+                          {
+                              PropertyAllocationId = alloc.PropertyAllocationId,
+                              DrCr = alloc.PropertyAllocDrCr,
+                              PropertyDescription = unit != null ? unit.PropertyDescription : "",
+                              PropertyNo = alloc.PropertyNo,
+                              EffectiveDate = alloc.EffectiveDate,
+                              VoucherAmount = alloc.AmountAllocated,
+                              Remarks = alloc.PropertyAllocRemarks
+                          }).ToList();
 
-			return Json(result);
-		}
-		[HttpPost]
+            return Json(result);
+        }
+        [HttpPost]
         public IActionResult DeleteJournalChild([FromBody] long journalChildNo)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1028,7 +1026,396 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Ok(isPLItem);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateVoucheronload([FromBody] JournalRegisterViewModel model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
+
+
+            try
+            {
+                // Get user session data
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                byte claimerId = Convert.ToByte(userIdStr); // ✅ Convert string to byte
+
+                string userName = HttpContext.Session.GetString("UserName");
+                DateTime now = DateTime.Now;
+                // Check if master record exists
+                var existingMaster = await dbContext.Tbl20126JournalRegisterMasters
+                    .FirstOrDefaultAsync(m => m.JournalRefNo == model.JournalRefNo);
+
+                if (existingMaster != null)
+                {
+                    // ✅ Update master record
+                    existingMaster.JournalEntryDate = model.JournalEntryDate;
+                    existingMaster.JournalEffectiveDate = model.JournalEffectiveDate;
+                    existingMaster.JournalVoucherNarration = model.JournalVoucherNarration;
+                    existingMaster.JournalModifiedBy = userName;
+                    existingMaster.JournalModifiedOn = now;
+                    dbContext.Tbl20126JournalRegisterMasters.Update(existingMaster);
+                }
+                else
+                {
+                    // ✅ Insert new master
+                    var newMaster = new Tbl20126JournalRegisterMaster
+                    {
+                        JournalRefNo = model.JournalRefNo,
+                        JournalEntryDate = model.JournalEntryDate,
+                        JournalEffectiveDate = model.JournalEffectiveDate,
+                        JournalVoucherNarration = model.JournalVoucherNarration,
+                        RequesterId = claimerId,
+                        JournalCreatedBy = userName,
+                        JournalCreatedOn = now
+                    };
+
+                    dbContext.Tbl20126JournalRegisterMasters.Add(newMaster);
+                }
+
+
+
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        [HttpPost]
+        public IActionResult InsertDefaultCostAllocation([FromBody] CostAllocationDto dto)
+        {
+            // Validate tenant and get context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (dto == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data." });
+            }
+
+            try
+            {
+                // Map DTO to Entity
+                var entity = new Tbl20128JournalRegisterCostAllocation
+                {
+                    CostAllocationId = 0,
+                    CostAllocDrCr = dto.CostAllocDrCr,
+                    CostAllocationUnitId = dto.CostAllocationUnitId,
+                    EffectiveDate = dto.EffectiveDate,
+                    AmountAllocated = dto.AmountAllocated,
+                    CostAllocRemarks = dto.CostAllocRemarks,
+                    JournalChildNo = dto.VoucherEntryId,
+                    VoucherNo = dto.VoucherNo
+                };
+
+                dbContext.Tbl20128JournalRegisterCostAllocations.Add(entity);
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true, id = entity.CostAllocationId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error inserting cost allocation.", error = ex.Message });
+            }
+        }
+        public IActionResult UpdateCostAllocationWithFields([FromBody] UpdateCostAllocationFieldsDto dto)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+            var record = dbContext.Tbl20128JournalRegisterCostAllocations.FirstOrDefault(x => x.CostAllocationId == dto.CostAllocationId);
+            if (record == null)
+                return NotFound(new { success = false, message = "Record not found." });
+
+            record.AmountAllocated = dto.VoucherAmount;
+            record.CostAllocRemarks = dto.CostAllocRemarks;
+            record.CostAllocationUnitId = dto.CostAllocationUnitId;
+            record.EffectiveDate = dto.EffectiveDate;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true });
+        }
+        [HttpPost]
+
+        public IActionResult DeleteByVoucherNo([FromBody] VoucherDeleteRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrEmpty(request.VoucherNo))
+            {
+                return BadRequest(new { success = false, message = "Voucher number is required." });
+            }
+
+            var allocations = dbContext.Tbl20128JournalRegisterCostAllocations
+                .Where(x => x.VoucherNo == request.VoucherNo)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20128JournalRegisterCostAllocations.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+        [HttpPost]
+
+        public IActionResult DeleteCostAllocation(long costAllocationId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+
+
+            var allocations = dbContext.Tbl20128JournalRegisterCostAllocations
+                .Where(x => x.CostAllocationId == costAllocationId)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20128JournalRegisterCostAllocations.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+        public IActionResult InsertDefaultEmployeeAllocation([FromBody] EmployeeAllocationDto dto)
+        {
+            // Validate tenant and get context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (dto == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data." });
+            }
+
+            try
+            {
+                // Map DTO to Entity
+                var entity = new Tbl20129JournalRegisterEmployeeAllocation
+                {
+                    EmployeeAllocationId = 0,
+                    EmpAllocDrCr = dto.EmpAllocDrCr,
+                    EmployeeNo = dto.EmployeeNo,
+                    EffectiveDate = dto.EffectiveDate,
+                    AmountAllocated = dto.AmountAllocated,
+                    CostAllocRemarks = dto.CostAllocRemarks,
+                    JournalChildNo = dto.VoucherEntryId,
+                    VoucherNo = dto.VoucherNo,
+                    LedgerAccountNo = dto.LedgerAccountNo,
+                };
+
+                dbContext.Tbl20129JournalRegisterEmployeeAllocations.Add(entity);
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true, id = entity.EmployeeAllocationId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error inserting cost allocation.", error = ex.Message });
+            }
+        }
+        public IActionResult UpdateEmployeeAllocationWithFields([FromBody] UpdateEmployeeAllocationFieldsDto dto)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+            var record = dbContext.Tbl20129JournalRegisterEmployeeAllocations.FirstOrDefault(x => x.EmployeeAllocationId == dto.EmployeeAllocationId);
+            if (record == null)
+                return NotFound(new { success = false, message = "Record not found." });
+
+            record.AmountAllocated = dto.VoucherAmount;
+            record.CostAllocRemarks = dto.CostAllocRemarks;
+            record.EmployeeNo = dto.EmployeeNo;
+            record.EffectiveDate = dto.EffectiveDate;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true });
+        }
+        public IActionResult DeleteEmployeeAllocation(long employeeAllocationId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+
+
+            var allocations = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                .Where(x => x.EmployeeAllocationId == employeeAllocationId)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+        [HttpPost]
+
+        public IActionResult DeleteEmployeeByVoucherNo([FromBody] VoucherDeleteRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrEmpty(request.VoucherNo))
+            {
+                return BadRequest(new { success = false, message = "Voucher number is required." });
+            }
+
+            var allocations = dbContext.Tbl20129JournalRegisterEmployeeAllocations
+                .Where(x => x.VoucherNo == request.VoucherNo)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20129JournalRegisterEmployeeAllocations.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+        [HttpPost]
+        public IActionResult InsertDefaultPropertyAllocation([FromBody] PropertyAllocationDto dto)
+        {
+            // Validate tenant and get context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (dto == null)
+            {
+                return BadRequest(new { success = false, message = "Invalid data." });
+            }
+
+            try
+            {
+                // Map DTO to Entity
+                var entity = new Tbl20130JournalRegisterPropertyAllocation
+                {
+                    PropertyAllocationId = 0,
+                    PropertyAllocDrCr = dto.PropertyAllocDrCr,
+                    PropertyNo = dto.PropertyNo,
+                    EffectiveDate = dto.EffectiveDate,
+                    AmountAllocated = dto.AmountAllocated,
+                    PropertyAllocRemarks = dto.PropertyAllocRemarks,
+                    JournalChildNo = dto.VoucherEntryId,
+                    VoucherNo = dto.VoucherNo,
+                    LedgerAccountNo = dto.LedgerAccountNo,
+                };
+
+                dbContext.Tbl20130JournalRegisterPropertyAllocations.Add(entity);
+                dbContext.SaveChanges();
+
+                return Ok(new { success = true, id = entity.PropertyAllocationId });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error inserting cost allocation.", error = ex.Message });
+            }
+        }
+        public IActionResult UpdatePropertyAllocationWithFields([FromBody] UpdatePropertyAllocationFieldsDto dto)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+            var record = dbContext.Tbl20130JournalRegisterPropertyAllocations.FirstOrDefault(x => x.PropertyAllocationId == dto.PropertyAllocationId);
+            if (record == null)
+                return NotFound(new { success = false, message = "Record not found." });
+
+            record.AmountAllocated = dto.VoucherAmount;
+            record.PropertyAllocRemarks = dto.PropertyAllocRemarks;
+            record.PropertyNo = dto.PropertyNo;
+            record.EffectiveDate = dto.EffectiveDate;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true });
+        }
+        [HttpPost]
+
+        public IActionResult DeletePropertyAllocation(long propertyAllocationId)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+
+
+            var allocations = dbContext.Tbl20130JournalRegisterPropertyAllocations
+                .Where(x => x.PropertyAllocationId == propertyAllocationId)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
+        [HttpPost]
+
+        public IActionResult DeletePropertyByVoucherNo([FromBody] VoucherDeleteRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrEmpty(request.VoucherNo))
+            {
+                return BadRequest(new { success = false, message = "Voucher number is required." });
+            }
+
+            var allocations = dbContext.Tbl20130JournalRegisterPropertyAllocations
+                .Where(x => x.VoucherNo == request.VoucherNo)
+                .ToList();
+
+            if (!allocations.Any())
+            {
+                return NotFound(new { success = false, message = "No records found to delete." });
+            }
+
+            dbContext.Tbl20130JournalRegisterPropertyAllocations.RemoveRange(allocations);
+            dbContext.SaveChanges();
+
+            return Ok(new { success = true, message = "All cost allocation records deleted for voucher." });
+        }
     }
 }
 

@@ -10,6 +10,9 @@
 
 
 <style>
+    .dx-dropdownbutton .dx-button-content{
+        padding:-1!important;
+    }
     .limited-footer .btn-container {
         display: none !important;
     }
@@ -62,14 +65,24 @@
     .titleCard-toggle1{
         display:none;
     }
-   
+       .footer-fixed{
+    bottom:-10px;
+   }
+   .row > *{
+       margin-top:0px !important;
+   }
 </style>
 
-    <div >
+    <div class="footer-fixed" >
         @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
     </div>
 
-
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Financial Reports</h3>
+</div>
 <div class="container-fluid d-flex flex-column vh-100 px-3 py-2">
 
     <!-- Optional: Load Panel -->
@@ -160,17 +173,17 @@
                     .Text("Use Effective Date")
                     .Value(true)
             )
-            <button id="toggleChartBtn" class="btn btn-primary">Hide Chart</button>
+            <button id="toggleChartBtn" class="btn btn-primary">Show Chart</button>
         </div>
     </div>
 
     <!-- Scrollable Chart + Grid Area -->
     <div class="flex-grow-1 overflow-auto">
         <!-- Chart Container -->
-        <div id="pivotChartContainer" style="height: 300px;"></div>
+        <div id="pivotChartContainer" style="height: 300px;display:none;"></div>
 
         <!-- Pivot Grid Container -->
-        <div id="pivotGridContainer" style="height: calc(100vh - 420px);"></div>
+        <div id="pivotGridContainer" style="550px;"></div>
     </div>
 
     <!-- Optional Fullscreen Chart Modal -->
@@ -192,9 +205,29 @@
 
 
 
+    <div id="dataModePopup"></div>
 
 
 <script type="text/javascript">
+    let selectedMode = "online"; // default
+    let allowDataMode = false;
+
+$(function () {
+    $.getJSON('/api/TrialBalance/GetAllowDataModeSelection', function (res) {
+        if (res && res.allowDataMode === true) {
+            allowDataMode = true;
+            showDataModePopup(function (mode) {
+                // Store selected mode, then trigger default record load
+                ddBtnShowRecords_click("range", mode);
+            });
+        } else {
+            // No mode selection, proceed with default load
+            ddBtnShowRecords_click("range");
+        }
+    });
+});
+
+
     let selectBox=null;
     $(function () {
         $("#TrialBalance").dxTextBox({
@@ -282,8 +315,8 @@
             }
         });
     }
-    function ddBtnShowRecords_click(option) {
-        var startDate, endDate;
+function ddBtnShowRecords_click(option, mode = null) {
+    mode = mode || selectedMode || "online";
 
         // Get today's date
         let today = new Date();
@@ -354,13 +387,15 @@
         });
         var loadPanel = $("#loadPanel").dxLoadPanel("instance");
         loadPanel.show();
+       var isOffline = (mode === 'offline');
+
         $.ajax({
-            url: '/api/TrialBalance/GetTrialBalances',
+            url: isOffline ? '/api/TrialBalance/GetOfflineTrialBalances' : '/api/TrialBalance/GetTrialBalances',
             type: 'GET',
             data: {
                 startDate: startDate ? startDate.toISOString().split('T')[0] : null,
                 endDate: endDate ? endDate.toISOString().split('T')[0] : null,
-                accountGroup: accountGroup  // If null, fetch all account groups
+                accountGroup: accountGroup
             },
             success: function (data) {
                 initializePivotGrid(data);
@@ -369,9 +404,10 @@
                 console.error("Error fetching filtered records: ", error);
             },
             complete: function () {
-                $("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
+                $("#loadPanel").dxLoadPanel("instance").hide();
             }
         });
+
     }
    function initializePivotGrid(data) {
     var pivotGrid = $("#pivotGridContainer").dxPivotGrid({
@@ -382,17 +418,19 @@
             },
             fields: [
                 { dataField: "MasterGroup", area: "row", caption: "Master Group" },
-                { dataField: "LedgerNo", area: "row", caption: "Ledger No" },
+                { dataField: "AccountGroup", area: "row", caption: "Account Group" },
+                { dataField: "AccountHeadName", area: "row", caption: "Account Group" },
+                { dataField: "MonthYear", area: "column", caption: "Month Year" },
                 { dataField: "DrCr", area: "column", caption: "Dr Cr" },
                 { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
-                { dataField: "DrAmount", area: "data", caption: "Debit Amount", summaryType: "sum" },
-                { dataField: "CrAmount", area: "data", caption: "Credit Amount", summaryType: "sum" },
-                { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount", summaryType: "sum" },
-                { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" }
+                { dataField: "DrAmount", area: "data", caption: "Debit Amount", summaryType: "sum",format: { type: "fixedPoint", precision: 2, useGrouping: true } },
+                { dataField: "CrAmount", area: "data", caption: "Credit Amount", summaryType: "sum",format: { type: "fixedPoint", precision: 2, useGrouping: true } },
+                { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount", summaryType: "sum",format: { type: "fixedPoint", precision: 2, useGrouping: true } },
+                { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" ,format: { type: "fixedPoint", precision: 2, useGrouping: true }}
             ]
         },
         width: "100%",
-        height: "100%",
+        height: "550px",
         allowSortingBySummary: true,
         allowSorting: true,
         allowFiltering: true,
@@ -590,7 +628,7 @@ $("#pivotChartContainer").dxChart({
 
 
 
-    $("#btnShowRowTotals").on("click", function (e) {
+    $("#btnShowRowTotals1").on("click", function (e) {
         e.preventDefault();
 
         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
@@ -601,7 +639,7 @@ $("#pivotChartContainer").dxChart({
         }
     });
 
-    $("#btnShowFields").on("click", function (e) {
+    $("#btnShowFields1").on("click", function (e) {
         e.preventDefault();
 
         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
@@ -705,6 +743,91 @@ function updateTrialBalanceChartByGroup(pivotGridInstance) {
 }
 
 
+
+
+function showDataModePopup(callback) {
+
+
+    $("#dataModePopup").dxPopup({
+        title: "Select Data Mode",
+        contentTemplate: function (contentElement) {
+            const container = $("<div>").css({
+                padding: "10px",
+                fontFamily: "Segoe UI, sans-serif",
+                fontSize: "14px"
+            }).appendTo(contentElement);
+
+            // Label
+            $("<div>")
+                .text("📡 Do you want to load the data in?")
+                .css({
+                    fontSize: "16px",
+                    fontWeight: "600",
+                    marginBottom: "10px",
+                    color: "#333"
+                })
+                .appendTo(container);
+
+            // Info message box (initially hidden)
+            const messageBox = $("<div>")
+                .css({
+                    backgroundColor: "#f5f5f5",
+                    padding: "10px",
+                    border: "1px solid #ddd",
+                    borderRadius: "6px",
+                    color: "#444",
+                    fontSize: "13px",
+                    marginTop: "10px",
+                    display: "none"
+                })
+                .appendTo(container);
+
+            // Radio group
+            const radioGroup = $("<div>").dxRadioGroup({
+                items: ["Online", "Offline"],
+                layout: "horizontal",
+                value: null, // No default selected
+                onValueChanged: function (e) {
+                    selectedMode = e.value.toLowerCase();
+
+                    // Show the box and set message based on selected mode
+                    messageBox.text(
+                        selectedMode === "online"
+                            ? "✅ This is live data. It may take a few extra seconds to load."
+                            : "ℹ️ This is preloaded data till last night. For real-time data, choose Online."
+                    ).fadeIn(200);
+                }
+            }).css({
+                marginBottom: "10px"
+            });
+
+            $("<div>")
+                .addClass("dx-field-value")
+                .append(radioGroup)
+                .appendTo(container);
+        },
+        showCloseButton: false,
+        showTitle: true,
+        visible: true,
+        width: 440,
+        height: 260,
+        toolbarItems: [
+            {
+                toolbar: "bottom",
+                location: "after",
+                widget: "dxButton",
+                options: {
+                    text: "OK",
+                    type: "success",
+                    onClick: function () {
+                        $("#dataModePopup").dxPopup("instance").hide();
+                        callback(selectedMode);
+                    }
+                }
+            }
+        ]
+    });
+}
 
 
 </script>

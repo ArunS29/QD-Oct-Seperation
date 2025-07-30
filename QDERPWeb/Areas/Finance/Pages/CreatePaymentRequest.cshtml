@@ -1411,6 +1411,7 @@
                             $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
                             $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
                             $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
+                            $("#Priorityclaim").dxSelectBox("instance").option("value", entry.Priority || null);
                             $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
                             $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccountname);
                             let radioGroup = $("#radioGroup").dxRadioGroup("instance");
@@ -1566,7 +1567,8 @@
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
                 ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                 Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
                 PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
@@ -1627,7 +1629,8 @@
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
                 ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                 Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
                 PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
@@ -1764,7 +1767,8 @@
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
                 ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
+                 ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                 Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
                 PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,

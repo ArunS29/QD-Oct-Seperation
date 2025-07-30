@@ -1369,8 +1369,11 @@
                     url: '@Url.Action("GetNewClaimNo", "ExpenseClaim")',
                     type: 'GET',
                     success: function (data) {
+                        
                         voucherNoField.option("value", data);
+                        
                         initializeDataGrid(data);
+                        savedetailsonload();
                     },
                     error: function () {
                         alert("Error generating voucher number.");
@@ -1412,6 +1415,7 @@
                             $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
                             $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
                             $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
+                             $("#Priorityclaim").dxSelectBox("instance").option("value", entry.Priority);
                             $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
                             $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccountname);
                             let radioGroup = $("#radioGroup").dxRadioGroup("instance");
@@ -1505,6 +1509,26 @@
                     type: 'GET',
                     data: { claimRefNo: claimRefNo },
                     success: function (data) {
+                        debugger;
+                       if (!data.success) {
+                            DevExpress.ui.notify(data.message || "No child records found.", "warning", 3000);
+                            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                                const dataSource = dataGrid.option("dataSource") || [];
+
+                                if (!Array.isArray(dataSource)) {
+                                    return;
+                                }
+
+                                if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
+                                    dataSource.push({
+                                        ClaimedAmount: 0.00,
+                                        ApprovedAmount: 0.00,
+                                        VoucherNo: claimRefNo
+                                    });
+                                    dataGrid.option("dataSource", dataSource);
+                                }
+                            return;
+                       }
                         const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
 
                         if (entry) {
@@ -1571,10 +1595,11 @@
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
                 ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
                 PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+                Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
                 FundRequestTypeId: 1,
                 ExpenseDetails: gridData // 🔁 Add the grid rows here
             };
@@ -1632,9 +1657,14 @@
 
             var VM = {
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
-                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
-                ProjectClaimedFor: paymentaccheadId,
+                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+                ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
+                PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+                Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
+                FundRequestTypeId: 1,
                 ExpenseDetails: gridData // 🔁 Add the grid rows here
             };
 
@@ -1767,10 +1797,15 @@
 
             var VM = {
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
-                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value"),
-                ProjectClaimedFor: paymentaccheadId,
+                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+                ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                ExpenseDetails: gridData // 🔁 Add the grid rows here
+                PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
+                PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+                Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
+                FundRequestTypeId: 1,
+                ExpenseDetails: gridData  // 🔁 Add the grid rows here
             };
 
             $.ajax({
@@ -2410,6 +2445,55 @@
         delay: [100, 100],
     });
     }
+    function savedetailsonload(){
+        debugger;
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
 
+        if (rowCount == 0) {
+           /*  var gridData = dataGrid.getDataSource().items();  */// Gets all current grid data
+
+            var VM = {
+                ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+                ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
+                PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+                FundRequestTypeId: 1,
+                 // 🔁 Add the grid rows here
+            };
+
+            $.ajax({
+                type: "POST",
+                url: "/api/ExpenseClaim/UpdateVoucheronload",
+                contentType: "application/json",
+                data: JSON.stringify(VM),
+                dataType: "json",
+                success: function (response) {
+                    
+                },
+                error: function () {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            });
+        } else {
+            if (IsNotification === true) {
+                DevExpress.ui.dialog.alert(
+                    "Cannot continue saving with errors, please clear the errors and continue.",
+                    "Clear Errors"
+                );
+            } else {
+                DevExpress.ui.dialog.alert(
+                    "Voucher has no line items to be saved, please enter transaction to save.!",
+                    "No Line Items"
+                );
+            }
+        }
+        }
 
 </script>
