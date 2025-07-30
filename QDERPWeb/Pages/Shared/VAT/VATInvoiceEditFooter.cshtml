@@ -334,9 +334,9 @@
         @(Html.DevExtreme().Button()
                 .ID("btnAttach")
                 .Text(new JS("formatMessage('Attach')"))
-                .Width(132)
-                .Icon("link")
-                .OnClick("onAttachmentButtonClick")
+                .Icon("attach")
+                .Hint("Click to attach")
+                .OnClick("onVatAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>
@@ -1899,5 +1899,6 @@
         }
     }
 
+    
   
 </script>

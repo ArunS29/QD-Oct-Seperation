@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using DevExpress.CodeParser;
 using DevExpress.Office.Drawing;
 using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Data;
@@ -101,7 +102,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddDocumentsEntry(string folderId, string moduleType, string isMaster)
+        public async Task<IActionResult> AddDocumentsEntry(string folderId, string moduleType, string isMaster, string menuType)
         {
             try
             {
@@ -140,39 +141,73 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 string documentType = (isMasterNormalized == "true" || isMasterNormalized == "master documents")
                     ? "Master Documents"
                     : "Transaction Documents";
-
+                menuType = Clean(menuType);
                 // Get voucher date if transaction document
                 DateTime? voucherDate = null;
-                if (documentType == "Transaction Documents")
-                {
-                    DateTime? task1 = await dbContext.Tbl201VoucherEntries
-                        .Where(v => v.VoucherNo == folderId)
-                        .Select(v => (DateTime?)v.AddedOn)
-                        .FirstOrDefaultAsync();
+                if (documentType == "Transaction Documents") {
 
-                    DateTime? task2 = await dbContext.Tbl20102ExpenseClaimMasters
-                        .Where(c => c.ClaimRefNo == folderId)
-                        .Select(c => (DateTime?)c.ClaimCreatedOn)
-                        .FirstOrDefaultAsync();
+                    if (menuType == "finance") {
 
-                    DateTime? task3 = await dbContext.Tbl20126JournalRegisterMasters
-                        .Where(c => c.JournalRefNo == folderId)
-                        .Select(c => (DateTime?)c.JournalEntryDate)
-                        .FirstOrDefaultAsync();
 
-                    DateTime? task4 = await dbContext.Tbl201ChartOfAccounts
-                       .Where(c => c.AccountId == folderId)
-                       .Select(c => (DateTime?)c.RecordCreatedOn)
-                       .FirstOrDefaultAsync();
+                        DateTime? task1 = await dbContext.Tbl201VoucherEntries
+                            .Where(v => v.VoucherNo == folderId)
+                            .Select(v => (DateTime?)v.AddedOn)
+                            .FirstOrDefaultAsync();
 
-                    DateTime? task5 = await dbContext.Tbl20105AssetMasters
-                       .Where(c => c.AssetLedgerNo == folderId)
-                       .Select(c => (DateTime?)c.AddedOn)
-                       .FirstOrDefaultAsync();
+                        DateTime? task2 = await dbContext.Tbl20102ExpenseClaimMasters
+                            .Where(c => c.ClaimRefNo == folderId)
+                            .Select(c => (DateTime?)c.ClaimCreatedOn)
+                            .FirstOrDefaultAsync();
 
-                    voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
+                        DateTime? task3 = await dbContext.Tbl20126JournalRegisterMasters
+                            .Where(c => c.JournalRefNo == folderId)
+                            .Select(c => (DateTime?)c.JournalEntryDate)
+                            .FirstOrDefaultAsync();
 
+                        DateTime? task4 = await dbContext.Tbl201ChartOfAccounts
+                           .Where(c => c.AccountId == folderId)
+                           .Select(c => (DateTime?)c.RecordCreatedOn)
+                           .FirstOrDefaultAsync();
+
+                        DateTime? task5 = await dbContext.Tbl20105AssetMasters
+                           .Where(c => c.AssetLedgerNo == folderId)
+                           .Select(c => (DateTime?)c.AddedOn)
+                           .FirstOrDefaultAsync();
+
+
+
+                        voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
+
+                    
+
+                    } else if (menuType == "vat") {
+
+
+                        DateTime? task1 = await dbContext.Tbl20170VatcreditNoteMasters
+                            .Where(v => v.CreditNoteNo == folderId)
+                            .Select(v => (DateTime?)v.CreditNoteDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task2 = await dbContext.Tbl20161VatinvoiceMasters
+                            .Where(c => c.InvoiceNo == folderId)
+                            .Select(c => (DateTime?)c.InvoiceDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task3 = await dbContext.Tbl20166VatpurchaseMasters
+                            .Where(c => c.PurchaseVoucherNo == folderId)
+                            .Select(c => (DateTime?)c.PurchaseVoucherDate)
+                            .FirstOrDefaultAsync();
+
+
+
+                        voucherDate = task1 ?? task2 ?? task3;
+
+                    }
                 }
+
+
+
+                
 
 
                 int year = voucherDate?.Year ?? DateTime.Now.Year;
@@ -188,8 +223,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var fileName = $"{docNo}_{Path.GetFileName(file.FileName)}";
                     string blobPath = (documentType == "Transaction Documents")
-                        ? $"transaction_documents/{area}/year{year}/{month}/{moduleType}/{folderId}/{fileName}"
-                        : $"master_documents/{area}/{moduleType}/{folderId}/{fileName}";
+                        ? $"transaction_documents/{menuType}/year{year}/{month}/{moduleType}/{folderId}/{fileName}"
+                        : $"master_documents/{menuType}/{moduleType}/{folderId}/{fileName}";
 
                     var azurePath = await blobHelper.UploadFileAsync(file, blobPath, tenantName);
 
@@ -261,7 +296,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-            public async Task<IActionResult> GetDocuments(string folderId, string module)
+            public async Task<IActionResult> GetDocuments(string folderId, string module, string menuType)
             {
                 try
                 {
@@ -288,6 +323,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var normalizedModule = Clean(module);
                     var normalizedFolderId = Clean(folderId);
                     var normalizedTenant = Clean(tenantName);
+                    var normalizedMenu = Clean(menuType);
 
                     // Build partial Azure path prefix
                     var azurePathPrefix = $"{normalizedTenant}/"; // Tenant root
@@ -300,6 +336,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var dbDocs = await dbContext.Tbl20116LedgerDocuments
                         .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
+                                    d.AzurePath.Contains(normalizedMenu) &&
                                     d.AzurePath.Contains(normalizedModule) &&
                                     d.AzurePath.Contains(normalizedFolderId))
                         .ToListAsync();

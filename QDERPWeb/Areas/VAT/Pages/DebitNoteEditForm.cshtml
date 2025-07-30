@@ -4362,9 +4362,7 @@
 			  window.parent.$("#ledgerEditAccountPopup").dxPopup("instance").hide();
 			  window.parent.$("#popupContainer").dxPopup("instance").hide();
 		   }
-		   function GoToAttachment(){
-			   window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
-		   }
+		   
 			function onPostButtonClick(e) {
 			
 			var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
@@ -5481,22 +5479,7 @@
 		});
 
 
-			$("#btnAttach").on("click", function (e) {
-		const dialog = DevExpress.ui.dialog.custom({
-			title: "Attach File",
-			messageHtml: "Click OK to select file(s)",
-			buttons: [
-				{
-					text: "OK",
-					onClick: function () {
-						handleFileSelection();
-					}
-				},
-				{
-					text: "Cancel"
-				}
-			]
-		});
+			
 
 		dialog.show(); // Show the dialog
 	});

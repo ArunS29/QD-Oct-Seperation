@@ -2099,14 +2099,73 @@
             postingVoucherNo: newVoucherNo,
             addedBy: username,
             addedOn: now
-        })
+        }),
+        success: async function (spResponse) {
+            var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+            var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+            var voucherType ="journal register entry";
+            var menuType = "finance";
+            // 1. Get Documents
+            const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}`);
+            const documents = await getDocRes.json();
+            if (!documents.length) {
+                DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+                return;
+            }
+            // 2. Generate DocumentNo to each documents
+            const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+            const newDocNos = await docNoRes.json();
+            if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+                DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+                return;
+            }
+            // 3. Reupload each document to AddDocumentsEntry
+            const generateNo = $("#journalvoucher").dxTextBox("instance").option("value");
+
+            const PostVoucherType = "Journal";
+            const isMaster = false;
+
+            for (let i = 0; i < documents.length; i++) {
+                const doc = documents[i];
+                const newDocNo = newDocNos[i];
+
+                try {
+                    const fileResponse = await fetch(doc.FileUrl);
+                    const blob = await fileResponse.blob();
+
+                    const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+                    const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+
+                    const formData = new FormData();
+                    formData.append("file", new File([blob], safeFileName)); // no docNo prefix
+                    formData.append("DocumentNo", newDocNo);
+                    formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+                    formData.append("DocumentType", doc.DocumentType ?? "1");
+                    formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+                    formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+                    formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+                    formData.append("LedgerNo", generateNo); // new folder id
+
+
+                    const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(menuType)}`, {
+                        method: "POST",
+                        body: formData
+                    });
+
+                    const uploadResult = await uploadRes.json();
+                    console.log("Uploaded document:", uploadResult);
+                } catch (uploadError) {
+                    console.error("Error re-uploading document:", uploadError);
+                }
+            }
+            DevExpress.ui.dialog.alert("Journal Entry added to the database with Attachments.", "Successful");
+        },
+        error: function (xhr, status, error) {
+            DevExpress.ui.notify("Failed to create voucher: " + spResponse.message, "error", 3000);
+        }
     });
 
-    if (spResponse.success) {
-        DevExpress.ui.dialog.alert("Journal Entry added to the database.", "Successful");
-    } else {
-        DevExpress.ui.notify("Failed to create voucher: " + spResponse.message, "error", 3000);
-    }
+    
 }
 
     function dataGridSelectionChanged(e) {
@@ -2179,13 +2238,13 @@
         } else {
             var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             var voucherNo = voucherNoBox.option("value");
-
+            var menuType = "finance";
         
             var voucherType = "journal register entry"
         
             const isMaster = false;
             console.log(voucherType)
-            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
             const title = "Transaction Documents";
             openModal(url, title);
         }

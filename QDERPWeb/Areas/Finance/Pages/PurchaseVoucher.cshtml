@@ -3866,30 +3866,7 @@ $.ajax({
 		});
 	}
 
-	function onAttachmentButtonClick() {
-		var dataGrid = $("#dataGrid").dxDataGrid("instance");
-		var rowCount = dataGrid.getVisibleRows().length;
-		var dataSource = dataGrid.option("dataSource");
-
-		if (rowCount === 0 || rowCount === null) {
-			DevExpress.ui.dialog.alert(
-				"Not allow to Add Attachments. Please enter some transactions.",
-				"Data Not Found"
-			).done(function () {
-
-			});
-		} else {
-			var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-			var voucherNo = voucherNoBox.option("value");
-
-			var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-			var voucherType = voucherTypeBox.option("value");
-			console.log(voucherType)
-			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&modal=true`;
-			const title = "Ledger Documents";
-			openModal(url, title);
-		}		
-	}
+	
 	$(document).ready(function () {
     $("#verifiedSection, #verifiedOnSection, #approvedSection, #approvedOnSection").hide();
 });
