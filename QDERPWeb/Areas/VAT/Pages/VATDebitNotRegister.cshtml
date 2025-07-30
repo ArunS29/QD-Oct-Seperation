@@ -154,6 +154,58 @@
 	.dx-fieldset.horizontal-container {
 		margin-top: 10px;
 	}
+
+	.voucher-slider {
+		position: relative;
+		height: 100px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	.voucher-slide1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide1.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	#approvedCount {
+		font-weight: bold;
+	}
+
+	#verifiedCount {
+		font-weight: bold;
+	}
+
+	#postedCount {
+		font-weight: bold;
+	}
 </style>
 <div class="title">
 <input id="formId" value="frm20171VATDebitNoteView" type="hidden" />
@@ -164,38 +216,37 @@
 		<h6 class="fade-in">QuickDice ERP Solutions</h6>
 
 	</div>
-	<div id="mainCard" class="card today-bg">
-		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
-		</div>
+	<div class="card orange-theme" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
+		<h2 style="margin-bottom: 10px; color: white;">Voucher Count</h2>
 
-		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
-			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
-			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+		<div class="voucher-slider">
+			<div class="voucher-slide active">
+				<h4>Invoices Verified</h4>
+				<h4>Total <span id="verifiedCount">0</span></h4>
+			</div>
+			<div class="voucher-slide">
+				<h4>Invoices Approved</h4>
+				<h4>Total <span id="approvedCount">0</span></h4>
+			</div>
+			<div class="voucher-slide">
+				<h4>Invoices Posted</h4>
+				<h4>Total <span id="postedCount">0</span></h4>
+			</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<h1 id="invoiceCount">0</h1>
-		<h3>No of Invoices</h3>
+	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important;  padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;" ">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Today</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide1 active">
+				<h4># Of Credit Notes Raised Today</h4>
+				<h1 id="creditToday" style="color: white;">0</h1>
+			</div>
+			<div class="voucher-slide1">
+				<h4># Of Credit Notes Raised Total</h4>
+				<h1 id="creditTotal" style="color: white;">0</h1>
+			</div>
+		</div>
 	</div>
 </div>
 
@@ -283,6 +334,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201907vatdebitNoteRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
+		.OnContentReady("onGridContentReady")
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
@@ -849,112 +901,83 @@
 
 
 <script>
-		function animateInvoiceCount(target) {
-	  let i = 0;
-	  const el = document.getElementById("invoiceCount");
-	  el.classList.remove('bounce');
+		 function showColumnChooser() {
+			var dataGrid = $("#dataGrid").dxDataGrid("instance");
+			var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
 
-	  const timer = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(timer);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
-	}
-
-	// Animate to 40
-	animateInvoiceCount(40);
-
-
-	function countUpTurnover(targetStr) {
-	  const el = document.getElementById("turnover");
-	  const target = parseFloat(targetStr);
-	  let current = 0.0;
-
-	  const interval = setInterval(() => {
-		current += 0.5;
-		if (current >= target) {
-		  el.textContent = targetStr + " K";
-		  clearInterval(interval);
-		} else {
-		  el.textContent = current.toFixed(1) + " K";
-		}
-	  }, 30);
-	}
-
-	// Animate to 46.2 K
-	countUpTurnover("46.2");
-
-
-		  const card = document.getElementById('mainCard');
-		const counts = [8, 15, 5];
-		const countEls = [
-		  document.getElementById("count0"),
-		  document.getElementById("count1"),
-		  document.getElementById("count2"),
-		];
-		const tabs = document.querySelectorAll(".tab-text");
-		const contents = document.querySelectorAll(".tab-content");
-
-		function animateCount(el, target) {
-		  let i = 0;
-		  el.innerText = i;
-		  el.classList.remove('bounce');
-		  const interval = setInterval(() => {
-			if (i >= target) {
-			  el.innerText = target;
-			  el.classList.add('bounce');
-			  clearInterval(interval);
+			if (isColumnChooserVisible) {
+				dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
 			} else {
-			  el.innerText = i++;
+				dataGrid.option("columnChooser.enabled", true);
+				dataGrid.showColumnChooser();
 			}
-		  }, 30);
+		}
+		let currentSlideIndex = 0;
+		const slides = document.querySelectorAll('.voucher-slide');
+
+		setInterval(() => {
+			slides[currentSlideIndex].classList.remove('active');
+
+			currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+			slides[currentSlideIndex].classList.add('active');
+		}, 2000);
+		let currentSlideIndex1 = 0;
+		const slides1 = document.querySelectorAll('.voucher-slide1');
+
+		setInterval(() => {
+			slides1[currentSlideIndex1].classList.remove('active');
+
+			currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+
+			slides1[currentSlideIndex1].classList.add('active');
+		}, 2000);
+		
+
+		function onGridContentReady(e) {
+			const totalCount = e.component.totalCount();
+			animateInvoiceCount(totalCount);
+		}
+	function onGridContentReady(e) {
+			const dataSource = e.component.option("dataSource");
+
+			if (dataSource && dataSource.length > 0) {
+				// Example logic: you can use your own property names here
+				const todayCount = dataSource.filter(x => isToday(x.Date)).length;
+				const totalCount = dataSource.length;
+
+				// Update counts in the card
+				document.getElementById('creditToday').textContent = todayCount;
+				document.getElementById('creditTotal').textContent = totalCount;
+
+				// Start sliding animation once (if not already started)
+				if (!window._voucherSliderStarted) {
+					startVoucherSlide();
+					window._voucherSliderStarted = true;
+				}
+			}
+		}
+			function startVoucherSlide() {
+			let currentSlide = 0;
+			const slides = document.querySelectorAll('.voucher-slide');
+
+			setInterval(() => {
+				slides[currentSlide].classList.remove('active');
+				currentSlide = (currentSlide + 1) % slides.length;
+				slides[currentSlide].classList.add('active');
+			}, 2000);
 		}
 
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
+		function isToday(dateStr) {
+			const today = new Date();
+			const d = new Date(dateStr);
+			return d.getDate() === today.getDate() &&
+				   d.getMonth() === today.getMonth() &&
+				   d.getFullYear() === today.getFullYear();
 		}
 
-		// Start "Today" count immediately
-		animateCount(countEls[0], counts[0]);
 
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
-
-		// Auto-start animation for "Today"
-		animateCount(countEls[0], counts[0]);
-
-
-
-			function DebitStatusCellTemplate(cellElement, cellInfo) {
+				function DebitStatusCellTemplate(cellElement, cellInfo) {
 		const status = cellInfo.value;
 		let backgroundColor = "";
 		let textColor = "black";
@@ -1154,6 +1177,98 @@
 			}
 		});
 	}
+	// 	function ddBtnShowRecords_click(duration) {
+	// 	var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+	// 	var toDateBox = $("#todateBox").dxDateBox("instance");
+	// 	var currentDate = new Date();
+	// 	var frmDate, toDate;
+
+	// 	switch (duration) {
+	// 		case 'today':
+	// 			frmDate = new Date(currentDate);
+	// 			toDate = new Date(currentDate);
+	// 			break;
+	// 		case 'yesterday':
+	// 			var dateObj = new Date(currentDate);
+	// 			dateObj.setDate(dateObj.getDate() - 1);
+	// 			frmDate = toDate = dateObj;
+	// 			break;
+	// 		case 'week':
+	// 			var dayOfWeek = currentDate.getDay(); 0 (Sun) - 6 (Sat)
+	// 			var startOfWeek = new Date(currentDate);
+	// 			startOfWeek.setDate(currentDate.getDate() - dayOfWeek);
+	// 			var endOfWeek = new Date(startOfWeek);
+	// 			endOfWeek.setDate(startOfWeek.getDate() + 6);
+	// 			frmDate = startOfWeek;
+	// 			toDate = endOfWeek;
+	// 			break;
+	// 		case 'tillmonth':
+	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+	// 			toDate = new Date(currentDate);
+	// 			break;
+	// 		case 'fullmonth':
+	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+	// 			toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0);
+	// 			break;
+	// 		case 'tillyear':
+	// 			frmDate = new Date(currentDate.getFullYear(), 0, 1);
+	// 			toDate = new Date(currentDate);
+	// 			break;
+	// 		case 'fullyear':
+	// 			frmDate = new Date(currentDate.getFullYear(), 0, 1);
+	// 			toDate = new Date(currentDate.getFullYear(), 11, 31);
+	// 			break;
+	// 		case 'lastyear':
+	// 			frmDate = new Date(currentDate.getFullYear() - 1, 0, 1);
+	// 			toDate = new Date(currentDate.getFullYear() - 1, 11, 31);
+	// 			break;
+	// 		case 'lastmonth':
+	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+	// 			toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+	// 			break;
+	// 		default:
+	// 			frmDate = new Date(frmDateBox.option("value"));
+	// 			toDate = new Date(toDateBox.option("value"));
+	// 			break;
+	// 	}
+
+	// 	Format dates to MM/DD/YYYY
+	// 	var formattedFromDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+	// 	var formattedToDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+
+	// 	Set to global variables if used elsewhere
+	// 	FromDate = formattedFromDate;
+	// 	ToDate = formattedToDate;
+
+	// 	frmDateBox.option("value", formattedFromDate);
+	// 	toDateBox.option("value", formattedToDate);
+
+	// 	Load data via API
+	// 	$.ajax({
+	// 		url: '/api/VATModule/GetVatDebitNoteDetails',
+	// 		type: 'GET',
+	// 		data: {
+	// 			frmDate: formattedFromDate,
+	// 			toDate: formattedToDate
+	// 		},
+	// 		success: function (data) {
+	// 			var dataGrid = $("#dataGrid").dxDataGrid("instance");
+	// 			dataGrid.option("dataSource", data);
+
+	// 			if (data && data.length > 0) {
+	// 				var firstRow = data[0];
+	// 				var lastRow = data[data.length - 1];
+	// 				Set your custom vars as needed:
+	// 				VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
+	// 				firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+	// 			}
+	// 		},
+	// 		error: function () {
+	// 			DevExpress.ui.notify("Error while loading data", "error", 2000);
+	// 		}
+	// 	});
+	// }
+
 	function formatDate(date) {
 		var d = new Date(date),
 			month = '' + (d.getMonth() + 1),
