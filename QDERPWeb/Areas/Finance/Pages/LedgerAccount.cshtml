@@ -349,7 +349,36 @@
                                                 .OnOpened("ddlAccountGrouponOpened")
                                                 .OnKeyDown("ddlAccountGrouponKeyDown")
                                                 .OnValueChanged("ddlAccountGroupValueChanged")
-                                                .ContentTemplate(new TemplateName("AccountGroupContentTemplate")))
+                                                .ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
+                                                				.Buttons(buttons => {
+					// Built-in clear button
+					buttons.Add()
+					.Name("clear");
+
+					buttons.Add()
+					.Name("btnAddAccount")
+					.Location(TextEditorButtonLocation.After)
+					.Widget(w => w.Button()
+					.Type(ButtonType.Default)
+					.Icon("plus")
+					.ElementAttr(new { @class = "custom-hover-button add-hover" })
+					.OnClick("redirectledgerAccountMaster"));
+
+					buttons.Add()
+					.Name("btnEditAccount")
+					.Location(TextEditorButtonLocation.After)
+					.Widget(w => w.Button()
+					.Type(ButtonType.Default)
+					.Icon("edit")
+					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+					.OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectledgerAccountMaster() }"));
+
+
+
+					buttons.Add()
+					.Name("dropDown");
+				})
+                                                )
                     </div>
                   
                 </div>

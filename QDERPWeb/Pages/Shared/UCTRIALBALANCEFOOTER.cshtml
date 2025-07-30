@@ -69,7 +69,7 @@
 
         /* Initially hide the button text and set a fixed small width */
         .btn-container .dx-button {
-            width: 65px !important; /* Small width for icons */
+            /* width: 65px !important; /* Small width for icons */ */
             transition: width 0.3s ease-in-out;
         }
 
@@ -80,7 +80,7 @@
 
         /* Initially hide text */
         .btn-container .dx-button .dx-button-text {
-            display: none;
+            /* display: none; */
         }
 
         /* Show text on hover */
@@ -128,19 +128,57 @@
         border-bottom: 1px solid #ccc; /* Border between rows */
         margin-bottom: 50px;
     }
+
+    .btn-container {
+        margin-right: 10px;
+    }
+
+    .layout-button .dx-button {
+        background-color: #5c6bc0; /* Indigo */
+        color: white;
+    }
+
+    .print-button .dx-button {
+        background-color: #26a69a; /* Teal */
+        color: white;
+    }
+
+    .show-fields-button .dx-button {
+        background-color: #42a5f5; /* Blue */
+        color: white;
+    }
+
+    .report-menu-button .dx-button {
+        background-color: #ff7043; /* Deep orange */
+        color: white;
+    }
+
+    .row-totals-button .dx-button {
+        background-color: #ab47bc; /* Purple */
+        color: white;
+    }
+
+    .all-records-button .dx-button {
+        background-color: #7cb342; /* Light Green */
+        color: white;
+    }
+
+    /* Optional: Add hover effect */
+    .dx-button:hover {
+        opacity: 0.9;
+    }
+
+    .dx-icon{
+        color:white!important;
+    }
 </style>
-<div class="dx-card-header minimal-header">
-    <div class="card-title-icon">
-        <i class="fas fa-file-invoice-dollar"></i>
-    </div>
-    <h3 class="card-title-text">Financial Reports</h3>
-</div>
+
 <div class="dx-fieldset horizontal-container">
 
     @* <div id="ddButtonLayout"></div> *@
-    <div class="btn-container">
+    <div class="btn-container layout-button">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
+            .ID("ddButtonLayout1")
             .Text(new JS("formatMessage('Layout')"))
             .Icon("smalliconslayout")
             .Width(50)
@@ -159,9 +197,9 @@
 
             )
     </div>
-    <div class="btn-container">
+    <div class="btn-container print-button">
         @(Html.DevExtreme().Button()
-            .ID("btnPrint")
+            .ID("btnPrint1")
             .Text(new JS("formatMessage('Print')"))
             .Icon("print")
             .Type(ButtonType.Normal)
@@ -169,9 +207,9 @@
             .Width(180)
             )
     </div>
-    <div class="btn-container">
+    <div class="btn-container show-fields-button">
         @(Html.DevExtreme().Button()
-            .ID("btnShowFields")
+            .ID("btnShowFields1")
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("doc")
@@ -192,7 +230,7 @@
             )
     </div> *@
 
-    <div class="btn-container menuBtn">
+    <div class="btn-container menuBtn report-menu-button">
         @(Html.DevExtreme().Menu() 
              .ID("menuReports1") 
              .DataSource(new[] { 
@@ -284,9 +322,9 @@
             )
     </div> *@
 
-    <div class="btn-container">
+    <div class="btn-container row-totals-button">
         @(Html.DevExtreme().Button()
-            .ID("btnShowRowTotals")
+            .ID("btnShowRowTotals1")
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("rowfield")
@@ -297,9 +335,9 @@
     </div>
 
 
-    <div class="btn-container">
+    <div class="btn-container all-records-button">
         @(Html.DevExtreme().Button()
-            .ID("btnShowAllRecords")
+            .ID("btnShowAllRecords1")
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Text(new JS("formatMessage('Show All Records')"))
