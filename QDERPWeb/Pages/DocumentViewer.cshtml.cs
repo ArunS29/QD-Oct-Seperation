@@ -1789,6 +1789,61 @@ namespace QD.ERP.Web.Pages
                     companyNameAr, companyAddressAr, _tenantDbContextHelper
                 );
             }
+            else if (reportName == "TrialBalancePreReport")
+            {
+                if (accountGroup == null || frmDate == null || toDate == null)
+                {
+                    return BadRequest("Missing required parameters for Group.");
+                }
+
+                AccountGroup = accountGroup;
+                FrmDate = frmDate.Value;
+                ToDate = toDate.Value;
+
+
+                var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
+                var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+                // Parse it to int (you may want to use long or Guid if that's your actual ID type)
+                if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+                {
+                    // Handle invalid or missing ID (fallback or error handling)
+                    defaultCompanyId = 0; // or return early / throw error
+                }
+                // Company Info
+
+                ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
+                    .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
+
+
+                var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
+                var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
+                var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
+                var companyNameAr = ERPCompany_details?.CompanyNameAr ?? string.Empty;
+
+                string logoBase64 = string.Empty;
+                Image logoImage = null;
+
+                if (ERPCompany_details?.CompanyLogo != null && ERPCompany_details.CompanyLogo.Length > 0)
+                {
+                    try
+                    {
+                        using (MemoryStream ms = new MemoryStream(ERPCompany_details.CompanyLogo))
+                        {
+                            logoImage = Image.FromStream(ms);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+
+                        Console.WriteLine("Error processing company logo: " + ex.Message);
+                    }
+                }
+                Report = new TrialBalancePreReport(
+                     FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, _tenantDbContextHelper
+                );
+            }
             else if (reportName == "TrialBalanceExportFormat")
             {
                 if (accountGroup == null || frmDate == null || toDate == null)

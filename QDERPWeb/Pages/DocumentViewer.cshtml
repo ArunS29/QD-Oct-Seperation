@@ -17,19 +17,39 @@
     var currentReportName = '@Model.ReportName';
 
     function onDocumentViewerReady(s, e) {
-        s.preview.zoom(1.5); // Set zoom level
+        // Set zoom level correctly
+        s.GetPreviewModel().reportPreview.zoom(1.5);
 
-        // Ask the user
-        const wantsFullscreen = confirm("Would you like to view the report in fullscreen mode?");
+        // Wait until the toolbar is rendered
+        setTimeout(() => {
+            tryTriggerFullScreen();
+        }, 1000);
+    }
 
-        if (wantsFullscreen) {
-            const viewerContainer = document.querySelector(".dxrd-preview-wrapper");
-            if (viewerContainer && viewerContainer.requestFullscreen) {
-                viewerContainer.requestFullscreen().catch(err => {
-                    console.warn("Fullscreen request failed:", err);
-                });
+
+
+           function tryTriggerFullScreen() {
+               alert('hi');
+        let attempts = 0;
+        const maxAttempts = 30;
+
+        const intervalId = setInterval(() => {
+            const fullscreenBtn = document.querySelector(
+                'div[role="button"][aria-label="Full Screen"]'
+            );
+
+            if (fullscreenBtn) {
+                fullscreenBtn.click();
+                console.log("✅ Fullscreen triggered!");
+                clearInterval(intervalId);
+            } else {
+                attempts++;
+                if (attempts >= maxAttempts) {
+                    console.warn("❌ Fullscreen button not found after waiting.");
+                    clearInterval(intervalId);
+                }
             }
-        }
+        }, 500); // Try every 500ms
     }
 
 
@@ -59,12 +79,14 @@
     function refreshEmailPopup() {
         document.getElementById("emailFrame").src = document.getElementById("emailFrame").src;
     }
+
+
+
 </script>
 
 <button class="btn btn-primary send-email-btn" onclick="openEmailPopup()">📧 Send Email</button>
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
     .Height("82em")
-    
     .ClientSideEvents(events => events.DocumentReady("onDocumentViewerReady"))
     .Bind(Model.Report)
 )
