@@ -582,6 +582,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingEntity.AddedBy = model.AddedBy ?? User.Identity?.Name;
                     existingEntity.AddedOn = DateTime.Now;
                     existingEntity.IsVerified = true;
+                    existingEntity.CurrencyId = model.CurrencyId ?? 1;
+                    existingEntity.BaseCurrencyId = model.BaseCurrencyId ?? 1;
+                    existingEntity.CurrencyRate = model.CurrencyRate ?? 0;
 
                     dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
                 }
@@ -621,7 +624,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         AddedOn = DateTime.Now,
                          IsApproved = false,
                         IsVerified = false,
-                        IsSubmitted = false
+                        IsSubmitted = false,
+                        CurrencyId = model.CurrencyId??1,
+                        BaseCurrencyId = model.BaseCurrencyId??1,
+                        CurrencyRate = model.CurrencyRate ?? 0
                     };
 
                     await dbContext.Tbl60201salesOrderMasters.AddAsync(entity);

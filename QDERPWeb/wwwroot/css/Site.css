@@ -115,7 +115,9 @@ body {
 .dx-datagrid .dx-header-row .dx-datagrid-text-content {
     font-weight: bold;
 }
-
+.dx-datagrid .dx-header-row {
+    background: var(--background-color);
+}
 .dx-datagrid {
     border-radius: 15px;
     /* box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1); */
