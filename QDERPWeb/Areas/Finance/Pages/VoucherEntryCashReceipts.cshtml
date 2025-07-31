@@ -1126,7 +1126,7 @@ function addVoucherEntry() {
              url: "/api/VoucherEntryCashReceipts/GetNewBRVoucherNo",
             success: function (response) {
                 if (!response || response.success === false) {
-                    DevExpress.ui.dialog.alert("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
+                    DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
                     return;
                 }
 
@@ -1140,7 +1140,7 @@ function addVoucherEntry() {
   updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
             },
             error: function (xhr, status, error) {
-                DevExpress.ui.dialog.alert("Error retrieving voucher number: " + error, "Error");
+                DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
             }
         });
     } else {
@@ -1169,7 +1169,7 @@ function addVoucherEntry() {
 
             // Ensure paymentaccheadname and paymentaccheadId are assigned before use
             if (!paymentaccheadname || !paymentaccheadId) {
-                DevExpress.ui.dialog.alert(
+                DevExpress.ui.notify(
                     "Default Receiving Account not set. Please refresh the page or check the setup.",
                     "Error"
                 );
@@ -1547,7 +1547,7 @@ function addVoucherEntry() {
             }
         }
 
-                 DevExpress.ui.dialog.alert(
+                 DevExpress.ui.notify(
                     "Cannot continue saving with errors,please clear the errors and continue.",
                     "Clear Errors"
                 );
@@ -1720,7 +1720,7 @@ function addVoucherEntry() {
 
                      if(paymentIsLedgerObselete==true){
          IsObeselete=true;
-           DevExpress.ui.dialog.alert(
+           DevExpress.ui.notify(
     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
     "LEDGER IS OBSELETE(NOT IN USE)"
     );
@@ -1781,7 +1781,7 @@ function addVoucherEntry() {
 
                      if(paymentIsLedgerObselete==true){
          IsObeselete=true;
-           DevExpress.ui.dialog.alert(
+           DevExpress.ui.notify(
     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
     "LEDGER IS OBSELETE(NOT IN USE)"
     );
@@ -1862,14 +1862,14 @@ function addVoucherEntry() {
                             if (response.success) {
 
 
-                                 DevExpress.ui.dialog.alert(
+                                 DevExpress.ui.notify(
                         "Payment Voucher Details updated Successfully.",
                         "Update Sucessful"
                     );
 
                                 if(IsObeselete==true)
                                 {
-                                      DevExpress.ui.dialog.alert(
+                                      DevExpress.ui.notify(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1886,7 +1886,7 @@ function addVoucherEntry() {
                         },
                         error: function (xhr, status, error) {
                           //  DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
-                              DevExpress.ui.dialog.alert(
+                              DevExpress.ui.notify(
                         "Voucher has no line items to be saved, please enter transaction to save.!",
                         "No Line Items"
                     );
@@ -1897,14 +1897,14 @@ function addVoucherEntry() {
                     if(IsNotification==true)
                     {
 
-                            DevExpress.ui.dialog.alert(
+                            DevExpress.ui.notify(
                         "Cannot continue saving with errors,please clear the errors and continue.",
                         "Clear Errors"
                     );
                     }
                     else
                     {
-                          DevExpress.ui.dialog.alert(
+                          DevExpress.ui.notify(
                         "Voucher has no line items to be saved, please enter transaction to save.!",
                         "No Line Items"
                     );
@@ -1973,7 +1973,7 @@ function addVoucherEntry() {
                         dataType: "json",
                         success: function (response) {
                             if (response.success) {
-                            DevExpress.ui.dialog.alert(
+                            DevExpress.ui.notify(
                                 "Receipt Voucher Details Updated Sucessfully.",
                                 "Data Saved Successfully"
                             ).done(function () {
@@ -1990,7 +1990,7 @@ function addVoucherEntry() {
                     });
                 } else {
 
-                    DevExpress.ui.dialog.alert(
+                    DevExpress.ui.notify(
         "Voucher has no line items to be saved, please enter transaction to save.!",
         "No Line Items"
     ).done(function () {
@@ -2208,7 +2208,7 @@ function addVoucherEntry() {
                 // Check if the formatted voucher date is before the cutoff date
                 if (new Date(formattedDate) < cutoffDate) {
                     // Show alert for blocked entry
-                    DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+                    DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
                     // Set both voucherDate and effectiveDate to the current date
                     voucherDate.option("value", formattedCurrentDate);
@@ -2638,7 +2638,7 @@ function addVoucherEntry() {
                 ).done(function (dialogResult) {
                     if (dialogResult) {
                         onConfirm(); // Proceed only if the user clicks "Yes"
-                        DevExpress.ui.dialog.alert(
+                        DevExpress.ui.notify(
                             "Line entry has been successfully removed from the database.",
                             "Deletion Successful"
                         );
@@ -2654,7 +2654,7 @@ function addVoucherEntry() {
                 ).done(function (dialogResult) {
                     if (dialogResult) {
                         onConfirm(); // Proceed only if the user clicks "Yes"
-                        DevExpress.ui.dialog.alert(
+                        DevExpress.ui.notify(
                             "All Entries has been successfully removed from the database.",
                             "Data Deleted Successfully"
                         );
@@ -3147,7 +3147,7 @@ function addVoucherEntry() {
                         // Check if the formatted voucher date is before the cutoff date
                         if (new Date(formattedDate) < cutoffDate) {
                             // Show alert for blocked entry
-                            DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+                            DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
                             // Set both voucherDate and effectiveDate to the current date
                             voucherDate.option("value", formattedCurrentDate);
@@ -3458,7 +3458,7 @@ function onBaseCurrencyInit(e) {
 
                              if(IsObeselete==true)
                              {
-                                   DevExpress.ui.dialog.alert(
+                                   DevExpress.ui.notify(
                     "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                     "LEDGER IS OBSELETE(NOT IN USE)"
                     );
@@ -3475,7 +3475,7 @@ function onBaseCurrencyInit(e) {
                      },
                      error: function (xhr, status, error) {
                        //  DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
-                           DevExpress.ui.dialog.alert(
+                           DevExpress.ui.notify(
                      "Voucher has no line items to be saved, please enter transaction to save.!",
                      "No Line Items"
                  );
@@ -3486,14 +3486,14 @@ function onBaseCurrencyInit(e) {
                  if(IsNotification==true)
                  {
 
-                         DevExpress.ui.dialog.alert(
+                         DevExpress.ui.notify(
                      "Cannot continue saving with errors,please clear the errors and continue.",
                      "Clear Errors"
                  );
                  }
                  else
                  {
-                       DevExpress.ui.dialog.alert(
+                       DevExpress.ui.notify(
                      "Voucher has no line items to be saved, please enter transaction to save.!",
                      "No Line Items"
                  );
