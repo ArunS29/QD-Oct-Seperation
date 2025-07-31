@@ -750,7 +750,7 @@
 						.Controller("VATModule")
 						.LoadAction("GetTaxCurrency")
 						.LoadMode(DataSourceLoadMode.Raw)
-						.Key("CurrencyExchangeID"))
+						.Key("CurrencyExchangeId"))
 						.LabelMode(EditorLabelMode.Floating)
 						.ID("ddlGoodsGroup4")
 						.ShowClearButton(true)
@@ -759,7 +759,8 @@
 						.OpenOnFieldClick(false)
 						.ValueChangeEvent("input")
 						.HoverStateEnabled(true)
-						.ValueExpr("CurrencyExchangeID")
+                        .OnInitialized("onBaseCurrencyInitialized")
+						.ValueExpr("CurrencyExchangeId")
 						.DisplayExpr("CurrencyName")
 						.OnInput("dropDownBoxOnInput")
 						.OnOpened("onOpened")
@@ -790,7 +791,7 @@
 					    .Controller("VATModule")
 					    .LoadAction("GetInvoiceCurrency")
 					    .LoadMode(DataSourceLoadMode.Raw)
-					    .Key("CurrencyExchangeID"))
+					    .Key("CurrencyExchangeId"))
 					    .LabelMode(EditorLabelMode.Floating)
 					    .ID("ddlGoodsGroup3")
 					    .ShowClearButton(true)
@@ -799,7 +800,8 @@
 					    .OpenOnFieldClick(false)
 					    .ValueChangeEvent("input")
 					    .HoverStateEnabled(true)
-					    .ValueExpr("CurrencyExchangeID")
+                        .OnInitialized("onBaseCurrencyInitialized")
+					    .ValueExpr("CurrencyExchangeId")
 					    .DisplayExpr("CurrencyName")
 					    .OnInput("dropDownBoxOnInput")
 					    .OnOpened("onOpened")
@@ -1029,7 +1031,7 @@
 {
 	@(Html.DevExtreme().DataGrid()
 
-												.ID("taxcurrecy-datagrid")
+											.ID("taxcurrecy-datagrid")
 											.DataSource(d => d.WebApi()
 											.Controller("VATModule")
 													.LoadAction("GetTaxCurrency")
@@ -1043,7 +1045,7 @@
 											.SearchPanel(sp => sp.HighlightSearchText(true))
 											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 											.OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
-											.OnInitialized("dataGridTaxCurrencyHeadInitialized")
+											.OnInitialized("onBaseCurrencyInitialized")
 											// .HeaderFilter(p => p.Visible(true))
 											.ShowBorders(true)
 											.HoverStateEnabled(true)
@@ -1075,7 +1077,7 @@
 												.LoadAction("GetInvoiceCurrency")
 										.LoadMode(DataSourceLoadMode.Raw)
 												///   .Key("AccountHead") //salary paid entry
-												.Key("CurrencyExchangeID")
+												.Key("CurrencyExchangeId")
 
 										)
 										.WordWrapEnabled(true)
@@ -1083,7 +1085,7 @@
 										.SearchPanel(sp => sp.HighlightSearchText(true))
 										.Selection(sl => sl.Mode(SelectionMode.Single)) 
 										.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
-										.OnInitialized("dataGridInvoiceCurrencyHeadInitialized")
+										.OnInitialized("onBaseCurrencyInitialized")
 										.ShowBorders(true)
 										.HoverStateEnabled(true)
 										.Paging(p => p.PageSize(15))
@@ -1094,7 +1096,7 @@
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
 										{
-											columns.Add().DataField("CurrencyExchangeID").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center).Width(100);
+											columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
 											columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
 											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
 											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
@@ -2124,12 +2126,12 @@
                     CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
                     CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
                     InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                    // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                    // BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-                    // CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-                    CurrencyId : 1,
-                    BaseCurrencyId :1,
                     CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                    BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                    CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+                    // CurrencyId : 1,
+                    // BaseCurrencyId :1,
+                    // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
                     SalesOrderChildren: children
                 };
 
@@ -2200,6 +2202,9 @@
                         $("#CostCenter").dxDropDownBox("instance").option("value", data.CostAllocationMasterGroup);
                         $("#CompanyBranch").dxDropDownBox("instance").option("value", data.CompanyBranch);
                         $("#InventoryGroup").dxDropDownBox("instance").option("value", data.InventoryMasterGroupId);
+                        $("#currencyexchangerate").dxNumberBox("instance").option("value", data.CurrencyRate);
+                        $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", data.CurrencyId);
+                        $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", data.BaseCurrencyId);
                         // Add more fields as needed
                     })
                     .fail(function () {
@@ -2360,12 +2365,12 @@
                         CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
                         InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
                         InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                        // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                        // BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-                        // CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
                         CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                        BaseCurrencyId :1,
-                        CurrencyId : 1,
+                        BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                        CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+                        // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                        // BaseCurrencyId :1,
+                        // CurrencyId : 1,
                         SalesOrderChildren: children
                     };
 
@@ -2731,4 +2736,23 @@ $(document).ready(function () {
 		        }
 	        }
         }
+        function onBaseCurrencyInitialized(e) {
+            const ddb = e.component;
+
+            setTimeout(() => {
+                const ds = ddb.getDataSource();
+
+                if (ds) {
+                    ds.load().done(function (data) {
+                        if (data && data.length > 0) {
+                            const firstItemId = data[0].CurrencyExchangeId;
+                            ddb.option("value", firstItemId);
+                        }
+                    });
+                } else {
+                    console.warn("DataSource is not available yet.");
+                }
+            }, 100); // delay 100ms
+        }
+
 </script>

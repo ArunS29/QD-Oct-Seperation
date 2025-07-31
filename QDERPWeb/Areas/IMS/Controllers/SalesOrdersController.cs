@@ -57,6 +57,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
 
                     // Fetching the data
+                    var cost = 0;
                     var data = await query.Select(i => new
                     {
                         i.SalesOrderNo,
@@ -73,6 +74,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalAfterDiscount,
                         i.TotalTaxAmount,
                         i.TotalWithTax,
+                        cost = i.TotalWithTax * i.CurrencyRate,
                     }).ToListAsync();
 
                     return Json(data);
@@ -928,6 +930,9 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                 order.IsVerified,
                 order.IsApproved,
                 order.CostAllocationMasterGroup,
+                order.CurrencyId,
+                order.CurrencyRate,
+                order.BaseCurrencyId,
                 SalesOrderChildren = children
             });
         }
