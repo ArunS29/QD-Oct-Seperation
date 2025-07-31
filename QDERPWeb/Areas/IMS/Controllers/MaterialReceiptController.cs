@@ -791,6 +791,96 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
+        [HttpGet]
+        public IActionResult GetGSCodeDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var description = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.Gsdescrpition)
+                    .FirstOrDefault();
 
+                return Ok(description ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
+        }
+
+        [HttpGet]
+        public IActionResult GetGSCodeDetailedDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var detailedDesc = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.GsdetailedDesc)
+                    .FirstOrDefault();
+
+                return Ok(detailedDesc ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetdataByGSCode(string GSCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (string.IsNullOrEmpty(GSCode))
+                    return BadRequest("GSCode  is required.");
+
+                try
+                {
+
+                    var client = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(c => c.Gscode == GSCode)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("GS data not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetGSData: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata(long ReceiptChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (ReceiptChildSlNo == 0)
+                    return BadRequest("ReceiptChildSlNo is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Tbl60502materialReceiptChildren
+                        .Where(c => c.ReceiptChildSlNo == ReceiptChildSlNo)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
