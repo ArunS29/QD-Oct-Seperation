@@ -508,7 +508,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         i.ClientNeighborhood,
                         i.ClientNeighborhoodAr,
                         i.ClientCountryCode,
-                        i.AccountHeadArabic
+                        i.AccountHeadArabic,
+                        i.BillingName
 
                     });
 
@@ -4707,7 +4708,7 @@ documentNo: DebitNoteNo
                     }
 
 
-                    return Json(result);
+                    return Json(resultWithVAT);
                 }
                 catch (Exception ex)
                 {
@@ -5119,7 +5120,7 @@ documentNo: InvoiceNo
 
 
                         // Add new dynamic column
-                        dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
+                        dict["UnitRateMethod"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
                         //dict["VAT"] = vatValue;
@@ -6057,6 +6058,111 @@ documentNo: InvoiceNo
             }
 
             return BadRequest(new { Message = "Unable to access tenant database context." }); // ✅ Handle TryGet failure
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ProformaVerifyVoucher(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Voucher number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20181ProformaInvoiceMasters.FirstOrDefault(v => v.ProformaInvoiceNo == InvoiceNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "Voucher not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsVerified = true;
+                    voucher.VerifiedOn = DateTime.Now;
+                    voucher.VerifiedBy = UserName;
+
+                    dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+module: "VAT>Proforma Verify Voucher",
+actionDetail: $"Proforma Verify Voucher Number: {InvoiceNo}",
+documentNo: InvoiceNo
+);
+                    return Ok(new
+                    {
+                        Message = "Voucher verified successfully.",
+                        VoucherVerifiedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> ProformaApproveVoucher(string InvoiceNo, bool IsDirectApproval)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var UserName = HttpContext.Session.GetString("UserName");
+
+                    if (string.IsNullOrEmpty(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "InvoiceNo number is required." });
+                    }
+
+                    var voucher = dbContext.Tbl20181ProformaInvoiceMasters.FirstOrDefault(v => v.ProformaInvoiceNo == InvoiceNo);
+
+                    if (voucher == null)
+                    {
+                        return NotFound(new { Message = "InvoiceNo not found." });
+                    }
+
+                    // Update the fields
+                    voucher.IsApproved = true;
+                    voucher.ApprovedOn = DateTime.Now;
+                    voucher.ApprovedBy = UserName;
+
+                    if (IsDirectApproval == false)
+                    {
+                        voucher.IsVerified = true;
+                        voucher.VerifiedOn = DateTime.Now;
+                        voucher.VerifiedBy = UserName;
+
+                    }
+
+                    dbContext.SaveChanges();
+                    await _userActionLogger.LogAsync(
+  module: "VAT> Proforma Approve Voucher",
+  actionDetail: $"Approve VoucherNo: {InvoiceNo}",
+  documentNo: InvoiceNo
+);
+                    return Ok(new
+                    {
+                        Message = "InvoiceNo Approved successfully.",
+                        VoucherApprovedBy = UserName,  // Example, replace with actual data if needed
+                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return BadRequest(new { Message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
         }
 
 
