@@ -794,11 +794,13 @@
             return;
         }
 
-        // Open the XtraReport with Voucher No as a parameter
+        const screenWidth = window.screen.availWidth;
+        const screenHeight = window.screen.availHeight;
+
         window.open(
             `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
             '_blank',
-            'width=1200,height=800,scrollbars=yes,resizable=yes'
+            `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
         );
     }
     // verify Function
