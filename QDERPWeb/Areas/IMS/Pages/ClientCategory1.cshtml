@@ -102,7 +102,6 @@
     }
 
     .mainContainer {
-        margin-top: 1em;
         width: 100%;
     }
 
@@ -118,44 +117,32 @@
 </div> *@
 @* <div class="sathish-container-top"> *@
 <div class="content-container-top">
-    <div class="row">
-        <!-- Client Name Input (Full width row) -->
-        <div class="col-md-12">
+    <div style="display:flex; align-items :end; padding:0px;">
             @(Html.DevExtreme().TextBox()
                         .ID("txtClientCategory")
                         .Label(new JS("formatMessage('Type a New Client & Add to the Existing List:')"))
                         .LabelMode(EditorLabelMode.Floating)
+                        .Width(335)
                         .Value(null)
-                        .Width("100%")
                         .ValidationRules(rules =>
                         {
                             rules.AddRequired()
                             .Message(new JS("formatMessage('Client Category is required')"));
                         })
                         )
-        </div>
-    </div>
-
-    <!-- Client Category Code and Button aligned in same row -->
-    <div class="row">
-        <!-- TextBox: 8 columns -->
-        <div class="col-md-8">
+                        <div style="display:flex; align-items:end;gap:20px;">
             @(Html.DevExtreme().TextBox()
                         .ID("txtCategoryCode")
                         .Label(new JS("formatMessage('Client Category Code:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(null)
-                        .Width("100%")
+                        .Width(450)
                         .ValidationRules(rules =>
                         {
                             rules.AddRequired()
                             .Message(new JS("formatMessage('Client Category Code is required')"));
                         })
                         )
-        </div>
-
-        <!-- Button: 4 columns -->
-        <div class="col-md-4 d-flex align-items-end" style="padding-left: 10px;">
             @(Html.DevExtreme().Button()
                         .ID("btnadd")
                         .Text(new JS("formatMessage('ADD')"))
@@ -165,9 +152,9 @@
                         .OnClick("function() { adddivmaster(); }")
                         .ElementAttr(new { @class = "dx-button-add" })
                         )
+            </div>
         </div>
-    </div>
-
+    <br />
     <div id="gridContainer"></div>
     <br />
     <div class="form-group">
@@ -181,7 +168,6 @@
                 )
     </div>
 </div>
-@* </div> *@
 
 
 <script type="text/javascript">
@@ -445,7 +431,7 @@
                 rowRenderingMode: "virtual", // Optimizes row rendering
                 useNative: true // Use native scrolling for better performance
             },
-            height: 400, // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            height: "72vh", // Set a fixed height for the grid (this helps in showing vertical scrollbar)
             width: "100%" // Make grid responsive and take full width of the container
         });
     });

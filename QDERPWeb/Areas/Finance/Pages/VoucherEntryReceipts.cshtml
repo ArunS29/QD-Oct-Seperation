@@ -102,39 +102,26 @@
                     </div>
                     <div class="form-group col-md-7 col-sm-6">
 
-                        @(Html.DevExtreme().DropDownBox()
-                                                .Label(new JS("formatMessage('Receiving Account')"))
-                                                .DataSource(d => d.WebApi()
-                                                .Controller("VoucherEntryCashReceipts")
-                                                .LoadAction("GetReceivingAccount")
-                                                .LoadMode(DataSourceLoadMode.Raw)
-                                                .Key("AccountId")
-                                                )
-                                                .ValidationRules(rules =>
-                                                {
-                                                    rules.AddRequired()
-                                                    .Message("Receiving Account is required");
-                                                })
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .ID("accountDropDownBox")
-                                                .ShowClearButton(true)
-                                                .AcceptCustomValue(true)
-                                                .AcceptCustomValue(false)
-                                                .OpenOnFieldClick(false)
-                                                .ValueChangeEvent("change") // Detects changes in the dropdown
-                                                .HoverStateEnabled(true)
-
-                                                .ValueExpr("AccountId")
-                                                .DisplayExpr("AccountHead")
-                                                .OnValueChanged("onReceivingAccountChange") // Call the change handler
-                                                .OnInput("dropDownBoxOnInput")
-                                                .OnOpened("onOpened")
-                                                .TabIndex(3)
-                                                .DropDownOptions(o => o.Width(1000))
-                                                .ElementAttr(new { @class = "white-dropdownbox" })
-                                                .OnKeyDown("onKeyDown")
-                                                .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
-                                                )
+                         @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Receiving Account')"))
+                        .DataSource(d => d.WebApi().Controller("VoucherMaster").LoadAction("GetBPPaymentAccounts").LoadMode(DataSourceLoadMode.Raw).Key("AccountHead"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("accountDropDownBox")
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(true)
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("AccountId")
+                        .DisplayExpr("AccountHead")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(3)
+                        .DropDownOptions(o => o.Width(1000)) 
+                        .ElementAttr(new { @class = "white-dropdownbox" })
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
+                    )
                     </div>
                     
                 </div>
@@ -856,35 +843,38 @@ buttons.Add()
                 }
 
         <!-- Drop Down Grid Template -->
-        @using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
+               @using (Html.DevExtreme().NamedTemplate("PaymentAmountContentTemplate"))
         {
-            @(
-                    Html.DevExtreme().DataGrid()
-                    .ID("suppliername-datagrid")
-                    .DataSource(d => d.WebApi()
-                    .Controller("VoucherEntryReceipts")
-                    .LoadAction("GetReceivingAccount")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("AccountId")
-                    )
-                    .WordWrapEnabled(true)
-                    .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
-                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridSelectionChanged")
-                    .ColumnChooser(c => c.Enabled(true))
-                    .OnInitialized("dataGridInitialized")
-                    .HeaderFilter(p => p.Visible(true))
-                    .ShowBorders(true)
-                    .HoverStateEnabled(true)
-                    .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
-                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                    .Height(345)
-                    .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS("getSelectedRowKeys()"))
-                    .Columns(columns =>
-                    {
+            @(Html.DevExtreme().DataGrid()
+
+                        .ID("accountpaymentamount-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("VoucherMaster")
+                        .LoadAction("GetBPPaymentAccounts")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        /// .Key("AccountHead") //salary paid entry
+                        .Key("AccountId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .SearchPanel(sp => sp.Visible(true))
+                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .OnSelectionChanged("dataGridSelectionChanged")
+                        .OnInitialized("dataGridInitialized")
+                        // .HeaderFilter(p => p.Visible(true))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .FilterRow(f => f.Visible(true))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .ColumnChooser(c => c.Enabled(true))
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS("getSelectedRowKeys()"))
+
+                        .Columns(columns =>
+                        {
                         columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
                         columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
                         columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
@@ -901,20 +891,17 @@ buttons.Add()
                         columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
                         columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
                         columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-                        columns.Add().DataField("IsLedgerObselete")
-
-
-                    .Alignment(HorizontalAlignment.Center)
-                    .CellTemplate(@<text>
+                            columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
+                        .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
             </div>
         </text>);
 
-                    })
-                    .OnRowPrepared("onAccountHeadRowPrepared")
+                        })
+                        .OnRowPrepared("onAccountHeadRowPrepared")
                     )
-                }
+        }
 
         @using (Html.DevExtreme().NamedTemplate("AccountHeadContentTemplate"))
         {
@@ -1712,7 +1699,7 @@ function addVoucherEntry() {
             if (ddbInstance.option("opened")) {
                 ddbInstance.close();
             }
-            var selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
+            var selectedRowData = $("#accountpaymentamount-datagrid").dxDataGrid("instance").getSelectedRowsData();
             // Get ReferenceNo from selected row
             if (selectedRowData.length > 0) {
                 paymentaccheadId = selectedRowData[0].AccountId;
@@ -2896,26 +2883,26 @@ function addVoucherEntry() {
                 fetchVoucherEntries(voucherNo);
             }
 
-            // function validateVoucherNo(voucherNo) {
+            function validateVoucherNo(voucherNo) {
 
-            //     $.ajax({
-            //         type: "GET",
-            //         url: "/api/SalesVoucher/CheckVoucherExists",
-            //         contentType: "application/json",
-            //         data: { voucherNo: voucherNo },
-            //         success: function (response) {
-            //             if (!response.success || response.exists) {
-            //                 DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
-            //                 $("#VoucherNo").dxTextBox("instance").option("value", null);
-            //             } else {
-            //                 DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
-            //             }
-            //         },
-            //         error: function () {
-            //             DevExpress.ui.notify("Validation error occurred.", "error", 3000);
-            //         }
-            //     });
-            // }
+                $.ajax({
+                    type: "GET",
+                    url: "/api/SalesVoucher/CheckVoucherExists",
+                    contentType: "application/json",
+                    data: { voucherNo: voucherNo },
+                    success: function (response) {
+                        if (!response.success || response.exists) {
+                            DevExpress.ui.notify(response.message || "Sales Invoice No already exists. Please use a different number.", "error", 3000);
+                            $("#VoucherNo").dxTextBox("instance").option("value", null);
+                        } else {
+                            DevExpress.ui.notify("Sales Invoice No is available.", "success", 2000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Validation error occurred.", "error", 3000);
+                    }
+                });
+            }
 
              function fetchVoucherDetails(voucherNo) {
 
@@ -3319,10 +3306,10 @@ function fetchUpdatedData(voucherEntryNo) {
                 var dropDown = $("#accountDropDownBox").dxDropDownBox("instance");
 
                 // Set the dropdown value
-                dropDown.option("value", data.AccountId);
+                dropDown.option("value", data.AccountHead);
 
                 // Get the DataGrid instance inside the dropdown
-                var dataGrid = $("#suppliername-datagrid").dxDataGrid("instance");
+                var dataGrid = $("#accountpaymentamount-datagrid").dxDataGrid("instance");
                 if (dataGrid) {
                     dataGrid.option("selectedRowKeys", [data.AccountId]);
                 }
@@ -3526,18 +3513,7 @@ function onBaseCurrencyInit(e) {
     
 
 
-        // function onAttachmentButtonClick() {
-        //     var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-        //     var voucherNo = voucherNoBox.option("value");
-
-        //     var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); or dxTextBox
-        //     var voucherType = voucherTypeBox.option("value");
-        //     const isMaster = false;
-        //     console.log(voucherType)
-        //     const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
-        //     const title = "Transaction Documents";
-        //     openModal(url, title);
-        // }
+       
         function loadCurrencyGridOnOpen(e) {
             debugger;
             const dropDown = e.component;

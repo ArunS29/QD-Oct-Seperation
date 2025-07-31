@@ -153,6 +153,7 @@
             .Value(0)
             .ShowSpinButtons(true)
             .Min(0)
+			
 			.TabIndex(6)
             .Max(1000)
             .Step(1)
@@ -319,6 +320,7 @@ buttons.Add()
 											.Message("Amount value must be greater than zero");
 										})
 										.Min(0)
+										.Max(99999999)
 										.Placeholder("0.00")
 										.Format("#,##0.00")
 										.TabIndex(11)
@@ -428,7 +430,7 @@ buttons.Add()
 								.Value(1)
 
 								.Min(0)
-
+								.Max(99999)
 								.Format("#,##0.00")
 								.InputAttr(new
 								{
@@ -3627,31 +3629,7 @@ buttons.Add()
         }
     }
 
-	function onAttachmentButtonClick() {
-		var dataGrid = $("#dataGrid").dxDataGrid("instance");
-		var rowCount = dataGrid.getVisibleRows().length;
-		var dataSource = dataGrid.option("dataSource");
-
-		if (rowCount === 0 || rowCount === null) {
-			DevExpress.ui.dialog.alert(
-				"Not allow to Add Attachments. Please enter some transactions.",
-				"Data Not Found"
-			).done(function () {
-
-			});
-		} else {
-			var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-			var voucherNo = voucherNoBox.option("value");
-
-			var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
-			var voucherType = voucherTypeBox.option("value");
-			const isMaster = false;
-			console.log(voucherType)
-			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
-			const title = "Transaction Documents";
-			openModal(url, title);
-		}
-	}
+	
 	function onReferenceDropdownOpened(e) {
         const grid = $("#ReferenceGrid").dxDataGrid("instance");
         if (grid) {

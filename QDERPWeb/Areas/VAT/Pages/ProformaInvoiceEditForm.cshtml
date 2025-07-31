@@ -1315,10 +1315,8 @@
 		<div class="dx-field ledgerResult">
 			@(
 							Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-
 							.ID("B2BdataGrid")
 							.Height("39vh")
-
 							.RemoteOperations(false)
 							.Columns(columns =>
 							{
@@ -7503,25 +7501,7 @@
 			button.option("text", "Save");
 		});
 
-			$("#btnAttach").on("click", function (e) {
-			const dialog = DevExpress.ui.dialog.custom({
-				title: "Attach File",
-				messageHtml: "Click OK to select file(s)",
-				buttons: [
-					{
-						text: "OK",
-						onClick: function () {
-							handleFileSelection();
-						}
-					},
-					{
-						text: "Cancel"
-					}
-				]
-			});
-
-			dialog.show(); // Show the dialog
-		});
+			
 
 		function handleFileSelection() {
 			const fileInput = document.getElementById("fileInput");

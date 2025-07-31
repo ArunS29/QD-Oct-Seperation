@@ -91,6 +91,7 @@
         <div id="ClientLeads" class="no-border-input"></div>
     </div>
 </div> *@
+<input id="formId" value="frm30106ClientMaster" type="hidden" />
 @await Html.PartialAsync("/Pages/Shared/IMS/ClientLeadFooter.cshtml")
 <div class="ledgerResult">
     @(
@@ -236,7 +237,7 @@
                     let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
                     let url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
                     let title = `Client Master`;
-                    openModal(url, title);
+                    openModal(url, title ,"","75%");
                 }
             }];
         }

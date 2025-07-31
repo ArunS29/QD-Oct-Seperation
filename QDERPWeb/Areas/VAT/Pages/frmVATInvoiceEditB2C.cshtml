@@ -4483,12 +4483,10 @@
 
 									onClick: function () {
 
-
 									       let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
 											let title = "Goods and Services";
 													openModal(url, title);
 								
-
 										//window.location.href = url;
 
 									},
@@ -8442,25 +8440,7 @@
 		button.option("text", "Update");
 	});
 
-		$("#btnAttach").on("click", function (e) {
-		const dialog = DevExpress.ui.dialog.custom({
-			title: "Attach File",
-			messageHtml: "Click OK to select file(s)",
-			buttons: [
-				{
-					text: "OK",
-					onClick: function () {
-						handleFileSelection();
-					}
-				},
-				{
-					text: "Cancel"
-				}
-			]
-		});
-
-		dialog.show(); // Show the dialog
-	});
+		
 
 	function handleFileSelection() {
 		const fileInput = document.getElementById("fileInput");
@@ -9508,6 +9488,36 @@
         });
     }
 
+		// Attachment
+		function onVatAttachmentButtonClick(e) {
+
+			const grid = $("#B2BdataGrid").dxDataGrid("instance");
+			const data = grid.getDataSource().items();
+			const hasValidAmounts = data.some(row => {
+				return (row.CalcLineAmount && row.CalcLineAmount > 0);
+			});
+
+			if (!hasValidAmounts) {
+				DevExpress.ui.dialog.alert("Data Not found in the Amount Cell within the Grid", "Can't Enable Attachment");
+				return;
+			}
+			// Get Voucher No safely
+			const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+			const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+			var menuType = "vat";
+
+
+			var formType ="Sales Invoice B2C";
+			// Log and build URL
+			console.log("Voucher No:", invoiceNo);
+			console.log("Voucher Type:", formType);
+
+			const isMaster = false;
+			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+			const title = "Transaction Documents";
+
+			openModal(url, title);
+		}
 
 				
 </script>
