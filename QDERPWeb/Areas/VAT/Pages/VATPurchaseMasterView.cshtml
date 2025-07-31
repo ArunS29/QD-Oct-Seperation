@@ -175,6 +175,28 @@
 		margin-top: 10px;
 	}
 
+	.voucher-slider {
+		position: relative;
+		height: 120px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.5s ease;
+		text-align: center;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
 	
 </style>
 
@@ -190,40 +212,49 @@
 
 
 	<div id="mainCard" class="card today-bg">
-		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
+		<div class="tabs" style="gap:10px;">
+			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
+			<div class="tab-text" onclick="switchTab(1)">Approved</div>
+			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
 		</div>
 
 		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
 			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
+			<div class="count" id="count1">0</div> <!-- Approved -->
 		</div>
 
 		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
 			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<h1 id="invoiceCount">0</h1>
-		<h3>No of Invoices</h3>
-	</div>
+	<div class="card green shine">
+	<h4 style="font-weight:bold;">Bill Amount</h4>
+	<h1 id="invoiceAmount">0.00 SAR</h1>
+	<h3 id="vatTotalValue">VAT Value: 0.00 SAR</h3>
 </div>
 
+
+	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Voucher Count</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide active">
+				<h4 style="color: white; margin: 0;">New Voucher</h4>
+				<h4 style="color: white; margin: 0;">
+					Today &nbsp; <span id="todayCount">0</span>
+				</h4>
+			</div>
+
+			<div class="voucher-slide">
+				<h1 id="fiveYearCount" style="color: white;">0</h1>
+				<h5 style="color: white;">Last 5 Years</h5>
+			</div>
+		</div>
+	</div>
+</div>
 
 <div class="Head">
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATPurchaseRegisterFooter.cshtml")
@@ -311,6 +342,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201707vatpurchaseRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
+		.OnContentReady("onGridContentReady")
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
@@ -876,108 +908,109 @@
 </div>
 
 <script>
+	let currentSlideIndex = 0;
+	const slides = document.querySelectorAll('.voucher-slide');
 
-		function animateInvoiceCount(target) {
-	  let i = 0;
-	  const el = document.getElementById("invoiceCount");
-	  el.classList.remove('bounce');
+	setInterval(() => {
+		slides[currentSlideIndex].classList.remove('active');
 
-	  const timer = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(timer);
-		} else {
-		  el.innerText = i++;
+		currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+		slides[currentSlideIndex].classList.add('active');
+	}, 2000);
+	let currentSlideIndex1 = 0;
+	const slides1 = document.querySelectorAll('.voucher-slide1');
+
+	setInterval(() => {
+		slides1[currentSlideIndex1].classList.remove('active');
+
+		currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+
+		slides1[currentSlideIndex1].classList.add('active');
+	}, 2000);
+	function animateTodayVoucherCount(target) {
+		let i = 0;
+		const el = document.getElementById("todayCount");
+		if (!el) return;
+
+		el.classList.remove('bounce');
+
+		const timer = setInterval(() => {
+			if (i >= target) {
+				el.innerText = target;
+				el.classList.add('bounce');
+				clearInterval(timer);
+			} else {
+				el.innerText = i++;
+			}
+		}, 30);
+	}
+		
+		const card = document.getElementById('mainCard');
+		const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
+		const countEls = [
+		  document.getElementById("count0"),
+		  document.getElementById("count1"),
+		  document.getElementById("count2"),
+		];
+		const tabs = document.querySelectorAll(".tab-text");
+		const contents = document.querySelectorAll(".tab-content");
+
+		function animateCount(el, target) {
+		  let i = 0;
+		  el.innerText = i;
+		  el.classList.remove('bounce');
+		  const interval = setInterval(() => {
+			if (i >= target) {
+			  el.innerText = target;
+			  el.classList.add('bounce');
+			  clearInterval(interval);
+			} else {
+			  el.innerText = i++;
+			}
+		  }, 30);
 		}
-	  }, 30);
-	}
 
-	// Animate to 40
-	animateInvoiceCount(40);
+		function switchTab(index) {
+		  tabs.forEach((tab, i) => {
+			tab.classList.toggle('active', i === index);
+			contents[i].classList.toggle('active', i === index);
+		  });
 
+		  // Change background class
+		  card.className = "card";
+		  if (index === 0) card.classList.add("today-bg");
+		  if (index === 1) card.classList.add("week-bg");
+		  if (index === 2) card.classList.add("month-bg");
 
-	function countUpTurnover(targetStr) {
-	  const el = document.getElementById("turnover");
-	  const target = parseFloat(targetStr);
-	  let current = 0.0;
-
-	  const interval = setInterval(() => {
-		current += 0.5;
-		if (current >= target) {
-		  el.textContent = targetStr + " K";
-		  clearInterval(interval);
-		} else {
-		  el.textContent = current.toFixed(1) + " K";
+		  // Animate count
+		  animateCount(countEls[index], counts[index]);
 		}
-	  }, 30);
-	}
 
-	// Animate to 46.2 K
-	countUpTurnover("46.2");
+		// ✅ Count Approved Invoices From Grid
+		function updateApprovedCountFromGrid() {
+		  const grid = $("#dataGrid").dxDataGrid("instance");
+		  const data = grid.getDataSource().items();
 
-	  const card = document.getElementById('mainCard');
-	const counts = [8, 15, 5];
-	const countEls = [
-	  document.getElementById("count0"),
-	  document.getElementById("count1"),
-	  document.getElementById("count2"),
-	];
-	const tabs = document.querySelectorAll(".tab-text");
-	const contents = document.querySelectorAll(".tab-content");
+		  // Update dynamic counts based on status
+		  counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
+		  counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
+		  counts[2] = data.filter(item => item.InvoiceStatus === "Submitted").length;
 
-	function animateCount(el, target) {
-	  let i = 0;
-	  el.innerText = i;
-	  el.classList.remove('bounce');
-	  const interval = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(interval);
-		} else {
-		  el.innerText = i++;
+		  // You can also update visible numbers immediately
+		  countEls[0].textContent = counts[0];
+		  countEls[1].textContent = counts[1];
+		  countEls[2].textContent = counts[2];
+
+		  // Optionally animate default tab (Today/Verified)
+		  animateCount(countEls[0], counts[0]);
 		}
-	  }, 30);
-	}
+		document.getElementById("count0").textContent = counts[0]; // Verified count
 
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Start "Today" count immediately
-	animateCount(countEls[0], counts[0]);
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Auto-start animation for "Today"
-	animateCount(countEls[0], counts[0]);
+		// 🔁 Called after DataGrid loads
+		function onGridContentReady(e) {
+		  updateApprovedCountFromGrid();
+		}
 	function VoucherStatusCellTemplate(cellElement, cellInfo) {
 		const status = cellInfo.value;
 		let backgroundColor = "";
@@ -1139,16 +1172,59 @@
 				toDate: toDate
 			},
 			success: function (data) {
+				console.log("ShowData", data);
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-				var dataGrid = $("#dataGrid").dxDataGrid("instance");
-				var dataSource = dataGrid.option("dataSource");
-				if (dataSource && dataSource.length > 0) {
-					var lastRow = dataSource[dataSource.length - 1];
-					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
-					var firstRow = dataSource[0];
-					firstrowVoucherAmountFormatted = firstRow.VoucherAmountFormatted;
+				if (data.data.length === 0 && page > 1) return;
 
+				currentPage = Number(data.currentPage);
+				var grid = $("#dataGrid").dxDataGrid("instance");
+				grid.option("dataSource", data.data);
+
+				updateInvoiceAmountCard(data.data);
+				console.log("SalesRegisterGrid", data.data);
+
+				if (data.data && data.data.length > 0) {
+					VoucherAmountFormatted = data.data[data.data.length - 1].VoucherAmountFormatted;
+					firstrowVoucherAmountFormatted = data.data[0].VoucherAmountFormatted;
 				}
+
+				const totalPages = Math.ceil(Number(data.totalCount) / Number(data.pageSize));
+				$("#pageInfo").text(`Page ${data.currentPage} of ${totalPages} (${data.totalCount} items)`);
+				$("#nextPage").prop("disabled", totalPages === data.currentPage);
+				$("#previousPage").prop("disabled", data.currentPage === 1);
+
+				const animatedCount = data.data.length;
+				animateInvoiceCardCount(animatedCount);
+
+				let periodLabel = "Invoices";
+				switch (duration) {
+					case 'today': periodLabel = "Today's Invoices"; break;
+					case 'yesterday': periodLabel = "Yesterday's Invoices"; break;
+					case 'week': periodLabel = "This Week's Invoices"; break;
+					case 'tillmonth':
+					case 'fullmonth': periodLabel = "This Month's Invoices"; break;
+					case 'tillyear':
+					case 'fullyear': periodLabel = "This Year's Invoices"; break;
+					case 'lastmonth': periodLabel = "Last Month's Invoices"; break;
+					case 'lastyear': periodLabel = "Last Year's Invoices"; break;
+					default: periodLabel = "Invoices";
+				}
+
+				$("#invoicePeriodLabel").text(periodLabel);
+				const today = new Date();
+				today.setHours(0, 0, 0, 0);
+
+				const fiveYearsAgo = new Date();
+				fiveYearsAgo.setFullYear(today.getFullYear() - 5);
+				fiveYearsAgo.setHours(0, 0, 0, 0);
+
+				const fiveYearCount = data.data.filter(row => {
+					const d = new Date(row.InvoiceDate); // or row.VoucherDate
+					d.setHours(0, 0, 0, 0);
+					return d >= fiveYearsAgo && d <= today;
+				}).length;
+
+				animateVoucherCount("fiveYearCount", fiveYearCount);
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
@@ -1179,7 +1255,23 @@
 
 		return [day, strmonth, year].join('-');
 	}
-	
+			function updateInvoiceAmountCard(data) {
+		let total = 0;
+		if (Array.isArray(data)) {
+			total = data.reduce((sum, item) => {
+				const value = parseFloat(item.TotalInvoiceAmount);
+				return sum + (isNaN(value) ? 0 : value);
+			}, 0);
+		}
+
+		const formatted = total.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+
+		// ✅ Update the card content
+		$("#invoiceAmount").text(formatted + " SAR");
+	}
 	 function cloneEInvoice() {
 		 
 		if (!invoiceNo) {
