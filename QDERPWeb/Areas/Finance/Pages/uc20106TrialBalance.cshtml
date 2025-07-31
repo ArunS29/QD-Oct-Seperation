@@ -71,11 +71,57 @@
    .row > *{
        margin-top:0px !important;
    }
+#deep-hole-overlay {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle, #000 0%, #111 50%, #000 100%);
+  z-index: 9999;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  animation: tunnelZoom 2.5s forwards;
+}
+
+.deep-hole-overlay .spiral {
+  width: 200px;
+  height: 200px;
+  border: 8px solid #0ff;
+  border-radius: 50%;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  animation: spinSpiral 1s linear infinite;
+}
+
+@@keyframes spinSpiral {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@@keyframes tunnelZoom {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(15);
+    opacity: 0;
+  }
+}
+
+
+
 </style>
 
     <div class="footer-fixed" >
         @await Html.PartialAsync("UCTRIALBALANCEFOOTER")
     </div>
+<!-- Deep Hole Overlay -->
+<div id="deep-hole-overlay" style="display: none;">
+  <div class="deep-hole-overlay">
+    <div class="spiral"></div>
+  </div>
+</div>
+
 
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
@@ -748,86 +794,124 @@ function updateTrialBalanceChartByGroup(pivotGridInstance) {
 function showDataModePopup(callback) {
 
 
+    // ✅ Use your local tone from wwwroot/tones/
+    const playSound = () => {
+        const audio = new Audio("/tones/mixkit-correct-answer-tone-2870.wav");
+        audio.volume = 0.5;
+        audio.play().catch(err => console.warn("Audio play blocked by browser:", err));
+    };
+
     $("#dataModePopup").dxPopup({
-        title: "Select Data Mode",
+        title: "✨ Select Data Mode",
         contentTemplate: function (contentElement) {
             const container = $("<div>").css({
-                padding: "10px",
-                fontFamily: "Segoe UI, sans-serif",
-                fontSize: "14px"
+                padding: "20px",
+                fontFamily: "'Segoe UI', sans-serif",
+                fontSize: "14px",
+                lineHeight: "1.6",
+                background: "#fdfdfd",
+                borderRadius: "12px",
+                boxShadow: "inset 0 0 3px rgba(0,0,0,0.05)"
             }).appendTo(contentElement);
 
-            // Label
-            $("<div>")
-                .text("📡 Do you want to load the data in?")
-                .css({
-                    fontSize: "16px",
-                    fontWeight: "600",
-                    marginBottom: "10px",
-                    color: "#333"
-                })
-                .appendTo(container);
+            // 📌 Title
+            $("<div>").html(`
+                <h3 style="margin: 0 0 10px; font-size: 18px; color: #333;">
+                    🧭 <span style="font-weight:600;">How do you want to load data?</span>
+                </h3>
+            `).appendTo(container);
 
-            // Info message box (initially hidden)
-            const messageBox = $("<div>")
-                .css({
-                    backgroundColor: "#f5f5f5",
-                    padding: "10px",
-                    border: "1px solid #ddd",
-                    borderRadius: "6px",
-                    color: "#444",
-                    fontSize: "13px",
-                    marginTop: "10px",
-                    display: "none"
-                })
-                .appendTo(container);
+            // 💬 Message Box
+            const messageBox = $("<div>").css({
+                backgroundColor: "#e0f3ff",
+                border: "2px dashed #4bb3fd",
+                borderRadius: "8px",
+                padding: "12px",
+                color: "#01579b",
+                fontSize: "14px",
+                display: "none",
+                marginTop: "12px",
+                boxShadow: "0 2px 4px rgba(0,0,0,0.05)"
+            }).appendTo(container);
 
-            // Radio group
+            // 📡 Radio Group
             const radioGroup = $("<div>").dxRadioGroup({
                 items: ["Online", "Offline"],
                 layout: "horizontal",
-                value: null, // No default selected
+                stylingMode: "outlined",
+                value: null,
                 onValueChanged: function (e) {
                     selectedMode = e.value.toLowerCase();
 
-                    // Show the box and set message based on selected mode
-                    messageBox.text(
-                        selectedMode === "online"
-                            ? "✅ This is live data. It may take a few extra seconds to load."
-                            : "ℹ️ This is preloaded data till last night. For real-time data, choose Online."
-                    ).fadeIn(200);
+                    const msg = selectedMode === "online"
+                        ? "✅ You’ve selected <strong>Online Mode</strong>. This is real-time data.It will take Few minutes to load data. 🔄"
+                        : "🕓 You’ve selected <strong>Offline Mode</strong>. This is preloaded data till last night.if you need live data go online 📁";
+
+                    messageBox.html(msg).slideDown(200);
                 }
             }).css({
-                marginBottom: "10px"
+                marginTop: "20px",
+                textAlign: "center"
             });
 
-            $("<div>")
-                .addClass("dx-field-value")
-                .append(radioGroup)
-                .appendTo(container);
+            $("<div>").addClass("dx-field-value").append(radioGroup).appendTo(container);
         },
-        showCloseButton: false,
+        showCloseButton: true,
         showTitle: true,
+        width: 500,
+        height: "auto",
+        dragEnabled: false,
+        shadingColor: "rgba(0,0,0,0.15)",
+        animation: {
+            show: {
+                type: "slide",
+                from: { top: -150, opacity: 0 },
+                to: { top: 0, opacity: 1 },
+                duration: 400
+            },
+            hide: {
+                type: "fade",
+                duration: 100
+            }
+        },
         visible: true,
-        width: 440,
-        height: 260,
         toolbarItems: [
             {
                 toolbar: "bottom",
                 location: "after",
                 widget: "dxButton",
                 options: {
-                    text: "OK",
+                    text: "🎯 Confirm",
                     type: "success",
-                    onClick: function () {
+                    elementAttr: {
+                        style: "border-radius: 8px; font-weight: 600; min-width: 100px;"
+                    },
+                   onClick: function () {
+                    playSound();
+
+                    // Show deep hole animation
+                    const hole = document.getElementById("deep-hole-overlay");
+                    hole.style.display = "flex";
+    
+                    // Restart animation
+                    hole.style.animation = "none";
+                    void hole.offsetWidth; // Force reflow
+                    hole.style.animation = "tunnelZoom 1.5s forwards";
+
+                    setTimeout(() => {
+                        hole.style.display = "none"; // Hide after animation
                         $("#dataModePopup").dxPopup("instance").hide();
-                        callback(selectedMode);
-                    }
+                        callback(selectedMode); // Continue your logic
+                    }, 200); // Match animation duration
+                }
+
                 }
             }
         ]
     });
 }
+
+
 
 
 </script>

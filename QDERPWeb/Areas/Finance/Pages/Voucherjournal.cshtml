@@ -1599,7 +1599,7 @@ buttons.Add()
 
                 if (accIsLedgerObselete == true) {
                     IsObeselete = true;
-                    DevExpress.ui.dialog.alert(
+                    DevExpress.ui.notify(
                         "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                         "LEDGER IS OBSELETE(NOT IN USE)"
                     );
@@ -2018,7 +2018,7 @@ buttons.Add()
                 // Check if the formatted voucher date is before the cutoff date
                 if (new Date(formattedDate) < cutoffDate) {
                     // Show alert for blocked entry
-                    DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+                    DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
                     // Set both voucherDate and effectiveDate to the current date
                     voucherDate.option("value", formattedCurrentDate);
@@ -2434,7 +2434,7 @@ buttons.Add()
                     if (typeof onConfirm === "function") {
                         onConfirm(); // Ensure onConfirm is defined before calling
                     }
-                    DevExpress.ui.dialog.alert(
+                    DevExpress.ui.notify(
                         "Voucher has been successfully removed from the database.",
                         "Data Deleted Successfully"
                     ).done(function () {
@@ -2535,7 +2535,7 @@ buttons.Add()
         ).done(function (dialogResult) {
             if (dialogResult) {
                 onConfirm(); // Proceed only if the user clicks "Yes"
-                DevExpress.ui.dialog.alert(
+                DevExpress.ui.notify(
                     "All Entries has been successfully removed from the database.",
                     "Data Deleted Successfully"
                 );
@@ -2549,7 +2549,7 @@ buttons.Add()
         var rowCount = dataGrid.getVisibleRows().length;
 
         if (rowCount === 0 || rowCount === null) {
-            DevExpress.ui.dialog.alert("No records available to delete. Please enter some transactions.", "Data Not Found");
+            DevExpress.ui.notify("No records available to delete. Please enter some transactions.", "Data Not Found");
         } else {
             var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
             var temporaryNo = $("#TemporaryNo").dxTextBox("instance").option("value");
@@ -2561,7 +2561,7 @@ buttons.Add()
                     success: function (response) {
                         if (response.data) {
                             $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-                            DevExpress.ui.dialog.alert("Voucher has been successfully removed from the database.", "Data Deleted Successfully")
+                            DevExpress.ui.notify("Voucher has been successfully removed from the database.", "Data Deleted Successfully")
                                 .done(function () {
                                     history.back(); // Execute only when "OK" is clicked
                                 });

@@ -14,6 +14,10 @@
         public string? MonthYear { get; set; }
 
         public DateTime? VoucherDate { get; set; }
+
+        public string? DrCr { get; set; }
+        public decimal? DrAmount { get; set; }
+        public decimal? CrAmount { get; set; }
     }
 
 }
