@@ -1970,7 +1970,8 @@
                     disableclaim();
                     var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
                     var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-                    var voucherType ="Petty CashRequest"
+                    var voucherType ="Petty CashRequest";
+                    var menuType = "finance";
                     // 1. Get Documents
                     const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}`);
                     const documents = await getDocRes.json();
@@ -2013,7 +2014,7 @@
                             formData.append("LedgerNo", generateNo); // new folder id
 
 
-                            const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}`, {
+                            const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(menuType)}`, {
                                 method: "POST",
                                 body: formData
                             });
@@ -2236,7 +2237,7 @@
             }
             const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-
+            var menuType = "finance";
 
             var voucherType ="Petty CashRequest"
             // Log and build URL
@@ -2244,7 +2245,7 @@
             console.log("Voucher Type:", voucherType);
 
             const isMaster = false;
-                    const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
             const title = "Transaction Documents";
 
             openModal(url, title);

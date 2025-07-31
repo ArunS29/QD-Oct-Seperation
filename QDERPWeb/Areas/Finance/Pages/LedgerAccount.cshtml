@@ -5073,7 +5073,7 @@ function syncSupVATNumbers(e) {
         var openingBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
         var dropDown = $('#ddlAccountGroup').dxDropDownBox("instance");
         var isAssetGroupText = dropDown.option("displayValue");
-
+            var menuType = "finance";
         // If it's an array (common in DropDownBox), convert to string
         if (Array.isArray(isAssetGroupText)) {
             isAssetGroupText = isAssetGroupText[0] || "";
@@ -5101,7 +5101,7 @@ function syncSupVATNumbers(e) {
         }
 
         // Redirect
-        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`;
     }
 
 

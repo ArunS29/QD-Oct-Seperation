@@ -2081,7 +2081,8 @@ function redirectToAssetCategoryView() {
         var sAccountID = $('#txtacctledno').dxTextBox("instance").option("value");
         var module = "Assets";
         var isMaster = false;
-        let url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
+        var menuType = "finance";
+        let url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`;
         let title = "";
         openModal(url, title);
     }

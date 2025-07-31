@@ -1705,7 +1705,6 @@
 
 
 <!-- Modal Structure -->
-
 <script>
 
 	let accid=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
@@ -1721,9 +1720,9 @@
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
 			function InvoiceOPenToSave(data) {
-			
 
-	    var InvoiceMaster = {
+
+		var InvoiceMaster = {
 		DebitNoteNo:data,
 		DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
 		PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
@@ -1820,7 +1819,7 @@
 											if(account.IsApproved==true)
 											{
 												disableEditing();
-												
+
 											}
 											else if(account.IsPosted==true)
 											{
@@ -1834,7 +1833,7 @@
 									dataType: 'json',
 								success: function (response) {
 										console.log("DebitGrid",response)
-					
+
 										let rowData = response.map((item, index) => ({
 										SNo: index + 1,
 										...item
@@ -1873,7 +1872,7 @@
 
 							$('#DebitNoteNo').dxTextBox("instance")?.option("value", account.DebitNoteNo);
 							dataGridSupplierNameSelectionChanged({ selectedRowKeys: [account.SupplierCode] });
-							
+
 							//$('#ddlSupplierNameArabic').dxTextBox("instance")?.option("value", account.SupplierName);
 							$('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.DebitNoteDate);
 							dataGridPurhaseVoucherSelectionChanged({ selectedRowKeys: [account.PurchaseVoucherNo] });
@@ -1883,22 +1882,22 @@
 							$("#txtInvoicePeriod").dxTextBox("instance").option("value", account.InvoicePeriod);
 							dataGridItemReturnsSelectionChanged({ selectedRowKeys: [account.StoreCode] });
 
-							
+
 							$("#EffectiveDate").dxDateBox("instance").option("value",account.DebitNoteEffectiveDate);
 							dataGridPurchaseAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount] });
 							dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode] });
 							$("#txtInvoiceNotes").dxTextArea("instance").option("value",account.DebitNoteRemarks);
 							$("#txtNotesinArabic").dxTextArea("instance").option("value",account.DebitNoteRemarksAr);
-							
+
 							//PaymentMeansTypeCode: paymentmeanstypecode,
-							
+
 							//$("#ddPurchaseAccount").dxDropDownBox("instance").option("value",account.RevenueAccount);
-							
+
 							//$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value",account.CostCenterCode);
 							dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId] });
 							dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode] });
 							//$("#ddlDivision").dxDropDownBox("instance").option("value",account.BranchCode);
-							
+
 							//$("#ddlDebitNoteDivision").dxDropDownBox("instance").option("value",account.CompanyId);
 
 
@@ -1907,7 +1906,7 @@
 								type: "GET",
 								url: `/api/VATModule/GetGridDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
 									dataType: 'json',
-								success: function (response) {
+								success: async function (response) {
 										console.log("DebitGrid",response)
 
 										let rowData = response.map((item, index) => ({
@@ -1918,6 +1917,67 @@
 
 									// ✅ Now safely initialize the grid here
 									initializeDataGrid(rowData);
+									// Bind Attachment After Amend
+
+									const invoiceNo = InvNo;
+									var menuType = "vat";
+
+									
+									var formType = "VATPurchase Bill";
+									// 1. Get Documents
+									const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
+									const documents = await getDocRes.json();
+									if (!documents.length) {
+													DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+													return;
+									}
+									// 2. Generate DocumentNo to each documents
+									const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+									const newDocNos = await docNoRes.json();
+									if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+													DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+													return;
+									}
+									// 3. Reupload each document to AddDocumentsEntry
+									const generateNo = $("#DebitNoteNo").dxTextBox("instance").option("value");
+
+									const PostVoucherType = "e-Invoice DebitNote";
+									const isMaster = false;
+									const PostMenuType = 'vat';
+									for (let i = 0; i < documents.length; i++) {
+										const doc = documents[i];
+										const newDocNo = newDocNos[i];
+
+										try {
+											const fileResponse = await fetch(doc.FileUrl);
+											const blob = await fileResponse.blob();
+
+											const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+											const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+
+											const formData = new FormData();
+											formData.append("file", new File([blob], safeFileName)); // no docNo prefix
+											formData.append("DocumentNo", newDocNo);
+											formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+											formData.append("DocumentType", doc.DocumentType ?? "1");
+											formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+											formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+											formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+											formData.append("LedgerNo", generateNo); // new folder id
+
+
+												const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
+												method: "POST",
+												body: formData
+											});
+
+											const uploadResult = await uploadRes.json();
+											console.log("Uploaded document:", uploadResult);
+										} catch (uploadError) {
+														console.error("Error re-uploading document:", uploadError);
+										}
+									}
+
 								},
 								error: function (xhr, status, error) {
 									console.error("Error fetching grid data:", error);
@@ -2426,7 +2486,7 @@
 			};
 
 
-	
+
 
 
 			 var dataGridInstance;
@@ -3160,7 +3220,7 @@
 								return;
 							}
 					}
-				
+
 			}
 
 
@@ -3326,7 +3386,7 @@
 			const selectedKey = e.selectedRowKeys[0];
 			const ddbInstance = $("#VATSupplierName").dxDropDownBox("instance");
 			supplierid = selectedKey;
-			
+
 			if (selectedKey) {
 				ddbInstance.option("value", selectedKey);
 				if (ddbInstance.option("opened")) {
@@ -3340,8 +3400,8 @@
 
 						accheadid=selectedRowData[0].AccountHead;
 						supplierid=selectedRowData[0].AccountId;
-					
-					
+
+
 
 				} else {
 						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -3381,7 +3441,7 @@
 					// Get ReferenceNo from selected row
 
 					if (selectedRowData.length > 0) {
-						
+
 
 					} else {
 						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -3527,7 +3587,7 @@
 			}
 
 		}
-			
+
 
 		function dataGridCompanyBranchHeadInitialized(e) {
 
@@ -3575,9 +3635,9 @@
 		}
 
 
-		
 
-		
+
+
 
 		function dataGridPurchaseAccountInitialized(e) {
 
@@ -4366,7 +4426,7 @@
 			   window.location.href = `/${tenantName}/Finance/LedgerDocuments`;
 		   }
 			function onPostButtonClick(e) {
-			
+
 			var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
 
 			// Format the AccountId with the desired prefix
@@ -4744,13 +4804,13 @@
 	}
 
 
-	
+
 
 	 $("#btnSave").on("click", function (e) {
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
-		
+
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -4759,9 +4819,9 @@
 		var InvoiceMaster = {
 			DebitNoteNo: $('#DebitNoteNo').dxTextBox("instance").option("value") || null,
 			DebitNoteDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value") || null,
-	        PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
+			PurchaseVoucherNo: $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("value") || null,
 			SupplierBillNo:$("#SupplierInvoiceNo").dxTextBox("instance").option("value") || null,
-		    SupplierCode: supplierid,
+			SupplierCode: supplierid,
 			SupplierBillDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 			//SupplierNameAr:$("#ddlSupplierNameArabic").dxDropDownBox("instance").option("value"),
 			ReferenceNo:$("#txtReferenceNo").dxTextBox("instance").option("value") || null,
@@ -4769,7 +4829,7 @@
 			ItemReturns:$("#ddItemsReturnfromstore").dxDropDownBox("instance").option("value")||null,
 			DebitNoteEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value") || null,
 		// 	//PaymentMeansTypeCode: paymentmeanstypecode,
-		    RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
+			RevenueAccount:$("#ddPurchaseAccount").dxDropDownBox("instance").option("value")||null,
 			CostCenterCode:$("#ddlCostCenterAccount").dxDropDownBox("instance").option("value")||null,
 			DebitNoteRemarks:$("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
 			DebitNoteRemarksAr:$("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
@@ -5227,7 +5287,6 @@
 					if (response && response.Message) {
 						DevExpress.ui.notify(
 							"VAT Invoice has been Verified.","success",2000
-							
 						).done(() => {
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -5340,7 +5399,7 @@
 			});
 		}
 
-		  
+
 
 		$("#btnPostToLedgers").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -5420,13 +5479,71 @@
 				dataType: "json",
 				// Uncomment the following line if the API expects data in the request body:
 				// data: JSON.stringify({ voucherNo: vno }),
-				success: function (response) {
+				success: async function (response) {
 					if (response && response.Message) {
 						debugger;
 						if(response.IsDirect == true)
 						{
+								const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");
+								const debitNoteNo = DebitNoteNoBox ? DebitNoteNoBox.option("value") : null;
+								var menuType = "vat";
+
+								var formType ="e-Invoice DebitNote";
+								// 1. Get Documents
+								const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(debitNoteNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
+								const documents = await getDocRes.json();
+								if (!documents.length) {
+												DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+												return;
+								}
+								// 2. Generate DocumentNo to each documents
+								const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+								const newDocNos = await docNoRes.json();
+								if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+												DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+												return;
+								}
+								// 3. Reupload each document to AddDocumentsEntry
+								const generateNo = debitNoteNo;
+
+								const PostVoucherType = "journal";
+								const isMaster = false;
+								const PostMenuType = 'finance';
+								for (let i = 0; i < documents.length; i++) {
+									const doc = documents[i];
+									const newDocNo = newDocNos[i];
+
+									try {
+										const fileResponse = await fetch(doc.FileUrl);
+										const blob = await fileResponse.blob();
+
+										const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+										const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+
+										const formData = new FormData();
+										formData.append("file", new File([blob], safeFileName)); // no docNo prefix
+										formData.append("DocumentNo", newDocNo);
+										formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+										formData.append("DocumentType", doc.DocumentType ?? "1");
+										formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+										formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+										formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+										formData.append("LedgerNo", generateNo); // new folder id
+
+
+											const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
+											method: "POST",
+											body: formData
+										});
+
+										const uploadResult = await uploadRes.json();
+										console.log("Uploaded document:", uploadResult);
+									} catch (uploadError) {
+													console.error("Error re-uploading document:", uploadError);
+									}
+								}
 							DevExpress.ui.dialog.alert(
-								"VAT Invoice has been posted to the Accounting Books.",
+								"VAT Invoice has been posted to the Accounting Books With Documents.",
 								"Invoice Posted Successfully."
 							)
 						}
@@ -5470,9 +5587,9 @@
 			});
 		}
 
-		
 
-		
+
+
 
 
 
@@ -5481,25 +5598,7 @@
 		});
 
 
-			$("#btnAttach").on("click", function (e) {
-		const dialog = DevExpress.ui.dialog.custom({
-			title: "Attach File",
-			messageHtml: "Click OK to select file(s)",
-			buttons: [
-				{
-					text: "OK",
-					onClick: function () {
-						handleFileSelection();
-					}
-				},
-				{
-					text: "Cancel"
-				}
-			]
-		});
-
-		dialog.show(); // Show the dialog
-	});
+			
 
 	function handleFileSelection() {
 		const fileInput = document.getElementById("fileInput");
@@ -5603,7 +5702,7 @@
 
 
 
-	
+
 
 
 		function disableEditing() {
@@ -5863,4 +5962,3 @@
 
 
 </script>
-

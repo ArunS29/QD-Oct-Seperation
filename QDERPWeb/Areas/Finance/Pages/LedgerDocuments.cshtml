@@ -449,7 +449,7 @@
     var referenceNo = urlParams.get("ReferenceNo");
     var moduleType = urlParams.get("ModuleType");
     var isMaster = urlParams.get("isMaster");
-
+    
     var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
     document.getElementById("documentTitle").textContent = title + " - " + moduleType;
     let currentEditRowIndex = -1;
@@ -458,11 +458,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
-
+        const menuType = urlParams.get("menuType");
         $("#documentsGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "DocumentNo",
-                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}`,
+                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}&menuType=${encodeURIComponent(menuType)}`,
                 updateUrl: "/api/LedgerDocumentsF/UpdateDocumentEntry",
                 deleteUrl: "/api/LedgerDocumentsF/DeleteDocumentEntry",  // ✅ Use this, not `removeUrl`
                 updateMethod: "PUT",
@@ -957,6 +957,7 @@
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
         const isMaster = urlParams.get("isMaster");
+        const menuType = urlParams.get("menuType");
         console.log(isMaster)
         const formData = new FormData();
 
@@ -981,7 +982,7 @@
         formData.append("NotificationDate", getValue("#NotificationDate", ""));
 
         $.ajax({
-            url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(referenceNo)}&moduleType=${encodeURIComponent(moduleType)}&isMaster=${encodeURIComponent(isMaster)}`,
+            url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(referenceNo)}&moduleType=${encodeURIComponent(moduleType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`,
             type: "POST",
             data: formData,
             contentType: false,
@@ -1101,7 +1102,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
-        
+       // const menuType = urlParams.get("menuType");
 
         // 1. Bind ReferenceNo in the TextBox
         if (referenceNo) {
