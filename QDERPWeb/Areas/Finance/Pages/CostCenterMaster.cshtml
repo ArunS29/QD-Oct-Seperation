@@ -211,6 +211,27 @@
     .no-border-input {
         border: none;
     }
+
+    .custom-green-btn {
+        color: white !important;
+        background-color: green !important;
+        border-color: green !important;
+    }
+
+        .custom-green-btn .dx-icon {
+            color: white !important;
+        }
+
+    .custom-red-btn {
+        color: white !important;
+        background-color: red !important;
+        border-color: red !important;
+    }
+
+        .custom-red-btn .dx-icon {
+            color: white !important;
+        }
+
 </style>
 <div>
     <div id="costAllocationPopup" style="display:none;">
@@ -326,22 +347,22 @@
         </div>
     </div>
 
-    <div class="container5" style="display:flex; flex-wrap:wrap; gap:10px; justify-content:center;">
+    <div class="container5" style="display:flex; flex-wrap:wrap; gap:15px; justify-content:center;">
         <div class="col-md-1">
-            <label id="CreatedBy1" class="label"></label>
-            @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(true))
+           
+            @(Html.DevExtreme().TextBox().ID("CreatedBy").Value(null).Width("100%").ReadOnly(true).Label("Created By:").LabelMode(EditorLabelMode.Floating))
         </div>
         <div class="col-md-1">
-            <label id="CreatedOn1" class="label"></label>
-            @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(true))
+            
+            @(Html.DevExtreme().TextBox().ID("CreatedOn").Value(null).Width("100%").ReadOnly(true).Label("Created On:").LabelMode(EditorLabelMode.Floating))
         </div>
         <div class="col-md-1">
-            <label id="ModifiedBy1" class="label"></label>
-            @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(true))
+            
+            @(Html.DevExtreme().TextBox().ID("ModifiedBy").Value(null).Width("100%").ReadOnly(true).Label("Modified By:").LabelMode(EditorLabelMode.Floating))
         </div>
         <div class="col-md-1">
-            <label id="ModifiedOn1" class="label"></label>
-            @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(true))
+            
+            @(Html.DevExtreme().TextBox().ID("ModifiedOn").Value(null).Width("100%").ReadOnly(true).Label("Modified On:").LabelMode(EditorLabelMode.Floating))
         </div>
     </div>
 </div>
@@ -355,7 +376,8 @@
                         .Text(new JS("formatMessage('Save')"))
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
-                        .Icon("save"))
+                        .Icon("save")
+                        .ElementAttr("class", "custom-green-btn"))
 
             @(Html.DevExtreme().Button()
                         .ID("btnBack")
@@ -363,7 +385,9 @@
                         .Icon("arrowleft")
                         .Type(ButtonType.Normal)
                         .StylingMode(ButtonStylingMode.Outlined)
-                        .OnClick("navigateToHome"))
+                        .OnClick("navigateToHome")
+                        .ElementAttr("class", "custom-red-btn"))
+
         </div>
     </div>
 </div>
@@ -517,30 +541,30 @@
                                                      readOnly: true
     });
                              });
-                           $(function () {
-                                             $("#CreatedBy1").dxTextBox({
-                                                     text:formatMessage("Created By:"),
-                                                     readOnly: true
-    });
-                             });
-                             $(function () {
-                                                 $("#CreatedOn1").dxTextBox({
-                                                         text:formatMessage("Created On:"),
-                                                     readOnly: true
-    });
-                             });
-                             $(function () {
-                                                 $("#ModifiedBy1").dxTextBox({
-                                                         text:formatMessage("Modified By:"),
-                                                     readOnly: true
-    });
-                             });
-                             $(function () {
-                                                 $("#ModifiedOn1").dxTextBox({
-                                                         text:formatMessage("Modified On:"),
-                                                     readOnly: true
-    });
-                             });
+    //                        $(function () {
+    //                                          $("#CreatedBy1").dxTextBox({
+    //                                                  text:formatMessage("Created By:"),
+    //                                                  readOnly: true
+    // });
+    //                          });
+    //                          $(function () {
+    //                                              $("#CreatedOn1").dxTextBox({
+    //                                                      text:formatMessage("Created On:"),
+    //                                                  readOnly: true
+    // });
+    //                          });
+    //                          $(function () {
+    //                                              $("#ModifiedBy1").dxTextBox({
+    //                                                      text:formatMessage("Modified By:"),
+    //                                                  readOnly: true
+    // });
+    //                          });
+    //                          $(function () {
+    //                                              $("#ModifiedOn1").dxTextBox({
+    //                                                      text:formatMessage("Modified On:"),
+    //                                                  readOnly: true
+    // });
+    //                          });
 
 
 
@@ -551,6 +575,8 @@
     $(function () {
         $("#costCenterComboBox").dxSelectBox({
             width: 1000,
+            label: "Cost Center Group",                  // Label text
+            labelMode: "floating",
             dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
                     return $.ajax({
@@ -569,7 +595,7 @@
                 }
             }),
             displayExpr: "CostAllocationGroup", // Field to display in ComboBox
-            valueExpr: "CostAllocationUnitId", // Field to use as the value
+            valueExpr: "CostAllocationGroup", // Field to use as the value
             placeholder: formatMessage('Select or Enter a Cost Center Group'),
             searchEnabled: true, // Enable search functionality
             acceptCustomValue: true, // Allow user to input custom values
@@ -577,7 +603,7 @@
             onCustomItemCreating: function (args) {
                 const newValue = args.text; // The custom value entered by the user
                 return {
-                    CostAllocationUnitId: newValue, // Assign a unique ID or key
+                   
                     CostAllocationGroup: newValue  // Use the entered value as the display text
                 };
             },
@@ -591,6 +617,8 @@
     $(function () {
         $("#costCenterMaster1").dxSelectBox({
             width: 1000,
+            label: "Cost Center Group",                  // Label text
+            labelMode: "floating",
             dataSource: new DevExpress.data.CustomStore({
                 load: function (loadOptions) {
                     return $.ajax({
@@ -609,7 +637,7 @@
                 }
             }),
             displayExpr: "CostAllocationMasterGroup", // Field to display in ComboBox
-            valueExpr: "CostAllocationUnitId", // Field to use as the value
+            valueExpr: "CostAllocationMasterGroup", // Field to use as the value
             placeholder: formatMessage('Select or Enter a Cost Center Master Group'),
             searchEnabled: true, // Enable search functionality
             acceptCustomValue: true, // Allow user to input custom values
@@ -617,7 +645,7 @@
             onCustomItemCreating: function (args) {
                 const newValue = args.text; // The custom value entered by the user
                 return {
-                    CostAllocationUnitId: newValue, // Assign a unique ID or key
+                   
                     CostAllocationMasterGroup: newValue  // Use the entered value as the display text
                 };
             },
@@ -725,12 +753,8 @@
                         $("#CreatedBy").dxTextBox("instance").option("value", response.data.CreatedBy);
                         $("#CreatedOn").dxTextBox("instance").option("value", formatDate(response.data.CreatedOn));
                        // $("#ModifiedBy").dxTextBox("instance").option("value", response.data.ModifiedBy);
-                        var ModifiedBy = $('#ModifiedBy').dxTextBox("instance");
-                        if (ModifiedBy) {
-                            ModifiedBy.option("value", getUN);
-
-                        }
-                        $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(new Date()));
+                        $("#ModifiedBy").dxTextBox("instance").option("value", response.data.ModifiedBy);
+                        $("#ModifiedOn").dxTextBox("instance").option("value", formatDate(response.data.ModifiedOn));
                     } else {
                         //   alert(response.message);
                     }
@@ -943,6 +967,7 @@ function formatDate(date) {
                                         dataGrid.refresh();
                                     }
                                 }
+                                history.back();
                                 // setTimeout(() => window.location.reload(), 2000);
                             } else {
                                 DevExpress.ui.notify(response.message, "error", 3000);

@@ -351,7 +351,7 @@
     </div>
 </div>
 <div class="dx-fieldset horizontal-container mt-2">
-    @* @(Html.DevExtreme().DropDownButton()
+    @(Html.DevExtreme().DropDownButton()
         .ID("journaleditButtonLayout1")
         .Icon("smalliconslayout")
         .Width(100)
@@ -367,8 +367,8 @@
             items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
         })
         .ShowArrowIcon(false)
-        ) *@
-    @* @(Html.DevExtreme().Button()
+        ) 
+   @(Html.DevExtreme().Button()
         .ID("btnMoveUp")
         
         .Type(ButtonType.Normal)
@@ -385,7 +385,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
         .Icon("spindown") // Change the icon to an up/down arrow option
         .ElementAttr(new { @class = "bold-button" })
-        ) *@
+        )
     @(Html.DevExtreme().Button()
         .ID("btnSave")
         .Text(new JS("formatMessage('Save')"))
