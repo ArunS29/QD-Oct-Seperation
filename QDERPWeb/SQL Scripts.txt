@@ -2125,13 +2125,13 @@ CREATE TABLE Aicon.FinancialSummaryReport (
     MasterGroupAr NVARCHAR(255)
 );     
 ALTER TABLE Aicon.FinancialSummaryReport ADD VoucherDate DATETIME;
-
-INSERT INTO Aicon.FinancialSummaryReport (
+ALTER TABLE Aicon.FinancialSummaryReport ADD MonthYear NVARCHAR(50);
+INSERT INTO dbo.FinancialSummaryReport (
     AccountHead, AccountHeadName, VoucherAmountFormatted,
     AccountGroup, MasterGroup, TransactionsFull,
-    AccountHeadArabic, AccountGroupAr, MasterGroupAr, VoucherDate
+    AccountHeadArabic, AccountGroupAr, MasterGroupAr, VoucherDate, MonthYear
 )
- 
+
 -- Opening Balance
 SELECT  
     AccountHead,   
@@ -2143,8 +2143,9 @@ SELECT
     AccountHeadArabic, 
     AccountGroupAr, 
     MasterGroupAr,
-    MIN(VoucherDate) AS VoucherDate  -- Use MIN or MAX for grouped date
-FROM Aicon.qry201MainVoucherEntriesWithMaster  
+    MIN(VoucherDate) AS VoucherDate,
+    DATENAME(m, MIN(VoucherDate)) + ' ' + CAST(DATEPART(yyyy, MIN(VoucherDate)) AS varchar) AS MonthYear
+FROM dbo.qry201MainVoucherEntriesWithMaster  
 WHERE ISNULL(IsCalculateOpeningBalance, 0) = 1  
 GROUP BY 
     AccountHead, 
@@ -2154,9 +2155,9 @@ GROUP BY
     AccountHeadArabic, 
     AccountGroupAr, 
     MasterGroupAr
- 
+
 UNION ALL
- 
+
 -- Transactions during the period
 SELECT  
     q.AccountHead, 
@@ -2171,8 +2172,9 @@ SELECT
     q.AccountHeadArabic,  
     q.AccountGroupAr,  
     q.MasterGroupAr,
-    q.VoucherDate
-FROM Aicon.qry201MainVoucherEntriesWithMaster AS q
-    RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts coa ON coa.AccountID = q.AccountHead
-    RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON coa.AccountGroupID = ag.AccountGroupID
-    RIGHT OUTER JOIN Aicon.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID;
+    q.VoucherDate,
+    DATENAME(m, q.VoucherEffectiveDate) + ' ' + CAST(DATEPART(yyyy, q.VoucherEffectiveDate) AS varchar) AS MonthYear
+FROM dbo.qry201MainVoucherEntriesWithMaster AS q
+    RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts coa ON coa.AccountID = q.AccountHead
+    RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON coa.AccountGroupID = ag.AccountGroupID
+    RIGHT OUTER JOIN dbo.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID;
