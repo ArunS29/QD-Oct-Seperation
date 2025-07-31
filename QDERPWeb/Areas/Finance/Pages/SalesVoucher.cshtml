@@ -153,6 +153,7 @@
             .Value(0)
             .ShowSpinButtons(true)
             .Min(0)
+			
 			.TabIndex(6)
             .Max(1000)
             .Step(1)
@@ -319,6 +320,7 @@ buttons.Add()
 											.Message("Amount value must be greater than zero");
 										})
 										.Min(0)
+										.Max(99999999)
 										.Placeholder("0.00")
 										.Format("#,##0.00")
 										.TabIndex(11)
@@ -428,7 +430,7 @@ buttons.Add()
 								.Value(1)
 
 								.Min(0)
-
+								.Max(99999)
 								.Format("#,##0.00")
 								.InputAttr(new
 								{

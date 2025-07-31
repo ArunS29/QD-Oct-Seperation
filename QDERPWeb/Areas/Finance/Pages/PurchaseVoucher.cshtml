@@ -305,6 +305,7 @@ buttons.Add()
 								.LabelMode(EditorLabelMode.Floating)
 								.ID("txtVoucherAmount")
 								.Value(0)
+								.Max(99999999)
 								.ValidationRules(rules =>
 								{
 									rules.AddRequired()
@@ -419,7 +420,7 @@ buttons.Add()
 						.Value(1)
 
 						.Min(0)
-
+						.Max(99999)
 						.Format("#,##0.00")
 						.InputAttr(new
 						{

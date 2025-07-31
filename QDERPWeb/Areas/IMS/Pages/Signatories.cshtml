@@ -119,6 +119,9 @@
             position: absolute;
         }
 
+    .fieldset{
+        margin: 7px 0px;
+    }
     .playIcon {
         display: none;
     }
@@ -278,7 +281,7 @@
                     </div>
 
                     <div class="form-group">
-                        <div class="dx-fieldset" style="width: 375px;">
+                    <div class="fieldset" style="width: 370px;">
                             <div class="imagecontainer" id="imgBox1" style="width: 142%; height: 100px; background-color: white;">
                                 <span>Upload Signature</span>
                             </div>
@@ -345,7 +348,7 @@
                 });
                
   })
-        .Height("40vh")
+        .Height("38vh")
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
@@ -368,14 +371,30 @@
 </div>
 
 </div>
-<div class="limited-footer">
-    @await Html.PartialAsync("InventoryModuleFooter")
+<div class="footer-fixed" style="display:flex; height:50px; gap:20px;">
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnUpdate")
+                .Text(new JS("formatMessage('Update')"))
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                )
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
+    </div>
 </div>
  <script>
 
     $(document).ready(function () {
 
-        $(".limited-footer .btn-container").each(function () {
+        $(".footer-fixed .btn-container").each(function () {
 
               if (!$(this).find("#btnUpdate,#btnBack").length) {
 
@@ -387,7 +406,7 @@
 
       });
 
-    $(document).on("click", "#btnBack", function () {
+      $(document).on("click", "#btnBack", function () {
         window.history.back();
     });
 

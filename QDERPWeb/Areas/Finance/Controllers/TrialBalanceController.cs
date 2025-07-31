@@ -145,6 +145,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         item.VoucherAmountFormatted,
                         item.AccountGroup,
                         item.MasterGroup,
+                        item.MonthYear,
                         TransactionsFull = item.TransactionsFull ?? "N/A",
                         AccountHeadArabic = item.AccountHeadArabic ?? string.Empty,
                         AccountGroupAr = item.AccountGroupAr ?? string.Empty,
