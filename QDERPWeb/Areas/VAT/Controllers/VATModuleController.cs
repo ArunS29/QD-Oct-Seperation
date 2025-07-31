@@ -23,9 +23,7 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using static QD.ERP.Web.Service.UserAccessService;
-
-
-
+using QDERPWeb.Models;
 
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
@@ -38,12 +36,15 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
         private readonly ILogger<VATModuleController> _logger;
         private readonly IUserActionLogger _userActionLogger;
 
-        public VATModuleController(ILogger<VATModuleController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        private readonly FcmService _fcmService;
+
+        public VATModuleController(ILogger<VATModuleController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
             _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
            
+            _fcmService = fcmService;
         }
 
         //[HttpGet]
@@ -1757,6 +1758,8 @@ documentNo: unitType
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(InvoiceNo))
                     {
@@ -1777,6 +1780,16 @@ documentNo: unitType
 
                     dbContext.SaveChanges();
                     
+                    var notifyRequest = new NotificationRequest
+                        {
+                             UserId = UserId, // or fetch from session/DB
+                             VoucherName = InvoiceNo,
+                             ActionType = "Sales Invoice Verified",
+                            TenantName = TenantName 
+                    };
+
+                await _fcmService.SendNotificationAsync(notifyRequest);
+
                     await _userActionLogger.LogAsync(
     module: "VAT> Sales Verify Voucher",
     actionDetail: $"Verify VoucherNo: {InvoiceNo}",
@@ -1806,6 +1819,8 @@ documentNo: unitType
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(InvoiceNo))
                     {
@@ -1838,6 +1853,17 @@ documentNo: unitType
   actionDetail: $"Approve VoucherNo: {InvoiceNo}",
   documentNo: InvoiceNo
 );
+                     var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = InvoiceNo,
+                 ActionType = "Sales Invoice Approved",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
+
                     return Ok(new
                     {
                         Message = "InvoiceNo verified successfully.",
@@ -1867,6 +1893,8 @@ documentNo: unitType
                     bool IsPosted = false;
 
                     var UserName = HttpContext.Session.GetString("UserName");
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(InvoiceNo))
                     {
@@ -1911,6 +1939,16 @@ documentNo: InvoiceNo
                     {
                         IsDirect = false;
                     }
+
+                                 var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = InvoiceNo,
+                 ActionType = "Sales Invoice Posted",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -2410,6 +2448,8 @@ documentNo: InvoiceNo
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                      var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(CreditNoteNo))
                     {
@@ -2434,6 +2474,17 @@ module: "VAT> Credit Note Verify",
 actionDetail: $"Credit Note Verify Number: {CreditNoteNo}",
 documentNo: CreditNoteNo
 );
+
+                         var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = CreditNoteNo,
+                 ActionType = "Credit Note Voucher Verified",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
                     return Ok(new
                     {
                         Message = "CreditNoteNo verified successfully.",
@@ -2458,6 +2509,8 @@ documentNo: CreditNoteNo
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                      var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(CreditNoteNo))
                     {
@@ -2490,6 +2543,19 @@ module: "VAT> Credit Note Approve",
 actionDetail: $"Credit Note Approve Number: {CreditNoteNo}",
 documentNo: CreditNoteNo
 );
+
+
+             var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = CreditNoteNo,
+                 ActionType = "Credit Noyte Voucher Approved",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
+
                     return Ok(new
                     {
                         Message = "CreditNoteNo approved successfully.",
@@ -2515,6 +2581,8 @@ documentNo: CreditNoteNo
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(DebitNoteNo))
                     {
@@ -2547,6 +2615,17 @@ module: "VAT> Debit Note Verify",
 actionDetail: $"Debit Note Verify Number: {DebitNoteNo}",
 documentNo: DebitNoteNo
 );
+
+                                 var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = DebitNoteNo,
+                 ActionType = "Debit Note Voucher Approved",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
                     return Ok(new
                     {
                         Message = "InvoiceNo verified successfully.",
@@ -2577,6 +2656,8 @@ documentNo: DebitNoteNo
                     bool IsDirect = false;
 
                     var UserName = HttpContext.Session.GetString("UserName");
+                      var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(CreditNoteNo))
                     {
@@ -2618,6 +2699,16 @@ documentNo: CreditNoteNo
                     {
                         IsDirect = false;
                     }
+
+                                 var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = CreditNoteNo,
+                 ActionType = "Credit Note Voucher Posted",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -4436,6 +4527,8 @@ documentNo: InvoiceNo
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                     var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(InvoiceNo))
                     {
@@ -4468,6 +4561,17 @@ module: "VAT> Purchase Approve Voucher",
 actionDetail: $"Purchase Approve VoucherNo: {InvoiceNo}",
 documentNo: InvoiceNo
 );
+
+                             var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = InvoiceNo,
+                 ActionType = "Purchae Invoice Voucher Approved",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
                     return Ok(new
                     {
                         Message = "InvoiceNo verified successfully.",
@@ -4495,6 +4599,8 @@ documentNo: InvoiceNo
                     bool IsDirect = false;
 
                     var UserName = HttpContext.Session.GetString("UserName");
+                     var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(InvoiceNo))
                     {
@@ -4540,6 +4646,15 @@ documentNo: InvoiceNo
                         IsDirect = false;
                     }
 
+             var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = InvoiceNo,
+                 ActionType = "Purchase Invoice Voucher Posted",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new
                     {
@@ -4570,6 +4685,8 @@ documentNo: InvoiceNo
                     bool IsDirect = false;
 
                     var UserName = HttpContext.Session.GetString("UserName");
+                    var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(DebitNoteNo))
                     {
@@ -4614,6 +4731,17 @@ documentNo: DebitNoteNo
                     {
                         IsDirect = false;
                     }
+
+
+                                 var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = DebitNoteNo,
+                 ActionType = "Debit Note Voucher Posted",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -5922,6 +6050,8 @@ documentNo: proformaInvoiceNo
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                     var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(DebitNoteNo))
                     {
@@ -5946,6 +6076,17 @@ module: "VAT>Debit Verify Voucher",
 actionDetail: $"Debit Verify Voucher Number: {DebitNoteNo}",
 documentNo: DebitNoteNo
 );
+
+                             var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = "DebitNoteNo",
+                 ActionType = "Debit Note Voucher Verified",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
                     return Ok(new
                     {
                         Message = "DebitNoteNo verified successfully.",
@@ -5970,6 +6111,9 @@ documentNo: DebitNoteNo
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                     var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
+
 
                     if (string.IsNullOrEmpty(InvoiceNo))
                     {
@@ -5994,6 +6138,17 @@ module: "VAT>Purchase Verify Voucher",
 actionDetail: $"Purchase Verify Voucher Number: {InvoiceNo}",
 documentNo: InvoiceNo
 );
+
+                 var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = InvoiceNo,
+                 ActionType = "Purchase Voucher Verified",
+                TenantName = TenantName 
+            };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
                     return Ok(new
                     {
                         Message = "Voucher verified successfully.",
