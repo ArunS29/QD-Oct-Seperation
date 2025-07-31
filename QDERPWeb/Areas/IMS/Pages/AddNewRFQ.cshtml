@@ -1543,11 +1543,11 @@
 									onClick: function () {
 								const gsCode = options.data.Gscode;
 							console.log("GSCode:", gsCode);
-								const MprchildSlNo = options.data.MprchildSlNo;
+								const RfqchildSlNo = options.data.RfqchildSlNo;
 
 							window.currentDescriptionCell = options;
 
-											let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
+											let url = `/${tenantName}/IMS/DetailedDescriptionRFQ?RfqchildSlNo=${encodeURIComponent(RfqchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
 							let title = "Details Description";
 
 							openModal(url, title);
@@ -4182,7 +4182,36 @@
 			// }
 
 
-	
+	function receiveModalFieldData(modalData) {
+			console.log("📦 Received from modal:", modalData); // ✅ Step 1: Log
+
+			const grid = $("#B2BdataGrid").dxDataGrid("instance");
+			if (!window.currentDescriptionCell) {
+				console.warn("❌ No currentDescriptionCell found");
+				return;
+			}
+
+			const key = window.currentDescriptionCell.key;
+			console.log("🔑 Editing key:", key); // ✅ Step 2: Confirm key
+
+			const rowIndex = grid.getRowIndexByKey(key);
+			if (rowIndex === -1) {
+				console.warn("❌ Could not find rowIndex for key", key);
+				return;
+			}
+
+			let rowData = grid.getDataSource().items()[rowIndex];
+			console.log("📝 Before Update rowData:", rowData); // ✅ Step 3
+
+			for (const [field, value] of Object.entries(modalData)) {
+				rowData[field] = value;
+				grid.cellValue(rowIndex, field, value);
+			}
+
+			console.log("✅ After Update rowData:", rowData); // ✅ Step 4
+			grid.repaintRows([rowIndex]);
+			DevExpress.ui.notify("Details saved", "success", 1500);
+		}
 
 	$("#btnSave").on("click", function (e) {
 			const $btn = $(this).dxButton("instance");
@@ -4225,8 +4254,8 @@
 
 			SalesPersonCode:$("#SalesPerson").dxDropDownBox("instance").option("value") || null,
 		};
-
-		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+		//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
 
 		if (!children || children.length === 0) {
 			DevExpress.ui.notify("No child records to save.", "error", 3000);

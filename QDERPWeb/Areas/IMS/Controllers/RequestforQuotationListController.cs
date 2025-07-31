@@ -1077,5 +1077,36 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return BadRequest("Failed to resolve tenant");
         }
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata(long RfqchildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (RfqchildSlNo == 0)
+                    return BadRequest("MPR Child Sl No is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Tbl60702rfqchildren
+                        .Where(c => c.RfqchildSlNo == RfqchildSlNo)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }
+

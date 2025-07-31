@@ -1088,7 +1088,7 @@
            columns.Add().DataField("SerialNo").Caption("#").Width(100).AllowEditing(false).CellTemplate(new JS("serialTemplate"));
             columns.Add().DataField("Gscode").Caption("Item Code");
             columns.Add().DataField("AddlDescription").Caption("Description");
-            columns.Add().DataField("...").Caption("...");
+            columns.Add().DataField("...").Caption("Descriptions");
             columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method");
             columns.Add().DataField("QuotedQuantity").Caption("Qty");
             columns.Add().DataField("UnitPrice").Caption("Unit Price");
@@ -1096,7 +1096,7 @@
             columns.Add().DataField("VATDesc").Caption("VAT Desc");
             columns.Add().DataField("DiscountInOc").Caption("VAT");
             columns.Add().DataField("UnitRateInOc").Caption("Amount").Format("currency");
-            columns.Add().DataField("MRItemNumber").Caption("MR Item Number");
+            //columns.Add().DataField("MRItemNumber").Caption("MR Item Number");
         })
         .ColumnAutoWidth(true)
         .Width("100%")
@@ -1328,7 +1328,7 @@
         $(function () {
 
             dataGridInstance = $("#itemGrid").dxDataGrid({
-
+                focusedRowEnabled: true,
                            dataSource: [],
 
                     keyExpr: "PochildNo",
@@ -1549,29 +1549,77 @@
                         }
 
                     },
-        {
-                dataField: "Descriptions",
-                caption: "...",
-                width: 80,
-                allowEditing: true,
-                cellTemplate: function (container, options) {
-                $("<div>").dxButton({
-                    icon: "user", // Built-in DevExtreme icon
-                    hint: "Edit VAT Details Description",
-                    stylingMode: "text",
-                    width: 60,
-                    onClick: function () {
-                        // Save context
-                        window.currentDescriptionCell = options;
+      {
+    dataField: "Descriptions",
+    caption: "...",
+    cssClass: "center-header",
+    width: 90,
+    allowEditing: true,
+    cellTemplate: function (container, options) {
+        const gsCode = options.data.Gscode;
+        const poChildNo = options.data.PochildNo;
 
-                        // Open modal
-                        let url = `/${tenantName}/VAT/VATDetailsDescription`;
-                        let title = "Details Description";
-                        openModal(url, title);
-                    }
-                }).appendTo(container);
+        $("<div>").dxButton({
+            icon: "user",
+            hint: "Edit IMS Details Description",
+            stylingMode: "text",
+            width: 60,
+            onClick: function () {
+                window.currentDescriptionCell = options;
+
+                // Always include gsCode if available
+                let queryParams = [];
+
+                if (gsCode) {
+                    queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
+                }
+
+                // Include poChildNo only if present
+                if (poChildNo) {
+                    queryParams.push(`poChildNo=${encodeURIComponent(poChildNo)}`);
+                }
+
+                let url = `/${tenantName}/IMS/DetailedDescriptionPO?${queryParams.join("&")}`;
+                let title = "Details Description";
+
+                openModal(url, title);
             }
-            },
+        }).appendTo(container);
+    },
+    editCellTemplate: function (container, options) {
+        const gsCode = options.data.Gscode;
+        const poChildNo = options.data.PochildNo;
+
+        $("<div>").dxButton({
+            icon: "user",
+            hint: "Edit IMS Details Description",
+            stylingMode: "text",
+            width: 60,
+            onClick: function () {
+                window.currentDescriptionCell = options;
+
+                // Always include gsCode if available
+                let queryParams = [];
+
+                if (gsCode) {
+                    queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
+                }
+
+                // Include poChildNo only if present
+                if (poChildNo) {
+                    queryParams.push(`poChildNo=${encodeURIComponent(poChildNo)}`);
+                }
+
+                let url = `/${tenantName}/IMS/DetailedDescriptionPO?${queryParams.join("&")}`;
+                let title = "Details Description";
+
+                openModal(url, title);
+            }
+        }).appendTo(container);
+    }
+
+},
+
 
 
                     {
@@ -1772,7 +1820,12 @@
 
                         { dataField: "LineTotalWithTax",  caption: formatMessage('Amount'), width: 150, format: { type: "fixedPoint", precision: 2 } },
 
-                        { dataField:"MRItemNo", caption: formatMessage('MR Item NO'), width: 150 },
+                       // { dataField:"MRItemNo", caption: formatMessage('MR Item NO'), width: 150 },
+                        { dataField: "AddlDescription", visible: false },
+			{ dataField: "PoitemRemarks", visible: false },
+			{ dataField: "MritemNo", visible: false },
+				{ dataField: "DeliveryPeriod", visible: false },
+			{ dataField: "PlanNo", visible: false }
 
 
                     // { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
@@ -2244,6 +2297,39 @@
             return isAllValid;
         }
 
+
+        	function receiveModalFieldData(modalData) {
+    console.log("📥 Received from modal:", modalData);
+
+    // ✅ Confirm globals exist
+    if (!dataGridInstance) {
+        console.error("❌ dataGridInstance is not initialized.");
+        return;
+    }
+
+    if (!window.currentDescriptionCell || !window.currentDescriptionCell.key) {
+        console.error("❌ currentDescriptionCell is missing or invalid.");
+        return;
+    }
+
+    const rowKey = window.currentDescriptionCell.key;
+    console.log("🔑 Editing key:", rowKey);
+
+    const rowIndex = dataGridInstance.getRowIndexByKey(rowKey);
+
+    if (rowIndex === -1) {
+        console.warn("⚠️ Row not found in grid for key:", rowKey);
+        return;
+    }
+
+    // ✅ Set the new values from modal
+    dataGridInstance.cellValue(rowIndex, "AddlDescription", modalData.AddlDescription || "");
+    dataGridInstance.cellValue(rowIndex, "PoitemRemarks", modalData.PoitemRemarks || "");
+    dataGridInstance.cellValue(rowIndex, "MritemNo", modalData.MritemNo || "");
+    dataGridInstance.cellValue(rowIndex, "DeliveryPeriod", modalData.DeliveryPeriod || "");
+    dataGridInstance.cellValue(rowIndex, "PlanNo", modalData.PlanNo || "");
+}
+
     function savePurchaseOrder() {
              const requiredFields = [
                 "SupplierName", // Client Name
@@ -2270,7 +2356,7 @@
         SalesPersonCode: $("#SalesPerson").dxSelectBox("instance").option("value"),
         ProjectSubUnitCode: $("#RequestingUnit").dxSelectBox("instance").option("value"),
         Posummary: $("#PoSummary").dxTextArea("instance").option("value"),
-        Pointroduction: $("#PoIntro").dxTextBox("instance").option("value"),
+        Pointroduction: $("#PoIntro").dxTextArea("instance").option("value"),
         PothanksNote: $("#Thanks").dxTextArea("instance").option("value"),
         PopaymentTerm: $("#PaymentTerm").dxSelectBox("instance").option("value"),
         PodocRequired: $("#DocumentsRequired").dxSelectBox("instance").option("value"),
@@ -2312,7 +2398,7 @@ const children = grid.getDataSource().items().map(item => {
                 PochildNo: Number(item.PochildNo) || 0,
                 Pono: master.Pono,
                 Gscode: item.Gscode,
-                // AddlDescription: item.AddlDescription,
+                AddlDescription: item.AddlDescription,
                 QuotedQuantity: item.QuotedQuantity,
                 UnitRateMethod: item.UnitRateMethod !== undefined && item.UnitRateMethod !== null && item.UnitRateMethod !== "" ? Number(item.UnitRateMethod) : null,
                 UnitPrice: item.UnitPrice,
@@ -2374,7 +2460,7 @@ const children = grid.getDataSource().items().map(item => {
             { id: "#RequestingUnit", type: "dxSelectBox" },
             { id: "#Subject", type: "dxTextBox" },
             { id: "#PoSummary", type: "dxTextArea" },
-            { id: "#PoIntro", type: "dxTextBox" },
+            { id: "#PoIntro", type: "dxTextArea" },
             { id: "#Thanks", type: "dxTextArea" },
             { id: "#PaymentTerm", type: "dxSelectBox" },
             { id: "#DocumentsRequired", type: "dxSelectBox" },
