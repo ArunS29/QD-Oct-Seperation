@@ -1162,6 +1162,18 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string ClaimRemarks { get; set; }
         public string SupplierPaymentLedgerNo { get; set; }
     }
+    public class ZeroToWonDto
+    {
+        public string Mprno { get; set; }
+        public string GsCode { get; set; }
+    }
+
+    public class UpdateIsWonDto
+    {
+        public int RFQChildSlNo { get; set; }
+        public string ReasonForSelection { get; set; }
+    }
+
 
 }
 
