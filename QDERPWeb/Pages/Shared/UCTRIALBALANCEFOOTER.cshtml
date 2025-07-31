@@ -768,16 +768,12 @@
           "Property Allocation Report":"PropertAllocationReport",
 
       };
-
-
-
-
-
-        // Menu item click handler
-       function handleReportsClick(e) {
+    function handleReportsClick(e) {
         const selectedText = e.itemData.text;
 
-        // Get UI control instances
+        // 👇 Use global selectedMode or default to "online"
+        const mode = selectedMode || "online";
+
         var accountGroup = selectBox;
         var frmDateBox = $("#frmdateBox").dxDateBox("instance");
         var toDateBox = $("#todateBox").dxDateBox("instance");
@@ -785,13 +781,20 @@
         var frmDate = frmDateBox.option("value");
         var toDate = toDateBox.option("value");
 
-        // Validation (remove accountGroup from mandatory fields if needed)
-        if (!frmDate || !toDate) {
-            alert("Please select From Date and To Date.");
-            return;
+            if (selectedText === "Trial Balance" && mode === "offline") {
+            reportName = "TrialBalancePreReport";
+
+            DevExpress.ui.notify({
+                message: "📁 Your report is generating in *Offline Mode* (preloaded data).",
+                type: "info",
+                displayTime: 5000,
+                position: {
+                    my: "top center",
+                    at: "top center"
+                }
+            }, "info", 3000);
         }
 
-        // Format date to D-MMM-YYYY
         function formatDate(date) {
             let dateObj = new Date(date);
             let day = dateObj.getDate();
@@ -803,31 +806,25 @@
         var frmDateStr = formatDate(frmDate);
         var toDateStr = formatDate(toDate);
 
-        // Check if report mapping exists
         if (reportMappingss[selectedText]) {
-            const reportName = reportMappingss[selectedText];
+            let reportName = reportMappingss[selectedText];
+
+            // 👇 Override report name if Trial Balance and mode is offline
+            if (selectedText === "Trial Balance" && mode === "offline") {
+                reportName = "TrialBalancePreReport";
+            }
 
             if (selectedText === "Cash Flow Statements") {
-                // Special handling for Cash Flow Statements report
-                
-
                 const formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
                 const formattedToDate = new Date(toDate).toISOString().split('T')[0];
-
                 var url = `/${tenantName}/Finance/CashInflow?fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
                 window.open(url, '_blank');
-            } 
-            else if (selectedText === "PropertAllocationReport") {
-                // Special handling for Cash Flow Statements report
-
-
+            } else if (selectedText === "Property Allocation Report") {
                 const formattedFrmDate = new Date(frmDate).toISOString().split('T')[0];
                 const formattedToDate = new Date(toDate).toISOString().split('T')[0];
-
                 var url = `/${tenantName}/Finance/PropertAllocationReport?fromDate=${formattedFrmDate}&toDate=${formattedToDate}`;
                 window.open(url, '_blank');
-            }else {
-                // Default handling for other reports
+            } else {
                 let url = `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&accountGroup=${encodeURIComponent(accountGroup)}`;
                 window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
             }
@@ -835,6 +832,7 @@
             console.warn("No report mapping found for:", selectedText);
         }
     }
+
 
 
 
