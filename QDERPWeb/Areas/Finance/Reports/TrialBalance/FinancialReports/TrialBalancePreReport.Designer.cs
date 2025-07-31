@@ -69,6 +69,12 @@
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression10 = new DevExpress.DataAccess.Sql.ColumnExpression();
             DevExpress.DataAccess.Sql.Column column11 = new DevExpress.DataAccess.Sql.Column();
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression11 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column12 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression12 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column13 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression13 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column14 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression14 = new DevExpress.DataAccess.Sql.ColumnExpression();
             DevExpress.DataAccess.Sql.AllColumns allColumns1 = new DevExpress.DataAccess.Sql.AllColumns();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(TrialBalancePreReport));
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
@@ -370,7 +376,7 @@
             // 
             this.tableCell11.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.tableCell11.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TransDebit]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[DrAmount]")});
             this.tableCell11.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell11.Name = "tableCell11";
             this.tableCell11.StyleName = "DetailData1";
@@ -385,7 +391,7 @@
             // 
             this.tableCell12.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.tableCell12.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs([TransCredit])) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs([CrAmount])) + \')\'\n")});
             this.tableCell12.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell12.Name = "tableCell12";
             this.tableCell12.StyleName = "DetailData1";
@@ -400,7 +406,7 @@
             // 
             this.xrTableCell1.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrTableCell1.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs([Op_Bal]+[TransDebit]-[TransCredit]) \n) + \')\'\n\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs([Op_Bal]+[DrAmount]-[CrAmount]) \n) + \')\'\n\n")});
             this.xrTableCell1.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrTableCell1.Multiline = true;
             this.xrTableCell1.Name = "xrTableCell1";
@@ -709,7 +715,7 @@
             // 
             this.xrLabel5.BackColor = System.Drawing.Color.Lavender;
             this.xrLabel5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([Op_Bal]))) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([VoucherAmountFormatted]))) + \')\'\n")});
             this.xrLabel5.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel5.LocationFloat = new DevExpress.Utils.PointFloat(275.1333F, 6.357829E-05F);
             this.xrLabel5.Multiline = true;
@@ -728,7 +734,7 @@
             // 
             this.xrLabel7.BackColor = System.Drawing.Color.Lavender;
             this.xrLabel7.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([TransDebit])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([DrAmount])")});
             this.xrLabel7.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(419.7833F, 0F);
             this.xrLabel7.Multiline = true;
@@ -747,7 +753,7 @@
             // 
             this.xrLabel8.BackColor = System.Drawing.Color.Lavender;
             this.xrLabel8.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\n\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([TransCredit])\n)) + \')\'")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\n\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([CrAmount])\n)) + \')\'")});
             this.xrLabel8.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel8.LocationFloat = new DevExpress.Utils.PointFloat(551.502F, 0F);
             this.xrLabel8.Multiline = true;
@@ -766,7 +772,7 @@
             // 
             this.xrLabel9.BackColor = System.Drawing.Color.Lavender;
             this.xrLabel9.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([Op_Bal]+[TransDebit]-[TransCredit])\n)")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([VoucherAmountFormatted]+[DrAmount]-[CrAmount])\n)")});
             this.xrLabel9.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel9.LocationFloat = new DevExpress.Utils.PointFloat(682.0249F, 0F);
             this.xrLabel9.Multiline = true;
@@ -824,7 +830,7 @@
             // 
             this.xrLabel21.BackColor = System.Drawing.Color.CornflowerBlue;
             this.xrLabel21.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([Op_Bal]+[TransDebit]-[TransCredit])\n)")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([VoucherAmountFormatted]+[DrAmount]-[CrAmount])\n)")});
             this.xrLabel21.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel21.LocationFloat = new DevExpress.Utils.PointFloat(682.0249F, 48.83342F);
             this.xrLabel21.Multiline = true;
@@ -843,7 +849,7 @@
             // 
             this.xrLabel20.BackColor = System.Drawing.Color.CornflowerBlue;
             this.xrLabel20.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([TransCredit])\n)) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([CrAmount])\n)) + \')\'\n")});
             this.xrLabel20.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel20.LocationFloat = new DevExpress.Utils.PointFloat(551.502F, 48.83342F);
             this.xrLabel20.Multiline = true;
@@ -862,7 +868,7 @@
             // 
             this.xrLabel19.BackColor = System.Drawing.Color.CornflowerBlue;
             this.xrLabel19.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([TransDebit])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([DrAmount])")});
             this.xrLabel19.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel19.LocationFloat = new DevExpress.Utils.PointFloat(418.1614F, 48.83342F);
             this.xrLabel19.Multiline = true;
@@ -881,7 +887,7 @@
             // 
             this.xrLabel18.BackColor = System.Drawing.Color.CornflowerBlue;
             this.xrLabel18.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([Op_Bal]))) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([VoucherAmountFormatted]))) + \')\'\n")});
             this.xrLabel18.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel18.LocationFloat = new DevExpress.Utils.PointFloat(273.5114F, 48.83342F);
             this.xrLabel18.Multiline = true;
@@ -921,7 +927,7 @@
             // 
             this.xrLabel15.BackColor = System.Drawing.Color.LightCyan;
             this.xrLabel15.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([Op_Bal]+[TransDebit]-[TransCredit])\n)")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([VoucherAmountFormatted]+[DrAmount]-[CrAmount])\n)")});
             this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(682.0249F, 0F);
             this.xrLabel15.Multiline = true;
@@ -940,7 +946,7 @@
             // 
             this.xrLabel14.BackColor = System.Drawing.Color.LightCyan;
             this.xrLabel14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([TransCredit])\n)) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([CrAmount])\n)) + \')\'\n")});
             this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(551.502F, 0F);
             this.xrLabel14.Multiline = true;
@@ -959,7 +965,7 @@
             // 
             this.xrLabel13.BackColor = System.Drawing.Color.LightCyan;
             this.xrLabel13.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([TransDebit])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([DrAmount])")});
             this.xrLabel13.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel13.LocationFloat = new DevExpress.Utils.PointFloat(419.7833F, 0F);
             this.xrLabel13.Multiline = true;
@@ -978,7 +984,7 @@
             // 
             this.xrLabel12.BackColor = System.Drawing.Color.LightCyan;
             this.xrLabel12.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([Op_Bal]))) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([VoucherAmountFormatted]))) + \')\'\n")});
             this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, ((DevExpress.Drawing.DXFontStyle)((DevExpress.Drawing.DXFontStyle.Bold | DevExpress.Drawing.DXFontStyle.Italic))));
             this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(275.1333F, 0F);
             this.xrLabel12.Multiline = true;
@@ -1063,7 +1069,7 @@
             // 
             this.xrLabel27.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.xrLabel27.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([Op_Bal]+[TransDebit]-[TransCredit])\n)")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Abs([VoucherAmountFormatted]+[DrAmount]-[CrAmount])\n)")});
             this.xrLabel27.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Italic);
             this.xrLabel27.LocationFloat = new DevExpress.Utils.PointFloat(682.025F, 0F);
             this.xrLabel27.Multiline = true;
@@ -1082,7 +1088,7 @@
             // 
             this.xrLabel26.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.xrLabel26.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([TransCredit])\n)) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([CrAmount])\n)) + \')\'\n")});
             this.xrLabel26.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Italic);
             this.xrLabel26.LocationFloat = new DevExpress.Utils.PointFloat(551.502F, 0F);
             this.xrLabel26.Multiline = true;
@@ -1101,7 +1107,7 @@
             // 
             this.xrLabel25.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.xrLabel25.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([TransDebit])")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([DrAmount])")});
             this.xrLabel25.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Italic);
             this.xrLabel25.LocationFloat = new DevExpress.Utils.PointFloat(418.1614F, 0F);
             this.xrLabel25.Multiline = true;
@@ -1120,7 +1126,7 @@
             // 
             this.xrLabel24.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))), ((int)(((byte)(0)))));
             this.xrLabel24.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([Op_Bal]))) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs(sumSum([VoucherAmountFormatted]))) + \')\'\n")});
             this.xrLabel24.Font = new DevExpress.Drawing.DXFont("Cambria", 10F, DevExpress.Drawing.DXFontStyle.Italic);
             this.xrLabel24.LocationFloat = new DevExpress.Utils.PointFloat(273.5114F, 0F);
             this.xrLabel24.Multiline = true;
@@ -1220,7 +1226,7 @@
             this.sqlDataSource1.ConnectionName = "DBConnection";
             this.sqlDataSource1.Name = "sqlDataSource1";
             columnExpression1.ColumnName = "AccountHead";
-            table1.MetaSerializable = "<Meta X=\"30\" Y=\"30\" Width=\"125\" Height=\"284\" />";
+            table1.MetaSerializable = "<Meta X=\"30\" Y=\"30\" Width=\"125\" Height=\"344\" />";
             table1.Name = "FinancialSummaryReport";
             columnExpression1.Table = table1;
             column1.Expression = columnExpression1;
@@ -1254,6 +1260,15 @@
             columnExpression11.ColumnName = "MonthYear";
             columnExpression11.Table = table1;
             column11.Expression = columnExpression11;
+            columnExpression12.ColumnName = "DrCr";
+            columnExpression12.Table = table1;
+            column12.Expression = columnExpression12;
+            columnExpression13.ColumnName = "DrAmount";
+            columnExpression13.Table = table1;
+            column13.Expression = columnExpression13;
+            columnExpression14.ColumnName = "CrAmount";
+            columnExpression14.Table = table1;
+            column14.Expression = columnExpression14;
             allColumns1.Table = table1;
             selectQuery1.Columns.Add(column1);
             selectQuery1.Columns.Add(column2);
@@ -1266,6 +1281,9 @@
             selectQuery1.Columns.Add(column9);
             selectQuery1.Columns.Add(column10);
             selectQuery1.Columns.Add(column11);
+            selectQuery1.Columns.Add(column12);
+            selectQuery1.Columns.Add(column13);
+            selectQuery1.Columns.Add(column14);
             selectQuery1.Columns.Add(allColumns1);
             selectQuery1.Name = "FinancialSummaryReport";
             selectQuery1.Tables.Add(table1);
