@@ -1338,6 +1338,141 @@
 		});
 	});
 
+	
+	// function ddBtnShowRecords_click(duration, page) {
+	// 	var frmDateBox = $("#frmdateBox").dxDateBox("instance");
+	// 	var toDateBox = $("#todateBox").dxDateBox("instance");
+	// 	var chkEffective = $("#chkUseEffectiveDate").dxCheckBox("instance");
+	// 	var useEffective = chkEffective.option("value");
+	// 	var currentDate = new Date();
+	// 	var frmDate, toDate;
+
+	// 	switch (duration) {
+	// 		case 'today':
+	// 			frmDate = toDate = currentDate;
+	// 			break;
+	// 		case 'yesterday':
+	// 			var dateObj = new Date();
+	// 			Subtract one day from current time
+	// 			dateObj.setDate(dateObj.getDate() - 1);
+	// 			frmDate = toDate = dateObj;
+	// 			break;
+	// 		case 'week':
+	// 		 var dayOfWeek = currentDate.getDay(); Sunday is 0, Monday is 1, ..., Saturday is 6
+
+	// 					 Calculate the start of the week (Saturday)
+	// 					 var startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7; Adjust to get Saturday
+
+	// 					 Calculate the start date (7 days before Saturday) and end date (the day before Saturday)
+	// 				 frmDate = new Date(currentDate.setDate(startOfWeek)); 7 days before Saturday
+	// 					 toDate = new Date(currentDate.setDate(startOfWeek + 6));
+	// 					 break;
+	// 		case 'tillmonth':
+	// 			Get the first and last day of the current month
+	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); First day of month
+	// 			toDate = currentDate; Today
+	// 			break;
+	// 		case 'fullmonth':
+	// 			Get the first and last day of the current month
+	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1); First day of month
+	// 			toDate = new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 0); Last day of month
+	// 			break;
+	// 		case 'tillyear':
+	// 			Get the first and last day of the current year
+	// 			frmDate = new Date(currentDate.getFullYear(), 0, 1); First day of year (January 1)
+	// 			toDate = currentDate;Today
+	// 			break;
+	// 		case 'fullyear':
+	// 			Get the first and last day of the current year
+	// 			frmDate = new Date(currentDate.getFullYear(), 0, 1); First day of year (January 1)
+	// 			toDate = new Date(currentDate.getFullYear(), 11, 31); Last day of month
+	// 			break;
+	// 		case 'lastyear':
+	// 			Get the first and last day of the last year
+	// 			frmDate = new Date(currentDate.getFullYear() - 1, 0, 1); First day of year (January 1)
+	// 			toDate = new Date(currentDate.getFullYear() - 1, 11, 31); Last day of month
+	// 			break;
+	// 		case 'lastmonth':
+	// 			frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
+	// 			toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
+	// 			break;
+	// 		default:
+	// 			frmDate = frmDateBox.option("value");
+	// 			toDate = toDateBox.option("value");
+	// 	}
+
+	// 	frmDate = new Date(frmDate).toLocaleDateString('en-CA'); yyyy-MM-dd
+	// 	toDate = new Date(toDate).toLocaleDateString('en-CA');
+
+	// 	frmDateBox.option("value", frmDate);
+	// 	toDateBox.option("value", toDate);
+
+	// 	if (page < 1) return;
+
+	// 	$.ajax({
+	// 		url: '/api/VATModule/GetVatInvoices',
+	// 		type: 'GET',
+	// 		data: {
+	// 			frmDate: frmDate,
+	// 			toDate: toDate,
+	// 			useEffectiveDate: useEffective,
+	// 			pageNumber: page,
+	// 			pageSize: pageSize
+	// 		},
+	// 		success: function (data) {
+	// 			if (data.data.length === 0 && page > 1) return;
+	// 			currentPage = Number(data.currentPage);
+	// 			var grid = $("#dataGrid").dxDataGrid("instance");
+	// 			grid.option("dataSource", data.data);
+	// 			 updateInvoiceAmountCard(data.data);
+	// 			console.log("SalesRegisterGrid",data.data)
+	// 			if (data.data && data.data.length > 0) {
+	// 				VoucherAmountFormatted = data.data[data.data.length - 1].VoucherAmountFormatted;
+	// 				firstrowVoucherAmountFormatted = data.data[0].VoucherAmountFormatted;
+	// 			}
+	// 			const totalPages = Math.ceil(Number(data.totalCount) / Number(data.pageSize));
+	// 			$("#pageInfo").text(`Page ${data.currentPage} of ${totalPages} (${data.totalCount} items)`);
+	// 			if (totalPages === data.currentPage) {
+	// 				$("#nextPage").prop("disabled", true);
+	// 			} else {
+	// 				$("#nextPage").prop("disabled", false);
+	// 			}
+
+	// 			if (data.currentPage === 1) {
+	// 				$("#previousPage").prop("disabled", true);
+	// 			} else {
+	// 				$("#previousPage").prop("disabled", false);
+	// 			}
+	// 				const animatedCount = data.data.length;
+	// animateInvoiceCardCount(animatedCount);
+
+	// let periodLabel = "Invoices";
+
+	// switch (duration) {
+	// 	case 'today': periodLabel = "Today's Invoices"; break;
+	// 	case 'yesterday': periodLabel = "Yesterday's Invoices"; break;
+	// 	case 'week': periodLabel = "This Week's Invoices"; break;
+	// 	case 'tillmonth':
+	// 	case 'fullmonth': periodLabel = "This Month's Invoices"; break;
+	// 	case 'tillyear':
+	// 	case 'fullyear': periodLabel = "This Year's Invoices"; break;
+	// 	case 'lastmonth': periodLabel = "Last Month's Invoices"; break;
+	// 	case 'lastyear': periodLabel = "Last Year's Invoices"; break;
+	// 	default: periodLabel = "Invoices";
+	// }
+
+	// $("#invoicePeriodLabel").text(periodLabel);
+
+	// 				$("#turnover").text(thisMonthInvoices.length);
+	// $("#invoicePeriodLabel").text("This Month's Invoices");
+
+	// 		},
+	// 		error: function () {
+	// 			DevExpress.ui.notify("Error while loading data", "error", 2000);
+	// 		}
+	// 	});
+	// }
+
 	let currentPage = 1;
 	let pageSize = 10;
 
@@ -1346,7 +1481,6 @@
 		ddBtnShowRecords_click(null, currentPage);
 	}
 
-	
 		function ddBtnShowRecords_click(duration, page) {
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		var toDateBox = $("#todateBox").dxDateBox("instance");

@@ -936,6 +936,8 @@
     // Call this on page load
     $(document).ready(function () {
         calculateRevenueTotal();
+        updateVatSalesTurnoverCard();
+
     });
 
     function animateCount(el, target) {
@@ -1126,6 +1128,19 @@
 
         // Set to DevExtreme NumberBox in the total row
         $("#RevenueTotal").dxNumberBox("instance").option("value", total);
+    }
+    function updateVatSalesTurnoverCard() {
+        const value1 = parseFloat($("#DssSalesTaxAfterAdj").dxNumberBox("instance").option("value")) || 0;
+        const value2 = parseFloat($("#Dss15SalesTaxAfterAdj").dxNumberBox("instance").option("value")) || 0;
+
+        const total = value1 + value2;
+
+        // Format and display the total
+        const formatted = total.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        document.getElementById("vatSalesTurnover").textContent = formatted + " SAR";
     }
 
     $(function () {

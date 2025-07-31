@@ -906,11 +906,12 @@
 
 			// Update counts in the card
 			document.getElementById('creditToday').textContent = todayCount;
-			document.getElementById('creditTotal').textContent = totalCount;
+			// document.getElementById('creditTotal').textContent = totalCount;
 			updateVerifiedCount(dataSource);
 				updatePostedCount(dataSource); // ✅ Now includes posted count
 			// ✅ Update verified count
 			updateApprovedCount(dataSource);
+			 updateCreditNoteTotal(dataSource);
 
 			// Start sliding animation once (if not already started)
 			if (!window._voucherSliderStarted) {
@@ -918,6 +919,23 @@
 				window._voucherSliderStarted = true;
 			}
 		}
+	}
+		function updateCreditNoteTotal(data) {
+		let totalCredit = 0;
+
+		if (Array.isArray(data)) {
+			totalCredit = data.reduce((sum, item) => {
+				const value = parseFloat(item.TotalCreditNoteAmount || 0);
+				return sum + (isNaN(value) ? 0 : value);
+			}, 0);
+		}
+
+		const formatted = totalCredit.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+
+		document.getElementById('creditTotal').textContent = formatted;
 	}
 
 		function startVoucherSlide() {
