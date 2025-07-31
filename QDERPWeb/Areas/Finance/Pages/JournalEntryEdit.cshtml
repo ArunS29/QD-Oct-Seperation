@@ -2328,9 +2328,9 @@
             }
 
         function attachWorkflowWatchers() {
-            $("#IsSubmitted").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
-            $("#IsVerified").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
-            $("#IsApproved").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#SubmittedBy").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#VerifiedBy").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#ApprovedBy").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
         }
 
             $(function () {

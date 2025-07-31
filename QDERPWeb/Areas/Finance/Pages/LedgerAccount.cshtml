@@ -814,7 +814,8 @@
                                                         .Label("Mobile No")
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .ID("txtPersonMobile")
-                                                        .InputAttr("aria-label", "Text")
+                                                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                                                        
                                                         .Width("100%"))
                         </div>
 
@@ -3962,6 +3963,12 @@ function syncSupVATNumbers(e) {
 
 
   function redirectToBranchMaster() {
+       const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlbranch"));
+
+    // Close the dropdown if it's open
+    if (dropDownInstance.option("opened")) {
+        dropDownInstance.close();
+    }
     const url = `/${tenantName}/Finance/Divmaster`;
 
     const modalOverlay = document.createElement("div");
@@ -4006,6 +4013,12 @@ function syncSupVATNumbers(e) {
     }
 
   function redirecttoledgersubgroup() {
+        const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlSubgroup"));
+
+    // Close the dropdown if it's open
+    if (dropDownInstance.option("opened")) {
+        dropDownInstance.close();
+    }
     const url = `/${tenantName}/Finance/LedgerSubGroupMaster`;
 
     const modalOverlay = document.createElement("div");
@@ -4051,6 +4064,12 @@ function syncSupVATNumbers(e) {
     }
 
  function redirecttosalespersonmaster() {
+        const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlSales"));
+
+// Close the dropdown if it's open
+if (dropDownInstance.option("opened")) {
+    dropDownInstance.close();
+}
     const url = `/${tenantName}/Finance/SalesPersonMaster`;
 
     const modalOverlay = document.createElement("div");
@@ -4119,6 +4138,12 @@ function syncSupVATNumbers(e) {
     }
 
     function redirectledgerAccountMaster() {
+           const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlAccountGroup"));
+
+// Close the dropdown if it's open
+if (dropDownInstance.option("opened")) {
+    dropDownInstance.close();
+}
         if (["M5", "M6", "M7", "M8", "M2", "M9", "M4", "M1"].includes(accgrpunder)) {
             disableTabs(["tab-content-1", "tab-content-2", "tab-content-3", "tab-content-7"]);
         } else if (["M3"].includes(accgrpunder)) {

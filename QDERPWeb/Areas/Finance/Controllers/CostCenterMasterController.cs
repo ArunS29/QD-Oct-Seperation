@@ -31,13 +31,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var CostCenterMaster = dbContext.Tbl201CostAllocationUnits.Select(i => new
-                    {
-                        i.CostAllocationUnitId,
-                        i.CostAllocationGroup,
-                    });
+                    var uniqueGroups = dbContext.Tbl201CostAllocationUnits
+                        .Select(i => i.CostAllocationGroup)
+                        .Distinct()
+                        .Select(group => new
+                        {
+                            CostAllocationGroup = group
+                        });
 
-                    return Json(await DataSourceLoader.LoadAsync(CostCenterMaster, loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync(uniqueGroups, loadOptions));
                 }
                 catch (Exception ex)
                 {
@@ -49,6 +51,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+
         [HttpGet]
         public async Task<IActionResult> GetCostAllocationMasterGroup(DataSourceLoadOptions loadOptions)
         {
@@ -56,13 +59,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var CostCenterMaster = dbContext.Tbl201CostAllocationUnits.Select(i => new
-                    {
-                        i.CostAllocationUnitId,
-                        i.CostAllocationMasterGroup,
-                    });
+                    var uniqueGroups = dbContext.Tbl201CostAllocationUnits
+                        .Select(i => i.CostAllocationMasterGroup)
+                        .Distinct()
+                        .Select(group => new
+                        {
+                            CostAllocationMasterGroup = group
+                        });
 
-                    return Json(await DataSourceLoader.LoadAsync(CostCenterMaster, loadOptions));
+                    return Json(await DataSourceLoader.LoadAsync(uniqueGroups, loadOptions));
                 }
                 catch (Exception ex)
                 {
@@ -73,6 +78,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetProject(DataSourceLoadOptions loadOptions)
@@ -181,13 +187,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var existingUnit = dbContext.Tbl201CostAllocationUnits
-                        .Where(x => x.CostAllocationUnitId == VM.CostAllocationUnitId)
-                        .FirstOrDefault();
+                        .FirstOrDefault(x => x.CostAllocationUnitId == VM.CostAllocationUnitId);
 
                     if (existingUnit != null)
                     {
                         return BadRequest(new { success = false, message = "Cost Allocation Unit ID already exists." });
                     }
+
+                    // Set CreatedBy and CreatedOn
+                    string userName = HttpContext.Session.GetString("UserName");
+                    DateTime now = DateTime.Now;
+
+                    VM.CreatedBy = userName;
+                    VM.CreatedOn = now;
 
                     dbContext.Tbl201CostAllocationUnits.Add(VM);
                     await dbContext.SaveChangesAsync();
@@ -204,6 +216,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+
         [HttpPut]
         public async Task<ActionResult> UpdateCostCenterMaster([FromBody] Tbl201CostAllocationUnit VM)
         {
@@ -216,6 +229,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 try
                 {
+                    string userName = HttpContext.Session.GetString("UserName");
+                    DateTime now = DateTime.Now;
                     var existingUnit = await dbContext.Tbl201CostAllocationUnits
                         .FirstOrDefaultAsync(x => x.CostAllocationUnitId == VM.CostAllocationUnitId);
 
@@ -232,8 +247,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingUnit.ProjectMasterCode = VM.ProjectMasterCode;
                     existingUnit.BranchCode = VM.BranchCode;
                     existingUnit.IsDisabled = VM.IsDisabled;
-                    existingUnit.ModifiedBy = VM.ModifiedBy;
-                    existingUnit.ModifiedOn = VM.ModifiedOn;
+                    existingUnit.ModifiedBy = userName;
+                    existingUnit.ModifiedOn = now;
 
                     await dbContext.SaveChangesAsync();
 
