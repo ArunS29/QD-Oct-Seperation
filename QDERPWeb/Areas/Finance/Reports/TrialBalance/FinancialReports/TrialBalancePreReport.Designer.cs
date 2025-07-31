@@ -361,7 +361,7 @@
             // 
             this.tableCell10.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.tableCell10.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs([Op_Bal])) + \')\'\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "\'(\' + FormatString(\'{0:N2}\', Abs([VoucherAmountFormatted])) + \')\'\n")});
             this.tableCell10.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Italic);
             this.tableCell10.Name = "tableCell10";
             this.tableCell10.StyleName = "DetailData1";

@@ -1111,7 +1111,7 @@ function addVoucherEntry() {
         // Fetch new voucher number via AJAX
         $.ajax({
             type: "GET",
-            url: "/api/VoucherEntryCashReceipts/GetNewBRVoucherNo",
+            url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
             success: function (response) {
                 if (!response || response.success === false) {
                     DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");

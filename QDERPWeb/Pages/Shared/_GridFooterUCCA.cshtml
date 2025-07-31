@@ -707,8 +707,12 @@
                 url += `&requestedBy=${encodeURIComponent(requestedBy)}`;
             }
 
-            // Open Document Viewer
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+            
+            window.open(
+                url,
+                '_blank',
+                `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+            );
         } else {
             console.warn('No report mapping found for:', selectedText);
         }
