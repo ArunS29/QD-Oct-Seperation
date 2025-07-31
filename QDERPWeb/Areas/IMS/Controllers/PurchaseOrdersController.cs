@@ -1661,6 +1661,37 @@ public async Task<IActionResult> GetOrderStatus(string pono)
 
             return Unauthorized();
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata(long poChildNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (poChildNo == 0)
+                    return BadRequest("poChildNo is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Tbl60402purchaseOrderChildren
+                        .Where(c => c.PochildNo == poChildNo)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
         public class ReportAttributeUpdateModel
         {
             public string ReportNo { get; set; }       // Always "IMS-QTN-01"
@@ -1707,4 +1738,7 @@ public async Task<IActionResult> GetOrderStatus(string pono)
     public Tbl60401purchaseOrderMaster Master { get; set; }
     public List<Tbl60402purchaseOrderChild> Children { get; set; }
 }
+
+
+
 }

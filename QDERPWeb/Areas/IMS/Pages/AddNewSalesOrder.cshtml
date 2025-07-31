@@ -877,7 +877,56 @@
     const item = descriptionList.find(d => d.Gscode === options.value);
     container.text(item ? item.Gsdescrpition : options.value);
     }
-    "));
+    ")); 
+            columns.Add()
+            .DataField("Descriptions") // this is modal field
+            .Caption("...")
+            .CssClass("center-header")
+            .Width(90)
+            .AllowEditing(true)
+            .CellTemplate(new JS(@"
+                function(container, options) {
+                    const gsCode = options.data.Gscode;
+                    const salesOrderChildId = options.data.SalesOrderChildId;
+
+                    $('<div>').dxButton({
+                        icon: 'user',
+                        hint: 'Edit IMS Details Description',
+                        stylingMode: 'text',
+                        width: 60,
+                        onClick: function () {
+                            window.currentDescriptionCell = options;
+                            const queryParams = [];
+                            if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
+                            if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
+                            const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
+                            openModal(url, 'Details Description');
+                        }
+                    }).appendTo(container);
+                }
+            "))
+            .EditCellTemplate(new JS(@"
+                function(container, options) {
+                    const gsCode = options.data.Gscode;
+                    const salesOrderChildId = options.data.SalesOrderChildId;
+
+                    $('<div>').dxButton({
+                        icon: 'user',
+                        hint: 'Edit IMS Details Description',
+                        stylingMode: 'text',
+                        width: 60,
+                        onClick: function () {
+                            window.currentDescriptionCell = options;
+                            const queryParams = [];
+                            if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
+                            if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
+                            const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
+                            openModal(url, 'Details Description');
+                        }
+                    }).appendTo(container);
+                }
+            "));
+
 
             columns.Add()
             .DataField("UnitRateMethod")
@@ -904,6 +953,13 @@
     "));
                 columns.Add().DataField("LineTaxAmount").Caption("VAT").AllowEditing(false);
             columns.Add().DataField("LineTotalWithTax").Caption("Total").AllowEditing(false);
+
+            columns.Add().DataField("AddlDescription").Visible(false);
+            columns.Add().DataField("QuoteRemarks").Visible(false);
+            columns.Add().DataField("DeliveryPeriod").Visible(false);
+            columns.Add().DataField("PlanNo").Visible(false);
+
+           
         })
         .ColumnAutoWidth(true)
         .Width("100%")
@@ -1925,6 +1981,38 @@
         var currentUserName = '@User.Identity.Name';
 
 
+      function receiveModalFieldData(modalData) {
+    console.log("📥 Received from modal:", modalData);
+
+    const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+
+    if (!dataGridInstance) {
+        console.error("❌ dataGridInstance is not initialized.");
+        return;
+    }
+
+    if (!window.currentDescriptionCell || !window.currentDescriptionCell.key) {
+        console.error("❌ currentDescriptionCell is missing or invalid.");
+        return;
+    }
+
+    const rowKey = window.currentDescriptionCell.key;
+    console.log("🔑 Editing key:", rowKey);
+
+    const rowIndex = dataGridInstance.getRowIndexByKey(rowKey);
+
+    if (rowIndex === -1) {
+        console.warn("⚠️ Row not found in grid for key:", rowKey);
+        return;
+    }
+
+    // ✅ Set the new values from modal
+    dataGridInstance.cellValue(rowIndex, "AddlDescription", modalData.AddlDescription || "");
+    dataGridInstance.cellValue(rowIndex, "QuoteRemarks", modalData.QuoteRemarks || "");
+    dataGridInstance.cellValue(rowIndex, "DeliveryPeriod", modalData.DeliveryPeriod || "");
+    dataGridInstance.cellValue(rowIndex, "PlanNo", modalData.PlanNo || "");
+}
+
 
             $("#btnSave").on("click", function (e) {
             e.preventDefault();
@@ -2001,7 +2089,11 @@
                     QuotedUnitPrice: row.QuotedUnitPrice ?? null,
                     QuotedDiscount: row.QuotedDiscount ?? null,
                     QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
-                    CostPrice: row.CostPrice ?? null
+                    CostPrice: row.CostPrice ?? null,
+                    AddlDescription:row.AddlDescription ?? null,
+                    QuoteRemarks:row.QuoteRemarks ?? null,
+                    DeliveryPeriod:row.DeliveryPeriod ?? null,
+                    PlanNo:row.PlanNo ?? null,
                 }));
 
                 // ✅ Prepare full model for submission

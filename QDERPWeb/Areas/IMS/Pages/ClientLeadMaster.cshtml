@@ -33,21 +33,11 @@
     .mainContainer{
         overflow-x: hidden;
     }
-    .form-container1 {
-        margin: 10px;
-        width: 98%;
-        border-radius: 1px; /* Optional: Rounded corners */
-    }
-
-    .form-container {
-        width: 100%;
-        border-radius: 1px;
-    }
 
     .form-row {
         display: flex;
         gap: 10px;
-            padding: 0px 17px 4px;
+        padding: 0px 9px 1px;
         width: 97%;
     }
 
@@ -62,29 +52,10 @@
         align-items: center;
         gap:10px;
     }
-
-    .dx-textbox .dx-texteditor-input,
-    .dx-numberbox .dx-texteditor-input,
-    .dx-selectbox .dx-texteditor-input {
-        /*  background-color: white; */
-    }
-
-    .dx-button{
-        margin-left:5px;
-    }
     .dx-selectbox {
         width: 100%;
     }
-
-    .footer-buttons .row {
-        margin-top: 20px; /* Add some space between the form and footer */
-    }
-
-    .footer-buttons .col-md-1 {
-        /*  padding-left: 10px;
-                                    padding-right: 10px; */
-    }
-
+ 
     /* Adds border to form control elements */
     .form-control-with-border {
         /* border: 1px solid gray; */
@@ -92,15 +63,6 @@
         padding: 8px;
         width: 100%;
     }
-
-
-    .horizontal-container {
-    display: flex;
-    gap: 20px; /* Adds spacing between buttons */
-    justify-content: start; /* Aligns buttons to the left */
-    align-items: center; /* Vertically centers the buttons */
-    margin: 15px;
-}
     .button-group {
         align-items: center;
         justify-content: center;
@@ -151,7 +113,7 @@
     .imagecontainer {
         background-color: #e0f7fa;
         border: 1px solid #90caf9;
-        height: 200px;
+        height: 190px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -180,24 +142,11 @@
     </div>
 </div> *@
 <div class="form-container1">
-
-    <div class="col-md-12">
-        <div class="outline-container">
-
-            <div class="row">
-
-                <!-- Asset Ledger No Field -->
-                <div class="col-md-2">
-        @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").ReadOnly(true).Label(new JS("formatMessage('Client Code')"))
+    <div style="display:flex; align-items:end; gap:10px;  padding: 2px 13px;">
+        @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").Width(310).ReadOnly(true).Label(new JS("formatMessage('Client Code')"))
             .LabelMode(EditorLabelMode.Floating)
          .ValidationRules(r => r.AddRequired().Message("Client Code is required.")))
-                </div>
-
-
-
-                <!-- Asset Category Dropdown -->
-                <div class="col-md-8 " >
-                    <div class="form-group-row" style="display:flex; align-items:end;">
+               
         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).Label(new JS("formatMessage('Client Category')"))
             .LabelMode(EditorLabelMode.Floating)
      .DataSource(d => d.WebApi()
@@ -208,10 +157,8 @@
      )
      .LabelMode(EditorLabelMode.Floating)
      .ID("GetProjectDropDown")
-     .Width(600)
-     @*  .ShowClearButton(true)
-                 .AcceptCustomValue(true) *@
-     .OpenOnFieldClick(false)//
+     .Width(360)
+     .OpenOnFieldClick(false)
      .ValueChangeEvent("input")
      .HoverStateEnabled(true)
      .ValueExpr("ClientCategoryCode")
@@ -219,7 +166,6 @@
      .OnInput("dropDownBoxOnInput")
      .OnOpened("onOpened")
      .TabIndex(1)
-     .Width("60%")
      .OnKeyDown("onKeyDown")
      //.OnValueChanged("dropDownBoxValueChanged")
      .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
@@ -236,45 +182,15 @@
        buttons.Add()
        .Name("dropDown");
    }))
+            @(Html.DevExtreme().TextBox()
+                        .ID("txtClientName").Label(new JS("formatMessage('Client Name')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(360)
+                        .ValidationRules(r => r.AddRequired().Message("Client Name is required."))
+                        )
+                            
                     </div>
-                </div>
-            </div>
-
-
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <!-- Asset Description Field -->
-                            <div class="col-md-12">
-                                
-        @(
-            Html.DevExtreme().TextBox()
-            .ID("txtClientName").Label(new JS("formatMessage('Client Name')"))
-            .LabelMode(EditorLabelMode.Floating)
-             .ValidationRules(r => r.AddRequired().Message("Client Name is required."))
-            )
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-
-                    
-
-                </div>
-            </div>
-
-
-
-
-            <div class="row">
-            </div>
-        </div>
-    </div>
-
+    
 
     <div class="form-container">
 
@@ -421,12 +337,8 @@
                 </div>
             </div>
         </text>);
-
-
-
-
                     item.Add().Title(new JS("formatMessage('Business Card')")).Text("Business Card").Template(@<text>
-            <div class="dx-fieldset" style="display:flex;flex-direction:column;gap: 10px;width:50%;">
+              <div style="display:flex;flex-direction:column;gap: 10px;width:50%; margin: 8px 10px;">
                 <div class="imagecontainer" id="imgBox1">
                     <span>No image data</span>
                 </div>
@@ -550,40 +462,25 @@
                     )
 
                 </div>
-
-
-
-
             </div>
-
-
         </text>);
                 })
             )
 
     </div>
+    <div class="footer-fixed" style="display:flex;height:45px;">
+        <div class="col-md-2">
+            @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("onSaveClientMasterClick"))
 
-        
-         
-   <div class="form-container">
-        <div class="footer-buttons">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("onSaveClientMasterClick"))
-
-                    </div>
-                 <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).OnClick("function() { saveAndClose(); }"))
-                </div> 
-                <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
-                    </div>
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("GoBack"))
-                    </div>
-                </div>
-            </div>
+        </div>
+        <div class="col-md-2">
+            @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).OnClick("function() { saveAndClose(); }"))
+        </div>
+        <div class="col-md-2">
+            @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
+        </div>
+        <div class="col-md-2">
+            @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("GoBack"))
         </div>
     </div>
 </div>
@@ -1289,7 +1186,7 @@ ContactRemarks:clientRemarks,
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodedClientName}`;
                     let title = `Edit Client - ${clientCode}`;
-                    openModal(url, title);
+                    openModal(url, title,"","80%");
                 }
             },
             {
@@ -1298,7 +1195,7 @@ ContactRemarks:clientRemarks,
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientContactList?ClientContactSlNo=${ClientContactSlNo}&clientName=${encodedClientName}`;
                     let title = `Edit Client - ${ClientContactSlNo}`;
-                    openModal(url, title);
+                    openModal(url, title,"","80%");
                 }
             },
             {
@@ -1333,7 +1230,7 @@ ContactRemarks:clientRemarks,
  function redirectToClientCategory() {
         let url = `/${tenantName}/IMS/ClientCategory1`;
             let title = "Client Category";
-        openModal(url, title);
+        openModal(url, title ,"","80%");
         refreshClientCategorySelectBox()
     }
     
@@ -1356,7 +1253,7 @@ ContactRemarks:clientRemarks,
 
     var title = `Contact List ${clientName}`;
     
-    openModal(url, title);
+    openModal(url, title ,"","80%");
 }
 
 

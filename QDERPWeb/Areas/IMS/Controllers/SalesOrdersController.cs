@@ -673,8 +673,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						entity.UnitRateMethod = child.UnitRateMethod;
 						entity.Gscode = child.Gscode;
 						entity.QuotedTaxSlab = child.QuotedTaxSlab;
+                        entity.AddlDescription = child.AddlDescription;
+                        entity.QuoteRemarks = child.QuoteRemarks;
+                        entity.DeliveryPeriod = child.DeliveryPeriod;
+                        entity.PlanNo = child.PlanNo;
 
-						dbContext.Entry(entity).State = EntityState.Modified; // Force update tracking
+                
+
+
+                        dbContext.Entry(entity).State = EntityState.Modified; // Force update tracking
 					}
 				}
 
@@ -879,7 +886,11 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                     c.QuotedTaxSlab,
                     c.LineTotalAfterDiscount,
                     c.LineTotalWithTax,
-                    c.LineTaxAmount
+                    c.LineTaxAmount,
+                    c.AddlDescription,
+                    c.QuoteRemarks,
+                    c.DeliveryPeriod,
+                    c.PlanNo
                 }
             ).ToListAsync();
 
@@ -1662,6 +1673,37 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata(long salesOrderChildId)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (salesOrderChildId == 0)
+                    return BadRequest("salesOrderChildId is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Tbl60202salesOrderChildren
+                        .Where(c => c.SalesOrderChildId == salesOrderChildId)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
     }
 

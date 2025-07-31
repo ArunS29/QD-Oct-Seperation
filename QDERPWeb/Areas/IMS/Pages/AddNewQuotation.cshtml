@@ -363,7 +363,7 @@
 							return;
 						}
 						var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
-						openModal(url, '');
+						openModal(url, 'Client Master');
 					}")
 				);
 		}))
@@ -1419,7 +1419,7 @@
     @(Html.DevExtreme().DataGrid()
                         .ID("GetProject-datagrid")
                         .DataSource(d => d.WebApi()
-							.Controller("AddNewQuotation")
+						.Controller("AddNewQuotation")
                         .LoadAction("GetQuotationStatus")
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("QuoteStatusId")
@@ -1511,8 +1511,8 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().Caption(new JS("formatMessage('Branch Code')")).DataField("CompanyId");
-                            columns.Add().Caption(new JS("formatMessage('Branch/Division Name')")).DataField("CompanyName");
+                            columns.Add().Caption(new JS("formatMessage('Code')")).DataField("CompanyId").Width(80);
+                            columns.Add().Caption(new JS("formatMessage('Name')")).DataField("CompanyName");
 
 
 
@@ -1546,7 +1546,7 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().Caption(new JS("formatMessage('ID')")).DataField("InventoryMasterGroupId");
+                            columns.Add().Caption(new JS("formatMessage('ID')")).DataField("InventoryMasterGroupId").Width(80);
                             columns.Add().Caption(new JS("formatMessage('Inventory Master Group')")).DataField("InventoryMasterGroup");
                         })
                         )
@@ -1579,9 +1579,9 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
                         })
                         )
@@ -1614,9 +1614,9 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
                         })
                         )
@@ -1649,9 +1649,9 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
                         })
                         )
@@ -6277,15 +6277,15 @@ hideAllButtonsExcept([
 	});
 
 	// Close only on outside click
-	$(document).on("click", function (e) {
-		const $target = $(e.target);
-		const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
+	// $(document).on("click", function (e) {
+	// 	const $target = $(e.target);
+	// 	const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
 
-		if (!isInside) {
-			const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-			dropDown.close();
-		}
-	});
+	// 	if (!isInside) {
+	// 		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+	// 		dropDown.close();
+	// 	}
+	// });
 	// Function to handle selection change in the DataGrid
 
 
@@ -6660,7 +6660,7 @@ hideAllButtonsExcept([
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
 		const title = "Signatories";
-		openModal(url, title);
+		openModal(url, title,"","75%");
 	}
 
 	function AddReqUnit() {

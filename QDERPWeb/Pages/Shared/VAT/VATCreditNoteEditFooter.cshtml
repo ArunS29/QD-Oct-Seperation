@@ -284,10 +284,10 @@
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
                 .ID("btnAttach")
-                .Width(132)
                 .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
-                              //.OnClick("onAttachButtonClick")
+                .Icon("attach")
+                .Hint("Click to attach")
+                .OnClick("onVatAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>
@@ -1486,6 +1486,34 @@
                 }
             }
 
+    function onVatAttachmentButtonClick(e) {
 
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
+        const hasValidAmounts = data.some(row => {
+            return (row.CalcLineAmount && row.CalcLineAmount > 0);
+        });
+
+        if (!hasValidAmounts) {
+            DevExpress.ui.dialog.alert("Data Not found in the Amount Cell within the Grid", "Can't Enable Attachment");
+            return;
+        }
+        // Get Voucher No safely
+        const creditNoBox = $("#CreditNoteNo").dxTextBox("instance");
+        const creditNo = creditNoBox ? creditNoBox.option("value") : null;
+        var menuType = "vat";
+
+
+        var formType ="e-Invoice CreditNote";
+        // Log and build URL
+        console.log("Voucher No:", creditNo);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(creditNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
 
 </script>

@@ -369,7 +369,7 @@ body.dark-mode {
     gap: 10px; /* Adds spacing between buttons */
     justify-content: start; /* Aligns buttons to the left */
     align-items: center; /* Vertically centers the buttons */
-    margin-top: 10px;
+    margin: 0px 10px;
 }
 
 .button-alignment-down {
@@ -993,4 +993,7 @@ dx-item-content dx-list-item-content:hover{
 }
 .dx-popup-content {
     background-color: var(--background-color);
+}
+.dx-datagrid .dx-header-row {
+    background: var(--background-color);
 }

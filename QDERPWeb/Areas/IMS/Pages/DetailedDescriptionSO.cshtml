@@ -1,182 +1,151 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.DetailedDescriptionRFQModel
+@model QD.ERP.Web.Areas.IMS.Pages.DetailedDescriptionSOModel
 @{
 }
 
 <style>
-
+ 
     .container {
         display: none !important;
     }
-
+ 
     .frame {
         display: none !important;
     }
-
+ 
     .footerContainer {
         display: none !important;
     }
-
+ 
     .bodyContainer {
         display: flex;
         justify-content: center;
     }
-
+ 
     .imagecontainer {
         border-bottom: 2px;
     }
-
+ 
     .mainContainer {
         margin-top: 1em;
         width: 100%;
     }
-
+ 
     .playIcon {
         display: none;
     }
+ 
+    .modal-content {
+        position: absolute;
+        top: 40%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        width: 70%;
+        max-width: 1400px;
+        height: 90%;
+        max-height: 470px;
+        background: white;
+        border-radius: 8px;
+        padding: 0;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.2);
+        overflow: hidden;
+    }
+ 
 </style>
-
+ 
 <div style="padding: 10px; border-radius: 5px;">
-    <div style="display: flex; justify-content: space-between; align-items: center;">
-        <label style="font-weight: bold;">Detailed Description / Specification:</label>
-        <div>
-
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<label style="font-weight: bold;">Detailed Description / Specification:</label>
+<div>
             @(Html.DevExtreme().Button()
-
                         .ID("btnUseDetailedDescription")
-
                         .Text("Use Detailed Description")
-
                         .Icon("info")
-
                         .Type(ButtonType.Normal)
-
                         .StylingMode(ButtonStylingMode.Contained)
-
                         .ElementAttr("style", "margin-right: 10px;")
-                        .OnClick("getDetailedDescription"))
-
+                        .OnClick("getDetailedDescription1")
+                        )
             @(Html.DevExtreme().Button()
-
                         .ID("btnUseItemDesc")
-
                         .Text("Use Item Desc.")
-
                         .Icon("info")
-
                         .Type(ButtonType.Normal)
-                        .OnClick("getItemDescription")
-                        .StylingMode(ButtonStylingMode.Contained))
-        </div>
-    </div>
-
+                        .StylingMode(ButtonStylingMode.Contained)
+                       .OnClick("getItemDescription1")
+                       )
+</div>
+</div>
+ 
     <!-- TextArea -->
-    <div style="margin-top: 10px;">
-
+<div style="margin-top: 10px;">
         @(Html.DevExtreme().TextArea()
-
                 .ID("DetailedDescription")
-
-                .Height(100)
-
                 .Label("Detailed Description / Specification")
-
                 .LabelMode(EditorLabelMode.Floating)
-
-                .ElementAttr("style", "width: 100%;"))
-    </div>
-
-
+                .ElementAttr("style", "width: 100%; height: 80px !important;"))
+</div>
+ 
     <!-- Remarks -->
-    <div style="margin-top: 15px;">
-
+<div style="margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
-
                 .ID("Remarks")
-
                 .Label("Remarks")
-
                 .LabelMode(EditorLabelMode.Floating)
-
                 .ElementAttr("style", "width: 100%;"))
-    </div>
-
+</div>
+ 
     <!-- Size / Manufacturer / Brand -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
-
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
-
                 .ID("Size")
-
                 .Label("Size")
-
                 .LabelMode(EditorLabelMode.Floating))
-
+ 
         @(Html.DevExtreme().TextBox()
-
                 .ID("Manufacturer")
-
                 .Label("Manufacturer")
-
                 .LabelMode(EditorLabelMode.Floating))
-
+ 
         @(Html.DevExtreme().TextBox()
-
                 .ID("Brand")
-
                 .Label("Brand")
-
                 .LabelMode(EditorLabelMode.Floating))
-    </div>
-
+</div>
+ 
     <!-- Part No / Delivery Period / Plan No -->
-    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
-
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
         @(Html.DevExtreme().TextBox()
-
                 .ID("PartNo")
-
                 .Label("Part No")
-
                 .LabelMode(EditorLabelMode.Floating))
-
+ 
         @(Html.DevExtreme().TextBox()
-
                 .ID("DeliveryPeriod")
-
                 .Label("Delivery Period")
-
                 .LabelMode(EditorLabelMode.Floating))
-
+ 
         @(Html.DevExtreme().TextBox()
-
                 .ID("PlanNo")
-
                 .Label("Plan No")
-
                 .LabelMode(EditorLabelMode.Floating))
-
-    </div>
-
-@(Html.DevExtreme().Button()
+</div>
+    @(Html.DevExtreme().Button()
         .ID("btnApplyAndClose")
         .Text("Apply & Close")
         .Icon("check")
-        .OnClick("applyAndClose"))
-
-
+        .OnClick("applyAndClose1"))
 </div>
-
 <script>
     let GSCode = null;
-    let RfqchildSlNo1=null;
+    let salesOrderChildId1=null;
 
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
-         const RfqchildSlNos = urlParams.get("RfqchildSlNo");
-          RfqchildSlNo1 = RfqchildSlNos ? RfqchildSlNos.split("?")[0] : null;
-          if(RfqchildSlNo1){
-              loadeditData(RfqchildSlNo1);
+         const salesOrderChildIds = urlParams.get("salesOrderChildId");
+          salesOrderChildId1 = salesOrderChildIds ? salesOrderChildIds.split("?")[0] : null;
+          if(salesOrderChildId1){
+              loadeditData(salesOrderChildId1);
           }
 
         const GSCodes = urlParams.get("gsCode");
@@ -192,7 +161,7 @@
 
         function loadClientDetails(GSCode) {
        $.ajax({
-            url: `/api/RequestforQuotationList/GetdataByGSCode?GSCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/AddNewClientRequest/GetdataByGSCode?GSCode=${encodeURIComponent(GSCode)}`,
             type: 'GET',
             dataType: 'json',
             success: function (res)  {
@@ -207,19 +176,17 @@
             }
         });
     }
-      function  loadeditData(RfqchildSlNo1) {
+      function  loadeditData(salesOrderChildId1) {
        $.ajax({
-           url: `/api/RequestforQuotationList/GetDetaildescriptiondata?RfqchildSlNo=${encodeURIComponent(RfqchildSlNo1)}`,
+           url: `/api/SalesOrders/GetDetaildescriptiondata?salesOrderChildId=${encodeURIComponent(salesOrderChildId1)}`,
             type: 'GET',
             dataType: 'json',
             success: function (res)  {
                 console.log("ddd111",res);
-
-
-            $("#DetailedDescription").dxTextArea("instance").option("value",res.AddlDescription);
-            $("#Remarks").dxTextBox("instance").option("value",res.QuotationRemarks);
-           $("#DeliveryPeriod").dxTextBox("instance").option("value",res.DeliveryPeriod);
-          $("#PlanNo").dxTextBox("instance").option("value",res.PlanNo);
+           $("#DetailedDescription").dxTextArea("instance").option("value",res.AddlDescription);
+            $("#Remarks").dxTextBox("instance").option("value",res.QuoteRemarks);
+             $("#DeliveryPeriod").dxTextBox("instance").option("value",res.DeliveryPeriod);
+           $("#PlanNo").dxTextBox("instance").option("value",res.PlanNo);
             },
             error: function (xhr) {
                 console.log("data fetch failed:", xhr.responseText);
@@ -227,8 +194,8 @@
         });
     }
 
-    // 🔧 This must be globally accessible
-    function getItemDescription() {
+
+    function getItemDescription1() {
         if (!GSCode) {
             DevExpress.ui.notify("GSCode is missing", "error", 2000);
             return;
@@ -236,7 +203,7 @@
 
         $.ajax({
 
-            url: `/api/RequestforQuotationList/GetGSCodeDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/AddNewClientRequest/GetGSCodeDescription?gsCode=${encodeURIComponent(GSCode)}`,
             type: "GET",
             success: function (data) {
                 $("#DetailedDescription").dxTextArea("instance").option("value", data);
@@ -247,14 +214,14 @@
         });
     }
 
-    function getDetailedDescription() {
+    function getDetailedDescription1() {
         if (!GSCode) {
             DevExpress.ui.notify("GSCode is missing", "error", 2000);
             return;
         }
 
         $.ajax({
-            url: `/api/RequestforQuotationList/GetGSCodeDetailedDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/AddNewClientRequest/GetGSCodeDetailedDescription?gsCode=${encodeURIComponent(GSCode)}`,
             type: "GET",
             success: function (data) {
                 $("#DetailedDescription").dxTextArea("instance").option("value", data);
@@ -272,7 +239,7 @@
         return {
             GSCode: GSCode,
             AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            QuotationRemarks: $("#Remarks").dxTextBox("instance").option("value"),
+            QuoteRemarks: $("#Remarks").dxTextBox("instance").option("value"),
             DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
             PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
         };
@@ -285,10 +252,10 @@
             window.opener.receiveModalFieldData(fieldValues);
         }
     };
-       function applyAndClose() {
+       function applyAndClose1() {
         const modalData = {
-             AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            QuotationRemarks: $("#Remarks").dxTextBox("instance").option("value"),
+              AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            QuoteRemarks: $("#Remarks").dxTextBox("instance").option("value"),
             DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
             PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
         };
