@@ -258,11 +258,30 @@
 		</div>
 
 		<div class="card green shine">
-			<h4 style="font-weight:bold;">Invoice Amount</h4>
-			<h1 id="invoiceAmount">0.00 SAR</h1>
-			<h3 id="vatTotalValue">VAT Value: 0.00 SAR</h3>
+			<h4 style="font-weight:bold;">
+				
+				Invoice Amount
+			</h4>
 
+			<h1 id="invoiceAmount">
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+				</svg>
+				0.00 
+			</h1>
+			<h4 style="font-weight:bold;">
+				VAT Value 
+			</h4>
+			<h3 id="vatTotalValue">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>
+				0.00 
+			</h3>
 		</div>
+
 		<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important;">
 			<h3 style="margin-bottom: 10px; color: white;font-weight:bold;">Voucher Count</h3>
 			<div class="voucher-slider">
@@ -956,26 +975,34 @@
 @* <div id="testSvgPreview" style="width:100px; height:100px; border:1px solid #ccc;"></div> *@
 
 <script>
-		function updateTotalVATValue(data) {
-	let totalVAT = 0;
+			function updateTotalVATValue(data) {
+		let totalVAT = 0;
 
-	if (Array.isArray(data)) {
-		data.forEach(item => {
-			const vat5 = parseFloat(item.DomesticStandartRatedTax) || 0;
-			const vat10 = parseFloat(item.TotalTaxOf10Perc) || 0;
-			const vat15 = parseFloat(item.TotalTaxOf15Perc) || 0;
+		if (Array.isArray(data)) {
+			data.forEach(item => {
+				const vat5 = parseFloat(item.DomesticStandartRatedTax) || 0;
+				const vat10 = parseFloat(item.TotalTaxOf10Perc) || 0;
+				const vat15 = parseFloat(item.TotalTaxOf15Perc) || 0;
 
-			totalVAT += vat5 + vat10 + vat15;
+				totalVAT += vat5 + vat10 + vat15;
+			});
+		}
+
+		const formatted = totalVAT.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		});
+
+		const svg = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>`;
+
+		// ✅ Inject SVG + formatted value
+		$("#vatTotalValue").html(svg + formatted);
 	}
 
-	const formatted = totalVAT.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
-	});
-
-	$("#vatTotalValue").text("VAT Value: " + formatted + " SAR");
-}
 
 	function animateTodayVoucherCount(target) {
 		let i = 0;
@@ -1060,10 +1087,11 @@
 		function onGridContentReady(e) {
 		// ✅ Update status counts like Verified / Approved / Submitted
 		updateApprovedCountFromGrid();
-
+			
 		// ✅ Get data and update total VAT value
 		const data = e.component.getDataSource().items();
 		updateTotalVATValue(data);
+		
 	}
 
 
@@ -1740,9 +1768,16 @@
 			maximumFractionDigits: 2
 		});
 
-		// ✅ Update the card content
-		$("#invoiceAmount").text(formatted + " SAR");
+		const svg = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>`;
+
+		// ✅ Use .html() instead of .text()
+		$("#invoiceAmount").html(svg + formatted);
 	}
+
 
 	$(function () {
 		$("#VATInvoiceRegister").dxTextBox({
