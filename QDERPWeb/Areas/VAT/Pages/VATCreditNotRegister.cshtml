@@ -249,17 +249,17 @@
 
 			<div class="voucher-slider">
 				<div class="voucher-slide active">
-					<h4># of Invoices Verified</h4>
+					<h4>No of Invoices Verified</h4>
 					<h4>Total <span id="verifiedCount">0</span></h4>
 				</div>
 
 				<div class="voucher-slide">
-					<h4># of Invoices Approved</h4>
+					<h4>No of Invoices Approved</h4>
 					<h4>Total <span id="approvedCount">0</span></h4>
 				</div>
 
 				<div class="voucher-slide">
-					<h4># of Invoices Posted</h4>
+					<h4>No of Invoices Posted</h4>
 					<h4>Total <span id="postedCount">0</span></h4>
 
 				</div>
@@ -271,12 +271,22 @@
 		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Today</h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
-				<h4># Of Credit Notes Raised Today</h4>
-				<h1 id="creditToday" style="color: white;">0</h1>
+				<h4>Credit Notes Raised Today</h4>
+				<h1 id="creditToday" style="color: white;">
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+								<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+								<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+							</svg>0
+						</h1>
 			</div>
 			<div class="voucher-slide1">
-				<h4># Of Credit Notes Raised Total</h4>
-				<h1 id="creditTotal" style="color: white;">0</h1>
+				<h4>Credit Notes Raised Total</h4>
+					<h1 id="creditTotal" style="color: white;">
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+							<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+							<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+						</svg>0
+					</h1>
 			</div>
 		</div>
 	</div>
@@ -904,13 +914,13 @@
 			// ✅ Count of Verified invoices only
 			const verifiedCount = dataSource.filter(x => x.InvoiceStatus === "Verified").length;
 
-			// Update counts in the card
-			document.getElementById('creditToday').textContent = todayCount;
-			document.getElementById('creditTotal').textContent = totalCount;
+			// document.getElementById('creditTotal').textContent = totalCount;
 			updateVerifiedCount(dataSource);
-				updatePostedCount(dataSource); // ✅ Now includes posted count
+			updatePostedCount(dataSource); // ✅ Now includes posted count
 			// ✅ Update verified count
 			updateApprovedCount(dataSource);
+			 updateCreditNoteTotal(dataSource);
+			 updateCreditToday(dataSource);
 
 			// Start sliding animation once (if not already started)
 			if (!window._voucherSliderStarted) {
@@ -919,6 +929,54 @@
 			}
 		}
 	}
+			function updateCreditNoteTotal(data) {
+		let totalCredit = 0;
+
+		if (Array.isArray(data)) {
+			totalCredit = data.reduce((sum, item) => {
+				const value = parseFloat(item.TotalCreditNoteAmount || 0);
+				return sum + (isNaN(value) ? 0 : value);
+			}, 0);
+		}
+
+		const formatted = totalCredit.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+
+		const svg = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>`;
+
+		// ✅ Set the content with SVG and value
+		document.getElementById('creditTotal').innerHTML = svg + formatted;
+	}
+				function updateCreditToday(data) {
+		let todayCount = 0;
+
+		const today = new Date();
+		today.setHours(0, 0, 0, 0); // reset to start of today
+
+		if (Array.isArray(data)) {
+			todayCount = data.filter(item => {
+				const createdDate = new Date(item.CreatedDate); // update field name if different
+				createdDate.setHours(0, 0, 0, 0);
+				return createdDate.getTime() === today.getTime();
+			}).length;
+		}
+
+		const svg = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>`;
+
+		document.getElementById('creditToday').innerHTML = svg + todayCount;
+	}
+
+
 
 		function startVoucherSlide() {
 		let currentSlide = 0;
