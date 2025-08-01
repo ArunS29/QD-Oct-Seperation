@@ -3668,11 +3668,17 @@
                     if (reportMappings[selectedText]) {
                         let reportName = reportMappings[selectedText];
                         console.log(`Redirecting to ${reportName}`);
+
+                        const screenWidth = window.screen.availWidth;
+                        const screenHeight = window.screen.availHeight;
+
                         window.open(
                             `/${tenantName}/DocumentViewer?reportName=${encodeURIComponent(reportName)}&accountId=${encodeURIComponent(accountId)}&frmDate=${encodeURIComponent(frmDateStr)}&toDate=${encodeURIComponent(toDateStr)}&skipPreview=true`,
                             '_blank',
-                            'width=1200,height=800,scrollbars=yes,resizable=yes'
+                            `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
                         );
+                    
+
                     } else {
                         console.log("No matching report found for selectedText:", selectedText);
                     }

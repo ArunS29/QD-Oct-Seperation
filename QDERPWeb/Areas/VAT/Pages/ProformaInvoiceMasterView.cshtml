@@ -62,9 +62,9 @@
 	}
 
 	/* 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
-			display: none !important;
-		}
-	 */
+				display: none !important;
+			}
+		 */
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -152,7 +152,7 @@
 	.context-menu-item {
 		/* display: flex; */
 		align-items: center;
-		padding: 10px 15px; 
+		padding: 10px 15px;
 		font-size: 14px;
 		cursor: pointer;
 		transition: background 0.2s ease-in-out;
@@ -214,7 +214,7 @@
  *@
 <div class="title">
 
-	 <input id="formId" value="frm201LedgerView" type="hidden" />
+	<input id="formId" value="frm201LedgerView" type="hidden" />
 
 	<div class="card blue shine compact">
 		<h2 class="title-slide">Proforma Invoice Register</h2>
@@ -226,7 +226,7 @@
 		<div class="tabs" style="gap:10px;">
 			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
 			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text" onclick="switchTab(2)">Posted</div>
 		</div>
 
 		<div class="tab-content active">
@@ -245,7 +245,7 @@
 	<div class="card green shine">
 		<h4 style="font-weight:bold;">Invoice Amount</h4>
 		<h1 id="invoiceAmount">0.00 SAR</h1>
-		<h3>VAT Value</h3>
+		@* <h3>VAT Value</h3> *@
 	</div>
 	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
 		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Voucher Count</h4>
@@ -322,32 +322,32 @@
 		.Width(180)
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
-				.DropDownOptions(options => options.Width(230))
-				.Items(items =>
-				{
-					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-				})
-				.ItemTemplate(@<text>
-            <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
-                <div class="item-content">
-                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                    <div>
-                        <div class="item-title"><%- text %></div>
-                    </div>
-                </div>
-            </div>
-        </text>)
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+		.DropDownOptions(options => options.Width(230))
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		.ItemTemplate(@<text>
+				   		<div class="custom-dropdown-item">
+				   			<div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+				   			<div class="item-content">
+				   				<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+				   				<div>
+				   					<div class="item-title"><%- text %></div>
+				   				</div>
+				   			</div>
+				   		</div>
+				   	</text>)
 		)
 
 	@(Html.DevExtreme().CheckBox()
@@ -360,6 +360,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
+		.OnContentReady("onGridContentReady")
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
@@ -397,7 +398,7 @@
 				subColumns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount)
 			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-	    	.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption(new JS("formatMessage('Total VAT Amount')"))
@@ -522,12 +523,12 @@
 			columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
 
 		})
-		@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
+	   	@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
 		.Height("60vh") // <<< fixed height
 		.ColumnAutoWidth(true)
 		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.Width("98%")
-		@* .WordWrapEnabled(true) *@
+				  	@* .WordWrapEnabled(true) *@
 		//.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
@@ -553,7 +554,7 @@
 			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
 
 				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
-		    .CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
@@ -733,7 +734,7 @@
 			 window.location.href = url;
 	}
 
-	
+
 
 
 
@@ -776,7 +777,7 @@
 		});
 	});
 
-		
+
 	// Assuming tenantName is already defined globally
 	let invoiceNo = null,InvoiceStatus=null;
 	let IsEdit = false;
@@ -790,7 +791,7 @@
 		IsEdit = true;
 
 		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?ProformaInvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
-	
+
 		window.location.href = url; // Navigate to the page
 
 	}
@@ -976,7 +977,7 @@
 		$("#invoiceAmount").text(formatted + " SAR");
 	}
 
-			
+
 	$(document).ready(function () {
 						console.log('Start permission handling');
 						// Form ID
@@ -1219,7 +1220,7 @@
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
 		});
-	
+
 			},
 			error: function (err) {
 				console.error("Grid load failed", err);
@@ -1291,29 +1292,42 @@
 	}
 
 	// ✅ Count Approved Invoices From Grid
-	function updateApprovedCountFromGrid() {
-	  const grid = $("#dataGrid").dxDataGrid("instance");
-	  const data = grid.getDataSource().items();
+		function updateApprovedCountFromGrid() {
+		const grid = $("#dataGrid").dxDataGrid("instance");
+		const data = grid.getVisibleRows().map(row => row.data);
 
-	  // Update dynamic counts based on status
-	  counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
-	  counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
-	  counts[2] = data.filter(item => item.InvoiceStatus === "Submitted").length;
+		// Update dynamic counts based on status
+		counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
+		counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
+		counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
 
-	  // You can also update visible numbers immediately
-	  countEls[0].textContent = counts[0];
-	  countEls[1].textContent = counts[1];
-	  countEls[2].textContent = counts[2];
+		// Update visible numbers
+		countEls[0].textContent = counts[0];
+		countEls[1].textContent = counts[1];
+		countEls[2].textContent = counts[2];
 
-	  // Optionally animate default tab (Today/Verified)
-	  animateCount(countEls[0], counts[0]);
+		// Animate default tab (Verified)
+		animateCount(countEls[0], counts[0]);
 	}
-	document.getElementById("count0").textContent = counts[0]; // Verified count
+		function updateInvoiceAmountFromGrid() {
+		const grid = $("#dataGrid").dxDataGrid("instance");
+		const summaryItems = grid.getTotalSummaryValue("CalcLineAmount");
+
+		const totalAmount = summaryItems != null ? summaryItems : 0;
+		const formatted = totalAmount.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+
+		document.getElementById("invoiceAmount").textContent = formatted + " SAR";
+	}
 
 	// 🔁 Called after DataGrid loads
-	function onGridContentReady(e) {
-	  updateApprovedCountFromGrid();
+		function onGridContentReady(e) {
+		updateApprovedCountFromGrid();
+		updateInvoiceAmountFromGrid();
 	}
+
 
 
 
@@ -1332,7 +1346,7 @@
 			3000
 		);
 		return;
-	          }
+			  }
 
 		DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Purchase Bill?", "Confirm Unlock")
 			.done(function (dialogResult) {

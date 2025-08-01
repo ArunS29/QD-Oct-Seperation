@@ -167,7 +167,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(250)
+                Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(215)
                 .Items(item =>
                 {
                     item.Add()
@@ -413,43 +413,51 @@
             <tbody>
                 <!-- Subject -->
                 <tr>
-                    <td>
+                    <td style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextBox()
                             .ID("Subject")
-                            .Value("Quotation for Materials")
-													.Label(new JS("formatMessage('RFQ Subject:')"))
+							.Label(new JS("formatMessage('RFQ Subject:')"))
                             .LabelMode(EditorLabelMode.Floating)
+							.Spellcheck(true) 
                             .Width("100%")
                         )
-                        <div class="d-flex gap-1 mt-1">
-                            <button class="btn btn-secondary btn-sm">Set Default</button>
-                            <button class="btn btn-outline-secondary btn-sm">
-                                <i class="fa fa-font"></i>
-                            </button>
-                        </div>
+						  @(Html.DevExtreme().Button()
+                        .ID("AddSuject")
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("upload")
+                       .OnClick("function() { saveField('ReportSubject', 'Subject' ,'Subject'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("EditSubject")
+                          .ElementAttr("class", "custom-btn-size")
+                        .Icon("fa fa-font")
+                        .Hint("Reset"))
                     </td>
                 </tr>
 
                 <!-- Quote Introduction -->
                 <tr>
-                    <td>
-                      @(Html.DevExtreme().TextArea()
+                    <td style="display:flex; align-items:end;">
+						   @(Html.DevExtreme().TextArea()
 							.ID("QuoteIntro")
 							.Height(80)
 							.Label(new JS("formatMessage('RFQ Remarks:')"))
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
-							.RtlEnabled(true) 
 							.Spellcheck(true) 
-							.MaxLength(500) 
-  )
-
-                        <div class="d-flex gap-1 mt-1">
-                            <button class="btn btn-secondary btn-sm">Set Default</button>
-                            <button class="btn btn-outline-secondary btn-sm">
-                                <i class="fa fa-font"></i>
-                            </button>
-                        </div>
+							.MaxLength(500))
+							@(Html.DevExtreme().Button()
+							.ID("AddIntro")
+							.ElementAttr("class", "custom-btn-size")
+							.Icon("upload")
+							.OnClick("function() { saveField('ReportSubject', 'QuoteIntro' ,'Subject'); }")
+							.Hint("Set Default")) 
+							@(Html.DevExtreme().Button()
+							.ID("EditIntro")
+							.ElementAttr("class", "custom-btn-size")
+							.Icon("fa fa-font")
+							.Hint("Reset"))
+                      
                     </td>
                 </tr>
             </tbody>
@@ -461,19 +469,25 @@
         <table class="w-100">
             <tbody>
                 <tr>
-                    <td>
+                    <td style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextArea()
-                            .ID("QuoteSummary")
-                            .ElementAttr("style", "height: 140px ! important;")
-							.Label(new JS("formatMessage('RFQ Summary:')"))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%"))
-                        <div class="d-flex gap-1 mt-1">
-                            <button class="btn btn-secondary btn-sm">Set Default</button>
-                            <button class="btn btn-outline-secondary btn-sm">
-                                <i class="fa fa-font"></i>
-                            </button>
-                        </div>
+                             .ID("QuoteSummary")
+                             .ElementAttr("style", "height: 140px ! important;")
+							 .Label(new JS("formatMessage('RFQ Summary:')"))
+							 .Spellcheck(true) 
+                             .LabelMode(EditorLabelMode.Floating)
+                             .Width("100%"))
+							  @(Html.DevExtreme().Button()
+							 .ID("Addsummary")
+							 .ElementAttr("class", "custom-btn-size")
+							 .Icon("upload")
+							 .OnClick("function() { saveField('ReportSubject', 'QuoteSummary' ,'Subject'); }")
+							 .Hint("Set Default")) 
+							 @(Html.DevExtreme().Button()
+							.ID("EditSummary")
+							.ElementAttr("class", "custom-btn-size")
+							.Icon("fa fa-font")
+						    .Hint("Reset"))
                     </td>
                 </tr>
             </tbody>
@@ -879,7 +893,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("ProjectId");
+						columns.Add().DataField("ProjectId").Width(150);
 						columns.Add().DataField("ProjectDescription");
 
 
@@ -914,8 +928,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("SignatoryId");
-				columns.Add().DataField("SignatoryName");
+				columns.Add().DataField("SignatoryId").Caption("ID").Width(80);
+				columns.Add().DataField("SignatoryName").Caption("Name");
 
 
 
@@ -949,8 +963,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("CompanyId");
-				columns.Add().DataField("CompanyName");
+				columns.Add().DataField("CompanyId").Caption("ID").Width(80);
+				columns.Add().DataField("CompanyName").Caption("Name");
 
 
 
@@ -984,10 +998,8 @@
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
-				columns.Add().DataField("InventoryMasterGroupId");
-				columns.Add().DataField("InventoryMasterGroup");
-
-
+				columns.Add().DataField("InventoryMasterGroupId").Caption("ID").Width(80);
+				columns.Add().DataField("InventoryMasterGroup").Caption("Name");
 
 			})
 			)
@@ -997,7 +1009,6 @@
 
 
 <script>
-	
 	  function onOpened(e) {
         setTimeout(() => {
             e.component.focus();
@@ -5027,43 +5038,43 @@ $("#btnCreatePo").on("click", function () {
 			}
 
 
-			$(function () {
-				const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+			// $(function () {
+			// 	const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
 
-				// On initial load - set checkboxes
-				const selectedVals = dropDown.option("value") || [];
-				selectedVals.forEach(id => {
-					$(`input[name="vatOption"][value="${id}"]`)
-						.prop("checked", true)
-						.closest(".vat-item").addClass("selected");
-				});
-			});
+			// 	// On initial load - set checkboxes
+			// 	const selectedVals = dropDown.option("value") || [];
+			// 	selectedVals.forEach(id => {
+			// 		$(`input[name="vatOption"][value="${id}"]`)
+			// 			.prop("checked", true)
+			// 			.closest(".vat-item").addClass("selected");
+			// 	});
+			// });
 
-			// Handle checkbox change
-			$(document).on("change", 'input[name="vatOption"]', function () {
-				const selectedIds = $('input[name="vatOption"]:checked')
-					.map(function () { return parseInt(this.value); }).get();
+			// // Handle checkbox change
+			// $(document).on("change", 'input[name="vatOption"]', function () {
+			// 	const selectedIds = $('input[name="vatOption"]:checked')
+			// 		.map(function () { return parseInt(this.value); }).get();
 
-				const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-				dropDown.option("value", selectedIds);
+			// 	const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+			// 	dropDown.option("value", selectedIds);
 
-				// Highlight selected
-				$(".vat-item").removeClass("selected");
-				$('input[name="vatOption"]:checked').each(function () {
-					$(this).closest(".vat-item").addClass("selected");
-				});
-			});
+			// 	// Highlight selected
+			// 	$(".vat-item").removeClass("selected");
+			// 	$('input[name="vatOption"]:checked').each(function () {
+			// 		$(this).closest(".vat-item").addClass("selected");
+			// 	});
+			// });
 
-			// Close only on outside click
-			$(document).on("click", function (e) {
-				const $target = $(e.target);
-				const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
+			// // Close only on outside click
+			// $(document).on("click", function (e) {
+			// 	const $target = $(e.target);
+			// 	const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
 
-				if (!isInside) {
-					const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-					dropDown.close();
-				}
-			});
+			// 	if (!isInside) {
+			// 		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+			// 		dropDown.close();
+			// 	}
+			// });
 		// Function to handle selection change in the DataGrid
 
 
@@ -5425,17 +5436,17 @@ $("#btnCreatePo").on("click", function () {
 
 		   function AddReqUnit(){
 				const url = `/${tenantName}/IMS/ProjectSubUnits`;
-			  const title = "";
+			  const title = "Project";
 				  openModal(url, title);
 		  }
 			 function AddModeReq(){
 				const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-			  const title = "";
+			  const title = "Quotation Mode Of Request";
 				  openModal(url, title);
 		  }
 			 function AddTypeReq(){
 				const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-			  const title = "";
+			  const title = "Quotation Type Of Request";
 				  openModal(url, title);
 		  }
 		   function AddNewSupplier(){
@@ -5534,5 +5545,59 @@ $("#btnCreatePo").on("click", function () {
 
 		console.log('End permission handling');
 	});
+	 function saveField(fieldName, dxId,name) {
+    let instance = null;
 
+    try {
+        instance = $("#" + dxId).dxTextBox("instance");
+    } catch (e) {
+        // Not a TextBox, try TextArea next
+    }
+
+    if (!instance) {
+        try {
+            instance = $("#" + dxId).dxTextArea("instance");
+        } catch (e) {
+            console.error(`Neither dxTextBox nor dxTextArea initialized for: ${dxId}`);
+            DevExpress.ui.dialog.alert("Component not initialized: " + dxId, "Error");
+            return;
+        }
+    }
+    const value = instance.option("value");
+
+    $.ajax({
+        url: "/api/PurchaseOrders/SaveReportAttribute",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+        reportNo: "IMS-RFQ-01",
+        field: fieldName,
+        value: value
+        }),
+        success: function () {
+            DevExpress.ui.notify(`PO ${name} has been set as default.`, "success", 2000);
+        },
+        error: function (xhr) {
+            DevExpress.ui.dialog.alert("Failed to save data", "Error");
+            console.error("Save error:", xhr.responseText);
+        }
+    });
+}
+   $(function () {
+    $.ajax({
+        url: "/api/PurchaseOrders/GetReportAttributes?reportNo=IMS-RFQ-01", // ✅ fixed missing quote
+        type: "GET",
+        success: function (data) {
+            console.log("Loaded:", data);
+
+            $("#Subject").dxTextBox("instance")?.option("value", data.ReportSubject || "");
+            $("#QuoteIntro").dxTextArea("instance")?.option("value", data.ReportSummary || "");
+            $("#QuoteSummary").dxTextArea("instance")?.option("value", data.ReportIntroduction || "");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading report data:", error);
+        }
+    });
+});
+       
 </script>

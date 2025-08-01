@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.VAT.Models;
+using QD.ERP.Web.Models;
 
 namespace QD.ERP.Web.DAL.Entities;
 
@@ -19,6 +20,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
     public virtual DbSet<FinancialSummaryReport> FinancialSummaryReports { get; set; }
 
+    public virtual DbSet<TblFcmDeviceToken> TblFcmDeviceTokens { get; set; }
     public virtual DbSet<Language> Languages { get; set; }
     public virtual DbSet<TblUserAccessWeb> TblUserAccessWebs { get; set; }
 
@@ -3419,6 +3421,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<MaterialReceiptViewModel> MaterialReceiptViewModels { get; set; }
     public DbSet<Qry01Bankandcashbalance> Qry01Bankandcashbalance { get; set; }
     public DbSet<Qry01SupplierOutstanding> Qry01SupplierOutstanding { get; set; }
+    public DbSet<ZeroToWonDto> ZeroToWonDtos { get; set; }
+    public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -3444,6 +3448,8 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<RFQViewModel>().HasNoKey();
 		modelBuilder.Entity<QuotationViewModel>().HasNoKey();
         modelBuilder.Entity<MaterialReceiptViewModel>().HasNoKey();
+        modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
+        modelBuilder.Entity<UpdateIsWonDto>().HasNoKey();
 
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
         modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
@@ -19298,6 +19304,38 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VerifiedBy).IsUnicode(false);
             entity.Property(e => e.VerifiedOn).HasColumnType("datetime");
         });
+
+
+
+           modelBuilder.Entity<TblFcmDeviceToken>(entity =>
+    {
+        entity.ToTable("tblFcmDeviceTokens");
+
+        entity.HasKey(e => e.Id).HasName("PK_tblFcmDeviceTokens");
+
+        entity.Property(e => e.UserId)
+              .IsRequired()
+              .HasMaxLength(50);
+
+        entity.Property(e => e.TenantName)
+              .IsRequired()
+              .HasMaxLength(255);
+
+        entity.Property(e => e.DeviceId)
+              .IsRequired()
+              .HasMaxLength(100);
+
+        entity.Property(e => e.Token)
+              .IsRequired()
+              .HasMaxLength(255);
+
+        entity.Property(e => e.Platform)
+              .HasMaxLength(50);
+
+        entity.Property(e => e.LastUpdated)
+              .HasColumnType("datetime")
+              .HasDefaultValueSql("GETDATE()");
+    });
         // Specify the correct table name if it differs from the class name
         modelBuilder.Entity<Language>(entity =>
         {

@@ -18,7 +18,7 @@
 
     function onDocumentViewerReady(s, e) {
         // Set zoom level correctly
-        s.GetPreviewModel().reportPreview.zoom(1.5);
+        s.GetPreviewModel().reportPreview.zoom(1.8);
 
         // Wait until the toolbar is rendered
         setTimeout(() => {
@@ -28,29 +28,7 @@
 
 
 
-           function tryTriggerFullScreen() {
-               alert('hi');
-        let attempts = 0;
-        const maxAttempts = 30;
 
-        const intervalId = setInterval(() => {
-            const fullscreenBtn = document.querySelector(
-                'div[role="button"][aria-label="Full Screen"]'
-            );
-
-            if (fullscreenBtn) {
-                fullscreenBtn.click();
-                console.log("✅ Fullscreen triggered!");
-                clearInterval(intervalId);
-            } else {
-                attempts++;
-                if (attempts >= maxAttempts) {
-                    console.warn("❌ Fullscreen button not found after waiting.");
-                    clearInterval(intervalId);
-                }
-            }
-        }, 500); // Try every 500ms
-    }
 
 
 

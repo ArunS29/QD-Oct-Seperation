@@ -744,8 +744,8 @@
                 columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method").Width(120);
                 columns.Add().DataField("Qty").Caption("Qty").Width(80).DataType(GridColumnDataType.Number);
                 columns.Add().DataField("UnitCostPrice").Caption("Unit Cost Price").Format("currency").Width(120);
-                columns.Add().DataField("EmployeeName").Caption("Employee Name").Width(160);
-                columns.Add().DataField("PropertyOrEquipment").Caption("Property/Equipment").Width(180);
+                columns.Add().DataField("EmployeeNo").Caption("Employee Name").Width(160);
+                columns.Add().DataField("PropertyNo").Caption("Property/Equipment").Width(180);
                 columns.Add().DataField("MaxQty").Caption("MaxQty").Width(180).Visible(false);
                 columns.Add().DataField("MinQty").Caption("MinQty").Width(180).Visible(false);
 
@@ -1262,7 +1262,7 @@
         });
     });
 
-//////////////////////////////////////////////////////////////////////////////////////
+
         var dataGridInstance;
 
         var rowData = []; // Store the grid data
@@ -1270,7 +1270,7 @@
         $(function () {
 
             dataGridInstance = $("#itemGrid").dxDataGrid({
-
+                    focusedRowEnabled: true,
                 dataSource: rowData,
 
                 keyExpr: "SNo",
@@ -1495,6 +1495,34 @@
                     }
 
     },
+      {
+                  dataField: "Descriptions",
+                  caption: "...",
+                     cssClass: "center-header",
+                  width: 90,
+                  allowEditing: true,
+                          cellTemplate: function (container, options) {
+                                  // const quoteChildId = options.data.ItemNo;
+                          $("<div>").dxButton({
+                              icon: "user", // Built-in DevExtreme icon
+                              hint: "Edit IMS Details Description",
+                              stylingMode: "text",
+
+                              width: 60,
+                                  onClick: function () {
+                                const gsCode = options.data.ItemCode;
+                          console.log("GSCode:", gsCode);
+
+                          window.currentDescriptionCell = options;
+
+                                let url = `/${tenantName}/IMS/DetailedDescriptionDO?gsCode=${encodeURIComponent(gsCode)}`;
+                          let title = "Details Description";
+
+                          openModal(url, title);
+                      }
+                          }).appendTo(container);
+                      }
+                      },
                             {
 
                             dataField: "UnitRateMethod",
@@ -1599,7 +1627,7 @@
                 },
         {
 
-               dataField: "EmployeeName",
+               dataField: "EmployeeNo",
         caption: formatMessage('Employee Name'),
         width: 200,
         editCellTemplate: function (cellElement, cellInfo) {
@@ -1646,7 +1674,7 @@
 
     },
              {
-        dataField: "PropertyOrEquipment",
+        dataField: "PropertyNo",
         caption: formatMessage('PropertyOrEquipment'),
         width: 200,
         editCellTemplate: function (cellElement, cellInfo) {
@@ -1660,8 +1688,8 @@
 
                 $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
                     dataSource: dropdownData,
-                        valueExpr: "UnitCode",  // Binds the dropdown value to UnitDesc
-                    displayExpr: "UnitDesc", // Shows UnitDesc in the dropdown
+                          valueExpr: "PropertyNo",  // Binds the dropdown value to UnitDesc
+                      displayExpr: "PropertyDescription", // Shows UnitDesc in the dropdown
                     value: cellInfo.value,   // Set initial value
 
                     dropDownOptions: { width: 600 },
@@ -1670,19 +1698,19 @@
                         return $("<div>").dxDataGrid({
                             dataSource: dropdownData,
                             selection: { mode: "single" },
-                            keyExpr: "UnitCode",
+                              keyExpr: "PropertyNo",
                             height: 300,
                             scrolling: { mode: "virtual" },
                             columns: [
-                                { dataField: "UnitCode", caption: "Unit Code", width: 150 },
-                                { dataField: "UnitDesc", caption: "Unit Description", width: 150 }
+                                    { dataField: "PropertyNo", caption: "Property No", width: 150 },
+                                    { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
                             ],
                             onSelectionChanged: function (selectedItems) {
                                 let selectedItem = selectedItems.selectedRowsData[0];
 
                                 if (selectedItem) {
                                     // 1️⃣ Set the selected value in PropertyOrEquipment
-                                    cellInfo.setValue(selectedItem.UnitDesc);
+                                        cellInfo.setValue(selectedItem.PropertyNo);
 
                                     // 2️⃣ Get the parent DataGrid instance and row index
                                     let dataGrid = $("#itemGrid").dxDataGrid("instance");
@@ -1690,7 +1718,7 @@
 
                                     // 3️⃣ Set UnitRateMethod column in the same row
                                     if (rowIndex !== -1) {
-                                            dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitCode || "");
+                                              dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
                                     }
                                 }
                             }
@@ -1700,6 +1728,11 @@
             });
         }
     },
+      { dataField: "AddlDescription", visible: false },
+            { dataField: "DeliveryRemarks", visible: false }
+            // { dataField: "EmployeeNo", visible: false },
+            //  { dataField: "PropertyNo", visible: false }
+         
                 ],
 
                 editing: {
@@ -1734,8 +1767,14 @@
                         UnitRateMethod: 0,
                         Qty: 0.00,
                         UnitCostPrice:0.00,
-                        EmployeeName:"",
-                        PropertyOrEquipment:"",
+                        EmployeeNo:"",
+                        PropertyNo:"",
+
+                          AddlDescription: null,
+                    DeliveryRemarks: null
+                      // PropertyNo:null,
+                      // EmployeeNo:null
+                  
                    
                 };
 
@@ -1777,20 +1816,21 @@
             }));
         });
     }
+       
         function getPropertyDropdownData() {
-        return $.ajax({
-            url: "/api/DeliveryNote/GetPropertyOrEquipment", // Use the correct API route
-            method: "GET",
-            dataType: "json"
-        }).then(function(response) {
-            console.log("Property Data:", response);
-            return response.map(item => ({
-                        UnitCode: item.UnitCode,
-                        UnitDesc: item.UnitDesc
-            }));
-        });
-    }
-
+              return $.ajax({
+                      url: "/api/DeliveryNote/GetPropertyOrEquipment", // This should match your actual backend endpoint
+                  method: "GET",
+                  dataType: "json"
+              }).then(function (response) {
+                  console.log("Unit Rate Data", response);
+                  return response.map(item => ({
+                        PropertyNo: item.PropertyNo,
+                        PropertyDescription: item.PropertyDescription
+                   
+                  }));
+              });
+          }
       let dropDownBoxInstance = null;
 
     function dataGridInitialized1(e) {
@@ -1828,5 +1868,36 @@
         });
     }
 
-    
+
+          function receiveModalFieldData(modalData) {
+        console.log("📥 Received from modal:", modalData);
+
+        const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+
+        if (!dataGridInstance) {
+            console.error("❌ dataGridInstance is not initialized.");
+            return;
+        }
+
+        if (!window.currentDescriptionCell || !window.currentDescriptionCell.key) {
+            console.error("❌ currentDescriptionCell is missing or invalid.");
+            return;
+        }
+
+        const rowKey = window.currentDescriptionCell.key;
+        console.log("🔑 Editing key:", rowKey);
+
+        const rowIndex = dataGridInstance.getRowIndexByKey(rowKey);
+
+        if (rowIndex === -1) {
+            console.warn("⚠️ Row not found in grid for key:", rowKey);
+            return;
+        }
+
+        // ✅ Set the new values from modal
+        dataGridInstance.cellValue(rowIndex, "AddlDescription", modalData.AddlDescription || "");
+            dataGridInstance.cellValue(rowIndex, "DeliveryRemarks", modalData.DeliveryRemarks || "");
+            dataGridInstance.cellValue(rowIndex, "EmployeeNo", modalData.EmployeeNo || "");
+            dataGridInstance.cellValue(rowIndex, "PropertyNo", modalData.PropertyNo || "");
+    }
    </script>
