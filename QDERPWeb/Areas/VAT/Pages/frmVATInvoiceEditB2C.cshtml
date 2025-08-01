@@ -1281,6 +1281,7 @@
 																												.DisplayExpr("SalesOrderNo")
 																												.OnInput("dropDownBoxOnInput")
 																												.OnOpened("onOpened")
+
 																												//.Width(650)
 																												.TabIndex(1)
 																												.DropDownOptions(o => o
@@ -3901,10 +3902,6 @@
                                                        width: 240,
                                                           placeholder: "Search..."
                                                       },
-                                                      filterRow: {
-                                                          visible: true,
-                                                          applyFilter: "auto"
-                                                      },
 										columns: [
 											{ dataField: "GSCode", caption: "Code", width: 80 },
 											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
@@ -4100,6 +4097,12 @@
 										selection: { mode: "single" },
 										height: 300,
 										scrolling: { mode: "virtual" },
+										 searchPanel: {
+											visible: true,
+											highlightCaseSensitive: true,
+											width: 130,
+											placeholder: "Search..."
+											},
 										columns: [
 											{ dataField: "UnitCode", caption: "Code", width: 80 },
 											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
@@ -4248,6 +4251,12 @@
 							keyExpr: "TaxSlabCode",
 							height: 300,
 							scrolling: { mode: "virtual" },
+							 searchPanel: {
+							visible: true,
+							highlightCaseSensitive: true,
+							width: 130,
+							placeholder: "Search..."
+							},
 							columns: [
 								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
 								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
@@ -4520,11 +4529,6 @@
                                                               width: 240,
                                                               placeholder: "Search..."
                                                           },
-                                                          filterRow: {
-                                                              visible: true,
-                                                              applyFilter: "auto"
-                                                          },
-
 											columns: [
 
 												{ dataField: "GSCode", caption: "Code", width: 80 },
@@ -4785,7 +4789,7 @@
 							width: 240,
 							placeholder: "Search..."
 						},
-						filterRow: { visible: true, applyFilter: "auto" },
+					
 						columns: [
 							{ dataField: "UnitCode", caption: "Code", width: 80 },
 							{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },

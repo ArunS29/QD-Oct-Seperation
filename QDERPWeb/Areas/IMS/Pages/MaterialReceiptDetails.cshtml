@@ -298,10 +298,71 @@
 				band.AddFor(m => m.SupplierName).Caption(new JS("formatMessage('Supplier Name')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center);
 				band.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Right);
-				band.AddFor(m => m.QtyReceived).Caption(new JS("formatMessage('Qty Received')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.QtyReceived).Caption(new JS("formatMessage('Qty Received')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#ffe6e6',
+				color: '#d93025',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
 				band.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Desc')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.UnitPrice).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Center);
-				band.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('LineTotal With Tax')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.UnitPrice).Caption(new JS("formatMessage('Unit Price')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+
+				band.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('LineTotal With Tax')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+
 	
 				});
 		
