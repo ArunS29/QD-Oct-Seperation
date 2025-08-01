@@ -2496,4 +2496,36 @@ $(document).ready(function () {
 				e.component.focus();
 			});
 		}
+
+    function onIMSAttachmentButtonClick() {
+        // Get Voucher No safely
+        const SalesOrderNOBox = $("#SalesOrderNO").dxTextBox("instance");
+        const salesOrderNO = SalesOrderNOBox ? SalesOrderNOBox.option("value") : null;
+        var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.notify(
+                "Not allow to Add Attachments. Please enter some transactions in Grid.",
+                "warning",
+                4000
+                );
+            return;
+        }        
+        var menuType = "inventory";
+
+
+        var formType ="Sales Order";
+        // Log and build URL
+        console.log("Voucher No:", salesOrderNO);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(salesOrderNO)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
 </script>

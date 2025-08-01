@@ -35,6 +35,15 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+            .ID("btnAttach")
+            .Icon("attach")
+            .Text(new JS("formatMessage('Attach')"))
+            .OnClick("onIMSAttachmentButtonClick")
+            .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+            )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
                 .ID("btnPrint")
                 .Icon("print")
                 .Text(new JS("formatMessage('Print')"))

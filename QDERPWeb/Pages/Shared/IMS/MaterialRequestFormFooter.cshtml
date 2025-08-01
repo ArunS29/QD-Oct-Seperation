@@ -35,7 +35,8 @@
         @(Html.DevExtreme().Button()
                 .ID("btnAttach")
                 .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
+                .Icon("attach")
+                .OnClick("onIMSAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })// Apply custom CSS class
                 )
     </div>

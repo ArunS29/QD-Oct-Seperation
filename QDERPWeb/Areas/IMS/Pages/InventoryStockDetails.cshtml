@@ -2226,7 +2226,7 @@
                         .Icon("attach")
                         .Type(ButtonType.Default)
                         .Width(250)
-                        .OnClick("inventoryDocumentBind") // JavaScript function
+                        .OnClick("onIMSAttachmentButtonClick") // JavaScript function
                         )
                          @(Html.DevExtreme().Button()
                          .Text(new JS("formatMessage('Merge Selected Files')"))
@@ -2913,6 +2913,46 @@
          textBox2Instance.option("value", arabicTranslation);
 
     }
+    // Attachment
+    function onIMSAttachmentButtonClick() {
+        // Get Voucher No safely
+        const stockCodeBox = $("#StockNoItemCode").dxTextBox("instance");
+        const stockCode = stockCodeBox ? stockCodeBox.option("value") : null;
+        var button = $("#btnSave").dxButton("instance");
+        var buttonText = button ? button.option("text") : "";
 
+
+        if (!stockCode || stockCode == null || stockCode == "") {
+            DevExpress.ui.notify(
+                "Select Stock Group",
+                "warning",
+                4000
+            );            
+            return;
+        }
+        
+
+        if (buttonText !== "Update") {
+            DevExpress.ui.notify(
+                "Please, Save Stock Detail",
+                "warning",
+                    4000
+            );
+            return;
+        }
+        var menuType = "inventory";
+
+
+        var formType ="Stock Inventory";
+        // Log and build URL
+        console.log("Voucher No:", stockCode);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(stockCode)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
       
 </script>

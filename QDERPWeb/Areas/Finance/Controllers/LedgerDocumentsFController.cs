@@ -144,9 +144,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 menuType = Clean(menuType);
                 // Get voucher date if transaction document
                 DateTime? voucherDate = null;
-                if (documentType == "Transaction Documents") {
+                if (documentType == "Transaction Documents")
+                {
 
-                    if (menuType == "finance") {
+                    if (menuType == "finance")
+                    {
 
 
                         DateTime? task1 = await dbContext.Tbl201VoucherEntries
@@ -178,9 +180,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
 
-                    
 
-                    } else if (menuType == "vat") {
+
+                    }
+                    else if (menuType == "vat")
+                    {
 
 
                         DateTime? task1 = await dbContext.Tbl20170VatcreditNoteMasters
@@ -211,12 +215,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
 
                     }
+                    else if (menuType == "inventory")
+                    {
+
+                        DateTime? task1 = await dbContext.Tbl60601purchaseRequestMasters
+                            .Where(c => c.Mprno == folderId)
+                            .Select(c => (DateTime?)c.Mprdate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task2 = await dbContext.Tbl20164GoodsAndServicesMasters
+                            .Where(c => c.Gscode == folderId)
+                            .Select(c => (DateTime?)c.CreatedOn)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task3 = await dbContext.Tbl60101quotationMasters
+                            .Where(c => c.QuoteNo == folderId)
+                            .Select(c => (DateTime?)c.QuoteDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task4 = await dbContext.Tbl60201salesOrderMasters
+                            .Where(c => c.SalesOrderNo == folderId)
+                            .Select(c => (DateTime?)c.SalesOrderDate)
+                            .FirstOrDefaultAsync();
+
+                        voucherDate = task1 ?? task2 ?? task3 ?? task4;
+                    }
                 }
-
-
-
-                
-
 
                 int year = voucherDate?.Year ?? DateTime.Now.Year;
                 string month = (voucherDate?.Month ?? DateTime.Now.Month).ToString("00");
