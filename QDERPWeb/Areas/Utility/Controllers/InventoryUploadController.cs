@@ -126,12 +126,6 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             foreach (var item in request.Items)
             {
-                if (string.IsNullOrWhiteSpace(item.GSCode))
-                {
-                    //item.GSCode = $"AUTO-GS-{Guid.NewGuid().ToString().Substring(0, 8)}";
-                    item.GSCode = item.GSCode ?? "";
-                }
-
                 if (string.IsNullOrEmpty(item.GSDescription))
                 {
                     return BadRequest(new { success = false, message = "Each item must have a GSDescription." });
@@ -159,27 +153,43 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
                     foreach (var item in request.Items)
                     {
-                        dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
+                        if (string.IsNullOrWhiteSpace(item.GSCode))
                         {
-                            SlNo = slNoCounter++,
-                            Gscode = item.GSCode,
-                            Gsdescription = item.GSDescription,
-                            RequestQty = item.RequestQty,
-                            UnitPrice = item.UnitPrice,
-                            PlanNo = item.PlanNo,
-                            Manufacturer = item.Manufacturer,
-                            DeliveryPeriod = item.DeliveryPeriod,
-                            Remarks = item.Remarks,
-                            GsuomDesc = item.GsuomDesc,
-                            ItemSize = item.ItemSize,
-                            ItemPartNo = item.ItemPartNo,
-                            ItemBrand = item.ItemBrand,
-                            ItemColor = item.ItemColor,
-                            ItemDimension = item.ItemDimension,
-                            ItemThickness = item.ItemThickness?.ToString(),
-                            GsdescriptionAr = item.GsdescriptionAr
-                        });
+                            item.GSCode = item.GSCode ?? "";
+                        }
+
+                        var exists = await dbContext.Tbl60005inventoryUploads
+                            .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
+
+                        if (!exists)
+                        {
+                            dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
+                            {
+                                SlNo = slNoCounter++,
+                                Gscode = item.GSCode,
+                                Gsdescription = item.GSDescription,
+                                RequestQty = item.RequestQty,
+                                UnitPrice = item.UnitPrice,
+                                PlanNo = item.PlanNo,
+                                Manufacturer = item.Manufacturer,
+                                DeliveryPeriod = item.DeliveryPeriod,
+                                Remarks = item.Remarks,
+                                GsuomDesc = item.GsuomDesc,
+                                ItemSize = item.ItemSize,
+                                ItemPartNo = item.ItemPartNo,
+                                ItemBrand = item.ItemBrand,
+                                ItemColor = item.ItemColor,
+                                ItemDimension = item.ItemDimension,
+                                ItemThickness = item.ItemThickness?.ToString(),
+                                GsdescriptionAr = item.GsdescriptionAr
+                            });
+                        }
+                        else
+                        {
+                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.GSCode, item.PlanNo);
+                        }
                     }
+
 
                     await dbContext.SaveChangesAsync();
 
@@ -200,7 +210,6 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
 
                     await transaction.CommitAsync();
-
                 }
                 catch (Exception ex)
                 {
@@ -226,22 +235,22 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
            
 
             var insertedItems = new List<object>();
-            int index = 0;
+            //int index = 0;
 
             foreach (var RC in request.Items)
             {
 
 
-                index++;
+                //index++;
 
-                string gsCodeToUse = string.IsNullOrWhiteSpace(RC.GSCode)
-                ? $"GS-{request.RequestNo}-{index:D3}"
-                : RC.GSCode.Trim();
+                //string gsCodeToUse = string.IsNullOrWhiteSpace(RC.GSCode)
+                //? $"GS-{request.RequestNo}-{index:D3}"
+                //: RC.GSCode.Trim();
 
                 var newChild = new Tbl60602purchaseRequestChild
                 {
                     Mprno = request.RequestNo,
-                    Gscode = gsCodeToUse,
+                    Gscode = RC.GSCode,
                     QtyRequested = RC.QtyRequested,
                     UnitRateMethod = RC.UnitRateMethod,
                     ItemRemarks = RC.ItemRemarks,
@@ -256,8 +265,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     QuoteGroupItemSlNo = RC.QuoteGroupItemSlNo
                 };
 
-                await dbContext.Tbl60602purchaseRequestChildren.AddAsync(newChild);
-                insertedItems.Add(newChild);
+                //await dbContext.Tbl60602purchaseRequestChildren.AddAsync(newChild);
             }
 
 
