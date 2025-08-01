@@ -322,29 +322,92 @@ ADD IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
 
     ALTER TABLE tbl901companydetails ADD AllowDataModeSelection BIT DEFAULT 0;
 
----------------------------Voucher ---------------------------  
+---------------------------Voucher currency tx  ---------------------------  
 
 ALTER TABLE Aicon.Tbl201VoucherEntry ADD [Type] VARCHAR(30);
 
 
-alter table Aicon.tbl201vouchermaster 
-add Currencyid int  
+IF NOT EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE 
+        TABLE_NAME = 'tbl201VoucherMaster'
+        AND TABLE_SCHEMA = 'Aicon'
+        AND COLUMN_NAME = 'CurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl201VoucherMaster
+    ADD CurrencyId INT CONSTRAINT DF_tbl201VoucherMaster_CurrencyId DEFAULT 1;
 
-ALTER TABLE Aicon.tbl201Vouchermaster 
-ADD CurrencyRate DECIMAL(18, 2); 
+    PRINT 'CurrencyId column added to Aicon.tbl201VoucherMaster with default 1.';
+END
+ELSE
+BEGIN
+    PRINT 'CurrencyId column already exists in Aicon.tbl201VoucherMaster.';
+END
 
-alter table Aicon.tbl201vouchermaster 
-add basecurrencyid int; 
+
+-- Aicon.tbl201VoucherMaster - CurrencyRate
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl201VoucherMaster' AND COLUMN_NAME = 'CurrencyRate'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl201VoucherMaster 
+    ADD CurrencyRate DECIMAL(18, 2);
+
+    PRINT 'Added CurrencyRate to Aicon.tbl201VoucherMaster';
+END
 
 
-alter table Aicon.tbl20113ChequeMaster  
-add Currencyid int      
+-- Aicon.tbl201VoucherMaster - BaseCurrencyId
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl201VoucherMaster' AND COLUMN_NAME = 'BaseCurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl201VoucherMaster 
+    ADD BaseCurrencyId INT;
 
-ALTER TABLE Aicon.tbl20113ChequeMaster   
-ADD CurrencyRate DECIMAL(18, 2);   
+    PRINT 'Added BaseCurrencyId to Aicon.tbl201VoucherMaster';
+END
 
-alter table Aicon.tbl20113ChequeMaster   
-add basecurrencyid int;  
+
+-- Aicon.tbl20113ChequeMaster - CurrencyId
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl20113ChequeMaster' AND COLUMN_NAME = 'CurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl20113ChequeMaster  
+    ADD CurrencyId INT;
+
+    PRINT 'Added CurrencyId to Aicon.tbl20113ChequeMaster';
+END
+
+-- Aicon.tbl20113ChequeMaster - CurrencyRate
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl20113ChequeMaster' AND COLUMN_NAME = 'CurrencyRate'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl20113ChequeMaster  
+    ADD CurrencyRate DECIMAL(18, 2);
+
+    PRINT 'Added CurrencyRate to Aicon.tbl20113ChequeMaster';
+END
+
+-- Aicon.tbl20113ChequeMaster - BaseCurrencyId
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl20113ChequeMaster' AND COLUMN_NAME = 'BaseCurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl20113ChequeMaster  
+    ADD BaseCurrencyId INT;
+
+    PRINT 'Added BaseCurrencyId to Aicon.tbl20113ChequeMaster';
+END
 
 update Aicon.tbl201vouchermaster 
 set currencyid=1 
