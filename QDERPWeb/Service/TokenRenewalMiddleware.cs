@@ -16,14 +16,16 @@ namespace QD.ERP.Web.Service
         private readonly IConfiguration _configuration;
 
         // Time before expiry to renew (e.g., 10 minutes)
-        private const int RenewalWindowMinutes = 10;
-        // New token lifetime (e.g., 60 minutes)
-        private const int TokenLifetimeMinutes = 30;
+        private readonly int _renewalWindowMinutes;
+        // New token lifetime (e.g., 30 minutes)
+        private readonly int _tokenLifetimeMinutes;
 
         public TokenRenewalMiddleware(RequestDelegate next, IConfiguration configuration)
         {
             _next = next;
             _configuration = configuration;
+            _renewalWindowMinutes = int.Parse(_configuration["JwtSettings:RenewalWindowMinutes"] ?? "10");
+            _tokenLifetimeMinutes = int.Parse(_configuration["JwtSettings:TokenLifetimeMinutes"] ?? "30");
         }
 
         public async Task InvokeAsync(HttpContext context)
@@ -67,46 +69,47 @@ namespace QD.ERP.Web.Service
                     var now = DateTime.UtcNow;
                     var minutesLeft = (exp - now).TotalMinutes;
 
-                    if (minutesLeft < RenewalWindowMinutes && minutesLeft > 0)
+                    if (minutesLeft < _renewalWindowMinutes && minutesLeft > 0)
                     {
                         // Generate new token with same claims
                         var claims = principal.Claims.ToList();
-                        var newToken = GenerateJwtToken(claims, now, _configuration);
+                        var newToken = GenerateJwtToken(claims, now);
 
                         // Set cookie (overwrite old token)
                         context.Response.Cookies.Append("AuthToken", newToken, new CookieOptions
                         {
                             HttpOnly = true,
                             Secure = context.Request.IsHttps,
-                            Expires = now.AddMinutes(TokenLifetimeMinutes),
+                            Expires = now.AddMinutes(_tokenLifetimeMinutes),
                             SameSite = SameSiteMode.Lax,
                             Path = "/"
                         });
                     }
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Ignore invalid/expired tokens, let other middleware handle auth
+                    // Log the error and proceed
+                    Console.WriteLine($"Token renewal error: {ex.Message}");
                 }
             }
 
             await _next(context);
         }
 
-        private string GenerateJwtToken(System.Collections.Generic.IEnumerable<Claim> claims, DateTime now, IConfiguration configuration)
+        private string GenerateJwtToken(IEnumerable<Claim> claims, DateTime now)
         {
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["JwtSettings:Key"]));
-            var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:Key"]));
+            var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var jwt = new JwtSecurityToken(
-                issuer: configuration["JwtSettings:Issuer"],
-                audience: configuration["JwtSettings:Audience"],
+            var token = new JwtSecurityToken(
+                issuer: _configuration["JwtSettings:Issuer"],
+                audience: _configuration["JwtSettings:Audience"],
                 claims: claims,
-                notBefore: now,
-                expires: now.AddMinutes(TokenLifetimeMinutes),
-                signingCredentials: creds);
+                expires: now.AddMinutes(_tokenLifetimeMinutes),
+                signingCredentials: credentials
+            );
 
-            return new JwtSecurityTokenHandler().WriteToken(jwt);
+            return new JwtSecurityTokenHandler().WriteToken(token);
         }
     }
 }

@@ -110,7 +110,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.IdleTimeout = TimeSpan.FromMinutes(60); // Set session timeout to 1 hour
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
