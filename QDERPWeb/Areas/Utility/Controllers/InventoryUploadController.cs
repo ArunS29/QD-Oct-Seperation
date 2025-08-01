@@ -213,6 +213,160 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
             return Ok(new { success = true });
         }
 
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateToPurchaseRqstChild([FromBody] RequestChildBulk request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+
+            if (string.IsNullOrEmpty(request.RequestNo) || request.Items == null || !request.Items.Any())
+                return BadRequest(new { success = false, message = "RequestNo and items are required." });
+
+           
+
+            var insertedItems = new List<object>();
+            int index = 0;
+
+            foreach (var RC in request.Items)
+            {
+
+
+                index++;
+
+                string gsCodeToUse = string.IsNullOrWhiteSpace(RC.GSCode)
+                ? $"GS-{request.RequestNo}-{index:D3}"
+                : RC.GSCode.Trim();
+
+                var newChild = new Tbl60602purchaseRequestChild
+                {
+                    Mprno = request.RequestNo,
+                    Gscode = gsCodeToUse,
+                    QtyRequested = RC.QtyRequested,
+                    UnitRateMethod = RC.UnitRateMethod,
+                    ItemRemarks = RC.ItemRemarks,
+                    LineOrderNo = RC.LineOrderNo,
+                    AddlDescription = RC.AddlDescription,
+                    PlanNo = RC.PlanNo,
+                    DeliveryPeriod = RC.DeliveryPeriod,
+                    ItemReqPurpose = RC.ItemReqPurpose,
+                    ItemReqPriority = RC.ItemReqPriority,
+                    ItemReqExpectedDate = RC.ItemReqExpectedDate,
+                    ExpectedUnitRate = RC.ExpectedUnitRate,
+                    QuoteGroupItemSlNo = RC.QuoteGroupItemSlNo
+                };
+
+                await dbContext.Tbl60602purchaseRequestChildren.AddAsync(newChild);
+                insertedItems.Add(newChild);
+            }
+
+
+
+
+            try
+            {
+                var result = await dbContext.SaveChangesAsync();
+                _logger.LogInformation($"SaveChangesAsync result: {result}");
+
+                if (result == 0)
+                {
+                    return BadRequest(new { success = false, message = "No records were saved to the database." });
+                }
+                else
+                {
+                    var existingMaster = await dbContext.Tbl60601purchaseRequestMasters
+                               .AsNoTracking()
+                               .FirstOrDefaultAsync(x => x.Mprno == request.RequestNo);
+
+                    if (existingMaster == null)
+                    {
+                        dbContext.Tbl60601purchaseRequestMasters.Add(new Tbl60601purchaseRequestMaster
+                        {
+                            Mprno = request.RequestNo
+                        });
+
+                        var masterSaveResult = await dbContext.SaveChangesAsync();
+                        _logger.LogInformation($"Master SaveChangesAsync result: {masterSaveResult}");
+                    }
+
+
+                    return Ok(new { success = true, message = "Child records inserted successfully." });
+                }
+                    
+            }
+            catch (DbUpdateException dbEx)
+            {
+                _logger.LogError(dbEx, "Database update failed.");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Database update failed.",
+                    details = dbEx.InnerException?.Message ?? dbEx.Message
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unhandled exception.");
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Unexpected error occurred.",
+                    details = ex.Message
+                });
+            }
+
+
+
+
+
+        }
+
+
+
+
+        public class RequestChildBulk
+        {
+            public string RequestNo { get; set; }
+            public List<RequestChild> Items { get; set; }
+        }
+
+
+
+
+        public class RequestChild
+        {
+            public string MPRNo { get; set; }
+            public string GSCode { get; set; }
+            public decimal QtyRequested { get; set; }
+            public byte? UnitRateMethod { get; set; }
+            public string ItemRemarks { get; set; }
+            public int? LineOrderNo { get; set; }
+            public string AddlDescription { get; set; }
+            public string PlanNo { get; set; }
+            public string DeliveryPeriod { get; set; }
+            public string ItemReqPurpose { get; set; }
+            public string ItemReqPriority { get; set; }
+            public DateTime? ItemReqExpectedDate { get; set; }
+            public decimal? ExpectedUnitRate { get; set; }
+            public long? QuoteGroupItemSlNo { get; set; }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         [HttpGet]
         public IActionResult GetGSGroupCode(int gsgroupId)
         {
