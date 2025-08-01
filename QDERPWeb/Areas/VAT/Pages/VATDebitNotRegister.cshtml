@@ -243,9 +243,10 @@
 				<h1 id="creditToday" style="color: white;">0</h1>
 			</div>
 			<div class="voucher-slide1">
-				<h4># Of Credit Notes Raised Total</h4>
-				<h1 id="creditTotal" style="color: white;">0</h1>
+				<h4># Of Debit Notes Total Amount</h4>
+				<h1 id="debitTotal" style="color: white;">0</h1>
 			</div>
+
 		</div>
 	</div>
 </div>
@@ -837,6 +838,9 @@
 				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
+				totalItems.Add().Column("TotalDebitNoteAmount").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+
 				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
@@ -948,8 +952,8 @@
 
 				// Update counts in the card
 				document.getElementById('creditToday').textContent = todayCount;
-				document.getElementById('creditTotal').textContent = totalCount;
-
+				//document.getElementById('creditTotal').textContent = totalCount;
+					  updateDebitNoteTotal(dataSource);
 				// Start sliding animation once (if not already started)
 				if (!window._voucherSliderStarted) {
 					startVoucherSlide();
@@ -957,6 +961,24 @@
 				}
 			}
 		}
+			function updateDebitNoteTotal(data) {
+		let totalDebit = 0;
+
+		if (Array.isArray(data)) {
+			totalDebit = data.reduce((sum, item) => {
+				const value = parseFloat(item.TotalDebitNoteAmount || 0);
+				return sum + (isNaN(value) ? 0 : value);
+			}, 0);
+		}
+
+		const formatted = totalDebit.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+
+		document.getElementById('debitTotal').textContent = formatted;
+	}
+
 			function startVoucherSlide() {
 			let currentSlide = 0;
 			const slides = document.querySelectorAll('.voucher-slide');

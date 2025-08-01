@@ -215,7 +215,8 @@
 		<div class="tabs" style="gap:10px;">
 			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
 			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text" onclick="switchTab(2)">Posted</div>
+
 		</div>
 
 		<div class="tab-content active">
@@ -947,7 +948,7 @@
 	}
 		
 		const card = document.getElementById('mainCard');
-		const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
+		const counts = [0, 0, 0]; // [Verified, Approved, Posted]
 		const countEls = [
 		  document.getElementById("count0"),
 		  document.getElementById("count1"),
@@ -988,29 +989,51 @@
 		}
 
 		// ✅ Count Approved Invoices From Grid
-		function updateApprovedCountFromGrid() {
-		  const grid = $("#dataGrid").dxDataGrid("instance");
-		  const data = grid.getDataSource().items();
+	function updateApprovedCountFromGrid() {
+	  const grid = $("#dataGrid").dxDataGrid("instance");
+	  const data = grid.getDataSource().items();
 
-		  // Update dynamic counts based on status
-		  counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
-		  counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
-		  counts[2] = data.filter(item => item.InvoiceStatus === "Submitted").length;
+	  // Update counts
+	  counts[0] = data.filter(item => item.VoucherStatus === "Verified").length;
+	  counts[1] = data.filter(item => item.VoucherStatus === "Approved").length;
+	  counts[2] = data.filter(item => item.VoucherStatus === "Posted").length; // ✅ FIXED
 
-		  // You can also update visible numbers immediately
-		  countEls[0].textContent = counts[0];
-		  countEls[1].textContent = counts[1];
-		  countEls[2].textContent = counts[2];
+	  // Update UI
+	  countEls[0].textContent = counts[0];
+	  countEls[1].textContent = counts[1];
+	  countEls[2].textContent = counts[2];
 
-		  // Optionally animate default tab (Today/Verified)
-		  animateCount(countEls[0], counts[0]);
-		}
-		document.getElementById("count0").textContent = counts[0]; // Verified count
+	  // Animate Verified tab (optional)
+	  animateCount(countEls[0], counts[0]);
+	}
+			// 🔁 Called after DataGrid loads
+				function onGridContentReady(e) {
+	  updateApprovedCountFromGrid(); // Your existing logic
 
-		// 🔁 Called after DataGrid loads
-		function onGridContentReady(e) {
-		  updateApprovedCountFromGrid();
-		}
+	  // 👉 Bill Amount
+	  const total = e.component.getTotalSummaryValue("TotalPurchaseAmount");
+	  if (total != null) {
+		const formatted = total.toLocaleString(undefined, {
+		  minimumFractionDigits: 2,
+		  maximumFractionDigits: 2
+		});
+		document.getElementById("invoiceAmount").textContent = formatted + " SAR";
+	  }
+
+	  // 👉 VAT Total
+	  const vat5 = e.component.getTotalSummaryValue("DomesticStandardPurTax") || 0;
+	  const vat10 = e.component.getTotalSummaryValue("TotalDspurchaseTax10Perc") || 0;
+	  const vat15 = e.component.getTotalSummaryValue("TotalDspurchaseTax15Perc") || 0;
+
+	  const vatTotal = vat5 + vat10 + vat15;
+	  const vatFormatted = vatTotal.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+	  });
+	  document.getElementById("vatTotalValue").textContent = "VAT Value: " + vatFormatted + " SAR";
+	}
+
+
 	function VoucherStatusCellTemplate(cellElement, cellInfo) {
 		const status = cellInfo.value;
 		let backgroundColor = "";
