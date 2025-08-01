@@ -355,7 +355,7 @@ body.dark-mode {
 }
 
 .dx-dropdownbutton .dx-button-content {
-    padding: 0 !important;
+    padding: 10px !important;
 }
 
 /* .modalTitle{ */
@@ -990,6 +990,7 @@ dx-item-content dx-list-item-content:hover{
 }
 .dx-popup-content {
     background-color: var(--background-color);
+    padding:0px !important;
 }
 .dx-datagrid .dx-header-row {
     background: var(--background-color);

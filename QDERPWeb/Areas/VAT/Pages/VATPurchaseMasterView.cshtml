@@ -274,15 +274,15 @@
 <div class="Head">
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATPurchaseRegisterFooter.cshtml")
 </div>
-<div class="context-menu" id="contextMenu">
+<div class="context-menu" id="contextMenu" style="width: max-content;">
 	<div class="context-menu-item" onclick="viewInvoice()">
 		<i class="dx-icon-edit"></i> Edit Invoice
 	</div>
 	<div class="context-menu-item" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Debit Note)
+		<i class="dx-icon-close"></i> Cancel VAT Purchase (Issue Debit Note)
 	</div>
 	<div class="context-menu-item" onclick="UnlockInvoice()">
-		<i class="dx-icon-unlocked"></i> Unlock The Bill
+		<i class="dx-icon-unlock"></i> Unlock The Bill
 	</div>
 
 	<div class="context-menu-item" onclick="cloneEInvoice()">

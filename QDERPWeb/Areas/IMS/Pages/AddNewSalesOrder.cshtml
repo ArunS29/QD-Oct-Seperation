@@ -902,7 +902,7 @@
                             if (gsCode) queryParams.push(`gsCode=${encodeURIComponent(gsCode)}`);
                             if (salesOrderChildId) queryParams.push(`salesOrderChildId=${encodeURIComponent(salesOrderChildId)}`);
                             const url = `/${tenantName}/IMS/DetailedDescriptionSO?${queryParams.join('&')}`;
-                            openModal(url, 'Details Description');
+                            openModal(url, 'Details Description','60%','60%');
                         }
                     }).appendTo(container);
                 }

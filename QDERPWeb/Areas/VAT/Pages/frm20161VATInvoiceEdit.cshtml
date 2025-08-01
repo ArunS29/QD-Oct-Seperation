@@ -2372,7 +2372,7 @@
 					.DisplayExpr("TaxSlab")
 					.OnOpened("onOpened")
 					.OnKeyDown("onKeyDown")
-					.Width(400)
+					.Width(280)
 					.DropDownOptions(o => o.Width(800))
 					.ContentTemplate(new TemplateName("TaxSlabDropdownContentTemplate"))
 					)
@@ -4119,7 +4119,7 @@
                 valueExpr: "TaxSlabCode",
                 displayExpr: "TaxCodeToDisplay",
                 value: cellInfo.value,
-                dropDownOptions: { width: 400 },
+                dropDownOptions: { width: 280 },
                 placeholder: "Select VAT%",
                 onValueChanged: function (e) {
                     let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
@@ -4855,7 +4855,7 @@
 								valueExpr: "TaxSlabCode",
 								displayExpr: "TaxCodeToDisplay",
 								value: cellInfo.value,
-								dropDownOptions: { width: 400 },
+								dropDownOptions: { width: 280 },
 								placeholder: "Select an Item / Services",
 								onValueChanged: function (e) {
 									let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);

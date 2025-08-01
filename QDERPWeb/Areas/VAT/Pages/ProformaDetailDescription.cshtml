@@ -3,14 +3,6 @@
 @{
 }
 <style>
-    .form-wrapper {
-        margin: 10px;
-        padding: 20px;
-        border-radius: 6px;
-        width: 97%;
-        height: 85%;
-    }
-
     .form-group {
         position: relative;
         padding: 10px;
@@ -87,16 +79,6 @@
         display: flex;
         justify-content: center;
     }
-
-    .mainContainer {
-        margin-top: 3em;
-        width: 100%;
-    }
-
-    .playIcon {
-        display: none;
-    }
-
     table tr {
         gap: 10px;
     }
@@ -124,7 +106,7 @@
         <div id="DetailsDescription2" class="no-border-title"></div>
     </div>
 </div>
-<div class="form-wrapper">
+<div>
 
     <!-- Detailed Description Section -->
     <div class="form-group" style="position: relative;">
@@ -144,23 +126,71 @@
     <table style="width: 100%; border-spacing: 10px; border-collapse: separate;">
         <tr>
             <td colspan="4">
-                @(Html.DevExtreme().TextBox()
+                @(Html.DevExtreme().TextArea()
                                 .Label(new JS("formatMessage('Detailed Description / Specification:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .ID("DetailedDescription")
                 @*     .Height("100% !important") *@
-                                .Height(120)
+                                .Height(150)
                                 .Width("100%")
+                                )
+            @(Html.DevExtreme().Button()
+                        .ID("convertToArabic2")
+                        .Width(50)
+                        .Icon("fas fa-language")
+                        .ElementAttr("style", "padding:10px; color:black;margin-right:10px;")
+                        .OnClick("convertToArabic1")
+                        )
+            </td>
+        </tr>
+        <tr>
+            <td colspan="4">
+                
+                @(Html.DevExtreme().TextArea()
+                                .Label(new JS("formatMessage('Detailed Description / Specification (In Arabic):')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("DetailedDescriptionAr")
+                @*     .Height("100% !important") *@
+                                .Height(150)
+                                .Width("100%")
+                                )
+            </td>
+        </tr>
+        <tr>
+            <td rowspan="2">
+                @(Html.DevExtreme().TextArea()
+                    .ID("txtRemarks")
+                    .ElementAttr("style", "height:150px !important;")
+                    .Label("Remarks:")
+                    .LabelMode(EditorLabelMode.Floating)
+                )
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("Remarks1")
+                                .Label("Discount Text:")
+                                .LabelMode(EditorLabelMode.Floating)
                                 )
             </td>
         </tr>
         <tr>
             <td>
                 @(Html.DevExtreme().TextBox()
-                                .ID("Remarks")
-                                .Label("Remarks:")
+                                .ID("discounttxt")
+                                .Label("Discount Text:(Arabic)")
                                 .LabelMode(EditorLabelMode.Floating)
-                                )
+                                .Buttons(buttons =>
+                                {
+                                    buttons.Add()
+                                    .Name("discounttxtAr")
+                                    .Location(TextEditorButtonLocation.After)
+                                    .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("fas fa-language")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    );
+                                   
+                                }))
             </td>
         </tr>
 
@@ -182,4 +212,18 @@
 
             });
     });
+     async function convertToArabic1() {
+         const textBox1Instance = $("#ItemName").dxTextBox("instance");
+         const textBox2Instance = $("#ItemNameArabic").dxTextBox("instance");
+         if (!textBox1Instance || !textBox2Instance) {
+             console.error("TextBox instances are not properly initialized.");
+             return;
+         }
+         const englishText = textBox1Instance.option("value");
+         if (!englishText || englishText.trim() === "") {
+             return;
+         }
+         const arabicTranslation = await translateToArabic(englishText);
+         textBox2Instance.option("value", arabicTranslation);
+    }
 </script>
