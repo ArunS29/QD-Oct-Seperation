@@ -372,39 +372,137 @@
 						
 							columns.Add().Caption(new JS("formatMessage('RFQ')")).Columns(band =>
 							{
-					band.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No of Items')")).Alignment(HorizontalAlignment.Center);
-					band.AddFor(m => m.NoOfRfqissued).Caption(new JS("formatMessage('No of RFQ Issued')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No of Items')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', // Light yellow
+		color: '#b58900',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
+				band.AddFor(m => m.NoOfRfqissued).Caption(new JS("formatMessage('No of RFQ Issued')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', // Light yellow
+		color: '#b58900',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		 
+		}
+		"));
 
 						   });
 			
 					columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
 				 {
-					band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
-					band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-							function(e) {
-							if (e.value === null || e.value === undefined) {
-							return ''; // Return empty string for null/undefined
-							}
-							return Number(e.value).toLocaleString(undefined, {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-							});
-							}");
-							band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-							function(e) {
-							if (e.value === null || e.value === undefined) {
-							return ''; // Return empty string for null/undefined
-							}
-							return Number(e.value).toLocaleString(undefined, {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-							});
-							}");
-				});
+				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+	 
+		}
+		"));
+				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+												function(cellElement, cellInfo) {
+												if (cellInfo.value != null) {
+												const formattedValue = new Intl.NumberFormat('en-US', {
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2
+												}).format(cellInfo.value);
+												$('<span>')
+												.text(formattedValue)
+												.css({
+												display: 'inline-block',
+												backgroundColor: '#ffe6e6',
+												color: '#d93025',
+												fontWeight: 'bold',
+												padding: '4px 10px',
+												borderRadius: '20px'
+												})
+												.appendTo(cellElement);
+												}
+												}
+												"));
+				band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+																function(cellElement, cellInfo) {
+																if (cellInfo.value != null) {
+																const formattedValue = new Intl.NumberFormat('en-US', {
+																minimumFractionDigits: 2,
+																maximumFractionDigits: 2
+																}).format(cellInfo.value);
+																$('<span>')
+																.text(formattedValue)
+																.css({
+																display: 'inline-block',
+																backgroundColor: '#e6ffe6',
+																color: '#1a8f1a',
+																fontWeight: 'bold',
+																padding: '4px 10px',
+																borderRadius: '20px'
+																})
+																.appendTo(cellElement);
+																}
+																}
+																"));
+														});
 
 					columns.Add().Caption(new JS("formatMessage('Sales Order Details')")).Columns(band =>
-			 {
-					band.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
+					 {
+				band.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+							function(cellElement, cellInfo) {
+							if (cellInfo.value != null && cellInfo.value !== '') {
+							$('<span>')
+							.text(cellInfo.value)
+							.css({
+							display: 'inline-block',
+							backgroundColor: '#fff9cc', // Light yellow
+							color: '#b58900',            // Amber text
+							fontWeight: 'bold',
+							padding: '4px 10px',
+							borderRadius: '20px',
+							minWidth: '24px',
+							textAlign: 'center'
+							})
+							.appendTo(cellElement);
+							}
+							// else: do nothing (no span rendered)
+							}
+							"));
 					band.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center);
 					band.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center);
 
@@ -477,7 +575,7 @@
 			.ColumnAutoWidth(true)
 			.OnRowPrepared("onRowPrepared")
 			.Width("98%")
-			.WordWrapEnabled(true)
+			.WordWrapEnabled(false)
 			//.OnCellClick("function(e) {handleCellClick(e);}")
 			.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 			.AllowColumnReordering(true)

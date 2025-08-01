@@ -2813,6 +2813,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         if (child.PurchaseChildSlNo == null || child.PurchaseChildSlNo == 0)
                         {
+                            if(child.TaxSlabCode==null)
+                            {
+                                child.TaxSlabCode = 2;
+                            }
                             // Create a new instance for each child
                             var aTbl20167VatpurchaseChild = new Tbl20167VatpurchaseChild
                             {
@@ -2959,8 +2963,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 UnitRateInOc = child.UnitRate,
                                 DiscountInOc = child.Discount,
                                 UnitsToBill = 1,
-                                //UnitRateMethod = child.UnitRateMethod,
-                                UnitRateMethod = 49,
+                                UnitRateMethod = child.UnitRateMethod,
                                 ItemCode = child.ItemCode ?? string.Empty,
                                 UoM = "Each"
                             };
@@ -3367,7 +3370,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.QuantityInvoiced = child.QuantityInvoiced;
                                 existingChild.TaxSlabCode = child.TaxSlabCode;
                                 existingChild.UnitsToBill = 1;
-                                existingChild.UnitRateMethod = 49;
+                                existingChild.UnitRateMethod = child.UnitRateMethod;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
                                 existingChild.Discount = child.Discount;

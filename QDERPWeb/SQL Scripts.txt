@@ -2126,12 +2126,18 @@ CREATE TABLE Aicon.FinancialSummaryReport (
 );     
 ALTER TABLE Aicon.FinancialSummaryReport ADD VoucherDate DATETIME;
 ALTER TABLE Aicon.FinancialSummaryReport ADD MonthYear NVARCHAR(50);
+ALTER TABLE dbo.FinancialSummaryReport
+ADD DrCr NVARCHAR(50), DrAmount DECIMAL(18,2), CrAmount DECIMAL(18,2);
+
+
 INSERT INTO dbo.FinancialSummaryReport (
     AccountHead, AccountHeadName, VoucherAmountFormatted,
     AccountGroup, MasterGroup, TransactionsFull,
-    AccountHeadArabic, AccountGroupAr, MasterGroupAr, VoucherDate, MonthYear
+    AccountHeadArabic, AccountGroupAr, MasterGroupAr,
+    VoucherDate, MonthYear,
+    DrCr, DrAmount, CrAmount
 )
-
+ 
 -- Opening Balance
 SELECT  
     AccountHead,   
@@ -2144,8 +2150,11 @@ SELECT
     AccountGroupAr, 
     MasterGroupAr,
     MIN(VoucherDate) AS VoucherDate,
-    DATENAME(m, MIN(VoucherDate)) + ' ' + CAST(DATEPART(yyyy, MIN(VoucherDate)) AS varchar) AS MonthYear
-FROM dbo.qry201MainVoucherEntriesWithMaster  
+    DATENAME(m, MIN(VoucherDate)) + ' ' + CAST(DATEPART(yyyy, MIN(VoucherDate)) AS varchar) AS MonthYear,
+    NULL AS DrCr,
+    SUM(DrAmount) AS DrAmount,
+    SUM(CrAmount) AS CrAmount
+FROM dbo.qry201MainVoucherEntriesWithMaster 
 WHERE ISNULL(IsCalculateOpeningBalance, 0) = 1  
 GROUP BY 
     AccountHead, 
@@ -2155,9 +2164,9 @@ GROUP BY
     AccountHeadArabic, 
     AccountGroupAr, 
     MasterGroupAr
-
+ 
 UNION ALL
-
+ 
 -- Transactions during the period
 SELECT  
     q.AccountHead, 
@@ -2173,7 +2182,10 @@ SELECT
     q.AccountGroupAr,  
     q.MasterGroupAr,
     q.VoucherDate,
-    DATENAME(m, q.VoucherEffectiveDate) + ' ' + CAST(DATEPART(yyyy, q.VoucherEffectiveDate) AS varchar) AS MonthYear
+    DATENAME(m, q.VoucherEffectiveDate) + ' ' + CAST(DATEPART(yyyy, q.VoucherEffectiveDate) AS varchar) AS MonthYear,
+    q.DrCr,
+    q.DrAmount,
+    q.CrAmount
 FROM dbo.qry201MainVoucherEntriesWithMaster AS q
     RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts coa ON coa.AccountID = q.AccountHead
     RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON coa.AccountGroupID = ag.AccountGroupID

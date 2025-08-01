@@ -339,7 +339,26 @@
 			});
 			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', 
+		color: '#b58900',          
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		")); 
 
 
 
@@ -348,74 +367,114 @@
 
 			columns.Add().Caption(new JS("formatMessage('Quoted Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-		function(e) {
-		if (e.value === null || e.value === undefined) {
-		return '';
-		}
-		let value = Math.abs(e.value);
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
 		}
-		");
+		}
+		"));
 
-				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-		function(e) {
-		if (e.value === null || e.value === undefined) {
-		return '';
-		}
-		let value = Math.abs(e.value);
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
 		}
-		");
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-    function(e) {
-        if (e.value === null || e.value === undefined) {
-            return '';
-        }
-        let value = Math.abs(e.value);
-       return value.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-");
-
-
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-    function(e) {
-        if (e.value === null || e.value === undefined) {
-            return '';
-        }
-		let value = Math.abs(e.value);
-
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
-    }
-");
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
-
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-    function(e) {
-        if (e.value === null || e.value === undefined) {
-            return '';
-        }
-        let value = Math.abs(e.value);
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
-    }
-");
-
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 			});
 			
 		})

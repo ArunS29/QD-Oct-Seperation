@@ -271,23 +271,143 @@
 							subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 						});
-						columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
+						columns.Add().Caption(new JS("formatMessage('No Of Items')"))
+						.Columns(subColumns =>
 						{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-						});
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true).CellTemplate(new JS(@"
+								function(cellElement, cellInfo) {
+								if (cellInfo.value != null && cellInfo.value !== '') {
+								$('<span>')
+								.text(cellInfo.value)
+								.css({
+								display: 'inline-block',
+								backgroundColor: '#fff9cc', // Light yellow
+								color: '#b58900',            // Amber text
+								fontWeight: 'bold',
+								padding: '4px 10px',
+								borderRadius: '20px',
+								minWidth: '24px',
+								textAlign: 'center'
+								})
+								.appendTo(cellElement);
+								}
+								// else: do nothing (no span rendered)
+								}
+								"));
+								});
 
 
 						columns.Add().Caption(new JS("formatMessage('Sales Order Amount')")).Columns(subColumns =>
-	{
-		        subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				{
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6', // Light yellow
+		color: '#d93025',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.Add().DataField("cost")
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+subColumns.Add().DataField("cost")
 					.Caption(new JS("formatMessage('Total With Tax')"))
 					.CellTemplate(new JS(@"
 					function(cellElement, cellInfo) {
@@ -311,7 +431,6 @@
 					}
 					}
 					")); 
-				
 	});
 		})
 		//.ElementAttr("style", "height: 444px !important;")

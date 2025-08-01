@@ -467,7 +467,7 @@
 
         </text>);
                     item.Add().Title("Signatories").Icon("detailslayout").Text("Signatories").Template(@<text>
-            <div class="p-3">
+            <div>
                 <table style="width: 100%; vertical-align: top;">
                     <tr>
                         <!-- Left: Signatories -->
@@ -967,7 +967,6 @@
         .Width("100%")
         .WordWrapEnabled(true)
         .AllowColumnReordering(true)
-        @* .OnRowUpdating("onRowUpdating") *@
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(false))
@@ -979,7 +978,7 @@
         .ShowBorders(true)
         .ShowRowLines(true)
         .Editing(editing => editing
-        .Mode(GridEditMode.Cell) 
+        .Mode(GridEditMode.Cell)
         .AllowUpdating(true)
         .AllowDeleting(true)
         )
