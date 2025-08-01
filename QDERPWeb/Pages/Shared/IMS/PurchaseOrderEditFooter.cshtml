@@ -33,7 +33,8 @@
         @(Html.DevExtreme().Button()
                 .ID("btnAttach")
                 .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
+                .Icon("attach")
+                .OnClick("onIMSAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" }) )
     </div>
     <div class="btn-container">
@@ -1301,4 +1302,34 @@
         window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
 
+    function onIMSAttachmentButtonClick(e) {
+        // Get Voucher No safely
+        const purchaseOrderNOBox = $("#PurchaseOrderNo").dxTextBox("instance");
+        const purchaseOrderNO = purchaseOrderNOBox ? purchaseOrderNOBox.option("value") : null;
+        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.notify(
+                "Not allow to Add Attachments. Please enter some transactions in Grid.",
+                "warning",
+                4000
+                );
+            return;
+        }
+        var menuType = "inventory";
+
+
+        var formType ="Purchase Order";
+        // Log and build URL
+        console.log("Voucher No:", purchaseOrderNO);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(purchaseOrderNO)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
 </script>

@@ -238,7 +238,27 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             .Select(c => (DateTime?)c.SalesOrderDate)
                             .FirstOrDefaultAsync();
 
-                        voucherDate = task1 ?? task2 ?? task3 ?? task4;
+                        DateTime? task5 = await dbContext.Tbl60301deliveryNoteMasters
+                            .Where(c => c.DeliveryNoteNo == folderId)
+                            .Select(c => (DateTime?)c.DeliveryDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task6 = await dbContext.Tbl60701rfqmasters
+                            .Where(c => c.Rfqno == folderId)
+                            .Select(c => (DateTime?)c.Rfqdate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task7 = await dbContext.Tbl60401purchaseOrderMasters
+                            .Where(c => c.Pono == folderId)
+                            .Select(c => (DateTime?)c.Podate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task8 = await dbContext.Tbl60501materialReceiptMasters
+                            .Where(c => c.ReceiptNo == folderId)
+                            .Select(c => (DateTime?)c.ReceiptDate)
+                            .FirstOrDefaultAsync();
+
+                        voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5 ?? task6 ?? task7 ?? task8;
                     }
                 }
 

@@ -6844,7 +6844,7 @@ function saveField(fieldName, dxId,name) {
 		// var button = $("#btnSave").dxButton("instance");
 		// var buttonText = button ? button.option("text") : "";
 
-		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 		var rowCount = dataGrid.getVisibleRows().length;
 		var dataSource = dataGrid.option("dataSource");
 
@@ -6870,7 +6870,7 @@ function saveField(fieldName, dxId,name) {
 		const requestNo = requestNoBox ? requestNoBox.option("value") : null;
 		var menuType = "inventory";
 
-		var formType ="Quotations To Clients";
+		var formType ="Quotation to Clients";
 		// Log and build URL
 		console.log("Voucher No:", requestNo);
 		console.log("Voucher Type:", formType);

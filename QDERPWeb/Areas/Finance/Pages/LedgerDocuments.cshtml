@@ -575,6 +575,8 @@
                                         icon: "plus",
                                         stylingMode: "text",
                                         onClick: function () {
+                                            const selectBox = e.component;
+                                            selectBox.close();
                                             onAddDocType();
                                         }
                                     }
@@ -772,6 +774,7 @@
             // reload the store after modal is closed
             documentTypeStore.load();
         });
+
     }
 
 
