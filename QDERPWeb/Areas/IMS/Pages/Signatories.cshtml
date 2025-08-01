@@ -314,7 +314,22 @@
         {
             toolbar.Items(items => { }); // hide default toolbar
         })
-        .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
+                .Toolbar(toolbar =>
+                {
+                    toolbar.Items(items =>
+                    {
+                        items.Add()
+                    .Widget(w => w.Button()
+                    .Text("Delete Selected")
+                    .Icon("trash")
+                    .Type(ButtonType.Danger)
+                    .OnClick("deleteSelectedSignatories")
+                    )
+                    .Location(ToolbarItemLocation.Before);
+                    });
+                })
+
+        .OnRowUpdating("onSignatoryUpdating")                      
             .Columns(columns =>
             {
                 columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
@@ -591,6 +606,42 @@
         });
     });
 
+      
+    function deleteSelectedSignatories() {
+        const grid = $("#SignatoryGrid").dxDataGrid("instance");
+        const selectedRows = grid.getSelectedRowKeys();
+         const selectedIds = selectedRows.map(r => parseInt(r.SignatoryID));
+
+        if (selectedIds.length === 0) {
+            DevExpress.ui.notify("Please select at least one row to delete.", "warning", 2000);
+            return;
+        }
+
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete the selected records?", "Confirm Deletion")
+            .done(function (dialogResult) {
+                if (dialogResult) {
+                    $.ajax({
+                        url: "/api/Signatories/DeleteMultiple",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(selectedIds),
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.notify("Selected signatories deleted successfully.", "success", 2000);
+                                grid.refresh();
+                            } else {
+                                DevExpress.ui.notify("Deletion failed: " + (response.message || "Unknown error"), "error", 2000);
+                            }
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Error during deletion: " + xhr.responseText, "error", 2000);
+                        }
+                    });
+                }
+            });
+    }
+</script>
 
 
-    </script>
+
+ 
