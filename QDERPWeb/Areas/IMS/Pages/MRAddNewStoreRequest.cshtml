@@ -6,9 +6,7 @@
 
 
 <style>
-	    .dx-fieldset{
-        height:180px !important;
-    }
+	
 	.titleCard-toggle1 {
 		display: none;
 	}
@@ -1462,7 +1460,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height("40vh")
+						.Height("45vh")
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -5867,8 +5865,6 @@ AddlDescription: null,
 			contentType: "application/json",
 			data: JSON.stringify(model),
 			success: function (response) {
-				  isVoucherSaved = true; // Mark Updated step as done
-                      updateWorkflowVisual(getWorkflowStatusFromFields());
 				DevExpress.ui.notify(response.message, "success", 3000);
 				// Refresh parent DataGrid (ensure the correct selector is used)
 				if (window.parent && window.parent.$("#dataGrid").length) {
@@ -6261,7 +6257,6 @@ $("#btnBack").on("click", function (e) {
 					url: `/api/AddNewClientRequest/SubmitMPR?mprNo=${encodeURIComponent(mprNo)}`,
 					contentType: "application/json",
 					success: function (response) {
-						syncWorkflowFromFields();
 							 DevExpress.ui.notify("Material Purchase Request has been submitted for Approval.", "success", 3000);
 
 							const approvedByBox = $("#ddPreparedby").dxDropDownBox("instance");
@@ -6346,7 +6341,6 @@ $("#btnBack").on("click", function (e) {
 		        if (approvedByBox) {
 			    approvedByBox.option("value", response.VoucherApprovedBy);
 		           }
-				   syncWorkflowFromFields();
 						DevExpress.ui.notify(response.message, "success", 3000);
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -6428,7 +6422,7 @@ $("#btnBack").on("click", function (e) {
 					approvedByBox.option("value", response.VoucherApprovedBy);
 				}
 			}
-			syncWorkflowFromFields();
+
 		DevExpress.ui.notify(response.Message, "success", 3000);
 
 				// ✅ Hide buttons as needed
@@ -7191,7 +7185,7 @@ $("#btnBack").on("click", function (e) {
 		console.log('End permission handling');
 	});
 
-	            let isVoucherSaved = false;
+		            let isVoucherSaved = false;
 
         function getWorkflowStatusFromFields() {
     const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
