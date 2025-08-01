@@ -468,7 +468,7 @@ ADD CONSTRAINT DF_tbl201VoucherMaster_CurrencyRate DEFAULT 1.00 FOR CurrencyRate
 PRINT 'Default 1.00 set for CurrencyRate';
 
 -----------------------
--- dbo.tbl201VoucherMaster
+-- Aicon.tbl201VoucherMaster
 -----------------------
 
 -- 1. CurrencyId default = 1
@@ -481,11 +481,11 @@ WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
 
 IF @ConstraintName1 IS NOT NULL
 BEGIN
-    EXEC('ALTER TABLE dbo.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName1 + ']');
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName1 + ']');
     PRINT 'Dropped existing default on CurrencyId (VoucherMaster)';
 END
 
-ALTER TABLE dbo.tbl201VoucherMaster
+ALTER TABLE Aicon.tbl201VoucherMaster
 ADD CONSTRAINT DF_tbl201VoucherMaster_CurrencyId DEFAULT 1 FOR CurrencyId;
 PRINT 'Set default 1 for CurrencyId (VoucherMaster)';
 
@@ -500,11 +500,11 @@ WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
 
 IF @ConstraintName2 IS NOT NULL
 BEGIN
-    EXEC('ALTER TABLE dbo.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName2 + ']');
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName2 + ']');
     PRINT 'Dropped existing default on BaseCurrencyId (VoucherMaster)';
 END
 
-ALTER TABLE dbo.tbl201VoucherMaster
+ALTER TABLE Aicon.tbl201VoucherMaster
 ADD CONSTRAINT DF_tbl201VoucherMaster_BaseCurrencyId DEFAULT 1 FOR BaseCurrencyId;
 PRINT 'Set default 1 for BaseCurrencyId (VoucherMaster)';
 
@@ -519,17 +519,17 @@ WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
 
 IF @ConstraintName3 IS NOT NULL
 BEGIN
-    EXEC('ALTER TABLE dbo.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName3 + ']');
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName3 + ']');
     PRINT 'Dropped existing default on CurrencyRate (VoucherMaster)';
 END
 
-ALTER TABLE dbo.tbl201VoucherMaster
+ALTER TABLE Aicon.tbl201VoucherMaster
 ADD CONSTRAINT DF_tbl201VoucherMaster_CurrencyRate DEFAULT 1.00 FOR CurrencyRate;
 PRINT 'Set default 1.00 for CurrencyRate (VoucherMaster)';
 
 
 -----------------------
--- dbo.tbl20113ChequeMaster
+-- Aicon.tbl20113ChequeMaster
 -----------------------
 
 -- 1. CurrencyId default = 1
@@ -542,11 +542,11 @@ WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl20113ChequeMaster'
 
 IF @ConstraintName4 IS NOT NULL
 BEGIN
-    EXEC('ALTER TABLE dbo.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName4 + ']');
+    EXEC('ALTER TABLE Aicon.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName4 + ']');
     PRINT 'Dropped existing default on CurrencyId (ChequeMaster)';
 END
 
-ALTER TABLE dbo.tbl20113ChequeMaster
+ALTER TABLE Aicon.tbl20113ChequeMaster
 ADD CONSTRAINT DF_tbl20113ChequeMaster_CurrencyId DEFAULT 1 FOR CurrencyId;
 PRINT 'Set default 1 for CurrencyId (ChequeMaster)';
 
@@ -561,11 +561,11 @@ WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl20113ChequeMaster'
 
 IF @ConstraintName5 IS NOT NULL
 BEGIN
-    EXEC('ALTER TABLE dbo.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName5 + ']');
+    EXEC('ALTER TABLE Aicon.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName5 + ']');
     PRINT 'Dropped existing default on BaseCurrencyId (ChequeMaster)';
 END
 
-ALTER TABLE dbo.tbl20113ChequeMaster
+ALTER TABLE Aicon.tbl20113ChequeMaster
 ADD CONSTRAINT DF_tbl20113ChequeMaster_BaseCurrencyId DEFAULT 1 FOR BaseCurrencyId;
 PRINT 'Set default 1 for BaseCurrencyId (ChequeMaster)';
 
@@ -580,11 +580,11 @@ WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl20113ChequeMaster'
 
 IF @ConstraintName6 IS NOT NULL
 BEGIN
-    EXEC('ALTER TABLE dbo.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName6 + ']');
+    EXEC('ALTER TABLE Aicon.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName6 + ']');
     PRINT 'Dropped existing default on CurrencyRate (ChequeMaster)';
 END
 
-ALTER TABLE dbo.tbl20113ChequeMaster
+ALTER TABLE Aicon.tbl20113ChequeMaster
 ADD CONSTRAINT DF_tbl20113ChequeMaster_CurrencyRate DEFAULT 1.00 FOR CurrencyRate;
 PRINT 'Set default 1.00 for CurrencyRate (ChequeMaster)';
 
@@ -2392,11 +2392,11 @@ CREATE TABLE Aicon.FinancialSummaryReport (
 );     
 ALTER TABLE Aicon.FinancialSummaryReport ADD VoucherDate DATETIME;
 ALTER TABLE Aicon.FinancialSummaryReport ADD MonthYear NVARCHAR(50);
-ALTER TABLE dbo.FinancialSummaryReport
+ALTER TABLE Aicon.FinancialSummaryReport
 ADD DrCr NVARCHAR(50), DrAmount DECIMAL(18,2), CrAmount DECIMAL(18,2);
 
 
-INSERT INTO dbo.FinancialSummaryReport (
+INSERT INTO Aicon.FinancialSummaryReport (
     AccountHead, AccountHeadName, VoucherAmountFormatted,
     AccountGroup, MasterGroup, TransactionsFull,
     AccountHeadArabic, AccountGroupAr, MasterGroupAr,
@@ -2420,7 +2420,7 @@ SELECT
     NULL AS DrCr,
     SUM(DrAmount) AS DrAmount,
     SUM(CrAmount) AS CrAmount
-FROM dbo.qry201MainVoucherEntriesWithMaster 
+FROM Aicon.qry201MainVoucherEntriesWithMaster 
 WHERE ISNULL(IsCalculateOpeningBalance, 0) = 1  
 GROUP BY 
     AccountHead, 
@@ -2452,10 +2452,10 @@ SELECT
     q.DrCr,
     q.DrAmount,
     q.CrAmount
-FROM dbo.qry201MainVoucherEntriesWithMaster AS q
-    RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts coa ON coa.AccountID = q.AccountHead
-    RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON coa.AccountGroupID = ag.AccountGroupID
-    RIGHT OUTER JOIN dbo.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID;
+FROM Aicon.qry201MainVoucherEntriesWithMaster AS q
+    RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts coa ON coa.AccountID = q.AccountHead
+    RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON coa.AccountGroupID = ag.AccountGroupID
+    RIGHT OUTER JOIN Aicon.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID;
 
 
 
