@@ -64,6 +64,9 @@ public partial class Qry60204salesOrderViewMaster
     public decimal? TotalTaxAmount { get; set; }
 
     public decimal? TotalWithTax { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 
     public string OrderStatus { get; set; }
 
