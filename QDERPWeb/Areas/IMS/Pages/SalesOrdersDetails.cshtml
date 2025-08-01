@@ -1,4 +1,5 @@
-﻿@page
+﻿
+@page
 @model QD.ERP.Web.Areas.IMS.Pages.SalesOrdersDetailsModel
 @{
 }
@@ -35,8 +36,6 @@
 		width: 100%;
 		height: 100%;
 	}
-
-	
 
 	.close-btn {
 		position: absolute;
@@ -240,8 +239,8 @@
 				subColumns.AddFor(m => m.ClientName).Caption("Client Name").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.ClientPono).Caption("Client Po no").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gscode).Caption("GSCode").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.Gsdescrpition).Caption("GSDescrpition").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gscode).Caption("Stock Code").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Gsdescrpition).Caption("Stock Descrpition").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitType).Caption("UnitType").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitDesc).Caption("UnitDesc").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.QuotedQuantity).Caption("QuotedQuantity").Alignment(HorizontalAlignment.Center).Visible(true);
@@ -261,7 +260,7 @@
 
 			});
 		})
-		.Height("70vh") // Fixed height for the grid
+		.Height("70vh")
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)

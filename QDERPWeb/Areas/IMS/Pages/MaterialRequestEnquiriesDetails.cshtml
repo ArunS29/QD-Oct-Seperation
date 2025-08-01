@@ -200,32 +200,32 @@
 
 	</div>
 
-	<div id="mainCard" class="card today-bg">
+	<div id="mainCard" class="card verified-bg">
 		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
+			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
+			<div class="tab-text" onclick="switchTab(1)">Approved</div>
+			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text" onclick="switchTab(3)">Cancelled</div>
 		</div>
 
 		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
+			<h4>Total</h4>
 			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
+			<h4>Total</h4>
 			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
+			<h4>Total</h4>
 			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+		</div>
+
+		<div class="tab-content">
+			<h4>Total</h4>
+			<div class="count" id="count3">0</div>
 		</div>
 	</div>
 
@@ -326,6 +326,7 @@
 			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60604purchaseRequestViewMaster>()
 					.ID("dataGrid")
 					.RemoteOperations(false)
+	             	.OnContentReady("onGridReady")
 					.DataSource(new JS("[]"))
 					.Columns(columns =>
 					{
@@ -372,39 +373,137 @@
 						
 							columns.Add().Caption(new JS("formatMessage('RFQ')")).Columns(band =>
 							{
-					band.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No of Items')")).Alignment(HorizontalAlignment.Center);
-					band.AddFor(m => m.NoOfRfqissued).Caption(new JS("formatMessage('No of RFQ Issued')")).Alignment(HorizontalAlignment.Center);
+				band.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No of Items')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', // Light yellow
+		color: '#b58900',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
+				band.AddFor(m => m.NoOfRfqissued).Caption(new JS("formatMessage('No of RFQ Issued')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', // Light yellow
+		color: '#b58900',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		 
+		}
+		"));
 
 						   });
 			
 					columns.Add().Caption(new JS("formatMessage('Quotation')")).Columns(band =>
 				 {
-					band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center);
-					band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-							function(e) {
-							if (e.value === null || e.value === undefined) {
-							return ''; // Return empty string for null/undefined
-							}
-							return Number(e.value).toLocaleString(undefined, {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-							});
-							}");
-							band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CustomizeText(@"
-							function(e) {
-							if (e.value === null || e.value === undefined) {
-							return ''; // Return empty string for null/undefined
-							}
-							return Number(e.value).toLocaleString(undefined, {
-							minimumFractionDigits: 2,
-							maximumFractionDigits: 2
-							});
-							}");
-				});
+				band.AddFor(m => m.NoOfQuotations).Caption(new JS("formatMessage('No of Quotation')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+	 
+		}
+		"));
+				band.AddFor(m => m.NetQuotedAmount).Caption(new JS("formatMessage('Net Quoted Amount')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+												function(cellElement, cellInfo) {
+												if (cellInfo.value != null) {
+												const formattedValue = new Intl.NumberFormat('en-US', {
+												minimumFractionDigits: 2,
+												maximumFractionDigits: 2
+												}).format(cellInfo.value);
+												$('<span>')
+												.text(formattedValue)
+												.css({
+												display: 'inline-block',
+												backgroundColor: '#ffe6e6',
+												color: '#d93025',
+												fontWeight: 'bold',
+												padding: '4px 10px',
+												borderRadius: '20px'
+												})
+												.appendTo(cellElement);
+												}
+												}
+												"));
+				band.AddFor(m => m.NetQuotedWithTax).Caption(new JS("formatMessage('Net Quoted With Tax')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+																function(cellElement, cellInfo) {
+																if (cellInfo.value != null) {
+																const formattedValue = new Intl.NumberFormat('en-US', {
+																minimumFractionDigits: 2,
+																maximumFractionDigits: 2
+																}).format(cellInfo.value);
+																$('<span>')
+																.text(formattedValue)
+																.css({
+																display: 'inline-block',
+																backgroundColor: '#e6ffe6',
+																color: '#1a8f1a',
+																fontWeight: 'bold',
+																padding: '4px 10px',
+																borderRadius: '20px'
+																})
+																.appendTo(cellElement);
+																}
+																}
+																"));
+														});
 
 					columns.Add().Caption(new JS("formatMessage('Sales Order Details')")).Columns(band =>
-			 {
-					band.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center);
+					 {
+				band.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+							function(cellElement, cellInfo) {
+							if (cellInfo.value != null && cellInfo.value !== '') {
+							$('<span>')
+							.text(cellInfo.value)
+							.css({
+							display: 'inline-block',
+							backgroundColor: '#fff9cc', // Light yellow
+							color: '#b58900',            // Amber text
+							fontWeight: 'bold',
+							padding: '4px 10px',
+							borderRadius: '20px',
+							minWidth: '24px',
+							textAlign: 'center'
+							})
+							.appendTo(cellElement);
+							}
+							// else: do nothing (no span rendered)
+							}
+							"));
 					band.AddFor(m => m.OrderStatus).Caption(new JS("formatMessage('Order Status')")).Alignment(HorizontalAlignment.Center);
 					band.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center);
 
@@ -476,8 +575,8 @@
 			.Height("60vh") // <<< fixed height
 			.ColumnAutoWidth(true)
 			.OnRowPrepared("onRowPrepared")
-			.Width("99%")
-			.WordWrapEnabled(true)
+			.Width("98%")
+			.WordWrapEnabled(false)
 			//.OnCellClick("function(e) {handleCellClick(e);}")
 			.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 			.AllowColumnReordering(true)
@@ -529,6 +628,85 @@
 
 
 <script>
+		function onGridReady(e) {
+		const ds = e.component.getDataSource();
+		if (ds && ds.items) {
+			updateStatusTabCounts(ds.items());
+		}
+	}
+		
+	const card = document.getElementById('mainCard');
+
+	// Count elements for each tab
+	const countEls = [
+		document.getElementById("count0"),
+		document.getElementById("count1"),
+		document.getElementById("count2"),
+		document.getElementById("count3"),
+	];
+
+	const tabs = document.querySelectorAll(".tab-text");
+	const contents = document.querySelectorAll(".tab-content");
+
+	// Hold dynamic count values here
+	let counts = [0, 0, 0, 0];
+
+	function animateCount(el, target) {
+		let i = 0;
+		el.innerText = i;
+		el.classList.remove('bounce');
+
+		const interval = setInterval(() => {
+			if (i >= target) {
+				el.innerText = target;
+				el.classList.add('bounce');
+				clearInterval(interval);
+			} else {
+				el.innerText = i++;
+			}
+		}, 20);
+	}
+
+	function switchTab(index) {
+		tabs.forEach((tab, i) => {
+			tab.classList.toggle('active', i === index);
+			contents[i].classList.toggle('active', i === index);
+		});
+
+		card.className = "card"; // Reset all card styles
+		if (index === 0) card.classList.add("verified-bg");
+		if (index === 1) card.classList.add("approved-bg");
+		if (index === 2) card.classList.add("submitted-bg");
+		if (index === 3) card.classList.add("cancelled-bg");
+
+		animateCount(countEls[index], counts[index]);
+	}
+
+	// 🔄 Update count values dynamically from DevExtreme grid data
+	function updateStatusTabCounts(data) {
+		let verified = 0, approved = 0, submitted = 0, cancelled = 0;
+
+		data.forEach(row => {
+			if (row.IsVerified) verified++;
+			if (row.IsApproved) approved++;
+			if (row.IsSubmitted) submitted++;
+			if (row.IsCancelled) cancelled++;
+		});
+
+		counts = [verified, approved, submitted, cancelled];
+
+		// Optionally animate the active tab again
+		const activeIndex = [...tabs].findIndex(tab => tab.classList.contains('active'));
+		animateCount(countEls[activeIndex], counts[activeIndex]);
+	}
+
+	// ✅ Auto-run Verified count on load
+	window.addEventListener("DOMContentLoaded", () => {
+		switchTab(0); // Default tab
+	});
+
+
+
 	  
 
 		 $(function () {
@@ -1319,68 +1497,7 @@ $(document).ready(function () {
 		// Animate to 46.2 K
 		countUpTurnover("46.2");
 
-		  const card = document.getElementById('mainCard');
-		const counts = [8, 15, 5];
-		const countEls = [
-		  document.getElementById("count0"),
-		  document.getElementById("count1"),
-		  document.getElementById("count2"),
-		];
-		const tabs = document.querySelectorAll(".tab-text");
-		const contents = document.querySelectorAll(".tab-content");
-
-		function animateCount(el, target) {
-		  let i = 0;
-		  el.innerText = i;
-		  el.classList.remove('bounce');
-		  const interval = setInterval(() => {
-			if (i >= target) {
-			  el.innerText = target;
-			  el.classList.add('bounce');
-			  clearInterval(interval);
-			} else {
-			  el.innerText = i++;
-			}
-		  }, 30);
-		}
-
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
-
-		// Start "Today" count immediately
-		animateCount(countEls[0], counts[0]);
-
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
-
-		// Auto-start animation for "Today"
-		animateCount(countEls[0], counts[0]);
+			
 
 			 function onRowPrepared(e) {
 			if (e.rowType === "data" && e.data.IsCancelled) {

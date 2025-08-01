@@ -1512,14 +1512,31 @@
                     data: { claimRefNo: claimRefNo },
                     success: function (data) {
                         debugger;
-                       if (!data.success) {
-                            DevExpress.ui.notify(data.message || "No child records found.", "warning", 3000);
-                            const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                           // If `data` is a raw array (not wrapped in { success: true, data: [...] })
+                            if (Array.isArray(data)) {
+                                if (data.length === 0) {
+                                    DevExpress.ui.notify("No child records found.", "warning", 3000);
+                                } else {
+                                    const entry = data.find(d => d.ClaimRefNo === claimRefNo);
+                                    if (entry) {
+                                        const gridInstance = $("#dataGrid").dxDataGrid("instance");
+                                        gridInstance.option("dataSource", data);
+                                        gridInstance.refresh();
+                                    } else {
+                                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                                    }
+                                }
+                                return;
+                            }
+
+                            // If `data` is an object (wrapped format: { success: true, data: [...] })
+                            if (!data.success) {
+                                DevExpress.ui.notify(data.message || "No child records found.", "warning", 3000);
+
+                                const dataGrid = $("#dataGrid").dxDataGrid("instance");
                                 const dataSource = dataGrid.option("dataSource") || [];
 
-                                if (!Array.isArray(dataSource)) {
-                                    return;
-                                }
+                                if (!Array.isArray(dataSource)) return;
 
                                 if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
                                     dataSource.push({
@@ -1529,19 +1546,18 @@
                                     });
                                     dataGrid.option("dataSource", dataSource);
                                 }
-                            return;
-                       }
-                        const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
+                                return;
+                            }
 
-                        if (entry) {
-
-
-                            const gridInstance = $("#dataGrid").dxDataGrid("instance");
-                            gridInstance.option("dataSource", data);
-                            gridInstance.refresh();
-                        } else {
-                            DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
-                        }
+                            // If `data.success === true` and data.data exists
+                            if (Array.isArray(data.data)) {
+                                const gridInstance = $("#dataGrid").dxDataGrid("instance");
+                                gridInstance.option("dataSource", data.data);
+                                gridInstance.refresh();
+                            } else {
+                                DevExpress.ui.notify("Unexpected data format.", "error", 3000);
+                            }
+    
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);

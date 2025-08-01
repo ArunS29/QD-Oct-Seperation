@@ -221,20 +221,33 @@
 					.Width(180)
 					.ElementAttr("class", "button-alignment-up")
 					.TabIndex(4)
+					.SplitButton(true) // This enables main-button vs arrow split behavior
+					.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 					.DropDownOptions(options => options.Width(230))
 					.Items(items =>
-					{
-						items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-						items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-						items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-						items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-						items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-						items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-						items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-						items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-						items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-						items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-					})
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
 					)
 
 </div>
@@ -258,23 +271,166 @@
 							subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 						});
-						columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
+						columns.Add().Caption(new JS("formatMessage('No Of Items')"))
+						.Columns(subColumns =>
 						{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-						});
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true).CellTemplate(new JS(@"
+								function(cellElement, cellInfo) {
+								if (cellInfo.value != null && cellInfo.value !== '') {
+								$('<span>')
+								.text(cellInfo.value)
+								.css({
+								display: 'inline-block',
+								backgroundColor: '#fff9cc', // Light yellow
+								color: '#b58900',            // Amber text
+								fontWeight: 'bold',
+								padding: '4px 10px',
+								borderRadius: '20px',
+								minWidth: '24px',
+								textAlign: 'center'
+								})
+								.appendTo(cellElement);
+								}
+								// else: do nothing (no span rendered)
+								}
+								"));
+								});
 
 
 						columns.Add().Caption(new JS("formatMessage('Sales Order Amount')")).Columns(subColumns =>
-	{
-		        subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				{
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6', // Light yellow
+		color: '#d93025',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+subColumns.Add().DataField("cost")
+					.Caption(new JS("formatMessage('Total With Tax')"))
+					.CellTemplate(new JS(@"
+					function(cellElement, cellInfo) {
+					if (cellInfo.value != null) {
+					const formattedValue = new Intl.NumberFormat('en-US', {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2
+					}).format(cellInfo.value);
+					$('<span>')
+					.text(formattedValue)
+					.css({
+					display: 'inline-block',
+					backgroundColor: '#fff9cc',
+					color: '#b58900',
+					fontWeight: 'bold',
+					padding: '4px 10px',
+					borderRadius: '20px'
+					})
+					.appendTo(cellElement);
+		
+					}
+					}
+					")); 
 	});
 		})
 		//.ElementAttr("style", "height: 444px !important;")

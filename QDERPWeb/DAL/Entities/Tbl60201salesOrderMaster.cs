@@ -32,6 +32,10 @@ public partial class Tbl60201salesOrderMaster
     public decimal? QuoteTransport { get; set; }
 
     public decimal? QuoteDiscount { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
+
 
     public byte? PaymentTerms { get; set; }
 
@@ -114,4 +118,5 @@ public partial class Tbl60201salesOrderMaster
     public DateTime? VerifiedOn { get; set; }
 
     public string CostAllocationMasterGroup { get; set; }
+
 }

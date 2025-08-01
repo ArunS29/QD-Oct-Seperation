@@ -62,9 +62,9 @@
 	}
 
 	/* 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
-			display: none !important;
-		}
-	 */
+				display: none !important;
+			}
+		 */
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -152,7 +152,7 @@
 	.context-menu-item {
 		/* display: flex; */
 		align-items: center;
-		padding: 10px 15px; 
+		padding: 10px 15px;
 		font-size: 14px;
 		cursor: pointer;
 		transition: background 0.2s ease-in-out;
@@ -214,7 +214,7 @@
  *@
 <div class="title">
 
-	 <input id="formId" value="frm201LedgerView" type="hidden" />
+	<input id="formId" value="frm201LedgerView" type="hidden" />
 
 	<div class="card blue shine compact">
 		<h2 class="title-slide">Proforma Invoice Register</h2>
@@ -226,7 +226,7 @@
 		<div class="tabs" style="gap:10px;">
 			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
 			<div class="tab-text" onclick="switchTab(1)">Approved</div>
-			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text" onclick="switchTab(2)">Posted</div>
 		</div>
 
 		<div class="tab-content active">
@@ -243,9 +243,28 @@
 	</div>
 
 	<div class="card green shine">
-		<h4 style="font-weight:bold;">Invoice Amount</h4>
-		<h1 id="invoiceAmount">0.00 SAR</h1>
-		<h3>VAT Value</h3>
+		<h4 style="font-weight:bold;">
+
+			Invoice Amount
+		</h4>
+
+		<h1 id="invoiceAmountss">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>
+			0.00
+		</h1>
+		<h4 style="font-weight:bold;">
+			VAT Value
+		</h4>
+		<h3 id="vatTotalValuess">
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>
+			0.00
+		</h3>
 	</div>
 	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
 		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Voucher Count</h4>
@@ -322,32 +341,32 @@
 		.Width(180)
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
-				.DropDownOptions(options => options.Width(230))
-				.Items(items =>
-				{
-					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-				})
-				.ItemTemplate(@<text>
-            <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
-                <div class="item-content">
-                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                    <div>
-                        <div class="item-title"><%- text %></div>
-                    </div>
-                </div>
-            </div>
-        </text>)
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+		.DropDownOptions(options => options.Width(230))
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		.ItemTemplate(@<text>
+				   		<div class="custom-dropdown-item">
+				   			<div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+				   			<div class="item-content">
+				   				<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+				   				<div>
+				   					<div class="item-title"><%- text %></div>
+				   				</div>
+				   			</div>
+				   		</div>
+				   	</text>)
 		)
 
 	@(Html.DevExtreme().CheckBox()
@@ -360,6 +379,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
+		.OnContentReady("onGridContentReady")
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
@@ -397,7 +417,7 @@
 				subColumns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount)
 			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-	    	.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption(new JS("formatMessage('Total VAT Amount')"))
@@ -522,12 +542,12 @@
 			columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
 
 		})
-		@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
+	   	@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
 		.Height("60vh") // <<< fixed height
 		.ColumnAutoWidth(true)
 		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.Width("98%")
-		@* .WordWrapEnabled(true) *@
+				  	@* .WordWrapEnabled(true) *@
 		//.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
@@ -553,7 +573,7 @@
 			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
 
 				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
-		    .CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
@@ -625,6 +645,58 @@
 </div>
 
 <script>
+	function updateProformaAmountCard(component) {
+		const total = component.getTotalSummaryValue("CalcLineAmount");
+		if (total != null) {
+			const formatted = total.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			});
+
+			const svg = `
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+				</svg>`;
+
+			// Inject SVG + formatted amount
+			document.getElementById('invoiceAmountss').innerHTML = svg + " " + formatted;
+		} else {
+			document.getElementById('invoiceAmountss').innerHTML = "0.00";
+		}
+	}
+
+
+		function updateTotalVATValuess(data) {
+		let totalVAT = 0;
+
+		if (Array.isArray(data)) {
+			data.forEach(item => {
+				const vat5 = parseFloat(item.DomesticStandartRatedTax) || 0;
+				const vat10 = parseFloat(item.DomesticZeroRatedTax) || 0;
+				const vat15 = parseFloat(item.DomesticExemptedTax) || 0;
+
+				totalVAT += vat5 + vat10 + vat15;
+			});
+		}
+
+		const formatted = totalVAT.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+
+		const svg = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>`;
+
+		// Check element exists before injecting
+		const vatElement = document.getElementById('vatTotalValuess');
+		if (vatElement) vatElement.innerHTML = svg + formatted;
+	}
+
+
 	let currentSlideIndex = 0;
 	const slides = document.querySelectorAll('.voucher-slide');
 
@@ -635,16 +707,16 @@
 
 		slides[currentSlideIndex].classList.add('active');
 	}, 2000);
-	let currentSlideIndex1 = 0;
-	const slides1 = document.querySelectorAll('.voucher-slide1');
+	// let currentSlideIndex1 = 0;
+	// const slides1 = document.querySelectorAll('.voucher-slide1');
 
-	setInterval(() => {
-		slides1[currentSlideIndex1].classList.remove('active');
+	// setInterval(() => {
+	// 	slides1[currentSlideIndex1].classList.remove('active');
 
-		currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+	// 	currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
 
-		slides1[currentSlideIndex1].classList.add('active');
-	}, 2000);
+	// 	slides1[currentSlideIndex1].classList.add('active');
+	// }, 2000);
 	function animateTodayVoucherCount(target) {
 		let i = 0;
 		const el = document.getElementById("todayCount");
@@ -733,7 +805,7 @@
 			 window.location.href = url;
 	}
 
-	
+
 
 
 
@@ -776,7 +848,7 @@
 		});
 	});
 
-		
+
 	// Assuming tenantName is already defined globally
 	let invoiceNo = null,InvoiceStatus=null;
 	let IsEdit = false;
@@ -790,7 +862,7 @@
 		IsEdit = true;
 
 		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?ProformaInvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
-	
+
 		window.location.href = url; // Navigate to the page
 
 	}
@@ -881,7 +953,7 @@
 				var grid = $("#dataGrid").dxDataGrid("instance");
 				grid.option("dataSource", data.data);
 
-				updateInvoiceAmountCard(data.data);
+				updateInvoiceAmountCardss(data.data);
 				console.log("SalesRegisterGrid", data.data);
 
 				if (data.data && data.data.length > 0) {
@@ -958,25 +1030,9 @@
 		return [day, strmonth, year].join('-');
 	}
 
-	function updateInvoiceAmountCard(data) {
-		let total = 0;
-		if (Array.isArray(data)) {
-			total = data.reduce((sum, item) => {
-				const value = parseFloat(item.TotalInvoiceAmount);
-				return sum + (isNaN(value) ? 0 : value);
-			}, 0);
-		}
+	
 
-		const formatted = total.toLocaleString(undefined, {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2
-		});
 
-		// ✅ Update the card content
-		$("#invoiceAmount").text(formatted + " SAR");
-	}
-
-			
 	$(document).ready(function () {
 						console.log('Start permission handling');
 						// Form ID
@@ -1219,7 +1275,7 @@
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
 			}
 		});
-	
+
 			},
 			error: function (err) {
 				console.error("Grid load failed", err);
@@ -1291,34 +1347,34 @@
 	}
 
 	// ✅ Count Approved Invoices From Grid
-	function updateApprovedCountFromGrid() {
-	  const grid = $("#dataGrid").dxDataGrid("instance");
-	  const data = grid.getDataSource().items();
+		function updateApprovedCountFromGrid() {
+		const grid = $("#dataGrid").dxDataGrid("instance");
+		const data = grid.getVisibleRows().map(row => row.data);
 
-	  // Update dynamic counts based on status
-	  counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
-	  counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
-	  counts[2] = data.filter(item => item.InvoiceStatus === "Submitted").length;
+		// Update dynamic counts based on status
+		counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
+		counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
+		counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
 
-	  // You can also update visible numbers immediately
-	  countEls[0].textContent = counts[0];
-	  countEls[1].textContent = counts[1];
-	  countEls[2].textContent = counts[2];
+		// Update visible numbers
+		countEls[0].textContent = counts[0];
+		countEls[1].textContent = counts[1];
+		countEls[2].textContent = counts[2];
 
-	  // Optionally animate default tab (Today/Verified)
-	  animateCount(countEls[0], counts[0]);
-	}
-	document.getElementById("count0").textContent = counts[0]; // Verified count
-
-	// 🔁 Called after DataGrid loads
-	function onGridContentReady(e) {
-	  updateApprovedCountFromGrid();
+		// Animate default tab (Verified)
+		animateCount(countEls[0], counts[0]);
 	}
 
 
+		function onGridContentReady(e) {
+		updateApprovedCountFromGrid();
 
+		const component = e.component;
+		const data = component.getDataSource().items();
 
-	
+		updateProformaAmountCard(component);     // ✅ Total invoice
+		updateTotalVATValuess(data);             // ✅ Total VAT
+	}
 
 
 
@@ -1332,7 +1388,7 @@
 			3000
 		);
 		return;
-	          }
+			  }
 
 		DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Purchase Bill?", "Confirm Unlock")
 			.done(function (dialogResult) {

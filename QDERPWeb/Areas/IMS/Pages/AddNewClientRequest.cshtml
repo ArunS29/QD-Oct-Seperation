@@ -3116,9 +3116,9 @@
 
 														if (selectedItem) {
 
-															e.component.option("value", selectedItem.UnitCode);
+															e.component.option("value", selectedItem.UnitType);
 
-													cellInfo.setValue(selectedItem.UnitCode);
+													cellInfo.setValue(selectedItem.UnitType);
 
 															let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
@@ -3897,9 +3897,9 @@
 												let selectedItem = selectedItems.selectedRowsData[0];
 												if (selectedItem) {
 													// Set the value of the DropDownBox
-													e.component.option("value", selectedItem.UnitCode);
+													e.component.option("value", selectedItem.UnitType);
 													// Update the cell value in the grid
-													cellInfo.setValue(selectedItem.UnitCode);
+													cellInfo.setValue(selectedItem.UnitType);
 													// Close the DropDownBox
 													e.component.close();
 												}

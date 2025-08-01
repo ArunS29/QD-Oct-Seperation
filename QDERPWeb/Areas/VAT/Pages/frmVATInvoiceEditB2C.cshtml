@@ -542,6 +542,17 @@
 .footer-fixed{
 	bottom:29px !important;
 }
+#loader {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 9999;
+		font-size: 18px;
+		background-color: rgba(255,255,255,0.8);
+		padding: 20px;
+		border-radius: 8px;
+	}
 </style>
 
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -705,9 +716,8 @@
 								@(Html.DevExtreme().DropDownBox().Label(new JS("formatMessage('Client Name')"))//.ID("ClientName")
 																.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetClientCode").LoadMode(DataSourceLoadMode.Raw).Key("ClientName"))
 																.LabelMode(EditorLabelMode.Floating)
-
 																.ID("ddclientname")
-																.Value("Cash Customer")
+																.Value("")
 																.ValidationRules(rules =>
 																{
 																	rules.AddRequired()
@@ -800,7 +810,7 @@
 																.ContentTemplate(new TemplateName("ClientNameContent"))
 																)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Floating))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Other ID')")).ID("ClientOtherID").LabelMode(EditorLabelMode.Floating).MaxLength(50))</td>
 							<td>
 								@(Html.DevExtreme().DropDownBox()
 																.ID("ClientAddressDetails")
@@ -824,21 +834,27 @@
 																										.Label(new JS("formatMessage('Address - Street Name:')"))
 																										.ID("StreetName")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
 																										.ID("StreetNameArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Building Number:')"))
 																										.ID("BuildingNumber")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+                                                                                                        .MaxLength(50)
+													)
 																   												</td>
 																   											</tr>
 																   											<tr>
@@ -847,21 +863,27 @@
 																										.Label(new JS("formatMessage('Address - Additional Address:')"))
 																										.ID("AdditionalAddress")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
 																										.ID("AdditionalAddressArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Additional Number:')"))
 																										.ID("AdditionalNumber")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+													)
 																   												</td>
 
 											</tr>
@@ -872,21 +894,27 @@
 																										.Label(new JS("formatMessage('Client City:')"))
 																										.ID("ClientCity")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Client City: (Arabic)')"))
 																										.ID("ClientCityArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(100)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Postal Code:')"))
 																										.ID("PostalCode")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(5)
+													)
 																   												</td>
 																   											</tr>
 																   											<tr>
@@ -896,14 +924,18 @@
 																										.Label(new JS("formatMessage('Province / State:')"))
 																										.ID("Province")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Province / State: (Arabic)')"))
 																										.ID("ProvinceArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(100)
+                                                       )
 																   												</td>
 
 												<td>
@@ -937,14 +969,18 @@
 																										.Label(new JS("formatMessage('District / Neighborhood:')"))
 																										.ID("District")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+													)
 																   												</td>
 																   												<td colspan="2">
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 																										.ID("DistrictArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(100)
+													)
 																   												</td>
 
 																			</tr>
@@ -956,7 +992,7 @@
 																</text>)
 																)
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").Value("عميل نقدي").LabelMode(EditorLabelMode.Floating))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client Name in Arabic')")).ID("ClientNameArabic").Value("عميل نقدي").LabelMode(EditorLabelMode.Floating).MaxLength(200))</td>
 							</tr>
 							<tr>
 							<td>
@@ -1054,8 +1090,8 @@
 
 
 							</td>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Floating).Disabled(true))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Floating).Disabled(true))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Invoice Counter Value')")).ID("InvoiceCounterValue").LabelMode(EditorLabelMode.Floating).Disabled(true).MaxLength(19))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('UUID')")).ID("UUID").LabelMode(EditorLabelMode.Floating).Disabled(true).MaxLength(50))</td>
 							</tr>
 						</table>
 
@@ -1123,6 +1159,7 @@
 																.ID("txtInvoiceNotes")
 																.Value("")
 																.Width("100%")
+																.MaxLength(2147483647)
 																.Placeholder(new JS("formatMessage('Enter your comments here...')"))
 																)
 
@@ -1156,6 +1193,7 @@
 																.ID("txtNotesinArabic")
 																.Value("")
 																.Height(40)
+																.MaxLength(2147483647)
 																.Width("100%") // You can adjust width as needed to fit
 																.Placeholder(new JS("formatMessage('Enter your comments here...')"))
 																)
@@ -1257,7 +1295,7 @@
 							</tr>
 							<tr>
 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo").LabelMode(EditorLabelMode.Floating))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client PO No')")).ID("ClientPONo").LabelMode(EditorLabelMode.Floating).MaxLength(2147483647))</td>
 							
 
 								<td>@(Html.DevExtreme().DateBox().Label(new JS("formatMessage('PO Date')")).ID("PODate").Type(DateBoxType.Date).DisplayFormat("dd-MMM-yyyy").LabelMode(EditorLabelMode.Floating))</td>
@@ -1272,13 +1310,13 @@
 							<tr>
 
 
-							<td colspan ="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef").LabelMode(EditorLabelMode.Floating))</td>
+							<td colspan ="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Project Ref./Contract No')")).ID("ProjectRef").LabelMode(EditorLabelMode.Floating).MaxLength(2147483647))</td>
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference").LabelMode(EditorLabelMode.Floating))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('SES Reference')")).ID("SESReference").LabelMode(EditorLabelMode.Floating).MaxLength(2147483647))</td>
 							
 
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms").LabelMode(EditorLabelMode.Floating))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Payment Terms')")).ID("PaymentTerms").LabelMode(EditorLabelMode.Floating).MaxLength(2147483647))</td>
 							</tr>
 
 						</table>
@@ -1291,13 +1329,13 @@
 							</tr>
 							<tr>
 
-							<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo").LabelMode(EditorLabelMode.Floating))</td>
+							<td colspan="2">@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Quotation No')")).ID("QuotationNo").LabelMode(EditorLabelMode.Floating).MaxLength(2147483647))</td>
 
 							</tr>
 							<tr>
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Notes')")).ID("DeliveryNotes").LabelMode(EditorLabelMode.Floating))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Delivery Notes')")).ID("DeliveryNotes").LabelMode(EditorLabelMode.Floating).MaxLength(2147483647))</td>
 							
-								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference").LabelMode(EditorLabelMode.Floating))</td>
+								<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Client GRN Reference')")).ID("ClientGRNReference").LabelMode(EditorLabelMode.Floating).MaxLength(2147483647))</td>
 							</tr>
 
 						</table>
@@ -1358,12 +1396,15 @@
 								@(Html.DevExtreme().TextBox()
 																.ID("LessAdvance")
 																.Value("Less: Advance")
-																.Width("100%")) <!-- Added Width -->
+																.Width("100%")
+																.MaxLength(2147483647)
+								) <!-- Added Width -->
 											   							</td>
 											   							<td>
 								@(Html.DevExtreme().NumberBox()
 																.ID("currencyexchangerate3")
 																.Min(1)
+																.Max(99999999)
 																.Step(1)
 																.ShowSpinButtons(true)
 																.Width("90%")) <!-- Fixed pixel size -->
@@ -1389,6 +1430,7 @@
 																.ID("LessAdvanceAr")
 																.Value("اقب المسبق")
 																.Width("100%")
+																.MaxLength(2147483647)
 																.RtlEnabled(true)
 																)
 
@@ -1470,6 +1512,7 @@
 																.Min(1)
 																.Step(1)
 																.ShowSpinButtons(true)
+																.Max(99999999)
 																.Width("90%"))
 											  							</td>
 											  							<td>
@@ -1492,6 +1535,7 @@
 																.ID("LessAdvanceAr1")
 																.Value("ناقص قيمة الخصومات الأخرى")
 																.Width("100%")
+																.MaxLength(2147483647)
 																.RtlEnabled(true)
 																)
 
@@ -1545,7 +1589,9 @@
 																.Min(1)
 																.Step(1)
 																.ShowSpinButtons(true)
-																.Width("90%"))
+																.Width("90%")
+																.Max(99999999)
+								)
 											  							</td>
 											  							<td>
 											  								<span class="input-group-prepend" style="margin-right: 10px;">
@@ -1566,6 +1612,7 @@
 																.LabelMode(EditorLabelMode.Floating)
 																.ID("LessAdvanceAr2")
 																.Value("احتفاظ أقل")
+																.MaxLength(2147483647)
 																.Width("100%")
 																.RtlEnabled(true)
 																)
@@ -1740,8 +1787,8 @@
         })
     )
 							</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Floating).Width("100%"))</td>
-							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Floating).Width("100%"))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Registered Name')")).ID("OurCompanyRegisteredName").LabelMode(EditorLabelMode.Floating).Width("100%").MaxLength(200))</td>
+							<td>@(Html.DevExtreme().TextBox().Label(new JS("formatMessage('Our Company Name in Arabic')")).ID("OurCompanyNameinArabic").LabelMode(EditorLabelMode.Floating).Width("100%").MaxLength(400))</td>
 							<td>
 								@(Html.DevExtreme().DateBox()
 																						.ID("ddlinvoicesubmittedon")
@@ -1768,6 +1815,7 @@
 																													.Width("100%")
 																													.ID("SubmittedBytext")
 																													.Value(null)
+																													.MaxLength(2147483647)
 																													// .Disabled(true)
 																													)
 								
@@ -1796,21 +1844,27 @@
 																										.Label(new JS("formatMessage('Address - Street Name:')"))
 																										.ID("OurStreetName")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Address - Street Name: (Arabic)')"))
 																										.ID("OurStreetNameArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Building Number:')"))
 																										.ID("OurBuildingNumber")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+                                                     )
 																   												</td>
 																   											</tr>
 																   											<tr>
@@ -1819,21 +1873,27 @@
 																										.Label(new JS("formatMessage('Address - Additional Address:')"))
 																										.ID("OurAdditionalAddress")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Address - Additional Address: (Arabic)')"))
 																										.ID("OurAdditionalAddressArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+                                                                                                        .MaxLength(2147483647)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Additional Number:')"))
 																										.ID("OurAdditionalNumber")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(2147483647)
+													)
 																   												</td>
 
 											</tr>
@@ -1844,21 +1904,28 @@
 																										.Label(new JS("formatMessage('Client City:')"))
 																										.ID("OurClientCity")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Client City: (Arabic)')"))
 																										.ID("OurClientCityArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(100)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Postal Code:')"))
 																										.ID("OurPostalCode")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(5)
+													)
 																   												</td>
 																   											</tr>
 																   											<tr>
@@ -1868,14 +1935,18 @@
 																										.Label(new JS("formatMessage('Province / State:')"))
 																										.ID("OurProvince")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+													)
 																   												</td>
 																   												<td>
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('Province / State: (Arabic)')"))
 																										.ID("OurProvinceArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(100)
+													)
 																   												</td>
 
 												<td style="width: 100%">
@@ -1896,14 +1967,19 @@
 																										.Label(new JS("formatMessage('District / Neighborhood:')"))
 																										.ID("OurDistrict")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(50)
+																										
+													.MaxLength(1))
 																   												</td>
 																   												<td colspan="2">
 													@(Html.DevExtreme().TextBox()
 																										.Label(new JS("formatMessage('District / Neighborhood: (Arabic)')"))
 																										.ID("OurDistrictArabic")
 																										.LabelMode(EditorLabelMode.Floating)
-																										.Width("100%"))
+																										.Width("100%")
+																										.MaxLength(100)
+													)
 																   												</td>
 
 																			</tr>
@@ -2359,6 +2435,10 @@
 
 		<div class ="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceEditFooter.cshtml")
+		</div>
+		<div id="loader" style="display: none;">
+			@* <span>Loading...</span> <!-- Or use a spinner icon --> *@
+			<i class="fa fa-spinner fa-spin" style="font-size: 24px;"></i>
 		</div>
 		<div id="ExcemptioncodePopover"></div>
 
@@ -4058,9 +4138,36 @@
 						});
 					}
 				},
-					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
-				{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150 },
+					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150,
+					 editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } },
+				{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150,
+                   editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    }},
+				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,
+				editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } },
 				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
 						{
 			dataField: "DiscountDetails",
@@ -4080,7 +4187,16 @@
 				}).appendTo(container);
 			}
 		},
-				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150 },
+				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,
+				editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } },
 				{
 		dataField: "VATPercentage",
 		caption: formatMessage('VAT%'),
@@ -4176,8 +4292,26 @@
 		}
 	},
 				{ dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
-				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150 },
-				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
+				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,
+                    editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    }},
+				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150,
+				editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } },
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 			],
 			editing: {
@@ -4618,140 +4752,6 @@
 			}
 
 					},
-
-
-					// {
-
-					// 		dataField: "UnitRateMethod",
-
-					// 	caption: formatMessage('Unit Rate Method'),
-
-					// 		cssClass: "center-header",
-
-					// 	width: 200,
-
-					// 	editCellTemplate: function (cellElement, cellInfo) {
-
-					// 		getUnitRateMethods().done(function (unitRates) {
-
-					// 			// Create container for dropdown + button
-
-					// 			let $container = $("<div>").css({
-
-					// 				display: "flex",
-
-					// 				alignItems: "center",
-
-					// 				gap: "5px",
-
-					// 				width: "100%"
-
-					// 			}).appendTo(cellElement);
-
-					// 			// DropDownBox inside container
-
-					// 			$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-
-					// 				dataSource: unitRates,
-
-					// 				valueExpr: "UnitCode",
-
-					// 				displayExpr: "UnitDesc",
-
-					// 				value: cellInfo.value || null,
-
-					// 				placeholder: "Select Unit Rate Method",
-
-					// 				dropDownOptions: { width: 600 },
-
-					// 				contentTemplate: function (e) {
-
-					// 					return $("<div>").dxDataGrid({
-
-					// 						dataSource: unitRates,
-
-					// 						keyExpr: "UnitCode",
-
-					// 						selection: { mode: "single" },
-
-					// 						height: 300,
-
-					// 						scrolling: { mode: "virtual" },
-
-					// 						columns: [
-
-					// 							{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-					// 							{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-					// 							{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-					// 							{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
-
-					// 						],
-
-					// 						onSelectionChanged: function (selectedItems) {
-
-					// 							let selectedItem = selectedItems.selectedRowsData[0];
-
-					// 							if (selectedItem) {
-
-					// 								e.component.option("value", selectedItem.UnitDesc);
-
-					// 								cellInfo.setValue(selectedItem.UnitDesc);
-
-					// 								let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-					// 								let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-
-					// 								if (rowIndex !== -1) {
-
-					// 									grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
-					// 									UnitCode=selectedItem.UnitCode;
-
-					// 								}
-
-					// 								e.component.close();
-
-					// 							}
-
-					// 						}
-
-					// 					});
-
-					// 				}
-
-					// 			});
-
-					// 			// ✅ Add Button
-
-					// 			$("<div>").dxButton({
-
-					// 				icon: "plus",
-
-					// 				hint: "Add new item",
-
-					// 				onClick: function () {
-
-					// 					let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-					// 					 let title = "Unit of Measure";
-					// 					openModal(url, title);
-					// 					//window.location.href = url;
-
-					// 				},
-
-					// 				width: 60,
-
-					// 				height: 30
-
-					// 			}).appendTo($container);
-
-					// 		});
-
-					// 	}
-
-					// },
-
 					{
 	dataField: "UnitRateMethod",
 	caption: formatMessage('Unit Rate Method'),
@@ -4826,16 +4826,43 @@
 },
 
 
-					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'),cssClass: "center-header", width: 150 },
+					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'),cssClass: "center-header", width: 150,
+					editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } },
 
-					{ dataField: "UnitRate", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150 },
+					{ dataField: "UnitRate", caption: formatMessage('Unit Price'),cssClass: "center-header", width: 150,
+					editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    }},
 
 						{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'),cssClass: "center-header", width: 185, format: { type: "fixedPoint", precision: 2 } },
 
-						{ dataField: "Discount", caption: formatMessage('Discount'), cssClass: "center-header",width: 150 },
+						{ dataField: "Discount", caption: formatMessage('Discount'), cssClass: "center-header",width: 150,
+						editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    }},
 
 					//{ dataField: "DiscountDetails", caption: "...", width: 50 },
-							{
+		{
 			dataField: "DiscountDetails",
 			caption: "...",
 			cssClass: "center-header",
@@ -4852,10 +4879,9 @@
 					}
 				}).appendTo(container);
 			}
-		}
-		,
+		},
 
-							{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
+					{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 } },
 
 					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -5144,25 +5170,32 @@
 				}
 				});
 				
-			// Fetch dropdown data (same API can be used if needed)
-		 function getDropdownData() {
-			return $.ajax({
-				url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-				method: "GET",
-				dataType: "json"
-			}).then(function(response) {
-				console.log("GsData",response)
-				return response.map(item => ({
-					GSCode: item.Gscode,
-					GSDescrpition: item.Gsdescrpition,
-					GsdescriptionAr:item.GsdescriptionAr,
-					ItemPartNo: item.ItemPartNo,
-					CostPrice: item.CostPrice,
-					GSSellingRate: item.GssellingRate,
-					ReorderQty:item.ReorderQty
-				}));
-			});
-		}
+	// Fetch dropdown data (same API can be used if needed)
+				function getDropdownData() {
+		// Show loader before AJAX call
+		$("#loader").show();
+
+		return $.ajax({
+			url: "/api/VATModule/GetGoodsAndServices", // API endpoint
+			method: "GET",
+			dataType: "json"
+		}).then(function(response) {
+			console.log("GsData", response);
+			return response.map(item => ({
+				GSCode: item.Gscode,
+				GSDescrpition: item.Gsdescrpition,
+				GsdescriptionAr: item.GsdescriptionAr,
+				ItemPartNo: item.ItemPartNo,
+				CostPrice: item.CostPrice,
+				GSSellingRate: item.GssellingRate,
+				ReorderQty: item.ReorderQty,
+                UnitDescription:item.UnitRateMethod
+			}));
+		}).always(function () {
+			// Hide loader after AJAX call finishes (success or error)
+			$("#loader").hide();
+		});
+	}
 		function getUnitRateMethods() {
 			return $.ajax({
 				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -5243,13 +5276,30 @@
 				revaccheadid = "L00343";
 			}
 			debugger;
-
+			  let invoiceTypeText = $("#VATInvoiceType").dxDropDownBox("instance").option("value");
+              let invoiceSubTypeText = $("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
+              
+              let InvoiceType = null; // This should match C# short?
+              let InvoiceSubType=null;
+              
+              if (invoiceTypeText === "Tax Invoice") {
+                  InvoiceType = 01;
+              }
+              
+              if (invoiceSubTypeText === "Tax Invoice") {
+                  InvoiceSubType = "01";
+              } else if (invoiceSubTypeText === "Simplified Tax Invoice") {
+                  InvoiceSubType = "02";
+              }
 			var InvoiceMaster = {
 
 					InvoiceNo: data,
 				InvoiceDate: $("#InvoiceDate").dxDateBox("instance").option("value") || null,
 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value") || null,
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,
+				InvoiceTypeCode: InvoiceType|| null,
+				InvoiceTypeCodeSubType: InvoiceSubType|| null,
+				InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
 				ClientCode: accheadid || null,
 				BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,
 				BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,
@@ -5396,9 +5446,11 @@
 									 IsClientCode=true;
 										console.log("ClientData",selectedRowData[0])
 								  let  accheadname = selectedRowData[0].BillingName;
+
 									  ClientAddressSt=selectedRowData[0].ClientAddressStreet;
 										 ClientCity= selectedRowData[0].ClientCity;
 										ClientPostalCode=selectedRowData[0].ClientPostalCode;
+										 var dropDownBox = $("#ClientAddressDetails").dxDropDownBox("instance");
 		                           	    var fullAddress = [ClientPostalCode,ClientAddressSt, ClientCity,selectedRowData[0].ClientBuildingNumber].filter(Boolean).join(", ");
 			                            dropDownBox.option("value", fullAddress);
 		                                ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
@@ -5426,10 +5478,7 @@
 				                        $("#District").dxTextBox("instance").option("value", selectedRowData[0].ClientNeighborhood);
 
 
-								} else {
-									DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
-									return;
-								}
+								} 
 				}
 
 			}
@@ -7190,6 +7239,22 @@
 		  {
 				  revaccheadid="L00343"
 		  }
+		  let invoiceTypeText = $("#VATInvoiceType").dxDropDownBox("instance").option("value");
+          let invoiceSubTypeText = $("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
+          
+          let InvoiceType = null; // This should match C# short?
+		  let InvoiceSubType=null;
+          
+          if (invoiceTypeText === "Tax Invoice") {
+              InvoiceType = 01;
+          }
+          
+          if (invoiceSubTypeText === "Tax Invoice") {
+              InvoiceSubType = "01";
+          } else if (invoiceSubTypeText === "Simplified Tax Invoice") {
+              InvoiceSubType = "02";
+          }
+
 
 			if(clientnameValidation.isValid)
 			{
@@ -7201,9 +7266,10 @@
 				InvoiceDateWtTime: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
 			    PaymentMeansTypeCode: paymentmeanstypecode,
-				  // InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")|| null,
-				  // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
-				  // InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
+
+				  InvoiceTypeCode: InvoiceType|| null,
+				  InvoiceTypeCodeSubType: InvoiceSubType|| null,
+				  InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
 
 				 ClientCode: accheadid|| null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
@@ -7212,7 +7278,7 @@
 				 BuyerVatnumber: $("#ClientVATNo").dxTextBox("instance").option("value")|| null,
 				 BuyerOtherIdtype: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
 				BuyerOtherId: $("#ClientOtherID").dxTextBox("instance").option("value")|| null,
-					BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
+				BuyerAddressStreet:$("#StreetName").dxTextBox("instance").option("value")|| null,
 			BuyerAddressStreetAr:$("#StreetNameArabic").dxTextBox("instance").option("value")|| null,
 			BuyerAdditionalStreet:$("#AdditionalAddress").dxTextBox("instance").option("value")|| null,
 			BuyerAdditionalStreetAr:$("#AdditionalAddressArabic").dxTextBox("instance").option("value")|| null,
@@ -7386,10 +7452,8 @@
 			}
 			else
 			{
-				  DevExpress.ui.dialog.alert(
-						"Cannot continue saving with errors,please clear the errors and continue.",
-						"Clear Errors"
-					);
+           	DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
+
 			}
 
 		 });
@@ -7599,10 +7663,9 @@
 				}
 				else
 				{
-					  DevExpress.ui.dialog.alert(
-							"Cannot continue saving with errors,please clear the errors and continue.",
-							"Clear Errors"
-						);
+					DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
+
+					
 				}
 
 			 });
@@ -7641,7 +7704,7 @@
 				},
 				error: function (xhr, status, error) {
 					console.error("Error loading Payment Accounts:", error);
-					DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					DevExpress.ui.notify("Failed to load account details.", "Error",2000);
 				}
 			});
 		});
@@ -7915,18 +7978,19 @@
 				data: JSON.stringify({ voucherNo: vno }), // Send as JSON in request body
 				success: function (response) {
 					if (response && response.Message) {
-						DevExpress.ui.dialog.alert(
-							"VAT Invoice has been Verified.",
-							"Verified"
-						).done(() => {
+						DevExpress.ui.notify(
+							"VAT Invoice has been Verified.","success",2000
+							
+						);
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 							initWorkflowTippyPopovers();
-						});
+						
 					}
 					else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
+						btnVerifydisableEditing();
 				},
 				error: function (xhr, status, error) {
 					let errorMessage = xhr.responseJSON && xhr.responseJSON.Message
@@ -8003,7 +8067,7 @@
 				success: function (response) {
 					if (response && response.Message) {
     DevExpress.ui.notify("VAT InvoiceNo has been Approved.", "success", 2000)
-        .done(() => {
+
             disableEditing();
 
             const approvedBy = response.VoucherApprovedBy || "N/A";
@@ -8028,7 +8092,6 @@
             }
 
 
-        });
 }
                else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -8127,7 +8190,7 @@
 					if (response && response.Message) {
 						if(response.IsDirect == true)
 						{
-							DevExpress.ui.notify("VAT Invoice has been posted to the Accounting Books", "success", 3000);
+							DevExpress.ui.notify("VAT Invoice has been posted to the Accounting Books", "success", 2000);
 							
 						}
 							// else if(response.IsPosted == true)
@@ -8157,7 +8220,7 @@
 
 
 					} else {
-						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 3000);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -9318,6 +9381,7 @@
 				if (data && data.AccountID) {
 					// Set default value to DropDownBox
 					const dropDownBox = $("#ddclientcode").dxDropDownBox("instance");
+					
 					if (dropDownBox) {
 						dropDownBox.option("value", data.AccountID);
 					}
