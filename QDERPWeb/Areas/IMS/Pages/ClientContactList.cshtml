@@ -111,7 +111,7 @@
                 .Width("100%")
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("class", "white-bg")
-                        .ReadOnly(true))
+                .ReadOnly(true))
 
         </div>
         <div class="form-field">
@@ -157,7 +157,7 @@
                 .LabelMode(EditorLabelMode.Floating)
                 .Width("100%")
                 .ElementAttr("class", "white-bg")
-                )
+                        .ValidationRules(r => r.AddRequired().Message("Contact Person is required.")))
             @(Html.DevExtreme().Button()
                 .Icon("user") // built-in person icon
 
@@ -395,28 +395,34 @@
         });
     });
     function saveOrUpdateClientList() {
+    const contactPersonInstance = $("#contactPerson").dxTextBox("instance");
+    const validator = $("#contactPerson").dxValidator("instance");
 
-        const clientContactSlNo = $("#clientHidden").dxTextBox("instance").option("value"); // hidden field for ID
+    const validationResult = validator.validate();
 
-        const data = {
-            ClientCode: $("#clientCode").dxTextBox("instance").option("value"),
-            ClientName: $("#txtclientName").dxTextBox("instance").option("value"),
-            ContactPerson: $("#contactPerson").dxTextBox("instance").option("value"),
-            ContactPersonTitle: $("#title").dxTextBox("instance").option("value"),
-            ContactDivision: $("#division").dxTextBox("instance").option("value"),
-            ContactLocation: $("#location").dxTextBox("instance").option("value"),
-            ContactMobile1: $("#mobile1").dxTextBox("instance").option("value"),
-            ContactPhone1: $("#phone1").dxTextBox("instance").option("value"),
-            ContactMobile2: $("#mobile2").dxTextBox("instance").option("value"),
-            ContactPhone2: $("#phone2").dxTextBox("instance").option("value"),
-            ContactFaxNo: $("#fax").dxTextBox("instance").option("value"),
-            ContactEmail: $("#email").dxTextBox("instance").option("value")
-        };
+    if (!validationResult.isValid) {
+        return; // stop execution if validation fails
+    }
 
-        // Only add ClientContactSlNo if it's available (i.e., update scenario)
-        if (clientContactSlNo) {
-            data.ClientContactSlNo = clientContactSlNo;  // Add the ID only if it exists (for update)
-        }
+    const clientContactSlNo = $("#clientHidden").dxTextBox("instance").option("value");
+    const data = {
+        ClientCode: $("#clientCode").dxTextBox("instance").option("value"),
+        ClientName: $("#txtclientName").dxTextBox("instance").option("value"),
+        ContactPerson: contactPersonInstance.option("value"),
+        ContactPersonTitle: $("#title").dxTextBox("instance").option("value"),
+        ContactDivision: $("#division").dxTextBox("instance").option("value"),
+        ContactLocation: $("#location").dxTextBox("instance").option("value"),
+        ContactMobile1: $("#mobile1").dxTextBox("instance").option("value"),
+        ContactPhone1: $("#phone1").dxTextBox("instance").option("value"),
+        ContactMobile2: $("#mobile2").dxTextBox("instance").option("value"),
+        ContactPhone2: $("#phone2").dxTextBox("instance").option("value"),
+        ContactFaxNo: $("#fax").dxTextBox("instance").option("value"),
+        ContactEmail: $("#email").dxTextBox("instance").option("value")
+    };
+
+    if (clientContactSlNo) {
+        data.ClientContactSlNo = clientContactSlNo;
+    }
 
         $.ajax({
             url: '/api/ClientContactList/SaveOrUpdateClientContact', // use the API endpoint for save or update
