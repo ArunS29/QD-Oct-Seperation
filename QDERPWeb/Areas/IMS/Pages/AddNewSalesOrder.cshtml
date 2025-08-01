@@ -179,6 +179,12 @@
         border-width: 2px;
     }
 </style>
+<input type="hidden" id="SubmittedBy" value="" />
+<input type="hidden" id="SubmittedOn" value="" />
+<input type="hidden" id="VerifiedBy" value="" />
+<input type="hidden" id="VerifiedOn" value="" />
+<input type="hidden" id="ApprovedBy" value="" />
+<input type="hidden" id="ApprovedOn" value="" />
 
 
 <meta charset="UTF-8">
@@ -201,7 +207,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
 
-        @(Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(300)
+        @(Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(250)
                 .Items(item =>
                 {
                     item.Add()
@@ -1959,6 +1965,8 @@
                     contentType: "application/json",
                     data: JSON.stringify(model),
                     success: function (response) {
+                          isVoucherSaved = true; // Mark Updated step as done
+                      updateWorkflowVisual(getWorkflowStatusFromFields());
                         DevExpress.ui.notify(response.message, "success", 2000);
                          location.reload();
                         // ✅ Reload grid after save
@@ -2188,6 +2196,8 @@
                         contentType: "application/json",
                         data: JSON.stringify(model),
                         success: function (response) {
+                              isVoucherSaved = true; // Mark Updated step as done
+                      updateWorkflowVisual(getWorkflowStatusFromFields());
                             DevExpress.ui.notify(response.message, "success", 2000);
                             // ✅ Reload grid after save
                             $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
@@ -2277,7 +2287,11 @@
             success: function (response) {
                 if (response.success) {
                     DevExpress.ui.notify(response.message, "success", 2000);
+                     $("#SubmittedBy").val(response.submittedBy);
+                    $("#SubmittedOn").val(response.submittedOn);
 
+                    syncWorkflowFromFields();
+                    initWorkflowTippyPopovers();
                 
 
                     // 🛑 Disable Submit button
@@ -2312,6 +2326,11 @@
             contentType: 'application/json',
             success: function (response) {
                 if (response.success) {
+                    $("#VerifiedBy").val(response.verifiedBy);
+                    $("#VerifiedOn").val(response.verifiedOn);
+
+                    syncWorkflowFromFields();
+                    initWorkflowTippyPopovers();
                     DevExpress.ui.notify(response.message, "success", 2000);
                     $("#btnVerify").dxButton("instance").option("disabled", true);
                 } else {
@@ -2340,6 +2359,11 @@
             contentType: 'application/json',
             success: function (response) {
                 if (response.success) {
+                       $("#ApprovedBy").val(response.approvedBy);
+                        $("#ApprovedOn").val(response.approvedOn);
+
+                        syncWorkflowFromFields();
+                        initWorkflowTippyPopovers();
                     DevExpress.ui.notify(response.message, "success", 2000);
                     disableAllControls(); // disable fields/buttons
                 } else {
@@ -2496,4 +2520,140 @@ $(document).ready(function () {
 				e.component.focus();
 			});
 		}
+        	            let isVoucherSaved = false;
+
+  function getWorkflowStatusFromFields() {
+    const preparedVal = $("#SubmittedBy").val();
+    const verifiedVal = $("#VerifiedBy").val();
+    const approvedVal = $("#ApprovedBy").val();
+
+    const submitted = preparedVal !== "";
+    const verified = verifiedVal !== "";
+    const approved = approvedVal !== "";
+
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+
+
+
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = "In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = "Pending";
+            }
+
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+    // function attachWorkflowWatchers() {
+    //     $("#SubmittedBy").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    //     $("#VerifiedBy").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    //     $("#ApprovedBy").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    // }
+
+        $(function () {
+            setTimeout(() => {
+                // attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+     
+
+
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+function initWorkflowTippyPopovers() {
+    tippy.hideAll();
+    document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+
+    const submittedBy = $("#SubmittedBy").val() || "N/A";
+    const verifiedBy = $("#VerifiedBy").val() || "N/A";
+    const approvedBy = $("#ApprovedBy").val() || "N/A";
+
+    const submittedOn = formatDate($("#SubmittedOn").val());
+    const verifiedOn = formatDate($("#VerifiedOn").val());
+    const approvedOn = formatDate($("#ApprovedOn").val());
+
+    tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        placement: 'top',
+        animation: 'shift-away',
+        delay: [100, 100],
+    });
+
+    tippy('#circle-verify', {
+        content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+        allowHTML: true,
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        placement: 'top',
+        animation: 'shift-away',
+        delay: [100, 100],
+    });
+
+    tippy('#circle-approve', {
+        content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+        allowHTML: true,
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        placement: 'top',
+        animation: 'shift-away',
+        delay: [100, 100],
+    });
+}
+
 </script>
