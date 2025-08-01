@@ -4,6 +4,8 @@ using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QDERPWeb.Models;
+
 
 namespace QDWEB.Areas.Finance.Controllers
 {
@@ -13,10 +15,13 @@ namespace QDWEB.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherApprovalController> _logger;
 
-        public VoucherApprovalController(ILogger<VoucherApprovalController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly FcmService _fcmService;
+
+        public VoucherApprovalController(ILogger<VoucherApprovalController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _fcmService = fcmService;
         }
         [HttpGet]
         public IActionResult GetVoucherApproval(string voucherTypes)
@@ -161,13 +166,16 @@ namespace QDWEB.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateVoucherStatus([FromBody] VoucherUpdateRequest request)
+        public async Task<IActionResult> UpdateVoucherStatus([FromBody] VoucherUpdateRequest request)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
             var UserName = HttpContext.Session.GetString("UserName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
+
             var vouchers = dbContext.Tbl201VoucherMasters
                 .Where(v => request.VoucherNos.Contains(v.VoucherNo))
                 .ToList();
@@ -223,18 +231,30 @@ namespace QDWEB.Areas.Finance.Controllers
                 _ => "Operation completed."
             };
 
-            return Json(new { success = true, message = message });
-        }
+             var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = vouchers[0].VoucherNo,
+                 ActionType = request.ActionType,
+                TenantName = TenantName 
+            };
 
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
+        return Json(new { success = true, message = message });
+        
+}
 
         [HttpPost]
-        public IActionResult VerifyVoucher(string voucherNo)
+        public async Task<IActionResult> VerifyVoucher(string voucherNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(voucherNo))
                         return BadRequest("Invalid VoucherNo");
@@ -248,6 +268,16 @@ namespace QDWEB.Areas.Finance.Controllers
                     voucher.IsVerified = true;
 
                     dbContext.SaveChanges();
+
+                       var notifyRequest = new NotificationRequest
+                                {
+                                    UserId = UserId, // or fetch from session/DB
+                                    VoucherName = voucher.VoucherNo,
+                                    ActionType = "Verify Voucher",
+                                    TenantName = TenantName 
+                                };
+
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new
                     {
