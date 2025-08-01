@@ -295,7 +295,7 @@
         }
         // else: do nothing (no span rendered)
         }
-        "));
+        "));    
  columns.AddFor(m => m.UnitType)
                 .Caption(new JS("formatMessage('Unit')"))
             .Width(100);
@@ -433,15 +433,18 @@
         cellElement
         .text(formatted)
         .css({
-        backgroundColor: '#e6ffe6', // light green
-        padding: '4px 8px',         // optional spacing
-        borderRadius: '6px'         // optional rounded corners
+        backgroundColor: '#e6ffe6',
+        display: 'inline-block',
+        fontWeight: 'bold',
+        margin: '10px 35px',
+        padding: '4px 10px',
+        borderRadius: '20px'      
         });
 
         if (cellInfo.value < 0) {
-        cellElement.css('color', 'red'); // negative in red
+        cellElement.css('color', 'red');    
         } else {
-        cellElement.css('color', '#1a8f1a'); // positive in green text
+        cellElement.css('color', '#1a8f1a'); 
         }
         }
         "));

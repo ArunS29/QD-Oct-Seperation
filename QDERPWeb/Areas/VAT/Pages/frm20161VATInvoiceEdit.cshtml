@@ -3821,10 +3821,7 @@
                                                        width: 240,
                                                           placeholder: "Search..."
                                                       },
-                                                      filterRow: {
-                                                          visible: true,
-                                                          applyFilter: "auto"
-                                                      },
+                                                  
 										columns: [
 											{ dataField: "GSCode", caption: "Code", width: 80 },
 											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
@@ -3854,6 +3851,54 @@
 									});
 								}
 							});
+            $("<div>").css({ flex: 1 }).dxDropDownBox({
+                dataSource: dropdownData,
+                valueExpr: "GSCode",
+                displayExpr: "GSDescrpition",
+                value: options.value,
+                dropDownOptions: { width: 800 },
+                contentTemplate: function (e) {
+                    return $("<div>").dxDataGrid({
+                        dataSource: dropdownData,
+                        selection: { mode: "single" },
+                        keyExpr: "GSCode",
+                        height: 300,
+                        scrolling: { mode: "virtual" },
+						 searchPanel: {
+						visible: true,
+						highlightCaseSensitive: true,
+						width: 130,
+						placeholder: "Search..."
+						},
+                        columns: [
+                            { dataField: "GSCode", caption: "Code", width: 80 },
+                            { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                            { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+                            { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                            { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+                            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+                            { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                        ],
+                        onSelectionChanged: function (selectedItems) {
+                            let selectedItem = selectedItems.selectedRowsData[0];
+                            if (selectedItem) {
+                                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                                let rowIndex = dataGrid.getRowIndexByKey(options.key);
+                                if (rowIndex !== -1) {
+                                    dataGrid.cellValue(rowIndex, "DetailedDescription", selectedItem.GSDescrpition || "");
+                                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+                                    dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                                    dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                                    dataGrid.cellValue(rowIndex, "Qty", 1);
+                                    dataGrid.cellValue(rowIndex, "VAT%", "15%");
+									dataGrid.cellValue(rowIndex, "UnitRateMethod",selectedItem.UnitDescription);
+                                }
+                                e.component.close();
+                            }
+                        }
+                    });
+                }
+            }).appendTo($container);
 
 							$("<div>").dxButton({
 								icon: "plus",
@@ -4020,6 +4065,12 @@
                                     selection: { mode: "single" },
                                     height: 300,
                                     scrolling: { mode: "virtual" },
+									 searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 130,
+													placeholder: "Search..."
+													},
                                     columns: [
                                         { dataField: "UnitCode", caption: "Code", width: 80 },
                                         { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
@@ -4159,6 +4210,12 @@
                         keyExpr: "TaxSlabCode",
                         height: 300,
                         scrolling: { mode: "virtual" },
+						 searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 130,
+													placeholder: "Search..."
+													},
                         columns: [
                             { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
                             { dataField: "TaxRate", caption: "TaxRate", width: 80 }
@@ -4407,6 +4464,11 @@
 										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+										searchPanel: {
+                  visible: true,
+                  width: 240,
+                  placeholder: "Search..."
+              },
 
 										columns: [
 
@@ -4700,6 +4762,12 @@
 										height: 300,
 
 										scrolling: { mode: "virtual" },
+												 searchPanel: {
+													visible: true,
+													highlightCaseSensitive: true,
+													width: 130,
+													placeholder: "Search..."
+													},
 
 										columns: [
 
