@@ -13,6 +13,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using QDERPWeb.Models;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -23,10 +24,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ExpenseClaimController> _logger;
 
-        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly FcmService _fcmService;
+
+        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _fcmService = fcmService;
         }
 
         [HttpGet]
@@ -472,6 +476,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var userName = HttpContext.Session.GetString("UserName");
+                var UserId = HttpContext.Session.GetString("UserId");
+                var TenantName = HttpContext.Session.GetString("TenantName");
+
                 var submittedOn = DateTime.Now;
 
                 var claim = await dbContext.Tbl20102ExpenseClaimMasters
@@ -484,6 +491,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.SubmittedOn = submittedOn;
 
                     await dbContext.SaveChangesAsync();
+
+                    var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "Claim Submitted",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Json(new
                     {
@@ -506,6 +523,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var userName = HttpContext.Session.GetString("UserName");
+                var UserId = HttpContext.Session.GetString("UserId");
+                var TenantName = HttpContext.Session.GetString("TenantName");
+
                 var verifiedOn = DateTime.Now;
 
                 var claim = await dbContext.Tbl20102ExpenseClaimMasters
@@ -518,6 +538,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.VerifiedOn = verifiedOn;
 
                     await dbContext.SaveChangesAsync();
+
+                    var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "Claim Verified",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Json(new
                     {
@@ -538,6 +568,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var userName = HttpContext.Session.GetString("UserName");
+                var UserId = HttpContext.Session.GetString("UserId");
+                var TenantName = HttpContext.Session.GetString("TenantName");
+
                 var approveOn = DateTime.Now;
 
                 var claim = await dbContext.Tbl20102ExpenseClaimMasters
@@ -550,6 +583,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.ApprovedOn = approveOn;
 
                     await dbContext.SaveChangesAsync();
+
+                        var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "Claim Approved",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Json(new
                     {

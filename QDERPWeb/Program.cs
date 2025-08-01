@@ -1,29 +1,46 @@
-﻿using QD.ERP.Web;
-using QD.ERP.Web.DAL.Entities;
-using QD.ERP.Web.Models.DALCommon;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Mvc.ApplicationModels;
-using Microsoft.EntityFrameworkCore;
-using SaasKit.Multitenancy;
+﻿using DevExpress.AspNetCore;
+using DevExpress.AspNetCore.Reporting;
+using DevExpress.Spreadsheet.Charts;
+using DevExpress.XtraCharts;
 using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
-using DevExpress.AspNetCore;
+using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.AspNetCore.Authentication.Cookies;
-using DevExpress.AspNetCore.Reporting;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http.Features;
+using Microsoft.AspNetCore.Mvc.ApplicationModels;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
+using QD.ERP.Web;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Middleware;
+using QD.ERP.Web.Middlewares;
+using QD.ERP.Web.Models.DALCommon;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Service.ReportService;
+using QD.ERP.Web.Services.Logging;
+using SaasKit.Multitenancy;
 using Serilog;
 using Serilog.Events;
-using Microsoft.ApplicationInsights.Extensibility;
-using QD.ERP.Web.Service.ReportService;
-using QD.ERP.Web.Middlewares;
-using DevExpress.XtraCharts;
-using QD.ERP.Web.Middleware;
-using QD.ERP.Web.Services.Logging;
+using System.Diagnostics;
 using System.Text;
 using System.Text.Json;
-using System.Diagnostics;
-using Microsoft.AspNetCore.Http.Features;
+using FirebaseAdmin;
+using Google.Apis.Auth.OAuth2;
+
+
+if (FirebaseApp.DefaultInstance == null)
+{
+
+    var path = Path.Combine(AppContext.BaseDirectory, "firebase-config.json");
+
+    FirebaseApp.Create(new AppOptions
+    {
+        Credential = GoogleCredential.FromFile(path)
+    });
+
+    Debug.WriteLine("✅ Firebase initialized with app name: " + FirebaseApp.DefaultInstance.Name);
+}
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -56,6 +73,8 @@ builder.Services.AddScoped<ReportDbContext>(serviceProvider =>
 
 builder.Services.AddScoped<DevExpress.XtraReports.Web.Extensions.ReportStorageWebExtension, ReportStorageWebExtension>();
 
+builder.Services.AddScoped<FcmService>();
+
 // Configuring Reporting Services
 builder.Services.ConfigureReportingServices(configurator =>
 {
@@ -69,7 +88,6 @@ builder.Services.ConfigureReportingServices(configurator =>
         viewerConfigurator.UseCachedReportSourceBuilder();
     });
 });
-
 
 var CommonDBConnection = builder.Configuration.GetConnectionString("CommonDBConnection");
 builder.Services.AddDbContext<ERPCommonContext>(options =>
@@ -92,7 +110,7 @@ builder.Services.AddMemoryCache();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
-    options.IdleTimeout = TimeSpan.FromMinutes(20);
+    options.IdleTimeout = TimeSpan.FromMinutes(60); // Set session timeout to 1 hour
     options.Cookie.HttpOnly = true;
     options.Cookie.IsEssential = true;
 });
@@ -219,30 +237,28 @@ app.Use(async (context, next) =>
     {
         context.Request.EnableBuffering();
 
-        using (var reader = new StreamReader(
+        using var reader = new StreamReader(
             context.Request.Body,
             encoding: Encoding.UTF8,
             detectEncodingFromByteOrderMarks: false,
             bufferSize: 1024,
-            leaveOpen: true))
-        {
-            var body = await reader.ReadToEndAsync();
-            context.Request.Body.Position = 0;
+            leaveOpen: true);
+        var body = await reader.ReadToEndAsync();
+        context.Request.Body.Position = 0;
 
-            if (!string.IsNullOrWhiteSpace(body))
+        if (!string.IsNullOrWhiteSpace(body))
+        {
+            try
             {
-                try
+                var json = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
+                if (json != null && json.TryGetValue("TenantName", out var tn))
                 {
-                    var json = JsonSerializer.Deserialize<Dictionary<string, object>>(body);
-                    if (json != null && json.TryGetValue("TenantName", out var tn))
-                    {
-                        tenantName = tn?.ToString();
-                    }
+                    tenantName = tn?.ToString();
                 }
-                catch (Exception ex)
-                {
-                    Debug.WriteLine($"Error fetching Tenant Name: {ex.Message}");
-                }
+            }
+            catch (Exception ex)
+            {
+                Debug.WriteLine($"Error fetching Tenant Name: {ex.Message}");
             }
         }
     }

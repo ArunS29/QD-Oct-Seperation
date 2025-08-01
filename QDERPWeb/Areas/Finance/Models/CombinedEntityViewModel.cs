@@ -604,6 +604,9 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string QuoteType { get; set; }
 
         public decimal? QuoteTransport { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
 
         public decimal? QuoteDiscount { get; set; }
 

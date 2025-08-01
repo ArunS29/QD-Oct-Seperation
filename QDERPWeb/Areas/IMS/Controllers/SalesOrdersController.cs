@@ -57,6 +57,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     query = query.Where(i => i.SalesOrderDate >= fromDate && i.SalesOrderDate <= toDate);
 
                     // Fetching the data
+                    var cost = 0;
                     var data = await query.Select(i => new
                     {
                         i.SalesOrderNo,
@@ -73,6 +74,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalAfterDiscount,
                         i.TotalTaxAmount,
                         i.TotalWithTax,
+                        cost = i.TotalWithTax * i.CurrencyRate,
                     }).ToListAsync();
 
                     return Json(data);
@@ -582,6 +584,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingEntity.AddedBy = model.AddedBy ?? User.Identity?.Name;
                     existingEntity.AddedOn = DateTime.Now;
                     existingEntity.IsVerified = true;
+                    existingEntity.CurrencyId = model.CurrencyId ?? 1;
+                    existingEntity.BaseCurrencyId = model.BaseCurrencyId ?? 1;
+                    existingEntity.CurrencyRate = model.CurrencyRate ?? 0;
 
                     dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
                 }
@@ -621,7 +626,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         AddedOn = DateTime.Now,
                          IsApproved = false,
                         IsVerified = false,
-                        IsSubmitted = false
+                        IsSubmitted = false,
+                        CurrencyId = model.CurrencyId??1,
+                        BaseCurrencyId = model.BaseCurrencyId??1,
+                        CurrencyRate = model.CurrencyRate ?? 0
                     };
 
                     await dbContext.Tbl60201salesOrderMasters.AddAsync(entity);
@@ -922,6 +930,9 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                 order.IsVerified,
                 order.IsApproved,
                 order.CostAllocationMasterGroup,
+                order.CurrencyId,
+                order.CurrencyRate,
+                order.BaseCurrencyId,
                 SalesOrderChildren = children
             });
         }
