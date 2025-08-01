@@ -1320,7 +1320,7 @@ buttons.Add()
 
                                 if(IsObeselete==true)
                                 {
-                                      DevExpress.ui.dialog.alert(
+                                      DevExpress.ui.notify(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1339,7 +1339,7 @@ buttons.Add()
                         },
                         error: function (xhr, status, error) {
                           //  DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
-                              DevExpress.ui.dialog.alert(
+                              DevExpress.ui.notify(
                         "Voucher has no line items to be saved, please enter transaction to save.!",
                         "No Line Items"
                     );
@@ -1350,14 +1350,14 @@ buttons.Add()
                     if(IsNotification==true)
                     {
 
-                            DevExpress.ui.dialog.alert(
+                            DevExpress.ui.notify(
                         "Cannot continue saving with errors,please clear the errors and continue.",
                         "Clear Errors"
                     );
                     }
                     else
                     {
-                          DevExpress.ui.dialog.alert(
+                          DevExpress.ui.notify(
                         "Voucher has no line items to be saved, please enter transaction to save.!",
                         "No Line Items"
                     );
@@ -1426,14 +1426,14 @@ buttons.Add()
                             if (response.success) {
 
 
-                                 DevExpress.ui.dialog.alert(
+                                 DevExpress.ui.notify(
                         "Payment Voucher Details updated Successfully.",
                         "Update Sucessful"
                     );
 
                                 if(IsObeselete==true)
                                 {
-                                      DevExpress.ui.dialog.alert(
+                                      DevExpress.ui.notify(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1450,7 +1450,7 @@ buttons.Add()
                         },
                         error: function (xhr, status, error) {
                           //  DevExpress.ui.notify("Voucher has no line items to be saved, please enter transaction to save.!", "error", 2000);
-                              DevExpress.ui.dialog.alert(
+                              DevExpress.ui.notify(
                         "Voucher has no line items to be saved, please enter transaction to save.!",
                         "No Line Items"
                     );
@@ -1461,14 +1461,14 @@ buttons.Add()
                     if(IsNotification==true)
                     {
 
-                            DevExpress.ui.dialog.alert(
+                            DevExpress.ui.notify(
                         "Cannot continue saving with errors,please clear the errors and continue.",
                         "Clear Errors"
                     );
                     }
                     else
                     {
-                          DevExpress.ui.dialog.alert(
+                          DevExpress.ui.notify(
                         "Voucher has no line items to be saved, please enter transaction to save.!",
                         "No Line Items"
                     );
@@ -1533,7 +1533,7 @@ buttons.Add()
                         dataType: "json",
                         success: function (response) {
                             if (response.success) {
-                        DevExpress.ui.dialog.alert(
+                        DevExpress.ui.notify(
                             "Payment Voucher Details Updated Sucessfully.",
                             "Data Saved Successfully"
                         ).done(function () {
@@ -1551,7 +1551,7 @@ buttons.Add()
                     });
                 } else {
 
-                    DevExpress.ui.dialog.alert(
+                    DevExpress.ui.notify(
         "Voucher has no line items to be saved, please enter transaction to save.!",
         "No Line Items"
     ).done(function () {
@@ -1645,7 +1645,7 @@ buttons.Add()
 
                         if(paymentIsLedgerObselete==true){
                             IsObeselete=true;
-                              DevExpress.ui.dialog.alert(
+                              DevExpress.ui.notify(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1683,7 +1683,7 @@ buttons.Add()
 
                         if(accIsLedgerObselete==true){
 
-                              DevExpress.ui.dialog.alert(
+                              DevExpress.ui.notify(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1768,7 +1768,7 @@ function addVoucherEntry() {
             url: "/api/VoucherMaster/GetNewCPVoucherNo", // Replace with your actual controller route
             success: function (response) {
                 if (!response || response.success === false) {
-                    DevExpress.ui.dialog.alert("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
+                    DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
                     return;
                 }
 
@@ -1782,7 +1782,7 @@ function addVoucherEntry() {
                  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
             },
             error: function (xhr, status, error) {
-                DevExpress.ui.dialog.alert("Error retrieving voucher number: " + error, "Error");
+                DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
             }
         });
     } else {
@@ -1806,7 +1806,7 @@ function addVoucherEntry() {
 
     // Ensure paymentaccheadname and paymentaccheadId are assigned before use
     if (!paymentaccheadname || !paymentaccheadId) {
-        DevExpress.ui.dialog.alert(
+        DevExpress.ui.notify(
             "Default Receiving Account not set. Please refresh the page or check the setup.",
             "Error"
         );
@@ -2068,7 +2068,7 @@ accountGrid.clearSelection();
         }
     }
 
-             DevExpress.ui.dialog.alert(
+             DevExpress.ui.notify(
                 "Cannot continue saving with errors,please clear the errors and continue.",
                 "Clear Errors"
             );
@@ -2679,7 +2679,7 @@ accountGrid.clearSelection();
             ).done(function (dialogResult) {
                 if (dialogResult) {
                     onConfirm(); // Proceed only if the user clicks "Yes"
-                    DevExpress.ui.dialog.alert(
+                    DevExpress.ui.notify(
                         "Line entry has been successfully removed from the database.",
                         "Deletion Successful"
                     );
@@ -2695,7 +2695,7 @@ accountGrid.clearSelection();
             ).done(function (dialogResult) {
                 if (dialogResult) {
                     onConfirm(); // Proceed only if the user clicks "Yes"
-                    DevExpress.ui.dialog.alert(
+                    DevExpress.ui.notify(
                         "All Entries has been successfully removed from the database.",
                         "Data Deleted Successfully"
                     );
@@ -2908,7 +2908,7 @@ accountGrid.clearSelection();
                     var foundAccount = response.data.find(acc => acc.AccountHead === "Petty Cash - Shabbir");
 
                     if (foundAccount && foundAccount.IsLedgerObselete === true) {
-                        DevExpress.ui.dialog.alert(
+                        DevExpress.ui.notify(
                             "Selected Ledger Account is set as Obsolete. (Not in use currently). Please review again.",
                             "LEDGER IS OBSOLETE (NOT IN USE)"
                         );
@@ -2919,7 +2919,7 @@ accountGrid.clearSelection();
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Payment Accounts:", error);
-                DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+                DevExpress.ui.notify("Failed to load account details.", "Error");
             }
         });
     });
@@ -3728,7 +3728,7 @@ accountGrid.clearSelection();
                 // Check if the formatted voucher date is before the cutoff date
                 if (new Date(formattedDate) < cutoffDate) {
                     // Show alert for blocked entry
-                    DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+                    DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
                     // Set both voucherDate and effectiveDate to the current date
                     voucherDate.option("value", formattedCurrentDate);

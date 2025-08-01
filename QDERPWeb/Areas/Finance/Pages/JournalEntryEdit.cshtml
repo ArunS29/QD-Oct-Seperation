@@ -291,10 +291,22 @@
             .DisplayExpr("this")
             );
                     columns.Add().DataField("DrAmount").Caption("Dr Amount").Width(120).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Dr' : ''; }");
+            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Dr' : ''; }")
+            .EditorOptions(new {
+        showSpinButtons = true,
+        format = "#,##0.00",
+        max = 99999999, // Allows up to 8 digits before decimal
+        onKeyPress = new JS("function(e) { if (e.event.key.length === 1 && !/[0-9.]/.test(e.event.key)) e.event.preventDefault(); }")
+    });
 
                     columns.Add().DataField("CrAmount").Caption("Cr Amount").Width(120).Alignment(HorizontalAlignment.Right)
-            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Cr' : ''; }");
+            .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) + ' Cr' : ''; }")
+            .EditorOptions(new {
+        showSpinButtons = true,
+        format = "#,##0.00",
+        max = 99999999, // Allows up to 8 digits before decimal
+        onKeyPress = new JS("function(e) { if (e.event.key.length === 1 && !/[0-9.]/.test(e.event.key)) e.event.preventDefault(); }")
+    });
                     columns.Add().DataField("CostAllocationDescription").Caption("Cost Allocation").Width(200);
                     columns.Add().DataField("TotalCostAllocated").Caption("Total Cost Allocated").Width(150).AllowEditing(false);
                     columns.Add().Caption("...").Width(100).CellTemplate(@<text>
@@ -2316,9 +2328,9 @@
             }
 
         function attachWorkflowWatchers() {
-            $("#IsSubmitted").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
-            $("#IsVerified").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
-            $("#IsApproved").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#SubmittedBy").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#VerifiedBy").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
+            $("#ApprovedBy").dxCheckBox("instance").on("valueChanged", syncWorkflowFromFields);
         }
 
             $(function () {

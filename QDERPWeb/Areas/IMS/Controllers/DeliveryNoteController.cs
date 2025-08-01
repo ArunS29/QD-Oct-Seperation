@@ -394,8 +394,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.IssuedUom = updatedItem.IssuedUom;
                     existingItem.UnitRateMethod = updatedItem.UnitRateMethod;
                     existingItem.AddlDescription = updatedItem.AddlDescription;
-                    existingItem.EmployeeName = updatedItem.EmployeeName;
-                    existingItem.PropertyDescription = updatedItem.PropertyDescription;
+                    //existingItem.EmployeeName = updatedItem.EmployeeName;
+                    //existingItem.PropertyDescription = updatedItem.PropertyDescription;
+                    existingItem.EmployeeNo = updatedItem.EmployeeNo;
+                    existingItem.PropertyNo = updatedItem.PropertyNo;
                     existingItem.BatchNo = updatedItem.BatchNo;
 
                     await dbContext.SaveChangesAsync();
@@ -436,32 +438,26 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, $"Server error: {ex.Message}");
             }
         }
-
         [HttpGet]
         public async Task<IActionResult> GetPropertyOrEquipment()
         {
-            try
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                try
                 {
-                    var result = await dbContext.Tbl40111PropertyUnitCodes
-                        .Select(p => new
-                        {
-                            UnitCode = p.UnitCode,
-                            UnitDesc = p.UnitDesc
-                        })
-                        .ToListAsync();
-
-                    return Ok(result);
+                    var SubGroup = await dbContext.Tbl40101PropertyMasters.ToListAsync();
+                    return Ok(SubGroup);
                 }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetDocumentTypes: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
 
-                return Unauthorized(new { message = "Invalid tenant.", success = false });
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Server error: {ex.Message}");
-            }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+       
         public class DeliveryNoteItemsRequest
         {
             public string DeliveryNoteNo { get; set; }
@@ -478,6 +474,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             public decimal? UnitCostPrice { get; set; }
             public string EmployeeName { get; set; }
             public string PropertyOrEquipment { get; set; }
+            public string AddlDescription { get; set; }
+            public string EmployeeNo { get; set; }
+            public string DeliveryRemarks { get; set; }
+            public string PropertyNo { get; set; }
         }
 
         [HttpPost]
@@ -515,8 +515,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             entity.UnitRateMethod = item.UnitRateMethod;
                             entity.IssuedQty = item.Qty;
                             entity.IssuedUnitPrice = item.UnitCostPrice;
-                            entity.EmployeeNo = item.EmployeeName;
-                            entity.PropertyNo = item.PropertyOrEquipment;
+                            entity.EmployeeNo = item.EmployeeNo;
+                            entity.PropertyNo = item.PropertyNo;
+                            entity.AddlDescription = item.AddlDescription;
+                            entity.DeliveryRemarks = item.DeliveryRemarks;
+                            //entity.EmployeeNo = item.EmployeeNo;
+                            //entity.PropertyNo = item.PropertyNo;
+                         
+
+               
                         }
                         else
                         {
@@ -529,8 +536,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                                 UnitRateMethod = item.UnitRateMethod,
                                 IssuedQty = item.Qty,
                                 IssuedUnitPrice = item.UnitCostPrice,
-                                EmployeeNo = item.EmployeeName,
-                                PropertyNo = item.PropertyOrEquipment,
+                                EmployeeNo = item.EmployeeNo,
+                                PropertyNo = item.PropertyNo,
+                                AddlDescription = item.AddlDescription,
+                                DeliveryRemarks = item.DeliveryRemarks,
+                               
+                          
 
                             };
 
@@ -607,8 +618,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         UnitRateMethod = x.UnitRateMethod,
                         Qty = x.IssuedQty,
                         UnitCostPrice = x.IssuedUnitPrice,
-                        EmployeeName = x.EmployeeNo,
-                        PropertyOrEquipment = x.PropertyNo
+                        EmployeeNo = x.EmployeeNo,
+                        PropertyNo = x.PropertyNo,
+                        AddlDescription = x.AddlDescription,
+                        DeliveryRemarks = x.DeliveryRemarks
                     })
                 });
             }
@@ -827,7 +840,88 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Ok(orders);
 		}
-	}
+
+        [HttpGet]
+        public async Task<IActionResult> GetEmployeeDetails(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl101Employees.Select(i => new
+                    {
+                    i.EmployeeId,
+                    i.EmployeeName,
+                    i.NationalId,
+                    i.EmployeeReferenceId
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetPropertyDetails(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var clients = dbContext.Tbl40101PropertyMasters.Select(i => new
+                    {
+                       i.PropertyNo,
+                       i.PropertyDescription
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(clients, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetClientDetails: {ex.Message}");
+                    return StatusCode(500, new { message = "Error fetching client details", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata(long DeliveryNoteSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (DeliveryNoteSlNo == 0)
+                    return BadRequest("DeliveryNoteSlNo is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Tbl60302deliveryNoteChildren
+                        .Where(c => c.DeliveryNoteSlNo == DeliveryNoteSlNo)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+    }
 
 
 }

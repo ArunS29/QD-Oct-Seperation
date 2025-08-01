@@ -353,6 +353,18 @@
 	.footer-fixed{
 		bottom:39px!important;
 	}
+
+	#loader {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		z-index: 9999;
+		font-size: 18px;
+		background-color: rgba(255,255,255,0.8);
+		padding: 20px;
+		border-radius: 8px;
+	}
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -1085,6 +1097,10 @@
 
 		<div class="footer-fixed">
 			@await Html.PartialAsync("/Pages/Shared/VAT/VATDebitNoteEditFooter.cshtml")
+		</div>
+		<div id="loader" style="display: none;">
+			@* <span>Loading...</span> <!-- Or use a spinner icon --> *@
+			<i class="fa fa-spinner fa-spin" style="font-size: 24px;"></i>
 		</div>
 
 	
@@ -2383,9 +2399,27 @@
 						},
 						{ dataField: "Units Till Bill", caption: "Units To Bill", width: 150 },
 
-						{ dataField: "QuantityDebited", caption: "Qty", width: 150 },
+						{ dataField: "QuantityDebited", caption: "Qty", width: 150,
+						editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } },
 
-						{ dataField: "UnitRate", caption: "Unit Price", width: 150 },
+						{ dataField: "UnitRate", caption: "Unit Price", width: 150,
+						editorOptions: {
+							onInput: function(e) {
+							let maxLength = 8; // Example: allow max 5 digits
+							let value = e.event.target.value;
+							if (value.length > maxLength) {
+								e.event.target.value = value.slice(0, maxLength);
+							}
+						}
+					} },
 
 						// { dataField: "CalcLineAmountBeforeDiscount", caption: "Total Before Discount", width: 185 },
 
@@ -2393,7 +2427,7 @@
 
 						// { dataField: "DiscountDetails", caption: "...", width: 50 },
 
-						{ dataField: "CalcLineAmount", caption: "Amount", width: 150 },
+						{ dataField: "CalcLineAmount", caption: "Amount", width: 150,allowEditing: false },
 
 						//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -2880,17 +2914,29 @@
 					},
 
 						{ dataField: "Units Till Bill", caption: "Units To Bill",cssClass: "center-header", width: 150 },
-					{ dataField: "QuantityDebited", caption: "Qty",cssClass: "center-header", width: 150 },
+						{ dataField: "QuantityDebited", caption: "Qty",cssClass: "center-header", width: 150,				 
+						editorOptions: {
+	               		onInput: function(e) {
+	               		let maxLength = 8; // Example: allow max 5 digits
+	               		let value = e.event.target.value;
+	               		if (value.length > maxLength) {
+	               			e.event.target.value = value.slice(0, maxLength);
+	               		}
+	               	}
+	               } },
 
-					{ dataField: "UnitRate", caption: "Unit Price", cssClass: "center-header",width: 150 },
+						{ dataField: "UnitRate", caption: "Unit Price", cssClass: "center-header",width: 150,		
+						editorOptions: {
+	                      		onInput: function(e) {
+	                      		let maxLength = 8; // Example: allow max 5 digits
+	                      		let value = e.event.target.value;
+	                      		if (value.length > maxLength) {
+	                      			e.event.target.value = value.slice(0, maxLength);
+	                      		}
+	                      	}
+	                      } },
 
-					// { dataField: "TotalBeforeDiscount", caption: "Total Before Discount", width: 150 },
-
-					// { dataField: "Discount", caption: "Discount", width: 150 },
-
-					// { dataField: "DiscountDetails", caption: "...", width: 50 },
-
-					{ dataField: "CalcLineAmount", caption: "Amount",cssClass: "center-header", width: 150 },
+					{ dataField: "CalcLineAmount", caption: "Amount",cssClass: "center-header", width: 150,allowEditing: false },
 
 					//{ dataField: "VAT%", caption: "VAT%", width: 150 },
 
@@ -2965,11 +3011,7 @@
 		}
 	},
 
-					// { dataField: "ExcemptionCode", caption: "Excemption Code", width: 150 },
-
 					{ dataField: "CalcTaxAmount", caption: "VAT", cssClass: "center-header",width: 150 },
-
-					// { dataField: "Total", caption: "Total", width: 150 },
 
 					 { dataField: "TaxSlabCode", caption: "TaxSlabCode", width: 150 ,allowEditing: false,visible: false}
 
@@ -3004,97 +3046,32 @@
 
 
 
-			// Fetch dropdown data (same API can be used if needed)
+					// Fetch dropdown data (same API can be used if needed)
+				function getDropdownData() {
+		// Show loader before AJAX call
+		$("#loader").show();
 
-		 function getDropdownData() {
+		return $.ajax({
+			url: "/api/VATModule/GetGoodsAndServices", // API endpoint
+			method: "GET",
+			dataType: "json"
+		}).then(function(response) {
+			console.log("GsData", response);
+			return response.map(item => ({
+				GSCode: item.Gscode,
+				GSDescrpition: item.Gsdescrpition,
+				GsdescriptionAr: item.GsdescriptionAr,
+				ItemPartNo: item.ItemPartNo,
+				CostPrice: item.CostPrice,
+				GSSellingRate: item.GssellingRate,
+				ReorderQty: item.ReorderQty
 
-			return $.ajax({
-
-				url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-
-				method: "GET",
-
-				dataType: "json"
-
-			}).then(function(response) {
-
-				console.log("GsData",response)
-
-				return response.map(item => ({
-
-					GSCode: item.Gscode,
-
-					GSDescrpition: item.Gsdescrpition,
-
-					GsdescriptionAr:item.GsdescriptionAr,
-
-					ItemPartNo: item.ItemPartNo,
-
-					CostPrice: item.CostPrice,
-
-					GSSellingRate: item.GssellingRate,
-
-					ReorderQty:item.ReorderQty
-
-				}));
-
-			});
-
-		}
-
-		function getUnitRateMethods() {
-
-			return $.ajax({
-
-				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
-
-				method: "GET",
-
-				dataType: "json"
-
-			}).then(function (response) {
-
-				console.log("Unit Rate Data", response);
-
-				return response.map(item => ({
-
-					UnitCode: item.UnitCode,
-
-					UnitDesc: item.UnitDesc,
-
-					UnitType: item.UnitType,
-
-					UnitDescAr: item.UnitDescAr
-
-				}));
-
-			});
-
-		}
-
-
-
-		// $("#btnAddNew").on("click", function (e) {
-		// 		var newRow = {
-		// 			SNo: rowData.length + 1, // Auto-generate SNo
-		// 			ItemCode: ItemNo,
-		// 			Description: "",
-		// 			DescriptionDetails:"",
-		// 			Qty: 0,
-		// 			UnitPrice: 0.00,
-		// 			TotalBeforeDiscount:0.00,
-		// 			Discount:0,
-		// 			DiscountDetails:"",
-		// 			Amount:0.00,
-		// 			ExcemptionCode:"",
-		// 			VAT:"",
-		// 			Total: 0.00
-		// 		};
-
-		// 		rowData.push(newRow);
-		// 		dataGridInstance.option("dataSource", rowData);
-		// 		dataGridInstance.refresh();
-		// 	});
+			}));
+		}).always(function () {
+			// Hide loader after AJAX call finishes (success or error)
+			$("#loader").hide();
+		});
+	}
 
 		$("#btnAddNew").on("click", function (e) {
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -3134,25 +3111,7 @@
 	});
 
 
-			// Fetch dropdown data (same API can be used if needed)
-		 function getDropdownData() {
-			return $.ajax({
-				url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-				method: "GET",
-				dataType: "json"
-			}).then(function(response) {
-				console.log("GsData",response)
-				return response.map(item => ({
-					GSCode: item.Gscode,
-					GSDescrpition: item.Gsdescrpition,
-					GsdescriptionAr:item.GsdescriptionAr,
-					ItemPartNo: item.ItemPartNo,
-					CostPrice: item.CostPrice,
-					GSSellingRate: item.GssellingRate,
-					ReorderQty:item.ReorderQty
-				}));
-			});
-		}
+			
 		function getUnitRateMethods() {
 			return $.ajax({
 				url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -4899,9 +4858,8 @@
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
-						  DevExpress.ui.dialog.alert(
-					"Invoice Details updated Successfully.",
-					"Update successful"
+						  DevExpress.ui.notify(
+					"Debit Note Details updated Successfully.","success",2000
 				);
 					},
 					error: function (xhr) {
@@ -4916,9 +4874,8 @@
 		}
 		else
 		{
-			  DevExpress.ui.dialog.alert(
-					"Cannot continue saving with errors,please clear the errors and continue.",
-					"Clear Errors"
+			  DevExpress.ui.notify(
+					"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 				);
 		}
 
@@ -5016,9 +4973,8 @@
 										console.error("Error fetching grid data:", error);
 									}
 								});
-						  DevExpress.ui.dialog.alert(
-					"Debit Note Details updated Successfully.",
-					"Update successful"
+						 DevExpress.ui.notify(
+					"Debit Note Details updated Successfully.","success",2000
 				);
 				history.back();
 					},
@@ -5034,9 +4990,8 @@
 		}
 		else
 		{
-			  DevExpress.ui.dialog.alert(
-					"Cannot continue saving with errors,please clear the errors and continue.",
-					"Clear Errors"
+			  DevExpress.ui.notify(
+					"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 				);
 		}
 
@@ -5287,11 +5242,11 @@
 					if (response && response.Message) {
 						DevExpress.ui.notify(
 							"VAT Invoice has been Verified.","success",2000
-						).done(() => {
+						);
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 							initWorkflowTippyPopovers();
-						});
+						
 					}
 					else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -5372,10 +5327,10 @@
 				// data: JSON.stringify({ voucherNo: vno }),
 				success: function (response) {
 					if (response && response.Message) {
-						DevExpress.ui.dialog.alert(
+						DevExpress.ui.notify(
 							"VAT InvoiceNo has been Approved.",
 							"Approved"
-						).done(() => {
+						);
 							disableEditing();
 							$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 							$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -5385,7 +5340,7 @@
 								$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 								$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 							}
-						});
+					
 					} else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
@@ -5542,10 +5497,10 @@
 													console.error("Error re-uploading document:", uploadError);
 									}
 								}
-							DevExpress.ui.dialog.alert(
-								"VAT Invoice has been posted to the Accounting Books With Documents.",
-								"Invoice Posted Successfully."
-							)
+							DevExpress.ui.notify(
+								"VAT Invoice has been posted to the Accounting Books With Documents.","success",2000
+							
+							);
 						}
 							// else if(response.IsPosted == true)
 							// {

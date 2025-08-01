@@ -213,25 +213,54 @@
             columns.AddFor(m => m.GsgroupName).Caption(new JS("formatMessage('Stock Group')")).Width(180).Visible(true).GroupIndex(0);
         columns.AddFor(m => m.ItemPartNo)
                 .Caption(new JS("formatMessage('Item Part No')"))
-            .Width(150);
-        columns.AddFor(m => m.UnitType)
+            .Width(150).CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value != null && cellInfo.value !== '') {
+        $('<span>')
+        .text(cellInfo.value)
+        .css({
+        display: 'inline-block',
+        backgroundColor: '#fff9cc', // Light yellow
+        color: '#b58900',            // Amber text
+        fontWeight: 'bold',
+        padding: '4px 10px',
+        borderRadius: '20px',
+        minWidth: '24px',
+        textAlign: 'center'
+        })
+        .appendTo(cellElement);
+        }
+        // else: do nothing (no span rendered)
+        }
+        "));
+ columns.AddFor(m => m.UnitType)
                 .Caption(new JS("formatMessage('Unit')"))
             .Width(100);
         columns.AddFor(m => m.GssellingRate)
                 .Caption(new JS("formatMessage('Selling Price')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120).CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null/undefined
-        }
-        return Number(e.value).toLocaleString(undefined, {
+            .Width(120).CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value != null) {
+        const formattedValue = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        });
+        }).format(cellInfo.value);
+        $('<span>')
+        .text(formattedValue)
+        .css({
+        display: 'inline-block',
+        backgroundColor: '#e6ffe6',
+        color: '#1a8f1a',
+        fontWeight: 'bold',
+        padding: '4px 10px',
+        borderRadius: '20px'
+        })
+        .appendTo(cellElement);
         }
-        ");
+        }
+        "));
         columns.AddFor(m => m.CostPrice)
                 .Caption(new JS("formatMessage('Cost Price')"))
             .Format("fixedPoint")
@@ -251,47 +280,77 @@
                 .Caption(new JS("formatMessage('Opening Balance')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120).CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null/undefined
-        }
-        return Number(e.value).toLocaleString(undefined, {
+            .Width(120).CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value != null) {
+        const formattedValue = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        });
+        }).format(cellInfo.value);
+        $('<span>')
+        .text(formattedValue)
+        .css({
+        display: 'inline-block',
+        backgroundColor: '#ffe6e6',
+        color: '#d93025',
+        fontWeight: 'bold',
+        padding: '4px 10px',
+        borderRadius: '20px'
+        })
+        .appendTo(cellElement);
         }
-        ");
+        }
+        "));
         columns.AddFor(m => m.TotalReceived)
                 .Caption(new JS("formatMessage('Received')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120).CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null/undefined
-        }
-        return Number(e.value).toLocaleString(undefined, {
+            .Width(120).CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value != null) {
+        const formattedValue = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        });
+        }).format(cellInfo.value);
+        $('<span>')
+        .text(formattedValue)
+        .css({
+        display: 'inline-block',
+        backgroundColor: '#ffe6e6',
+        color: '#d93025',
+        fontWeight: 'bold',
+        padding: '4px 10px',
+        borderRadius: '20px'
+        })
+        .appendTo(cellElement);
         }
-        ");
+        }
+        "));
         columns.AddFor(m => m.TotalIssues)
                 .Caption(new JS("formatMessage('Issues')"))
             .Format("fixedPoint")
             .Alignment(HorizontalAlignment.Right)
-            .Width(120).CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null/undefined
-        }
-        return Number(e.value).toLocaleString(undefined, {
+            .Width(120).CellTemplate(new JS(@"
+        function(cellElement, cellInfo) {
+        if (cellInfo.value != null) {
+        const formattedValue = new Intl.NumberFormat('en-US', {
         minimumFractionDigits: 2,
         maximumFractionDigits: 2
-        });
+        }).format(cellInfo.value);
+        $('<span>')
+        .text(formattedValue)
+        .css({
+        display: 'inline-block',
+        backgroundColor: '#e6ffe6',
+        color: '#1a8f1a',
+        fontWeight: 'bold',
+        padding: '4px 10px',
+        borderRadius: '20px'
+        })
+        .appendTo(cellElement);
         }
-        ");
+        }
+        "));
         columns.AddFor(m => m.ClosingBalance)
                 .Caption(new JS("formatMessage('Closing Balance')"))
             .Format("fixedPoint")
@@ -308,11 +367,22 @@
         maximumFractionDigits: 2
         });
 
-        cellElement.text(formatted);
+        cellElement
+        .text(formatted)
+        .css({
+        backgroundColor: '#e6ffe6', // light green
+        padding: '4px 8px',         // optional spacing
+        borderRadius: '6px'         // optional rounded corners
+        });
 
         if (cellInfo.value < 0) {
-        cellElement.css('color', 'red');
-        }}"));
+        cellElement.css('color', 'red'); // negative in red
+        } else {
+        cellElement.css('color', '#1a8f1a'); // positive in green text
+        }
+        }
+        "));
+
         
         columns.AddFor(m => m.MaxQty)
                 .Caption(new JS("formatMessage('Inventory Value (FIFO)')"))

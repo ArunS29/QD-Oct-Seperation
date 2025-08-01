@@ -1134,7 +1134,7 @@
 		});
 	}
 		let invoiceNo = null;
-	let IsEdit = false,CreditNoteNo=null;
+	let IsEdit = false,CreditNoteNo=null,InvoiceType=null;
 
 	// Assuming tenantName is already defined globally
 	function viewInvoice() {
@@ -1142,14 +1142,27 @@
 			alert("Invoice number is not set.");
 			return;
 		}
-
 		IsEdit = true;
+		if(InvoiceType=="Tax Invoice")
+		{
 
 		const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 
 		const title = "VAT Invoice Edit(B2B)";
-		//openModal(url, title);
-		 window.location.href = url; // Navigate to the page
+	    window.location.href = url; // Navigate to the page
+		
+		}
+		
+		if(InvoiceType=="Simplified Tax Invoice")
+		{
+		IsEdit = true;
+
+		const url = `/${tenantName}/VAT/frmVATInvoiceEditB2C?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+
+		const title = "VAT Invoice Edit(B2C)";
+	    window.location.href = url; // Navigate to the page
+		}
+
 	}
 
 
@@ -1333,7 +1346,8 @@
 			var rowIndex = $(this).index();
 			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
 			 invoiceNo = rowData.InvoiceNo;
-			console.log(rowData);
+			 InvoiceType = rowData.InvoiceSubType;
+			console.log("SalesRegisterData",rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
 	});

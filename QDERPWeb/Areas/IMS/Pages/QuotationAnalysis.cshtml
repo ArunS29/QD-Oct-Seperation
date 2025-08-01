@@ -127,7 +127,9 @@
     }
 
     let pivotGridInstance = null;
+    window._lastClickedCheckboxCell = null;
     let currentPivotRawData = [];
+
 
         function loadPivotGridData(mprno) {
         $.ajax({
@@ -144,10 +146,15 @@
                             { dataField: "Gsdescrpition", area: "row", caption: formatMessage("Item Description") },
                             { dataField: "QuotedQuantity", area: "row", caption: formatMessage("Quantity") },
                             { dataField: "SupplierName", area: "column", caption: formatMessage("Supplier Name") },
-                            { dataField: "UnitPrice", area: "data", caption: formatMessage("Unit Price"), summaryType: "avg", format: "currency" },
+                            { dataField: "UnitPrice", area: "data", caption: formatMessage("Unit Price"), summaryType: "avg", format: { type: "fixedPoint", precision: 2 } },
                             { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
-                            { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: "currency" },
-                            { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" }
+                            { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                            { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" },
+                             { dataField: "Mprno", visible: false },
+{ dataField: "Gscode", visible: false },
+{ dataField: "RfqchildSlNo", visible: false }
+
+
                         ],
                         store: {
                             type: "array",
@@ -180,26 +187,61 @@
                         showRowFields: true
                     },
                     loadPanel: { enabled: true },
-                    onCellPrepared: function (e) {
-                        if (e.area === "data" && e.cell?.dataType === "boolean") {
-                            const $cell = $(e.cellElement);
-                            $cell.empty();
+onCellPrepared: function (e) {
+    // Apply background color condition (optional)
+    if (e.area === "data" && e.cell?.dataType !== "boolean") {
+        if (e.cell.value > 10000) {
+            $(e.cellElement).css("background-color", "#e6ffe6"); // light green
+        }
+    }
 
-                            const isChecked = !!e.cell.value;
-                            const checkbox = $("<input>")
-                                .attr("type", "checkbox")
-                                .prop("checked", isChecked)
-                                .on("change", function () {
-                                    if ($(this).prop("checked")) {
-                                        const $row = $cell.closest("tr");
-                                        $row.find('input[type="checkbox"]').not(this).prop("checked", false);
-                                    }
-                                });
+    // Render checkbox only for boolean field
+    if (e.area === "data" && e.cell?.dataType === "boolean") {
+        const $cell = $(e.cellElement);
+        $cell.empty(); // clear existing content
 
-                            $cell.append(checkbox);
-                        }
-                    }
-                }).dxPivotGrid("instance");
+        const isChecked = !!e.cell.value;
+
+        const checkbox = $("<input>")
+            .attr("type", "checkbox")
+            .prop("checked", isChecked)
+      .on("change", function () {
+    if ($(this).prop("checked")) {
+        const $row = $cell.closest("tr");
+        $row.find('input[type="checkbox"]').not(this).prop("checked", false);
+    }
+
+    const rowPath = e.cell?.rowPath || [];
+    const columnPath = e.cell?.columnPath || [];
+
+    console.log("RowPath:", rowPath);
+    console.log("ColumnPath:", columnPath);
+
+    const match = currentPivotRawData.find(item =>
+        item.Gsdescrpition === rowPath[0] &&
+        item.SupplierName === columnPath[0] &&
+        (rowPath.length === 1 || item.QuotedQuantity == rowPath[1])
+    );
+
+    if (match) {
+        console.log("✅ MATCH FOUND");
+        console.log("MPR No:", match.Mprno);
+        console.log("RFQChildSlNo:", match.RfqchildSlNo);
+        console.log("GSCode:", match.Gscode);
+        openSelectionDetailsPopup(match.Mprno, match.RfqchildSlNo, match.Gscode);
+    } else {
+        DevExpress.ui.notify("Required data not found for selection.", "error", 2000);
+        console.warn("❌ No match for row/column path", rowPath, columnPath);
+    }
+});
+
+
+        $cell.append(checkbox);
+    }
+}
+
+
+}).dxPivotGrid("instance");
             },
             error: function (xhr, status, error) {
                 console.error("Error fetching data: ", error);
@@ -295,4 +337,22 @@
 
 		console.log('End permission handling');
 	});
+
+
+function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
+    const tenantName = window.tenantName || "defaultTenant";
+    
+    // Construct the modal URL with query parameters
+    const url = `/${tenantName}/IMS/ReasonForQA?mprno=${encodeURIComponent(mprno)}&rfqchildSlNo=${encodeURIComponent(rfqchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
+
+    // Save the cell reference in a global variable if needed for later updates
+    window._cellToUpdate = $cellToUpdate;
+
+    // Open the modal using a custom openModal function (you should have this implemented elsewhere)
+    openModal(url,"Selection Details", "70%","33%");
+}
+
+
+
+
 </script>
