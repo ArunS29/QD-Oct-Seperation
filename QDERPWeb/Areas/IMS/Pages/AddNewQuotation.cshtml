@@ -2286,7 +2286,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "");
+									openModal(url, "Goods And Service");
 
 								},
 
@@ -2317,7 +2317,7 @@ $("<div>").dxButton({
         }
 
         const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-        window.open(url, "_blank");
+        openModal(url, "Goods And Service");
     },
     width: 60,
     height: 30
@@ -3045,7 +3045,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "");
+									openModal(url, "Goods And Service");
 
 								},
 
@@ -3070,7 +3070,7 @@ placeholder: "Search..."
         }
 
         const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-        window.open(url, "");
+       openModal(url, "Goods And Service");
     },
 
 								width: 60,

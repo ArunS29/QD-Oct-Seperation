@@ -11,7 +11,8 @@ var dictionary = {
         "Sub Group Name": "Sub Group Name",
         "Notes": "Notes",
         "Item Group Code": "Item Group Code",
-
+        "Duplicate GroupName": "Duplicate GroupName",
+        "This GroupName already exists!": "This GroupName already exists!",
 
         "Inventory Ledger": "Inventory Ledger",
         "Cost Ledger Account": "Cost Ledger Account",
@@ -6800,6 +6801,8 @@ var dictionary = {
         "QuoteChildId": "معرّف الفرع الفرعي للعرض",
         "Tax Slab": "شريحة الضريبة",
         "Unit Cost Price": "سعر تكلفة الوحدة",
+        "Duplicate GroupName": "اسم المجموعة مكرر",
+        "This GroupName already exists!": "اسم المجموعة هذا موجود بالفعل!",
         "Purchase Request with Item Details": "طلب شراء مع تفاصيل الأصناف",
         "SupplierCode": "رمز المورد",
         "SupplierCategoryCode": "رمز فئة المورد",
