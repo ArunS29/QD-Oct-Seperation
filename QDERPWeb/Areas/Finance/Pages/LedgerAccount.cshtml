@@ -4337,18 +4337,35 @@ if (dropDownInstance.option("opened")) {
         }
     }
 
-    function onTabSelectionChanged(e) {
-        // Hide all tab content
-        $(".tab-content").hide();
+    // function onTabSelectionChanged(e) {
+    //     Hide all tab content
+    //     $(".tab-content").hide();
 
-        // Show the content of the selected tab
-        var selectedTabIndex = e.component.option("selectedIndex");
-        $("#tab-content-" + (selectedTabIndex + 1)).show();
-    }
+    //     Show the content of the selected tab
+    //     var selectedTabIndex = e.component.option("selectedIndex");
+    //     $("#tab-content-" + (selectedTabIndex + 1)).show();
+    // }
 
     // function onPostButtonClick(e) {
     //     alert("Opening Balance Entry Posted successfully");
     // }
+    function onTabSelectionChanged(e) {
+    const disabledIndex = $(".custom-tabs").data("disabledTabIndex");
+    const selectedTabIndex = e.component.option("selectedIndex");
+
+    // Prevent navigating to the disabled tab
+    if (disabledIndex !== undefined && selectedTabIndex === disabledIndex) {
+        const previousIndex = e.previousIndex ?? 0;
+        e.component.option("selectedIndex", previousIndex);
+        DevExpress.ui.notify("", "warning", 2000);
+        return;
+    }
+
+    // Show only the selected tab's content
+    $(".tab-content").hide();
+    $("#tab-content-" + (selectedTabIndex + 1)).show();
+}
+
 
     function txtAccountHeadFocusOut(e) {
 
@@ -6373,36 +6390,48 @@ if (dropDownInstance.option("opened")) {
         textBox2Instance.option("value", arabicTranslation);
 
     }
-    $(document).ready(function () {
+$(window).on("load", function () {
     const urlParams = new URLSearchParams(window.location.search);
+    const isClientAdd = urlParams.get('IsClientAdd') === 'true';
+    const isPurchaseEdit = urlParams.get('IsPurchaseEdit') === 'true';
 
-    // Correct text value to match DropDownBox entries
-    const sundryCreditorValue = "SUNDARY CREDITORS"; // Exact match required from your data source
+    const checkAndApplyFormState = () => {
+        const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+        const tabsInstance = $(".custom-tabs").dxTabs("instance");
 
-    if (urlParams.get('IsSupplier') === 'true') {
-        // From Add popup → select & disable 'SUNDARY CREDITORS'
-        setTimeout(() => {
-            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
-            if (group) {
-                group.option({
-                    value: sundryCreditorValue,
-                    disabled: true
-                });
-            }
-        }, 300);
-    }
+        if (!group || !tabsInstance) {
+            setTimeout(checkAndApplyFormState, 100);
+            return;
+        }
 
-    if (urlParams.get('IsPurchaseEdit') === 'true') {
-        // From Edit popup → just disable Account Group
-        setTimeout(() => {
-            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
-            if (group) {
-                group.option("disabled", true);
-            }
-        }, 300);
-    }
+        if (isClientAdd) {
+            group.option({
+                value: "SUNDRY DEBTORS",
+                disabled: true
+            });
+
+            $("#accountGroupContainer").show();
+            $("#nameFieldContainer").hide();
+            $("#editButton").hide();
+            $("#addButton").show();
+
+            // ❌ Disable tab 4 (Supplier Details) ONLY on add
+            $(".custom-tabs").data("disabledTabIndex", 4);
+        } else {
+            group.option("disabled", isPurchaseEdit);
+
+            $("#accountGroupContainer").toggle(!isPurchaseEdit);
+            $("#nameFieldContainer").toggle(isPurchaseEdit);
+            $("#editButton").toggle(isPurchaseEdit);
+            $("#addButton").hide();
+
+            // ✅ Enable all tabs again
+            $(".custom-tabs").removeData("disabledTabIndex");
+        }
+    };
+
+    checkAndApplyFormState();
 });
-
 
 
     // alert("two");

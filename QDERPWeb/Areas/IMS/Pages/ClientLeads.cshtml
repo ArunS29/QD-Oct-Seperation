@@ -40,8 +40,34 @@
         overflow-x:hidden;
     }
 
+    .voucher-slider {
+        position: relative;
+        height: 120px;
+        overflow: hidden;
+    }
+
+    .voucher-slide1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(100%);
+        transition: all 0.5s ease;
+        text-align: center;
+    }
+
+        .voucher-slide1.active {
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 2;
+        }
+
+        .voucher-slide1.slide-up {
+            transform: translateY(-100%);
+        }
 </style>
-<div class="title">
+<div class="title" style="width: 40% !important;">
    
 
     <div class="card blue shine compact">
@@ -50,41 +76,24 @@
         <h6 class="fade-in">QuickDice ERP Solutions</h6>
 
     </div>
-
-    <div id="mainCard" class="card today-bg">
-        <div class="tabs">
-            <div class="tab-text active" onclick="switchTab(0)">Today</div>
-            <div class="tab-text" onclick="switchTab(1)">Week</div>
-            <div class="tab-text" onclick="switchTab(2)">Month</div>
-        </div>
-
-        <div class="tab-content active">
-            <h4>&#128276; Pending Verifications</h4>
-            <div class="count" id="count0">0</div>
-            @* <div class="trend">🔺 12% more than yesterday</div> *@
-            @* <div class="message">You're getting things moving!</div> *@
-        </div>
-
-        <div class="tab-content">
-            <h4>&#9989; Vouchers Verified</h4>
-            <div class="count" id="count1">0</div>
-            @* <div class="trend">🔼 25% higher than last week</div> *@
-            @* <div class="message">Awesome pace — keep it up!</div> *@
-        </div>
-
-        <div class="tab-content">
-            <h4>&#128229; New Vouchers</h4>
-            <div class="count" id="count2">0</div>
-            @* <div class="trend">🔽 10% drop this month</div> *@
-            @* <div class="message">Fewer vouchers — time to catch up?</div> *@
+    <div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+        <h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Total clients</h4>
+        <div class="voucher-slider">
+            <div class="voucher-slide1 active">
+                <h4>Clients Entry Today</h4>
+                <h1 id="creditToday" style="color: white;">
+                    0
+                </h1>
+            </div>
+            <div class="voucher-slide1">
+                <h4>Client Entry Total</h4>
+                <h1 id="creditTotal" style="color: white;">
+                   0
+                </h1>
+            </div>
         </div>
     </div>
-    <div class="card purple sparkle">
-        <p>&#10024;</p>
-        <h4>No of Items</h4>
-        <h1 id="turnover">0</h1>
-        <h3>for this period</h3>
-    </div>
+   
 </div>
 @* <div class="title" >
     <div class="header-container">
@@ -97,6 +106,7 @@
     @(
         Html.DevExtreme().DataGrid()
         .ID("dataGrid")
+        .OnInitialized("onStatusCardReady")
         .DataSource(ds => ds.Mvc()
         .Controller("ClientLeads")
         .LoadAction("Get"))
@@ -204,7 +214,77 @@
 
 
 <script>
+        function updateClientEntryCounts(data) {
+        let totalClients = 0;
+        let todayClients = 0;
 
+        const today = new Date().toISOString().split('T')[0]; // Format: YYYY-MM-DD
+
+        if (Array.isArray(data)) {
+            totalClients = data.length;
+
+            todayClients = data.filter(item => {
+                if (!item.CreatedDate) return false;
+
+                const itemDate = new Date(item.CreatedDate).toISOString().split('T')[0];
+                return itemDate === today;
+            }).length;
+        }
+
+        // Update the DOM
+        const todayEl = document.getElementById("creditToday");
+        const totalEl = document.getElementById("creditTotal");
+
+        if (todayEl) todayEl.textContent = todayClients.toLocaleString();
+        if (totalEl) totalEl.textContent = totalClients.toLocaleString();
+    }
+
+        function onStatusCardReady(e) {
+        const gridInstance = e.component;
+        const dataSource = gridInstance.getDataSource();
+        const gridId = e.element.attr("id");
+
+        if (!dataSource || !gridId) return;
+
+        const items = gridInstance.option("dataSource");
+
+        const handleData = (data) => {
+            if (gridId === "dataGrid") {
+                updateStatusTabCounts(data);     // For tab counters
+                updateClientEntryCounts(data);   // ✅ For total & today client count
+            } else {
+                updatewithtaxAmount(data);       // For amount card
+                updateTaxAmounts(data);          // For tax card
+                updateVoucherCounts(data);       // (if any)
+            }
+        };
+
+        if (Array.isArray(items)) {
+            handleData(items);
+        } else {
+            dataSource.load().done(handleData);
+        }
+    }
+    function startVoucherSlide() {
+                    let currentSlide = 0;
+                    const slides = document.querySelectorAll('.voucher-slide1');
+
+                    setInterval(() => {
+                        slides[currentSlide].classList.remove('active');
+                        currentSlide = (currentSlide + 1) % slides.length;
+                        slides[currentSlide].classList.add('active');
+                    }, 2000);
+                }
+                let currentSlideIndex = 0;
+                const slides = document.querySelectorAll('.voucher-slide1');
+
+                setInterval(() => {
+                    slides[currentSlideIndex].classList.remove('active');
+
+                    currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+                    slides[currentSlideIndex].classList.add('active');
+                }, 2000);
     $(document).ready(function () {
 
         // Handle Back button click
@@ -325,85 +405,5 @@
 
 		console.log('End permission handling');
 	});
-    function countUpTurnover(targetStr) {
-          const el = document.getElementById("turnover");
-          const target = parseFloat(targetStr);
-          let current = 0.0;
 
-          const interval = setInterval(() => {
-            current += 0.5;
-            if (current >= target) {
-              el.textContent = targetStr + " K";
-              clearInterval(interval);
-            } else {
-              el.textContent = current.toFixed(1) + " K";
-            }
-          }, 30);
-        }
-
-        // Animate to 46.2 K
-        countUpTurnover("46.2");
-
-          const card = document.getElementById('mainCard');
-        const counts = [8, 15, 5];
-        const countEls = [
-          document.getElementById("count0"),
-          document.getElementById("count1"),
-          document.getElementById("count2"),
-        ];
-        const tabs = document.querySelectorAll(".tab-text");
-        const contents = document.querySelectorAll(".tab-content");
-
-        function animateCount(el, target) {
-          let i = 0;
-          el.innerText = i;
-          el.classList.remove('bounce');
-          const interval = setInterval(() => {
-            if (i >= target) {
-              el.innerText = target;
-              el.classList.add('bounce');
-              clearInterval(interval);
-            } else {
-              el.innerText = i++;
-            }
-          }, 30);
-        }
-
-        function switchTab(index) {
-          tabs.forEach((tab, i) => {
-            tab.classList.toggle('active', i === index);
-            contents[i].classList.toggle('active', i === index);
-          });
-
-          // Change background class
-          card.className = "card";
-          if (index === 0) card.classList.add("today-bg");
-          if (index === 1) card.classList.add("week-bg");
-          if (index === 2) card.classList.add("month-bg");
-
-          // Animate count
-          animateCount(countEls[index], counts[index]);
-        }
-
-        // Start "Today" count immediately
-        animateCount(countEls[0], counts[0]);
-
-        function switchTab(index) {
-          tabs.forEach((tab, i) => {
-            tab.classList.toggle('active', i === index);
-            contents[i].classList.toggle('active', i === index);
-          });
-
-          // Change background class
-          card.className = "card";
-          if (index === 0) card.classList.add("today-bg");
-          if (index === 1) card.classList.add("week-bg");
-          if (index === 2) card.classList.add("month-bg");
-
-          // Animate count
-          animateCount(countEls[index], counts[index]);
-        }
-
-        // Auto-start animation for "Today"
-        animateCount(countEls[0], counts[0]);
 </script>
