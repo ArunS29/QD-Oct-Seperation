@@ -24,7 +24,6 @@
     .form-group-row {
         display: flex;
         gap: 20px;
-        margin-bottom: 20px;
         flex-wrap: wrap;
     }
 
@@ -117,7 +116,6 @@
             .ID("statusId")
             .Disabled(true)
             .Label(new JS("formatMessage('Status ID')"))
-            .Value("-1")
              .ReadOnly(true)
             .LabelMode(EditorLabelMode.Floating)
             .TabIndex(1)
@@ -228,7 +226,7 @@
         </div>  
     </div>
 
-    <div class="  form-group-row " style="width:49.5%;">
+<div class="  form-group-row " style="width:49.5%; margin-left: 20px;">
 
         @(Html.DevExtreme().DateBox()
             .Label(new JS("formatMessage('Followup On')"))
@@ -330,11 +328,17 @@
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
         const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
          $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
+             $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
+            $("#reportedBy").dxTextBox("instance").option("value", data.ReportedBy);
+            $("#reportedOn").dxDateBox("instance").option("value", data.ReportedOn);
+            $("#reportRemarks").dxTextArea("instance").option("value", data.StatusRemarks);
+            $("#GetStatusDropDown").dxDropDownBox("instance").option("value", data.Status);
+            $("#followUpOn").dxDateBox("instance").option("value", data.FollowupOn);
         getReportedBy();
 
          const statusBox = $("#statusId").dxNumberBox("instance");
     if (statusBox) {
-      statusBox.option("value", clientStatusNo || -1);
+        statusBox.option("value", clientStatusNo || clientStatusNo);
     }
        
 
