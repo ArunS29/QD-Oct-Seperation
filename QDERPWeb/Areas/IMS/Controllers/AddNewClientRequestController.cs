@@ -1113,7 +1113,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 					if (voucher == null)
 					{
-						return NotFound(new { Message = "CreditNoteNo not found." });
+						return NotFound(new { Message = "Mprno not found." });
 					}
 
 					// Update cancellation details

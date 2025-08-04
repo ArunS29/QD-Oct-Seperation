@@ -93,6 +93,59 @@
             font-size: 22px;
         }
     }
+
+    .voucher-slider {
+        position: relative;
+        height: 120px;
+        overflow: hidden;
+    }
+
+    .voucher-slide {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(100%);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        text-align: center;
+    }
+
+
+        .voucher-slide.active {
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 2;
+        }
+
+        .voucher-slide.slide-up {
+            transform: translateY(-100%);
+        }
+    .voucher-slide1 {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        opacity: 0;
+        transform: translateY(100%);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+        text-align: center;
+    }
+
+
+        .voucher-slide1.active {
+            opacity: 1;
+            transform: translateY(0);
+            z-index: 2;
+        }
+
+        .voucher-slide1.slide-up {
+            transform: translateY(-100%);
+        }
+
+
+
+      
 </style>
 <div class="title">
 
@@ -103,41 +156,50 @@
 
     </div>
 
-    <div id="mainCard" class="card today-bg">
-        <div class="tabs">
-            <div class="tab-text active" onclick="switchTab(0)">Today</div>
-            <div class="tab-text" onclick="switchTab(1)">Week</div>
-            <div class="tab-text" onclick="switchTab(2)">Month</div>
-        </div>
+    <div class="card today-bg">
+      
+            <h3 style="margin-bottom: 10px; color: white;font-weight:bold;">Balance</h3>
+            <div class="voucher-slider">
+            <div class="voucher-slide active">
+                <h3 style="color: white; margin: 0;">Opening Balance</h3>
+                <h4 style="color: white; margin: 0; display: flex; align-items: center; gap: 5px;">
+                   
+                    <span id="openingbalanceCount">0</span>
+                </h4>
+            </div>
 
-        <div class="tab-content active">
-            <h4>&#128276; Pending Verifications</h4>
-            <div class="count" id="count0">0</div>
-            @* <div class="trend">🔺 12% more than yesterday</div> *@
-            @* <div class="message">You're getting things moving!</div> *@
-        </div>
 
-        <div class="tab-content">
-            <h4>&#9989; Vouchers Verified</h4>
-            <div class="count" id="count1">0</div>
-            @* <div class="trend">🔼 25% higher than last week</div> *@
-            @* <div class="message">Awesome pace — keep it up!</div> *@
+                <div class="voucher-slide">
+                <h3 style="color: white; margin: 0;">Closing Balance</h3>
+                <h4 style="color: white; margin: 0; display: flex; align-items: center; gap: 5px;">
+                    
+                    <span id="closingbalanceCount">0</span>
+                        </h4>
+                </div>
+            </div>
         </div>
+    <div class="card green shine">
+            <h3 style="margin-bottom: 10px; color: white;font-weight:bold;">Aount</h3>
+            <div class="voucher-slider">
+            <div class="voucher-slide1 active">
+                <h3 style="color: white; margin: 0;">No of Received Amount</h3>
+                <h4 style="color: white; margin: 0; display: flex; align-items: center; gap: 5px;">
+                    <span id="receivedamount">0</span>
+                </h4>
+            </div>
 
-        <div class="tab-content">
-            <h4>&#128229; New Vouchers</h4>
-            <div class="count" id="count2">0</div>
-            @* <div class="trend">🔽 10% drop this month</div> *@
-            @* <div class="message">Fewer vouchers — time to catch up?</div> *@
+
+                <div class="voucher-slide1">
+                <h3 style="color: white; margin: 0;">Issuse</h3>
+                <h4 style="color: white; margin: 0; display: flex; align-items: center; gap: 5px;">
+                    <span id="issuseCount">0</span>
+                        </h4>
+                </div>
+            </div>
         </div>
-    </div>
+    
 
-    <div class="card purple sparkle">
-        <p>&#10024;</p>
-        <h4>No of Items</h4>
-        <h1 id="turnover">0</h1>
-        <h3>for this period</h3>
-    </div>
+    
 </div>
 @* <div class="container-fluid"></div> *@
 @* <div class="title">
@@ -200,6 +262,7 @@
       @(Html.DevExtreme().DataGrid<Qry60001inventoryStockView>()
     .ID("dataGrid")
         .DataSource(new JS("[]")) // using global JS array
+       .OnContentReady("onGridContentReady")
     .RemoteOperations(false)
     .Columns(columns =>
     {
@@ -232,7 +295,7 @@
         }
         // else: do nothing (no span rendered)
         }
-        "));
+        "));    
  columns.AddFor(m => m.UnitType)
                 .Caption(new JS("formatMessage('Unit')"))
             .Width(100);
@@ -370,15 +433,18 @@
         cellElement
         .text(formatted)
         .css({
-        backgroundColor: '#e6ffe6', // light green
-        padding: '4px 8px',         // optional spacing
-        borderRadius: '6px'         // optional rounded corners
+        backgroundColor: '#e6ffe6',
+        display: 'inline-block',
+        fontWeight: 'bold',
+        margin: '10px 35px',
+        padding: '4px 10px',
+        borderRadius: '20px'      
         });
 
         if (cellInfo.value < 0) {
-        cellElement.css('color', 'red'); // negative in red
+        cellElement.css('color', 'red');    
         } else {
-        cellElement.css('color', '#1a8f1a'); // positive in green text
+        cellElement.css('color', '#1a8f1a'); 
         }
         }
         "));
@@ -702,6 +768,50 @@
 				}
 
 <script>
+         function setupAutoSlider(className, interval = 2000) {
+        let currentIndex = 0;
+        setInterval(() => {
+            const slides = document.querySelectorAll(`.${className}`);
+            if (slides.length === 0) return;
+
+            slides.forEach(slide => slide.classList.remove('active'));
+            currentIndex = (currentIndex + 1) % slides.length;
+            slides[currentIndex].classList.add('active');
+        }, interval);
+    }
+
+    // ✅ Initialize both sliders
+    setupAutoSlider('voucher-slide');
+    setupAutoSlider('voucher-slide1');
+
+  
+     function onGridContentReady(e) {
+         updateSummaryCounts(e);
+     }
+
+    
+        function updateSummaryCounts(e) {
+        const svgIcon = `
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle;">
+                <path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+                <path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+            </svg>
+        `;
+
+        function setValueWithIcon(id, value) {
+            const formatted = Number(value).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
+            });
+            document.getElementById(id).innerHTML = `${svgIcon} <span style="margin-left: 5px;">${formatted}</span>`;
+        }
+
+        setValueWithIcon("openingbalanceCount", e.component.getTotalSummaryValue("OpeningBalance") || 0);
+        setValueWithIcon("closingbalanceCount", e.component.getTotalSummaryValue("ClosingBalance") || 0);
+        setValueWithIcon("receivedamount", e.component.getTotalSummaryValue("TotalReceived") || 0);
+        setValueWithIcon("issuseCount", e.component.getTotalSummaryValue("TotalIssues") || 0);
+    }
+
 
     let dataGrid;
 

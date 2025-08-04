@@ -235,12 +235,35 @@
 					columns.Add().Caption(new JS("formatMessage('Client ContactSlNo')")).DataField("ClientContactSlNo").Visible(false);
 					columns.Add().Caption(new JS("formatMessage('Location')")).DataField("ContactLocation");
 					columns.Add().Caption(new JS("formatMessage('Division')")).DataField("ContactDivision");
-					columns.Add().Caption(new JS("formatMessage('Add')")).DataField("ContactDivision");
+			columns.Add().Caption("Add").Width(80).Alignment(HorizontalAlignment.Center)
+			.CellTemplate(@<text>
+		<a href="javascript:void(0);"
+		   onclick="selectContact('<%= data.ContactPerson?.Replace(" '", "\\' ") %>')"
+		   style="color: #0398fc; text-decoration: underline;">
+			Add
+		</a>
+	</text>);
+
+
+
+
+
+
 				}
 				) )
 	</div>
 
 <script>
+	function selectContact(contactName) {
+		console.log("Selected contact:", contactName);
+
+		// Call parent function defined on Page1
+		if (typeof window.parent.setContactName === "function") {
+			window.parent.setContactName(contactName);
+		} else {
+			DevExpress.ui.notify("Could not return contact to parent page", "error", 2000);
+		}
+	}
 	  $(document).ready(function () {
 		const urlParams = new URLSearchParams(window.location.search);
 		const clientCode = urlParams.get("clientCode");	

@@ -288,54 +288,6 @@ function preparePayload(items) {
     }));
 }
 
-function uploadItemschildtable() {
-    const grid = $("#Datagrid").dxDataGrid("instance");
-    const dataSource = grid?.getDataSource();
-    const items = dataSource?.items() ?? [];
-
-    const requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
-
-    const childItems = items.map((item, index) => ({
-        MPRChildSlNo: 0, // Not needed but safe to send 0
-        MPRNo: requestNo,
-        GSCode: item.GSCode?.trim() || "", // Let backend handle if blank
-        QtyRequested: item.RequestQty ?? 0,
-        UnitRateMethod: 1,
-        ItemRemarks: item.Remarks ?? "",
-        LineOrderNo: index + 1,
-        AddlDescription: item.GSDescription ?? "",
-        PlanNo: item.PlanNo ?? "",
-        DeliveryPeriod: item.DeliveryPeriod ?? "",
-        ItemReqPurpose: "For site delivery", // You can make this dynamic
-        ItemReqPriority: "Urgent",
-        ItemReqExpectedDate: "2025-08-10", // Replace if needed
-        ExpectedUnitRate: item.UnitPrice ?? 0,
-        QuoteGroupItemSlNo: 1234 // Replace if needed
-    }));
-
-    const payload = {
-        requestNo: requestNo,
-        items: childItems
-    };
-
-    $.ajax({
-        url: "/api/InventoryUpload/UpdateToPurchaseRqstChild", // Adjust route if needed
-        method: "POST",
-        contentType: "application/json",
-        data: JSON.stringify(payload),
-        success: function (result) {
-            DevExpress.ui.notify(result.message, "success", 3000);
-			onUploadButtonClick();
-            //grid.refresh();
-        },
-        error: function (xhr) {
-            console.error("Error saving child items:", xhr.responseText || xhr.statusText);
-            DevExpress.ui.notify("Failed to save child items ❌", "error", 3000);
-        }
-    });
-
-}
-
 function uploadItemsToMaterialRequests() {
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
@@ -345,7 +297,7 @@ function uploadItemsToMaterialRequests() {
 
     const requestBody = {
         GSGroupCode: "MTRL",
-        RequestNo: "SR-ENQ-2025-17111",
+        RequestNo: $("#txtRequestNo").dxTextBox("instance").option("value"),
         Items: preparedItems,
         GSGroupID: 1
     };
@@ -359,17 +311,13 @@ function uploadItemsToMaterialRequests() {
         data: JSON.stringify(requestBody),
         success: function (result) {
             DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
-		   uploadItemschildtable();
-
+			onUploadButtonClick();
         },
         error: function (xhr) {
             console.error("UploadStock error:", xhr);
             DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
-			
         }
     });
-
-	
 }
 
 

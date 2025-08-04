@@ -243,20 +243,236 @@
 				subColumns.AddFor(m => m.Gsdescrpition).Caption("Stock Descrpition").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitType).Caption("UnitType").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitDesc).Caption("UnitDesc").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedQuantity).Caption("QuotedQuantity").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.DeliveryTerms).Caption("DeliveryTerms").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.QuotedQuantity).Caption("QuotedQuantity").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#fff9cc', // Light yellow
+				color: '#b58900',            // Amber text
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				subColumns.AddFor(m => m.DeliveryTerms).Caption("DeliveryTerms").Alignment(HorizontalAlignment.Center).Visible(true);	
 				subColumns.AddFor(m => m.QuoteRemarks).Caption("QuoteRemarks").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedUnitPrice).Caption("QuotedUnitPrice").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTotalBeforeDiscount).Caption("LineTotalBeforeDiscount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.QuotedDiscount).Caption("QuotedDiscount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTotalAfterDiscount).Caption("LineTotalAfterDiscount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTaxAmount).Caption("LineTaxAmount").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.LineTotalWithTax).Caption("LineTotalWithTax").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.BalanceToDeliver).Caption("BalanceToDeliver").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalOrderedQty).Caption("TotalOrderedQty").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalIssdQty).Caption("TotalIssdQty").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.QuotedUnitPrice).Caption("QuotedUnitPrice").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc',
+		color: '#b58900',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.LineTotalBeforeDiscount).Caption("LineTotalBeforeDiscount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc',
+		color: '#b58900',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.QuotedDiscount).Caption("QuotedDiscount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.LineTotalAfterDiscount).Caption("LineTotalAfterDiscount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.LineTaxAmount).Caption("LineTaxAmount").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.LineTotalWithTax).Caption("LineTotalWithTax").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.BalanceToDeliver).Caption("BalanceToDeliver").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6',
+				color: '#1a8f1a',
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				subColumns.AddFor(m => m.TotalOrderedQty).Caption("TotalOrderedQty").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
+				subColumns.AddFor(m => m.TotalIssdQty).Caption("TotalIssdQty").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6', // Light yellow
+		color: '#1a8f1a',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
 				subColumns.AddFor(m => m.DeliveryPeriod).Caption("DeliveryPeriod").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.CostPrice).Caption("CostPrice").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.CostPrice).Caption("CostPrice").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
 			});
 		})

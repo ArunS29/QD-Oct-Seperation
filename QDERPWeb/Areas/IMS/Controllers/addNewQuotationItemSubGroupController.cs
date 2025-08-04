@@ -54,7 +54,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         .AnyAsync(x => x.GroupName == documentType.GroupName);
                     if (exists)
                     {
-                        return BadRequest(new { success = false, message = "Document Type already exists." });
+                        return BadRequest(new { success = false, message = "Sub Group Name already exists." });
                     }
 
 
@@ -62,7 +62,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl60107quotationChildItemGroups.Add(documentType);
                     await dbContext.SaveChangesAsync();
 
-                    return Ok(new { success = true, message = "Document Type added successfully." });
+                    return Ok(new { success = true, message = "Sub Group added successfully." });
                 }
                 catch (Exception ex)
                 {
