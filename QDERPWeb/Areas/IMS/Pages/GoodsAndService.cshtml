@@ -279,6 +279,7 @@
                 .Icon("arrowleft")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Outlined)
+                .OnClick("onBack")
                         .ElementAttr(new { @class = "dx-button-custom btn-back" })
                         )
             @(Html.DevExtreme().Button()
@@ -607,6 +608,11 @@
 
         var GsdescriptionAr = $('#txtDescriptionArabic').dxTextArea("instance").option("value");
         var GsuoM = $('#GetLedgerNoDropDown').dxDropDownBox("instance").option("value");
+            
+    if (GsuoM === "" || GsuoM === undefined) {
+        GsuoM = null;
+    }
+
 
         var GspackingUnit = $('#packingUnit').dxNumberBox("instance").option("value");
         var GssellingRate = $('#sellingRate').dxNumberBox("instance").option("value");
@@ -737,5 +743,7 @@ function bindGoodsAndServiceData() {
                 const title = "Unit Of Measure";
                         openModal(url, title ,"","75%");
         }
-
+            function onBack(){
+                window.parent.closeModal();
+            }
 </script>

@@ -226,12 +226,50 @@
 				subColumns.AddFor(m => m.Gscode).Caption("Gs Code").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.Gsdescrpition).Caption("Gs Description").Alignment(HorizontalAlignment.Center).Visible(true);
 				subColumns.AddFor(m => m.UnitType).Caption("Unti Type").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.IssuedQty).Caption("IssuedQty").Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.UnitRateMethod).Caption("Unit Rate Method").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6', // Light yellow
+				color: '#1a8f1a',            // Amber text
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
+				subColumns.AddFor(m => m.IssuedQty).Caption("IssuedQty").Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+				function(cellElement, cellInfo) {
+				if (cellInfo.value != null && cellInfo.value !== '') {
+				$('<span>')
+				.text(cellInfo.value)
+				.css({
+				display: 'inline-block',
+				backgroundColor: '#e6ffe6', // Light yellow
+				color: '#1a8f1a',            // Amber text
+				fontWeight: 'bold',
+				padding: '4px 10px',
+				borderRadius: '20px',
+				minWidth: '24px',
+				textAlign: 'center'
+				})
+				.appendTo(cellElement);
+				}
+				// else: do nothing (no span rendered)
+				}
+				"));
 
-			});
+					});
 			
-		})
+				})
 		.Height("70vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")

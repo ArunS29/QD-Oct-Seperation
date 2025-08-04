@@ -630,7 +630,7 @@
 
 
     function adddivmaster() {
-        
+        debugger;
         var GroupCode = $("#costCenterComboBox").dxSelectBox("instance").option("value");
         var GroupName = $("#costCenterMaster1").dxSelectBox("instance").option("value");
         var QuotationNo = $("#quotationNo").dxTextBox("instance").option("value");
@@ -698,6 +698,10 @@
                             $("#subGroupRemarks").dxTextBox("instance").reset();
                             $("#schLedgerActive").dxSwitch("instance").option("value", false);
                         $("#gridContainer").dxDataGrid("instance").refresh();
+
+    // getUnitRateMethods1(true).done(function () {
+    //          $("#B2BdataGrid").dxDataGrid("instance").refresh(); // ✅ Triggers dropdown to use latest cache
+    //      });
                     } else {
                         Swal.fire({
                             icon: 'error',

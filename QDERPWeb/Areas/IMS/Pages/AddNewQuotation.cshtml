@@ -37,12 +37,12 @@
         overflow-x: hidden;
     }
 
-    .form-container1 {
-        margin: 15px;
-        width: 99%;
-        padding: 5px;
-        border-radius: 1px;
-    }
+.form-container1 {
+    margin: 0px 15px;
+    width: 99%;
+    padding: 5px;
+    border-radius: 1px;
+}
 
     .form-container {
         width: 100%;
@@ -1257,7 +1257,7 @@
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
-		.Height("45vh")
+		.Height("40vh")
 		.ColumnAutoWidth(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -2286,7 +2286,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "");
+									openModal(url, "Goods And Service");
 
 								},
 
@@ -2317,7 +2317,7 @@ $("<div>").dxButton({
         }
 
         const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-        window.open(url, "_blank");
+        openModal(url, "Goods And Service");
     },
     width: 60,
     height: 30
@@ -3045,7 +3045,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "");
+									openModal(url, "Goods And Service");
 
 								},
 
@@ -3070,7 +3070,7 @@ placeholder: "Search..."
         }
 
         const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-        window.open(url, "");
+       openModal(url, "Goods And Service");
     },
 
 								width: 60,
@@ -5498,6 +5498,8 @@ AddlDescription: null,
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					  isVoucherSaved = true; // Mark Updated step as done
+                      updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
 					// Refresh parent DataGrid (ensure the correct selector is used)
 					if (window.parent && window.parent.$("#dataGrid").length) {
@@ -5636,6 +5638,8 @@ AddlDescription: null,
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					  isVoucherSaved = true; // Mark Updated step as done
+					updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
 					// Refresh parent DataGrid (ensure the correct selector is used)
 					if (window.parent && window.parent.$("#dataGrid").length) {
@@ -5913,6 +5917,7 @@ AddlDescription: null,
       url: `/api/AddNewQuotation/SubmitQuotation?QuoteNo=${encodeURIComponent(quoteNo)}`,
       contentType: "application/json",
       success: function (response) {
+		   syncWorkflowFromFields();
        DevExpress.ui.notify("Quotation has been submitted for approval.", "success", 3000);
          
             const preparedByBox = $("#ddPreparedby").dxDropDownBox("instance");
@@ -6005,7 +6010,7 @@ AddlDescription: null,
           approvedByBox.getDataSource().reload(); // refresh data
           approvedByBox.repaint();              // update display text
         }
-
+		 syncWorkflowFromFields();
        DevExpress.ui.notify("Quotation has been verified and processed for Approval.", "success", 3000);
 
       } else {
@@ -6090,7 +6095,7 @@ AddlDescription: null,
                         approvedByBox.repaint();                   // ensure display updates :contentReference[oaicite:2]{index=2}
                     }
                 }
-
+				 syncWorkflowFromFields();
            DevExpress.ui.notify("Quotation has been Approved.", "success", 3000);
 hideAllButtonsExcept([
     "btnPrint",
@@ -6855,5 +6860,143 @@ function saveField(fieldName, dxId,name) {
 					height: 419.056,
 					contentTemplate: () => $("#calculatorWrapper")
 				});
+	            let isVoucherSaved = false;
 
+        function getWorkflowStatusFromFields() {
+    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+    const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
+
+    const submitted = preparedVal !== null && preparedVal !== "";
+    const verified = verifiedVal !== null && verifiedVal !== "";
+    const approved = approvedVal !== null && approvedVal !== "";
+
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+
+
+     function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = "In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = "Pending";
+            }
+
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+        function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+        }
+
+    function attachWorkflowWatchers() {
+        $("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+        $("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+    }
+
+        $(function () {
+            setTimeout(() => {
+                attachWorkflowWatchers();
+                syncWorkflowFromFields();
+                 // bindWorkflowPopovers();
+                 initWorkflowTippyPopovers();
+
+            }, 300);
+        });
+     
+
+
+    function formatDate(date) {
+        if (!date) return "N/A";
+        const d = new Date(date);
+        return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+    }
+
+    function initWorkflowTippyPopovers() {
+        // 🧼 Clean up any old tippy instances
+        tippy.hideAll();
+        document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+		 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+		const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
+        const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+
+        console.log("🧪 Tooltip data:", {
+            verifiedBy, verifiedOn, approvedBy, approvedOn
+        });
+
+        // 🟩 Verified Popover
+        tippy('#circle-verify', {
+            content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+        });
+
+        // 🟩 Approved Popover
+        tippy('#circle-approve', {
+            content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+            allowHTML: true,
+            followCursor: 'horizontal',
+            placement: 'top',
+            animation: 'shift-away',
+            theme: 'light-border',
+            trigger: 'mouseenter focus',
+            delay: [100, 100],
+
+        });
+            tippy('#circle-submit', {
+        content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+        allowHTML: true,
+        followCursor: 'horizontal',
+        placement: 'top',
+        animation: 'shift-away',
+        theme: 'light-border',
+        trigger: 'mouseenter focus',
+        delay: [100, 100],
+    });
+    }
 </script>
