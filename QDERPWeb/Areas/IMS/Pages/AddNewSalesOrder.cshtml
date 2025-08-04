@@ -240,7 +240,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("SalesOrderDate")
                             .Value(DateTime.Today)
-                            .DateSerializationFormat("dd-MMM-yyyy")  // ✅ Ensure consistent format
+                           	.DisplayFormat("dd-MMM-yyyy") // ✅ Ensure consistent format
                             .Label("Sales Order Date")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
@@ -322,6 +322,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("QuotationDate")
                             .Label("Quotation Date:")
+                            	.DisplayFormat("dd-MMM-yyyy")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -334,7 +335,18 @@
                                     .Label("Client Ref. Name:")
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
-                                    .Width("100%"))
+                                    .Width("100%")
+                                    .Buttons(buttons =>
+							{
+								buttons.Add()
+								.Name("Addcontactname")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+								.Type(ButtonType.Default)
+								.Icon("plus")
+								.ElementAttr(new { @class = "custom-hover-button add-hover" })
+								.OnClick("AddContactName"));
+							}))
                                 </div>
                                 <div class="col-md-4">
                                     @(Html.DevExtreme().TextBox()
@@ -371,6 +383,7 @@
                             @(Html.DevExtreme().DateBox()
                             .ID("ClientPoDate")
                             .Label("Client PO Date:")
+                            	.DisplayFormat("dd-MMM-yyyy")
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -1740,7 +1753,7 @@
         });
     });
 
-
+    
              ///clientname IDBIndex data
             function onClientSelected(e) {
             const selected = e.selectedRowsData[0];
@@ -2753,5 +2766,35 @@ $(document).ready(function () {
                 }
             }, 100); // delay 100ms
         }
+        	  function AddContactName() {
+		var dropDownBox = $('#ClientNames').dxDropDownBox('instance');
 
+		var selectedValue = dropDownBox.option('value'); // clientCode
+
+		if (!selectedValue) {
+			DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+			return;
+		}
+
+		// Get the full item directly from dataSource using selected value
+		var dataSource = dropDownBox.getDataSource();
+
+		dataSource.load().done(function (data) {
+			var selectedItem = data.find(x => x.ClientCode === selectedValue);
+
+			if (!selectedItem || !selectedItem.ClientName) {
+				DevExpress.ui.notify('Client details not found.', 'error', 2000);
+				return;
+			}
+
+			var clientCode = selectedValue;
+			var clientName = selectedItem.ClientName;
+
+			var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' +
+				encodeURIComponent(clientCode) + '&clientName=' +
+				encodeURIComponent(clientName);
+
+			openModal(url, 'Client Contact List');
+		});
+	}
 </script>
