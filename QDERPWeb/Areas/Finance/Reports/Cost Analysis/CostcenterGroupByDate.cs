@@ -1,13 +1,11 @@
-﻿using System;
-using System.Drawing;
+﻿using DevExpress.DataAccess.ConnectionParameters;
 using DevExpress.DataAccess.Sql;
-using DevExpress.DataAccess.ConnectionParameters;
+using DevExpress.XtraPrinting; // Make sure this is included for TenantDbContextHelper
 using DevExpress.XtraReports.UI;
-using QD.ERP.Web.Service;
-using DevExpress.XtraPrinting;
+using Microsoft.Data.SqlClient;
 using Svg;
+using System.Drawing;
 using System.Text;
-using Microsoft.Data.SqlClient; // Make sure the namespace is correct
 
 namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
 {
@@ -25,25 +23,26 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            TenantDbContextHelper tenantDbContextHelper,string username)
+            TenantDbContextHelper tenantDbContextHelper, string username, bool? useEffectiveDate)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
+            SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, useEffectiveDate);
+            ConfigureSqlDataSource(requestedBy, frmDate, toDate, useEffectiveDate);
             LoadCurrencySymbolAndImage();
 
-            SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username);
         }
 
         public CostcenterGroupByDate()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "","");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "", "", null);
         }
 
         private void SetReportParameters(
             string requestedBy, DateTime frmDate, DateTime toDate,
             string tenantName, string companyName, string companyAddress,
-            Image logoImage, string companyNameAr, string companyAddressAr,string username)
+            Image logoImage, string companyNameAr, string companyAddressAr, string username, bool? useEffectiveDate)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -73,6 +72,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
             AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+            AddOrUpdateParameter("UseEffectiveDate", useEffectiveDate ?? false, typeof(bool));
             if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
                 userNameLabel.Text = username;
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
@@ -86,11 +86,25 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
 
             if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
+
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
                 companyNameArLabel.Text = companyNameAr;
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
+            if (FindControl("xrLabel19", true) is XRLabel effectiveDateLabel)
+            {
+                if (useEffectiveDate.HasValue && useEffectiveDate.Value)
+                {
+                    effectiveDateLabel.Text = "By Effective Date";
+                    effectiveDateLabel.Visible = true;
+                }
+                else
+                {
+                    effectiveDateLabel.Text = "By Voucher Date";
+                    effectiveDateLabel.Visible = false;
+                }
+            }
 
             if (FindControl("xrLabelRequestedBy", true) is XRLabel requestedByLabel)
             {
@@ -98,55 +112,60 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 requestedByLabel.Visible = !string.IsNullOrEmpty(requestedBy);
             }
 
-            ConfigureSqlDataSource(requestedBy, frmDate, toDate);
+
         }
 
-        private void ConfigureSqlDataSource(string requestedBy, DateTime frmDate, DateTime toDate)
+        private void ConfigureSqlDataSource(string requestedBy, DateTime frmDate, DateTime toDate, bool? useEffectiveDate)
         {
+            string dateColumn = (useEffectiveDate.HasValue && useEffectiveDate.Value) ? "EffectiveDate" : "VoucherDate";
+
             var selectQuery = new CustomSqlQuery()
             {
                 Name = "qry20151CostAnalysisReport",
-                Sql = @"SELECT * FROM qry20151CostAnalysisReport
-                        WHERE 
-                        (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
-                        AND VoucherDate BETWEEN @StartDate AND @EndDate"
+                Sql = $@"
+            SELECT * FROM qry20151CostAnalysisReport
+            WHERE 
+                (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy)
+                AND {dateColumn} BETWEEN @StartDate AND @EndDate"
             };
 
             selectQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter()
-                {
-                    Name = "@RequestedBy",
-                    Type = typeof(string),
-                    ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
-                },
-                new QueryParameter()
-                {
-                    Name = "@StartDate",
-                    Type = typeof(DateTime),
-                    ValueInfo = frmDate.ToString("yyyy-MM-dd")
-                },
-                new QueryParameter()
-                {
-                    Name = "@EndDate",
-                    Type = typeof(DateTime),
-                    ValueInfo = toDate.ToString("yyyy-MM-dd")
-                }
-            });
+        new QueryParameter()
+        {
+            Name = "@RequestedBy",
+            Type = typeof(string),
+            ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
+        },
+        new QueryParameter()
+        {
+            Name = "@StartDate",
+            Type = typeof(DateTime),
+            ValueInfo = frmDate.ToString("yyyy-MM-dd")
+        },
+        new QueryParameter()
+        {
+            Name = "@EndDate",
+            Type = typeof(DateTime),
+            ValueInfo = toDate.ToString("yyyy-MM-dd")
+        }
+    });
 
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);
 
-            // Multi-tenant logic
+            // Assign connection string dynamically from tenant context
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
-                this.sqlDataSource1.ConnectionParameters = new CustomStringConnectionParameters(tenant.ConnectionString);
+                var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
+                this.sqlDataSource1.ConnectionParameters = connectionParams;
             }
             else
             {
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
             }
 
+            // Fill data and handle no-data case
             this.sqlDataSource1.Fill();
             var data = this.sqlDataSource1.Result["qry20151CostAnalysisReport"];
             if (data == null || data.Count() == 0)
@@ -155,6 +174,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 CreateNoDataLabel();
             }
         }
+
 
         private void CreateNoDataLabel()
         {
@@ -181,28 +201,28 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                 string svgText = null;
                 string currencySymbol = null;
 
-               using (var connection = new SqlConnection(connectionString))
-    {
-        connection.Open();
+                using (var connection = new SqlConnection(connectionString))
+                {
+                    connection.Open();
 
-        string sql = $@"
+                    string sql = $@"
             SELECT c.CurrencyImage, c.CurrencySymbol
             FROM {tenant.schemaname}.tbl901CompanyDetails AS c
             INNER JOIN dbo.fn_GetDefaultCompanyDetails() AS f
                 ON c.CompanyId = f.CompanyId";
 
-        using (var command = new SqlCommand(sql, connection))
-        {
-            using (var reader = command.ExecuteReader())
-            {
-                if (reader.Read())
-                {
-                    svgText = reader["CurrencyImage"]?.ToString()?.Trim('\uFEFF');
-                    currencySymbol = reader["CurrencySymbol"]?.ToString()?.Trim();
+                    using (var command = new SqlCommand(sql, connection))
+                    {
+                        using (var reader = command.ExecuteReader())
+                        {
+                            if (reader.Read())
+                            {
+                                svgText = reader["CurrencyImage"]?.ToString()?.Trim('\uFEFF');
+                                currencySymbol = reader["CurrencySymbol"]?.ToString()?.Trim();
+                            }
+                        }
+                    }
                 }
-            }
-        }
-    }
 
 
                 // Set currency symbol to label
@@ -274,7 +294,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
         }
         private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            var fixedPictureBoxes = new[] { "xrPictureBox2", "xrPictureBox3" };
+            var fixedPictureBoxes = new[] { "xrPictureBox7", "xrPictureBox8" };
             foreach (var name in fixedPictureBoxes)
             {
                 if (FindControl(name, true) is XRPictureBox picBox)
@@ -289,13 +309,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
             {
 
 
-    //new { Label = "xrLabel15",  Picture = "xrPictureBox6" },
+    //new { Label = "xrLabel10",  Picture = "xrPictureBox6" },
+    //new { Label = "xrLabel15",  Picture = "xrPictureBox4" },
     //new { Label = "xrLabel16",  Picture = "xrPictureBox5" },
-    //new { Label = "xrLabel10",  Picture = "xrPictureBox9" },
-    //new { Label = "xrLabel23",  Picture = "xrPictureBox7" },
-    //new { Label = "xrLabel24",  Picture = "xrPictureBox8" },
-    //new { Label = "xrLabel26",  Picture = "xrPictureBox4" },
-    new { Label = "xrLabel00",  Picture = "xrPictureBox00" },
+    new { Label = "xrLabel000",  Picture = "xrPictureBox000" },
 };
 
             foreach (var p in pairs)
@@ -337,6 +354,11 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
                     }
                 };
             }
+        }
+
+        private void xrPictureBox8_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
         }
     }
 }

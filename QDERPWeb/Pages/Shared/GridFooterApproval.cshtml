@@ -542,7 +542,7 @@
                 reader.readAsText(file);
             }
         });
-            function setDefaultLayoutClick(e) {
+                function setDefaultLayoutClick(e) {
         const grid = $("#dataGrid").dxDataGrid("instance");
         const form = $('#formId').val();
 
@@ -552,18 +552,14 @@
         }
 
         const layout = grid.state();
-        //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
-
-        // console.log("JSON Layout:", layoutJson);
-        console.log("XML Layout:", layoutJson); // Comment if not needed
+        const layoutJson = JSON.stringify(layout); // ✅ Save as JSON string
 
         $.ajax({
             url: '/api/Utility/SaveLayout',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                layout: layoutJson, // or use layoutXml if backend expects XML
+                layout: layoutJson,
                 form: form
             }),
             success: function (data) {
@@ -576,25 +572,30 @@
         });
     }
 
-        function resetLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
-            $.ajax({
-                url: '/api/Utility/SaveLayout',  // API endpoint
-                type: 'POST',
-                data: {
-                    layout: null,
-                    form: form
-                },
-                success: function (data) {
-                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                    grid.state({});
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
+
+    function resetLayoutClick(e) {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const form = $('#formId').val();
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                layout: null, // 👈 this will trigger the backend to delete or reset
+                form: form
+            }),
+            success: function (data) {
+                DevExpress.ui.notify("Layout reset successful", "success", 2000);
+                grid.state(null); // 👈 clear client-side layout too
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                DevExpress.ui.notify("Error while resetting layout", "error", 2000);
+            }
+        });
+    }
+
         function saveLayoutClick(e) {
             var grid = $("#dataGrid").dxDataGrid("instance");
             var layout = grid.state();
@@ -646,8 +647,11 @@
             // Trigger the file input click event
             input.click();
         }
-
+            $(document).ready(function () {
+        loadGridState(); // 👈 This must be called explicitly
+    });
         function loadGridState() {
+            
             var form = $('#formId').val();
             // Call the API to get the grid state
             $.ajax({

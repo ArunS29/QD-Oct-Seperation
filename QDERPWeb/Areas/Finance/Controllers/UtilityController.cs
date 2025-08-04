@@ -67,16 +67,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
+                    var userIdString = HttpContext.Session.GetString("UserId");
+
+                    if (string.IsNullOrWhiteSpace(userIdString) || !byte.TryParse(userIdString, out byte userId))
+                    {
+                        return Unauthorized(new { message = "User not logged in or invalid user ID.", success = false });
+                    }
+
                     var layout = dbContext.Tbl90111LayoutMasters
-                        .Where(p => p.UserId == 101 && p.FormId == form)
+                        .Where(p => p.UserID == userId && p.FormId == form)
                         .Select(i => new
                         {
-                            i.LayoutJson
+                            i.LayoutXml
                         }).FirstOrDefault();
 
-                    if (layout != null && layout.LayoutJson != null)
+                    if (layout != null && layout.LayoutXml != null)
                     {
-                        return Json(layout.LayoutJson);
+                        return Json(layout.LayoutXml);
                     }
                     else
                     {
@@ -92,6 +99,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
         [HttpGet]
         public async Task<IActionResult> GetCurrencyListWithRates(int baseCurrencyId)
