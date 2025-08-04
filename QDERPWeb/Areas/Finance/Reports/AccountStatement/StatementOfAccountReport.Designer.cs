@@ -853,8 +853,8 @@ namespace QD.ERP.Web.Reports
             this.xrLabel15.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel15.BorderWidth = 0.5F;
             this.xrLabel15.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  sumSum([VoucherAmountFormatted]) > 0,\n  FormatString(\'{0:#,##0.00}\', sumSu" +
-                    "m([VoucherAmountFormatted])),\n  \'-\'\n)\n\n\n")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(\n  sumSum([ConvertedAmount]) > 0,\n  FormatString(\'{0:#,##0.00}\', sumSum([Conv" +
+                    "ertedAmount])),\n  \'-\'\n)\n\n\n")});
             this.xrLabel15.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel15.LocationFloat = new DevExpress.Utils.PointFloat(664.8348F, 1.333038F);
             this.xrLabel15.Name = "xrLabel15";

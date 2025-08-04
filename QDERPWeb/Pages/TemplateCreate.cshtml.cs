@@ -1,12 +1,13 @@
+﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
-using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using System;
 using System.ComponentModel.DataAnnotations;
 using System.Threading.Tasks;
 
+[Authorize] // 👈 Prevents anonymous users
 public class TemplateCreateModel : PageModel
 {
     private readonly TenantDbContextHelper _tenantDbContextHelper;
@@ -19,9 +20,9 @@ public class TemplateCreateModel : PageModel
     [BindProperty]
     public EmailTemplate Template { get; set; } = new EmailTemplate();
 
-    public bool IsSuccess { get; set; } = false;
-
-    public void OnGet() { }
+    public void OnGet()
+    {
+    }
 
     public async Task<IActionResult> OnPostAsync()
     {
@@ -30,15 +31,14 @@ public class TemplateCreateModel : PageModel
             return Page();
         }
 
+        if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+        {
+            ModelState.AddModelError(string.Empty, "Unable to resolve tenant database context.");
+            return Page();
+        }
+
         try
         {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
-            {
-                ModelState.AddModelError(string.Empty, "Unable to resolve tenant database context.");
-                return Page();
-            }
-
-            // Trim and sanitize
             Template.TemplateName = Template.TemplateName?.Trim();
             Template.Subject = Template.Subject?.Trim();
             Template.Body = Template.Body?.Trim();
@@ -47,8 +47,8 @@ public class TemplateCreateModel : PageModel
             dbContext.EmailTemplates.Add(Template);
             await dbContext.SaveChangesAsync();
 
-            IsSuccess = true;
-            return Page(); // JS will pick this and close or reload
+            // ✅ Use redirect with query flag
+            return RedirectToPage("TemplateCreate", new { isSuccess = true });
         }
         catch (Exception ex)
         {

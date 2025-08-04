@@ -15,11 +15,11 @@
     function openEmailPopup() {
         alert('Preparing');
 
-        var voucherNo = '@Model.VoucherNo'; 
-        var currentReportName = 'cashPayments'; 
+        var voucherNo = '@Model.VoucherNo';
+        var currentReportName = 'cashPayments';
 
-        console.log("Voucher No:", voucherNo); 
-        console.log("Current Report Name:", currentReportName); 
+        console.log("Voucher No:", voucherNo);
+        console.log("Current Report Name:", currentReportName);
 
         fetch('/api/ReportAttachment/Prepare', {
             method: 'POST',
@@ -31,31 +31,34 @@
                 voucherNo: voucherNo
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const fileName = data.fileName;
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const fileName = data.fileName;
+                const tenantName = window.location.pathname.split('/')[1]; // e.g., 'Sudhir'
 
-                    const popup = document.getElementById("emailPopup");
-                    document.getElementById("emailFrame").src = "/Pages/EmailCompose?fileName=" + encodeURIComponent(fileName);
+                // ✅ FIXED PATH (removed /Pages)
+                document.getElementById("emailFrame").src =
+                    `/${tenantName}/EmailCompose?fileName=${encodeURIComponent(fileName)}`;
 
-                    popup.style.display = "flex";
-                    popup.classList.add("fade-in");
+                const popup = document.getElementById("emailPopup");
+                popup.style.display = "flex";
+                popup.classList.add("fade-in");
 
-                    document.getElementById("emailLoader").style.display = "block";
-                    setTimeout(() => {
-                        document.getElementById("emailLoader").style.display = "none";
-                    }, 1500);
-                } else {
-                    alert("Failed to prepare attachment.");
-                }
-            })
-
-            .catch(err => {
-                console.error("Attachment generation failed:", err);
-                alert("Error preparing email attachment.");
-            });
+                document.getElementById("emailLoader").style.display = "block";
+                setTimeout(() => {
+                    document.getElementById("emailLoader").style.display = "none";
+                }, 1500);
+            } else {
+                alert("Failed to prepare attachment.");
+            }
+        })
+        .catch(err => {
+            console.error("Attachment generation failed:", err);
+            alert("Error preparing email attachment.");
+        });
     }
+
 
 
     function closeEmailPopup() {

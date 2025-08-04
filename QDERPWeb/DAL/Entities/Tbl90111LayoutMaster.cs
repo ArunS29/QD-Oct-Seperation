@@ -7,7 +7,7 @@ namespace QD.ERP.Web.DAL.Entities;
 
 public partial class Tbl90111LayoutMaster
 {
-    public byte? UserId { get; set; }
+    public byte? UserID { get; set; }
 
     public string FormId { get; set; }
 

@@ -59586,7 +59586,7 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasColumnName("FormID");
             entity.Property(e => e.LayoutDescription).IsUnicode(false);
             entity.Property(e => e.LayoutXml).HasColumnType("xml");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserID).HasColumnName("UserID");
         });
 
         modelBuilder.Entity<Tbl90112ReportAttribute>(entity =>

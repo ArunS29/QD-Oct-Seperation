@@ -31,8 +31,16 @@ namespace QD.ERP.Web.Controllers
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                 return StatusCode(500, "Tenant not found or DbContext could not be created.");
 
+            var userName = HttpContext.Session.GetString("UserName") ?? "Default User";
             var tenantName = HttpContext.Session.GetString("TenantName") ?? "Default Tenant";
-            var username = HttpContext.Session.GetString("UserName") ?? "Default Tenant";
+            var defaultCompanyIdString = HttpContext.Session.GetString("DefaultcompanyID");
+
+            // Parse DefaultcompanyID from session
+            if (!int.TryParse(defaultCompanyIdString, out int defaultCompanyId))
+            {
+                // Handle missing or invalid ID
+                defaultCompanyId = 0;
+            }
 
 
             string companyName = string.Empty;
@@ -42,7 +50,7 @@ namespace QD.ERP.Web.Controllers
             Image logoImage = null;
 
             var companyDetails = dbContext.Tbl901CompanyDetails
-                .FirstOrDefault(x => x.CompanyNameShort == tenantName);
+            .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
 
             if (companyDetails != null)
             {
@@ -68,7 +76,7 @@ namespace QD.ERP.Web.Controllers
             }
 
             // Generate the report
-            XtraReport report = GenerateReport(request.ReportName, request.VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username);
+            XtraReport report = GenerateReport(request.ReportName, request.VoucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName);
 
             // Save to Azure-safe path (temp path)
             string fileName = $"{request.VoucherNo}_{Guid.NewGuid():N}.pdf";

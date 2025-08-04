@@ -40,6 +40,7 @@
                 .ID("btnAttach")
                 .Icon("attach")
                 .Text(new JS("formatMessage('Attach')"))
+                .OnClick("onIMSAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 .Width(200)
                 )
@@ -842,6 +843,45 @@
         window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
 
+    function onIMSAttachmentButtonClick(e) {
+        // Get Voucher No safely
+        const deliveryNoBox = $("#deliveryNoteNo").dxTextBox("instance");
+        const deliveryNo = deliveryNoBox ? deliveryNoBox.option("value") : null;
+        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
 
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.notify(
+                "Not allow to Add Attachments. Please enter some transactions in Grid.",
+                "warning",
+                4000
+                );
+            return;
+        }
+        var menuType = "inventory";
+
+        var formType = '';
+        var deliveryType = $("#DeliveryType").dxSelectBox("instance");
+        var deliveryTypevalue = deliveryType.option("value");
+        if (deliveryTypevalue == "1") 
+            formType = "Delivery To Client";
+        else if (deliveryTypevalue == "2")
+            formType = "Delivery To Store";
+        else if (deliveryTypevalue == "3")
+            formType = "Delivery To Project";
+        else if (deliveryTypevalue == "4")
+            formType = "Delivery Store Tranfers";
+            
+        // Log and build URL
+        console.log("Voucher No:", deliveryNo);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(deliveryNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
 
 </script>
