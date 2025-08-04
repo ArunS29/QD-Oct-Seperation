@@ -2674,84 +2674,116 @@ $(document).ready(function () {
 
 		console.log('End permission handling');
 	});
-    
-		function dropDownBoxOnInput(e) {
-			const ddbInstance = e.component;
-			if (!ddbInstance.option("opened")) ddbInstance.open();
+
+            function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
 
 
-			const text = ddbInstance.option("text");
-			if (dataGrid) {
-				dataGrid.option("searchPanel.text", text);
-			}
-		}
-        	  function onOpened(e) {
-			setTimeout(() => {
-				e.component.focus();
-			});
-		}
-        
-        let IsCurrent="false";
-		function dataGridInvoiceCurrencyHeadInitialized(e) {
-			dataGrid = e.component;
-		}
-        function CurrencyClick() {
-			let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-            let title = "Currency Master";
-            openModal(url, title);
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
         }
-        $(document).ready(function () {
-			var urlParams = new URLSearchParams(window.location.search);
-			var IsEditflag = urlParams.get('IsEditflag') ?? "";
-				IsCurrent=IsEditflag.toString();
+    }
+          function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
         });
-        function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
-	        debugger;
-	        const selectedRow = e.selectedRowsData[0]; // full object
-	        const selectedKey = e.selectedRowKeys[0];
-	        const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+    }
 
-	        if (selectedKey) {
-		        ddbInstance.option("value", selectedKey); // CurrencyId
-		        if (ddbInstance.option("opened")) {
-			        ddbInstance.close();
-		        }
+    let IsCurrent="false";
+    function dataGridInvoiceCurrencyHeadInitialized(e) {
+        dataGrid = e.component;
+    }
+    function CurrencyClick() {
+        let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+        let title = "Currency Master";
+        openModal(url, title);
+    }
+    $(document).ready(function () {
+        var urlParams = new URLSearchParams(window.location.search);
+        var IsEditflag = urlParams.get('IsEditflag') ?? "";
+            IsCurrent=IsEditflag.toString();
+    });
+    function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
+        debugger;
+        const selectedRow = e.selectedRowsData[0]; // full object
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
 
-		        // Set CurrencyRate from the selected grid row
-		        const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
-		        $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
-	        }
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey); // CurrencyId
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+
+            // Set CurrencyRate from the selected grid row
+            const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
+            $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
         }
+    }
 
-        function dataGridTaxCurrencyHeadSelectionChanged(e) {
-	        debugger;
-	        const selectedKey = e.selectedRowKeys[0];
-	        const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
+    function dataGridTaxCurrencyHeadSelectionChanged(e) {
+        debugger;
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
 
-	        if (selectedKey) {
-		        ddbInstance.option("value", selectedKey); // BaseCurrencyId
-		        if (ddbInstance.option("opened")) {
-			        ddbInstance.close();
-		        }
-	        }
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey); // BaseCurrencyId
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
         }
-        function onBaseCurrencyInitialized(e) {
-            const ddb = e.component;
+    }
+    function onBaseCurrencyInitialized(e) {
+        const ddb = e.component;
 
-            setTimeout(() => {
-                const ds = ddb.getDataSource();
+        setTimeout(() => {
+            const ds = ddb.getDataSource();
 
-                if (ds) {
-                    ds.load().done(function (data) {
-                        if (data && data.length > 0) {
-                            const firstItemId = data[0].CurrencyExchangeId;
-                            ddb.option("value", firstItemId);
-                        }
-                    });
-                } else {
-                    console.warn("DataSource is not available yet.");
-                }
-            }, 100); // delay 100ms
+            if (ds) {
+                ds.load().done(function (data) {
+                    if (data && data.length > 0) {
+                        const firstItemId = data[0].CurrencyExchangeId;
+                        ddb.option("value", firstItemId);
+                    }
+                });
+            } else {
+                console.warn("DataSource is not available yet.");
+            }
+        }, 100); // delay 100ms
+    }
+    // Attachment
+    function onIMSAttachmentButtonClick() {
+        // Get Voucher No safely
+        const SalesOrderNOBox = $("#SalesOrderNO").dxTextBox("instance");
+        const salesOrderNO = SalesOrderNOBox ? SalesOrderNOBox.option("value") : null;
+        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.notify(
+                "Not allow to Add Attachments. Please enter some transactions in Grid.",
+                "warning",
+                4000
+                );
+            return;
         }
+        var menuType = "inventory";
+
+
+        var formType ="Sales Order";
+        // Log and build URL
+        console.log("Voucher No:", salesOrderNO);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(salesOrderNO)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
 
 </script>

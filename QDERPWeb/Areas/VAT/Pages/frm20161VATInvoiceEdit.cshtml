@@ -8145,65 +8145,65 @@
 					    if(response.IsDirect == true)
 						{
 
-								// attachment bind to sales in finance with posting
+							// attachment bind to sales in finance with posting
 
-									const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
-									const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
-									var menuType = "vat";
-									var formType ="Sales Invoice B2B";
-									// 1. Get Documents
-									const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-									const documents = await getDocRes.json();
-									if (!documents.length) {
-													DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-													return;
-									}
-									// 2. Generate DocumentNo to each documents
-									const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-									const newDocNos = await docNoRes.json();
-									if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-													DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-													return;
-									}
-									// 3. Reupload each document to AddDocumentsEntry
-									const generateNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+							const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+							const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+							var menuType = "vat";
+							var formType ="Sales Invoice B2B";
+							// 1. Get Documents
+							const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
+							const documents = await getDocRes.json();
+							if (!documents.length) {
+											DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+											return;
+							}
+							// 2. Generate DocumentNo to each documents
+							const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+							const newDocNos = await docNoRes.json();
+							if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+											DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+											return;
+							}
+							// 3. Reupload each document to AddDocumentsEntry
+							const generateNo = $("#InvoiceNo").dxTextBox("instance").option("value");
 
-									const PostVoucherType = "sales";
-									const isMaster = false;
-									const PostMenuType = 'finance';
-									for (let i = 0; i < documents.length; i++) {
-										const doc = documents[i];
-										const newDocNo = newDocNos[i];
+							const PostVoucherType = "sales";
+							const isMaster = false;
+							const PostMenuType = 'finance';
+							for (let i = 0; i < documents.length; i++) {
+								const doc = documents[i];
+								const newDocNo = newDocNos[i];
 
-										try {
-											const fileResponse = await fetch(doc.FileUrl);
-											const blob = await fileResponse.blob();
+								try {
+									const fileResponse = await fetch(doc.FileUrl);
+									const blob = await fileResponse.blob();
 
-											const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-											const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+									const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+									const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
 
-											const formData = new FormData();
-											formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-											formData.append("DocumentNo", newDocNo);
-											formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-											formData.append("DocumentType", doc.DocumentType ?? "1");
-											formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-											formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-											formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-											formData.append("LedgerNo", generateNo); // new folder id
+									const formData = new FormData();
+									formData.append("file", new File([blob], safeFileName)); // no docNo prefix
+									formData.append("DocumentNo", newDocNo);
+									formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+									formData.append("DocumentType", doc.DocumentType ?? "1");
+									formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+									formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+									formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+									formData.append("LedgerNo", generateNo); // new folder id
 
 
-												const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-												method: "POST",
-												body: formData
-											});
+										const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
+										method: "POST",
+										body: formData
+									});
 
-											const uploadResult = await uploadRes.json();
-											console.log("Uploaded document:", uploadResult);
-										} catch (uploadError) {
-														console.error("Error re-uploading document:", uploadError);
-										}
-									}
+									const uploadResult = await uploadRes.json();
+									console.log("Uploaded document:", uploadResult);
+								} catch (uploadError) {
+												console.error("Error re-uploading document:", uploadError);
+								}
+							}
 							DevExpress.ui.notify("VAT Invoice has been posted to the Accounting Books With Attachments.", "success", 2000);
 								
 						}

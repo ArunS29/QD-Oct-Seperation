@@ -1136,11 +1136,33 @@
             });
         });
 
-                function addAttachFiles(){
-                                  const url = `/${tenantName}/IMS/IMSLedgerDocument`;
-                            const title = "Ledger Documents";
-                                openModal(url, title);
-                        }
+        function addAttachFiles(){
+
+            var button = $("#btnSave").dxButton("instance");
+            var buttonText = button ? button.option("text") : "";
+
+            console.log("Button Text:", buttonText); // Debugging to check button text
+
+            // Close popup ONLY IF the button text is NOT "Update"
+            if (buttonText !== "Update") {
+                DevExpress.ui.notify(
+                    "Not allowed to Add Attachments. Please first save Supplier",
+                    "warning", 
+                    4000
+                );
+                return;
+            }
+
+            var supplierAccountId = $('#txtSupplierCode').dxTextBox("instance").option("value");
+            var module = "Supplier Account";
+            var isMaster = true;
+            var menuType = "inventory";
+
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(supplierAccountId)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`;
+                            
+            const title = "Master Documents";
+            openModal(url, title);
+        }
                             function Goback() {
             window.parent.closeModal(); // This closes the current window/tab
         }
