@@ -5,6 +5,45 @@
     ViewData["Title"] = "User Account Details";
 }
 
+<style>
+/* Base styling for the switch */
+.dx-datagrid .dx-switch {
+    margin: 0 auto;
+    transform: scale(1.1); /* Make it slightly larger */
+    transition: all 0.3s ease-in-out;
+}
+/* Track (background) when OFF */
+.dx-switch.dx-switch-off .dx-switch-container {
+    background-color: #ccc;
+    border-radius: 20px;
+}
+
+/* Track (background) when ON */
+.dx-switch.dx-switch-on .dx-switch-container {
+    background-color: #00b894; /* Teal green */
+    border-radius: 20px;
+}
+
+/* Handle (circle) */
+.dx-switch .dx-switch-handle {
+    background-color: #fff;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+}
+
+/* Animate the toggle movement */
+.dx-switch .dx-switch-container {
+    transition: background-color 0.3s ease;
+}
+
+/* Optional: Add hover effect */
+.dx-switch:hover .dx-switch-container {
+    box-shadow: 0 0 5px #00b894;
+}
+
+</style>
 <form id="userForm">
     <div class="title">
         <div class="header-container">
@@ -412,7 +451,6 @@
 
                         </div>
 
-                    </div>
                     <div class="tab-layout">
                         <div class="tab-menu">
                             @(
@@ -440,64 +478,43 @@
                         <div class="tab-content-area">
                             <!-- Container + Card Panels -->
                             <div class="container-fluid tab-container" id="Master-content" >
-                                loadMAsterData
-                                <div class="card">
                                     <div id="gridContainer1"></div>
-                                </div>
                             </div>
 
                             <div class="container-fluid tab-container" id="finance-content">
-                                loadFinanceData
-                                <div class="card">
                                     <div class="card-body">
                                         <div id="gridContainer"></div> 
                                     </div>
-                                </div>
                             </div>
 
                             <div class="container-fluid tab-container" id="vat-content">
-                                loadVATData
-                                <div class="card">
                                     <div class="card-body">
                                         <div id="VATgridContainer"></div> 
                                     </div>
-                                </div>
                             </div>
 
                             <div class="container-fluid tab-container">
-                                <div class="card">
                                     <div class="card-body">Content for Human Resources</div>
-                                </div>
                             </div>
 
                             <div class="container-fluid tab-container">
-                                <div class="card">
                                     <div class="card-body">Content for Equipment Rental</div>
-                                </div>
+                            </div>
+
+                            <div class="container-fluid tab-container" id="ims-content">
+                                    <div class="card-body"><div id="IMSgridContainer"></div> </div>
                             </div>
 
                             <div class="container-fluid tab-container">
-                                <div class="card">
-                                    <div class="card-body">Content for Inventory Management</div>
-                                </div>
-                            </div>
-
-                            <div class="container-fluid tab-container">
-                                <div class="card">
                                     <div class="card-body">Content for Camp Management</div>
-                                </div>
                             </div>
 
                             <div class="container-fluid tab-container">
-                                <div class="card">
                                     <div class="card-body">Content for Project Control</div>
-                                </div>
                             </div>
 
                             <div class="container-fluid tab-container">
-                                <div class="card">
                                     <div class="card-body">Content for Scaffolding Rental Solution</div>
-                                </div>
                             </div>
 
                             <div class="container-fluid tab-container">
@@ -546,6 +563,7 @@
                                 </div>
                             </div>
                         </div>
+                    </div>
                     </div>
 
 
@@ -1489,8 +1507,11 @@
             if (selectedText === "Master Module") {
                 loadMasterModuleData(selectedText);
             }
-              if (selectedText === "VAT") {
+            if (selectedText === "VAT") {
                 loadVATData(selectedText);
+            }
+            if (selectedText === "Inventory Management") {
+                loadIMSData(selectedText);
             }
         }
 
@@ -1512,7 +1533,7 @@
                     }
                 }),
                 remoteOperations: false,
-                height: 500,
+                height: "63vh",
                 columnAutoWidth: true,
                 scrolling: {
                     mode: "virtual",
@@ -1528,8 +1549,10 @@
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
-                                .dxCheckBox({
+                                .dxSwitch({
                                     value: options.value,
+                                    switchedOnText: "Yes",
+                                    switchedOffText: "No",
                                     onValueChanged: function (e) {
                                         const items = [{
                                             SlNo: options.data.SlNo,
@@ -1547,9 +1570,6 @@
                 sorting: {
                     mode: "multiple"
                 },
-                selection: {
-                    mode: "multiple"
-                },
                 showBorders: true
             });
         }
@@ -1558,7 +1578,6 @@
            function loadVATData(selectedText) {
             const urlParams = new URLSearchParams(window.location.search);
             const userId = urlParams.get("userId");
-            debugger;
             $("#VATgridContainer").dxDataGrid({
                 dataSource: new DevExpress.data.CustomStore({
                     key: "SlNo",
@@ -1573,7 +1592,7 @@
                     }
                 }),
                 remoteOperations: false,
-                height: 500,
+                height: "63vh",
                 columnAutoWidth: true,
                 scrolling: {
                     mode: "virtual",
@@ -1589,8 +1608,10 @@
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
-                                .dxCheckBox({
+                                .dxSwitch({
                                     value: options.value,
+                                    switchedOnText: "Yes",
+                                    switchedOffText: "No",
                                     onValueChanged: function (e) {
                                         const items = [{
                                             SlNo: options.data.SlNo,
@@ -1608,7 +1629,62 @@
                 sorting: {
                     mode: "multiple"
                 },
-                selection: {
+                showBorders: true
+            });
+        }
+
+        function loadIMSData(selectedText) {
+            const urlParams = new URLSearchParams(window.location.search);
+            const userId = urlParams.get("userId");
+            $("#IMSgridContainer").dxDataGrid({
+                dataSource: new DevExpress.data.CustomStore({
+                    key: "SlNo",
+                    load: function () {
+                        return $.getJSON(`/api/Utility/GetUserAccessWebs?userId=${userId}&selectedText=IMS`)
+                            .then(function (result) {
+                                return {
+                                    data: result.data,
+                                    totalCount: result.totalCount
+                                };
+                            });
+                    }
+                }),
+                remoteOperations: false,
+                height: "63vh",
+                columnAutoWidth: true,
+                scrolling: {
+                    mode: "virtual",
+                    showScrollbar: "always"
+                },
+                columns: [
+                    { dataField: "SlNo", caption: "Serial No", visible: false },
+                    { dataField: "ItemForm", caption: "Item Name" },
+                    { dataField: "ItemDescription", caption: "Action Name" },
+                    {
+                        dataField: "ItemVisible",
+                        caption: "Visible",
+                        dataType: "boolean",
+                        cellTemplate: function (container, options) {
+                            $("<div>")
+                                .dxSwitch({
+                                    value: options.value,
+                                    switchedOnText: "Yes",
+                                    switchedOffText: "No",
+                                    onValueChanged: function (e) {
+                                        const items = [{
+                                            SlNo: options.data.SlNo,
+                                            ItemVisible: e.value
+                                        }];
+                                        updateItemVisibility(items, function () {
+                                            $("#IMSgridContainer").dxDataGrid("instance").refresh();
+                                        });
+                                    }
+                                })
+                                .appendTo(container);
+                        }
+                    }
+                ],
+                sorting: {
                     mode: "multiple"
                 },
                 showBorders: true
@@ -1633,7 +1709,7 @@
                     }
                 }),
                 remoteOperations: false,
-                height: 500,
+                height: "63vh",
                 columnAutoWidth: true,
                 scrolling: {
                     mode: "virtual",
@@ -1649,8 +1725,10 @@
                         dataType: "boolean",
                         cellTemplate: function (container, options) {
                             $("<div>")
-                                .dxCheckBox({
+                                .dxSwitch({
                                     value: options.value,
+                                    switchedOnText: "Yes",
+                                    switchedOffText: "No",
                                     onValueChanged: function (e) {
                                         const items = [{
                                             SlNo: options.data.SlNo,
@@ -1666,9 +1744,6 @@
                     }
                 ],
                 sorting: {
-                    mode: "multiple"
-                },
-                selection: {
                     mode: "multiple"
                 },
                 showBorders: true
@@ -1930,9 +2005,9 @@
         gap: 20px;
     }
 
-    .tab-menu {
+    /* .tab-menu {
         min-width: 250px;
-    }
+    } */
 
     .tab-content-area {
         flex-grow: 1;

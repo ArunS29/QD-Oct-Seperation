@@ -50,11 +50,6 @@
         color: navy; /* Navy for the title */
     }
 
-    /* Content container styling */
-    .content-container {
-        width: 100%;
-    }
-
     /* Button styling */
     .dx-button {
         background-color: navy; /* Navy for buttons */
@@ -135,8 +130,6 @@
     .content-container {
         width: 100%; /* Full width for responsiveness */
         max-width: 100%; /* Matches the max-width of cards-container */
-        margin: 20px auto; /* Center align the container */
-        padding: 20px; /* Adds some inner spacing */
         /* background-color: #f5f5f5; /* Optional background color */ */ box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Optional shadow for aesthetics */
         border-radius: 8px; /* Rounded corners */
     }
@@ -213,17 +206,17 @@
 </style>
 
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="AccountingLedgerGroups" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 
-<div class="cards-container" style="padding:1em;">
+<div class="cards-container">
     @*    <h2>@ViewData["Title"]</h2> *@
     <!-- Card 1: General Account Group Information -->
     <div class="card">
-        <div class="dx-fieldset vertical-container">
+        <div class="vertical-container">
             <div class="form-group">
                 @(
                     Html.DevExtreme().TextBox()
@@ -298,7 +291,7 @@
     <!-- Card 2: Sales and Purchases -->
     @* <div class="cards-container right-aligned-card"> *@
     <div class="card" style="text-align: right;">
-        <div class="dx-fieldset vertical-container" style="align-items: flex-end;">
+        <div class="vertical-container" style="align-items: flex-end;">
             <div class="form-group">
                 @(
                     Html.DevExtreme().TextBox()
@@ -392,7 +385,7 @@
 
 
     <div class="card">
-        <div class="dx-fieldset vertical-container">
+        <div class="vertical-container">
 
             <div class="row">
                 <div class="col-md-6">
@@ -454,8 +447,8 @@
     </div>
 
     <!-- Card 4: Arabic Section -->
-    <div class="card" style="direction: rtl; padding: 20px;">
-        <div class="dx-fieldset vertical-container">
+    <div class="card" style="direction: rtl;">
+        <div class="vertical-container">
 
             <div class="row mb-3">
                 <div class="col-md-12 d-flex align-items-center gap-2">
@@ -501,7 +494,7 @@
     </div>
 
 <div class="content-container" style="width: 100%; max-width: 1200px;">
-    <div class="dx-fieldset horizontal-container">
+    <div class="horizontal-container">
         <div class="form-group-row1"
              style="display: flex; gap: 20px; align-items: center; justify-content: space-evenly; width: 100%;">
 
@@ -538,7 +531,7 @@
 </div>
     <!-- Card 5: CreatedOn Details -->
    @*  <div class="content-container" style="width: 190%; max-width: 1500px;">
-        <div class="dx-fieldset horizontal-container">
+        <div class="horizontal-container">
             <div class="form-group-row1">
                 <div class="form-group1">
                     <div>

@@ -3174,7 +3174,7 @@
 					valueExpr: "TaxSlabCode",
 					displayExpr: "TaxCodeToDisplay",
 					value: cellInfo.value,
-					dropDownOptions: { width: 400 },
+					dropDownOptions: { width: 280 },
 					placeholder: "Select VAT%",
 					onValueChanged: function (e) {
 						let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
@@ -3590,7 +3590,7 @@
 					// Open modal
 					let url = `/${tenantName}/VAT/ProformaDetailDescription`;
 					let title = "VAT Details Description";
-					openModal(url, title);
+					openModal(url, title,"70%","70%");
 				}
 			}).appendTo(container);
 		}
@@ -3798,7 +3798,7 @@
 								valueExpr: "TaxSlabCode",
 								displayExpr: "TaxCodeToDisplay",
 								value: cellInfo.value,
-								dropDownOptions: { width: 400 },
+								dropDownOptions: { width: 280 },
 								placeholder: "Select an Item / Services",
 								onValueChanged: function (e) {
 									let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
@@ -4405,7 +4405,7 @@
 	// 							  valueExpr: "TaxSlabCode",
 	// 							  displayExpr: "TaxCodeToDisplay",
 	// 							  value: cellInfo.value,
-	// 							  dropDownOptions: { width: 400 },
+	// 							  dropDownOptions: { width: 280 },
 	// 							  placeholder: "Select an Item / Services",
 	// 							  onValueChanged: function (e) {
 	// 								  let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
