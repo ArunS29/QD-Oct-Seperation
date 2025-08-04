@@ -92,7 +92,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
-            if (FindControl("xrLabel19", true) is XRLabel effectiveDateLabel)
+            if (FindControl("xrLabel22", true) is XRLabel effectiveDateLabel)
             {
                 if (useEffectiveDate.HasValue && useEffectiveDate.Value)
                 {
