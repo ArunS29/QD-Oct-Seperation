@@ -559,7 +559,8 @@
                     },
                     editorType: "dxSelectBox",
                     editCellTemplate: function (cellElement, cellInfo) {
-                        $("<div>").appendTo(cellElement).dxSelectBox({
+                        const $selectBoxContainer = $("<div>").appendTo(cellElement); 
+                        $selectBoxContainer.dxSelectBox({
                             dataSource: documentTypeStore,
                             value: cellInfo.value,
                             valueExpr: "DocumentTypeId",
@@ -575,9 +576,9 @@
                                         icon: "plus",
                                         stylingMode: "text",
                                         onClick: function () {
-                                            const selectBox = e.component;
-                                            selectBox.close();
-                                            onAddDocType();
+                                            const instance = $selectBoxContainer.dxSelectBox("instance");
+                                            onAddDocType(instance); // Pass it to the function
+                                            
                                         }
                                     }
                                 }
@@ -766,16 +767,19 @@
     });
 
 
-    function onAddDocType() {
+    function onAddDocType(selectBoxInstance) {
         const url = `/${tenantName}/IMS/DocumentTypes`;
         const title = "Add Document Type";
 
+        // Close the dropdown here
+        selectBoxInstance?.close();
+
         openModal(url, title).then(() => {
-            // reload the store after modal is closed
+            // Reload the store after modal is closed
             documentTypeStore.load();
         });
-
     }
+
 
 
     function formatDateForServer(dateValue) {
