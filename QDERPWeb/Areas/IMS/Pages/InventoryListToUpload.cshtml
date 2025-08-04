@@ -80,13 +80,14 @@
 	
 </style>
 
-
-<div class="title">
-	<div class="header-container">
-		<div id="InventoryListsToUpload" class="no-border-title"></div>
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="InventoryListsToUpload" class="titleText no-border-title"></div>
 	</div>
 </div>
-
 <div style="width:100%;" >
 
 	<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
@@ -130,6 +131,7 @@
 							.Label("Vat Purchase No.")
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
+							.Disabled(true)
 							)
 			</td>
 			<td>
@@ -138,6 +140,7 @@
 								.Label("Proforma Invoice No.")
 								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
+								.Disabled(true)
 								)
 
 			</td>
@@ -147,8 +150,8 @@
 								.Label("Invoice No.")
 								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
+								.Disabled(true)
 								)
-
 			</td>
 			<td>
 
@@ -227,17 +230,43 @@
 			.OnClick("PastefromExcel")
 			.Width(250))
 
-		@(Html.DevExtreme().DropDownButton()
+	@(
+		Html.DevExtreme().DropDownButton()
 			.ID("uploadDropdownButton")
 			.Text("Upload Items")
 			.Icon("upload")
 			.DropDownOptions(opt => opt.Width(320))
 			.Items(i => {
-				i.Add().Text("Upload item to Material Requests").Icon("upload").OnClick("uploadItemsToMaterialRequests");
-				i.Add().Text("Upload Invoice").Icon("download");
-				i.Add().Text("Upload Items to Performa Invoice").Icon("trash");
-				i.Add().Text("Upload Items to VAT Purchase Voucher").Icon("trash");
-			}))
+				i.Add().Text("Upload item to Material Requests")
+					.Icon("upload")
+					.OnClick("uploadItemsToMaterialRequests")
+					.Option("color", "#00ACC1");
+				i.Add().Text("Upload Invoice")
+					.Icon("doc")
+					@* .OnClick("uploadInvoice") *@
+					.Disabled(true)
+					.Option("color", "#FBBC05");
+				i.Add().Text("Upload Items to Performa Invoice")
+				  .Icon("tags")
+				  @* .OnClick("uploadToPerformaInvoice") *@
+				  .Disabled(true)
+				  .Option("color", "#4285F4");
+				i.Add().Text("Upload Items to VAT Purchase Voucher")
+				  .Icon("money")
+				  .Disabled(true)
+				  @* .OnClick("uploadToVatPurchaseVoucher") *@
+				  .Option("color", "#FF7043");
+			})
+			.ItemTemplate(@<text>
+					<div class="custom-dropdown-item">
+						<div style="background-color:<%- color %>; height: 90%;" class="side-bar"></div>
+						<div class="item-content">
+						<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+							<div class="item-title"><%- text %></div>
+						</div>
+					</div>
+				</text>)
+			)
 
 	</div>
 	@using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
@@ -266,8 +295,8 @@
 							.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
 							.Columns(columns =>
 							{
-								columns.Add().DataField("GsgroupName");
-								columns.Add().DataField("GsgroupCode").Visible(false);
+								columns.Add().DataField("GsgroupName").Caption(new JS("formatMessage('Stock Group')"));
+								columns.Add().DataField("GsgroupCode").Caption(new JS("formatMessage('Stock code')")).Visible(false);
 
 							})
 							)
@@ -358,7 +387,7 @@ function uploadItemsToMaterialRequests() {
 			text:formatMessage("Inventory List To Upload"),
 			readOnly: true,
 			onContentReady: function(e) {
-			$(e.element).addClass("dx-textbox-heading");
+			$(e.element).addClass("dx-textcolor-heading");
 			}
 		 });
 	});
