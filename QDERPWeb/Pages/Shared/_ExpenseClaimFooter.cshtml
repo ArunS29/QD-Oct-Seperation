@@ -484,125 +484,147 @@
                 reader.readAsText(file);
             }
         });
-        function saveLayoutClick(e) {
+                 function setDefaultLayoutClick(e) {
+         const grid = $("#dataGrid").dxDataGrid("instance");
+         const form = $('#formId').val();
 
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-            //console.log(layoutJson);
-            // Create a Blob from the JSON string
-            const blob = new Blob([layoutJson], { type: "application/json" });
-            // Create a URL for the Blob
-            const url = URL.createObjectURL(blob);
-            // Create a link element
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "grid-layout.json"; // Set the file name for download
-            // Append the link to the body (needed for Firefox)
-            document.body.appendChild(a);
-            // Programmatically click the link to trigger the download
-            a.click();
-            // Clean up by removing the link and revoking the Object URL
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            //DevExpress.ui.notify("Layout", "success", 600);
-        }
-        function openLayoutClick(e) {
+         if (!grid) {
+             DevExpress.ui.notify("Grid not found", "error", 2000);
+             return;
+         }
 
-            // Create an input element dynamically
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "application/json";
+         const layout = grid.state();
+         const layoutJson = JSON.stringify(layout); // ✅ Save as JSON string
 
-            // When a file is selected
-            input.addEventListener("change", function (event) {
-                const file = event.target.files[0];
-                if (!file) return;
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: layoutJson,
+                 form: form
+             }),
+             success: function (data) {
+                 DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+             },
+             error: function (xhr) {
+                 console.error("SaveLayout error:", xhr.responseText);
+                 DevExpress.ui.notify("Error while saving data", "error", 2000);
+             }
+         });
+     }
 
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        const layout = JSON.parse(e.target.result);
-                        const grid = $("#dataGrid").dxDataGrid("instance");
-                        grid.state(layout);
-                        //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                    } catch (error) {
-                        DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                    }
-                };
 
-                reader.readAsText(file);
-            });
+     function resetLayoutClick(e) {
+         const grid = $("#dataGrid").dxDataGrid("instance");
+         const form = $('#formId').val();
 
-            // Trigger the file input click event
-            input.click();
-        }
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: null, // 👈 this will trigger the backend to delete or reset
+                 form: form
+             }),
+             success: function (data) {
+                 DevExpress.ui.notify("Layout reset successful", "success", 2000);
+                 grid.state(null); // 👈 clear client-side layout too
+             },
+             error: function (xhr) {
+                 console.error(xhr.responseText);
+                 DevExpress.ui.notify("Error while resetting layout", "error", 2000);
+             }
+         });
+     }
 
-        function loadGridState() {
-            var form = $('#formId').val();
-            // Call the API to get the grid state
-            $.ajax({
-                url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-                method: 'GET',
-                data: {
-                    form: form
-                },
-                success: function (response) {
-                    // Get the DataGrid instance
-                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+         function saveLayoutClick(e) {
+             var grid = $("#dataGrid").dxDataGrid("instance");
+             var layout = grid.state();
+             const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+             //console.log(layoutJson);
+             // Create a Blob from the JSON string
+             const blob = new Blob([layoutJson], { type: "application/json" });
+             // Create a URL for the Blob
+             const url = URL.createObjectURL(blob);
+             // Create a link element
+             const a = document.createElement("a");
+             a.href = url;
+             a.download = "grid-layout.json"; // Set the file name for download
+             // Append the link to the body (needed for Firefox)
+             document.body.appendChild(a);
+             // Programmatically click the link to trigger the download
+             a.click();
+             // Clean up by removing the link and revoking the Object URL
+             document.body.removeChild(a);
+             URL.revokeObjectURL(url);
+             //DevExpress.ui.notify("Layout", "success", 600);
+         }
+         function openLayoutClick(e) {
+             // Create an input element dynamically
+             const input = document.createElement("input");
+             input.type = "file";
+             input.accept = "application/json";
 
-                    // Load the state into the DataGrid
-                    if (response) {
-                        try {
-                            // Parse the JSON string from the file
-                            const layout = JSON.parse(response);
+             // When a file is selected
+             input.addEventListener("change", function (event) {
+                 const file = event.target.files[0];
+                 if (!file) return;
 
-                            // Restore the grid state
-                            dataGrid.state(layout);
-                        } catch (error) {
-                            console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
-                        }
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error loading grid state:", error);
-                }
-            });
-        }
-           function setDefaultLayoutClick(e) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        const form = $('#formId').val();
+                 const reader = new FileReader();
+                 reader.onload = function (e) {
+                     try {
+                         const layout = JSON.parse(e.target.result);
+                         const grid = $("#dataGrid").dxDataGrid("instance");
+                         grid.state(layout);
+                         //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                     } catch (error) {
+                         DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                     }
+                 };
 
-        if (!grid) {
-            DevExpress.ui.notify("Grid not found", "error", 2000);
-            return;
-        }
+                 reader.readAsText(file);
+             });
 
-        const layout = grid.state();
-     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
+             // Trigger the file input click event
+             input.click();
+         }
+             $(document).ready(function () {
+         loadGridState(); // 👈 This must be called explicitly
+     });
+         function loadGridState() {
 
-       // console.log("JSON Layout:", layoutJson);
-        console.log("XML Layout:", layoutJson); // Comment if not needed
+             var form = $('#formId').val();
+             // Call the API to get the grid state
+             $.ajax({
+                 url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                 method: 'GET',
+                 data: {
+                     form: form
+                 },
+                 success: function (response) {
+                     // Get the DataGrid instance
+                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-        $.ajax({
-            url: '/api/Utility/SaveLayout',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                layout: layoutJson, // or use layoutXml if backend expects XML
-                form: form
-            }),
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function (xhr) {
-                console.error("SaveLayout error:", xhr.responseText);
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
+                     // Load the state into the DataGrid
+                     if (response) {
+                         try {
+                             // Parse the JSON string from the file
+                             const layout = JSON.parse(response);
+
+                             // Restore the grid state
+                             dataGrid.state(layout);
+                         } catch (error) {
+                             console.error("Error parsing JSON:", error);
+                             alert("Failed to load layout. Please ensure the JSON is valid.");
+                         }
+                     }
+                 },
+                 error: function (xhr, status, error) {
+                     console.error("Error loading grid state:", error);
+                 }
+             });
+         }
 
     // Optional: Convert DevExtreme JSON to custom XML format (not real XtraSerializer)
     function convertLayoutToXml(layout) {
