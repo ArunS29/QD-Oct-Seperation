@@ -199,42 +199,394 @@ GO
  
 
 -------- Alter 901Company Details -------- 
+ CREATE OR ALTER FUNCTION Aicon.fn_GetDefaultCompanyDetails()
+RETURNS TABLE
+AS
+RETURN
+(
+    WITH Selector AS
+    (
+        -- 1) grab the raw setting
+        SELECT TOP (1)
+            DefaultCompanyId
+        FROM Aicon.tbl901CompanyDetails
+        -- you could filter here if it’s per-user, per-tenant, etc.
+    ),
+    NormSelector AS
+    (
+        -- 2) normalize NULL/empty/1 → 1
+        SELECT
+            CASE
+                WHEN DefaultCompanyId IS NULL
+                  OR DefaultCompanyId = 1 THEN 1
+                ELSE DefaultCompanyId
+            END AS sel
+        FROM Selector
+    ),
+    OrderedCompanies AS
+    (
+        -- 3) number your rows in natural order
+        SELECT
+            CompanyId,
+            DefaultCompanyId,
+            currencytype,
+            ROW_NUMBER() OVER (ORDER BY CompanyId) AS rn
+        FROM Aicon.tbl901CompanyDetails
+    )
+    -- 4) pick out exactly the Nth row
+    SELECT
+        oc.CompanyId,
+        oc.DefaultCompanyId,
+        oc.currencytype
+    FROM OrderedCompanies AS oc
+    CROSS JOIN NormSelector    AS ns
+    WHERE oc.rn = ns.sel
+);
+GO
+
+
 ALTER TABLE Aicon.tbl901CompanyDetails 
 ADD 
-    DefaultcompanyID TINYINT NULL, 
+    DefaultcompanyID TINYINT NULL;
+
+    ALTER TABLE Aicon.tbl901CompanyDetails
+    ADD
     CompanyTextColor NVARCHAR(20) NULL; 
  
  
 ALTER TABLE Aicon.Tbl901CompanyDetails 
 ADD   
-    [CurrencyImage] NVARCHAR(MAX) NULL,  
+    [CurrencyImage] NVARCHAR(MAX) NULL;
+
+    ALTER TABLE Aicon.Tbl901CompanyDetails 
+ADD   
     [CurrencySymbol] VARCHAR(30) NULL;  
 
 ALTER TABLE Aicon.tbl901AlertUsers 
 ADD Isseen BIT NOT NULL DEFAULT 0; 	
----------------------------Voucher ---------------------------  
+
+sp_help Aicon.tbl901CompanyDetails
+ 
+ select DefaultcompanyID,CompanyTextColor from Aicon.tbl901CompanyDetails
+ 
+ update Aicon.tbl901CompanyDetails 
+ set CompanyTextColor='Black'
+
+
+ 	 update Aicon.tbl20169CurrencyExchange
+set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
+     where CurrencyExchangeID=1
+
+
+     update Aicon.tbl901CompanyDetails
+set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
+     
+     
+
+     -- IMS
+
+  UPDATE Aicon.tbl901CompanyDetails
+SET
+    CompanyNameShort = 'DhaferContracting',
+    RequestAbbrv = 'AI-ENQ-',
+    InvoiceYearDigits = 2,
+    IsResetInvoiceInYear = 1,
+    QuotationAbbrv = 'AIC-QUO-',
+    Rfqabbrv = 'AICON-RFQ-',PurchaseOrderAbbrv='AI-PO',SalesOrderAbbrv='AICON-SO-'
+WHERE CompanyID =1
+
+UPDATE Aicon.tbl901CompanyDetails02
+
+SET NoOfDigitsToInventoryQuotation = 4
+
+WHERE CompanyID=1
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableQuotationWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableQuotationWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableRFQWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableRFQWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableReceiptWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableReceiptWorkflow DEFAULT 1;
+
+ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD CONSTRAINT DF_tbl901CompanyDetails02_IsAllowUnlockPO DEFAULT 1 FOR IsAllowUnlockPO;
+
+ --Boolean Based Approve new Concept in Web told SajuSir (IMS) -25/07/25
+ ALTER TABLE Aicon.tbl901CompanyDetails02
+ADD IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
+    IsEnableRFQWorkflow       BIT NOT NULL DEFAULT 1,
+    IsEnableReceiptWorkflow   BIT NOT NULL DEFAULT 1;
+
+
+    ALTER TABLE tbl901companydetails ADD AllowDataModeSelection BIT DEFAULT 0;
+
+---------------------------Voucher currency tx  ---------------------------  
 
 ALTER TABLE Aicon.Tbl201VoucherEntry ADD [Type] VARCHAR(30);
 
 
-alter table Aicon.tbl201vouchermaster 
-add Currencyid int  
+IF NOT EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.COLUMNS
+    WHERE 
+        TABLE_NAME = 'tbl201VoucherMaster'
+        AND TABLE_SCHEMA = 'Aicon'
+        AND COLUMN_NAME = 'CurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl201VoucherMaster
+    ADD CurrencyId INT CONSTRAINT DF_tbl201VoucherMaster_CurrencyId DEFAULT 1;
 
-ALTER TABLE Aicon.tbl201Vouchermaster 
-ADD CurrencyRate DECIMAL(18, 2); 
+    PRINT 'CurrencyId column added to Aicon.tbl201VoucherMaster with default 1.';
+END
+ELSE
+BEGIN
+    PRINT 'CurrencyId column already exists in Aicon.tbl201VoucherMaster.';
+END
 
-alter table Aicon.tbl201vouchermaster 
-add basecurrencyid int; 
+
+-- Aicon.tbl201VoucherMaster - CurrencyRate
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl201VoucherMaster' AND COLUMN_NAME = 'CurrencyRate'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl201VoucherMaster 
+    ADD CurrencyRate DECIMAL(18, 2);
+
+    PRINT 'Added CurrencyRate to Aicon.tbl201VoucherMaster';
+END
 
 
-alter table Aicon.tbl20113ChequeMaster  
-add Currencyid int      
+-- Aicon.tbl201VoucherMaster - BaseCurrencyId
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl201VoucherMaster' AND COLUMN_NAME = 'BaseCurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl201VoucherMaster 
+    ADD BaseCurrencyId INT;
 
-ALTER TABLE Aicon.tbl20113ChequeMaster   
-ADD CurrencyRate DECIMAL(18, 2);   
+    PRINT 'Added BaseCurrencyId to Aicon.tbl201VoucherMaster';
+END
 
-alter table Aicon.tbl20113ChequeMaster   
-add basecurrencyid int;  
+
+-- Aicon.tbl20113ChequeMaster - CurrencyId
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl20113ChequeMaster' AND COLUMN_NAME = 'CurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl20113ChequeMaster  
+    ADD CurrencyId INT;
+
+    PRINT 'Added CurrencyId to Aicon.tbl20113ChequeMaster';
+END
+
+-- Aicon.tbl20113ChequeMaster - CurrencyRate
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl20113ChequeMaster' AND COLUMN_NAME = 'CurrencyRate'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl20113ChequeMaster  
+    ADD CurrencyRate DECIMAL(18, 2);
+
+    PRINT 'Added CurrencyRate to Aicon.tbl20113ChequeMaster';
+END
+
+-- Aicon.tbl20113ChequeMaster - BaseCurrencyId
+IF NOT EXISTS (
+    SELECT 1 FROM INFORMATION_SCHEMA.COLUMNS 
+    WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl20113ChequeMaster' AND COLUMN_NAME = 'BaseCurrencyId'
+)
+BEGIN
+    ALTER TABLE Aicon.tbl20113ChequeMaster  
+    ADD BaseCurrencyId INT;
+
+    PRINT 'Added BaseCurrencyId to Aicon.tbl20113ChequeMaster';
+END
+
+-----------------------Custom Currency Defaults-----------------------
+
+-- Set default value = 1 for CurrencyId
+DECLARE @ConstraintName1 NVARCHAR(200);
+SELECT @ConstraintName1 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
+  AND c.name = 'CurrencyId';
+
+IF @ConstraintName1 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT ' + QUOTENAME(@ConstraintName1));
+    PRINT 'Dropped existing default on CurrencyId';
+END
+
+ALTER TABLE Aicon.tbl201VoucherMaster
+ADD CONSTRAINT DF_tbl201VoucherMaster_CurrencyId DEFAULT 1 FOR CurrencyId;
+PRINT 'Default 1 set for CurrencyId';
+
+
+-- Set default value = 1 for BaseCurrencyId
+DECLARE @ConstraintName2 NVARCHAR(200);
+SELECT @ConstraintName2 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
+  AND c.name = 'BaseCurrencyId';
+
+IF @ConstraintName2 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT ' + QUOTENAME(@ConstraintName2));
+    PRINT 'Dropped existing default on BaseCurrencyId';
+END
+
+ALTER TABLE Aicon.tbl201VoucherMaster
+ADD CONSTRAINT DF_tbl201VoucherMaster_BaseCurrencyId DEFAULT 1 FOR BaseCurrencyId;
+PRINT 'Default 1 set for BaseCurrencyId';
+
+
+-- Set default value = 1.00 for CurrencyRate
+DECLARE @ConstraintName3 NVARCHAR(200);
+SELECT @ConstraintName3 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
+  AND c.name = 'CurrencyRate';
+
+IF @ConstraintName3 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT ' + QUOTENAME(@ConstraintName3));
+    PRINT 'Dropped existing default on CurrencyRate';
+END
+
+ALTER TABLE Aicon.tbl201VoucherMaster
+ADD CONSTRAINT DF_tbl201VoucherMaster_CurrencyRate DEFAULT 1.00 FOR CurrencyRate;
+PRINT 'Default 1.00 set for CurrencyRate';
+
+-----------------------
+-- Aicon.tbl201VoucherMaster
+-----------------------
+
+-- 1. CurrencyId default = 1
+DECLARE @ConstraintName1 NVARCHAR(200);
+SELECT @ConstraintName1 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
+  AND c.name = 'CurrencyId';
+
+IF @ConstraintName1 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName1 + ']');
+    PRINT 'Dropped existing default on CurrencyId (VoucherMaster)';
+END
+
+ALTER TABLE Aicon.tbl201VoucherMaster
+ADD CONSTRAINT DF_tbl201VoucherMaster_CurrencyId DEFAULT 1 FOR CurrencyId;
+PRINT 'Set default 1 for CurrencyId (VoucherMaster)';
+
+
+-- 2. BaseCurrencyId default = 1
+DECLARE @ConstraintName2 NVARCHAR(200);
+SELECT @ConstraintName2 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
+  AND c.name = 'BaseCurrencyId';
+
+IF @ConstraintName2 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName2 + ']');
+    PRINT 'Dropped existing default on BaseCurrencyId (VoucherMaster)';
+END
+
+ALTER TABLE Aicon.tbl201VoucherMaster
+ADD CONSTRAINT DF_tbl201VoucherMaster_BaseCurrencyId DEFAULT 1 FOR BaseCurrencyId;
+PRINT 'Set default 1 for BaseCurrencyId (VoucherMaster)';
+
+
+-- 3. CurrencyRate default = 1.00
+DECLARE @ConstraintName3 NVARCHAR(200);
+SELECT @ConstraintName3 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl201VoucherMaster'
+  AND c.name = 'CurrencyRate';
+
+IF @ConstraintName3 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl201VoucherMaster DROP CONSTRAINT [' + @ConstraintName3 + ']');
+    PRINT 'Dropped existing default on CurrencyRate (VoucherMaster)';
+END
+
+ALTER TABLE Aicon.tbl201VoucherMaster
+ADD CONSTRAINT DF_tbl201VoucherMaster_CurrencyRate DEFAULT 1.00 FOR CurrencyRate;
+PRINT 'Set default 1.00 for CurrencyRate (VoucherMaster)';
+
+
+-----------------------
+-- Aicon.tbl20113ChequeMaster
+-----------------------
+
+-- 1. CurrencyId default = 1
+DECLARE @ConstraintName4 NVARCHAR(200);
+SELECT @ConstraintName4 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl20113ChequeMaster'
+  AND c.name = 'CurrencyId';
+
+IF @ConstraintName4 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName4 + ']');
+    PRINT 'Dropped existing default on CurrencyId (ChequeMaster)';
+END
+
+ALTER TABLE Aicon.tbl20113ChequeMaster
+ADD CONSTRAINT DF_tbl20113ChequeMaster_CurrencyId DEFAULT 1 FOR CurrencyId;
+PRINT 'Set default 1 for CurrencyId (ChequeMaster)';
+
+
+-- 2. BaseCurrencyId default = 1
+DECLARE @ConstraintName5 NVARCHAR(200);
+SELECT @ConstraintName5 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl20113ChequeMaster'
+  AND c.name = 'BaseCurrencyId';
+
+IF @ConstraintName5 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName5 + ']');
+    PRINT 'Dropped existing default on BaseCurrencyId (ChequeMaster)';
+END
+
+ALTER TABLE Aicon.tbl20113ChequeMaster
+ADD CONSTRAINT DF_tbl20113ChequeMaster_BaseCurrencyId DEFAULT 1 FOR BaseCurrencyId;
+PRINT 'Set default 1 for BaseCurrencyId (ChequeMaster)';
+
+
+-- 3. CurrencyRate default = 1.00
+DECLARE @ConstraintName6 NVARCHAR(200);
+SELECT @ConstraintName6 = dc.name
+FROM sys.default_constraints dc
+JOIN sys.columns c ON c.default_object_id = dc.object_id
+WHERE OBJECT_NAME(dc.parent_object_id) = 'tbl20113ChequeMaster'
+  AND c.name = 'CurrencyRate';
+
+IF @ConstraintName6 IS NOT NULL
+BEGIN
+    EXEC('ALTER TABLE Aicon.tbl20113ChequeMaster DROP CONSTRAINT [' + @ConstraintName6 + ']');
+    PRINT 'Dropped existing default on CurrencyRate (ChequeMaster)';
+END
+
+ALTER TABLE Aicon.tbl20113ChequeMaster
+ADD CONSTRAINT DF_tbl20113ChequeMaster_CurrencyRate DEFAULT 1.00 FOR CurrencyRate;
+PRINT 'Set default 1.00 for CurrencyRate (ChequeMaster)';
 
 update Aicon.tbl201vouchermaster 
 set currencyid=1 
@@ -249,7 +601,7 @@ set currencyid=1
 update Aicon.tbl20113ChequeMaster    
 set basecurrencyid=1,  currencyid=1 
 
-
+----------------------------User Access Web ---------------------------
 CREATE TABLE Aicon.tblUserAccessWeb (  
 
 [SlNo] [int] IDENTITY(1,1) NOT NULL,  
@@ -1251,12 +1603,7 @@ VALUES (N'اُردُو', N'ur', N'https://flagcdn.com/w40/pk.png');
 
 
 
-sp_help Aicon.tbl901CompanyDetails
- 
- select DefaultcompanyID,CompanyTextColor from Aicon.tbl901CompanyDetails
- 
- update Aicon.tbl901CompanyDetails 
- set CompanyTextColor='Black'
+
 
  
 	
@@ -1342,14 +1689,6 @@ END
 
 
 
-	 update Aicon.tbl20169CurrencyExchange
-set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
-     where CurrencyExchangeID=1
-
-
-     update Aicon.tbl901CompanyDetails
-set  CurrencyImage= '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>'
-     
 
  
 
@@ -1459,38 +1798,12 @@ EXEC sp_01totSupOutstanding;
 
 EXEC sp_01totcashbalance; 
 
-  select * from Aicon.tbl901CompanyDetails
+ 
 
 
   --for IMS
 
-  UPDATE Aicon.tbl901CompanyDetails
-SET
-    CompanyNameShort = 'DhaferContracting',
-    RequestAbbrv = 'AI-ENQ-',
-    InvoiceYearDigits = 2,
-    IsResetInvoiceInYear = 1,
-    QuotationAbbrv = 'AIC-QUO-',
-    Rfqabbrv = 'AICON-RFQ-',PurchaseOrderAbbrv='AI-PO',SalesOrderAbbrv='AICON-SO-'
-WHERE CompanyID =1
 
-UPDATE Aicon.tbl901CompanyDetails02
-
-SET NoOfDigitsToInventoryQuotation = 4
-
-WHERE CompanyID=1
-
-ALTER TABLE Aicon.tbl901CompanyDetails02
-ADD IsEnableQuotationWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableQuotationWorkflow DEFAULT 1;
-
-ALTER TABLE Aicon.tbl901CompanyDetails02
-ADD IsEnableRFQWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableRFQWorkflow DEFAULT 1;
-
-ALTER TABLE Aicon.tbl901CompanyDetails02
-ADD IsEnableReceiptWorkflow BIT CONSTRAINT DF_tbl901CompanyDetails02_IsEnableReceiptWorkflow DEFAULT 1;
-
-ALTER TABLE Aicon.tbl901CompanyDetails02
-ADD CONSTRAINT DF_tbl901CompanyDetails02_IsAllowUnlockPO DEFAULT 1 FOR IsAllowUnlockPO;
 
 Alter VIEW [Aicon].[qry201VoucherEntryScreenDisplay]  
 AS  
@@ -1742,50 +2055,7 @@ FROM   Aicon.qry40102PropertyMasterView2 RIGHT OUTER JOIN
 
 
 
-             CREATE OR ALTER FUNCTION Aicon.fn_GetDefaultCompanyDetails()
-RETURNS TABLE
-AS
-RETURN
-(
-    WITH Selector AS
-    (
-        -- 1) grab the raw setting
-        SELECT TOP (1)
-            DefaultCompanyId
-        FROM Aicon.tbl901CompanyDetails
-        -- you could filter here if it’s per-user, per-tenant, etc.
-    ),
-    NormSelector AS
-    (
-        -- 2) normalize NULL/empty/1 → 1
-        SELECT
-            CASE
-                WHEN DefaultCompanyId IS NULL
-                  OR DefaultCompanyId = 1 THEN 1
-                ELSE DefaultCompanyId
-            END AS sel
-        FROM Selector
-    ),
-    OrderedCompanies AS
-    (
-        -- 3) number your rows in natural order
-        SELECT
-            CompanyId,
-            DefaultCompanyId,
-            currencytype,
-            ROW_NUMBER() OVER (ORDER BY CompanyId) AS rn
-        FROM Aicon.tbl901CompanyDetails
-    )
-    -- 4) pick out exactly the Nth row
-    SELECT
-        oc.CompanyId,
-        oc.DefaultCompanyId,
-        oc.currencytype
-    FROM OrderedCompanies AS oc
-    CROSS JOIN NormSelector    AS ns
-    WHERE oc.rn = ns.sel
-);
-GO
+            
 
 
 
@@ -2045,11 +2315,7 @@ Where PurchaseVoucherNo = @PurchaseVoucherNo
 
 END
 
- --Boolean Based Approve new Concept in Web told SajuSir (IMS) -25/07/25
- ALTER TABLE Aicon.tbl901CompanyDetails02
-ADD IsEnableQuotationWorkflow BIT NOT NULL DEFAULT 1,
-    IsEnableRFQWorkflow       BIT NOT NULL DEFAULT 1,
-    IsEnableReceiptWorkflow   BIT NOT NULL DEFAULT 1;
+
 
     Alter view Aicon.qry201_607VATInvoiceRegisterMainView as 
 SELECT Aicon.qry201_606VATInvoiceRegisterMain.InvoiceNo, DATEADD(dd, DATEDIFF(dd, 0, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceDate), 0) AS InvoiceDate, DATEADD(dd, DATEDIFF(dd, 0, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceEffectiveDate), 0) AS InvoiceEffectiveDate, 
@@ -2111,7 +2377,7 @@ FROM   Aicon.qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
 
 
 
-ALTER TABLE tbl901companydetails ADD AllowDataModeSelection BIT DEFAULT 0;
+
  
 CREATE TABLE Aicon.FinancialSummaryReport (
     AccountHead varchar(50),
@@ -2126,11 +2392,11 @@ CREATE TABLE Aicon.FinancialSummaryReport (
 );     
 ALTER TABLE Aicon.FinancialSummaryReport ADD VoucherDate DATETIME;
 ALTER TABLE Aicon.FinancialSummaryReport ADD MonthYear NVARCHAR(50);
-ALTER TABLE dbo.FinancialSummaryReport
+ALTER TABLE Aicon.FinancialSummaryReport
 ADD DrCr NVARCHAR(50), DrAmount DECIMAL(18,2), CrAmount DECIMAL(18,2);
 
 
-INSERT INTO dbo.FinancialSummaryReport (
+INSERT INTO Aicon.FinancialSummaryReport (
     AccountHead, AccountHeadName, VoucherAmountFormatted,
     AccountGroup, MasterGroup, TransactionsFull,
     AccountHeadArabic, AccountGroupAr, MasterGroupAr,
@@ -2154,7 +2420,7 @@ SELECT
     NULL AS DrCr,
     SUM(DrAmount) AS DrAmount,
     SUM(CrAmount) AS CrAmount
-FROM dbo.qry201MainVoucherEntriesWithMaster 
+FROM Aicon.qry201MainVoucherEntriesWithMaster 
 WHERE ISNULL(IsCalculateOpeningBalance, 0) = 1  
 GROUP BY 
     AccountHead, 
@@ -2186,7 +2452,83 @@ SELECT
     q.DrCr,
     q.DrAmount,
     q.CrAmount
-FROM dbo.qry201MainVoucherEntriesWithMaster AS q
-    RIGHT OUTER JOIN dbo.tbl201ChartOfAccounts coa ON coa.AccountID = q.AccountHead
-    RIGHT OUTER JOIN dbo.tbl201AccountGroups ag ON coa.AccountGroupID = ag.AccountGroupID
-    RIGHT OUTER JOIN dbo.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID;
+FROM Aicon.qry201MainVoucherEntriesWithMaster AS q
+    RIGHT OUTER JOIN Aicon.tbl201ChartOfAccounts coa ON coa.AccountID = q.AccountHead
+    RIGHT OUTER JOIN Aicon.tbl201AccountGroups ag ON coa.AccountGroupID = ag.AccountGroupID
+    RIGHT OUTER JOIN Aicon.tbl201MasterGroup mg ON ag.AccountGroupUnder = mg.MasterGroupID;
+
+
+
+    CREATE TABLE Aicon.tblFcmDeviceTokens (
+   Id INT IDENTITY PRIMARY KEY,
+   UserId NVARCHAR(50) NOT NULL,
+   TenantName NVARCHAR(255) NOT NULL,
+   DeviceId NVARCHAR(100) NOT NULL,
+   Token NVARCHAR(255) NOT NULL,
+   Platform NVARCHAR(50),
+   LastUpdated DATETIME DEFAULT GETDATE()
+);
+
+--IMS  currency changes
+
+ALTER TABLE Aicon.tbl602_01SalesOrderMaster 
+ADD CurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- Add CurrencyRate with default
+ALTER TABLE Aicon.tbl602_01SalesOrderMaster 
+ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+-- Add BaseCurrencyId with default
+ALTER TABLE Aicon.tbl602_01SalesOrderMaster 
+ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+
+Alter view [Aicon].[qry602_01SalesOrderView] as SELECT Aicon.tbl602_01SalesOrderMaster.SalesOrderNo, Aicon.tbl602_01SalesOrderMaster.SalesOrderDate, Aicon.tbl602_01SalesOrderMaster.ClientPONo, Aicon.tbl602_01SalesOrderMaster.ClientPODate, Aicon.tbl602_01SalesOrderMaster.QuoteNo, 
+                  Aicon.tbl602_01SalesOrderMaster.QuoteDate, Aicon.tbl602_01SalesOrderMaster.ClientRefNo, Aicon.tbl602_01SalesOrderMaster.PreparedBy, Aicon.tbl602_01SalesOrderMaster.PreparedOn, Aicon.tbl602_01SalesOrderMaster.ApprovedBy, 
+                  Aicon.tbl602_01SalesOrderMaster.ApprovedOn, Aicon.tbl602_01SalesOrderMaster.AddedBy, Aicon.tbl602_01SalesOrderMaster.AddedOn, Aicon.tbl602_01SalesOrderMaster.ModifiedBy, Aicon.tbl602_01SalesOrderMaster.ModifiedOn, 
+                  Aicon.tbl602_01SalesOrderMaster.RFQCode, Aicon.tbl602_01SalesOrderMaster.ClientCode, Aicon.tbl30101ClientMaster.ClientName, Aicon.tbl602_01SalesOrderMaster.SalesPersonCode, Aicon.tbl602_01SalesOrderMaster.IsVerified, 
+                  Aicon.tbl602_01SalesOrderMaster.IsApproved, Aicon.tbl602_01SalesOrderMaster.CompanyBranch, Aicon.tbl602_01SalesOrderMaster.Project, Aicon.qry602_03SalesOrderItemsWithTotal.NoOfItems, 
+                  Aicon.qry602_03SalesOrderItemsWithTotal.TotalBeforeDiscount, Aicon.qry602_03SalesOrderItemsWithTotal.Discount, Aicon.qry602_03SalesOrderItemsWithTotal.TotalAfterDiscount, Aicon.qry602_03SalesOrderItemsWithTotal.TotalTaxAmount, 
+                  Aicon.qry602_03SalesOrderItemsWithTotal.TotalWithTax, Aicon.tbl901CompanyDetails.CompanyName, Aicon.tbl601_01QuotationMaster.MPRNo, Aicon.tbl602_01SalesOrderMaster.OrderExpiryDate, 
+                  Aicon.tbl602_01SalesOrderMaster.InventoryMasterGroupID, Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroup, Aicon.tbl30104TypeOfRequestMaster.TypeOfRequest, Aicon.tbl602_01SalesOrderMaster.SalesOrderRemarks, 
+                  Aicon.tbl602_01SalesOrderMaster.ExpectedDeliveryDate, Aicon.tbl602_01SalesOrderMaster.DeliveryPeriod, Aicon.tbl602_01SalesOrderMaster.DeliveryTerms, Aicon.tbl20101SalesPersonMaster.SalesPersonName, 
+                  Aicon.tbl20101SalesPersonMaster.UserCode AS SalesPersonUserID, Aicon.tbl602_01SalesOrderMaster.IsSubmitted, Aicon.tbl602_01SalesOrderMaster.SubmittedBy, Aicon.tbl602_01SalesOrderMaster.SubmittedOn, 
+                  Aicon.tbl602_01SalesOrderMaster.VerifiedBy, Aicon.tbl602_01SalesOrderMaster.VerifiedOn,Aicon.tbl602_01SalesOrderMaster.CurrencyId,Aicon.tbl602_01SalesOrderMaster.BaseCurrencyId,Aicon.tbl602_01SalesOrderMaster.CurrencyRate
+FROM     Aicon.tbl602_01SalesOrderMaster LEFT OUTER JOIN
+                  Aicon.tbl20101SalesPersonMaster ON Aicon.tbl602_01SalesOrderMaster.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode LEFT OUTER JOIN
+                  Aicon.tbl30104TypeOfRequestMaster ON Aicon.tbl602_01SalesOrderMaster.TypeOfRequest = Aicon.tbl30104TypeOfRequestMaster.TypeOfRequestID LEFT OUTER JOIN
+                  Aicon.tbl600_08InventoryMasterGroup ON Aicon.tbl602_01SalesOrderMaster.InventoryMasterGroupID = Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroupID LEFT OUTER JOIN
+                  Aicon.tbl601_01QuotationMaster ON Aicon.tbl602_01SalesOrderMaster.QuoteNo = Aicon.tbl601_01QuotationMaster.QuoteNo LEFT OUTER JOIN
+                  Aicon.tbl901CompanyDetails ON Aicon.tbl602_01SalesOrderMaster.CompanyBranch = Aicon.tbl901CompanyDetails.CompanyID LEFT OUTER JOIN
+                  Aicon.qry602_03SalesOrderItemsWithTotal ON Aicon.tbl602_01SalesOrderMaster.SalesOrderNo = Aicon.qry602_03SalesOrderItemsWithTotal.SalesOrderNo LEFT OUTER JOIN
+                  Aicon.tbl30101ClientMaster ON Aicon.tbl602_01SalesOrderMaster.ClientCode = Aicon.tbl30101ClientMaster.ClientCode;
+
+go
+
+alter view [Aicon].[Qry602_04salesOrderViewMaster] as SELECT Aicon.qry602_01SalesOrderView.SalesOrderNo, Aicon.qry602_01SalesOrderView.SalesOrderDate, Aicon.qry602_01SalesOrderView.ClientPONo, Aicon.qry602_01SalesOrderView.ClientPODate, Aicon.qry602_01SalesOrderView.QuoteNo, 
+                  Aicon.qry602_01SalesOrderView.QuoteDate, Aicon.qry602_01SalesOrderView.ClientRefNo, Aicon.qry602_01SalesOrderView.PreparedBy, Aicon.qry602_01SalesOrderView.PreparedOn, Aicon.qry602_01SalesOrderView.ApprovedBy, 
+                  Aicon.qry602_01SalesOrderView.ApprovedOn, Aicon.qry602_01SalesOrderView.AddedBy, Aicon.qry602_01SalesOrderView.AddedOn, Aicon.qry602_01SalesOrderView.ModifiedBy, Aicon.qry602_01SalesOrderView.ModifiedOn, 
+                  Aicon.qry602_01SalesOrderView.RFQCode, Aicon.qry602_01SalesOrderView.ClientCode, Aicon.qry602_01SalesOrderView.ClientName, Aicon.qry602_01SalesOrderView.SalesPersonCode, Aicon.qry602_01SalesOrderView.IsVerified, 
+                  Aicon.qry602_01SalesOrderView.IsApproved, Aicon.qry602_01SalesOrderView.CompanyBranch, Aicon.qry602_01SalesOrderView.Project, Aicon.qry602_01SalesOrderView.NoOfItems, Aicon.qry602_01SalesOrderView.TotalBeforeDiscount, 
+                  Aicon.qry602_01SalesOrderView.Discount, Aicon.qry602_01SalesOrderView.TotalAfterDiscount, Aicon.qry602_01SalesOrderView.TotalTaxAmount, Aicon.qry602_01SalesOrderView.TotalWithTax,Aicon.qry602_01SalesOrderView.CurrencyId,Aicon.qry602_01SalesOrderView.BaseCurrencyId,Aicon.qry602_01SalesOrderView.CurrencyRate,
+                  CASE WHEN ISNULL(Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalOrdered, 0) 
+                  = 0 THEN 'NO ITEMS IN ORDER' ELSE (CASE WHEN Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalOrdered = Aicon.qry602_06SalesOrderIsAnyBalance.IsAnyBalanceToDeliver THEN 'Not Delivered' ELSE (CASE WHEN Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalOrdered
+                   = Aicon.qry602_06SalesOrderIsAnyBalance.GrandTotalIssued THEN 'Fully Delivered' ELSE 'Partially Delivered' END) END) END AS OrderStatus, CASE WHEN ISNULL(Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalOrdered, 0) 
+                  = 0 THEN 'NO ITEMS IN ORDER' ELSE (CASE WHEN Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalOrdered = Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.IsAnyBalanceToInvoice THEN 'Not Invoiced' ELSE (CASE WHEN
+                   Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalOrdered = Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.GrandTotalInvoiced THEN 'Fully Invoiced' ELSE 'Partially Invoiced' END) END) END AS InvoiceStatus, 
+                  Aicon.qry602_01SalesOrderView.CompanyName, Aicon.qry602_01SalesOrderView.MPRNo, Aicon.qry602_01SalesOrderView.OrderExpiryDate, Aicon.qry602_01SalesOrderView.InventoryMasterGroupID, 
+                  Aicon.qry602_01SalesOrderView.InventoryMasterGroup, Aicon.tbl20101SalesPersonMaster.SalesPersonName, Aicon.qry602_01SalesOrderView.TypeOfRequest, Aicon.qry602_01SalesOrderView.SalesOrderRemarks, 
+                  Aicon.qry602_01SalesOrderView.ExpectedDeliveryDate, Aicon.qry602_01SalesOrderView.DeliveryPeriod, Aicon.qry602_01SalesOrderView.DeliveryTerms, Aicon.qry602_01SalesOrderView.SalesPersonName AS Expr1, 
+                  Aicon.qry602_01SalesOrderView.SalesPersonUserID, Aicon.qry602_01SalesOrderView.IsSubmitted, Aicon.qry602_01SalesOrderView.SubmittedBy, Aicon.qry602_01SalesOrderView.SubmittedOn, Aicon.qry602_01SalesOrderView.VerifiedBy, 
+                  Aicon.qry602_01SalesOrderView.VerifiedOn, Aicon.qry602_10OrdersBalanceToInvoice.TotalInvoicedValue, Aicon.qry602_10OrdersBalanceToInvoice.BalanceToInvoiceValue
+FROM     Aicon.qry602_01SalesOrderView LEFT OUTER JOIN
+                  Aicon.qry602_10OrdersBalanceToInvoice ON Aicon.qry602_01SalesOrderView.SalesOrderNo = Aicon.qry602_10OrdersBalanceToInvoice.SalesOrderNo LEFT OUTER JOIN
+                  Aicon.tbl20101SalesPersonMaster ON Aicon.qry602_01SalesOrderView.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode LEFT OUTER JOIN
+                  Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice ON Aicon.qry602_01SalesOrderView.SalesOrderNo = Aicon.qry602_07SalesOrderIsAnyBalanceToInvoice.SalesOrderNo LEFT OUTER JOIN
+                  Aicon.qry602_06SalesOrderIsAnyBalance ON Aicon.qry602_01SalesOrderView.SalesOrderNo = Aicon.qry602_06SalesOrderIsAnyBalance.SalesOrderNo;
+go
+
+

@@ -413,7 +413,6 @@
 		.Height("60vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)

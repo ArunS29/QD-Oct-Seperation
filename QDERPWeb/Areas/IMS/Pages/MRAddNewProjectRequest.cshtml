@@ -1430,7 +1430,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height("45vh")
+						.Height("38vh")
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -5919,6 +5919,8 @@
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					 isVoucherSaved = true; // Mark Updated step as done
+					  updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
 					// Refresh parent DataGrid (ensure the correct selector is used)
 					if (window.parent && window.parent.$("#dataGrid").length) {
@@ -6019,6 +6021,8 @@
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					 isVoucherSaved = true; // Mark Updated step as done
+					  updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
 					// Refresh parent DataGrid (ensure the correct selector is used)
 					if (window.parent && window.parent.$("#dataGrid").length) {
@@ -6310,6 +6314,7 @@
 					url: `/api/AddNewClientRequest/SubmitMPR?mprNo=${encodeURIComponent(mprNo)}`,
 					contentType: "application/json",
 					success: function (response) {
+						syncWorkflowFromFields();
 						// ✅ Show alert and bind dropdown only after clicking OK
 						 DevExpress.ui.notify("Material Purchase Request has been submitted for Approval.", "success", 3000);
 
@@ -6398,6 +6403,7 @@
 		if (approvedByBox) {
 			approvedByBox.option("value", response.VoucherApprovedBy);
 		}
+		syncWorkflowFromFields();
 						DevExpress.ui.notify(response.message, "success", 3000);
 					} else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -6472,6 +6478,7 @@
 			contentType: "application/json",
 			success: function (response) {
 				if (response && response.Message) {
+					
 					// ✅ Only set dropdown if approval is truly successful
 			if (response.VoucherApprovedBy) {
 				const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
@@ -6479,7 +6486,7 @@
 					approvedByBox.option("value", response.VoucherApprovedBy);
 				}
 			}
-
+			syncWorkflowFromFields();
 		DevExpress.ui.notify(response.Message, "success", 3000);
 
 				// ✅ Hide buttons as needed
@@ -7221,38 +7228,176 @@
 		}
 		});
 	});
+					let isVoucherSaved = false;
 
-	// Attachment
-		// Attachment
-	function onIMSAttachmentButtonClick() {
+			function getWorkflowStatusFromFields() {
+		const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+		const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+		const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
 
-		var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		var rowCount = dataGrid.getVisibleRows().length;
-		var dataSource = dataGrid.option("dataSource");
+		const submitted = preparedVal !== null && preparedVal !== "";
+		const verified = verifiedVal !== null && verifiedVal !== "";
+		const approved = approvedVal !== null && approvedVal !== "";
 
-		if (rowCount === 0 || rowCount === null) {
-			DevExpress.ui.notify(
-				"Not allow to Add Attachments. Please enter some transactions in Grid.",
-				"warning",
-				4000
-				);
-			return;
-		}
-		// Get Voucher No safely
-		const requestNoBox = $("#txtRequestNo").dxTextBox("instance");
-		const requestNo = requestNoBox ? requestNoBox.option("value") : null;
-		var menuType = "inventory";
+		if (approved) return 4;
+		if (verified) return 3;
+		if (submitted) return 2;
+		if (isVoucherSaved) return 1;
 
-
-		var formType ="Project Request";
-		// Log and build URL
-		console.log("Voucher No:", requestNo);
-		console.log("Voucher Type:", formType);
-
-		const isMaster = false;
-		const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-		const title = "Transaction Documents";
-
-		openModal(url, title);
+		return 0;
 	}
+
+
+
+
+		 function updateWorkflowVisual(status) {
+				const steps = [
+			{ id: "step-update", icon: "fas fa-user" },
+			{ id: "step-submit", icon: "fas fa-paper-plane" },
+			{ id: "step-verify", icon: "fas fa-briefcase" },
+			{ id: "step-approve", icon: "fas fa-file-alt" }
+		];
+
+			steps.forEach((step, index) => {
+				const el = document.getElementById(step.id);
+				const statusMsg = el.querySelector(".step-status-msg");
+				const icon = el.querySelector("i");
+
+				el.classList.remove("completed", "current", "upcoming", "done");
+				icon.className = step.icon;
+
+				if (index < status) {
+					el.classList.add("completed");
+					statusMsg.textContent = "Done";
+					icon.className = "fas fa-check-circle";
+				} else if (index === status && status < 3) {
+					el.classList.add("current");
+					statusMsg.textContent = "In Progress";
+					icon.className = "fas fa-spinner fa-spin";
+				} else {
+					el.classList.add("upcoming");
+					statusMsg.textContent = "Pending";
+				}
+
+				// Final Approved state
+							if (status === 4 && index === 4) {
+					el.classList.add("completed");
+					statusMsg.textContent = "Done";
+					icon.className = "fas fa-check-circle";
+				}
+			});
+		}
+
+
+
+
+			function syncWorkflowFromFields() {
+				const status = getWorkflowStatusFromFields();
+				updateWorkflowVisual(status);
+			}
+
+		function attachWorkflowWatchers() {
+			$("#ddPreparedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+			$("#ddVerifiedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+			$("#ddApprovedby").dxDropDownBox("instance").on("valueChanged", syncWorkflowFromFields);
+		}
+
+			$(function () {
+				setTimeout(() => {
+					attachWorkflowWatchers();
+					syncWorkflowFromFields();
+					 // bindWorkflowPopovers();
+					 initWorkflowTippyPopovers();
+
+				}, 300);
+			});
+
+
+
+		function formatDate(date) {
+			if (!date) return "N/A";
+			const d = new Date(date);
+			return d.toLocaleDateString() + " " + d.toLocaleTimeString();
+		}
+
+		function initWorkflowTippyPopovers() {
+			// 🧼 Clean up any old tippy instances
+			tippy.hideAll();
+			document.querySelectorAll('[data-tippy-root]').forEach(el => el.remove());
+			 const submittedBy = $("#ddPreparedby").dxDropDownBox("instance")?.option("value") || "N/A";
+			const verifiedBy = $("#ddVerifiedby").dxDropDownBox("instance")?.option("value") || "N/A";
+			const approvedBy = $("#ddApprovedby").dxDropDownBox("instance")?.option("value") || "N/A";
+
+			console.log("🧪 Tooltip data:", {
+				verifiedBy, verifiedOn, approvedBy, approvedOn
+			});
+
+			// 🟩 Verified Popover
+			tippy('#circle-verify', {
+				content: `✅ Verified by: <strong>${verifiedBy}</strong><br>📅 On: ${verifiedOn}`,
+				allowHTML: true,
+				followCursor: 'horizontal',
+				placement: 'top',
+				animation: 'shift-away',
+				theme: 'light-border',
+				trigger: 'mouseenter focus',
+				delay: [100, 100],
+			});
+
+			// 🟩 Approved Popover
+			tippy('#circle-approve', {
+				content: `✅ Approved by: <strong>${approvedBy}</strong><br>📅 On: ${approvedOn}`,
+				allowHTML: true,
+				followCursor: 'horizontal',
+				placement: 'top',
+				animation: 'shift-away',
+				theme: 'light-border',
+				trigger: 'mouseenter focus',
+				delay: [100, 100],
+
+			});
+				tippy('#circle-submit', {
+			content: `📤 Submitted by: <strong>${submittedBy}</strong><br>📅 On: ${submittedOn}`,
+			allowHTML: true,
+			followCursor: 'horizontal',
+			placement: 'top',
+			animation: 'shift-away',
+			theme: 'light-border',
+			trigger: 'mouseenter focus',
+			delay: [100, 100],
+		});
+		}
+	
+	// Attachment
+function onIMSAttachmentButtonClick() {
+
+	var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+	var rowCount = dataGrid.getVisibleRows().length;
+	var dataSource = dataGrid.option("dataSource");
+
+	if (rowCount === 0 || rowCount === null) {
+		DevExpress.ui.notify(
+			"Not allow to Add Attachments. Please enter some transactions in Grid.",
+			"warning",
+			4000
+			);
+		return;
+	}
+	// Get Voucher No safely
+	const requestNoBox = $("#txtRequestNo").dxTextBox("instance");
+	const requestNo = requestNoBox ? requestNoBox.option("value") : null;
+	var menuType = "inventory";
+
+
+	var formType ="Project Request";
+	// Log and build URL
+	console.log("Voucher No:", requestNo);
+	console.log("Voucher Type:", formType);
+
+	const isMaster = false;
+	const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+	const title = "Transaction Documents";
+
+	openModal(url, title);
+}
 </script>
