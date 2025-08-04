@@ -222,6 +222,7 @@
                             .TabIndex(1)
                             .Width("100%")
                             .OnKeyDown("onKeyDown")
+                            .OnValueChanged("onStockGroupChange") 
                             //.OnValueChanged("dropDownBoxValueChanged")
                             .ContentTemplate(new TemplateName("GetTypeOfGroupContentTemplate"))
                             .Buttons(buttons =>
@@ -314,7 +315,7 @@
                                 .Type(ButtonType.Default)
                                 .Icon("plus")
                                 .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                .OnClick("ItemStore"));
+                                .OnClick("AddItemStore"));
                                 buttons.Add()
                                 .Name("dropDown");
                             }))
@@ -384,7 +385,7 @@
                                 .Type(ButtonType.Default)
                                 .Icon("plus")
                                 .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                .OnClick("ItemClassification"));
+                                .OnClick("AddItemClassification"));
                                 buttons.Add()
                                 .Name("dropDown");
                             }))
@@ -2861,7 +2862,7 @@
                   openModal(url, title);
           }
 
-      function ItemStore(){
+      function AddItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
               const title = "Item Store";
                   openModal(url, title, "","60%");
@@ -2871,7 +2872,7 @@
               const title = "Stock Group";
                   openModal(url, title,"","70%");
           }
-            function ItemClassification(){
+            function AddItemClassification(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
               const title = "Item Classification";
                   openModal(url, title);
