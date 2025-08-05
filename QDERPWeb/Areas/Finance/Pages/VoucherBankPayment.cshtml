@@ -4037,7 +4037,8 @@ function fetchUpdatedData(voucherEntryNo) {
                     if (formattedDate && formattedApprovedDate) {
                         disableEditing();
                     }
-                    
+                                                            syncWorkflowFromFields();
+                                    initWorkflowTippyPopovers();
 
                     //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
