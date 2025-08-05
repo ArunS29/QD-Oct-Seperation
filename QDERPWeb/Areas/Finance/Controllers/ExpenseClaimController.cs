@@ -522,7 +522,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var userName = HttpContext.Session.GetString("UserName");
+                var userName = HttpContext.Session.GetString("UserName") ?? "System";
                 var UserId = HttpContext.Session.GetString("UserId");
                 var TenantName = HttpContext.Session.GetString("TenantName");
 
