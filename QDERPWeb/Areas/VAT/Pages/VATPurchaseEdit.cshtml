@@ -7118,40 +7118,54 @@
 
 
 
-			 function onVoucherDateChanged(e) {
-		console.log("Selected Date:", e.value);
-	
-		var InvoiceDate = $("#InvoiceDate").dxDateBox("instance");
-		InvoiceDate.option("onValueChanged", function (e) {
-			let InvoiceDateval = e.value; // Get Date from DevExtreme DateBox
+				function onVoucherDateChanged(e) {
+		const newDate = new Date(e.value);
+		if (!newDate) return;
 
-			// Check if InvoiceDateval is valid
-			if (!InvoiceDateval) return;
+		const formattedNewDate = newDate.toISOString().split("T")[0];
+		const cutoffDate = new Date("2021-12-31");
+		const currentDate = new Date();
+		const formattedCurrentDate = currentDate.toISOString().split("T")[0];
 
-			// Set effectiveDate to the same value as InvoiceDate
-		
+		const oldDateString = $("#OldVoucherDate").val();
+		const oldDate = new Date(oldDateString);
 
-			// Convert to 'yyyy-MM-dd' format
-			let formattedDate = new Date(InvoiceDateval).toISOString().split("T")[0];
+		// Step 1: Check cutoff date
+		if (newDate < cutoffDate) {
+			DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
 
-			// Define the cutoff date (2021-12-31)
-			let cutoffDate = new Date("2021-12-31");
+			// Reset to current date
+			$("#InvoiceDate").dxDateBox("instance").option("value", currentDate);
+			return;
+		}
 
-			// Get the current date to set if the voucher date is blocked
-			let currentdate = new Date();
-			let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
-
-			// Check if the formatted voucher date is before the cutoff date
-			if (new Date(formattedDate) < cutoffDate) {
-				// Show alert for blocked entry
-				DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
-
-				// Set both voucherDate and effectiveDate to the current date
-				InvoiceDate.option("value", formattedCurrentDate);
-				
-			}
-		});
+		// Step 2: Check if year has changed
+		if (newDate.getFullYear() !== oldDate.getFullYear()) {
+			const msg = "Purchase Voucher Date is being changed. This will change the Voucher Number Serial for the year.\n\nDo you want to re-assign a new Voucher Number?";
+			DevExpress.ui.dialog.confirm(msg, "Voucher Date Changed").done(function (dialogResult) {
+				if (dialogResult) {
+					// Yes: Call backend to get new Voucher No
+					$.ajax({
+						url: '/Voucher/GetNewVoucherNumber', // Controller endpoint
+						type: 'POST',
+						data: { date: formattedNewDate },
+						success: function (newVoucherNo) {
+							$("#VoucherNo").val(newVoucherNo); // Update voucher number
+							$("#OldVoucherDate").val(formattedNewDate); // Update stored old date
+							DevExpress.ui.notify("Voucher Number has been updated.", "success", 2000);
+						},
+						error: function () {
+							DevExpress.ui.notify("Error updating voucher number.", "error", 2000);
+						}
+					});
+				} else {
+					// No: revert to old date
+					$("#InvoiceDate").dxDateBox("instance").option("value", oldDate);
+				}
+			});
+		}
 	}
+
 	// 	 function validateSupplierInvoiceNo(e) {
 	// 	const value = e.value;
 	// 	let isDuplicate = false;

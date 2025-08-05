@@ -582,7 +582,22 @@
             transform: translateY(-50%) scale(1.1);
         }
 
+    .with-sidebar {
+        position: relative;
+        overflow: hidden;
+    }
 
+        .with-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 10px;
+            height: 80%;
+            background: rgba(255, 255, 255, 0.4);
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -592,13 +607,13 @@
 
 	
 
-    <div class="card blue shine compact">
+    <div class="card blue shine compact with-sidebar">
         <h2 class="title-slide">VAT Returns</h2>
         <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
         <h6 class="fade-in">QuickDice ERP Solutions</h6>
     </div>
 
-    <div class="card green sparkle">
+    <div class="card green sparkle with-sidebar">
         <h1 class="title-slide">VAT on Sales</h1>
         <h2 id="vatSalesTurnover">0</h2>
 
@@ -606,7 +621,7 @@
     </div>
 
 
-    <div class="card red shine">
+    <div class="card red shine with-sidebar">
         <h1 class="title-slide">VAT on Purchase</h1>
         <h2 id="vatPurchaseTurnover">0</h2>
 
