@@ -368,6 +368,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                var TenantName = HttpContext.Session.GetString("TenantName");
                 // Get user session data
                 string userIdStr = HttpContext.Session.GetString("UserId");
                 byte claimerId = Convert.ToByte(userIdStr); // ✅ Convert string to byte
@@ -448,6 +449,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 await dbContext.SaveChangesAsync();
 
+                                    var notifyRequest = new NotificationRequest
+             {
+                 UserId = userIdStr, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "You have one claim to submit",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
                 return Ok(new { success = true });
             }
             catch (Exception ex)
@@ -496,7 +507,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = model.ClaimRefNo,
-                 ActionType = "Claim Submitted",
+                 ActionType = "You have one claim to verify",
                 TenantName = TenantName 
         };
 
@@ -543,7 +554,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = model.ClaimRefNo,
-                 ActionType = "Claim Verified",
+                 ActionType = "You have one claim to approve",
                 TenantName = TenantName 
         };
 
@@ -588,7 +599,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = model.ClaimRefNo,
-                 ActionType = "Claim Approved",
+                 ActionType = "You have one claim to pay",
                 TenantName = TenantName 
         };
 
@@ -652,8 +663,6 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
-
 
 
         [HttpGet]

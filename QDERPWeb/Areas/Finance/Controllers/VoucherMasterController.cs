@@ -15,6 +15,7 @@ using QD.ERP.Web.Areas.IMS.Reports.quotationstoClients;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
+using QDERPWeb.Models;
 
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
@@ -30,11 +31,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherMasterController> _logger;
         private readonly IUserActionLogger _userActionLogger;
-        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        private readonly FcmService _fcmService;
+
+        public VoucherMasterController(ILogger<VoucherMasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
             _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _fcmService = fcmService;
         }
         [HttpGet]
         public async Task<IActionResult> Get(DataSourceLoadOptions loadOptions)
@@ -2489,6 +2493,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var existingVoucher = await dbContext.Tbl201VoucherMasters
                                                         .FirstOrDefaultAsync(v => v.VoucherNo == VM.VoucherNo);
 
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     //               var existingVoucher = await dbContext.Tbl201VoucherMasters
                     //.Where(v => v.VoucherNo == VM.VoucherNo)
@@ -2521,6 +2527,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+
+                    var notifyRequest = new NotificationRequest
+                        {
+                             UserId = UserId, // or fetch from session/DB
+                             VoucherName = VM.VoucherNo,
+                             ActionType = "You have one Payment Voucher to verify",
+                            TenantName = TenantName 
+                    };
+
+                await _fcmService.SendNotificationAsync(notifyRequest);
+
                     return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
                 }
                 catch (Exception ex)
@@ -2763,6 +2780,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var existingInvoice = await dbContext.Tbl20166VatpurchaseMasters
                                                                  .FirstOrDefaultAsync(v => v.PurchaseVoucherNo == InvoiceMaster.PurchaseVoucherNo);
+                    
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (existingInvoice != null)
                     {
@@ -2778,6 +2798,18 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     await dbContext.SaveChangesAsync();
                     // await transaction.CommitAsync();
+
+                    var notifyRequest = new NotificationRequest
+                        {
+                             UserId = UserId, // or fetch from session/DB
+                             VoucherName = InvoiceMaster.PurchaseVoucherNo,
+                             ActionType = "You have one Purchase Invoice to verify",
+                            TenantName = TenantName 
+                    };
+
+                await _fcmService.SendNotificationAsync(notifyRequest);
+
+
 
                     return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
                 }
@@ -2889,6 +2921,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
                                                                  .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
 
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
+
                     if (existingInvoice != null)
                     {
                         // Update existing master record
@@ -2903,6 +2938,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     await dbContext.SaveChangesAsync();
                     // await transaction.CommitAsync();
+
+                    var notifyRequest = new NotificationRequest
+                        {
+                             UserId = UserId, // or fetch from session/DB
+                             VoucherName = InvoiceMaster.InvoiceNo,
+                             ActionType = "You have one Sales Invoice to verify",
+                            TenantName = TenantName 
+                    };
+
+                await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
                 }
@@ -3038,6 +3083,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var existingInvoice = await dbContext.Tbl20170VatcreditNoteMasters
                                                                  .FirstOrDefaultAsync(v => v.CreditNoteNo == InvoiceMaster.CreditNoteNo);
 
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
+
                     if (existingInvoice != null)
                     {
                         // Update existing master record
@@ -3052,6 +3100,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     await dbContext.SaveChangesAsync();
                     // await transaction.CommitAsync();
+
+                    var notifyRequest = new NotificationRequest
+                        {
+                             UserId = UserId, // or fetch from session/DB
+                             VoucherName = InvoiceMaster.CreditNoteNo,
+                             ActionType = "You have one Credit Note to verify",
+                            TenantName = TenantName 
+                    };
+
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
                 }
@@ -3163,6 +3221,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var existingInvoice = await dbContext.Tbl20172VatdebitNoteMasters
                                                                  .FirstOrDefaultAsync(v => v.DebitNoteNo == InvoiceMaster.DebitNoteNo);
 
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
+
                     if (existingInvoice != null)
                     {
                         // Update existing master record
@@ -3177,6 +3238,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     await dbContext.SaveChangesAsync();
                     // await transaction.CommitAsync();
+
+                    var notifyRequest = new NotificationRequest
+                        {
+                             UserId = UserId, // or fetch from session/DB
+                             VoucherName = InvoiceMaster.DebitNoteNo,
+                             ActionType = "You have one Debit Note to verify",
+                            TenantName = TenantName 
+                    };
+
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
                 }

@@ -54,8 +54,8 @@ public class FcmService
                 Tokens = tokens,
                 Notification = new Notification
                 {
-                    Title = $"Voucher {model.ActionType}",
-                    Body = $"{model.VoucherName} has been {model.ActionType}."
+                    Title = $"Ref No {model.VoucherName}",
+                    Body = $"{model.ActionType}"
                 }
             };
 

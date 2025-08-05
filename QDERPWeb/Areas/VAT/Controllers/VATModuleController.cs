@@ -43,7 +43,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
-           
             _fcmService = fcmService;
         }
 
@@ -1784,7 +1783,7 @@ documentNo: unitType
                         {
                              UserId = UserId, // or fetch from session/DB
                              VoucherName = InvoiceNo,
-                             ActionType = "Sales Invoice Verified",
+                             ActionType = "You have one Sales Invoice to approve",
                             TenantName = TenantName 
                     };
 
@@ -1857,7 +1856,7 @@ documentNo: unitType
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = InvoiceNo,
-                 ActionType = "Sales Invoice Approved",
+                 ActionType = "You have one Sales Invoice to post",
                 TenantName = TenantName 
         };
 
@@ -1939,16 +1938,6 @@ documentNo: InvoiceNo
                     {
                         IsDirect = false;
                     }
-
-                                 var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = InvoiceNo,
-                 ActionType = "Sales Invoice Posted",
-                TenantName = TenantName 
-        };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -2479,7 +2468,7 @@ documentNo: CreditNoteNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = CreditNoteNo,
-                 ActionType = "Credit Note Voucher Verified",
+                 ActionType = "You have one Credit Note to approve",
                 TenantName = TenantName 
             };
 
@@ -2549,7 +2538,7 @@ documentNo: CreditNoteNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = CreditNoteNo,
-                 ActionType = "Credit Noyte Voucher Approved",
+                 ActionType = "You have one Credit Note to post",
                 TenantName = TenantName 
             };
 
@@ -2620,7 +2609,7 @@ documentNo: DebitNoteNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = DebitNoteNo,
-                 ActionType = "Debit Note Voucher Approved",
+                 ActionType = "You have one Debit Note to post",
                 TenantName = TenantName 
             };
 
@@ -2699,16 +2688,6 @@ documentNo: CreditNoteNo
                     {
                         IsDirect = false;
                     }
-
-                                 var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = CreditNoteNo,
-                 ActionType = "Credit Note Voucher Posted",
-                TenantName = TenantName 
-            };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -4374,7 +4353,6 @@ documentNo: InvoiceNo
         }
 
 
-
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Tbl00109ReasonsForCreditNote>>> GetCreditNoteReasons()
         {
@@ -4566,7 +4544,7 @@ documentNo: InvoiceNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = InvoiceNo,
-                 ActionType = "Purchae Invoice Voucher Approved",
+                 ActionType = "You have one Purchase Invoice to post",
                 TenantName = TenantName 
             };
 
@@ -4646,16 +4624,6 @@ documentNo: InvoiceNo
                         IsDirect = false;
                     }
 
-             var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = InvoiceNo,
-                 ActionType = "Purchase Invoice Voucher Posted",
-                TenantName = TenantName 
-            };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
-
                     return Ok(new
                     {
                         Message = "Invoice posted successfully.",
@@ -4731,17 +4699,6 @@ documentNo: DebitNoteNo
                     {
                         IsDirect = false;
                     }
-
-
-                                 var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = DebitNoteNo,
-                 ActionType = "Debit Note Voucher Posted",
-                TenantName = TenantName 
-            };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -6080,8 +6037,8 @@ documentNo: DebitNoteNo
                              var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
-                 VoucherName = "DebitNoteNo",
-                 ActionType = "Debit Note Voucher Verified",
+                 VoucherName = DebitNoteNo,
+                 ActionType = "You have one Debit Note to approve",
                 TenantName = TenantName 
             };
 
@@ -6143,7 +6100,7 @@ documentNo: InvoiceNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = InvoiceNo,
-                 ActionType = "Purchase Voucher Verified",
+                 ActionType = "You have one Purchase Invoice to Approve",
                 TenantName = TenantName 
             };
 
