@@ -889,28 +889,28 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
+				frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
+				toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
 				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/PurchaseOrders/GetGroupedPurchaseOrders',
-		type: 'GET',
-		data: {
-			fromDate: frmDate,
-			toDate: toDate
-		},
-		success: function (data) {
-			console.log("Returned Data: ", data); // debug
-			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-		},
-		error: function (xhr) {
-			console.log("AJAX Error", xhr.responseText); // debug
-			DevExpress.ui.notify("Error while loading data", "error", 2000);
-		}
-	});
-
-
-}
+					url: '/api/PurchaseOrders/GetGroupedPurchaseOrders',
+					type: 'GET',
+					data: {
+						fromDate: frmDate,
+						toDate: toDate
+					},
+					success: function (data) {
+						console.log("Returned Data: ", data); // debug
+						$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+					},
+					error: function (xhr) {
+						console.log("AJAX Error", xhr.responseText); // debug
+						DevExpress.ui.notify("Error while loading data", "error", 2000);
+					}
+				});
+	}
 
 	let selectedRowData = null;
 
