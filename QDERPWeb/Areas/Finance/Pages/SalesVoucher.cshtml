@@ -1386,7 +1386,8 @@ buttons.Add()
 					// Check if both VerifiedOnDate and ApprovedOntext have values
 					if (formattedDate && formattedApprovedDate) {
 						disableEditing();
-						syncWorkflowFromFields
+						                                    syncWorkflowFromFields();
+                                initWorkflowTippyPopovers();
 					}
 				}
 			},
@@ -1904,6 +1905,8 @@ buttons.Add()
                         var button = $("#btnSave").dxButton("instance");
 						isVoucherSaved = true; // Mark Updated step as done
 						updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+						                                    syncWorkflowFromFields();
+                                initWorkflowTippyPopovers();
                         button.option("text", "Update");
                     },
                     error: function (xhr, status, error) {
