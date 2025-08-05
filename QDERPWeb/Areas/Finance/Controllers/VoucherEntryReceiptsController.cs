@@ -12,6 +12,7 @@ using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
 //using QD.ERP.Web.DAL.Entities;
+using QDERPWeb.Models;
 
 namespace Form.Areas.Finance.Controllers
 {
@@ -23,11 +24,13 @@ namespace Form.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherEntryReceiptsController> _logger;
         private readonly IUserActionLogger _userActionLogger;
-        public VoucherEntryReceiptsController(ILogger<VoucherEntryReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        private readonly FcmService _fcmService;
+        public VoucherEntryReceiptsController(ILogger<VoucherEntryReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger, FcmService fcmService)
         {
             _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _fcmService = fcmService;
         }
         [HttpGet]
         public async Task<IActionResult> GetReceivingAccount(DataSourceLoadOptions loadOptions)
@@ -558,6 +561,20 @@ namespace Form.Areas.Finance.Controllers
             {
                 dbContext.Tbl201VoucherMasters.Add(VM);
                 await dbContext.SaveChangesAsync();
+
+                var UserId = HttpContext.Session.GetString("UserId");
+                var TenantName = HttpContext.Session.GetString("TenantName");
+
+                var notifyRequest = new NotificationRequest
+                {
+                    UserId = UserId, // or fetch from session/DB
+                    VoucherName = VM.VoucherNo,
+                    ActionType = "You have one Receipt Voucher to verify",
+                    TenantName = TenantName
+                };
+
+                await _fcmService.SendNotificationAsync(notifyRequest);
+
                 //return Json(new { VoucherEntryNo = VE.VoucherNo });
                 return Ok(new { success = true, message = "Data inserted successfully!" });
             }
@@ -822,7 +839,7 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.AccountID = accountId;
             return PartialView("~/Areas/Finance/Views/_EmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
-        public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo,string accountId)
+        public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
