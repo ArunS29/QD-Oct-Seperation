@@ -832,6 +832,7 @@ bottom: -13px !important;
                         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201206depreciationChild>()
                         .ID("dataGrid")
                         .RemoteOperations(false)
+                       
                         .Columns(columns =>
                         {
                     columns.AddFor(m => m.DepreciationDocNo) .Caption(new JS("formatMessage('Depreciation Doc No')")) .Visible(true);
@@ -1030,11 +1031,11 @@ bottom: -13px !important;
                     .DisplayExpr("AssetMaintenanceType")
                     );
 
-                        columns.AddFor(m => m.MaintenanceReading).Caption(new JS("formatMessage('Maintenance Reading')"));
-                        columns.AddFor(m => m.MaintenanceDate).Caption(new JS("formatMessage('Maintenance Scheduled On')")).Format("dd-MMM-yyyy");
-                        columns.AddFor(m => m.ReminderDate).Caption(new JS("formatMessage('Reminder Date')")).Format("dd-MMM-yyyy"); 
-                        columns.AddFor(m => m.IsMaintenanceDone).Caption(new JS("formatMessage('Maintenance Done?')"));
-                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption(new JS("formatMessage('ActualMaintenanceDoneOn')")).Format("dd-MMM-yyyy"); 
+                        columns.AddFor(m => m.MaintenanceReading).Caption(new JS("formatMessage('Maintenance Reading')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.MaintenanceDate).Caption(new JS("formatMessage('Maintenance Scheduled On')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ReminderDate).Caption(new JS("formatMessage('Reminder Date')")).Format("dd-MMM-yyyy").CellTemplate(new JS("reminderDateCellTemplate")).Alignment(HorizontalAlignment.Center); 
+                        columns.AddFor(m => m.IsMaintenanceDone).Caption(new JS("formatMessage('Maintenance Done?')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption(new JS("formatMessage('ActualMaintenanceDoneOn')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
                         columns.AddFor(m => m.MaintenanceRemarks).Caption(new JS("formatMessage('Remarks')"));
                       
                         })
@@ -1101,6 +1102,8 @@ bottom: -13px !important;
 
         </text>);
                 })
+                 .OnSelectionChanged("onTabSelectionChanged")
+)
             )
 
     </div>
@@ -2271,4 +2274,44 @@ function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
             DevExpress.ui.notify("Please select a currency", "warning", 2000);
         }
     }
+    function onTabSelectionChanged(e) {
+    const selectedTitle = e.addedItems[0].title || e.addedItems[0].Title;
+    if (selectedTitle === "Depreciation") {
+        onDepreciationTabClick();
+    }
+}
+function onDepreciationTabClick() {
+    const ledgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+
+    if (!ledgerNo) {
+        DevExpress.ui.notify("Please select an Asset Ledger No", "warning", 3000);
+        return;
+    }
+
+    const grid = $("#dataGrid").dxDataGrid("instance");
+
+    // Dynamically bind data source with assetLedgerNo as parameter
+    grid.option("dataSource", new DevExpress.data.DataSource({
+        load: function(loadOptions) {
+            return $.ajax({
+                url: '/api/AssetView/GetDepreciationByLedger', // Your actual controller and action
+                data: {
+                    assetLedgerNo: ledgerNo
+                },
+                dataType: 'json'
+            });
+        },
+        key: "DepreciationDocNo"
+    }));
+}
+function reminderDateCellTemplate(container, options) {
+        var text = DevExpress.localization.formatDate(new Date(options.value), 'dd-MMM-yyyy');
+        container.css({ 
+            "background-color":  "rgb(192, 255, 192)", 
+            "color": "red",
+            "font-weight": "bold"
+        });
+        container.text(text);
+    }
+
 </script>

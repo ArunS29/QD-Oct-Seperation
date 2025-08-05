@@ -121,7 +121,7 @@
                 .ValueChangeEvent("input")
                 .HoverStateEnabled(true)
                 .ValueExpr("UserId")
-                .DisplayExpr("UserId")
+                .DisplayExpr("UserName")
                 .OnInput("dropDownBoxOnInput")
                 .OnOpened("onOpened")
                 .TabIndex(1)
@@ -201,8 +201,8 @@
                     .ShowBorders(true)
                     .SearchPanel(sp => sp.HighlightSearchText(true))
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                    .OnSelectionChanged("dataGridSelectionChanged")
-                    .OnInitialized("dataGridInitialized")
+                    .OnSelectionChanged("dataGridSelectionChanged1")
+                    .OnInitialized("dataGridInitialized1")
                     .HeaderFilter(p => p.Visible(true))
                     .ShowBorders(true)
                     .HoverStateEnabled(true)
@@ -666,7 +666,7 @@
             }
 
         }
-        function dataGridSelectionChanged(e) {
+        function dataGridSelectionChanged1(e) {
             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
             const ddbInstance = $("#DDlUserId").dxDropDownBox("instance"); // Use the correct ID here
 
@@ -708,6 +708,9 @@
             }
         }
         function dataGridInitialized(e) {
+            dataGrid = e.component;
+        }
+         function dataGridInitialized1(e) {
             dataGrid = e.component;
         }
         function dataGridAccountHeadInitialized(e) {

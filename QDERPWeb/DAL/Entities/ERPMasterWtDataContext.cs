@@ -20,6 +20,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
     public virtual DbSet<FinancialSummaryReport> FinancialSummaryReports { get; set; }
 
+  
+
     public virtual DbSet<TblFcmDeviceToken> TblFcmDeviceTokens { get; set; }
     public virtual DbSet<Language> Languages { get; set; }
     public virtual DbSet<TblUserAccessWeb> TblUserAccessWebs { get; set; }
@@ -3409,6 +3411,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<AssetRegisterViews> AssetRegisterViews { get; set; }
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
+    public DbSet<TotalDepreciationResult> TotalDepreciationResults { get; set; }
 
     public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
@@ -3450,7 +3453,7 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<MaterialReceiptViewModel>().HasNoKey();
         modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
         modelBuilder.Entity<UpdateIsWonDto>().HasNoKey();
-
+        modelBuilder.Entity<TotalDepreciationResult>().HasNoKey();
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
         modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
 
@@ -3459,7 +3462,7 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.HasNoKey(); // required for views or tables without PK
             entity.ToTable("FinancialSummaryReport"); // actual table or view name
         });
-
+      
         //modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
         modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {
@@ -59586,7 +59589,7 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasColumnName("FormID");
             entity.Property(e => e.LayoutDescription).IsUnicode(false);
             entity.Property(e => e.LayoutXml).HasColumnType("xml");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserID).HasColumnName("UserID");
         });
 
         modelBuilder.Entity<Tbl90112ReportAttribute>(entity =>

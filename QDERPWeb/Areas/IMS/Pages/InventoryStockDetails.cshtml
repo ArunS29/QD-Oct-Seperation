@@ -197,36 +197,79 @@
                             .OnValueChanged("onGscodeChanged")
                             .Width("90%"))
                     </td>
-                    <td>
-                        <div style="display:flex;align-items:end;">
-                            @(Html.DevExtreme().SelectBox()
-                                .ID("StockGroup")
-                                .DisplayExpr("GsgroupName")
-                                .ValueExpr("GsgroupId")
-                                .DataSource(d => d.WebApi()
-                                .Controller("StockInventory")
-                                .LoadAction("GetStockGroups")
-                                )
-                                .Label(new JS("formatMessage('Stock Group')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .SearchEnabled(true)
-                                .Width("90%")
-                                .OnValueChanged("onStockGroupChange")
-                                .Buttons(buttons =>
-                                {
-                                    buttons.Add()
-                                    .Name("btnAddAccount")
-                                    .Location(TextEditorButtonLocation.After)
-                                    .Widget(w => w.Button()
-                                    .Type(ButtonType.Default)
-                                    .Icon("plus")
-                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                                    .OnClick("StockGroup"));
-                                    buttons.Add()
-                                    .Name("dropDown");
-                                }))
-                        </div>
-                    </td>
+                <td>
+                    <div style="display:flex;align-items:end;">
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                            .ID("StockGroup")
+                            .Label(new JS("formatMessage('Stock Group')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("StockInventory")
+                            .LoadAction("GetStockGroups")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("GsgroupId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Width("90%")
+                            @*  .ShowClearButton(true)
+.AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(false)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("GsgroupId")
+                            .DisplayExpr("GsgroupName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .Width("100%")
+                            .OnKeyDown("onKeyDown")
+                            .OnValueChanged("onStockGroupChange") 
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetTypeOfGroupContentTemplate"))
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("StockGroup"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            }))
+                    </div>
+                </td>
+                    @* <td> *@
+                    @*     <div style="display:flex;align-items:end;"> *@
+                    @*         @(Html.DevExtreme().SelectBox() *@
+                    @*             .ID("StockGroup1") *@
+                    @*             .DisplayExpr("GsgroupName") *@
+                    @*             .ValueExpr("GsgroupId") *@
+                    @*             .DataSource(d => d.WebApi() *@
+                    @*             .Controller("StockInventory") *@
+                    @*             .LoadAction("GetStockGroups") *@
+                    @*             ) *@
+                    @*             .Label(new JS("formatMessage('Stock Group')")) *@
+                    @*             .LabelMode(EditorLabelMode.Floating) *@
+                    @*             .SearchEnabled(true) *@
+                    @*             .Width("90%") *@
+                    @*             .OnValueChanged("onStockGroupChange") *@
+                    @*             .Buttons(buttons => *@
+                    @*             { *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("btnAddAccount") *@
+                    @*                 .Location(TextEditorButtonLocation.After) *@
+                    @*                 .Widget(w => w.Button() *@
+                    @*                 .Type(ButtonType.Default) *@
+                    @*                 .Icon("plus") *@
+                    @*                 .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                    @*                                 .OnClick("StockGroup")); *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("dropDown"); *@
+                    @*             })) *@
+                    @*     </div> *@
+                    @* </td> *@
                     <td colspan="2">
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemName")
@@ -236,62 +279,146 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <div style="display:flex;align-items:end;" ;>
-                        @(Html.DevExtreme().SelectBox()
-                                .ID("ItemStore")
-                                .DisplayExpr("StoreName")
-                                .ValueExpr("StoreId")
-                                .DataSource(d => d.WebApi()
-                                .Controller("ERStockInventory")
-                                .LoadAction("GetStores")
-                                )
-                                .Label(new JS("formatMessage('Item Store')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("90%")
-                                .Buttons(buttons =>
-                                {
-                                    buttons.Add()
-                                    .Name("btnAddAccount")
-                                    .Location(TextEditorButtonLocation.After)
-                                    .Widget(w => w.Button()
-                                    .Type(ButtonType.Default)
-                                    .Icon("plus")
-                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                    .OnClick("ItemStore"));
-                                    buttons.Add()
-                                    .Name("dropDown");
-                                }))
-                        </div>
+                <td>
+                    <div style="display:flex;align-items:end;" ;>
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                            .Label(new JS("formatMessage('Item Store')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("ERStockInventory")
+                            .LoadAction("GetStores")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("StoreId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ItemStore")
+                            .Width("90%")
+                            @*  .ShowClearButton(true)
+.AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(false)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("StoreId")
+                            .DisplayExpr("StoreName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .Width("100%")
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetTypeOfItemStoreContentTemplate"))
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("AddItemStore"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            }))
+                    </div>
+                </td>
+                    @* <td> *@
+                    @*     <div style="display:flex;align-items:end;" ;> *@
+                    @*     @(Html.DevExtreme().SelectBox() *@
+                    @*             .ID("ItemStore") *@
+                    @*             .DisplayExpr("StoreName") *@
+                    @*             .ValueExpr("StoreId1") *@
+                    @*             .DataSource(d => d.WebApi() *@
+                    @*             .Controller("ERStockInventory") *@
+                    @*             .LoadAction("GetStores") *@
+                    @*             ) *@
+                    @*             .Label(new JS("formatMessage('Item Store')")) *@
+                    @*             .LabelMode(EditorLabelMode.Floating) *@
+                    @*             .Width("90%") *@
+                    @*             .Buttons(buttons => *@
+                    @*             { *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("btnAddAccount") *@
+                    @*                 .Location(TextEditorButtonLocation.After) *@
+                    @*                 .Widget(w => w.Button() *@
+                    @*                 .Type(ButtonType.Default) *@
+                    @*                 .Icon("plus") *@
+                    @*                 .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                    @*                 .OnClick("ItemStore")); *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("dropDown"); *@
+                    @*             })) *@
+                    @*     </div> *@
+                    @* </td> *@
+                <td>
+                    <div style="display:flex;align-items:end;">
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                            .Label(new JS("formatMessage('Item Classification')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("ERStockInventory")
+                            .LoadAction("GetItemClassifications")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("StockClassId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ItemClassification")
+                            .Width("90%")
+                            @*  .ShowClearButton(true)
+.AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(false)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("StockClassId")
+                            .DisplayExpr("StockClassification")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .Width("100%")
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetTypeOfClassificationContentTemplate"))
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("AddItemClassification"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            }))
+                    </div>
                     </td>
-                    <td>
-                        <div style="display:flex;align-items:end;">
-                        @(Html.DevExtreme().SelectBox()
-                                .ID("ItemClassification")
-                                .DisplayExpr("StockClassification")
-                                .ValueExpr("StockClassId")
-                                .DataSource(d => d.WebApi()
-                                .Controller("ERStockInventory")
-                                .LoadAction("GetItemClassifications")
-                                )
-                                .Label(new JS("formatMessage('Item Classification')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("90%")
-                                .Buttons(buttons =>
-                                {
-                                    buttons.Add()
-                                    .Name("btnAddAccount")
-                                    .Location(TextEditorButtonLocation.After)
-                                    .Widget(w => w.Button()
-                                    .Type(ButtonType.Default)
-                                    .Icon("plus")
-                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                    .OnClick("ItemClassification"));
-                                    buttons.Add()
-                                    .Name("dropDown");
-                                }))
-                        </div>
-                    </td>
+                    @* <td> *@
+                    @*     <div style="display:flex;align-items:end;"> *@
+                    @*     @(Html.DevExtreme().SelectBox() *@
+                    @*             .ID("ItemClassification2") *@
+                    @*             .DisplayExpr("StockClassification") *@
+                    @*             .ValueExpr("StockClassId") *@
+                    @*             .DataSource(d => d.WebApi() *@
+                    @*             .Controller("ERStockInventory") *@
+                    @*             .LoadAction("GetItemClassifications") *@
+                    @*             ) *@
+                    @*             .Label(new JS("formatMessage('Item Classification')")) *@
+                    @*             .LabelMode(EditorLabelMode.Floating) *@
+                    @*             .Width("90%") *@
+                    @*             .Buttons(buttons => *@
+                    @*             { *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("btnAddAccount") *@
+                    @*                 .Location(TextEditorButtonLocation.After) *@
+                    @*                 .Widget(w => w.Button() *@
+                    @*                 .Type(ButtonType.Default) *@
+                    @*                 .Icon("plus") *@
+                    @*                 .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                    @*                 .OnClick("ItemClassification")); *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("dropDown"); *@
+                    @*             })) *@
+                    @*     </div> *@
+                    @* </td> *@
                     <th style="display:flex; align-items:end;">
                         @(Html.DevExtreme().Button()
                             .ID("convertToArabic2")
@@ -2226,7 +2353,7 @@
                         .Icon("attach")
                         .Type(ButtonType.Default)
                         .Width(250)
-                        .OnClick("inventoryDocumentBind") // JavaScript function
+                        .OnClick("onIMSAttachmentButtonClick") // JavaScript function
                         )
                          @(Html.DevExtreme().Button()
                          .Text(new JS("formatMessage('Merge Selected Files')"))
@@ -2565,6 +2692,113 @@
         </div>
 
         </div>
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("StockGroupGrid-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("StockInventory")
+                .LoadAction("GetStockGroups")
+            .LoadMode(DataSourceLoadMode.Raw)
+                .Key("GsgroupId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged1")
+            .OnInitialized("dataGridInitialized1")
+            .HeaderFilter(p => p.Visible(true))
+            .FilterRow(f => f.Visible(false))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("GsgroupName");
+
+
+
+            })
+            )
+}
+
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfItemStoreContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                .ID("GetItemStore-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("ERStockInventory")
+                .LoadAction("GetStores")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("StoreId")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridSelectionChanged2")
+                .OnInitialized("dataGridInitialized2")
+                .HeaderFilter(p => p.Visible(true))
+                .FilterRow(f => f.Visible(false))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("StoreName");
+
+
+
+                })
+                )
+}
+
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfClassificationContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("GetItemClassification-datagrid")
+        .DataSource(d => d.WebApi()
+        .Controller("ERStockInventory")
+        .LoadAction("GetItemClassifications")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("StockClassId")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+        .OnSelectionChanged("dataGridSelectionChanged3")
+        .OnInitialized("dataGridInitialized3")
+        .HeaderFilter(p => p.Visible(true))
+        .FilterRow(f => f.Visible(false))
+        .ShowBorders(true)
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(345)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
+        {
+                columns.Add().DataField("StockClassification");
+
+
+
+        })
+        )
+}
 <script>
 
             function onTabSelectionChanged(e) {
@@ -2628,7 +2862,7 @@
                   openModal(url, title);
           }
 
-      function ItemStore(){
+      function AddItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
               const title = "Item Store";
                   openModal(url, title, "","60%");
@@ -2638,7 +2872,7 @@
               const title = "Stock Group";
                   openModal(url, title,"","70%");
           }
-            function ItemClassification(){
+            function AddItemClassification(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
               const title = "Item Classification";
                   openModal(url, title);
@@ -2913,6 +3147,130 @@
          textBox2Instance.option("value", arabicTranslation);
 
     }
+    // Attachment
+    function onIMSAttachmentButtonClick() {
+        // Get Voucher No safely
+        const stockCodeBox = $("#StockNoItemCode").dxTextBox("instance");
+        const stockCode = stockCodeBox ? stockCodeBox.option("value") : null;
+        var button = $("#btnSave").dxButton("instance");
+        var buttonText = button ? button.option("text") : "";
 
+
+        if (!stockCode || stockCode == null || stockCode == "") {
+            DevExpress.ui.notify(
+                "Select Stock Group",
+                "warning",
+                4000
+            );            
+            return;
+        }
+        
+
+        if (buttonText !== "Update") {
+            DevExpress.ui.notify(
+                "Please, Save Stock Detail",
+                "warning",
+                    4000
+            );
+            return;
+        }
+        var menuType = "inventory";
+
+
+        var formType ="Stock Inventory";
+        // Log and build URL
+        console.log("Voucher No:", stockCode);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(stockCode)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
+        function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        const text = ddbInstance.option("text");
+        const gridId = ddbInstance.option("dataGridId");
+        if (gridId) {
+            const grid = $("#" + gridId).dxDataGrid("instance");
+            if (grid) {
+                grid.option("searchPanel.text", text);
+            }
+        }
+    }
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+
+        const gridId = ddbInstance.option("dataGridId");
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else if (grid) {
+            let focusedIndex = grid.option("focusedRowIndex");
+            let visibleRows = grid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            grid.focus(grid.getRowElement(focusedIndex));
+        }
+    }
+
+    function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    //Classification
+    function dataGridSelectionChanged3(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ItemClassification").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized3(e) {
+        dataGrid = e.component;
+    }
+    //Group
+    function dataGridSelectionChanged1(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#StockGroup").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized1(e) {
+        dataGrid = e.component;
+    }
+    //Item Store
+    function dataGridSelectionChanged2(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ItemStore").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized2(e) {
+        dataGrid = e.component;
+    }
+    
       
 </script>

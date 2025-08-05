@@ -253,10 +253,10 @@
 	</div>
 
 	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Qoutation</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Quotation</h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4>Net Qouted Amount</h4>
+				<h4>Net Quoted Amount</h4>
 				<h1 id="netqoutedamount" style="color: white;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -265,7 +265,7 @@
 				</h1>
 			</div>
 			<div class="voucher-slide">
-				<h4>Net Qouted with Tax</h4>
+				<h4>Net Quoted with Tax</h4>
 				<h1 id="qoutedwithtax" style="color: white;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -339,6 +339,7 @@
 			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -948,25 +949,25 @@
 				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1);
 				toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0);
 				break;
-					 case 'q1': // Jan - Mar
-					startDate = new Date(today.getFullYear(), 0, 1);
-					endDate = new Date(today.getFullYear(), 2, 31);
-					break;
+			case 'q1': // Jan - Mar
+				frmDate = new Date(new Date().getFullYear(), 0, 1);
+				toDate = new Date(new Date().getFullYear(), 2, 31);
+				break;
 
-				case 'q2': // Apr - Jun
-					startDate = new Date(today.getFullYear(), 3, 1);
-					endDate = new Date(today.getFullYear(), 5, 30);
-					break;
+			case 'q2': // Apr - Jun
+				frmDate = new Date(new Date().getFullYear(), 3, 1);
+				toDate = new Date(new Date().getFullYear(), 5, 30);
+				break;
 
-				case 'q3': // Jul - Sep
-					startDate = new Date(today.getFullYear(), 6, 1);
-					endDate = new Date(today.getFullYear(), 8, 30);
-					break;
+			case 'q3': // Jul - Sep
+				frmDate = new Date(new Date().getFullYear(), 6, 1);
+				toDate = new Date(new Date().getFullYear(), 8, 30);
+				break;
 
-				case 'q4': // Oct - Dec
-					startDate = new Date(today.getFullYear(), 9, 1);
-					endDate = new Date(today.getFullYear(), 11, 31);
-					break;
+			case 'q4': // Oct - Dec
+				frmDate = new Date(new Date().getFullYear(), 9, 1);
+				toDate = new Date(new Date().getFullYear(), 11, 31);
+				break;
 		}
 
 		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -1454,7 +1455,6 @@
 				{
 					text: "Create Material Issue Note",
 					icon: "export",
-						 disabled: true,
 					onItemClick: function () {
 						onCreateMaterialIssueNote(e.row.data);
 					}

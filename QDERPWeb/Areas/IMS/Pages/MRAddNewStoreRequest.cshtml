@@ -6908,26 +6908,7 @@ $("#btnBack").on("click", function (e) {
 	// 	button.option("text", "Update");
 	// });
 
-	$("#btnAttach").on("click", function (e) {
-		const dialog = DevExpress.ui.dialog.custom({
-			title: "Attach File",
-			messageHtml: "Click OK to select file(s)",
-			buttons: [
-				{
-					text: "OK",
-					onClick: function () {
-						handleFileSelection();
-					}
-				},
-				{
-					text: "Cancel"
-				}
-			]
-		});
-
-		dialog.show(); // Show the dialog
-	});
-
+	
 	function handleFileSelection() {
 		const fileInput = document.getElementById("fileInput");
 
@@ -7324,4 +7305,37 @@ $("#btnBack").on("click", function (e) {
         delay: [100, 100],
     });
     }
+		// Attachment
+function onIMSAttachmentButtonClick(e) {
+
+	var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+	var rowCount = dataGrid.getVisibleRows().length;
+	var dataSource = dataGrid.option("dataSource");
+
+	if (rowCount === 0 || rowCount === null) {
+		DevExpress.ui.notify(
+			"Not allow to Add Attachments. Please enter some transactions in Grid.",
+			"warning",
+			4000
+			);
+		return;
+	}
+	// Get Voucher No safely
+	const requestNoBox = $("#txtRequestNo").dxTextBox("instance");
+	const requestNo = requestNoBox ? requestNoBox.option("value") : null;
+	var menuType = "inventory";
+
+
+	var formType ="Store Request";
+	// Log and build URL
+	console.log("Voucher No:", requestNo);
+	console.log("Voucher Type:", formType);
+
+	const isMaster = false;
+	const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+	const title = "Transaction Documents";
+
+	openModal(url, title);
+}
+
 </script>

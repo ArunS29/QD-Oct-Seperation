@@ -36,7 +36,7 @@ namespace QD.ERP.Web.Pages
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
-        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy)
+        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy,bool useEffectiveDate)
         {
 
             if (string.IsNullOrEmpty(reportName))
@@ -135,7 +135,7 @@ namespace QD.ERP.Web.Pages
                     case "SummaryReportByDate":
                         Report = new SummaryReport_ByDate_(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
                         );
                         break;
 
@@ -147,10 +147,10 @@ namespace QD.ERP.Web.Pages
                         break;
 
                     case "CostCenterReportByDate":
-                        Report = new CostcenterBydate(
-                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
-                        );
+                       Report = new CostcenterBydate(
+                          string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                          frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
+                       );
                         break;
 
                     case "CostCenterGroupReport":
@@ -163,7 +163,7 @@ namespace QD.ERP.Web.Pages
                     case "CostCenterGroupReportByDate":
                         Report = new CostcenterGroupByDate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
                         );
                         break;
 

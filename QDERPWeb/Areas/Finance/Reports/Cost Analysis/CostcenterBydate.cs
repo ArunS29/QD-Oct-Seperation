@@ -23,11 +23,12 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            TenantDbContextHelper tenantDbContextHelper, string username)
+            TenantDbContextHelper tenantDbContextHelper, string username,bool? useEffectiveDate)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username);
+            SetReportParameters(requestedBy, frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, useEffectiveDate);
+            ConfigureSqlDataSource(requestedBy, frmDate, toDate, useEffectiveDate);
             LoadCurrencySymbolAndImage();
 
         }
@@ -35,13 +36,13 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
         public CostcenterBydate()
         {
             InitializeComponent();
-            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "", "");
+            SetReportParameters(null, DateTime.MinValue, DateTime.MinValue, "", "", "", null, "", "", "",null);
         }
 
         private void SetReportParameters(
             string requestedBy, DateTime frmDate, DateTime toDate,
             string tenantName, string companyName, string companyAddress,
-            Image logoImage, string companyNameAr, string companyAddressAr, string username)
+            Image logoImage, string companyNameAr, string companyAddressAr, string username,bool? useEffectiveDate)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -71,6 +72,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
             AddOrUpdateParameter("CompanyNameAr", companyNameAr ?? "", typeof(string));
             AddOrUpdateParameter("CompanyAddressAr", companyAddressAr ?? "", typeof(string));
             AddOrUpdateParameter("UserName", username ?? "", typeof(string), false);
+            AddOrUpdateParameter("UseEffectiveDate", useEffectiveDate ?? false, typeof(bool));
             if (FindControl("xrLabelUserName", true) is XRLabel userNameLabel)
                 userNameLabel.Text = username;
             if (FindControl("xrLabelTenantName", true) is XRLabel tenantLabel)
@@ -90,6 +92,19 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
 
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
+            if (FindControl("xrLabel19", true) is XRLabel effectiveDateLabel)
+            {
+                if (useEffectiveDate.HasValue && useEffectiveDate.Value)
+                {
+                    effectiveDateLabel.Text = "By Effective Date";
+                    effectiveDateLabel.Visible = true;
+                }
+                else
+                {
+                    effectiveDateLabel.Text = "By Voucher Date";
+                    effectiveDateLabel.Visible = false;
+                }
+            }
 
             if (FindControl("xrLabelRequestedBy", true) is XRLabel requestedByLabel)
             {
@@ -97,45 +112,49 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
                 requestedByLabel.Visible = !string.IsNullOrEmpty(requestedBy);
             }
 
-            ConfigureSqlDataSource(requestedBy, frmDate, toDate);
+          
         }
 
-        private void ConfigureSqlDataSource(string requestedBy, DateTime frmDate, DateTime toDate)
+        private void ConfigureSqlDataSource(string requestedBy, DateTime frmDate, DateTime toDate, bool? useEffectiveDate)
         {
+            string dateColumn = (useEffectiveDate.HasValue && useEffectiveDate.Value) ? "EffectiveDate" : "VoucherDate";
+
             var selectQuery = new CustomSqlQuery()
             {
                 Name = "qry20151CostAnalysisReport",
-                Sql = @"SELECT * FROM qry20151CostAnalysisReport
-                        WHERE 
-                        (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy) 
-                        AND VoucherDate BETWEEN @StartDate AND @EndDate"
+                Sql = $@"
+            SELECT * FROM qry20151CostAnalysisReport
+            WHERE 
+                (@RequestedBy IS NULL OR @RequestedBy = '' OR @RequestedBy = 'N/A' OR CostAllocationUnit = @RequestedBy)
+                AND {dateColumn} BETWEEN @StartDate AND @EndDate"
             };
 
             selectQuery.Parameters.AddRange(new[]
             {
-                new QueryParameter()
-                {
-                    Name = "@RequestedBy",
-                    Type = typeof(string),
-                    ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
-                },
-                new QueryParameter()
-                {
-                    Name = "@StartDate",
-                    Type = typeof(DateTime),
-                    ValueInfo = frmDate.ToString("yyyy-MM-dd")
-                },
-                new QueryParameter()
-                {
-                    Name = "@EndDate",
-                    Type = typeof(DateTime),
-                    ValueInfo = toDate.ToString("yyyy-MM-dd")
-                }
-            });
+        new QueryParameter()
+        {
+            Name = "@RequestedBy",
+            Type = typeof(string),
+            ValueInfo = string.IsNullOrEmpty(requestedBy) || requestedBy == "N/A" ? "" : requestedBy
+        },
+        new QueryParameter()
+        {
+            Name = "@StartDate",
+            Type = typeof(DateTime),
+            ValueInfo = frmDate.ToString("yyyy-MM-dd")
+        },
+        new QueryParameter()
+        {
+            Name = "@EndDate",
+            Type = typeof(DateTime),
+            ValueInfo = toDate.ToString("yyyy-MM-dd")
+        }
+    });
 
             this.sqlDataSource1.Queries.Clear();
             this.sqlDataSource1.Queries.Add(selectQuery);
 
+            // Assign connection string dynamically from tenant context
             if (_tenantDbContextHelper != null && _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
             {
                 var connectionParams = new CustomStringConnectionParameters(tenant.ConnectionString);
@@ -146,6 +165,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
                 throw new Exception("Unable to get tenant context. Please check session and cache.");
             }
 
+            // Fill data and handle no-data case
             this.sqlDataSource1.Fill();
             var data = this.sqlDataSource1.Result["qry20151CostAnalysisReport"];
             if (data == null || data.Count() == 0)
@@ -154,6 +174,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.Cost_Analysis.summary_Report
                 CreateNoDataLabel();
             }
         }
+
 
         private void CreateNoDataLabel()
         {

@@ -214,7 +214,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
                                     // Set the image and a fixed icon size
                                     pictureBox.Image = bitmap;
                                     pictureBox.Sizing = ImageSizeMode.ZoomImage;
-                                    pictureBox.SizeF = new SizeF(10f, 10f); // adjust if needed
+                                    pictureBox.SizeF = new SizeF(15f, 15f); // adjust if needed
                                 }
                             }
                             catch (Exception ex)

@@ -277,9 +277,9 @@
                 },
                 update: function (key, values) {
                     var updatedSalesPerson = {
-                        SalesPersonCode: key, // Use the key for the salesperson to identify it
+                        SalesPersonCode:  values.SalesPersonName, // Use the key for the salesperson to identify it
                         SalesPersonName: values.SalesPersonName,
-                        UserCode: values.UserCode,
+                        UserCode:key,
                         EmailAddress: values.EmailAddress,
                         SalesPersonContactNo: values.SalesPersonContactNo
                     };
@@ -364,7 +364,7 @@
                 }
             },
             columns: [
-                { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: true },
+                { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: true, allowEditing: false  },
                 { dataField: "SalesPersonName", caption: formatMessage("Sales Person Name"), allowFiltering: true },
                 { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true },
                 { dataField: "SalesPersonContactNo", caption: formatMessage("Sales Person Contact Number"), allowFiltering: true },

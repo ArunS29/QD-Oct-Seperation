@@ -1124,8 +1124,7 @@ function addVoucherEntry() {
 
                 // Call the remaining logic using the retrieved voucher number
                 continueVoucherEntryWithVoucherNo(voucherNo);
-                  isVoucherSaved = true; // Mark Updated step as done
-  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
@@ -1339,7 +1338,8 @@ function addVoucherEntry() {
                     dataType: "json",
 
                     success: function (response) {
-
+                                      isVoucherSaved = true; // Mark Updated step as done
+            updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
                     $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
                        $("#txtCurrencyRate").dxNumberBox("instance").option("readOnly", true);
                         setTimeout(function () {
@@ -2964,7 +2964,8 @@ function addVoucherEntry() {
                             if (formattedDate && formattedApprovedDate) {
                                 disableEditing();
                             }
-
+                                    syncWorkflowFromFields();
+                                initWorkflowTippyPopovers();
                         //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
                 },
@@ -3624,44 +3625,7 @@ function onBaseCurrencyInit(e) {
     });
 }
 
-// function bindWorkflowPopovers() {
-//     const verifiedBy = $("#VerifiedBytext").dxTextBox("instance").option("value") || "N/A";
-//     const verifiedOn = $("#VerifiedDate").dxDateBox("instance")?.option("value") || "N/A";
-//     const approvedBy = $("#ApprovedBytext").dxTextBox("instance").option("value") || "N/A";
-//     const approvedOn = $("#ApprovedDate").dxDateBox("instance")?.option("value") || "N/A";
 
-//     $("#verifiedByName").text(verifiedBy);
-//     $("#verifiedOn").text(formatDate(verifiedOn));
-//     $("#approvedByName").text(approvedBy);
-//     $("#approvedOn").text(formatDate(approvedOn));
-
-//     attachPopoverEvents("#circle-verify", "#verifyPopover");
-//     attachPopoverEvents("#circle-approve", "#approvePopover");
-// }
-
-// function formatDate(date) {
-//     if (!date) return "N/A";
-//     const d = new Date(date);
-//     return d.toLocaleDateString() + " " + d.toLocaleTimeString();
-// }
-
-// function attachPopoverEvents(targetSelector, popoverSelector) {
-//     const $target = $(targetSelector);
-//     const $popover = $(popoverSelector);
-
-//     $target.on("mouseenter", function (e) {
-//         const offset = $target.offset();
-//         $popover.css({
-//             top: offset.top - $popover.outerHeight() - 10,
-//             left: offset.left,
-//             display: "block"
-//         });
-//     });
-
-//     $target.on("mouseleave", function () {
-//         $(popoverSelector).hide();
-//     });
-// }
 function formatDate(date) {
     if (!date) return "N/A";
     const d = new Date(date);
