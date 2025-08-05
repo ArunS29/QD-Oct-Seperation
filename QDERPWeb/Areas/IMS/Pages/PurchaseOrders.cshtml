@@ -142,6 +142,83 @@
 		width: 100%;
 		overflow: hidden;
 	}
+
+	.tabs {
+		display: flex;
+		justify-content: space-around;
+		margin-bottom: 15px;
+	}
+
+	.tab-text {
+		cursor: pointer;
+		font-weight: bold;
+		color: #333;
+	}
+
+		.tab-text.active {
+			color: #2196f3;
+		}
+
+	.tab-content {
+		display: none;
+		text-align: center;
+	}
+
+		.tab-content.active {
+			display: block;
+		}
+
+	.count {
+		font-size: 31px;
+		font-weight: bold;
+		margin-top: 10px;
+	}
+
+		.count.bounce {
+			animation: bounce 0.5s ease;
+		}
+
+	@@keyframes bounce {
+		0% {
+			transform: scale(1);
+		}
+
+		50% {
+			transform: scale(1.2);
+		}
+
+		100% {
+			transform: scale(1);
+		}
+	}
+
+	.voucher-slider {
+		position: relative;
+		height: 120px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.5s ease;
+		text-align: center;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+		.voucher-slide.slide-up {
+			transform: translateY(-100%);
+		}
+
 </style>
 <div class="title">
 
@@ -152,41 +229,56 @@
 
 	</div>
 
-	<div id="mainCard" class="card today-bg">
+	<!-- VOUCHER STATUS CARD -->
+	<div id="mainCard" class="card verified-bg">
 		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
+			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
+			<div class="tab-text" onclick="switchTab(1)">Approved</div>
+			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
 		</div>
 
 		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
-			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
+			<h4>Total Verified</h4>
+			<div class="count" id="verifiedtotalcount">0</div>
 		</div>
 
 		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
+			<h4>Total Approved</h4>
+			<div class="count" id="approvedtotalcount">0</div>
 		</div>
 
 		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
-			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+			<h4>Total Submitted</h4>
+			<div class="count" id="submittedtotalcount">0</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<p>&#10024;</p>
-		<h4>No of Items</h4>
-		<h1 id="turnover">0</h1>
-		<h3>for this period</h3>
+
+	<!-- QUOTATION AMOUNT CARD -->
+	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d); padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;">Purchase Amount</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide active">
+				<h4 style="color: white;">Total Tax Amount</h4>
+				<h1 id="purchasetaxsamounts" style="color: white; font-weight: bold;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+						<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+					</svg>0.00
+				</h1>
+			</div>
+			<div class="voucher-slide">
+				<h4 style="color: white;">Total with Tax</h4>
+				<h1 id="purchasetotalwithtaxs" style="color: white; font-weight: bold;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+						<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+					</svg>0.00
+				</h1>
+			</div>
+		</div>
 	</div>
+
 </div>
 <input id="formId" value="frm201LedgerView" type="hidden" />
 @* <div class="title">
@@ -291,6 +383,7 @@
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60404purchaseOrderViewMaster>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
+		.OnInitialized("onStatusCardReady")
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
@@ -556,6 +649,172 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+		function onStatusCardReady(e) {
+			const gridInstance = e.component;
+			const dataSource = gridInstance.getDataSource();
+			const gridId = e.element.attr("id");
+
+			if (!dataSource || !gridId) return;
+
+			const items = gridInstance.option("dataSource");
+
+			const handleData = (data) => {
+					if (gridId === "dataGrid") {
+					updateStatusTabCounts(data); // For tabs
+				} else {
+					updatewithtaxAmount(data); // Card 1
+					updateTaxAmounts(data);    // Card 2
+					updateVoucherCounts(data); // Count-based logic
+				}
+			};
+
+			if (Array.isArray(items)) {
+				handleData(items);
+			} else {
+				dataSource.load().done(handleData);
+			}
+		}
+
+		const card = document.getElementById('mainCard');
+
+		const countEls = [
+				document.getElementById("verifiedtotalcount"),
+				document.getElementById("approvedtotalcount"),
+				document.getElementById("submittedtotalcount")
+		];
+
+		const tabs = document.querySelectorAll(".tab-text");
+		const contents = document.querySelectorAll(".tab-content");
+
+		let counts = [0, 0, 0]; // Verified, Approved, Submitted
+
+		function animateCount(el, target) {
+			let i = 0;
+			el.innerText = i;
+			el.classList.remove('bounce');
+
+			const interval = setInterval(() => {
+				if (i >= target) {
+					el.innerText = target;
+					el.classList.add('bounce');
+					clearInterval(interval);
+				} else {
+					el.innerText = i++;
+				}
+			}, 20);
+		}
+
+		function switchTab(index) {
+			tabs.forEach((tab, i) => {
+				tab.classList.toggle('active', i === index);
+				contents[i].classList.toggle('active', i === index);
+			});
+
+			card.className = "card";
+			if (index === 0) card.classList.add("verified-bg");
+			if (index === 1) card.classList.add("approved-bg");
+			if (index === 2) card.classList.add("submitted-bg");
+
+			animateCount(countEls[index], counts[index]);
+		}
+
+
+
+		function updateStatusTabCounts(data) {
+			let verified = 0, approved = 0, submitted = 0;
+
+			data.forEach(row => {
+				if (row.IsVerified) verified++;
+				if (row.IsApproved) approved++;
+				if (row.IsSubmitted) submitted++;
+			});
+
+			counts = [verified, approved, submitted];
+
+			const activeIndex = [...tabs].findIndex(tab => tab.classList.contains('active'));
+			animateCount(countEls[activeIndex], counts[activeIndex]);
+		}
+
+		window.addEventListener("DOMContentLoaded", () => {
+			switchTab(0); // Default: Verified
+		});
+
+
+
+
+			let currentSlideIndex = 0;
+				const slides = document.querySelectorAll('.voucher-slide');
+
+				setInterval(() => {
+					slides[currentSlideIndex].classList.remove('active');
+
+					currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+					slides[currentSlideIndex].classList.add('active');
+				}, 2000);
+
+					function updatewithtaxAmount(data) {
+					let totalCredit = 0;
+
+					if (Array.isArray(data)) {
+						totalCredit = data.reduce((sum, item) => {
+										const value = parseFloat(item.TotalWithTax || 0);
+							return sum + (isNaN(value) ? 0 : value);
+						}, 0);
+					}
+
+					const formatted = totalCredit.toLocaleString(undefined, {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+					});
+
+					const svg = `
+						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+							<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+							<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+						</svg>`;
+
+					// ✅ Set the content with SVG and value
+						const element = document.getElementById('purchasetotalwithtaxs');
+		if (element) {
+			element.innerHTML = svg + formatted;
+		}
+		}
+					function updateTaxAmounts(data) {
+			let totalCredit = 0;
+
+			if (Array.isArray(data)) {
+				totalCredit = data.reduce((sum, item) => {
+						const value = parseFloat(item.TotalTaxAmount || 0);
+					return sum + (isNaN(value) ? 0 : value);
+				}, 0);
+			}
+
+			const formatted = totalCredit.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			});
+
+				const svg = `
+							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+								<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+								<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+							</svg>`;
+			const element = document.getElementById('purchasetaxsamounts');
+			if (element) {
+				element.innerHTML = svg + formatted;
+			}
+		}
+			function startVoucherSlide() {
+					let currentSlide = 0;
+					const slides = document.querySelectorAll('.voucher-slide');
+
+					setInterval(() => {
+						slides[currentSlide].classList.remove('active');
+						currentSlide = (currentSlide + 1) % slides.length;
+						slides[currentSlide].classList.add('active');
+					}, 2000);
+				}
 		  $(function () {
 		  $("#PurchaseOrders").dxTextBox({
 		  text: formatMessage("Purchase Order"),
@@ -1063,85 +1322,5 @@ function createVatPurchaseForPO() {
 		console.log('End permission handling');
 	});
 
-		 function countUpTurnover(targetStr) {
-	  const el = document.getElementById("turnover");
-	  const target = parseFloat(targetStr);
-	  let current = 0.0;
-
-	  const interval = setInterval(() => {
-		current += 0.5;
-		if (current >= target) {
-		  el.textContent = targetStr + " K";
-		  clearInterval(interval);
-		} else {
-		  el.textContent = current.toFixed(1) + " K";
-		}
-	  }, 30);
-	}
-
-	// Animate to 46.2 K
-	countUpTurnover("46.2");
-
-	  const card = document.getElementById('mainCard');
-	const counts = [8, 15, 5];
-	const countEls = [
-	  document.getElementById("count0"),
-	  document.getElementById("count1"),
-	  document.getElementById("count2"),
-	];
-	const tabs = document.querySelectorAll(".tab-text");
-	const contents = document.querySelectorAll(".tab-content");
-
-	function animateCount(el, target) {
-	  let i = 0;
-	  el.innerText = i;
-	  el.classList.remove('bounce');
-	  const interval = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(interval);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
-	}
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Start "Today" count immediately
-	animateCount(countEls[0], counts[0]);
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Auto-start animation for "Today"
-	animateCount(countEls[0], counts[0]);
+		
 </script>

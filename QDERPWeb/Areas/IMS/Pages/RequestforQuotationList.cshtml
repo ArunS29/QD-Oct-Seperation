@@ -141,6 +141,27 @@
 		overflow: hidden;
 	}
 
+	.voucher-slider {
+		position: relative;
+		height: 100px;
+		overflow: hidden;
+	}
+	.voucher-slide1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide1.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
 </style>
 
 @* <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -159,7 +180,7 @@
 		<h6 class="fade-in">QuickDice ERP Solutions</h6>
 
 	</div>
-	<div id="mainCard" class="card today-bg">
+	@* <div id="mainCard" class="card today-bg">
 		<div class="tabs">
 			<div class="tab-text active" onclick="switchTab(0)">Today</div>
 			<div class="tab-text" onclick="switchTab(1)">Week</div>
@@ -168,26 +189,43 @@
 
 		<div class="tab-content active">
 			<h4>&#128276; Pending Verifications</h4>
-			<div class="count" id="count0">0</div>
+			<div class="count" id="count0">0</div> *@
 			@* <div class="trend">🔺 12% more than yesterday</div> *@
 			@* <div class="message">You're getting things moving!</div> *@
-		</div>
+		@* </div>
 
 		<div class="tab-content">
 			<h4>&#9989; Vouchers Verified</h4>
 			<div class="count" id="count1">0</div>
 			@* <div class="trend">🔼 25% higher than last week</div> *@
 			@* <div class="message">Awesome pace — keep it up!</div> *@
-		</div>
+	@* 	</div>
 
 		<div class="tab-content">
 			<h4>&#128229; New Vouchers</h4>
 			<div class="count" id="count2">0</div>
 			@* <div class="trend">🔽 10% drop this month</div> *@
 			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+	@* 	</div> 
+	</div>   *@
+
+	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">No of Items</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide1 active">
+				<h4>Total Before Tax</h4>
+				<h1 id="Totalbeforetaxcount" style="color: white;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide1">
+				<h4>Total After Discount</h4>
+				<h1 id="totalafterdiscount" style="color: white;">
+					0
+				</h1>
+			</div>
 		</div>
 	</div>
-
 	<div class="card purple sparkle">
 		<p>&#10024;</p>
 		<h4>No of Items</h4>
@@ -432,6 +470,17 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+
+		let currentSlideIndex1 = 0;
+		const slides1 = document.querySelectorAll('.voucher-slide1');
+
+		setInterval(() => {
+			slides1[currentSlideIndex1].classList.remove('active');
+
+			currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+
+			slides1[currentSlideIndex1].classList.add('active');
+		}, 2000);
 		 $(function () {
 	$("#RequestforQuotationList").dxTextBox({
 	text: formatMessage("Request for Quotation List"),

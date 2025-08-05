@@ -236,6 +236,17 @@ Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60124quotationItemDetail>(
 			columns.AddFor(m => m.ItemPartNo).Caption(new JS("formatMessage('Item Part No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			columns.AddFor(m => m.ItemSize).Caption(new JS("formatMessage('Item Size')")).Alignment(HorizontalAlignment.Center).Visible(true);
 			columns.AddFor(m => m.ItemBrand).Caption(new JS("formatMessage('Item Brand')")).Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.ItemMake).Caption(new JS("formatMessage('Item Make')")).Visible(true);
+			columns.AddFor(m => m.UnitRateMethod).Caption(new JS("formatMessage('Unit Rate Method')")).Visible(true);
+			columns.AddFor(m => m.QuotedUnitPrice).Caption(new JS("formatMessage('Quoted Unit Price')")).Visible(true);
+			columns.AddFor(m => m.LineTotalBeforeDiscount).Caption(new JS("formatMessage('Line Total Before Discount')")).Visible(true);
+			columns.AddFor(m => m.QuotedDiscount).Caption(new JS("formatMessage('Quoted Discount')")).Visible(true);
+			columns.AddFor(m => m.LineTotalAfterDiscount).Caption(new JS("formatMessage('Line Total After Discount')")).Visible(true);
+			columns.AddFor(m => m.LineTaxAmount).Caption(new JS("formatMessage('Line Tax Amount')")).Visible(true);
+			columns.AddFor(m => m.LineTotalWithTax).Caption(new JS("formatMessage('Line Total With Tax')")).Visible(true);
+			columns.AddFor(m => m.Mprno).Caption(new JS("formatMessage('MPRNo')")).Visible(true);
+			columns.AddFor(m => m.Mprdate).Caption(new JS("formatMessage('MPR Date')")).Format("dd-MMM-yyyy").Visible(true);
+
 
 			columns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quote No')")).Visible(false);
 			columns.AddFor(m => m.QuoteDate).Caption(new JS("formatMessage('Quote Date')")).Format("dd-MMM-yyyy").Visible(false);
@@ -352,25 +363,82 @@ Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60124quotationItemDetail>(
 			.SummaryType(SummaryType.Count)
 			.ShowInGroupFooter(true)
 			.DisplayFormat(new JS("formatMessage('No of Items: {0}')"));
-
+				items.Add().Column("LineTotalBeforeDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("QuotedDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalAfterDiscount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.ShowInGroupFooter(true)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 			});
 			summary.TotalItems(items =>
 			{
 
-				items.Add().Column("QtyReceived")
-			.SummaryType(SummaryType.Sum)
-			.CustomizeText(@"
-function(e) {
-	if (e.value === null || e.value === undefined) {
-	return '';
-	}
-	return e.value.toLocaleString(undefined, {
-	minimumFractionDigits: 2,
-	maximumFractionDigits: 2
-	});
-	}
-	");
-				items.Add().Column("LineTotalWithTax")
+				
+				items.Add().Column("LineTotalBeforeDiscount")
 			.SummaryType(SummaryType.Sum)
 			.CustomizeText(@"
 function(e) {
@@ -384,6 +452,54 @@ function(e) {
 	}
 	");
 
+				items.Add().Column("QuotedDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalAfterDiscount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("LineTotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 			});
 		})
 		)

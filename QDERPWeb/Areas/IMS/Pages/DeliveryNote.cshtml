@@ -143,6 +143,58 @@
 		width: 100%;
 		overflow: hidden;
 	}
+
+	.voucher-slider {
+		position: relative;
+		height: 100px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	.voucher-slide1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide1.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	#approvedCount {
+		font-weight: bold;
+	}
+
+	#verifiedCount {
+		font-weight: bold;
+	}
+
+	#postedCount {
+		font-weight: bold;
+	}
 </style>
 <div class="title">
 	<input id="formId" value="frm201LedgerView" type="hidden" />
@@ -154,42 +206,51 @@
 
 	</div>
 
-	<div id="mainCard" class="card today-bg">
-		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
-		</div>
+	<div class="card orange-theme" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
+		<h4 style="margin-bottom: 10px; color: white;">Voucher Count</h4>
 
-		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
-			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
-		</div>
+		<div class="voucher-slider">
+			<div class="voucher-slide active">
+				<h4>No of Invoices Verified</h4>
+				<h3>Total <span id="verifiedCount">0</span></h3>
+			</div>
 
-		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
-		</div>
+			<div class="voucher-slide">
+				<h4>No of Invoices Approved</h4>
+				<h3>Total <span id="approvedCount">0</span></h3>
+			</div>
 
-		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
-			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+			<div class="voucher-slide">
+				<h4>No of Invoices Posted</h4>
+				<h3>Total <span id="postedCount">0</span></h3>
+			</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<h4>No of Items</h4>
-		<h1 id="turnover">0</h1>
-		<h3>for this period</h3>
+	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Today</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide1 active">
+				<h4>Credit Notes Raised Today</h4>
+				<h1 id="creditToday" style="color: white;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+						<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+					</svg>0
+				</h1>
+			</div>
+			<div class="voucher-slide1">
+				<h4>Credit Notes Raised Total</h4>
+				<h1 id="creditTotal" style="color: white;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+						<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+					</svg>0
+				</h1>
+			</div>
+		</div>
 	</div>
 </div>
-
 @* <div class="title">
 	<div class="header-container">
 		<div id="DeliveryNote" class="no-border-input"></div>
@@ -597,85 +658,127 @@ $(document).ready(function () {
 
 		console.log('End permission handling');
 	});
-			function countUpTurnover(targetStr) {
-	  const el = document.getElementById("turnover");
-	  const target = parseFloat(targetStr);
-	  let current = 0.0;
+			let currentSlideIndex = 0;
+		const slides = document.querySelectorAll('.voucher-slide');
 
-	  const interval = setInterval(() => {
-		current += 0.5;
-		if (current >= target) {
-		  el.textContent = targetStr + " K";
-		  clearInterval(interval);
-		} else {
-		  el.textContent = current.toFixed(1) + " K";
+		setInterval(() => {
+			slides[currentSlideIndex].classList.remove('active');
+
+			currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+			slides[currentSlideIndex].classList.add('active');
+		}, 2000);
+		let currentSlideIndex1 = 0;
+		const slides1 = document.querySelectorAll('.voucher-slide1');
+
+		setInterval(() => {
+			slides1[currentSlideIndex1].classList.remove('active');
+
+			currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+
+			slides1[currentSlideIndex1].classList.add('active');
+		}, 2000);
+
+			function updateVerifiedCount(data) {
+			const verifiedOnly = data.filter(item => item.InvoiceStatus === "Verified");
+			document.getElementById("verifiedCount").textContent = verifiedOnly.length;
 		}
-	  }, 30);
-	}
-
-	// Animate to 46.2 K
-	countUpTurnover("46.2");
-
-	  const card = document.getElementById('mainCard');
-	const counts = [8, 15, 5];
-	const countEls = [
-	  document.getElementById("count0"),
-	  document.getElementById("count1"),
-	  document.getElementById("count2"),
-	];
-	const tabs = document.querySelectorAll(".tab-text");
-	const contents = document.querySelectorAll(".tab-content");
-
-	function animateCount(el, target) {
-	  let i = 0;
-	  el.innerText = i;
-	  el.classList.remove('bounce');
-	  const interval = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(interval);
-		} else {
-		  el.innerText = i++;
+			function updateApprovedCount(data) {
+			const approvedOnly = data.filter(item => item.InvoiceStatus === "Approved");
+			document.getElementById("approvedCount").textContent = approvedOnly.length;
 		}
-	  }, 30);
-	}
 
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
+			function updatePostedCount(data) {
+			const postedOnly = data.filter(item => item.InvoiceStatus === "Posted");
+			document.getElementById("postedCount").textContent = postedOnly.length;
+		}
 
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
 
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
+					function onGridContentReady(e) {
+			const dataSource = e.component.option("dataSource");
 
-	// Start "Today" count immediately
-	animateCount(countEls[0], counts[0]);
+			if (dataSource && dataSource.length > 0) {
+				// Count today's entries
+				const todayCount = dataSource.filter(x => isToday(x.Date)).length;
 
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
+				// Total count
+				const totalCount = dataSource.length;
 
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
+				// ✅ Count of Verified invoices only
+				const verifiedCount = dataSource.filter(x => x.InvoiceStatus === "Verified").length;
 
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
+				// document.getElementById('creditTotal').textContent = totalCount;
+				updateVerifiedCount(dataSource);
+				updatePostedCount(dataSource); // ✅ Now includes posted count
+				// ✅ Update verified count
+				updateApprovedCount(dataSource);
+				 updateCreditNoteTotal(dataSource);
+				 updateCreditToday(dataSource);
 
-	// Auto-start animation for "Today"
-	animateCount(countEls[0], counts[0]);
+				// Start sliding animation once (if not already started)
+				if (!window._voucherSliderStarted) {
+					startVoucherSlide();
+					window._voucherSliderStarted = true;
+				}
+			}
+		}
+				function updateCreditNoteTotal(data) {
+			let totalCredit = 0;
+
+			if (Array.isArray(data)) {
+				totalCredit = data.reduce((sum, item) => {
+					const value = parseFloat(item.TotalCreditNoteAmount || 0);
+					return sum + (isNaN(value) ? 0 : value);
+				}, 0);
+			}
+
+			const formatted = totalCredit.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			});
+
+			const svg = `
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+				</svg>`;
+
+			// ✅ Set the content with SVG and value
+			document.getElementById('creditTotal').innerHTML = svg + formatted;
+		}
+					function updateCreditToday(data) {
+			let todayCount = 0;
+
+			const today = new Date();
+			today.setHours(0, 0, 0, 0); // reset to start of today
+
+			if (Array.isArray(data)) {
+				todayCount = data.filter(item => {
+					const createdDate = new Date(item.CreatedDate); // update field name if different
+					createdDate.setHours(0, 0, 0, 0);
+					return createdDate.getTime() === today.getTime();
+				}).length;
+			}
+
+			const svg = `
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+				</svg>`;
+
+			document.getElementById('creditToday').innerHTML = svg + todayCount;
+		}
+
+
+
+			function startVoucherSlide() {
+			let currentSlide = 0;
+			const slides = document.querySelectorAll('.voucher-slide');
+
+			setInterval(() => {
+				slides[currentSlide].classList.remove('active');
+				currentSlide = (currentSlide + 1) % slides.length;
+				slides[currentSlide].classList.add('active');
+			}, 2000);
+		}
 </script>

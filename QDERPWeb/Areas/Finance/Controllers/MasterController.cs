@@ -521,7 +521,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var salesPersons = await dbContext.Tbl20101SalesPersonMasters.ToListAsync();
+                    var salesPersons = await dbContext.Tbl20101SalesPersonMasters
+                         .OrderBy(x => x.UserCode)
+                        .ToListAsync();
                     return Ok(salesPersons);
                 }
                 catch (Exception ex)
