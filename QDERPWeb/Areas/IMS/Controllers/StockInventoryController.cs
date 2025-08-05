@@ -544,37 +544,67 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         //    }
         //}
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdateStore([FromBody] Tbl60001storeMaster model)
+        public async Task<IActionResult> SaveOrUpdateStore([FromQuery] string originalStoreId, [FromBody] Tbl60001storeMaster model)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
+                    // Check for duplicate name
                     bool isDuplicate = await dbContext.Tbl60001storeMasters
-               .AnyAsync(x => x.StoreName == model.StoreName && x.StoreId != model.StoreId);
+                        .AnyAsync(x => x.StoreName == model.StoreName && x.StoreId != originalStoreId);
 
                     if (isDuplicate)
                     {
                         return BadRequest(new { success = false, message = "This Store Name already exists." });
                     }
 
-
+                    // Get existing record using original ID
                     var existingRecord = await dbContext.Tbl60001storeMasters
-                        .FirstOrDefaultAsync(x => x.StoreId == model.StoreId);
+                        .FirstOrDefaultAsync(x => x.StoreId == originalStoreId);
 
                     if (existingRecord != null)
                     {
-                        existingRecord.StoreId = model.StoreId;
-                        existingRecord.StoreName = model.StoreName;
-                        existingRecord.CostAllocationUnitId = model.CostAllocationUnitId;
+                        if (originalStoreId != model.StoreId)
+                        {
+                            // Check if the new StoreId already exists
+                            bool idExists = await dbContext.Tbl60001storeMasters
+                                .AnyAsync(x => x.StoreId == model.StoreId);
+
+                            if (idExists)
+                            {
+                                return BadRequest(new { success = false, message = "This Store ID already exists." });
+                            }
+
+                            // Remove old record
+                            dbContext.Tbl60001storeMasters.Remove(existingRecord);
+
+                            // Add new record with new StoreId
+                            var newRecord = new Tbl60001storeMaster
+                            {
+                                StoreId = model.StoreId,
+                                StoreName = model.StoreName,
+                                CostAllocationUnitId = model.CostAllocationUnitId,
+                                // add other fields if required
+                            };
+
+                            dbContext.Tbl60001storeMasters.Add(newRecord);
+                        }
+                        else
+                        {
+                            // Just update fields (StoreId not changed)
+                            existingRecord.StoreName = model.StoreName;
+                            existingRecord.CostAllocationUnitId = model.CostAllocationUnitId;
+                            // other updates
+                        }
 
                         await dbContext.SaveChangesAsync();
-
-                        return Ok(new { success = true, message = "Updated successfully", id = model.StoreId });
+                        return Ok(new { success = true, message = "Saved or updated successfully", id = model.StoreId });
                     }
+
                     else
                     {
-                        // ➕ ADD logic (no auto-ID generation here)
+                        // If not found, treat as new
                         dbContext.Tbl60001storeMasters.Add(model);
                         await dbContext.SaveChangesAsync();
 
@@ -590,6 +620,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+
 
 
 
@@ -780,7 +811,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         model.Gscode,
                         model.OpeningBalance,
                         model.CostPrice,
-                        model.CostPrice  // or some other value if you want a different method
+                        model.GsuoM  // or some other value if you want a different method
                     );
                 }
                 else

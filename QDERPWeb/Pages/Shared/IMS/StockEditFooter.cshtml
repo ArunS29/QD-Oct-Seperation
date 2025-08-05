@@ -446,15 +446,24 @@
         }
     });
     function onSaveClicked(e) {
-        var isUpdate = $("#btnSave").data("is-update");
+        let stockCode = $("#StockNoItemCode").dxTextBox("instance").option("value");
+        let stockGroupName = $("#StockGroup").dxDropDownBox("instance").option("value");
+        let itemName = $("#ItemName").dxTextBox("instance").option("value");
+        let store = $("#ItemStore").dxDropDownBox("instance").option("value");
+        console.log(store);
+        if (!stockCode || !stockGroupName || !itemName.trim()) {
+            DevExpress.ui.notify("Stock Item Code, Stock Group and Item Name must be filled before save.", "error", 3000);
+            return;
+        }
 
+            var isUpdate = $("#btnSave").data("is-update");
         const data = {
             Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
             Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
             GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
-            GsgroupId: $("#StockGroup").dxSelectBox("instance").option("value"),
-            StoreId: $("#ItemStore").dxSelectBox("instance").option("value"),
-            ItemClassificationId: $("#ItemClassification").dxSelectBox("instance").option("value"),
+            GsgroupId: $("#StockGroup").dxDropDownBox("instance").option("value"),
+            StoreCode: $("#ItemStore").dxDropDownBox("instance").option("value"),
+            ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
             GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
             GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
             GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
@@ -509,15 +518,23 @@
     }
     function onSaveAndCloseClicked(e) {
         // Reuse the logic of onSaveClicked, but also go back
+        let stockCode = $("#StockNoItemCode").dxTextBox("instance").option("value");
+        let stockGroupName = $("#StockGroup").dxDropDownBox("instance").option("value");
+        let itemName = $("#ItemName").dxTextBox("instance").option("value");
+
+        if (!stockCode || !stockGroupName || !itemName.trim()) {
+            DevExpress.ui.notify("Stock Item Code, Stock Group and Item Name must be filled before save.", "error", 3000);
+            return;
+        }
         var isUpdate = $("#btnSave").data("is-update");
 
         const data = {
             Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
             Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
             GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
-            GsgroupId: $("#StockGroup").dxSelectBox("instance").option("value"),
-            StoreId: $("#ItemStore").dxSelectBox("instance").option("value"),
-            ItemClassificationId: $("#ItemClassification").dxSelectBox("instance").option("value"),
+            GsgroupId: $("#StockGroup").dxDropDownBox("instance").option("value"),
+            StoreCode: $("#ItemStore").dxDropDownBox("instance").option("value"),
+            ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
             GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
             GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
             GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),

@@ -174,6 +174,7 @@
             <div style="flex: 1;">
                 @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningBalance")
+                    .Format("#,##0.00")
                     .Label("Opening Balance")
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
@@ -185,14 +186,12 @@
                 @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningQty")
                     .ReadOnly(true)
-                    .Value(13)
                     .ShowSpinButtons(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Placeholder("Qty")
                     )
                 @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningRate")
-                    .Value(700.0000)
                     .ReadOnly(true)
                     .Format("#,##0.0000")
                     .ShowSpinButtons(true)
@@ -209,7 +208,16 @@
             .Columns(columns =>
             {
                 columns.Add().DataField("StockCode").Caption("Stock Code");
-                columns.Add().DataField("Unit").Caption("Unit");
+                columns.Add().DataField("Unit").Caption("Unit")
+                    .Lookup(lookup => lookup
+                    .DataSource(d => d.WebApi()
+                    .Controller("StockInventory")
+                    .LoadAction("GetUnitCodes")
+                    .Key("UnitCode") // Assuming this is the key
+                    )
+                    .ValueExpr("UnitCode")       // The value from your grid's data
+                    .DisplayExpr("UnitType")     // The text you want to show
+                    );
                 columns.Add().DataField("UnitPrice").Caption("Unit Price");
                 columns.Add().DataField("Quantity").Caption("Quantity");
                 columns.Add().DataField("ExpiryDate").Caption("Expiry Date").DataType(GridColumnDataType.Date);
@@ -221,12 +229,13 @@
             .ColumnAutoWidth(true)
             .Height(450)
             .Width("100%")
+            .OnCellPrepared("onOpeningBalanceCellPrepared")
             )
     </div>
 
     <!-- BUTTON FOOTER -->
     <div style="text-align: left;">
-        @(Html.DevExtreme().Button().ID("btnSave").Text("Save & Close").Type(ButtonType.Success).Icon("save"))
+        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Save & Close").Type(ButtonType.Success).Icon("save"))
         @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
         @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").Type(ButtonType.Danger))
         @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("back").Type(ButtonType.Normal))
@@ -323,7 +332,7 @@
             data: JSON.stringify(data),
             success: function () {
                 DevExpress.ui.notify("Story saved successfully!", "success", 2000);
-                $("#StoryGrid").dxDataGrid("instance").refresh();
+                $("#gridOpeningBalance").dxDataGrid("instance").refresh();
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save Story.", "error", 2000);
@@ -333,7 +342,7 @@
 
 
     $("#btnUpdate").on("click", function () {
-        const grid = $("#StoryGrid").dxDataGrid("instance");
+        const grid = $("#gridOpeningBalance").dxDataGrid("instance");
         grid.saveEditData(); // 🔥 only triggers on manual click
     });
 
@@ -356,7 +365,7 @@
             data: JSON.stringify(data),
             success: function () {
                 DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
-                $("#StoryGrid").dxDataGrid("instance").refresh();
+                $("#gridOpeningBalance").dxDataGrid("instance").refresh();
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save.", "error", 1500);
@@ -368,12 +377,15 @@
             const urlParams = new URLSearchParams(window.location.search);
             const gscode = urlParams.get('gscode');
             const description = urlParams.get('description');
+            const openingbal = urlParams.get('OpeningBalance');
+            const costPrice = urlParams.get('CostPrice');
 
             console.log("URL Params - gscode:", gscode, "description:", description);
 
             const stockBox = $("#txtStockCode").dxSelectBox("instance");
             const descBox = $("#txtStockDescription").dxTextBox("instance");
-
+            const openingBalBox = $("#txtOpeningBalance").dxNumberBox("instance");
+            const costPriceBox = $("#txtOpeningRate").dxNumberBox("instance");
             if (gscode) {
                 stockBox.option("acceptCustomValue", true); // This is important
                 stockBox.option("value", gscode);
@@ -381,6 +393,14 @@
 
             if (description) {
                 descBox.option("value", description);
+            }
+
+            if (openingbal) {
+                openingBalBox.option("value", openingbal);
+            }
+
+            if (costPrice) {
+                costPriceBox.option("value", costPrice);
             }
 
             loadOpeningBalanceGrid(gscode);
@@ -403,7 +423,14 @@
             }
         });
     }
-
+    function onOpeningBalanceCellPrepared(e) {
+        if (e.rowType === "data") {
+            const greenColumns = ["Quantity", "ExpiryDate", "BatchNo"];
+            if (greenColumns.includes(e.column.dataField)) {
+                e.cellElement.css("background-color", "#d4edda"); // light green
+            }
+        }
+    }
 
    
 
