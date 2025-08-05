@@ -3,6 +3,7 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
@@ -71,21 +72,27 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		{
 			try
 			{
-				// Step 1: Get tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-				// Step 2: Try to get DbContext for tenant
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Step 3: Get company from Tbl901CompanyDetails using tenantName
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
 
-					if (company == null)
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+                    if (company == null)
 					{
 						return NotFound("Company not found in Tbl901CompanyDetails.");
 					}
@@ -772,6 +779,90 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var users = dbContext.TblUserMasters.Select(u => new { u.UserId, u.UserName });
+                    return Json(await DataSourceLoader.LoadAsync(users, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUserddl: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateSalesPerson([FromBody] Tbl20101SalesPersonMaster salesPerson)
+        {
+            if (salesPerson == null || string.IsNullOrEmpty(salesPerson.SalesPersonCode))
+            {
+                return BadRequest("Invalid salesperson data.");
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existingSalesPerson = await dbContext.Tbl20101SalesPersonMasters
+                        .FirstOrDefaultAsync(s => s.SalesPersonCode == salesPerson.SalesPersonCode);
+
+                    if (existingSalesPerson == null)
+                    {
+                        return NotFound(new { success = false, message = $"Salesperson with code {salesPerson.SalesPersonCode} not found." });
+                    }
+
+                    if (salesPerson.UserCode.HasValue)
+                    {
+                        var userCodeExists = await dbContext.Tbl20101SalesPersonMasters
+                            .AnyAsync(s => s.UserCode == salesPerson.UserCode && s.SalesPersonCode != salesPerson.SalesPersonCode);
+
+                        if (!userCodeExists)
+                        {
+                            return BadRequest(new { success = false, message = $"The provided UserCode {salesPerson.UserCode} does not exist for any other salesperson." });
+                        }
+
+                        if (salesPerson.UserCode < 0 || salesPerson.UserCode > 255)
+                        {
+                            return BadRequest(new { success = false, message = "UserCode must be between 0 and 255." });
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(salesPerson.SalesPersonName))
+                        existingSalesPerson.SalesPersonName = salesPerson.SalesPersonName;
+                    if (salesPerson.UserCode.HasValue)
+                        existingSalesPerson.UserCode = salesPerson.UserCode.Value;
+                    if (!string.IsNullOrEmpty(salesPerson.EmailAddress))
+                        existingSalesPerson.EmailAddress = salesPerson.EmailAddress;
+                    if (!string.IsNullOrEmpty(salesPerson.SalesPersonContactNo))
+                        existingSalesPerson.SalesPersonContactNo = salesPerson.SalesPersonContactNo;
+                    if (salesPerson.TargetPerMonth.HasValue)
+                    {
+                        existingSalesPerson.TargetPerMonth = salesPerson.TargetPerMonth;
+                    }
+
+
+                    dbContext.Entry(existingSalesPerson).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
+
+                    return Ok(new { success = true, message = "Salesperson updated successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateSalesPerson: {ex.Message}");
                     return StatusCode(500, $"Internal server error: {ex.Message}");
                 }
             }
