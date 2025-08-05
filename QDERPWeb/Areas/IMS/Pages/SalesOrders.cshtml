@@ -744,11 +744,13 @@ subColumns.Add().DataField("cost")
 						break;
 				}
 				 // ✅ Update DateBoxes to reflect selection
-	frmDateBox.option("value", frmDate);
-	toDateBox.option("value", toDate);
+			frmDateBox.option("value", frmDate);
+			toDateBox.option("value", toDate);
 
-					frmDate = frmDate.toISOString().split('T')[0];
-		toDate = toDate.toISOString().split('T')[0];
+			frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
+			toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
+			frmDate = frmDate.toISOString().split('T')[0];
+			toDate = toDate.toISOString().split('T')[0];
 
 					$.ajax({
 			url: '/api/SalesOrders/GetSalesOrders',

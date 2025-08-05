@@ -367,8 +367,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
                 dbContext.SaveChanges();
+                var currentRevisionno = dbContext.Tbl60601purchaseRequestMasters
+           .Where(p => p.Mprno.StartsWith(originalMprNo))
+           .Max(p => p.MprrevisionNo);
 
-                return Ok(new { success = true, message = "Purchase Request revised successfully.", newMprNo });
+                return Ok(new { success = true, message = "Purchase Request revised successfully.", newMprNo,RevisionNo= currentRevisionno });
             }
             catch (Exception ex)
             {

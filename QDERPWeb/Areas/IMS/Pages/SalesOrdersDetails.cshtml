@@ -834,8 +834,10 @@
 					frmDateBox.option("value", frmDate);
 					toDateBox.option("value", toDate);
 
+					frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
+					toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
 					frmDate = frmDate.toISOString().split('T')[0];
-		toDate = toDate.toISOString().split('T')[0];
+					toDate = toDate.toISOString().split('T')[0];
 
 					$.ajax({
 			url: '/api/SalesOrders/GetSalesOrdersDetails',

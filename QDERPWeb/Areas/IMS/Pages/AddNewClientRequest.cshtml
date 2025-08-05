@@ -381,21 +381,11 @@
 
 						</td>
 						<td colspan="2" style="width:100%;">
-							@(Html.DevExtreme().SelectBox()
+							@(Html.DevExtreme().TextBox()
 														.ID("ddRevNo")
 														.Label(new JS("formatMessage('Rev.No')"))
 														.LabelMode(EditorLabelMode.Floating)
-														.DataSource(d => d.WebApi()
-																					//.Controller("YourControllerName")
-																					//.LoadAction("YourLoadActionName")
-														.Key("Id")
-														)
-														.DisplayExpr("InvoiceNo")
-														.ValueExpr("InvoiceNo")
 														.ReadOnly(true)
-														.ShowClearButton(true)
-								.ReadOnly(true)
-														.SearchEnabled(true)
 														.Width("100%")
 														)
 
@@ -2467,13 +2457,20 @@
 	}
 
 
-
-
+	
+		var rvNo=null;
 		let Approved=null;
 		$(document).ready(function () {
 			const urlParams = new URLSearchParams(window.location.search);
 			const mprnos = urlParams.get('Mprno');
 			const mprno = mprnos ? mprnos.split("?")[0] : null;
+			const value = $('#ddRevNo').dxTextBox("instance").option("value");
+			if(value == null || value == "" ){
+				const RevisionNo = urlParams.get("RevNo") ?? "";
+				rvNo = urlParams.get("RevNo") ?? "";
+				$('#ddRevNo').dxTextBox("instance").option("value", RevisionNo);
+			}
+		   
 				getSalesPersonByUser();
 			if (mprno) {
 				// If Mprno is present, load client details
@@ -2555,6 +2552,8 @@
 					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.MprapprovedSign);
 					$("#ddRequestedBy").dxDropDownBox("instance").option("value", response.TypeOfMpr);
 
+					$("#ddRevNo").dxTextBox("instance").option("value", response.MprrevisionNo ?? rvNo);
+
 
 
 				   // Fetch and initialize the data grid with invoice details
@@ -2616,9 +2615,9 @@
 					// Just make sure to close all functions properly
 					// For brevity, I'm skipping repeating all the column config here
 						 selection: {
-			mode: "multiple",
-			showCheckBoxesMode: "always"
-		},
+						mode: "multiple",
+						showCheckBoxesMode: "always"
+					},
 						columns: [
 							{
 
@@ -7688,9 +7687,9 @@ $("#btnAddNew").on("click", function (e) {
 				  }
 			
 				  function setContactName(name) {
-    $('#txtContactName').dxTextBox("instance").option("value", name);
+					$('#txtContactName').dxTextBox("instance").option("value", name);
 
-}
+				}
 
 					  function AddContactName() {
 		var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
