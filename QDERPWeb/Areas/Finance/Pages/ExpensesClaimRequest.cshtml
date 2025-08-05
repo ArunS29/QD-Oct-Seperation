@@ -1464,6 +1464,7 @@
                             const btnSubmit = $("#btnSubmit").dxButton("instance");
                             const btnVerify = $("#btnExpenseVerify").dxButton("instance");
                             const btnPostJournal = $("#btnPaytheClaim").dxButton("instance");
+                            const btnPreview = $("#btnPrintnew").dxDropDownButton("instance");
 
                             if (formattedsubmittedDate) {
                                 btnSubmit.option("disabled", true);
@@ -1481,7 +1482,7 @@
                             }
                             if (formattedPostedDate) {
                                 disableclaim();
-
+                                btnPreview.option("disabled", false);
                             }
 
                             // ✅ Sync fields

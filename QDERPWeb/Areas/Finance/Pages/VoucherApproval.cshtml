@@ -786,8 +786,11 @@
                     const targetGrid = $("#dataGrid").dxDataGrid("instance");
                     targetGrid.option("dataSource", data);
                     targetGrid.refresh();
-                       injectHeaderSVG();
-                       updateCards(data);
+                           setTimeout(function () {
+                        injectHeaderSVG();
+                        updateCards(data);
+                    }, 500); // delay in milliseconds (e.g., 500ms = 0.5 seconds)
+
                 },
                 error: function (err) {
                     DevExpress.ui.notify("Failed to load data", "error", 2000);
@@ -798,7 +801,9 @@
     }
 
     $(function () {
+      
         loadVoucherApprovals();
+          injectHeaderSVG();
         var selectedVoucherNos = [];
         var selectedVoucherTypes = [];
 
@@ -906,6 +911,7 @@
                                     DevExpress.ui.notify("Vouchers deleted successfully!", "success", 2000);
                                     // Call your own custom reload function
                                     loadVoucherApprovals();
+                                    injectHeaderSVG();
                                 } else {
                                     DevExpress.ui.notify(response.message || "Failed to delete vouchers!", "error", 2000);
                                 }
@@ -934,6 +940,7 @@
                         DevExpress.ui.notify(response.message, "success", 2000);
                         // Call your own custom reload function
                         loadVoucherApprovals();
+                        injectHeaderSVG();
                     } else {
                         alert("Error: " + response.message);
                     }
@@ -1084,8 +1091,10 @@
                 voucherTypes: voucherType.join(",")
             },
             success: function (data) {
+             
                 const targetGrid = $("#dataGrid").dxDataGrid("instance");
                 targetGrid.option("dataSource", data);
+                 injectHeaderSVG();
                 targetGrid.refresh();
                    injectHeaderSVG();
                    updateCards(data);

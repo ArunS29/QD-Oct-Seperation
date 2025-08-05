@@ -535,6 +535,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult GetDepreciationByLedger(DataSourceLoadOptions loadOptions, string assetLedgerNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var query = dbContext.Qry201206depreciationChildren
+                    .Where(x => x.AssetLedgerNo == assetLedgerNo);
+
+                return Json(DataSourceLoader.Load(query, loadOptions));
+            }
+
+            return Json(new { success = false, message = "Unable to load data." });
+        }
 
     }
 }
