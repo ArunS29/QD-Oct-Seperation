@@ -2662,7 +2662,7 @@
 
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null,rowIx=null;
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null,rowIx=null,IsVerified=false,IsApproved=false;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -4622,6 +4622,7 @@
 		 var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
+									debugger;
 									accheadid = selectedRowData[0].AccountId;
 
 								  let  accheadname = selectedRowData[0].AccountHead;
@@ -4743,6 +4744,7 @@
 		                        var selectedRowData = $("#clientname-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
+									debugger;
 									accheadid = selectedRowData[0].AccountId;
 									let accheadAr = selectedRowData[0].AccountHeadArabic;
 								   $("#ddlClientNameAr").dxDropDownBox("instance").option("value", accheadAr);
@@ -6567,31 +6569,21 @@
 			 });
 			 function onEditClientClick() {
         var clientId = $("#ddclientname").dxDropDownBox("option", "value");
-
+		debugger;
         if (!clientId) {
 			   DevExpress.ui.notify(
 								"Please select the Client to edit","error",3000
 						  );
+						  return;
         }
 
         // Proceed with edit logic (e.g., open modal or navigate)
         console.log("Client selected: ", clientId);
-		 showLedgerAccountPopup();
-		 showLedgerAccountEditPopup();
-        // yourEditFunction(clientId); // call your edit method here
+		 
+		 showLedgerAccountEditPopup(accheadid);
+       
     }
-		// 	 function onEditClientClick() {
-		// var clientId = $("#ddlClientNameAr").dxDropDownBox("option", "value");
-
-  //       if (!clientId) {
-  //           DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Client to edit");
-  //           return;
-  //       }
-
-  //       // Proceed with edit logic (e.g., open modal or navigate)
-  //       console.log("Client selected: ", clientId);
-  //       // yourEditFunction(clientId); // call your edit method here
-  //   }
+		
 
 			 $("#btnSaveAndClose").on("click", function (e) {
 
@@ -7054,6 +7046,7 @@
 							DevExpress.ui.notify(
 								"VAT Invoice has been Verified.","success",2000
 							);
+							  IsVerified=true;
 								$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 								$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 								  initWorkflowTippyPopovers();
@@ -7145,6 +7138,7 @@
 								"VAT InvoiceNo has been Approved.","success",2000
 							);
 								disableEditing();
+                                IsApproved=true;
 								$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 								$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
 								  initWorkflowTippyPopovers();
@@ -7598,6 +7592,10 @@
 
 			  var RevenueAccountValidator = $("#ddlGoodsGroup2").dxValidator("instance");
 				var RevenueAccountValidation = RevenueAccountValidator.validate();
+				debugger;
+				let VATInvoiceSubType=$("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
+		  if(IsVerified==true && IsApproved==true)
+		  {
 
 		  if(RevenueAccountValidation.isValid)
 		{
@@ -7620,9 +7618,17 @@
 				if (response.success) {
 					let newInvoiceNo = response.toInvoiceNo;
 					DevExpress.ui.notify("Invoice created successfully: " + newInvoiceNo,"success",2000);
-
-					const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
-					window.location.href = url;
+					if(VATInvoiceSubType=="Tax Invoice")
+					{
+					  const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+					  window.location.href = url;
+					}
+					else if(VATInvoiceSubType=="Simplified Tax Invoice")
+					{
+						const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+						window.location.href = url;
+					}
+		
 				} else {
 					alert("Failed: " + response.message);
 				}
@@ -7640,6 +7646,11 @@
 						  showTitle: true
 					  }).show();
 			  }
+	  }
+	  else
+	  {
+		  DevExpress.ui.notify("The invoice has not been verified or approved. Please verify it before creating the VAT Invoice.","error",3000);
+	  }
 
 	}
 
@@ -7755,15 +7766,15 @@
 						});
 					}
 
-			function showLedgerAccountPopup() {
-			var popup = $("#ledgerAccountPopup").dxPopup("instance");
-			popup.show();
-			let IsB2CEdit=true;
-			// alert("1")
-			// debugger;
-			// Correct URL to your LedgerAccount view
-				$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
-		}
+		// 	function showLedgerAccountPopup() {
+		// 	var popup = $("#ledgerAccountPopup").dxPopup("instance");
+		// 	popup.show();
+		// 	let IsB2CEdit=true;
+		// 	// alert("1")
+		// 	// debugger;
+		// 	// Correct URL to your LedgerAccount view
+		// 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
+		// }
 			function onEditCurrencyClick() {
 		const url = `/${tenantName}/VAT/EditCurrency`; // Replace with your actual route
 		const title = "Edit Currency";
@@ -8036,6 +8047,33 @@
 						  }
 					  });
 				  }
+
+		  function showLedgerAccountPopup() {
+			  var popup = $("#ledgerAccountPopup").dxPopup("instance");
+			  popup.show();
+
+			  // Correct URL to your LedgerAccount view
+			  $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+		  }
+
+					function showLedgerAccountEditPopup(accheadid) {
+		  console.log("Opening Edit Supplier popup for ID:", accheadid);
+
+		  const tenantName = window.location.pathname.split('/')[1];
+		  const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
+
+		  const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+		  popup.show();
+
+		  setTimeout(() => {
+			  const iframe = document.getElementById("ledgerEditAccountFrame");
+			  if (!iframe) {
+				  console.error("Edit iframe not found!");
+				  return;
+			  }
+			  iframe.src = url;
+		  }, 300);
+	  }
 
 </script>
 

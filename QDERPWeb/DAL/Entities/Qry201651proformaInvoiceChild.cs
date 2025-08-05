@@ -78,4 +78,7 @@ public partial class Qry201651proformaInvoiceChild
     public string CurrencyNote { get; set; }
 
     public string CurrencyPoints { get; set; }
+
+    public string CurrencyImage { get; set; }
+    public string CurrencySymbole { get; set; }
 }

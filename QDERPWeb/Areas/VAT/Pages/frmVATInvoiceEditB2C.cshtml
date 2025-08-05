@@ -1117,7 +1117,7 @@
 																					.Controller("VATModule")
 																					.LoadAction("GetRevenueAccount")
 																					.LoadMode(DataSourceLoadMode.Raw)
-																					.Key("IncomeLedger")
+																					.Key("AccountId")
 																					)
 														.ValidationRules(rules =>
 														{
@@ -1133,7 +1133,7 @@
 																					.OpenOnFieldClick(false)
 																					.ValueChangeEvent("input")
 																					.HoverStateEnabled(true)
-																					.ValueExpr("IncomeLedger")
+																					.ValueExpr("AccountId")
 																					.DisplayExpr("IncomeLedger")
 																					.OnInput("dropDownBoxOnInput")
 																					.OnOpened("onOpened")
@@ -2797,7 +2797,7 @@
 															.LoadAction("GetRevenueAccount")
 														.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
-													.Key("IncomeLedger")
+													.Key("AccountId")
 
 														)
 
@@ -5304,7 +5304,7 @@
 				InvoiceTypeCode: InvoiceType|| null,
 				InvoiceTypeCodeSubType: InvoiceSubType|| null,
 				InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
-				ClientCode: accheadid || null,
+				ClientCode:$("#ddclientcode").dxDropDownBox("instance").option("value") || null,
 				BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,
 				BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,
 				BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,
@@ -5329,7 +5329,9 @@
 				InvoiceEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value") || null,
 				InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value") || null,
 				InvoiceEndDate: $("#InvoiceEndDate").dxDateBox("instance").option("value") || null,
-				RevenueAccount: revaccheadid || null,
+				//RevenueAccount: revaccheadid || null,
+				RevenueAccount: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,
+				
 				CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value") || null,
 				RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
 				RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
@@ -7274,8 +7276,7 @@
 				  InvoiceTypeCode: InvoiceType|| null,
 				  InvoiceTypeCodeSubType: InvoiceSubType|| null,
 				  InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
-
-				 ClientCode: accheadid|| null,
+				 ClientCode:$("#ddclientcode").dxDropDownBox("instance").option("value") || null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 				 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
 				 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
@@ -7303,7 +7304,10 @@
 			InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
 			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
-			RevenueAccount:revaccheadid|| null,
+			RevenueAccount: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,
+
+			//RevenueAccount:revaccheadid|| null,
+
 			CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
 			RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 			RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
@@ -7488,7 +7492,7 @@
 					  InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
 					  InvoiceTransactionCode: $("#InvoiceTransactionsCode").dxDropDownBox("instance").option("value")|| null,
 
-					 ClientCode: accheadid|| null,
+					 ClientCode:$("#ddclientcode").dxDropDownBox("instance").option("value") || null,
 					 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 					 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
 					 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
@@ -7516,7 +7520,8 @@
 				InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 				InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
 				InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
-				RevenueAccount:revaccheadid|| null,
+				RevenueAccount: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,
+				//RevenueAccount:revaccheadid|| null,
 				CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
 				RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 				RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
@@ -7910,7 +7915,7 @@
 
 		$("#btnVerify").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-			IsDirect = false;
+			const IsDirect = false;
 			// Ensure dataGrid exists
 			if (!dataGrid) {
 				console.error("DataGrid instance not found.");
@@ -9223,7 +9228,8 @@
 		// Disable all input fields and buttons except for specific ones
 		$('input, select, textarea').prop('disabled', true);  // Disable inputs, selects, and textareas
 
-		const allowedButtons = ['btnMoveDown', 'btnMoveUp', 'btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
+
+		const allowedButtons = ['btnMoveDown', 'btnMoveUp','btnBack','btnPostToLedgers', 'btnPostTag', 'btnPrint1'];
 
 		// Disable all dxButton and dxDropDownButton controls
 		$('.dx-button, .dx-dropdownbutton').each(function () {
@@ -9458,8 +9464,9 @@
 
 		
 			$(async function () {
+				debugger;
 			try {
-					const result = await fetch('/api/VATModule/GetRevenueDefaultEntry');
+				const result = await fetch('/api/VATModule/GetRevenueDefaultEntry');
 				const data = await result.json();
 
 				if (data && data.AccountID) {

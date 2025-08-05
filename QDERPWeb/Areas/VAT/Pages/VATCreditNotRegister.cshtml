@@ -424,7 +424,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="AmtBeforeTax-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
@@ -442,7 +446,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="CalcTaxAmt-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 
 				subColumns.AddFor(m => m.TotalCreditNoteAmount)
@@ -460,7 +468,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ToatlAmt-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -483,7 +495,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
 			.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
@@ -500,7 +516,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header1" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
 			.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
@@ -517,7 +537,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header2" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
@@ -534,7 +558,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header3" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
@@ -551,7 +579,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ExemptedRevenue-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -572,7 +604,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="GGCRevenue-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -593,7 +629,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ExportsRevenue-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 			});
@@ -617,7 +657,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticVAT-header1" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.TotalTaxOf10Perc)
 			.Caption(new JS("formatMessage('Domestic VAT @10%')"))
@@ -634,7 +678,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+											<div class="DomesticVAT-header2" style="font-weight: bold;">
+												<%= column.caption %>
+											</div>
+										</text>);
 
 				subColumns.AddFor(m => m.TotalTaxOf15Perc)
 			.Caption(new JS("formatMessage('Domestic VAT @15%')"))
@@ -651,7 +699,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticVAT-header3" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
@@ -668,7 +720,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticVAT-header4" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
@@ -685,7 +741,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="DomesticVAT-header5" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -706,7 +766,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="GGCTax-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -727,7 +791,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ExportsTax-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 			});
@@ -767,7 +835,7 @@
 		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.Width("98%")
 		@* .WordWrapEnabled(true) *@
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		@* .OnCellClick("function(e) {handleCellClick(e);}") *@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
@@ -784,6 +852,7 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
+		.OnOptionChanged("handleGridOptionChanged")
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -1345,6 +1414,218 @@
 						showColumnChooser();
 						console.log('End permission handling');
 					});
+
+	function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
+		}
+	}
+	function injectHeaderSVG() {
+		debugger;
+		let gridElement = $('#dataGrid');
+		let dataGrid = gridElement.dxDataGrid("instance");
+		if (!dataGrid) return;
+
+		let dataSource = dataGrid.option("dataSource");
+		if (!dataSource || dataSource.length === 0) return;
+
+		let svgIcon = dataSource[0].CurrencyImage;
+	    let currencySymbol = dataSource[0].CurrencySymbole;
+	    
+	    if (!svgIcon && currencySymbol) {
+	    	svgIcon = `<span style="font-weight: bold;">${currencySymbol}</span>`;
+	    } else if (svgIcon) {
+	    	svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+	    } else {
+	    	return; // if neither icon nor symbol is present, exit
+	    }
+
+		gridElement.find(".dx-header-row td").each(function () {
+
+			const $cell = $(this);
+			const dataField = $cell.attr("data-field");  // 👈 This is key
+
+				const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
+				const AmtBeforeTaxText = $AmtBeforeTaxHeader.data("original-text") || $AmtBeforeTaxHeader.text().trim();
+				$AmtBeforeTaxHeader.data("original-text", AmtBeforeTaxText); // Save original once
+
+				$AmtBeforeTaxHeader.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+						<span style="font-weight: bold;">${AmtBeforeTaxText}</span>
+					</div>
+				`);
+
+						const $CalcTaxAmtHeader = $(".CalcTaxAmt-header");
+							const CalcTaxAmtText = $CalcTaxAmtHeader.data("original-text") || $CalcTaxAmtHeader.text().trim();
+							$CalcTaxAmtHeader.data("original-text", CalcTaxAmtText); // Save original once
+
+						$CalcTaxAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+								<span style="font-weight: bold;">${CalcTaxAmtText}</span>
+						</div>
+					`);
+
+							const $ToatlAmtHeader = $(".ToatlAmt-header");
+							const TotalAmtText = $ToatlAmtHeader.data("original-text") || $ToatlAmtHeader.text().trim();
+							$ToatlAmtHeader.data("original-text", TotalAmtText); // Save original once
+
+							$ToatlAmtHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${TotalAmtText}</span>
+							</div>
+						`);
+						const $DomesticRevenueHeader = $(".DomesticRevenue-header");
+										const DomesticRevenueText = $DomesticRevenueHeader.data("original-text") || $DomesticRevenueHeader.text().trim();
+											$DomesticRevenueHeader.data("original-text", DomesticRevenueText); // Save original once
+
+							$DomesticRevenueHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader2 = $(".DomesticRevenue-header2");
+							const DomesticRevenueText2 = $DomesticRevenueHeader2.data("original-text") || $DomesticRevenueHeader2.text().trim();
+								 $DomesticRevenueHeader2.data("original-text", DomesticRevenueText2); // Save original once
+
+								$DomesticRevenueHeader2.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText2}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader3 = $(".DomesticRevenue-header3");
+							const DomesticRevenueText3 = $DomesticRevenueHeader3.data("original-text") || $DomesticRevenueHeader3.text().trim();
+								$DomesticRevenueHeader3.data("original-text", DomesticRevenueText3); // Save original once
+
+								$DomesticRevenueHeader3.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText3}</span>
+							</div>
+						`);
+								const $ExemptedRevenueHeader = $(".ExemptedRevenue-header");
+								const ExemptedRevenueText = $ExemptedRevenueHeader.data("original-text") || $ExemptedRevenueHeader.text().trim();
+									$ExemptedRevenueHeader.data("original-text", ExemptedRevenueText); // Save original once
+
+									$ExemptedRevenueHeader.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ExemptedRevenueText}</span>
+								</div>
+							`);
+
+								
+
+						const $ExportRevenueHeader = $(".ExportsRevenue-header");
+							const ExportRevenueText = $ExportRevenueHeader.data("original-text") || $ExportRevenueHeader.text().trim();
+							$ExportRevenueHeader.data("original-text", ExportRevenueText); // Save original once
+
+						$ExportRevenueHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ExportRevenueText}</span>
+						</div>
+					`);
+
+						const $GGCRevenueHeader = $(".GGCRevenue-header");
+							const GGCRevenueText = $GGCRevenueHeader.data("original-text") || $GGCRevenueHeader.text().trim();
+							$GGCRevenueHeader.data("original-text", GGCRevenueText); // Save original once
+
+						$GGCRevenueHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${GGCRevenueText}</span>
+						</div>
+					`);
+								const $DomesticVATHeader = $(".DomesticVAT-header");
+								const DomesticVATText = $DomesticVATHeader.data("original-text") || $DomesticVATHeader.text().trim();
+								$DomesticVATHeader.data("original-text", DomesticVATText); // Save original once
+
+							$DomesticVATHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${DomesticVATText}</span>
+							</div>
+						`);
+
+										const $DomesticVATHeader1 = $(".DomesticVAT-header1");
+										const DomesticVATText1 = $DomesticVATHeader1.data("original-text") || $DomesticVATHeader1.text().trim();
+											$DomesticVATHeader1.data("original-text", DomesticVATText1); // Save original once
+
+									$DomesticVATHeader1.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+											<span style="font-weight: bold;">${DomesticVATText1}</span>
+								</div>
+							`);
+
+										const $DomesticVATHeader2 = $(".DomesticVAT-header2");
+									const DomesticVATText2 = $DomesticVATHeader2.data("original-text") || $DomesticVATHeader2.text().trim();
+									$DomesticVATHeader2.data("original-text", DomesticVATText2); // Save original once
+
+								$DomesticVATHeader2.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+											<span style="font-weight: bold;">${DomesticVATText2}</span>
+								</div>
+							`);
+
+										const $DomesticVATHeader3 = $(".DomesticVAT-header3");
+								const DomesticVATText3 = $DomesticVATHeader3.data("original-text") || $DomesticVATHeader3.text().trim();
+							$DomesticVATHeader3.data("original-text", DomesticVATText3); // Save original once
+
+					$DomesticVATHeader3.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+									<span style="font-weight: bold;">${DomesticVATText3}</span>
+					</div>
+	`);
+
+		const $DomesticVATHeader4 = $(".DomesticVAT-header4");
+								const DomesticVATText4 = $DomesticVATHeader4.data("original-text") || $DomesticVATHeader4.text().trim();
+							$DomesticVATHeader4.data("original-text", DomesticVATText4); // Save original once
+
+					$DomesticVATHeader4.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+									<span style="font-weight: bold;">${DomesticVATText4}</span>
+					</div>
+	`);
+
+							
+								const $GGCTaxHeader = $(".GGCTax-header");
+								const GGCTaxText = $GGCTaxHeader.data("original-text") || $GGCTaxHeader.text().trim();
+								$GGCTaxHeader.data("original-text", GGCTaxText); // Save original once
+
+							$GGCTaxHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${GGCTaxText}</span>
+							</div>
+						`);
+
+
+							const $ExportsHeader = $(".ExportsTax-header");
+									const ExportsText = $ExportsHeader.data("original-text") || $ExportsHeader.text().trim();
+									$ExportsHeader.data("original-text", ExportsText); // Save original once
+
+						$ExportsHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ExportsText}</span>
+						</div>
+					`);
+
+
+		});
+	}
 	
 </script>
 

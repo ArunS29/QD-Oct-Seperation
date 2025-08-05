@@ -522,7 +522,7 @@
 <script type="text/javascript">
 
  
-      
+     let isPosted=null;
     function moveRow(direction) {
         const grid = $("#B2BdataGrid").dxDataGrid("instance");
         const dataSource = grid.getDataSource();
@@ -1601,6 +1601,7 @@
 
                 if (response && response.isApproved !== undefined) {
                     console.log('Invoice Approval Status:', response.isApproved);
+                    isPosted = response.isPosted;
                     return response.isApproved;
                 } else {
                     console.log("Error: Invalid response from server.");
@@ -1876,28 +1877,53 @@
                 }
             }
 
-          function showSalesVoucherEditPopup(salesVoucherId, tenantName, isPosted) {
-        if (!isPosted) {
-            DevExpress.ui.dialog.alert(
-                "This VAT Sales Invoice is not yet posted to your ledgers.\nPlease Post the Voucher and try edit the Voucher.",
-                "Sales Invoice is Not Posted."
-            );
-        } else {
-            const url = `/${tenantName}/Finance/SalesVoucher/Edit/${encodeURIComponent(salesVoucherId)}`;
-            const popup = $("#salesVoucherEditPopup").dxPopup("instance");
+         async function showSalesVoucherEditPopup() {
+        try {
+            debugger;
+            const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
 
-            popup.show();
+            // Use value from TextBox if available
+            salesVoucherId = invoiceNoBox?.option("value");
 
-            setTimeout(() => {
-                const iframe = document.getElementById("salesVoucherEditFrame");
-                if (iframe) {
-                    iframe.src = url;
-                } else {
-                    console.error("Error: salesVoucherEditFrame not found!");
-                }
-            }, 300);
+            if (!salesVoucherId) {
+                DevExpress.ui.notify("Invoice No is missing.", "Error");
+                return;
+            }
+
+            const response = await $.ajax({
+                url: `/api/VATModule/GetInvoiceApprovalStatus/${encodeURIComponent(salesVoucherId)}`,
+                method: 'GET',
+                dataType: 'json',
+            });
+
+            if (!response || typeof response.isPosted === "undefined") {
+                console.log("Error: Invalid response from server.");
+                DevExpress.ui.dialog.alert("Failed to retrieve invoice status.", "Error");
+                return;
+            }
+
+            console.log('Invoice Approval Status:', response.isPosted);
+            isPosted = response.isPosted;
+
+            if (!isPosted) {
+                DevExpress.ui.dialog.alert(
+                    "This VAT Sales Invoice is not yet posted to your ledgers.\nPlease post the voucher before editing.",
+                    "Sales Invoice Not Posted"
+                );
+                return;
+            }
+
+            let url = `/${tenantName}/Finance/SalesVoucher?argsledno=${encodeURIComponent(salesVoucherId)}`; // Example add page
+            let title = "Sales Voucher";
+            openModal(url, title);
+
+           
+        } catch (error) {
+            console.error("Exception while opening sales voucher popup:", error);
+            DevExpress.ui.dialog.alert("An unexpected error occurred.", "Error");
         }
     }
+
 
     
   

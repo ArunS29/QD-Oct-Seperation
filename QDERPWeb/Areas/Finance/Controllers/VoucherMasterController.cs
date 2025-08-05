@@ -2886,7 +2886,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
+                        var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
                                                                  .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
 
                     if (existingInvoice != null)

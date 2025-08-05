@@ -391,7 +391,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="AmtBeforeTax-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 
 				amount.AddFor(m => m.CalcTaxAmount)
@@ -409,7 +413,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="CalcTaxAmt-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 
 				amount.AddFor(m => m.TotalPurchaseAmount)
@@ -427,7 +435,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="ToatlAmt-header" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -452,7 +464,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						  		<div class="DomesticRevenue-header" style="font-weight: bold;">
+						  			<%= column.caption %>
+						  		</div>
+						  	</text>);
 
 				domestic.AddFor(m => m.TotalDspurchase10Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases @10%')"))
@@ -469,7 +485,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticRevenue-header1" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domestic.AddFor(m => m.TotalDspurchase15Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases @15%')"))
@@ -486,7 +506,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticRevenue-header2" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domestic.AddFor(m => m.DomesticZeroTaxPurchases)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Purchases')"))
@@ -503,7 +527,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticZeroTaxPurchases-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domestic.AddFor(m => m.DomesticExemptedTaxPurchases)
 			.Caption(new JS("formatMessage('Domestic Exempted Purchases')"))
@@ -520,7 +548,12 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="ExemptedRevenue-header" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
+
 
 			});
 
@@ -542,7 +575,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption(new JS("formatMessage('Imports Purchases thru Customs 10%')"))
@@ -559,7 +596,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header1" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalImportPurchase15Perc)
 			.Caption(new JS("formatMessage('Imports Purchases thru Customs 15%')"))
@@ -576,7 +617,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header2" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.ImportsVatthruRcm)
 			.Caption(new JS("formatMessage('Imports RCM 5%')"))
@@ -593,7 +638,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header3" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalRcmpurchase10Perc)
 			.Caption(new JS("formatMessage('Imports RCM 10%')"))
@@ -610,7 +659,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsRCM-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalRcmpurchase15Perc)
 			.Caption(new JS("formatMessage('Imports RCM 15%')"))
@@ -627,7 +680,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="ImportsRCM-header1" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 			});
@@ -653,7 +710,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header1" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases VAT @10%')"))
@@ -670,7 +731,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header2" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases VAT @15%')"))
@@ -687,7 +752,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header3" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
@@ -703,7 +772,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header4" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax)
 			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
@@ -722,7 +795,11 @@
 		}
 		");
 
-			});
+			}).HeaderCellTemplate(@<text>
+							   		<div class="DomesticePurchase-header5" style="font-weight: bold;">
+							   			<%= column.caption %>
+							   		</div>
+							   	</text>);
 
 				// Imports VAT
 				vat.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(importsVAT =>
@@ -739,7 +816,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header6" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc)
 			.Caption(new JS("formatMessage('VAT Paid in Customs 10%')"))
@@ -753,7 +834,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header7" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc)
 			.Caption(new JS("formatMessage('VAT Paid in Customs 15%')"))
@@ -767,7 +852,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header7" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.ImportsVatthruRcmtax)
 			.Caption(new JS("formatMessage('VAT thru RCM 5%')"))
@@ -781,7 +870,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header8" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc)
 			.Caption(new JS("formatMessage('VAT thru RCM 10%')"))
@@ -795,7 +888,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header9" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption(new JS("formatMessage('VAT thru RCM 15%')"))
@@ -809,7 +906,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header10" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 			});
 			});
@@ -839,6 +940,7 @@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnOptionChanged("handleGridOptionChanged")
 		.ShowRowLines(true)
 		.Summary(summary =>
 		{
@@ -1606,7 +1708,299 @@
 		});
 	}
 
+	function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
+		}
+	}
+	function injectHeaderSVG() {
+		debugger;
+		let gridElement = $('#dataGrid');
+		let dataGrid = gridElement.dxDataGrid("instance");
+		if (!dataGrid) return;
 
+		let dataSource = dataGrid.option("dataSource");
+		if (!dataSource || dataSource.length === 0) return;
+
+		let svgIcon = dataSource[0].CurrencyImage;
+		if (!svgIcon) return;
+
+		svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+		gridElement.find(".dx-header-row td").each(function () {
+
+			const $cell = $(this);
+			const dataField = $cell.attr("data-field");  // 👈 This is key
+
+				const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
+				const AmtBeforeTaxText = $AmtBeforeTaxHeader.data("original-text") || $AmtBeforeTaxHeader.text().trim();
+				$AmtBeforeTaxHeader.data("original-text", AmtBeforeTaxText); // Save original once
+
+				$AmtBeforeTaxHeader.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+						<span style="font-weight: bold;">${AmtBeforeTaxText}</span>
+					</div>
+				`);
+
+						const $CalcTaxAmtHeader = $(".CalcTaxAmt-header");
+							const CalcTaxAmtText = $CalcTaxAmtHeader.data("original-text") || $CalcTaxAmtHeader.text().trim();
+							$CalcTaxAmtHeader.data("original-text", CalcTaxAmtText); // Save original once
+
+						$CalcTaxAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+								<span style="font-weight: bold;">${CalcTaxAmtText}</span>
+						</div>
+					`);
+
+							const $ToatlAmtHeader = $(".ToatlAmt-header");
+							const TotalAmtText = $ToatlAmtHeader.data("original-text") || $ToatlAmtHeader.text().trim();
+							$ToatlAmtHeader.data("original-text", TotalAmtText); // Save original once
+
+							$ToatlAmtHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${TotalAmtText}</span>
+							</div>
+						`);
+						const $DomesticRevenueHeader = $(".DomesticRevenue-header");
+										const DomesticRevenueText = $DomesticRevenueHeader.data("original-text") || $DomesticRevenueHeader.text().trim();
+											$DomesticRevenueHeader.data("original-text", DomesticRevenueText); // Save original once
+
+							$DomesticRevenueHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader2 = $(".DomesticRevenue-header1");
+							const DomesticRevenueText2 = $DomesticRevenueHeader2.data("original-text") || $DomesticRevenueHeader2.text().trim();
+								 $DomesticRevenueHeader2.data("original-text", DomesticRevenueText2); // Save original once
+
+								$DomesticRevenueHeader2.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText2}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader3 = $(".DomesticRevenue-header2");
+							const DomesticRevenueText3 = $DomesticRevenueHeader3.data("original-text") || $DomesticRevenueHeader3.text().trim();
+								$DomesticRevenueHeader3.data("original-text", DomesticRevenueText3); // Save original once
+
+								$DomesticRevenueHeader3.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText3}</span>
+							</div>
+						`);
+
+							const $DomesticZeroTaxPurchasesHeader = $(".DomesticZeroTaxPurchases-header");
+							const DomesticZeroTaxPurchasesText = $DomesticZeroTaxPurchasesHeader.data("original-text") || $DomesticZeroTaxPurchasesHeader.text().trim();
+								$DomesticZeroTaxPurchasesHeader.data("original-text", DomesticZeroTaxPurchasesText); // Save original once
+
+								$DomesticZeroTaxPurchasesHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticZeroTaxPurchasesText}</span>
+							</div>
+						`);
+
+								const $ExemptedRevenueHeader = $(".ExemptedRevenue-header");
+								const ExemptedRevenueText = $ExemptedRevenueHeader.data("original-text") || $ExemptedRevenueHeader.text().trim();
+									$ExemptedRevenueHeader.data("original-text", ExemptedRevenueText); // Save original once
+
+									$ExemptedRevenueHeader.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ExemptedRevenueText}</span>
+								</div>
+							`);
+
+
+								const $ImportsPurchaseHeader = $(".ImportsPurchase-header");
+								const ImportsPurchaseText = $ImportsPurchaseHeader.data("original-text") || $ImportsPurchaseHeader.text().trim();
+									$ImportsPurchaseHeader.data("original-text", ImportsPurchaseText); // Save original once
+
+									$ImportsPurchaseHeader.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText}</span>
+								</div>
+							`);
+
+							const $ImportsPurchaseHeader1 = $(".ImportsPurchase-header1");
+								const ImportsPurchaseText1 = $ImportsPurchaseHeader1.data("original-text") || $ImportsPurchaseHeader1.text().trim();
+									$ImportsPurchaseHeader1.data("original-text", ImportsPurchaseText1); // Save original once
+
+									$ImportsPurchaseHeader1.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText1}</span>
+								</div>
+							`);
+
+							const $ImportsPurchaseHeader2 = $(".ImportsPurchase-header2");
+								const ImportsPurchaseText2 = $ImportsPurchaseHeader2.data("original-text") || $ImportsPurchaseHeader2.text().trim();
+									$ImportsPurchaseHeader2.data("original-text", ImportsPurchaseText2); // Save original once
+
+									$ImportsPurchaseHeader2.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText2}</span>
+								</div>
+							`);
+
+							const $ImportsPurchaseHeader3 = $(".ImportsPurchase-header3");
+								const ImportsPurchaseText3 = $ImportsPurchaseHeader3.data("original-text") || $ImportsPurchaseHeader3.text().trim();
+									$ImportsPurchaseHeader3.data("original-text", ImportsPurchaseText3); // Save original once
+
+									$ImportsPurchaseHeader3.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText3}</span>
+								</div>
+							`);
+
+						const $ImportsRCMheader = $(".ImportsRCM-header");
+							const ImportsRCMText = $ImportsRCMheader.data("original-text") || $ImportsRCMheader.text().trim();
+							$ImportsRCMheader.data("original-text", ImportsRCMText); // Save original once
+
+						$ImportsRCMheader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ImportsRCMText}</span>
+						</div>
+					`);
+
+
+						const $ImportsRCMheader1 = $(".ImportsRCM-header1");
+							const ImportsRCMText1 = $ImportsRCMheader1.data("original-text") || $ImportsRCMheader1.text().trim();
+							$ImportsRCMheader1.data("original-text", ImportsRCMText); // Save original once
+
+						$ImportsRCMheader1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ImportsRCMText}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader1 = $(".DomesticePurchase-header1");
+							const DomesticePurchaseText1 = $DomesticePurchaseHeader1.data("original-text") || $DomesticePurchaseHeader1.text().trim();
+							$DomesticePurchaseHeader1.data("original-text", DomesticePurchaseText1); // Save original once
+
+						$DomesticePurchaseHeader1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText1}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader2 = $(".DomesticePurchase-header2");
+							const DomesticePurchaseText2 = $DomesticePurchaseHeader2.data("original-text") || $DomesticePurchaseHeader2.text().trim();
+							$DomesticePurchaseHeader2.data("original-text", DomesticePurchaseText2); // Save original once
+
+						$DomesticePurchaseHeader2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText2}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader3 = $(".DomesticePurchase-header3");
+							const DomesticePurchaseText3 = $DomesticePurchaseHeader3.data("original-text") || $DomesticePurchaseHeader3.text().trim();
+							$DomesticePurchaseHeader3.data("original-text", DomesticePurchaseText1); // Save original once
+
+						$DomesticePurchaseHeader3.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText1}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader4 = $(".DomesticePurchase-header4");
+							const DomesticePurchaseText4 = $DomesticePurchaseHeader4.data("original-text") || $DomesticePurchaseHeader4.text().trim();
+							$DomesticePurchaseHeader4.data("original-text", DomesticePurchaseText4); // Save original once
+
+						$DomesticePurchaseHeader4.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText1}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader5 = $(".DomesticePurchase-header5");
+							const DomesticePurchaseText5 = $DomesticePurchaseHeader5.data("original-text") || $DomesticePurchaseHeader5.text().trim();
+							$DomesticePurchaseHeader5.data("original-text", DomesticePurchaseText5); // Save original once
+
+						$DomesticePurchaseHeader5.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText5}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader6 = $(".DomesticePurchase-header6");
+							const DomesticePurchaseText6 = $DomesticePurchaseHeader6.data("original-text") || $DomesticePurchaseHeader6.text().trim();
+							$DomesticePurchaseHeader6.data("original-text", DomesticePurchaseText6); // Save original once
+
+						$DomesticePurchaseHeader6.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText6}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader7 = $(".DomesticePurchase-header7");
+							const DomesticePurchaseText7 = $DomesticePurchaseHeader7.data("original-text") || $DomesticePurchaseHeader7.text().trim();
+							$DomesticePurchaseHeader7.data("original-text", DomesticePurchaseText7); // Save original once
+
+						$DomesticePurchaseHeader7.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText7}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader8 = $(".DomesticePurchase-header1");
+							const DomesticePurchaseText8 = $DomesticePurchaseHeader8.data("original-text") || $DomesticePurchaseHeader8.text().trim();
+							$DomesticePurchaseHeader8.data("original-text", DomesticePurchaseText8); // Save original once
+
+						$DomesticePurchaseHeader8.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText8}</span>
+						</div>
+					`);
+
+
+						const $DomesticePurchaseHeader9 = $(".DomesticePurchase-header9");
+							const DomesticePurchaseText9 = $DomesticePurchaseHeader9.data("original-text") || $DomesticePurchaseHeader9.text().trim();
+							$DomesticePurchaseHeader9.data("original-text", DomesticePurchaseText1); // Save original once
+
+						$DomesticePurchaseHeader9.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText9}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader10 = $(".DomesticePurchase-header10");
+							const DomesticePurchaseText10 = $DomesticePurchaseHeader10.data("original-text") || $DomesticePurchaseHeader10.text().trim();
+							$DomesticePurchaseHeader10.data("original-text", DomesticePurchaseText10); // Save original once
+
+						$DomesticePurchaseHeader10.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText10}</span>
+						</div>
+					`);
+
+		});
+	}
 
 
 
