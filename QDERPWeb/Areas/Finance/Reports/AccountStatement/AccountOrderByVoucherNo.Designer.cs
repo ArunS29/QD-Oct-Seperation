@@ -156,8 +156,7 @@
             this.xrLabel12.BorderWidth = 0.5F;
             this.xrLabel12.CanGrow = false;
             this.xrLabel12.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Iif(\n  IsNull([ConvertedCrAmount]),\n  \'-\',\n  FormatString(\'{0:#,##0.00}\', " +
-                    "Sum([ConvertedCrAmount]))\n)\n)")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([ConvertedCrAmount])")});
             this.xrLabel12.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel12.LocationFloat = new DevExpress.Utils.PointFloat(752.8379F, 0.04191081F);
             this.xrLabel12.Name = "xrLabel12";
@@ -184,8 +183,7 @@
             this.xrLabel9.BorderWidth = 0.5F;
             this.xrLabel9.CanGrow = false;
             this.xrLabel9.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum(Iif(Sum([VoucherAmountFormatted]) > 0, FormatString(\'{0:#,##0.00}\', Sum([V" +
-                    "oucherAmountFormatted])), \'-\'))")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([ConvertedAmount])")});
             this.xrLabel9.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel9.LocationFloat = new DevExpress.Utils.PointFloat(625.6616F, 0.04191081F);
             this.xrLabel9.Name = "xrLabel9";
