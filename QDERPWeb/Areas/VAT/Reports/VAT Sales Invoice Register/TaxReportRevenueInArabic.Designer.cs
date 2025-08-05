@@ -550,7 +550,7 @@
             this.tableCell21.StylePriority.UseFont = false;
             this.tableCell21.StylePriority.UseTextAlignment = false;
             this.tableCell21.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.tableCell21.TextFormatString = "{0:#,##0.00}";
+            this.tableCell21.TextFormatString = "{0:#,##0.000;(#,##0.000)}";
             this.tableCell21.Weight = 0.047556868701081639D;
             // 
             // tableCell22
@@ -570,7 +570,7 @@
             this.tableCell22.StylePriority.UseFont = false;
             this.tableCell22.StylePriority.UseTextAlignment = false;
             this.tableCell22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            this.tableCell22.TextFormatString = "{0:#,##0.00}";
+            this.tableCell22.TextFormatString = "{0:n2}";
             this.tableCell22.Weight = 0.059749345900612122D;
             // 
             // tableCell23
@@ -753,7 +753,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell28.BorderWidth = 1F;
             this.tableCell28.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[QuotationNo]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalQtyInvoiced]")});
             this.tableCell28.Font = new DevExpress.Drawing.DXFont("Cambria", 8.25F);
             this.tableCell28.Name = "tableCell28";
             this.tableCell28.StylePriority.UseBackColor = false;
@@ -913,7 +913,7 @@
             // 
             // bottomMarginBand1
             // 
-            this.bottomMarginBand1.HeightF = 35.47414F;
+            this.bottomMarginBand1.HeightF = 38.05632F;
             this.bottomMarginBand1.Name = "bottomMarginBand1";
             // 
             // pageInfo2
@@ -2687,7 +2687,7 @@
             this.sqlDataSource1});
             this.DataMember = "qry201_607VATInvoiceRegisterMainView";
             this.DataSource = this.sqlDataSource1;
-            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 52.5F, 35.47414F);
+            this.Margins = new DevExpress.Drawing.DXMargins(25F, 25F, 52.5F, 38.05632F);
             this.PageWidth = 1450;
             this.PaperKind = DevExpress.Drawing.Printing.DXPaperKind.Custom;
             this.Version = "24.1";

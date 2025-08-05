@@ -123,12 +123,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry201_652ProformaInvoiceReport WHERE InvoiceNo = @InvoiceNo";
+                        string query = "SELECT * FROM qry201_652ProformaInvoiceReport WHERE ProformaInvoiceNo = @ProformaInvoiceNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@InvoiceNo", invoiceNo);
+                            cmd.Parameters.AddWithValue("@ProformaInvoiceNo", invoiceNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();

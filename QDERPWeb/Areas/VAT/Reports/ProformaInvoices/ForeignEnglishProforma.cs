@@ -119,7 +119,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
                 this.DataMember = "";
                 SetWatermark();
 
-                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(DrAmount)", ""));
+                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(BalanceDueAmount)", ""));
 
                 if (FindControl("xrLabel35", true) is XRLabel labelEnglish)
                     labelEnglish.Text = "Amount in Words: " + NumberToWordsHelper.ToEnglishWords(totalAmount);

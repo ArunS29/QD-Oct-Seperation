@@ -38,6 +38,8 @@ namespace QD.ERP.Web.Pages
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private ERPMasterWtDataContext _eRPMasterWtDataContext;
+        private string username;
+        private Image sealImage;
 
         public VoucherViewerModel(TenantDbContextHelper tenantDbContextHelper)
         {
@@ -128,7 +130,7 @@ namespace QD.ERP.Web.Pages
                 debitNoteNo = debitNoteNo;
 
                 Report = new QD.ERP.Web.Areas.VAT.Reports.VATDebitNote.DebitNoteView(
-                    debitNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                    debitNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, username, _tenantDbContextHelper);
 
                 return Page();
             }
@@ -227,7 +229,7 @@ namespace QD.ERP.Web.Pages
 
 
 
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage, 
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
@@ -239,14 +241,14 @@ namespace QD.ERP.Web.Pages
 
 
 
-                            invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
 
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
 
                     "ProformaNewFormat" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ProformaNewFormat(
-                       invoiceNo, tenantName, companyName, companyAddress, logoImage,  companyNameAr,
+                       invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr,
                        companyAddressAr, isApproved, _tenantDbContextHelper),
                     "WithoutDiscountInvoice" =>
                      new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.WithoutDiscountInvoice(
@@ -329,7 +331,7 @@ namespace QD.ERP.Web.Pages
 
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.CreditForeignCurrency(
-                        CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                        CreditNoteNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, isApproved, userName,_tenantDbContextHelper);
 
                   
           
@@ -338,13 +340,13 @@ namespace QD.ERP.Web.Pages
 
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
-                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
                 }
-                else if (reportName == "creditnote")
-                {
-                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
-                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper);
-                }
+                //else if (reportName == "creditnote")
+                //{
+                //    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
+                //        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper,);
+                //}
 
 
 

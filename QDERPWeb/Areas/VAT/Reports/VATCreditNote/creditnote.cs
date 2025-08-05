@@ -486,5 +486,10 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
                 return words.Trim();
             }
         }
+
+        private void xrLabel134_BeforePrint(object sender, CancelEventArgs e)
+        {
+
+        }
     }
 }

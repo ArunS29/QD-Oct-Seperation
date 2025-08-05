@@ -26,6 +26,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
         string companyName,
         string companyAddress,
         Image logoImage,
+        Image sealImage,
         string companyNameAr,
         string companyAddressAr,
         bool isApproved,
@@ -35,12 +36,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
             _isApproved = isApproved;
 
             InitializeComponent();
-            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr);
+            SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage, companyNameAr, companyAddressAr);
             LoadReportData(invoiceNo);
             LoadCurrencySymbolAndImage();
         }
 
-        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr)
+        private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -85,6 +86,8 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 
             if (FindControl("xrPictureBox0", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
+            if (FindControl("xrPictureBox1", true) is XRPictureBox sealPictureBox)
+                sealPictureBox.Image = sealImage;
         }
 
         private void LoadReportData(string invoiceNo)
@@ -116,12 +119,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 
                     using (SqlConnection conn = new SqlConnection(connectionString))
                     {
-                        string query = "SELECT * FROM qry201_652ProformaInvoiceReport WHERE InvoiceNo = @ProformaInvoiceNo";
+                        string query = "SELECT * FROM qry201_652ProformaInvoiceReport WHERE ProformaInvoiceNo = @ProformaInvoiceNo";
 
                         using (SqlCommand cmd = new SqlCommand(query, conn))
                         {
                             cmd.CommandType = CommandType.Text;
-                            cmd.Parameters.AddWithValue("@InvoiceNo", invoiceNo);
+                            cmd.Parameters.AddWithValue("@ProformaInvoiceNo", invoiceNo);
 
                             SqlDataAdapter da = new SqlDataAdapter(cmd);
                             conn.Open();
@@ -255,8 +258,9 @@ namespace QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices
 
         private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            var fixedPictureBoxes = new[] {  "xrPictureBox2","xrPictureBox4",
-                "xrPictureBox5", "xrPictureBox6", "xrPictureBox7" ,"xrPictureBox8", "xrPictureBox9", "xrPictureBox10","xrPictureBox11","xrPictureBox12" };
+            var fixedPictureBoxes = new[] {  "xrPictureBox4",
+                "xrPictureBox5", "xrPictureBox6", "xrPictureBox7" ,"xrPictureBox8", "xrPictureBox9", "xrPictureBox10","xrPictureBox11","xrPictureBox12",
+                "xrPictureBox13","xrPictureBox14" };
             foreach (var name in fixedPictureBoxes)
             {
                 if (FindControl(name, true) is XRPictureBox picBox)
