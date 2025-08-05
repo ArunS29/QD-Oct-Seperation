@@ -1176,6 +1176,27 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public int RFQChildSlNo { get; set; }
         public string ReasonForSelection { get; set; }
     }
+    public class DepreciationTotalRequest
+    {
+        public string DocNo { get; set; }
+    }
+    public class InsertDepreciationVoucherRequest
+    {
+        public string DepreciationDocNo { get; set; }
+        public string PaymentVoucherNo { get; set; }
+        public string DebitAccount { get; set; }
+        public string CreditAccount { get; set; }
+        public string AddedBy { get; set; }
+        public DateTime AddedOn { get; set; }
+        public string VoucherNarration { get; set; }
+        public decimal TotalAmount { get; set; }
+        public int JustAddedVoucherEntryNo { get; set; }
+    }
+    public class LayoutDto
+    {
+        public string FormId { get; set; }
+        public string LayoutJson { get; set; }
+    }
 
 
 }

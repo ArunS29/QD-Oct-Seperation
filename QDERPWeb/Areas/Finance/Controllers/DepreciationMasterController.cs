@@ -1,6 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
@@ -295,8 +296,84 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Json(DataSourceLoader.Load(data, loadOptions));
         }
+        [HttpPost]
+        
+        public async Task<IActionResult> GetDepreciationTotal([FromBody] DepreciationTotalRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Tenant context could not be determined.");
 
+            if (string.IsNullOrWhiteSpace(request.DocNo))
+                return BadRequest("DocNo is required.");
 
+            try
+            {
+                var docNoParam = new SqlParameter("@DocNo", request.DocNo ?? string.Empty);
+
+                var result = await dbContext
+                    .TotalDepreciationResults
+                    .FromSqlRaw("EXEC sp20129DepreciationTotal @DocNo", docNoParam)
+                    .ToListAsync();
+
+                // Assuming sp returns a single row with a column named TotalDepreciationAmount
+                var totalAmount = result.FirstOrDefault()?.TotalDepreciationAmount ?? 0;
+
+                return Ok(new { totalAmount });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error executing depreciation total SP.", error = ex.Message });
+            }
+        }
+
+        [HttpPost]
+        
+        public async Task<IActionResult> InsertDepreciationToVoucher([FromBody] InsertDepreciationVoucherRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Tenant context could not be determined.");
+
+            try
+            {
+                request.AddedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                request.AddedOn = DateTime.Now;
+                var parameters = new[]
+                {
+            new SqlParameter("@DepreciationDocNo", request.DepreciationDocNo ?? string.Empty),
+            new SqlParameter("@PaymentVoucherNo", request.PaymentVoucherNo ?? string.Empty),
+            new SqlParameter("@DebitAccount", request.DebitAccount ?? string.Empty),
+            new SqlParameter("@CreditAccount", request.CreditAccount ?? string.Empty),
+            new SqlParameter("@VoucherNarration", request.VoucherNarration ?? string.Empty),
+            new SqlParameter("@AddedBy", request.AddedBy ?? string.Empty),
+            new SqlParameter("@AddedOn", request.AddedOn),
+           
+            new SqlParameter("@TotalAmount", request.TotalAmount),
+            new SqlParameter
+            {
+                ParameterName = "@JustAddedVoucherEntryNo",
+                SqlDbType = System.Data.SqlDbType.Int,
+                Direction = System.Data.ParameterDirection.InputOutput,
+                Value = request.JustAddedVoucherEntryNo
+            }
+        };
+
+                await dbContext.Database.ExecuteSqlRawAsync("EXEC sp20128InsertDepreciationToVoucher " +
+                    "@DepreciationDocNo, @PaymentVoucherNo, @DebitAccount, @CreditAccount, " +
+                    "@VoucherNarration, @AddedBy, @AddedOn, @TotalAmount, @JustAddedVoucherEntryNo", parameters);
+
+                string returnedVoucherEntryNo = (string)parameters[1].Value;
+
+                return Ok(new
+                {
+                    success = true,
+                    JustAddedVoucherEntryNo = returnedVoucherEntryNo
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Error inserting voucher.", error = ex.Message });
+            }
+        }
     }
 }
 
