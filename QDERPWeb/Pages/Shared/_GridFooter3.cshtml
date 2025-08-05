@@ -9,7 +9,7 @@
     /* Style for inner iframe */
     #popupIframe {
         border-radius: 8px;
-        padding: 10px;
+        padding: 0px;
         overflow: auto;
     }
 
@@ -233,9 +233,9 @@
                     items.Add().Text(new JS("formatMessage('Ageing Reports')")).Icon("textdocument").Option("color", "#EA4335").OnClick("showSubmenu1");
                     items.Add().Text(new JS("formatMessage('Receivables Summary Reports')")).Option("color", "#FBBC05").Icon("textdocument");
 
-                    items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").Option("color", "#AB47BC").OnClick("ReportsByClient");
-                    items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").Option("color", "#34A853").OnClick("ReportsByClient");
-                    items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").Option("color", "#00ACC1").OnClick("ReportsByClient");
+                    items.Add().Text(new JS("formatMessage('Receivables By Client')")).Icon("taskcomplete").Option("color", "#AB47BC").OnClick("function() { ReportsByClient(0); }");
+                    items.Add().Text(new JS("formatMessage('Receivables By Sales Person')")).Icon("taskcomplete").Option("color", "#34A853").OnClick("function() { ReportsByClient(1); }");
+                    items.Add().Text(new JS("formatMessage('Receivables By Branch/ Division')")).Icon("taskcomplete").Option("color", "#00ACC1").OnClick("function() { ReportsByClient(2); }");
 
 
 
@@ -377,17 +377,12 @@
     function refreshPage() {
         location.reload(); 
     }
-    function ReportsByClient() {
-
-        let url = `/${tenantName}/Finance/ReportsByClients`; 
-
-        
+    function ReportsByClient(tabIndex) {
+        let url = `/${tenantName}/Finance/ReportsByClients?tab=${tabIndex}`;
         $("#popupIframe").attr("src", url);
-
-        // Open the popup
-        let popup = $("#reportsByClientPopup").dxPopup("instance");
-        popup.show();
+        $("#reportsByClientPopup").dxPopup("instance").show();
     }
+
         const reportMappings = {
         "Receivables Reports": "BillsRecivableReport1",
         "Receivables Reports with Effective Date": "ReceivableReport(EffectiveDate)",
@@ -428,8 +423,8 @@
             contentTemplate: function () {
                 return $("<iframe>", {
                     id: "popupIframe",
-                    width: "600px",
-                    height: "750px",
+                    width: "100%",
+                    height: "100%",
                     frameborder: 0,
                     
                 }).css({
@@ -589,7 +584,7 @@
                              dataGrid.state(layout);
                          } catch (error) {
                              console.error("Error parsing JSON:", error);
-                             alert("Failed to load layout. Please ensure the JSON is valid.");
+                             // alert("Failed to load layout. Please ensure the JSON is valid.");
                          }
                      }
                  },

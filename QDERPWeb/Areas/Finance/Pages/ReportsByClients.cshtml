@@ -32,54 +32,59 @@
         margin-top: 1em;
     }
 
-        .dx-datagrid .dx-row {
-            border-bottom: 1px solid #ccc; 
-
-        }
-
-    .dx-multiview-wrapper {
-        flex-grow: 1;
-        overflow: auto; 
+    .mainContainer {
+        background-color: white;
+         margin-top: 0px; 
+        margin-left: 0px; 
+        width: 96%;
+        height: 100vh;
+        overflow: hidden;
+         padding: 0px; 
     }
-
     .dx-tabpanel {
-        height: 500px !important; 
-        display: flex;
-        flex-direction: column;
+        background-color: #f9fafb;
+        border-radius: 10px;
+        overflow: hidden;
     }
 
-    .dx-tabpanel .dx-tab {
-        flex-shrink: 0;
-        }
+    .dx-tab {
+        font-weight: bold;
+        font-size: 14px;
+    }
 
-        .dx-tabpanel .dx-tab-panel {
-            height: 600px;
-            overflow-y: auto; 
-        }
-        
+    .dx-tab-selected {
+        background-color: #1976d2 !important;
+        color: white !important;
+    }
 
-            .dx-tabpanel .dx-tab.dx-selection {
-              background-color: lightblue; 
-                color: white !important; 
-            }
+    .form-group {
+        padding: 15px;
+    }
+
+    .dx-dropdownbox {
+        width: 100% !important;
+    }
+
 
             .card{
                 height:600px;
                 background-color:white;
                 width:580px;
             }
+
+    .dx-tabpanel-tabs .dx-tabs:not(.dx-tabs-vertical) .dx-tabpanel-tab {
+        max-width: 190px!important;
+    }
 </style>
 
 <div class="card">
-   
-    <div class="card-header" style="background-color: #c0dceb; color: black; font-weight: bold;">
-        Bills Receivable Reports
-    </div>
+   
 
    
     @(
         Html.DevExtreme().TabPanel()
         .ID("AssetTabs")
+        .DeferRendering(false)
         .Items(item =>
         {
             item.Add().Title("BillsReceivableByClient").Text("Bills Receivable By Client").Template(@<text>
@@ -461,6 +466,35 @@
     //         })
     //         .catch(error => console.error("Error:", error));
     // }
+
+        let accountHeadData = [];
+    let salesPersonData = [];
+    let branchData = [];
+
+      $(function () {
+        // 1) Ensure TabPanel and its DropDownBoxes exist before setting data
+        const tabPanel = $("#AssetTabs").dxTabPanel("instance");
+
+        // 2) Preload data
+        $.getJSON(`/${tenantName}/ReportsByClients/GetAccountHead`, function(data) {
+            $("#GetAccountHeadDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+
+        $.getJSON(`/${tenantName}/ReportsByClients/GetSalesPerson`, function(data) {
+            $("#GetSalesPersonDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+
+        $.getJSON(`/${tenantName}/ReportsByClients/GetCompanyBranch`, function(data) {
+            $("#GetCompanyBranchDropDown").dxDropDownBox("instance").option("dataSource", data);
+        });
+
+        // 3) Activate the correct tab from query parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        const tabIndex = parseInt(urlParams.get('tab'), 10);
+        if (!isNaN(tabIndex)) {
+            tabPanel.option("selectedIndex", tabIndex);
+        }
+    });
 
 
 

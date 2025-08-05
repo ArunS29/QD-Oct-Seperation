@@ -317,39 +317,112 @@
             reader.readAsText(file);
         }
     });
-                function setDefaultLayoutClick(e) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
+    // Convert JS object to XML string
+    function sanitizeXmlTagName(name) {
+        let safeName = name.replace(/[^a-zA-Z0-9_\-]/g, "_");
+        if (/^[^a-zA-Z_]/.test(safeName)) {
+            safeName = "_" + safeName;
+        }
+        return safeName;
+    }
+
+    function objectToXml(obj, rootName) {
+        let xml = `<${sanitizeXmlTagName(rootName)} originalName="${rootName}">`;
+        for (let prop in obj) {
+            if (!obj.hasOwnProperty(prop)) continue;
+            let value = obj[prop];
+
+            // Skip undefined or null
+            if (value === undefined || value === null) continue;
+
+            if (Array.isArray(value)) {
+                xml += `<${sanitizeXmlTagName(prop)} originalName="${prop}">` +
+                    value.map(item => objectToXml(item, 'item')).join('') +
+                    `</${sanitizeXmlTagName(prop)}>`;
+            } else if (typeof value === "object") {
+                xml += objectToXml(value, prop);
+            } else {
+                xml += `<${sanitizeXmlTagName(prop)} originalName="${prop}">${String(value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")}</${sanitizeXmlTagName(prop)}>`;
+            }
+        }
+        xml += `</${sanitizeXmlTagName(rootName)}>`;
+        return xml;
+    }
+
+    function xmlToObject(xml) {
+        if (xml.children.length === 0) {
+            let text = xml.textContent;
+            if (text === "true") return true;
+            if (text === "false") return false;
+            if (text === "" || text === null) return undefined;
+            if (!isNaN(text) && text.trim() !== "") return Number(text);
+            return text;
+        }
+
+        const isItem = (el) => el.nodeName === "item";
+        let obj = {};
+
+        for (let child of xml.children) {
+            const key = child.getAttribute("originalName") || child.nodeName;
+            const val = xmlToObject(child);
+
+            if (key === "item") {
+                if (!Array.isArray(obj)) obj = [];
+                obj.push(val);
+            } else {
+                if (obj.hasOwnProperty(key)) {
+                    if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+                    obj[key].push(val);
+                } else {
+                    obj[key] = val;
+                }
+            }
+        }
+
+        return obj;
+    }
+
+
+    // Save as default layout
+    function setDefaultLayoutClick() {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
         const form = $('#formId').val();
 
-        if (!grid) {
+        if (!pivotGrid) {
             DevExpress.ui.notify("Grid not found", "error", 2000);
             return;
         }
 
-        const layout = grid.state();
-        const layoutJson = JSON.stringify(layout); // ✅ Save as JSON string
+        // Include expanded paths in state
+        const state = pivotGrid.getDataSource().state();
+        state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
+        state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
+
+        const layoutXml = objectToXml(state, "Layout");
 
         $.ajax({
             url: '/api/Utility/SaveLayout',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                layout: layoutJson,
+                layout: layoutXml,
                 form: form
             }),
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+            success: function () {
+                DevExpress.ui.notify("Default layout saved", "success", 2000);
             },
             error: function (xhr) {
                 console.error("SaveLayout error:", xhr.responseText);
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
+                DevExpress.ui.notify("Error while saving layout", "error", 2000);
             }
         });
     }
 
-
-    function resetLayoutClick(e) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
+    // Reset layout
+    function resetLayoutClick() {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
         const form = $('#formId').val();
 
         $.ajax({
@@ -357,12 +430,12 @@
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({
-                layout: null, // 👈 this will trigger the backend to delete or reset
+                layout: null,
                 form: form
             }),
-            success: function (data) {
+            success: function () {
                 DevExpress.ui.notify("Layout reset successful", "success", 2000);
-                grid.state(null); // 👈 clear client-side layout too
+                pivotGrid.getDataSource().state({});
             },
             error: function (xhr) {
                 console.error(xhr.responseText);
@@ -371,93 +444,106 @@
         });
     }
 
-        function saveLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var layout = grid.state();
-            const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-            //console.log(layoutJson);
-            // Create a Blob from the JSON string
-            const blob = new Blob([layoutJson], { type: "application/json" });
-            // Create a URL for the Blob
-            const url = URL.createObjectURL(blob);
-            // Create a link element
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "grid-layout.json"; // Set the file name for download
-            // Append the link to the body (needed for Firefox)
-            document.body.appendChild(a);
-            // Programmatically click the link to trigger the download
-            a.click();
-            // Clean up by removing the link and revoking the Object URL
-            document.body.removeChild(a);
-            URL.revokeObjectURL(url);
-            //DevExpress.ui.notify("Layout", "success", 600);
-        }
-        function openLayoutClick(e) {
-            // Create an input element dynamically
-            const input = document.createElement("input");
-            input.type = "file";
-            input.accept = "application/json";
+    // Download layout
+    function saveLayoutClick() {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const state = pivotGrid.getDataSource().state();
+        state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
+        state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
 
-            // When a file is selected
-            input.addEventListener("change", function (event) {
-                const file = event.target.files[0];
-                if (!file) return;
+        const layoutXml = objectToXml(state, "Layout");
 
-                const reader = new FileReader();
-                reader.onload = function (e) {
-                    try {
-                        const layout = JSON.parse(e.target.result);
-                        const grid = $("#dataGrid").dxDataGrid("instance");
-                        grid.state(layout);
-                        //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                    } catch (error) {
-                        DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                    }
-                };
+        const blob = new Blob([layoutXml], { type: "application/xml" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = "pivotgrid-layout.xml";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+    }
 
-                reader.readAsText(file);
-            });
+    // Open layout from file
+    function openLayoutClick() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "application/xml";
 
-            // Trigger the file input click event
-            input.click();
-        }
-     $(document).ready(function () {
-        loadGridState(); // 👈 This must be called explicitly
-    });
-        function loadGridState() {
+        input.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
 
-            var form = $('#formId').val();
-            // Call the API to get the grid state
-            $.ajax({
-                url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-                method: 'GET',
-                data: {
-                    form: form
-                },
-                success: function (response) {
-                    // Get the DataGrid instance
-                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
-
-                    // Load the state into the DataGrid
-                    if (response) {
-                        try {
-                            // Parse the JSON string from the file
-                            const layout = JSON.parse(response);
-
-                            // Restore the grid state
-                            dataGrid.state(layout);
-                        } catch (error) {
-                            console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
-                        }
-                    }
-                },
-                error: function (xhr, status, error) {
-                    console.error("Error loading grid state:", error);
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
+                    let layoutObj = xmlToObject(xmlDoc.documentElement);
+                    layoutObj = JSON.parse(JSON.stringify(layoutObj));
+                    const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+                    pivotGrid.getDataSource().state(layoutObj);
+                } catch (error) {
+                    DevExpress.ui.notify("Invalid layout file!", "error", 600);
                 }
-            });
-        }
+            };
+
+            reader.readAsText(file);
+        });
+
+        input.click();
+    }
+
+    // Load default layout on page ready
+    $(document).ready(function () {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid({
+            // ... your pivot grid config
+            onContentReady: function (e) {
+                // Load layout only once on first render
+                if (!e.component.__layoutLoaded) {
+                    loadGridState();
+                    e.component.__layoutLoaded = true;
+                }
+            }
+        }).dxPivotGrid("instance");
+    });
+
+    function loadGridState() {
+        const form = $('#formId').val();
+
+        $.ajax({
+            url: `/api/Utility/LoadLayout`,
+            method: 'GET',
+            data: { form: form },
+            success: function (response) {
+                const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+
+                if (response) {
+                    try {
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(response, "application/xml");
+                        let layoutObj = xmlToObject(xmlDoc.documentElement);
+
+                        if (layoutObj.fields && Array.isArray(layoutObj.fields)) {
+                            layoutObj.fields.sort((a, b) => {
+                                const aIndex = Number(a.areaIndex ?? 0);
+                                const bIndex = Number(b.areaIndex ?? 0);
+                                return aIndex - bIndex;
+                            });
+                        }
+
+                        pivotGrid.getDataSource().state(layoutObj);
+                    } catch (error) {
+                        console.error("Error parsing layout XML:", error);
+                    }
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error loading grid layout:", error);
+            }
+        });
+    }
+
     // Footer Group Pannel button click event
     function toggleGroupPanel() {
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
