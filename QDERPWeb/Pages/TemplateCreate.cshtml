@@ -1,4 +1,4 @@
-﻿@page
+﻿@page 
 @model TemplateCreateModel
 @{
     Layout = null;
@@ -96,6 +96,7 @@
             <h2 class="mb-4 text-center">Create Email Template</h2>
 
             <form method="post">
+               
                 @Html.AntiForgeryToken()
 
                 <div class="mb-3">
@@ -178,14 +179,13 @@
             }
 
             // Handle success alert
-            var isSuccess = "@(HttpContext.Request.Query["isSuccess"])";
-            if (isSuccess.toLowerCase() === "true") {
-                setTimeout(() => {
-                    if (confirm("Email Template saved successfully!")) {
-                        history.back();
-                    }
-                }, 100);
-            }
+                   var isSuccess = "@(HttpContext.Request.Query["isSuccess"])";
+        if (isSuccess.toLowerCase() === "true") {
+            setTimeout(() => {
+                alert("Email Template saved successfully!");
+                window.location.href = `/${tenantName}/EmailCompose`; // 👈 redirect
+            }, 100);
+        }
         });
     </script>
 </body>

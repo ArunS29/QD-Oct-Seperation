@@ -101,6 +101,7 @@
         margin-top: -2px!important;
     }
 </style>
+<input id="formId" value="uc20106TrialBalance" type="hidden" />
 <div class="content-container-top">
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
@@ -369,10 +370,7 @@
             console.error("The dataSource does not have a store or is not structured as expected:", dataSource);
         }
     }
-
     $(document).ready(function () {
-        // Load all records on page load (ignore default date values)
-        // initializePivotGrid([]);
         loadAllRecords();
     });
 
@@ -380,26 +378,30 @@
         console.log("Loading trial balance records...");
 
         const today = new Date();
+        const firstDay = new Date(today.getFullYear() - 1, 0, 1);
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-        // Define date range: Jan 1st of last year to end of current month
-        const firstDay = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 last year
-        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of current month
         var loadPanel = $("#loadPanel").dxLoadPanel("instance");
         loadPanel.show();
+
         $.ajax({
             url: '/api/TransactionDetails/GetTrialBalance',
             type: 'GET',
             data: {
                 startDate: firstDay.toISOString().split('T')[0],
                 endDate: lastDay.toISOString().split('T')[0],
-                accountGroup: "" // include this if your API expects it
+                accountGroup: ""
             },
             success: function (data) {
-                debugger;
                 if (Array.isArray(data)) {
-                    pivotData = data; // Set global
+                    pivotData = data;
                     initializePivotGrid(data);
-                   console.log("pivotdata",data)
+
+                    // ✅ Apply saved layout AFTER pivot grid is ready and has data
+                    let pivot = $("#pivotGridContainer").dxPivotGrid("instance");
+                    pivot.getDataSource().reload().done(function () {
+                        loadGridState();
+                    });
                 } else {
                     console.error("Unexpected response format", data);
                 }
@@ -408,7 +410,7 @@
                 console.error("Error fetching trial balance records:", xhr.responseText || error);
             },
             complete: function () {
-                $("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
+                loadPanel.hide();
             }
         });
     }
