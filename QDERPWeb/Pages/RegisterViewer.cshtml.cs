@@ -74,7 +74,7 @@ namespace QD.ERP.Web.Pages
             // Now fetch the company details using DefaultcompanyID
             var ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
-
+            var DefaultCurrencyDecimals = ERPCompany_details?.DefaultCurrencyDecimals ?? 0;
             var companyName = ERPCompany_details?.CompanyName ?? string.Empty;
             var companyAddress = ERPCompany_details?.CompanyFullAddress ?? string.Empty;
             var companyAddressAr = ERPCompany_details?.CompanyFullAddressAr ?? string.Empty;
@@ -231,9 +231,9 @@ namespace QD.ERP.Web.Pages
                     case "TaxReportRevenueInArabic":
                         Report = new TaxReportRevenueInArabic(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
-                    case "CreditSummary":
-                        Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                        break;
+                    //case "CreditSummary":
+                    //    Report = new CreditSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
+                    //    break;
                     case "DebitNoteSummary":
                         Report = new DebitNoteSummary(FrmDate, ToDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;

@@ -218,9 +218,9 @@ namespace QD.ERP.Web.Pages
                     case "TaxReportRevenueInArabic":
                         Report = new TaxReportRevenueInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
-                    case "CreditSummary":
-                        Report = new CreditSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
-                        break;
+                    //case "CreditSummary":
+                    //    Report = new CreditSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                    //    break;
                     case "DebitNoteSummary":
                         Report = new DebitNoteSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
