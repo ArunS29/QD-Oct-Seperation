@@ -1,8 +1,9 @@
 ﻿using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Service;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<addNewQuotationItemSubGroupController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public addNewQuotationItemSubGroupController(ILogger<addNewQuotationItemSubGroupController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public addNewQuotationItemSubGroupController(ILogger<addNewQuotationItemSubGroupController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -61,6 +65,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60107quotationChildItemGroups.Add(documentType);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Add Sub Group",
+                      actionDetail: $":Sub Group Added {documentType.QuoteGroupItemSlNo}",
+                       documentNo: $"{documentType.QuoteGroupItemSlNo}"
+                    );
 
                     return Ok(new { success = true, message = "Sub Group added successfully." });
                 }
@@ -115,6 +124,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Entry(existing).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Update Sub Group",
+                      actionDetail: $":Sub Group Updated {documentType.QuoteGroupItemSlNo}",
+                       documentNo: $"{documentType.QuoteGroupItemSlNo}"
+                    );
 
                     return Ok(new { success = true, message = "Document Type updated successfully." });
                 }
@@ -142,6 +156,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60107quotationChildItemGroups.Remove(entity);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Delete Sub Group",
+                      actionDetail: $":Sub Group Deleted {documentType.QuoteGroupItemSlNo}",
+                      documentNo: $"{documentType.QuoteGroupItemSlNo}"
+                    );
 
                     return Ok(new { success = true, message = "Sub Group deleted successfully." });
                 }

@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.VAT.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -13,9 +14,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SignatoriesController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public SignatoriesController(ILogger<SignatoriesController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public SignatoriesController(ILogger<SignatoriesController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -82,6 +86,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                          module: "IMS > Save Or Update Signatory",
+                          actionDetail: $":Saved Signatory {model.SignatoryId}",
+                          documentNo: $"{model.SignatoryId}"
+                        );
 
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.SignatoryId });
                     }
@@ -98,6 +107,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl90104DocumentSignatories.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                          module: "IMS > Save Or Update Signatory",
+                          actionDetail: $":Saved Signatory {model.SignatoryId}",
+                          documentNo: $"{model.SignatoryId}"
+                        );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.SignatoryId });
                     }
@@ -124,6 +138,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl90104DocumentSignatories.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete ",
+                        actionDetail: $":Deleted  {key}",
+                        documentNo: $"{key}"
+                       );
                     return Ok();
                 }
 
@@ -155,6 +173,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl90104DocumentSignatories.RemoveRange(toDelete);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                          module: "IMS > Delete Multiple",
+                          actionDetail: $":Deleted Multiple {signatoryIds}",
+                          documentNo: $"{signatoryIds}"
+                    );
 
                     return Ok(new { success = true });
                 }

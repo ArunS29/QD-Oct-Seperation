@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -13,8 +14,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ClientContactListController> _logger;
-        public ClientContactListController(ILogger<ClientContactListController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+
+        public ClientContactListController(ILogger<ClientContactListController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -70,6 +74,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             existing.ContactEmail = item.ContactEmail;
 
                             dbContext.SaveChanges();
+                            _userActionLogger.LogAsync(module: "IMS > Save Or Update Client Contact",
+                              actionDetail: $":Saved Client Contact {item.ClientCode}",
+                              documentNo: $"{item.ClientCode}"
+                            );
 
                             return Ok(new
                             {
@@ -88,6 +96,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         // Insert new
                         dbContext.Tbl3010102clientContactLists.Add(item);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Save Or Update Client Contact",
+                              actionDetail: $":Saved Client Contact {item.ClientCode}",
+                              documentNo: $"{item.ClientCode}"
+                            );
 
                         return Ok(new
                         {
@@ -148,8 +160,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl3010102clientContactLists.Remove(entity);
                 dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete Client Category",
+                              actionDetail: $":Deleted Client Category {ClientContactSlNo}",
+                              documentNo: $"{ClientContactSlNo}"
+                            );
 
-                return Ok(new { success = true, message = "Deleted successfully." });
+                    return Ok(new { success = true, message = "Deleted successfully." });
             }
             catch (Exception ex)
             {

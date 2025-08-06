@@ -1,4 +1,5 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.Pdf.Native.BouncyCastle.Utilities;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
@@ -10,6 +11,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -22,9 +24,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<PurchaseOrdersController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public PurchaseOrdersController(ILogger<PurchaseOrdersController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public PurchaseOrdersController(ILogger<PurchaseOrdersController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -613,6 +618,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Save Purchase Order1",
+                  actionDetail: $":Saved Purchase Order1  {model.PocategoryId}",
+                  documentNo: $"{model.PocategoryId}"
+                );
 
                 return Ok(new
                 {
@@ -788,6 +798,11 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 dbContext.Tbl60402purchaseOrderChildren.RemoveRange(toDelete);
 
             await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+              module: "IMS > Save Purchase Order",
+              actionDetail: $":Saved Purchase Order  {model.Master.Pono}",
+              documentNo: $"{model.Master.Pono}"
+            );
             await transaction.CommitAsync();
         });
 
@@ -817,6 +832,11 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 // Insert all new/edited rows
                 await dbContext.Tbl60402purchaseOrderChildren.AddRangeAsync(items);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Save Item",
+                  actionDetail: $":Saved Item  {items[0].Pono}",
+                  documentNo: $"{items[0].Pono}"
+                );
 
                 return Ok(new { success = true, message = "Items saved successfully." });
             }
@@ -862,6 +882,11 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                     existingItem.DiscountInOc = updatedItem.DiscountInOc;
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Item",
+                      actionDetail: $":Saved Item  {updatedItem.PochildNo}",
+                      documentNo: $"{updatedItem.PochildNo}"
+                    );
 
                     return Ok(new { success = true, message = "Item updated successfully." });
                 }
@@ -1042,6 +1067,11 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 dbContext.Tbl60401purchaseOrderMasters.Remove(masterRecord);
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Delete Purchase Order",
+                  actionDetail: $":Deleted Purchase Order {Pono}",
+                  documentNo: $"{Pono}"
+                );
 
                 return Ok(new { success = true, message = "Purchase Order and its details deleted successfully." });
             }
@@ -1102,8 +1132,13 @@ public async Task<IActionResult> SubmitPurchaseOrder([FromBody] Tbl60401purchase
         po.SubmittedOn = DateTime.Now;
 
         await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Submit Purchase Order",
+                  actionDetail: $":Submited Purchase Order {data.Pono}",
+                  documentNo: $"{data.Pono}"
+                );
 
-        return Ok(new { success = true, message = "Purchase order submitted successfully." });
+                return Ok(new { success = true, message = "Purchase order submitted successfully." });
     }
     catch (Exception ex)
     {
@@ -1142,6 +1177,11 @@ var po = await dbContext.Tbl60401purchaseOrderMasters.FirstOrDefaultAsync(x => x
                 po.VerifiedOn = DateTime.Now;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Purchase Order",
+                   actionDetail: $":Deleted Purchase Order {data.Pono}",
+                  documentNo: $"{data.Pono}"
+                );
 
                 return Ok(new { success = true, message = "Purchase order verified successfully." });
             }
@@ -1181,6 +1221,11 @@ var po = await dbContext.Tbl60401purchaseOrderMasters.FirstOrDefaultAsync(x => x
                 po.ApprovedOn = DateTime.Now;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Approve Purchase Order",
+                   actionDetail: $":Approved Purchase Order {data.Pono}",
+                  documentNo: $"{data.Pono}"
+                );
 
                 return Ok(new { success = true, message = "Purchase order approved successfully." });
             }
@@ -1229,7 +1274,12 @@ public async Task<IActionResult> RevisePurchaseOrder1([FromBody] Tbl60401purchas
             newPo.IsVerified = false;
             newPo.IsSubmitted = false;
             await dbContext.SaveChangesAsync();
-        }
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Revise Purchase Order1",
+                      actionDetail: $":Revised Purchase Order1 {data.Pono}",
+                      documentNo: $"{data.Pono}"
+                    );
+                }
         else
         {
             return StatusCode(500, new { success = false, message = "Revision row not created. Please check your stored procedure." });
@@ -1274,7 +1324,12 @@ public async Task<IActionResult> UnlockPurchaseOrder([FromBody] Tbl60401purchase
             po.IsVerified = false;
             po.IsApproved = false;
             await dbContext.SaveChangesAsync();
-            return Ok(new { success = true, message = "Purchase Order unlocked. All statuses set to false." });
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Unlock Purchase Order",
+                      actionDetail: $":Unlocked Purchase Order {data.Pono}",
+                      documentNo: $"{data.Pono}"
+                    );
+                    return Ok(new { success = true, message = "Purchase Order unlocked. All statuses set to false." });
         }
         else
         {
@@ -1545,7 +1600,12 @@ public IActionResult GetAllPurchaseOrders()
             oldPo.IsVerified = false;
             oldPo.IsSubmitted = false;
             await dbContext.SaveChangesAsync();
-        }
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Revise Purchase Order",
+                      actionDetail: $":Revised Purchase Order {data.Pono}",
+                      documentNo: $"{data.Pono}"
+                    );
+                }
                 // ✅ Generate new revision values
                 int newRevisionId = (oldPo.PorevisionId ?? 0) + 1;
                 string newRevisionNo = $"Rev-{newRevisionId:00}";
@@ -1714,6 +1774,10 @@ public async Task<IActionResult> GetOrderStatus(string pono)
                 }
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Save Report Attribute View ",
+                  actionDetail: $":Saved Report Attribute {model.ReportNo}",
+                    documentNo: $"{model.ReportNo}"
+                );
                 return Ok(new { message = "Field updated successfully." });
             }
 

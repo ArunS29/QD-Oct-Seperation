@@ -10,6 +10,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.VAT.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
 using System.Dynamic;
 using System.Linq;
@@ -24,9 +25,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AddNewClientRequestController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public AddNewClientRequestController(ILogger<AddNewClientRequestController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public AddNewClientRequestController(ILogger<AddNewClientRequestController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -505,9 +509,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 
 					await dbContext.SaveChangesAsync();
-					// await transaction.CommitAsync();
+                    // await transaction.CommitAsync();
 
-					return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Update Invoice Master Details",
+                      actionDetail: $"Saved Invoice MasterDetails: {InvoiceMaster.Mprno}",
+                        documentNo: InvoiceMaster.Mprno
+                    );
+
+                    return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
 				}
 			}
 			catch (Exception ex)
@@ -665,7 +675,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-				return Ok(new { success = true, message = "Request Details Updated Successfully." });
+                await _userActionLogger.LogAsync(
+                      module: "IMS > PurchaseRequest",
+                      actionDetail: $"Saved  Purchase Request: {VM.Mprno}",
+                        documentNo: VM.Mprno
+                );
+
+
+                return Ok(new { success = true, message = "Request Details Updated Successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -776,18 +793,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return Unauthorized(new { success = false, message = "Invalid tenant context." });
             }
 
-            try
-            {
-                var child = await dbContext.Tbl60602purchaseRequestChildren
-                    .FirstOrDefaultAsync(x => x.MprchildSlNo == childId);
+			try
+			{
+				var child = await dbContext.Tbl60602purchaseRequestChildren
+					.FirstOrDefaultAsync(x => x.MprchildSlNo == childId);
 
-                if (child == null)
-                {
-                    return NotFound(new { success = false, message = "Child record not found." });
-                }
+				if (child == null)
+				{
+					return NotFound(new { success = false, message = "Child record not found." });
+				}
 
-                dbContext.Tbl60602purchaseRequestChildren.Remove(child);
-                await dbContext.SaveChangesAsync();
+				dbContext.Tbl60602purchaseRequestChildren.Remove(child);
+				await dbContext.SaveChangesAsync();
+
+				await _userActionLogger.LogAsync(
+					module: "IMS > Delete Child By Id",
+					actionDetail: $"Deleted Child By Id: {childId}",
+				   documentNo: $"{childId}"
+                );
 
                 return Ok(new { success = true, message = "Child row deleted successfully." });
             }
@@ -823,6 +846,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60602purchaseRequestChildren.RemoveRange(childrenToDelete);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete Multiple Children",
+                   actionDetail: $"Deleted Multiple Children: {childIds}",
+                    documentNo: $"{childIds}"
+                );
 
                 return Ok(new { success = true, message = "Selected child rows deleted successfully." });
             }
@@ -868,8 +896,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				dbContext.Tbl60601purchaseRequestMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete Purchase Request",
+                   actionDetail: $"Deleted Purchase Request: {Mprno}",
+                   documentNo: $"{Mprno}"
+                );
 
-				return Ok(new { success = true, message = "Purchase Request and its details deleted successfully." });
+                return Ok(new { success = true, message = "Purchase Request and its details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -948,8 +981,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+             module: "IMS > Submit MPR",
+              actionDetail: $"saved MPR record: {mprNo}",
+             documentNo: $"{mprNo}"
+            );
 
-			return Ok(new { success = true, message = "MPR submitted successfully.",
+            return Ok(new { success = true, message = "MPR submitted successfully.",
                 VoucherApprovedBy = signatoryId
             });
 		}
@@ -1009,6 +1047,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                     module: "IMS > VerifyMPR",
+                        actionDetail: $"Verified MPR: {mprNo}",
+                         documentNo: $"{mprNo}"
+                );
+
 
                 return Ok(new
                 {
@@ -1075,6 +1119,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                    module: "IMS > Approve MPR",
+                       actionDetail: $"Approved MPR: {mprNo}",
+                        documentNo: $"{mprNo}"
+                    );
 
                     return Ok(new
                     {
@@ -1123,8 +1172,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					voucher.PurchaseRequestStatusId = 35; // Status: Enquiry/Request Cancelled
 
 					dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Cancel MPR  ",
+                      actionDetail: $":Canceled MPR {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
 
-					return Ok(new
+                    return Ok(new
 					{
 						Message = "Material Purchase Request has been Cancelled.",
 						VoucherCancelledBy = userName
