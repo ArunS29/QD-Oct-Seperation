@@ -18,4 +18,5 @@ public partial class Tbl20101SalesPersonMaster
     public string SalesPersonContactNo { get; set; }
 
     public string SalespersonOldCode { get; set; }
+    public decimal? TargetPerMonth { get; set; }
 }

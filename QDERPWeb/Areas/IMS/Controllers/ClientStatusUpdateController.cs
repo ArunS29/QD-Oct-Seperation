@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -14,9 +15,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ClientStatusUpdateController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public ClientStatusUpdateController(ILogger<ClientStatusUpdateController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public ClientStatusUpdateController(ILogger<ClientStatusUpdateController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -121,6 +124,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             existing.FollowupOn = item.FollowupOn;
 
                             dbContext.SaveChanges();
+                            _userActionLogger.LogAsync(module: "IMS > SaveOrUpdateClientStatusUpdate",
+                              actionDetail: $":Saved Client Status Update {item.ClientStatusNo}",
+                              documentNo: $"{item.ClientStatusNo}"
+                            );
 
                             return Ok(new
                             {
@@ -139,6 +146,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         // Insert logic
                         dbContext.Tbl30104ClientStatuses.Add(item);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > SaveOrUpdateClientStatusUpdate",
+                              actionDetail: $":Saved Client Status Update {item.ClientStatusNo}",
+                              documentNo: $"{item.ClientStatusNo}"
+                            );
 
                         return Ok(new
                         {
@@ -180,6 +191,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl30104ClientStatuses.Remove(entity);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete Client Status Update",
+                       actionDetail: $":Deleted Client Status Update {ClientStatusNo}",
+                       documentNo: $"{ClientStatusNo}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully." });
                 }

@@ -595,7 +595,7 @@
 																		.OpenOnFieldClick(true)
 																		.ValueChangeEvent("input")
 																		.HoverStateEnabled(true)
-																		.ValueExpr("AccountHead")
+																		.ValueExpr("AccountId")
 																		.DisplayExpr("AccountId")
 																		.OnInput("dropDownBoxOnInput")
 																		.OnClosed("onDropDownBoxClosed")
@@ -717,27 +717,31 @@
 
 
 
-							<td>
-								@(Html.DevExtreme().TextBox()
-															.ID("GroupVATNo")
-															.Label(new JS("formatMessage('Group VAT No')"))
-															.LabelMode(EditorLabelMode.Floating)
-															.MaxLength(15)
-															.Mask("300000000010000") // 15 digits
-															.MaskChar("_") // Optional: makes it more readable
-															)
-							</td>
-							<td>
+						<!-- Group VAT No -->
+<td>
+    @(Html.DevExtreme().TextBox()
+        .ID("GroupVATNo")
+        .Label(new JS("formatMessage('Group VAT No')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .MaxLength(15)
+        .Mask("300000000010000")
+        .MaskChar("_")
+        .OnValueChanged("validateGroupVATNo")
+    )
+</td>
 
-								@(Html.DevExtreme().TextBox()
-															.ID("ClientVATNo")
-															.Label(new JS("formatMessage('Client VAT No')"))
-															.LabelMode(EditorLabelMode.Floating)
-															.MaxLength(15)
-															.Mask("300000000000003") // 15 digits
-															.MaskChar("_") // Optional: makes it more readable
-															)
-							</td>
+<!-- Client VAT No -->
+<td>
+    @(Html.DevExtreme().TextBox()
+        .ID("ClientVATNo")
+        .Label(new JS("formatMessage('Client VAT No')"))
+        .LabelMode(EditorLabelMode.Floating)
+        .MaxLength(15)
+        .Mask("300000000000003")
+        .MaskChar("_")
+        .OnValueChanged("validateClientVATNo")
+    )
+</td>
 							</tr>
 							<tr>
 								<td>
@@ -1093,7 +1097,7 @@
 															.Controller("VATModule")
 															.LoadAction("GetRevenueAccount")
 															.LoadMode(DataSourceLoadMode.Raw)
-															.Key("IncomeLedger")
+															.Key("AccountId")
 															)
 														.ValidationRules(rules =>
 														{
@@ -1110,7 +1114,7 @@
 															.OpenOnFieldClick(false)
 															.ValueChangeEvent("input")
 															.HoverStateEnabled(true)
-															.ValueExpr("IncomeLedger")
+															.ValueExpr("AccountId")
 															.DisplayExpr("IncomeLedger")
 															.OnInput("dropDownBoxOnInput")
 															.OnOpened("onOpened")
@@ -2547,7 +2551,7 @@
 								.Controller("VATModule")
 								.LoadAction("GetClientCode")
 								.LoadMode(DataSourceLoadMode.Raw)
-								.Key("AccountHead")
+								.Key("AccountId")
 								)
 								.WordWrapEnabled(true)
 								.ShowBorders(true)
@@ -2825,7 +2829,7 @@
 														.LoadAction("GetRevenueAccount")
 													.LoadMode(DataSourceLoadMode.Raw)
 												///   .Key("AccountHead") //salary paid entry
-												.Key("IncomeLedger")
+												.Key("AccountId")
 
 													)
 													
@@ -5334,7 +5338,7 @@
 				InvoiceDeliveryDate: $("#SupplyDate").dxDateBox("instance").option("value") || null,
 				InvoiceTypeCode:388,
 			    InvoiceTypeCodeSubType:"01",
-				ClientCode: accheadid || null,
+				ClientCode:$("#ddclientcode").dxDropDownBox("instance").option("value") || null,
 				BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value") || null,
 				BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value") || null,
 				BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value") || null,
@@ -5359,7 +5363,8 @@
 				InvoiceEffectiveDate: $("#EffectiveDate").dxDateBox("instance").option("value") || null,
 				InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value") || null,
 				InvoiceEndDate: $("#InvoiceEndDate").dxDateBox("instance").option("value") || null,
-				RevenueAccount: revaccheadid || null,
+				//RevenueAccount: revaccheadid || null,
+				RevenueAccount: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,
 				CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value") || null,
 				RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value") || null,
 				RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value") || null,
@@ -5879,19 +5884,19 @@
 									  dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [selectedRowData[0].SellerOtherIdtype]});
 
 										  // Assuming these are standard inputs
-			$("#OurStreetName").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreet);
-			$("#OurStreetNameArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreetAr);
-			$("#OurAdditionalAddress").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreet);
-			$("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreetAr);
-	        $("#OurBuildingNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerBuildingNumber);
-		    $("#OurClientCity").dxTextBox("instance").option("value", selectedRowData[0].SellerCity);
-				$("#OurClientCityArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerCityAr);
-				$("#OurAdditionalNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalNumber);
-				$("#OurProvince").dxTextBox("instance").option("value", selectedRowData[0].SellerProvince);
-				$("#OurProvinceArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerProvinceAr);
-				$("#OurPostalCode").dxTextBox("instance").option("value", selectedRowData[0].SellerPostalCode);
-				$("#OurDistrict").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhood);
-				$("#OurDistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhoodAr);
+			                          $("#OurStreetName").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreet);
+			                          $("#OurStreetNameArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAddressStreetAr);
+			                          $("#OurAdditionalAddress").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreet);
+			                          $("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalStreetAr);
+	                                  $("#OurBuildingNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerBuildingNumber);
+		                              $("#OurClientCity").dxTextBox("instance").option("value", selectedRowData[0].SellerCity);
+				                      $("#OurClientCityArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerCityAr);
+				                      $("#OurAdditionalNumber").dxTextBox("instance").option("value", selectedRowData[0].SellerAdditionalNumber);
+				                      $("#OurProvince").dxTextBox("instance").option("value", selectedRowData[0].SellerProvince);
+				                      $("#OurProvinceArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerProvinceAr);
+				                      $("#OurPostalCode").dxTextBox("instance").option("value", selectedRowData[0].SellerPostalCode);
+				                      $("#OurDistrict").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhood);
+				                      $("#OurDistrictArabic").dxTextBox("instance").option("value", selectedRowData[0].SellerNeighborhoodAr);
 
 				}
 				}
@@ -7217,6 +7222,8 @@
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
+			debugger;
+			RevenueAccount = $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value");
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
@@ -7239,8 +7246,7 @@
 			   // InvoiceTypeCodeSubType: $("#VATInvoiceSubType").dxDropDownBox("instance").option("value")|| null,
 			    InvoiceTypeCodeSubType:"01",
 				InvoiceTransactionCode: transcode,
-
-				 ClientCode: accheadid|| null,
+				ClientCode:$("#ddclientcode").dxDropDownBox("instance").option("value") || null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 				 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
 				 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
@@ -7268,7 +7274,8 @@
 			InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
 			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
-			RevenueAccount:revaccheadid|| null,
+			RevenueAccount: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,
+			//RevenueAccount:revaccheadid|| null,
 			CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
 			RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 			RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
@@ -7290,7 +7297,7 @@
 
 			//Deduction&CurrencyDetails
 			InvoiceCurrencyCode: InvoiceCurrencyExchangeId|| "1",
-			//TaxCurrencyCode: TaxCurrencyExchangeId|| null,
+			TaxCurrencyCode: TaxCurrencyExchangeId|| "1",
 			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
 			AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
 			AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
@@ -7453,7 +7460,7 @@
 			    InvoiceTypeCodeSubType:"01",
 				InvoiceTransactionCode: transcode,
 
-				 ClientCode: accheadid|| null,
+				 ClientCode:$("#ddclientcode").dxDropDownBox("instance").option("value") || null,
 				 BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 				 BuyerNameAr: $("#ClientNameArabic").dxTextBox("instance").option("value")|| null,
 				 BuyerGroupVatnumber: $("#GroupVATNo").dxTextBox("instance").option("value")|| null,
@@ -7481,7 +7488,8 @@
 			InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
 			InvoiceStartDate: $("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
 			InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
-			RevenueAccount:revaccheadid|| null,
+			//RevenueAccount:revaccheadid|| null,
+			RevenueAccount: $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value") || null,
 			CostCenterCode: $("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
 			RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 			RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
@@ -7870,7 +7878,7 @@
 
 		$("#btnVerify").on("click", function (e) {
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-			IsDirect = false;
+			const IsDirect = false;
 			// Ensure dataGrid exists
 			if (!dataGrid) {
 				console.error("DataGrid instance not found.");
@@ -9649,5 +9657,66 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 
 		openModal(url, title);
 	}
+
+
+	function validateGroupVATNo(e) {
+    const value = e.value;
+    const valid = validateVATPrefix(value);
+    if (!valid.success) {
+        DevExpress.ui.notify(valid.message, "error", 2000);
+        // Optionally clear or revert the value
+        e.component.option("value", "");
+    }
+}
+
+function validateClientVATNo(e) {
+    const value = e.value;
+    const valid = validateVATPrefix(value);
+    if (!valid.success) {
+        DevExpress.ui.notify(valid.message, "error", 2000);
+        e.component.option("value", "");
+    }
+}
+
+async function fetchDefaultCompanyCurrencyType() {
+	debugger;
+    try {
+        const response = await $.ajax({
+            url: '/api/VATModule/GetDefalutCompanyDetails', // Replace with actual controller route if needed
+            method: 'GET',
+            dataType: 'json'
+        });
+
+        if (response && response.length > 0 && response[0].CurrencyType) {
+            currencyType = response[0].CurrencyType;
+            console.log("Currency Type set to:", currencyType);
+        } else {
+            console.warn("Currency Type not found in response.");
+        }
+    } catch (error) {
+        console.error("Failed to fetch default company currency type:", error);
+    }
+}
+
+
+$(document).ready(function () {
+    fetchDefaultCompanyCurrencyType();
+});
+
+
+
+function validateVATPrefix(vatNo) {
+
+    if (!vatNo || vatNo.length === 0) return { success: true };
+
+    if (currencyType === "BHD" && !vatNo.startsWith("2")) {
+        return { success: false, message: "VAT No must start with 2 for BHD currency." };
+    }
+    if (currencyType === "SAR" && !vatNo.startsWith("3")) {
+        return { success: false, message: "VAT No must start with 3 for SAR currency." };
+    }
+    return { success: true };
+}
+
 </script>
 

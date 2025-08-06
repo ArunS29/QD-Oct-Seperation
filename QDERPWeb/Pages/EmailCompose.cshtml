@@ -160,11 +160,8 @@
                         // Delay to allow fade-out before opening the window
                         setTimeout(() => {
                             const tenantName = window.location.pathname.split('/')[1];
-                                    window.open(
-                                    `/${tenantName}/TemplateCreate`,
-                                    "TemplateWindow",
-                                    "width=900,height=700,resizable=yes,scrollbars=yes,status=no,location=no,toolbar=no,menubar=no,left=100,top=100"
-                                );
+                                  window.location.href = `/${tenantName}/TemplateCreate`;
+
 
                         }, 500); // match animation duration
                     }

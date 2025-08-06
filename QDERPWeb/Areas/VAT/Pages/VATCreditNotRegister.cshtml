@@ -230,42 +230,59 @@
 		font-weight: bold;
 	}
 
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
 </style>
 <div class="content-container-top">
 <div class="title">
 <input id="formId" value="frm20169VATCreditNoteView" type="hidden" />
 
 
-	<div class="card blue shine compact">
+		<div class="card blue shine compact with-sidebar">
 		<h2 class="title-slide">VAT Credit Note Register</h2>
 		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
 		<h6 class="fade-in">QuickDice ERP Solutions</h6>
 	</div>
 
 
-		<div class="card orange-theme" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
-			<h4 style="margin-bottom: 10px; color: white;">Voucher Count</h4>
+		<div class="card with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden; text-align: left;">
+			<h2 style="margin-bottom: 10px; color: white; font-size: 1.6em; font-weight: bold;">Voucher Count</h2>
 
 			<div class="voucher-slider">
 				<div class="voucher-slide active">
-					<h4>No of Invoices Verified</h4>
-					<h3>Total <span id="verifiedCount">0</span></h3>
+					<h5 style="margin: 0;text-align: left;">No of Invoices Verified</h5>
+					<h3 id="verifiedCount" style="margin: 5px 0 15px;text-align: left;">0</h3>
 				</div>
 
 				<div class="voucher-slide">
-					<h4>No of Invoices Approved</h4>
-					<h3>Total <span id="approvedCount">0</span></h3>
+					<h5 style="margin: 0;text-align: left;">No of Invoices Approved</h5>
+					<h3 id="approvedCount" style="margin: 5px 0 15px;text-align: left;">0</h3>
 				</div>
 
 				<div class="voucher-slide">
-					<h4>No of Invoices Posted</h4>
-					<h3>Total <span id="postedCount">0</span></h3>
+					<h5 style="margin: 0;text-align: left;">No of Invoices Posted</h5>
+					<h3 id="postedCount" style="margin: 5px 0;text-align: left;">0</h3>
 				</div>
 			</div>
 		</div>
 
-	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Today</h4>
+
+		<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+			<h2 style="margin-bottom: 10px; color: white;font-weight:bold;font-size: 1.6em;">Today</h2>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
 				<h4>Credit Notes Raised Today</h4>
@@ -424,7 +441,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="AmtBeforeTax-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
@@ -442,7 +463,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="CalcTaxAmt-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 
 				subColumns.AddFor(m => m.TotalCreditNoteAmount)
@@ -460,7 +485,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ToatlAmt-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -483,7 +512,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.TotalRevenueOf10Perc)
 			.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
@@ -500,7 +533,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header1" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
 			.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
@@ -517,7 +554,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header2" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
@@ -534,7 +575,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticRevenue-header3" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
@@ -551,7 +596,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ExemptedRevenue-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -572,7 +621,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="GGCRevenue-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -593,7 +646,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ExportsRevenue-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 			});
@@ -617,7 +674,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticVAT-header1" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.TotalTaxOf10Perc)
 			.Caption(new JS("formatMessage('Domestic VAT @10%')"))
@@ -634,7 +695,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+											<div class="DomesticVAT-header2" style="font-weight: bold;">
+												<%= column.caption %>
+											</div>
+										</text>);
 
 				subColumns.AddFor(m => m.TotalTaxOf15Perc)
 			.Caption(new JS("formatMessage('Domestic VAT @15%')"))
@@ -651,7 +716,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticVAT-header3" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
@@ -668,7 +737,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+							   			<div class="DomesticVAT-header4" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
@@ -685,7 +758,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="DomesticVAT-header5" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -706,7 +783,11 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="GGCTax-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 
@@ -727,35 +808,113 @@
 		}
 		return '';
 		}
-		");
+				").HeaderCellTemplate(@<text>
+			<div class="ExportsTax-header" style="font-weight: bold;">
+				<%= column.caption %>
+			</div>
+		</text>);
 
 			});
 			});
 			// Add hidden columns for remaining model fields
-			columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
-			columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-			columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-			columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
-			columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-			columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By (AR)").Visible(false);
-			columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
-			columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-			columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-			columns.AddFor(m => m.VerifiedByAr).Caption("Verified By (AR)").Visible(false);
-			columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
-			columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-			columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-			columns.AddFor(m => m.ApprovedByAr).Caption("Approved By (AR)").Visible(false);
-			columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
-			columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-			columns.AddFor(m => m.AddedByAr).Caption("Added By (AR)").Visible(false);
-			columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-			columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-			columns.AddFor(m => m.ModifiedByAr).Caption("Modified By (AR)").Visible(false);
-			columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
-			columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-			columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-			columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+					columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
+					columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
+					columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+					columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
+					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+					columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
+					columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+					columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
+					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+					columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+					columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
+					columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+					columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+					columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
+					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+					columns.AddFor(m => m.BillingAddress).Caption("Billing Address").Visible(false);
+				//	columns.AddFor(m => m.BillingAddressAr).Caption("Billing Address Ar").Visible(false);
+					columns.AddFor(m => m.BillingName).Caption("Billing Name").Visible(false);
+				//	columns.AddFor(m => m.BillingNameAr).Caption("Billing Name Ar").Visible(false);
+				//	columns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Visible(false);
+					columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
+					columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
+					columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
+					columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
+					columns.AddFor(m => m.CreditEndDate).Caption("Credit End Date").Visible(false);
+					columns.AddFor(m => m.CreditNoteEffectiveDate).Caption("Credit Note Effective Date").Visible(false);
+					columns.AddFor(m => m.CreditNoteRemarks).Caption("Credit Note Remarks").Visible(false);
+					columns.AddFor(m => m.CreditStartDate).Caption("Credit Start Date").Visible(false);
+					columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
+					columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
+					columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
+					columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+					columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
+					columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
+					columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
+					columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
+					columns.AddFor(m => m.RevenueAccount).Caption("Revenue Account").Visible(false);
+				//	columns.AddFor(m => m.VATRegistrationNo).Caption("VAT Registration No").Visible(false);
+					columns.AddFor(m => m.BranchCode).Caption("Branch Code").Visible(false);
+					columns.AddFor(m => m.BranchName).Caption("Branch Name").Visible(false);
+					columns.AddFor(m => m.BuyerAdditionalNumber).Caption("Buyer Additional Number").Visible(false);
+					columns.AddFor(m => m.BuyerAdditionalStreet).Caption("Buyer Additional Street").Visible(false);
+					columns.AddFor(m => m.BuyerAdditionalStreetAr).Caption("Buyer Additional Street Ar").Visible(false);
+					columns.AddFor(m => m.BuyerAddressStreet).Caption("Buyer Address Street").Visible(false);
+					columns.AddFor(m => m.BuyerAddressStreetAr).Caption("Buyer Address Street Ar").Visible(false);
+					columns.AddFor(m => m.BuyerBuildingNumber).Caption("Buyer Building Number").Visible(false);
+					columns.AddFor(m => m.BuyerCity).Caption("Buyer City").Visible(false);
+					columns.AddFor(m => m.BuyerCityAr).Caption("Buyer City Ar").Visible(false);
+					columns.AddFor(m => m.BuyerCountryCode).Caption("Buyer Country Code").Visible(false);
+					columns.AddFor(m => m.BuyerName).Caption("Buyer Name").Visible(false);
+					//columns.AddFor(m => m.BuyerGroupVATNumber).Caption("Buyer Group VAT Number").Visible(false);
+					columns.AddFor(m => m.BuyerNameAr).Caption("Buyer Name Ar").Visible(false);
+					columns.AddFor(m => m.BuyerNeighborhood).Caption("Buyer Neighborhood").Visible(false);
+					columns.AddFor(m => m.BuyerNeighborhoodAr).Caption("Buyer Neighborhood Ar").Visible(false);
+				//	columns.AddFor(m => m.BuyerOtherID).Caption("Buyer Other ID").Visible(false);
+				//	columns.AddFor(m => m.BuyerOtherIDType).Caption("Buyer Other ID Type").Visible(false);
+					columns.AddFor(m => m.BuyerPostalCode).Caption("Buyer Postal Code").Visible(false);
+					columns.AddFor(m => m.BuyerProvince).Caption("Buyer Province").Visible(false);
+					columns.AddFor(m => m.BuyerProvinceAr).Caption("Buyer Province Ar").Visible(false);
+				//	columns.AddFor(m => m.BuyerVATNumber).Caption("Buyer VAT Number").Visible(false);
+					columns.AddFor(m => m.InvoiceCounterValue).Caption("Invoice Counter Value").Visible(false);
+					columns.AddFor(m => m.InvoiceCurrencyCode).Caption("Invoice Currency Code").Visible(false);
+					columns.AddFor(m => m.InvoiceTransactionCode).Caption("Invoice Transaction Code").Visible(false);
+					columns.AddFor(m => m.InvoiceTypeCode).Caption("Invoice Type Code").Visible(false);
+					columns.AddFor(m => m.InvoiceTypeCodeSubType).Caption("Invoice Type Code Sub Type").Visible(false);
+				//	columns.AddFor(m => m.InvoiceUUID).Caption("Invoice UUID").Visible(false);
+					columns.AddFor(m => m.SellerAdditionalNumber).Caption("Seller Additional Number").Visible(false);
+					columns.AddFor(m => m.SellerAdditionalStreet).Caption("Seller Additional Street").Visible(false);
+				//	columns.AddFor(m => m.ReasonforIssuanceOfCRN).Caption("Reason for Issuance Of CRN").Visible(false);
+				//	columns.AddFor(m => m.ReasonforIssuanceOfCRNAr).Caption("Reason for Issuance Of CRN Ar").Visible(false);
+					columns.AddFor(m => m.SellerAdditionalStreetAr).Caption("Seller Additional Street Ar").Visible(false);
+					columns.AddFor(m => m.SellerAddressStreet).Caption("Seller Address Street").Visible(false);
+					columns.AddFor(m => m.SellerAddressStreetAr).Caption("Seller Address Street Ar").Visible(false);
+					columns.AddFor(m => m.SellerBuildingNumber).Caption("Seller Building Number").Visible(false);
+					columns.AddFor(m => m.SellerCity).Caption("Seller City").Visible(false);
+					columns.AddFor(m => m.SellerCityAr).Caption("Seller City Ar").Visible(false);
+					columns.AddFor(m => m.SellerCountryCode).Caption("Seller Country Code").Visible(false);
+					columns.AddFor(m => m.SellerName).Caption("Seller Name").Visible(false);
+				//	columns.AddFor(m => m.SellerGroupVATNumber).Caption("Seller Group VAT Number").Visible(false);
+				//	columns.AddFor(m => m.SellerNameAr).Caption("Seller Name Ar").Visible(false);
+					columns.AddFor(m => m.SellerNeighborhood).Caption("Seller Neighborhood").Visible(false);
+					columns.AddFor(m => m.SellerNeighborhoodAr).Caption("Seller Neighborhood Ar").Visible(false);
+				//	columns.AddFor(m => m.SellerOtherID).Caption("Seller Other ID").Visible(false);
+				//	columns.AddFor(m => m.SellerOtherIDType).Caption("Seller Other ID Type").Visible(false);
+					columns.AddFor(m => m.SellerPostalCode).Caption("Seller Postal Code").Visible(false);
+					columns.AddFor(m => m.SellerProvince).Caption("Seller Province").Visible(false);
+					columns.AddFor(m => m.SellerProvinceAr).Caption("Seller Province Ar").Visible(false);
+			//		columns.AddFor(m => m.SellerVATNumber).Caption("Seller VAT Number").Visible(false);
+					columns.AddFor(m => m.TaxCurrencyCode).Caption("Tax Currency Code").Visible(false);
+					columns.AddFor(m => m.EInvoiceSubmittedToZatcaBy).Caption("eInvoice Submitted To Zatca By").Visible(false);
+					columns.AddFor(m => m.EInvoiceSubmittedToZatcaOn).Caption("eInvoice Submitted To Zatca On").Visible(false);
+					columns.AddFor(m => m.InvoiceSupplyDate).Caption("Invoice Supply Date").Visible(false);
+					columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
+					columns.AddFor(m => m.Currency).Caption("Currency").Visible(false);
+					columns.AddFor(m => m.OtherDeductionAmount).Caption("Other Deduction Amount").Visible(false);
+					columns.AddFor(m => m.ReasonforCreditNote).Caption("Reason for Credit Note").Visible(false);
+					columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Visible(false);
+
 
 		})
 	@* 	.Editing(editing => editing
@@ -767,7 +926,7 @@
 		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.Width("98%")
 		@* .WordWrapEnabled(true) *@
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		@* .OnCellClick("function(e) {handleCellClick(e);}") *@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
@@ -784,6 +943,7 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
+		.OnOptionChanged("handleGridOptionChanged")
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -1345,6 +1505,218 @@
 						showColumnChooser();
 						console.log('End permission handling');
 					});
+
+	function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
+		}
+	}
+	function injectHeaderSVG() {
+		debugger;
+		let gridElement = $('#dataGrid');
+		let dataGrid = gridElement.dxDataGrid("instance");
+		if (!dataGrid) return;
+
+		let dataSource = dataGrid.option("dataSource");
+		if (!dataSource || dataSource.length === 0) return;
+
+		let svgIcon = dataSource[0].CurrencyImage;
+	    let currencySymbol = dataSource[0].CurrencySymbole;
+	    
+	    if (!svgIcon && currencySymbol) {
+	    	svgIcon = `<span style="font-weight: bold;">${currencySymbol}</span>`;
+	    } else if (svgIcon) {
+	    	svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+	    } else {
+	    	return; // if neither icon nor symbol is present, exit
+	    }
+
+		gridElement.find(".dx-header-row td").each(function () {
+
+			const $cell = $(this);
+			const dataField = $cell.attr("data-field");  // 👈 This is key
+
+				const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
+				const AmtBeforeTaxText = $AmtBeforeTaxHeader.data("original-text") || $AmtBeforeTaxHeader.text().trim();
+				$AmtBeforeTaxHeader.data("original-text", AmtBeforeTaxText); // Save original once
+
+				$AmtBeforeTaxHeader.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+						<span style="font-weight: bold;">${AmtBeforeTaxText}</span>
+					</div>
+				`);
+
+						const $CalcTaxAmtHeader = $(".CalcTaxAmt-header");
+							const CalcTaxAmtText = $CalcTaxAmtHeader.data("original-text") || $CalcTaxAmtHeader.text().trim();
+							$CalcTaxAmtHeader.data("original-text", CalcTaxAmtText); // Save original once
+
+						$CalcTaxAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+								<span style="font-weight: bold;">${CalcTaxAmtText}</span>
+						</div>
+					`);
+
+							const $ToatlAmtHeader = $(".ToatlAmt-header");
+							const TotalAmtText = $ToatlAmtHeader.data("original-text") || $ToatlAmtHeader.text().trim();
+							$ToatlAmtHeader.data("original-text", TotalAmtText); // Save original once
+
+							$ToatlAmtHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${TotalAmtText}</span>
+							</div>
+						`);
+						const $DomesticRevenueHeader = $(".DomesticRevenue-header");
+										const DomesticRevenueText = $DomesticRevenueHeader.data("original-text") || $DomesticRevenueHeader.text().trim();
+											$DomesticRevenueHeader.data("original-text", DomesticRevenueText); // Save original once
+
+							$DomesticRevenueHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader2 = $(".DomesticRevenue-header2");
+							const DomesticRevenueText2 = $DomesticRevenueHeader2.data("original-text") || $DomesticRevenueHeader2.text().trim();
+								 $DomesticRevenueHeader2.data("original-text", DomesticRevenueText2); // Save original once
+
+								$DomesticRevenueHeader2.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText2}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader3 = $(".DomesticRevenue-header3");
+							const DomesticRevenueText3 = $DomesticRevenueHeader3.data("original-text") || $DomesticRevenueHeader3.text().trim();
+								$DomesticRevenueHeader3.data("original-text", DomesticRevenueText3); // Save original once
+
+								$DomesticRevenueHeader3.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText3}</span>
+							</div>
+						`);
+								const $ExemptedRevenueHeader = $(".ExemptedRevenue-header");
+								const ExemptedRevenueText = $ExemptedRevenueHeader.data("original-text") || $ExemptedRevenueHeader.text().trim();
+									$ExemptedRevenueHeader.data("original-text", ExemptedRevenueText); // Save original once
+
+									$ExemptedRevenueHeader.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ExemptedRevenueText}</span>
+								</div>
+							`);
+
+								
+
+						const $ExportRevenueHeader = $(".ExportsRevenue-header");
+							const ExportRevenueText = $ExportRevenueHeader.data("original-text") || $ExportRevenueHeader.text().trim();
+							$ExportRevenueHeader.data("original-text", ExportRevenueText); // Save original once
+
+						$ExportRevenueHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ExportRevenueText}</span>
+						</div>
+					`);
+
+						const $GGCRevenueHeader = $(".GGCRevenue-header");
+							const GGCRevenueText = $GGCRevenueHeader.data("original-text") || $GGCRevenueHeader.text().trim();
+							$GGCRevenueHeader.data("original-text", GGCRevenueText); // Save original once
+
+						$GGCRevenueHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${GGCRevenueText}</span>
+						</div>
+					`);
+								const $DomesticVATHeader = $(".DomesticVAT-header");
+								const DomesticVATText = $DomesticVATHeader.data("original-text") || $DomesticVATHeader.text().trim();
+								$DomesticVATHeader.data("original-text", DomesticVATText); // Save original once
+
+							$DomesticVATHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${DomesticVATText}</span>
+							</div>
+						`);
+
+										const $DomesticVATHeader1 = $(".DomesticVAT-header1");
+										const DomesticVATText1 = $DomesticVATHeader1.data("original-text") || $DomesticVATHeader1.text().trim();
+											$DomesticVATHeader1.data("original-text", DomesticVATText1); // Save original once
+
+									$DomesticVATHeader1.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+											<span style="font-weight: bold;">${DomesticVATText1}</span>
+								</div>
+							`);
+
+										const $DomesticVATHeader2 = $(".DomesticVAT-header2");
+									const DomesticVATText2 = $DomesticVATHeader2.data("original-text") || $DomesticVATHeader2.text().trim();
+									$DomesticVATHeader2.data("original-text", DomesticVATText2); // Save original once
+
+								$DomesticVATHeader2.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+											<span style="font-weight: bold;">${DomesticVATText2}</span>
+								</div>
+							`);
+
+										const $DomesticVATHeader3 = $(".DomesticVAT-header3");
+								const DomesticVATText3 = $DomesticVATHeader3.data("original-text") || $DomesticVATHeader3.text().trim();
+							$DomesticVATHeader3.data("original-text", DomesticVATText3); // Save original once
+
+					$DomesticVATHeader3.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+									<span style="font-weight: bold;">${DomesticVATText3}</span>
+					</div>
+	`);
+
+		const $DomesticVATHeader4 = $(".DomesticVAT-header4");
+								const DomesticVATText4 = $DomesticVATHeader4.data("original-text") || $DomesticVATHeader4.text().trim();
+							$DomesticVATHeader4.data("original-text", DomesticVATText4); // Save original once
+
+					$DomesticVATHeader4.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+									<span style="font-weight: bold;">${DomesticVATText4}</span>
+					</div>
+	`);
+
+							
+								const $GGCTaxHeader = $(".GGCTax-header");
+								const GGCTaxText = $GGCTaxHeader.data("original-text") || $GGCTaxHeader.text().trim();
+								$GGCTaxHeader.data("original-text", GGCTaxText); // Save original once
+
+							$GGCTaxHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${GGCTaxText}</span>
+							</div>
+						`);
+
+
+							const $ExportsHeader = $(".ExportsTax-header");
+									const ExportsText = $ExportsHeader.data("original-text") || $ExportsHeader.text().trim();
+									$ExportsHeader.data("original-text", ExportsText); // Save original once
+
+						$ExportsHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ExportsText}</span>
+						</div>
+					`);
+
+
+		});
+	}
 	
 </script>
 

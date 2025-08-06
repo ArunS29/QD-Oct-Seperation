@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -13,9 +14,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<DocumentTypesController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public DocumentTypesController(ILogger<DocumentTypesController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public DocumentTypesController(ILogger<DocumentTypesController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -68,6 +72,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl101DocumentTypes.Add(documentType);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Add Document Type",
+                      actionDetail: $":Added Document Type  {documentType.DocumentTypeId}",
+                      documentNo: $"{documentType.DocumentTypeId}"
+                    );
 
                     return Ok(new { success = true, message = "Document Type added successfully." });
                 }
@@ -114,6 +123,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Entry(existing).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Update Document Type",
+                      actionDetail: $":Updated Document Type  {documentType.DocumentTypeId}",
+                      documentNo: $"{documentType.DocumentTypeId}"
+                    );
 
                     return Ok(new { success = true, message = "Document Type updated successfully." });
                 }
@@ -141,6 +155,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl101DocumentTypes.Remove(entity);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                       module: "IMS > Delete Document Type",
+                      actionDetail: $":Deleted Document Type  {documentType.DocumentTypeId}",
+                      documentNo: $"{documentType.DocumentTypeId}"
+                    );
 
                     return Ok(new { success = true, message = "Document Type deleted successfully." });
                 }

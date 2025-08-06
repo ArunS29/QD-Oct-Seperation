@@ -1,20 +1,22 @@
 using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -24,9 +26,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<DeliveryNoteController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public DeliveryNoteController(ILogger<DeliveryNoteController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public DeliveryNoteController(ILogger<DeliveryNoteController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -151,6 +156,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                 module: "IMS > Save Delivery Note",
+                 actionDetail: $":Saved Delivery Note  {model.DeliveryNoteNo}",
+                   documentNo: $"{model.DeliveryNoteNo}"
+                );
 
                 return Ok(new
                 {
@@ -188,6 +198,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 existingNote.ApprovedOn = DateTime.Now;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Approve Delivery Note",
+                   actionDetail: $":Approved Approve Delivery Note  {deliveryNoteNo}",
+                   documentNo: $"{deliveryNoteNo}"
+                );
+
 
                 return Ok(new { message = "Delivery note approved successfully", success = true });
             }
@@ -278,27 +294,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         {
             try
             {
-                // Get tenant name from session
-                var tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-
-                // Resolve tenant and DB context
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    // Get company short name using tenant name
-                    var companyShortName = await dbContext.Tbl901CompanyDetails
-                        .Where(c => c.CompanyNameShort == tenantName)
-                        .Select(c => c.CompanyNameShort)
-                        .FirstOrDefaultAsync();
+                    // Step 1: Get DefaultcompanyID from session
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0;
 
-                    if (string.IsNullOrWhiteSpace(companyShortName))
-                        return BadRequest(new { message = "Company short name not found for tenant.", success = false });
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    }
 
-                    // Generate delivery note number
-                    string shortCode = GetAbbreviatedCompanyCode(companyShortName);
+                    byte companyId = defaultCompanyByte;
+
+                    // Step 2: Get company details by CompanyId
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .FirstOrDefaultAsync(c => c.CompanyId == companyId);
+
+                    if (company == null)
+                    {
+                        return NotFound(new { message = "Company not found.", success = false });
+                    }
+
+                    // Step 3: Build prefix using company abbreviation and year
+                    string shortCode = GetAbbreviatedCompanyCode(company.CompanyNameShort ?? "");
                     string prefix = $"{shortCode}-DN-{DateTime.Now.Year}";
 
+                    // Step 4: Get last delivery note number matching the prefix
                     var lastNote = await dbContext.Tbl60301deliveryNoteMasters
                         .Where(d => d.DeliveryNoteNo.StartsWith(prefix))
                         .OrderByDescending(d => d.DeliveryNoteNo)
@@ -309,22 +331,26 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     {
                         var lastNumberPart = lastNote.DeliveryNoteNo.Split('-').Last();
                         if (int.TryParse(lastNumberPart, out int lastNum))
+                        {
                             nextNumber = lastNum + 1;
+                        }
                     }
 
+                    // Step 5: Format and return new delivery note number
                     string formattedNumber = nextNumber.ToString("D5");
                     string deliveryNoteNo = $"{prefix}-{formattedNumber}";
 
                     return Ok(new { deliveryNoteNo, success = true });
                 }
 
-                return Unauthorized(new { message = "Tenant not found.", success = false });
+                return Unauthorized(new { message = "Invalid tenant context.", success = false });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = $"Server error: {ex.Message}", success = false });
             }
         }
+
 
         private string GetAbbreviatedCompanyCode(string companyNameShort)
         {
@@ -360,6 +386,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     await dbContext.Qry60302deliveryNoteChildren.AddAsync(newItem);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Item",
+                      actionDetail: $":Saved Item {newItem.DeliveryNoteSlNo}",
+                      documentNo: $"{newItem.DeliveryNoteSlNo}"
+                    );
 
                     return Ok(new { success = true, message = "Item saved successfully." });
                 }
@@ -401,6 +432,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.BatchNo = updatedItem.BatchNo;
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Update Item",
+                      actionDetail: $":Updated Item  {updatedItem.DeliveryNoteSlNo}",
+                      documentNo: $"{updatedItem.DeliveryNoteSlNo}"
+                    );
 
                     return Ok(new { success = true, message = "Item updated successfully." });
                 }
@@ -550,6 +586,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update Delivery Note Items",
+                      actionDetail: $":Saved Delivery Note Items  {request.DeliveryNoteNo}",
+                      documentNo: $"{request.DeliveryNoteNo}"
+                    );
+
                     return Ok(new { success = true, message = "Items saved/updated successfully!" });
                 }
 
@@ -687,6 +729,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60301deliveryNoteMasters.Remove(entityToDelete);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Delete Delivery Item",
+                      actionDetail: $":Delete Delivery Item  {deliveryNoteNo}",
+                      documentNo: $"{deliveryNoteNo}"
+                    );
 
                     return Ok(new { success = true, message = $"Stock item '{deliveryNoteNo}' deleted successfully." });
                 }

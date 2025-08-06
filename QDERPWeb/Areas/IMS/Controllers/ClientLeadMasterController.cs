@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -15,9 +16,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ClientLeadMasterController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public ClientLeadMasterController(ILogger<ClientLeadMasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public ClientLeadMasterController(ILogger<ClientLeadMasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -202,6 +206,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl30101ClientMasters.Update(existingClient);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                           actionDetail: $":Inserted {clientMaster.ClientCode}",
+                            documentNo: $"{clientMaster.ClientCode}"
+                        );
 
                         return Ok(new { success = true, message = "Client updated successfully." });
                     }
@@ -235,6 +243,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl30101ClientMasters.Add(newClient);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                          actionDetail: $":Inserted {clientMaster.ClientCode}",
+                           documentNo: $"{clientMaster.ClientCode}"
+                       );
 
                         return Ok(new { success = true, message = "Client saved successfully." });
                     }
@@ -265,6 +277,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl30101ClientMasters.Remove(entity);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete Client Lead Master",
+                          actionDetail: $":Deleted Client Lead Master {ClientCode}",
+                           documentNo: $"{ClientCode}"
+                       );
 
                     return Ok(new { success = true, message = "Deleted successfully." });
                 }
@@ -374,7 +390,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         {
                             dbContext.Tbl3010102clientContactLists.Remove(contact);
                             dbContext.SaveChanges();
-                            return Ok(new { success = true, message = "Contact deleted successfully." });
+                        _userActionLogger.LogAsync(module: "IMS > Delete Contact",
+                         actionDetail: $":Deleted Contact {clientContactSlNo}",
+                          documentNo: $"{clientContactSlNo}"
+                      );
+                        return Ok(new { success = true, message = "Contact deleted successfully." });
                         }
 
                         return NotFound(new { success = false, message = "Contact not found." });
@@ -402,7 +422,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         {
                             dbContext.Tbl30104ClientStatuses.Remove(status);
                             dbContext.SaveChanges();
-                            return Ok(new { success = true, message = "Client status deleted successfully." });
+                        _userActionLogger.LogAsync(module: "IMS > Delete Client Lead Master",
+                           actionDetail: $":Deleted Client Lead Master {clientStatusNo}",
+                           documentNo: $"{clientStatusNo}"
+                        );
+                        return Ok(new { success = true, message = "Client status deleted successfully." });
                         }
 
                         return NotFound(new { success = false, message = "Status not found." });

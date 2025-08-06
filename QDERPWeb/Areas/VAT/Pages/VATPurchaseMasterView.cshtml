@@ -189,7 +189,7 @@
 		opacity: 0;
 		transform: translateY(100%);
 		transition: all 0.5s ease;
-		text-align: center;
+		text-align: left;
 	}
 
 		.voucher-slide.active {
@@ -197,22 +197,121 @@
 			transform: translateY(0);
 			z-index: 2;
 		}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
+
 	
+	.switch-heading2 {
+		font-weight: bold;
+		font-size: 20px;
+		color: white;
+		animation: fadeIn 0.6s ease-in-out;
+	}
+
+	.value-display2 {
+		font-size: 28px;
+		color: white;
+		transition: all 0.3s ease-in-out;
+	}
+
+	@@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(-5px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.switch-heading2 {
+		transition: opacity 0.4s ease;
+		opacity: 1;
+	}
+
+		.switch-heading2.fade-out {
+			opacity: 0;
+		}
+
+	.tabs {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 12px;
+		gap: 10px;
+	}
+
+	.tab-text {
+		flex: 1;
+		text-align: center;
+		cursor: pointer;
+		font-weight: bold;
+		padding: 2px 0;
+		border-radius: 13px;
+		background: rgba(255, 255, 255, 0.2);
+		transition: background 0.3s ease;
+	}
+
+		.tab-text.active {
+			background: rgba(255, 255, 255, 0.9);
+			color: rgb(0 0 0);
+		}
+
+
+	.tab-content {
+		display: none;
+		text-align: center;
+		animation: fadeSlideIn 0.4s ease;
+	}
+
 </style>
 
 <div class="title">
 <input id="formId" value="frm20165VATPurchaseMasterView" type="hidden" />
 
-	<div class="card blue shine compact">
-		<h2 class="title-slide">VAT Purchase Register</h2>
-		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">VAT Purchase Register</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			@* <div class="tile-icon">
+					<!-- Icon as SVG -->
+					<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<!-- L-shape blocks -->
+						<rect x="8" y="8" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+						<rect x="8" y="32" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+						<rect x="32" y="32" width="16" height="16" rx="3" fill="white" opacity="0.6" />
 
+						<!-- Rotated diamonds -->
+						<rect x="34" y="10" width="12" height="12" rx="2" transform="rotate(45 40 16)" fill="white" opacity="0.6" />
+						<rect x="42" y="2" width="12" height="12" rx="2" transform="rotate(45 48 8)" fill="white" opacity="0.6" />
+						<rect x="50" y="18" width="12" height="12" rx="2" transform="rotate(45 56 24)" fill="white" opacity="0.6" />
+					</svg>
+
+				</div> *@
+		</div>
 	</div>
 
-
-	<div id="mainCard" class="card today-bg">
-		<div class="tabs" style="gap:10px;">
+	<div id="mainCard" class="card today-bg with-sidebar">
+		<div class="tabs" style="gap:5px;">
 			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
 			<div class="tab-text" onclick="switchTab(1)">Approved</div>
 			<div class="tab-text" onclick="switchTab(2)">Posted</div>
@@ -232,44 +331,40 @@
 		</div>
 	</div>
 
-	<div class="card green shine">
-	<h4 style="font-weight:bold;">Bill Amount</h4>
-		<h1 id="invoiceAmounts">
+	
+
+	<div class="card sparkle with-sidebar" style="background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 16px; border-radius: 12px; width: 220px; color: white;">
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Purchase Details</h2>
+
+		<!-- Rotating Heading -->
+		<h5 id="statusHeading1" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Bill Amount</h5>
+
+		<!-- Value with SVG -->
+		<div id="switchValue" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
+			<!-- SVG icon -->
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
 				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
 			</svg>
 			0.00
-		</h1>
-		<h4 style="font-weight:bold;">
-			VAT Value
-		</h4>
-		<h3 id="vatTotalValues">
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
-				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
-				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
-			</svg>
-			0.00
-		</h3>
-	</div>
-
-	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Voucher Count</h4>
-		<div class="voucher-slider">
-			<div class="voucher-slide active">
-				<h4 style="color: white; margin: 0;">New Voucher</h4>
-				<h4 style="color: white; margin: 0;">
-					Today &nbsp; <span id="todayCount">0</span>
-				</h4>
-			</div>
-
-			<div class="voucher-slide">
-				<h1 id="fiveYearCount" style="color: white;">0</h1>
-				<h5 style="color: white;">Last 5 Years</h5>
-			</div>
 		</div>
+
 	</div>
-</div>
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px; border-radius: 12px; width: 240px;">
+
+		<!-- Main Heading: Voucher Count -->
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Voucher Count</h2>
+
+		<!-- Rotating Heading -->
+		<h3 id="statusHeading2" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;">Last 5 Years</h3>
+
+		<!-- Value -->
+		<div id="statusValue2" style="color: white; font-size: 24px; font-weight: bold;">
+			<span id="valueDisplay2" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">0</span>
+		</div>
+
+	</div>
+	</div>
 
 <div class="Head">
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATPurchaseRegisterFooter.cshtml")
@@ -391,7 +486,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="AmtBeforeTax-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 
 				amount.AddFor(m => m.CalcTaxAmount)
@@ -409,7 +508,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="CalcTaxAmt-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 
 				amount.AddFor(m => m.TotalPurchaseAmount)
@@ -427,7 +530,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="ToatlAmt-header" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -452,7 +559,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						  		<div class="DomesticRevenue-header" style="font-weight: bold;">
+						  			<%= column.caption %>
+						  		</div>
+						  	</text>);
 
 				domestic.AddFor(m => m.TotalDspurchase10Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases @10%')"))
@@ -469,7 +580,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticRevenue-header1" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domestic.AddFor(m => m.TotalDspurchase15Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases @15%')"))
@@ -486,7 +601,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticRevenue-header2" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domestic.AddFor(m => m.DomesticZeroTaxPurchases)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Purchases')"))
@@ -503,7 +622,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticZeroTaxPurchases-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domestic.AddFor(m => m.DomesticExemptedTaxPurchases)
 			.Caption(new JS("formatMessage('Domestic Exempted Purchases')"))
@@ -520,7 +643,12 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="ExemptedRevenue-header" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
+
 
 			});
 
@@ -542,7 +670,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption(new JS("formatMessage('Imports Purchases thru Customs 10%')"))
@@ -559,7 +691,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header1" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalImportPurchase15Perc)
 			.Caption(new JS("formatMessage('Imports Purchases thru Customs 15%')"))
@@ -576,7 +712,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header2" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.ImportsVatthruRcm)
 			.Caption(new JS("formatMessage('Imports RCM 5%')"))
@@ -593,7 +733,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsPurchase-header3" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalRcmpurchase10Perc)
 			.Caption(new JS("formatMessage('Imports RCM 10%')"))
@@ -610,7 +754,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="ImportsRCM-header" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				imports.AddFor(m => m.TotalRcmpurchase15Perc)
 			.Caption(new JS("formatMessage('Imports RCM 15%')"))
@@ -627,7 +775,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="ImportsRCM-header1" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 			});
@@ -653,7 +805,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header1" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.TotalDspurchaseTax10Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases VAT @10%')"))
@@ -670,7 +826,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header2" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.TotalDspurchaseTax15Perc)
 			.Caption(new JS("formatMessage('Domestic Purchases VAT @15%')"))
@@ -687,7 +847,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header3" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.DomesticZeroTaxPurTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
@@ -703,7 +867,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header4" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				domesticVAT.AddFor(m => m.DomesticExemptedTaxPurTax)
 			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
@@ -722,7 +890,11 @@
 		}
 		");
 
-			});
+			}).HeaderCellTemplate(@<text>
+							   		<div class="DomesticePurchase-header5" style="font-weight: bold;">
+							   			<%= column.caption %>
+							   		</div>
+							   	</text>);
 
 				// Imports VAT
 				vat.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(importsVAT =>
@@ -739,7 +911,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header6" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalImportPurchaseTax10Perc)
 			.Caption(new JS("formatMessage('VAT Paid in Customs 10%')"))
@@ -753,7 +929,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header7" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalImportPurchaseTax15Perc)
 			.Caption(new JS("formatMessage('VAT Paid in Customs 15%')"))
@@ -767,7 +947,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header7" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.ImportsVatthruRcmtax)
 			.Caption(new JS("formatMessage('VAT thru RCM 5%')"))
@@ -781,7 +965,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header8" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalRcmpurchaseTax10Perc)
 			.Caption(new JS("formatMessage('VAT thru RCM 10%')"))
@@ -795,7 +983,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header9" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				importsVAT.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption(new JS("formatMessage('VAT thru RCM 15%')"))
@@ -809,7 +1001,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="DomesticePurchase-header10" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 			});
 			});
@@ -839,6 +1035,7 @@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
+		.OnOptionChanged("handleGridOptionChanged")
 		.ShowRowLines(true)
 		.Summary(summary =>
 		{
@@ -923,28 +1120,69 @@
 </div>
 
 <script>
-	let currentSlideIndex = 0;
-	const slides = document.querySelectorAll('.voucher-slide');
 
+	const headings = ["Bill Amount", "VAT Value"];
+	let currentIndex = 0;
+
+	// Default values
+	let invoiceAmounts = "0.00";
+	let vatTotalValues = "0.00";
+
+	// Update values from your data functions:
+	function updatePurchaseAmountCard(data) {
+		let total = 0;
+		if (Array.isArray(data)) {
+			total = data.reduce((sum, item) => {
+				const val = parseFloat(item.TotalPurchaseAmount);
+				return sum + (isNaN(val) ? 0 : val);
+			}, 0);
+		}
+		invoiceAmounts = total.toFixed(2);
+	}
+
+	function updateTotalVATValue(data) {
+		let total = 0;
+		if (Array.isArray(data)) {
+			data.forEach(item => {
+				const vat5 = parseFloat(item.DomesticStandardPurTax) || 0;
+				const vat10 = parseFloat(item.TotalDspurchaseTax10Perc) || 0;
+				const vat15 = parseFloat(item.TotalDspurchaseTax15Perc) || 0;
+				total += vat5 + vat10 + vat15;
+			});
+		}
+		vatTotalValues = total.toFixed(2);
+	}
+
+	// Switch every 2 seconds
 	setInterval(() => {
-		slides[currentSlideIndex].classList.remove('active');
+		currentIndex = (currentIndex + 1) % 2;
 
-		currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+		const headingEl = document.getElementById("statusHeading1");
+		const valueEl = document.getElementById("switchValue");
 
-		slides[currentSlideIndex].classList.add('active');
+		headingEl.textContent = headings[currentIndex];
+		valueEl.innerHTML = `
+
+	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+		<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+		<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+	</svg>
+			${currentIndex === 0 ? invoiceAmounts : vatTotalValues}
+		`;
 	}, 2000);
-	// let currentSlideIndex1 = 0;
-	// const slides1 = document.querySelectorAll('.voucher-slide1');
+		
 
-	// setInterval(() => {
-	// 	slides1[currentSlideIndex1].classList.remove('active');
+	function onGridContentReady(e) {
+		const component = e.component;
+		const data = component.getDataSource().items();
 
-	// 	currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+		updatePurchaseAmountCard(data);  // ✅ FIXED: pass component
+		updateApprovedCountFromGrid();        // your existing call
+		updateTotalVATValue(data);            // your existing call
+	}
 
-	// 	slides1[currentSlideIndex1].classList.add('active');
-	// }, 2000);
-
-	function animateTodayVoucherCount(target) {
+	
+		function animateTodayVoucherCount(target) {
 		let i = 0;
 		const el = document.getElementById("todayCount");
 		if (!el) return;
@@ -961,6 +1199,50 @@
 			}
 		}, 30);
 	}
+			function animateTodayVoucherCount(target) {
+		let i = 0;
+		const el = document.getElementById("valueDisplay2");
+		if (!el) return;
+
+		el.classList.remove('bounce');
+
+		const timer = setInterval(() => {
+			if (i >= target) {
+				el.innerText = target;
+				el.classList.add('bounce');
+				clearInterval(timer);
+			} else {
+				el.innerText = i++;
+			}
+		}, 30);
+	}
+
+		let isLast5Years = true; // Initial state
+
+	function switchData() {
+		const heading = document.getElementById("statusHeading2");
+		const value = document.getElementById("valueDisplay2");
+
+		if (isLast5Years) {
+			heading.textContent = "New Voucher Today";
+
+			const todayTarget = parseInt(document.getElementById("todayCount")?.textContent || "0", 10);
+			animateTodayVoucherCount(todayTarget); // Animate count-up
+		} else {
+			heading.textContent = "Last 5 Years";
+			value.textContent = document.getElementById("fiveYearCount")?.textContent || "0";
+		}
+
+		isLast5Years = !isLast5Years;
+	}
+
+	// Call once on page load
+	switchData();
+
+	// Automatically switch every 2 seconds
+	setInterval(switchData, 2000); // 2000 ms = 5 seconds
+
+	
 		
 		const card = document.getElementById('mainCard');
 		const counts = [0, 0, 0]; // [Verified, Approved, Posted]
@@ -1184,8 +1466,8 @@
 				toDate: toDate
 			},
 			success: function (data) {
-				console.log("ShowData", data);
-				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				 console.log("ShowData", data);
+			 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 				if (data.data.length === 0 && page > 1) return;
 
 				currentPage = Number(data.currentPage);
@@ -1268,63 +1550,6 @@
 		return [day, strmonth, year].join('-');
 	}
 
-		function updatePurchaseAmountCard(component) {
-		const total = component.getTotalSummaryValue("TotalPurchaseAmount");
-		if (total != null) {
-			const formatted = total.toLocaleString(undefined, {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2
-			});
-
-			const svg = `
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
-					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
-					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
-				</svg>`;
-
-			// Inject SVG + formatted amount
-			document.getElementById('invoiceAmounts').innerHTML = svg + " " + formatted;
-		} else {
-			document.getElementById('invoiceAmounts').innerHTML = "0.00";
-		}
-	}
-
-	function onGridContentReady(e) {
-		const component = e.component;
-		const data = component.getDataSource().items();
-
-		updatePurchaseAmountCard(component);  // ✅ FIXED: pass component
-		updateApprovedCountFromGrid();        // your existing call
-		updateTotalVATValue(data);            // your existing call
-	}
-
-	function updateTotalVATValue(data) {
-		let totalVAT = 0;
-
-		if (Array.isArray(data)) {
-			data.forEach(item => {
-				const vat5 = parseFloat(item.DomesticStandardPurTax) || 0;
-				const vat10 = parseFloat(item.TotalDspurchaseTax10Perc) || 0;
-				const vat15 = parseFloat(item.TotalDspurchaseTax15Perc) || 0;
-
-				totalVAT += vat5 + vat10 + vat15;
-			});
-		}
-
-		const formatted = totalVAT.toLocaleString(undefined, {
-			minimumFractionDigits: 2,
-			maximumFractionDigits: 2
-		});
-
-		const svg = `
-			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
-				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
-				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
-			</svg>`;
-
-		// ✅ Inject SVG + formatted value
-		$("#vatTotalValues").html(svg + formatted);
-	}
 
 	 function cloneEInvoice() {
 		 
@@ -1606,7 +1831,299 @@
 		});
 	}
 
+	function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
+		}
+	}
+	function injectHeaderSVG() {
+		debugger;
+		let gridElement = $('#dataGrid');
+		let dataGrid = gridElement.dxDataGrid("instance");
+		if (!dataGrid) return;
 
+		let dataSource = dataGrid.option("dataSource");
+		if (!dataSource || dataSource.length === 0) return;
+
+		let svgIcon = dataSource[0].CurrencyImage;
+		if (!svgIcon) return;
+
+		svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+
+		gridElement.find(".dx-header-row td").each(function () {
+
+			const $cell = $(this);
+			const dataField = $cell.attr("data-field");  // 👈 This is key
+
+				const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
+				const AmtBeforeTaxText = $AmtBeforeTaxHeader.data("original-text") || $AmtBeforeTaxHeader.text().trim();
+				$AmtBeforeTaxHeader.data("original-text", AmtBeforeTaxText); // Save original once
+
+				$AmtBeforeTaxHeader.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+						<span style="font-weight: bold;">${AmtBeforeTaxText}</span>
+					</div>
+				`);
+
+						const $CalcTaxAmtHeader = $(".CalcTaxAmt-header");
+							const CalcTaxAmtText = $CalcTaxAmtHeader.data("original-text") || $CalcTaxAmtHeader.text().trim();
+							$CalcTaxAmtHeader.data("original-text", CalcTaxAmtText); // Save original once
+
+						$CalcTaxAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+								<span style="font-weight: bold;">${CalcTaxAmtText}</span>
+						</div>
+					`);
+
+							const $ToatlAmtHeader = $(".ToatlAmt-header");
+							const TotalAmtText = $ToatlAmtHeader.data("original-text") || $ToatlAmtHeader.text().trim();
+							$ToatlAmtHeader.data("original-text", TotalAmtText); // Save original once
+
+							$ToatlAmtHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+										<span style="font-weight: bold;">${TotalAmtText}</span>
+							</div>
+						`);
+						const $DomesticRevenueHeader = $(".DomesticRevenue-header");
+										const DomesticRevenueText = $DomesticRevenueHeader.data("original-text") || $DomesticRevenueHeader.text().trim();
+											$DomesticRevenueHeader.data("original-text", DomesticRevenueText); // Save original once
+
+							$DomesticRevenueHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader2 = $(".DomesticRevenue-header1");
+							const DomesticRevenueText2 = $DomesticRevenueHeader2.data("original-text") || $DomesticRevenueHeader2.text().trim();
+								 $DomesticRevenueHeader2.data("original-text", DomesticRevenueText2); // Save original once
+
+								$DomesticRevenueHeader2.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText2}</span>
+							</div>
+						`);
+
+							const $DomesticRevenueHeader3 = $(".DomesticRevenue-header2");
+							const DomesticRevenueText3 = $DomesticRevenueHeader3.data("original-text") || $DomesticRevenueHeader3.text().trim();
+								$DomesticRevenueHeader3.data("original-text", DomesticRevenueText3); // Save original once
+
+								$DomesticRevenueHeader3.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText3}</span>
+							</div>
+						`);
+
+							const $DomesticZeroTaxPurchasesHeader = $(".DomesticZeroTaxPurchases-header");
+							const DomesticZeroTaxPurchasesText = $DomesticZeroTaxPurchasesHeader.data("original-text") || $DomesticZeroTaxPurchasesHeader.text().trim();
+								$DomesticZeroTaxPurchasesHeader.data("original-text", DomesticZeroTaxPurchasesText); // Save original once
+
+								$DomesticZeroTaxPurchasesHeader.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticZeroTaxPurchasesText}</span>
+							</div>
+						`);
+
+								const $ExemptedRevenueHeader = $(".ExemptedRevenue-header");
+								const ExemptedRevenueText = $ExemptedRevenueHeader.data("original-text") || $ExemptedRevenueHeader.text().trim();
+									$ExemptedRevenueHeader.data("original-text", ExemptedRevenueText); // Save original once
+
+									$ExemptedRevenueHeader.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ExemptedRevenueText}</span>
+								</div>
+							`);
+
+
+								const $ImportsPurchaseHeader = $(".ImportsPurchase-header");
+								const ImportsPurchaseText = $ImportsPurchaseHeader.data("original-text") || $ImportsPurchaseHeader.text().trim();
+									$ImportsPurchaseHeader.data("original-text", ImportsPurchaseText); // Save original once
+
+									$ImportsPurchaseHeader.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText}</span>
+								</div>
+							`);
+
+							const $ImportsPurchaseHeader1 = $(".ImportsPurchase-header1");
+								const ImportsPurchaseText1 = $ImportsPurchaseHeader1.data("original-text") || $ImportsPurchaseHeader1.text().trim();
+									$ImportsPurchaseHeader1.data("original-text", ImportsPurchaseText1); // Save original once
+
+									$ImportsPurchaseHeader1.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText1}</span>
+								</div>
+							`);
+
+							const $ImportsPurchaseHeader2 = $(".ImportsPurchase-header2");
+								const ImportsPurchaseText2 = $ImportsPurchaseHeader2.data("original-text") || $ImportsPurchaseHeader2.text().trim();
+									$ImportsPurchaseHeader2.data("original-text", ImportsPurchaseText2); // Save original once
+
+									$ImportsPurchaseHeader2.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText2}</span>
+								</div>
+							`);
+
+							const $ImportsPurchaseHeader3 = $(".ImportsPurchase-header3");
+								const ImportsPurchaseText3 = $ImportsPurchaseHeader3.data("original-text") || $ImportsPurchaseHeader3.text().trim();
+									$ImportsPurchaseHeader3.data("original-text", ImportsPurchaseText3); // Save original once
+
+									$ImportsPurchaseHeader3.html(`
+								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+									${svgIcon}
+												<span style="font-weight: bold;">${ImportsPurchaseText3}</span>
+								</div>
+							`);
+
+						const $ImportsRCMheader = $(".ImportsRCM-header");
+							const ImportsRCMText = $ImportsRCMheader.data("original-text") || $ImportsRCMheader.text().trim();
+							$ImportsRCMheader.data("original-text", ImportsRCMText); // Save original once
+
+						$ImportsRCMheader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ImportsRCMText}</span>
+						</div>
+					`);
+
+
+						const $ImportsRCMheader1 = $(".ImportsRCM-header1");
+							const ImportsRCMText1 = $ImportsRCMheader1.data("original-text") || $ImportsRCMheader1.text().trim();
+							$ImportsRCMheader1.data("original-text", ImportsRCMText); // Save original once
+
+						$ImportsRCMheader1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${ImportsRCMText}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader1 = $(".DomesticePurchase-header1");
+							const DomesticePurchaseText1 = $DomesticePurchaseHeader1.data("original-text") || $DomesticePurchaseHeader1.text().trim();
+							$DomesticePurchaseHeader1.data("original-text", DomesticePurchaseText1); // Save original once
+
+						$DomesticePurchaseHeader1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText1}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader2 = $(".DomesticePurchase-header2");
+							const DomesticePurchaseText2 = $DomesticePurchaseHeader2.data("original-text") || $DomesticePurchaseHeader2.text().trim();
+							$DomesticePurchaseHeader2.data("original-text", DomesticePurchaseText2); // Save original once
+
+						$DomesticePurchaseHeader2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText2}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader3 = $(".DomesticePurchase-header3");
+							const DomesticePurchaseText3 = $DomesticePurchaseHeader3.data("original-text") || $DomesticePurchaseHeader3.text().trim();
+							$DomesticePurchaseHeader3.data("original-text", DomesticePurchaseText1); // Save original once
+
+						$DomesticePurchaseHeader3.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText1}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader4 = $(".DomesticePurchase-header4");
+							const DomesticePurchaseText4 = $DomesticePurchaseHeader4.data("original-text") || $DomesticePurchaseHeader4.text().trim();
+							$DomesticePurchaseHeader4.data("original-text", DomesticePurchaseText4); // Save original once
+
+						$DomesticePurchaseHeader4.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText1}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader5 = $(".DomesticePurchase-header5");
+							const DomesticePurchaseText5 = $DomesticePurchaseHeader5.data("original-text") || $DomesticePurchaseHeader5.text().trim();
+							$DomesticePurchaseHeader5.data("original-text", DomesticePurchaseText5); // Save original once
+
+						$DomesticePurchaseHeader5.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText5}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader6 = $(".DomesticePurchase-header6");
+							const DomesticePurchaseText6 = $DomesticePurchaseHeader6.data("original-text") || $DomesticePurchaseHeader6.text().trim();
+							$DomesticePurchaseHeader6.data("original-text", DomesticePurchaseText6); // Save original once
+
+						$DomesticePurchaseHeader6.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText6}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader7 = $(".DomesticePurchase-header7");
+							const DomesticePurchaseText7 = $DomesticePurchaseHeader7.data("original-text") || $DomesticePurchaseHeader7.text().trim();
+							$DomesticePurchaseHeader7.data("original-text", DomesticePurchaseText7); // Save original once
+
+						$DomesticePurchaseHeader7.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText7}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader8 = $(".DomesticePurchase-header1");
+							const DomesticePurchaseText8 = $DomesticePurchaseHeader8.data("original-text") || $DomesticePurchaseHeader8.text().trim();
+							$DomesticePurchaseHeader8.data("original-text", DomesticePurchaseText8); // Save original once
+
+						$DomesticePurchaseHeader8.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText8}</span>
+						</div>
+					`);
+
+
+						const $DomesticePurchaseHeader9 = $(".DomesticePurchase-header9");
+							const DomesticePurchaseText9 = $DomesticePurchaseHeader9.data("original-text") || $DomesticePurchaseHeader9.text().trim();
+							$DomesticePurchaseHeader9.data("original-text", DomesticePurchaseText1); // Save original once
+
+						$DomesticePurchaseHeader9.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText9}</span>
+						</div>
+					`);
+
+						const $DomesticePurchaseHeader10 = $(".DomesticePurchase-header10");
+							const DomesticePurchaseText10 = $DomesticePurchaseHeader10.data("original-text") || $DomesticePurchaseHeader10.text().trim();
+							$DomesticePurchaseHeader10.data("original-text", DomesticePurchaseText10); // Save original once
+
+						$DomesticePurchaseHeader10.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+									<span style="font-weight: bold;">${DomesticePurchaseText10}</span>
+						</div>
+					`);
+
+		});
+	}
 
 
 

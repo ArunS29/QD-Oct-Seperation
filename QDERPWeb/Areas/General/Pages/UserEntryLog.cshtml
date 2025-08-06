@@ -53,41 +53,38 @@
 
 
 	@(Html.DevExtreme().DropDownButton()
-		.ID("ddBtnShowRecord")
+		.ID("ddBtnShowRecords")
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
 		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+.		OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
-				.Items(items =>
-				{
-					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-				})
-				.ItemTemplate(@<text>
-            <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
-                <div class="item-content">
-                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                    <div>
-                        <div class="item-title"><%- text %></div>
-                    </div>
-                </div>
-            </div>
-        </text>)
-		)
-
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		.ItemTemplate(@<text>
+			<div class="custom-dropdown-item">
+				<div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+				<div class="item-content">
+				   	<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+				   	<div>
+				   		<div class="item-title"><%- text %></div>
+				   	</div>
+				</div>
+			</div>
+		</text>))
 </div>
 <div class="dx-field ledgerResult">
 	@(
@@ -202,8 +199,12 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
+				frmDateBox.option("value", frmDate);
+				toDateBox.option("value", toDate);
+				frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
+				toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
 				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
 		url: '/api/CompanyDetails/GetUserEntryLog',

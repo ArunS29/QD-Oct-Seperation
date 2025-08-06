@@ -206,37 +206,74 @@
 	#postedCount1 {
 		font-weight: bold;
 	}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
 </style>
 <div class="title">
 <input id="formId" value="frm20171VATDebitNoteView" type="hidden" />
 
-	<div class="card blue shine compact">
-		<h2 class="title-slide">VAT Debit Note Register</h2>
-		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
 
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">VAT Debit Note Register</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			@* <div class="tile-icon">
+					<!-- Icon as SVG -->
+					<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<!-- L-shape blocks -->
+						<rect x="8" y="8" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+						<rect x="8" y="32" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+						<rect x="32" y="32" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+
+						<!-- Rotated diamonds -->
+						<rect x="34" y="10" width="12" height="12" rx="2" transform="rotate(45 40 16)" fill="white" opacity="0.6" />
+						<rect x="42" y="2" width="12" height="12" rx="2" transform="rotate(45 48 8)" fill="white" opacity="0.6" />
+						<rect x="50" y="18" width="12" height="12" rx="2" transform="rotate(45 56 24)" fill="white" opacity="0.6" />
+					</svg>
+
+				</div> *@
+		</div>
 	</div>
-	<div class="card orange-theme" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
-		<h4 style="margin-bottom: 10px; color: white;">Voucher Count</h4>
+
+	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
+		<h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;">Voucher Count</h4>
 
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4>No of Invoices Verified</h4>
-				<h3>Total <span id="verifiedCount1">0</span></h3>
+				<h4 style ="margin: 0;text-align: left;">No of Invoices Verified</h4>
+				<h3 id="verifiedCount1" style="margin: 0;text-align: left;">0</h3>
 			</div>
 			<div class="voucher-slide">
-				<h4>No of Invoices Approved</h4>
-				<h3>Total <span id="approvedCount1">0</span></h3>
+				<h4 style="margin: 0;text-align: left;">No of Invoices Approved</h4>
+				<h3 id="approvedCount1" style="margin: 0;text-align: left;">0</h3>
 			</div>
 			<div class="voucher-slide">
-				<h4>No of Invoices Posted</h4>
-				<h3>Total <span id="postedCount1">0</span></h3>
+				<h4 style="margin: 0;text-align: left;">No of Invoices Posted</h4>
+				<h3 id="postedCount1" style="margin: 0;text-align: left;">0</h3>
 			</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important;  padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Today</h4>
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important;  padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Today</h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
 				<h4>Debit Notes Raised Today</h4>
@@ -392,7 +429,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header1" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
@@ -410,7 +451,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header2" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 
 				subColumns.AddFor(m => m.TotalDebitNoteAmount)
@@ -428,7 +473,11 @@
 		}
 		return '';
 		}
-		");
+		")			.HeaderCellTemplate(@<text>
+							   			<div class="Currency-header3" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 			});
 
@@ -453,7 +502,11 @@
 		}
 		return '';
 		}
-		");
+		")			.HeaderCellTemplate(@<text>
+							   			<div class="Currency-header4" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>);
 
 				subColumns.AddFor(m => m.TotalDspurchase10Perc)
 			.Caption("Domestic 10% Purchase")
@@ -470,7 +523,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header5" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalDspurchase15Perc)
 			.Caption("Domestic 15% Purchase")
@@ -487,7 +544,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header6" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.DomesticZeroTaxPurchases)
 			.Caption("Domestic Zero Rated Purchase")
@@ -504,7 +565,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header7" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
 			.Caption("Domestic Exempted Purchase")
@@ -521,7 +586,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="Currency-header8" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});		
 
@@ -542,7 +611,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header9" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption("Imports 10% Purchase")
@@ -559,7 +632,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header10" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalImportPurchase15Perc)
 			.Caption("Imports 15% Purchase")
@@ -576,7 +653,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header11" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.ImportsVatthruRcm)
 			.Caption("RCM @5% Purchase")
@@ -593,7 +674,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header12" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalRcmpurchase10Perc)
 			.Caption("RCM 10% Purchase")
@@ -610,7 +695,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header13" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalRcmpurchase15Perc)
 			.Caption("RCM 15% Purchase")
@@ -627,7 +716,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="Currency-header14" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -651,7 +744,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header15" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
 			.Caption("Domestic 10% VAT")
@@ -668,7 +765,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header16" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
 			.Caption("Domestic 15% VAT")
@@ -685,7 +786,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header17" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
 			.Caption("Domestic Zero Rated VAT")
@@ -702,7 +807,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header18" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
 			.Caption("Domestic Exempted VAT")
@@ -719,7 +828,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="Currency-header19" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -737,7 +850,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header20" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
 			.Caption("Imports @10% VAT")
@@ -751,7 +868,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header21" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("Imports @15% VAT")
@@ -765,7 +886,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header22" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.ImportsVatthruRcmtax)
 			.Caption("RCM @5% VAT")
@@ -779,7 +904,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header23" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption("RCM @10% VAT")
@@ -793,7 +922,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header24" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
 
 				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("RCM @15% VAT")
@@ -807,7 +940,11 @@
 		}
 		return '';
 		}
-		");
+		").HeaderCellTemplate(@<text>
+		<div class="Currency-header25" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 			});
@@ -821,7 +958,7 @@
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		@* .WordWrapEnabled(true) *@
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		///.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
@@ -838,6 +975,7 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
+		.OnOptionChanged("handleGridOptionChanged")
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -1512,6 +1650,332 @@
 						});
 					}
 				});
+		}
+
+
+
+		function handleGridOptionChanged(e) {
+			if (e.name === "columns" || e.name === "visible") {
+				// Columns changed, so re-inject SVG
+				injectHeaderSVG(); // slight delay to wait for DOM re-render
+			}
+		}
+		function injectHeaderSVG() {
+			debugger;
+			let gridElement = $('#dataGrid');
+			let dataGrid = gridElement.dxDataGrid("instance");
+			if (!dataGrid) return;
+
+			let dataSource = dataGrid.option("dataSource");
+			if (!dataSource || dataSource.length === 0) return;
+
+			let svgIcon = dataSource[0].CurrencyImage;
+			let currencySymbol = dataSource[0].CurrencySymbole;
+
+			if (!svgIcon && currencySymbol) {
+				svgIcon = `<span style="font-weight: bold;">${currencySymbol}</span>`;
+			} else if (svgIcon) {
+				svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+			} else {
+				return; // if neither icon nor symbol is present, exit
+			}
+
+			gridElement.find(".dx-header-row td").each(function () {
+
+				const $cell = $(this);
+				const dataField = $cell.attr("data-field");  // 👈 This is key
+
+					const $Currencyheader1 = $(".Currency-header1");
+					const CurrencyheaderText1 = $Currencyheader1.data("original-text") || $Currencyheader1.text().trim();
+					$Currencyheader1.data("original-text", CurrencyheaderText1); // Save original once
+
+					$Currencyheader1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText1}</span>
+						</div>
+					`);
+
+						const $Currencyheader2 = $(".Currency-header2");
+					const CurrencyheaderText2 = $Currencyheader2.data("original-text") || $Currencyheader2.text().trim();
+					$Currencyheader2.data("original-text", CurrencyheaderText2); // Save original once
+
+					$Currencyheader2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText2}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader3 = $(".Currency-header3");
+					const CurrencyheaderText3 = $Currencyheader3.data("original-text") || $Currencyheader3.text().trim();
+					$Currencyheader3.data("original-text", CurrencyheaderText3); // Save original once
+
+					$Currencyheader3.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText3}</span>
+						</div>
+					`);
+
+						const $Currencyheader4 = $(".Currency-header4");
+					const CurrencyheaderText4 = $Currencyheader4.data("original-text") || $Currencyheader4.text().trim();
+					$Currencyheader5.data("original-text", CurrencyheaderText4); // Save original once
+
+					$Currencyheader4.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText4}</span>
+						</div>
+					`);
+
+						const $Currencyheader5 = $(".Currency-header1");
+					const CurrencyheaderText5 = $Currencyheader5.data("original-text") || $Currencyheader5.text().trim();
+					$Currencyheader5.data("original-text", CurrencyheaderText5); // Save original once
+
+					$Currencyheader5.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText5}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader6 = $(".Currency-header6");
+					const CurrencyheaderText6 = $Currencyheader6.data("original-text") || $Currencyheader6.text().trim();
+					$Currencyheader6.data("original-text", CurrencyheaderText6); // Save original once
+
+					$Currencyheader6.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText6}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader7 = $(".Currency-header7");
+					const CurrencyheaderText7 = $Currencyheader7.data("original-text") || $Currencyheader7.text().trim();
+					$Currencyheader7.data("original-text", CurrencyheaderText7); // Save original once
+
+					$Currencyheader7.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText7}</span>
+						</div>
+					`);
+
+
+
+						const $Currencyheader8 = $(".Currency-header8");
+					const CurrencyheaderText8 = $Currencyheader8.data("original-text") || $Currencyheader8.text().trim();
+					$Currencyheader8.data("original-text", CurrencyheaderText8); // Save original once
+
+					$Currencyheader8.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText8}</span>
+						</div>
+					`);
+
+						const $Currencyheader9 = $(".Currency-header9");
+					const CurrencyheaderText9 = $Currencyheader9.data("original-text") || $Currencyheader9.text().trim();
+					$Currencyheader9.data("original-text", CurrencyheaderText9); // Save original once
+
+					$Currencyheader9.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText9}</span>
+						</div>
+					`);
+
+						const $Currencyheader10 = $(".Currency-header10");
+					const CurrencyheaderText10 = $Currencyheader10.data("original-text") || $Currencyheader10.text().trim();
+					$Currencyheader10.data("original-text", CurrencyheaderText10); // Save original once
+
+					$Currencyheader10.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText10}</span>
+						</div>
+					`);
+
+						const $Currencyheader11 = $(".Currency-header11");
+					const CurrencyheaderText11 = $Currencyheader11.data("original-text") || $Currencyheader11.text().trim();
+					$Currencyheader11.data("original-text", CurrencyheaderText11); // Save original once
+
+					$Currencyheader11.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText11}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader12 = $(".Currency-header12");
+					const CurrencyheaderText12 = $Currencyheader12.data("original-text") || $Currencyheader12.text().trim();
+					$Currencyheader12.data("original-text", CurrencyheaderText12); // Save original once
+
+					$Currencyheader12.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText12}</span>
+						</div>
+					`);
+
+						const $Currencyheader13 = $(".Currency-header13");
+					const CurrencyheaderText13 = $Currencyheader13.data("original-text") || $Currencyheader13.text().trim();
+					$Currencyheader13.data("original-text", CurrencyheaderText13); // Save original once
+
+					$Currencyheader13.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText13}</span>
+						</div>
+					`);
+
+						const $Currencyheader14 = $(".Currency-header14");
+					const CurrencyheaderText14 = $Currencyheader14.data("original-text") || $Currencyheader14.text().trim();
+					$Currencyheader14.data("original-text", CurrencyheaderText14); // Save original once
+
+					$Currencyheader14.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText14}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader15 = $(".Currency-header15");
+					const CurrencyheaderText15 = $Currencyheader15.data("original-text") || $Currencyheader15.text().trim();
+					$Currencyheader15.data("original-text", CurrencyheaderText15); // Save original once
+
+					$Currencyheader15.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText15}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader16 = $(".Currency-header16");
+					const CurrencyheaderText16 = $Currencyheader16.data("original-text") || $Currencyheader16.text().trim();
+					$Currencyheader16.data("original-text", CurrencyheaderText16); // Save original once
+
+					$Currencyheader16.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText16}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader17 = $(".Currency-header1");
+					const CurrencyheaderText17 = $Currencyheader17.data("original-text") || $Currencyheader17.text().trim();
+					$Currencyheader17.data("original-text", CurrencyheaderText17); // Save original once
+
+					$Currencyheader17.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText17}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader18 = $(".Currency-header18");
+					const CurrencyheaderText18 = $Currencyheader18.data("original-text") || $Currencyheader18.text().trim();
+					$Currencyheader18.data("original-text", CurrencyheaderText18); // Save original once
+
+					$Currencyheader18.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText18}</span>
+						</div>
+					`);
+
+						const $Currencyheader19 = $(".Currency-header19");
+					const CurrencyheaderText19 = $Currencyheader19.data("original-text") || $Currencyheader19.text().trim();
+					$Currencyheader19.data("original-text", CurrencyheaderText19); // Save original once
+
+					$Currencyheader19.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText19}</span>
+						</div>
+					`);
+
+						const $Currencyheader20 = $(".Currency-header20");
+					const CurrencyheaderText20 = $Currencyheader20.data("original-text") || $Currencyheader20.text().trim();
+					$Currencyheader20.data("original-text", CurrencyheaderText20); // Save original once
+
+					$Currencyheader20.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText20}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader21 = $(".Currency-header21");
+					const CurrencyheaderText21 = $Currencyheader21.data("original-text") || $Currencyheader21.text().trim();
+					$Currencyheader21.data("original-text", CurrencyheaderText21); // Save original once
+
+					$Currencyheader21.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText21}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader22 = $(".Currency-header22");
+					const CurrencyheaderText22 = $Currencyheader22.data("original-text") || $Currencyheader22.text().trim();
+					$Currencyheader22.data("original-text", CurrencyheaderText22); // Save original once
+
+					$Currencyheader22.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText22}</span>
+						</div>
+					`);
+
+						const $Currencyheader23 = $(".Currency-header23");
+					const CurrencyheaderText23 = $Currencyheader23.data("original-text") || $Currencyheader23.text().trim();
+					$Currencyheader23.data("original-text", CurrencyheaderText23); // Save original once
+
+					$Currencyheader23.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText23}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader24 = $(".Currency-header24");
+					const CurrencyheaderText24 = $Currencyheader24.data("original-text") || $Currencyheader24.text().trim();
+					$Currencyheader24.data("original-text", CurrencyheaderText24); // Save original once
+
+					$Currencyheader24.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText24}</span>
+						</div>
+					`);
+
+
+						const $Currencyheader25 = $(".Currency-header25");
+					const CurrencyheaderText25 = $Currencyheader25.data("original-text") || $Currencyheader25.text().trim();
+					$Currencyheader25.data("original-text", CurrencyheaderText25); // Save original once
+
+					$Currencyheader25.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CurrencyheaderText25}</span>
+						</div>
+					`);
+
+
+			});
 		}
 		
 </script>

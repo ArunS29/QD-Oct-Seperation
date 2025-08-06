@@ -1,21 +1,22 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -25,9 +26,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<RequestforQuotationListController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public RequestforQuotationListController(ILogger<RequestforQuotationListController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public RequestforQuotationListController(ILogger<RequestforQuotationListController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -142,18 +147,25 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		{
 			try
 			{
-				// Retrieve tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
+				 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Use tenantName to find the company
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
 
 					if (company == null)
 					{
@@ -531,6 +543,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update RFQ",
+                      actionDetail: $":Saved RFQ {VM.Rfqno}",
+                       documentNo: $"{VM.Rfqno}"
+                );
+
 
                 return Ok(new { success = true, message = "RFQ Details saved/updated successfully." });
             }
@@ -590,8 +608,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				dbContext.Tbl60701rfqmasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Delete Rfq",
+                  actionDetail: $":Deleted Rfq {Rfqno}",
+                  documentNo: $"{Rfqno}"
+                );
 
-				return Ok(new { success = true, message = "RFQ details deleted successfully." });
+                return Ok(new { success = true, message = "RFQ details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -640,8 +663,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+                             module: "IMS > Submit RFQ",
+                             actionDetail: $": Submited RFQ {Rfqno}",
+                             documentNo: $"{Rfqno}"
+                           );
 
-			return Ok(new { success = true, message = "RFQ submitted successfully." });
+            return Ok(new { success = true, message = "RFQ submitted successfully." });
 		}
         [HttpPost]
         public async Task<IActionResult> VerifyRFQ(string Rfqno)
@@ -678,6 +706,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             voucher.VerifiedBy = userName;
 
             await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+              module: "IMS > Verify RFQ",
+               actionDetail: $":Verified RFQ {Rfqno}",
+               documentNo: $"{Rfqno}"
+            );
 
             return Ok(new
             {
@@ -725,6 +758,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     voucher.Rfqsignatory = (byte)signatoryId.Value;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+              module: "IMS > Approve RFQ",
+               actionDetail: $":Approved RFQ {Rfqno}",
+               documentNo: $"{Rfqno}"
+            );
 
                 return Ok(new
                 {
@@ -772,6 +810,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 // Save Changes
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete RFQ View ",
+                        actionDetail: $":Deleted RFQ View  {Rfqno}",
+                        documentNo: $"{Rfqno}"
+                       );
 
                 // Log Deletion
                 //string userId = HttpContext.Session.GetString("UserID") ?? "Unknown";
@@ -819,6 +861,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60701rfqmasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Unlock RFQ",
+                    actionDetail: $":Unlocked RFQ {request.Rfqno}",
+                    documentNo: $"{request.Rfqno}"
+                );
 
                 return Ok(new { success = true, message = "Quotation has been unlocked successfully." });
             }
@@ -847,6 +894,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     pr.PurchaseRequestStatusId = 2;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Unlock RFQ",
+                       actionDetail: $":Unlocked RFQ {mprNo}",
+                       documentNo: $"{mprNo}"
+                    );
+
                 }
 
                 return Ok(new { message = "RFQ inserted from MPR successfully." });
@@ -917,6 +970,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     item.IsWonForPo = true;
                 }
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Create PO From RFQ",
+                  actionDetail: $":Created PO From RFQ {rfqNo}",
+                  documentNo: $"{rfqNo}"
+                );
 
                 // Step 4: Execute stored procedure to insert PO from RFQ
                 await dbContext.Database.ExecuteSqlRawAsync(
@@ -978,6 +1036,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60702rfqchildren.Remove(child);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Delete Child By Id",
+                  actionDetail: $":Deleted Child By Id {childId}",
+                  documentNo: $"{childId}"
+                );
 
                 return Ok(new { success = true, message = "Child row deleted successfully." });
             }

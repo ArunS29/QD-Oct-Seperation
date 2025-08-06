@@ -3,9 +3,11 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Globalization;
 using System.Net;
 
@@ -17,10 +19,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 	{
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<MaterialRequestEnquiriesDetailsController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public MaterialRequestEnquiriesDetailsController(ILogger<MaterialRequestEnquiriesDetailsController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public MaterialRequestEnquiriesDetailsController(ILogger<MaterialRequestEnquiriesDetailsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
 		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 		
@@ -179,11 +184,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					//DeleteDocumentPDF(Mprno, "VoucherScanned\\IMSEnquiry");
 
 					dbContext.SaveChanges();
-					
-					// Log the deletion
-					//InsertUserEntryLogSheet("IMS Purchase Request", $"IMS Purchase Request Ref No. {Mprno} has been deleted by User ID: {User.Identity.Name}.", User.Identity.Name, Mprno);
+                    _userActionLogger.LogAsync(module: "IMS > Delete Purchase Request  ",
+                      actionDetail: $":Deleted Purchase Request {Mprno}",
+                      documentNo: $"{Mprno}"
+                    );
 
-					return Json(new { success = true, message = "Request/Enquiry has been successfully removed from the database." });
+                    // Log the deletion
+                    //InsertUserEntryLogSheet("IMS Purchase Request", $"IMS Purchase Request Ref No. {Mprno} has been deleted by User ID: {User.Identity.Name}.", User.Identity.Name, Mprno);
+
+                    return Json(new { success = true, message = "Request/Enquiry has been successfully removed from the database." });
 				}
 				catch (Exception ex)
 				{
@@ -220,6 +229,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60601purchaseRequestMasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Unlock Material Receipt",
+                  actionDetail: $":Unlocked Material Receipt  {request.Mprno}",
+                  documentNo: $"{request.Mprno}"
+                );
 
                 return Ok(new { success = true, message = "Request/Enquiry has been unlocked successfully." });
             }
@@ -328,6 +342,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Clone Purchase Request",
+                     actionDetail: $":Cloned Purchase Request {originalMprNo}",
+                     documentNo: $"{originalMprNo}"
+                   );
 
                 return Ok(new
                 {
@@ -367,8 +385,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Revise Request",
+                 actionDetail: $":Revised Request {originalMprNo}",
+                 documentNo: $"{originalMprNo}"
+                );
+                var currentRevisionno = dbContext.Tbl60601purchaseRequestMasters
+           .Where(p => p.Mprno.StartsWith(originalMprNo))
+           .Max(p => p.MprrevisionNo);
 
-                return Ok(new { success = true, message = "Purchase Request revised successfully.", newMprNo });
+                return Ok(new { success = true, message = "Purchase Request revised successfully.", newMprNo,RevisionNo= currentRevisionno });
             }
             catch (Exception ex)
             {
@@ -523,6 +548,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 2; // Assuming '2' is the 'converted to RFQ' status
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Create Rfq From Mpr",
+                      actionDetail: $":Created Rfq From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 // 6. Return success
@@ -598,6 +628,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 4; // Assume 3 = Quotation created
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Created Quotation From Mpr",
+                      actionDetail: $":Created Quotation From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 return Ok(new { success = true, message = "Quotation created successfully.", quoteno = quoteNo });
@@ -665,6 +700,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 8; // ✅ Set status for "Material Receipt Created"
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Create Material Receipt From Mpr",
+                      actionDetail: $":Created Material Receipt From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 return Ok(new
@@ -729,6 +769,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 6;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Create PO From Mpr",
+                      actionDetail: $":Created PO From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 return Ok(new { success = true, poNo = newPoNo, message = "Purchase Order created successfully." });

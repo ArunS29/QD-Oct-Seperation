@@ -858,11 +858,20 @@
                                 .LabelMode(EditorLabelMode.Floating))
                             </td>
 
+                        
+                        </tr>
+                    <tr class="flex-row" style="margin-top: 6px;">
+                        <td>
+                            <label  id="AvgCostPriceLabel"></label>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("AvgCostPrice")
+                                .LabelMode(EditorLabelMode.Floating))
+                        </td>
                         <td>
                             <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
                             @(Html.DevExtreme().CheckBox()
-                            .ID("ItemDiscontinued")
-                            .Value(true))   
+                                .ID("ItemDiscontinued")
+                                .Value(true))
                         </td>
                         </tr>
                     </table>
@@ -2077,8 +2086,10 @@
                         .DataField("UnitCodeOfConversion")
                         .Width(300)
                         .Caption(new JS("formatMessage('Unit Code Of Conversion')"))
-                        .EditCellTemplate(new JS("unitCodeDropDownEditor")); // ✅ Use as editor
+                        .EditCellTemplate(new JS("unitCodeDropDownEditor")) // ✅ Use as editor
+                        .CellTemplate(new JS("unitCodeCellTemplate"));
 
+                        
                         columns.Add()
                         .DataField("UnitConverted")
                         .Caption(new JS("formatMessage('Unit Converted')"))
@@ -2155,9 +2166,7 @@
                         $("<div>").appendTo(cellElement).dxDropDownBox({
                             value: cellInfo.value,
                             valueExpr: "UnitCode",
-                            displayExpr: function (item) {
-                                return item ? `${item.UnitType}` : "";
-                            },
+                            displayExpr: "UnitType",
                             dataSource: unitCodeLookupData,
                             showClearButton: true,
                             dropDownOptions: { width: 600 },
@@ -2932,9 +2941,9 @@
                             $("#StockNoItemCode").dxTextBox("instance").option("value", data.Gscode);
                             $("#ItemName").dxTextBox("instance").option("value", data.Gsdescrpition);
                             $("#ItemNameArabic").dxTextBox("instance").option("value", data.GsdescriptionAr);
-                            $("#StockGroup").dxSelectBox("instance").option("value", data.GsgroupId);
-                            $("#ItemStore").dxSelectBox("instance").option("value", data.StoreId);
-                            $("#ItemClassification").dxSelectBox("instance").option("value", data.ItemClassificationId);
+                            $("#StockGroup").dxDropDownBox("instance").option("value", data.GsgroupId);
+                            $("#ItemStore").dxDropDownBox("instance").option("value", data.StoreCode);
+                            $("#ItemClassification").dxDropDownBox("instance").option("value", data.ItemClassificationId);
                             $("#DetailedDescription").dxTextArea("instance").option("value", data.GsdetailedDesc);
                             $("#ArabicDescription").dxTextArea("instance").option("value", data.GsdetailedDescAr);
                             $("#UnitOfMeasure").dxSelectBox("instance").option("value", data.GsuoM);
@@ -3042,7 +3051,7 @@
     function OpeningBalanceOPB() {
         // Get instances safely
         const gscodeInstance = $("#StockNoItemCode").dxTextBox("instance");
-        const descriptionInstance = $("#DetailedDescription").dxTextArea("instance");
+        const descriptionInstance = $("#ItemName").dxTextBox("instance");
 
         // Check if both controls exist
         if (!gscodeInstance || !descriptionInstance) {
@@ -3053,9 +3062,10 @@
         // Safely get values
         const gscode = gscodeInstance.option("value") || '';
         const description = descriptionInstance.option("value") || '';
-
+        const openingBalance = $("#OpeningBalance").dxNumberBox("instance").option("value");
+        const costPrice = $("#CostPrice").dxNumberBox("instance").option("value");
         // Encode the parameters to ensure URL safety
-        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&modal=true`;
+        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&modal=true`;
         openModal(url, "Opening Balance");
     }
 
@@ -3271,6 +3281,21 @@
     function dataGridInitialized2(e) {
         dataGrid = e.component;
     }
-    
+    //Unit of Convertion - unittype data
+    function unitCodeCellTemplate(cellElement, cellInfo) {
+        const rawCode = cellInfo.data.UnitCodeOfConversion;
+
+        if (rawCode == null || rawCode === "" || isNaN(Number(rawCode))) {
+            cellElement.text(""); // or "—" or "N/A"
+            return;
+        }
+
+        const code = Number(rawCode);
+        const unit = unitCodeLookupData.find(x => Number(x.UnitCode) === code);
+        const display = unit ? unit.UnitType : code;
+        cellElement.text(display);
+    }
+
+
       
 </script>

@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -17,10 +18,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<MaterialReceiptController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public MaterialReceiptController(ILogger<MaterialReceiptController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
 		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 
@@ -256,20 +260,27 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		{
 			try
 			{
-				// Retrieve tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
-
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Use tenantName to find the company
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-					if (company == null)
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+                    if (company == null)
 					{
 						return NotFound("Company not found.");
 					}
@@ -547,6 +558,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Save Or Update Material Receipt",
+                   actionDetail: $":Saved MaterialReceipt  {VM.ReceiptNo}",
+                   documentNo: $"{VM.ReceiptNo}"
+                );
 
                 return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully." });
             }
@@ -591,8 +607,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				dbContext.Tbl60501materialReceiptMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete Material Receipt",
+                   actionDetail: $":Deleted Material Receipt  {ReceiptNo}",
+                   documentNo: $"{ReceiptNo}"
+                );
 
-				return Ok(new { success = true, message = "Material Receipt details deleted successfully." });
+                return Ok(new { success = true, message = "Material Receipt details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -643,8 +664,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 					// Save changes
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Submit Material Receipt",
+                   actionDetail: $":Submited Material Receipt  {ReceiptNo}",
+                   documentNo: $"{ReceiptNo}"
+                );
 
-				return Ok(new { success = true, message = "Material Receipt submitted successfully." });
+                return Ok(new { success = true, message = "Material Receipt submitted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -701,6 +727,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             voucher.VerifiedBy = userName;
 
              await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+              module: "IMS > Verify Material Receipt",
+              actionDetail: $":Verified Material Receipt  {ReceiptNo}",
+              documentNo: $"{ReceiptNo}"
+            );
 
             return Ok(new
             {
@@ -748,6 +779,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     voucher.ReceiptSignatory = (byte)signatoryId.Value;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                 module: "IMS > Approve Material Receipt",
+                 actionDetail: $":Approved Material Receipt {ReceiptNo}",
+                  documentNo: $"{ReceiptNo}"
+                );
 
                 return Ok(new
                 {
@@ -782,6 +818,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60502materialReceiptChildren.Remove(child);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Child By Id",
+                  actionDetail: $":Deleted Child By Id  {childId}",
+                   documentNo: $"{childId}"
+                );
 
                 return Ok(new { success = true, message = "Child row deleted successfully." });
             }

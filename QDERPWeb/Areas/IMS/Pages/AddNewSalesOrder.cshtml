@@ -678,26 +678,24 @@
 
 
                             <!-- Cost Center Master -->
-                            @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
-                            .ID("CostCenter")
-                            .ValueExpr("CostAllocationUnitId")
-                            .ValueChangeEvent("input")
-							.HoverStateEnabled(true)
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            .DisplayExpr("CostAllocationMasterGroup")
-                            .DataSource(ds => ds
-                            .Mvc()
-                            .Controller("SalesOrders")
-                            .LoadAction("GetCostCenterMaster")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("CostAllocationUnitId")
-                            )
-                            .StylingMode(EditorStylingMode.Outlined)
-                            .Label("Cost Center Master *")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                            .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate")))
+                           @(Html.DevExtreme().DropDownBox()
+    .ID("CostCenter")
+    .ValueExpr("CostAllocationMasterGroup") // Selecting group name as value
+    .DisplayExpr("CostAllocationMasterGroup") // Display group name
+    .AcceptCustomValue(false)
+    .Label("Cost Center Master *")
+    .LabelMode(EditorLabelMode.Floating)
+    .Value("")
+    .DataSource(ds => ds
+        .Mvc()
+        .Controller("SalesOrders")
+        .LoadAction("GetCostCenterMaster")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("CostAllocationMasterGroup") // Must match returned field
+    )
+    .ContentTemplate(new TemplateName("CostCenterMasterDropDownTemplate"))
+    .Width("100%")
+)
 
                         </td>
 
@@ -1290,28 +1288,26 @@
                     )
 }
 
-@using (Html.DevExtreme().NamedTemplate("CostCenterMasterDropDownTemplate")) // ✅ Corrected name
+@using (Html.DevExtreme().NamedTemplate("CostCenterMasterDropDownTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("costcenterGroupGrid")
-                         .DataSource(ds => ds
-                         .Mvc()
-                         .Controller("SalesOrders")
-                             .LoadAction("GetCostCenterMaster")
-                         .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("CostAllocationUnitId")
-                         )
-                        .Height(300)
-                        .ShowBorders(true)
-                        .FilterRow(f => f.Visible(false))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Allocation Master Group");
-                        })
-                        .OnSelectionChanged("costcentermasterGroup")
-                    )
+        .ID("costcenterGroupGrid")
+        .DataSource(ds => ds
+            .Mvc()
+            .Controller("SalesOrders")
+            .LoadAction("GetCostCenterMaster")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("CostAllocationMasterGroup")
+        )
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .Height(300)
+        .ShowBorders(true)
+        .Columns(columns =>
+        {
+            columns.Add().DataField("CostAllocationMasterGroup").Caption("Cost Allocation Master Group");
+        })
+        .OnSelectionChanged("costcentermasterGroup")
+    )
 }
 
 <script>
@@ -1979,18 +1975,17 @@
         }
 
         //Costcenter
-            function costcentermasterGroup(e) {
-            const selected = e.selectedRowsData[0];
-            if (selected) {
-                const dropDownBox = $("#CostCenter").dxDropDownBox("instance");
-                if (dropDownBox) {
-                    dropDownBox.option("value", selected.CostAllocationUnitId);
-                    dropDownBox.close();
-                } else {
-                    console.error("DropDownBox instance not found.");
-                }
-            }
+           function costcentermasterGroup(e) {
+    const selected = e.selectedRowsData[0];
+    if (selected) {
+        const dropDownBox = $("#CostCenter").dxDropDownBox("instance");
+        if (dropDownBox) {
+            dropDownBox.option("value", selected.CostAllocationMasterGroup); // Set selected group
+            dropDownBox.close();
         }
+    }
+}
+
               // Inject the logged-in user name from Razor server-side to JS variable
         var currentUserName = '@User.Identity.Name';
 
@@ -2799,6 +2794,7 @@ $(document).ready(function () {
 
 
         	  function AddContactName() {
+                  alert(222);
 		var dropDownBox = $('#ClientNames').dxDropDownBox('instance');
         var menuType = "inventory";
 		var selectedValue = dropDownBox.option('value'); // clientCode

@@ -4,6 +4,7 @@ using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.VAT.Models;
@@ -43,7 +44,6 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
-           
             _fcmService = fcmService;
         }
 
@@ -177,8 +177,23 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     string[] acceptedFormats = { "MM/dd/yyyy", "yyyy-MM-dd" };
 
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
                     var company = dbContext.Tbl901CompanyDetails
-                   .FirstOrDefault();
+                   .FirstOrDefault(c => c.CompanyId == companyId);
 
                     if (!DateTime.TryParseExact(frmDate, acceptedFormats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
                         return BadRequest("Invalid from date format. Use MM/dd/yyyy or yyyy-MM-dd.");
@@ -218,6 +233,8 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         //decimal? currencyRate = total * rate;
 
                         item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
+                        item.CurrencySymbole = company.CurrencySymbol; 
+
                     }
 
 
@@ -244,6 +261,25 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             {
                 try
                 {
+                    var resultWithVAT = new List<ExpandoObject>();
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
                     if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
                         return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
@@ -255,7 +291,27 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                         .FromSqlRaw("SELECT * FROM qry201_707VATPurchaseRegisterMainView WHERE PurchaseVoucherDate BETWEEN @p0 AND @p1", from, to)
                         .ToListAsync();
 
-                    return Json(vatInvoices);
+                        foreach (var result in vatInvoices)
+                        {
+
+                            dynamic item = new ExpandoObject();
+                            var dict = (IDictionary<string, object>)item;
+
+                            // Copy all existing fields from gridDetails into dynamic object
+                            var properties = result.GetType().GetProperties();
+                            foreach (var prop in properties)
+                            {
+                                dict[prop.Name] = prop.GetValue(result);
+                            }
+
+                            dict["CurrencyImage"] = company.CurrencyImage;
+                            dict["CurrencySymbole"] = company.CurrencySymbol;
+
+
+                            resultWithVAT.Add(item);
+                        }
+
+                    return Json(resultWithVAT);
                 }
                 catch (Exception ex)
                 {
@@ -1784,7 +1840,7 @@ documentNo: unitType
                         {
                              UserId = UserId, // or fetch from session/DB
                              VoucherName = InvoiceNo,
-                             ActionType = "Sales Invoice Verified",
+                             ActionType = "You have one Sales Invoice to approve",
                             TenantName = TenantName 
                     };
 
@@ -1857,7 +1913,7 @@ documentNo: unitType
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = InvoiceNo,
-                 ActionType = "Sales Invoice Approved",
+                 ActionType = "You have one Sales Invoice to post",
                 TenantName = TenantName 
         };
 
@@ -1940,16 +1996,6 @@ documentNo: InvoiceNo
                         IsDirect = false;
                     }
 
-                                 var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = InvoiceNo,
-                 ActionType = "Sales Invoice Posted",
-                TenantName = TenantName 
-        };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
-
 
                     return Ok(new
                     {
@@ -1978,20 +2024,46 @@ documentNo: InvoiceNo
             {
                 try
                 {
-                    // Base query (IQueryable for optional filtering)
-                    var query = dbContext.Qry201807vatcreditNoteRegisterMainViews.AsQueryable();
+                    var resultWithVAT = new List<ExpandoObject>();
+                    // Get default company ID from session
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    if (!byte.TryParse(defaultCompanyString, out byte companyId))
+                        return BadRequest("Invalid company ID.");
 
-                    // Apply date filter only if both dates are passed
-                    if (!string.IsNullOrEmpty(frmDate) && !string.IsNullOrEmpty(toDate) &&
-                        DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from) &&
-                        DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                    // Parse dates
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
+
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
+
+                    // Get company details
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .FirstOrDefaultAsync(c => c.CompanyId == companyId);
+
+                    if (company == null)
+                        return NotFound($"Company with ID {companyId} not found.");
+
+                    // Fetch VAT credit note details
+                    var vatInvoices = await dbContext.Qry201807vatcreditNoteRegisterMainViews
+                        .FromSqlRaw("SELECT * FROM qry201_807VATCreditNoteRegisterMainView WHERE CreditNoteDate BETWEEN @p0 AND @p1", from, to)
+                        .ToListAsync();
+
+                    foreach (var result in vatInvoices)
                     {
-                        query = query.Where(x => x.InvoiceDateWtTime >= from && x.InvoiceDateWtTime <= to);
+
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        dict["CurrencyImage"] = company.CurrencyImage;
+                        dict["CurrencySymbole"] = company.CurrencySymbol;
+
+
+                        resultWithVAT.Add(item);
                     }
 
-                    var vatInvoices = await query.ToListAsync();
 
-                    return Json(vatInvoices);
+                    return Json(resultWithVAT);
                 }
                 catch (Exception ex)
                 {
@@ -2009,13 +2081,40 @@ documentNo: InvoiceNo
             {
                 try
                 {
+                    var resultWithVAT = new List<ExpandoObject>();
 
                     var result = dbContext.Tbl20161VatinvoiceMasters
                       .Where(x => x.InvoiceNo == InvoiceNo)
                       .ToList();
+                    foreach (var headerDetails in result)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = headerDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(headerDetails);
+                        }
+
+                      
+
+                        var CurrencyName = dbContext.Tbl20169CurrencyExchanges
+                   .Where(x => x.CurrencyExchangeId == Convert.ToInt16(headerDetails.InvoiceCurrencyCode))
+                   .Select(x => x.CurrencyName)
+                   .FirstOrDefault();
 
 
-                    return Json(result);
+                        // Add new dynamic column
+                        dict["CurrencyName"] = CurrencyName;
+                        //dict["VAT"] = vatValue;
+                        //dict["TotalVAT"] = totalValue;
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Json(resultWithVAT);
                 }
                 catch (Exception ex)
                 {
@@ -2091,6 +2190,7 @@ documentNo: InvoiceNo
             {
                 try
                 {
+
                     if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
                         return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
@@ -2327,18 +2427,53 @@ documentNo: InvoiceNo
             {
                 try
                 {
+                    var resultWithVAT = new List<ExpandoObject>();
+                    // Get default company ID from session
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    if (!byte.TryParse(defaultCompanyString, out byte companyId))
+                        return BadRequest("Invalid company ID.");
+
+                    // Parse dates
                     if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
                         return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
                     if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
                         return BadRequest("Invalid to date format. Use MM/dd/yyyy.");
 
-                    // Fetch records based on the date range
+                    // Get company details
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .FirstOrDefaultAsync(c => c.CompanyId == companyId);
+
+                    if (company == null)
+                        return NotFound($"Company with ID {companyId} not found.");
+
+                    // Fetch VAT credit note details
                     var vatInvoices = await dbContext.Qry201807vatcreditNoteRegisterMainViews
                         .FromSqlRaw("SELECT * FROM qry201_807VATCreditNoteRegisterMainView WHERE CreditNoteDate BETWEEN @p0 AND @p1", from, to)
                         .ToListAsync();
 
-                    return Json(vatInvoices);
+                    foreach (var result in vatInvoices)
+                    {
+
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = result.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(result);
+                        }
+
+                        dict["CurrencyImage"] = company.CurrencyImage; 
+                        dict["CurrencySymbole"] = company.CurrencySymbol; 
+
+
+                        resultWithVAT.Add(item); 
+                    }
+
+
+                    return Json(resultWithVAT);
                 }
                 catch (Exception ex)
                 {
@@ -2348,6 +2483,7 @@ documentNo: InvoiceNo
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         [HttpGet]
@@ -2479,7 +2615,7 @@ documentNo: CreditNoteNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = CreditNoteNo,
-                 ActionType = "Credit Note Voucher Verified",
+                 ActionType = "You have one Credit Note to approve",
                 TenantName = TenantName 
             };
 
@@ -2549,7 +2685,7 @@ documentNo: CreditNoteNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = CreditNoteNo,
-                 ActionType = "Credit Noyte Voucher Approved",
+                 ActionType = "You have one Credit Note to post",
                 TenantName = TenantName 
             };
 
@@ -2620,7 +2756,7 @@ documentNo: DebitNoteNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = DebitNoteNo,
-                 ActionType = "Debit Note Voucher Approved",
+                 ActionType = "You have one Debit Note to post",
                 TenantName = TenantName 
             };
 
@@ -2699,16 +2835,6 @@ documentNo: CreditNoteNo
                     {
                         IsDirect = false;
                     }
-
-                                 var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = CreditNoteNo,
-                 ActionType = "Credit Note Voucher Posted",
-                TenantName = TenantName 
-            };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -3532,6 +3658,25 @@ documentNo: InvoiceNo
             {
                 try
                 {
+                    var resultWithVAT = new List<ExpandoObject>();
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
                     if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
                         return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
@@ -3543,7 +3688,26 @@ documentNo: InvoiceNo
                         .FromSqlRaw("SELECT * FROM qry201_907VATDebitNoteRegisterMainView WHERE DebitNoteDate BETWEEN @p0 AND @p1", from, to)
                         .ToListAsync();
 
-                    return Json(vatInvoices);
+                    foreach (var result in vatInvoices)
+                    {
+
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = result.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(result);
+                        }
+
+                        dict["CurrencyImage"] = company.CurrencyImage;
+                        dict["CurrencySymbole"] = company.CurrencySymbol;
+
+
+                        resultWithVAT.Add(item);
+                    }
+                    return Json(resultWithVAT);
                 }
                 catch (Exception ex)
                 {
@@ -3562,6 +3726,25 @@ documentNo: InvoiceNo
             {
                 try
                 {
+                    var resultWithVAT = new List<ExpandoObject>();
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
                     if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
                         return BadRequest("Invalid from date format. Use MM/dd/yyyy.");
 
@@ -3573,7 +3756,29 @@ documentNo: InvoiceNo
                         .FromSqlRaw("SELECT * FROM qry201_657ProformaInvoiceRegisterMainView WHERE ProformaInvoiceDate BETWEEN @p0 AND @p1", from, to)
                         .ToListAsync();
 
-                    return Json(vatInvoices);
+                    foreach (var result in vatInvoices)
+                    {
+
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = result.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(result);
+                        }
+
+                        dict["CurrencyImage"] = company.CurrencyImage;
+                        dict["CurrencySymbole"] = company.CurrencySymbol;
+
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Json(resultWithVAT);
+
+                   
                 }
                 catch (Exception ex)
                 {
@@ -4307,7 +4512,7 @@ documentNo: InvoiceNo
                     }
 
                     // Return the approval status
-                    return Ok(new { isApproved = invoice.IsApproved });
+                    return Ok(new { isApproved = invoice.IsApproved,isPosted = invoice.IsPosted });
                 }
                 catch (Exception ex)
                 {
@@ -4372,7 +4577,6 @@ documentNo: InvoiceNo
 
             return Unauthorized("Unable to fetch tenant information.");
         }
-
 
 
         [HttpGet]
@@ -4566,7 +4770,7 @@ documentNo: InvoiceNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = InvoiceNo,
-                 ActionType = "Purchae Invoice Voucher Approved",
+                 ActionType = "You have one Purchase Invoice to post",
                 TenantName = TenantName 
             };
 
@@ -4646,16 +4850,6 @@ documentNo: InvoiceNo
                         IsDirect = false;
                     }
 
-             var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = InvoiceNo,
-                 ActionType = "Purchase Invoice Voucher Posted",
-                TenantName = TenantName 
-            };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
-
                     return Ok(new
                     {
                         Message = "Invoice posted successfully.",
@@ -4731,17 +4925,6 @@ documentNo: DebitNoteNo
                     {
                         IsDirect = false;
                     }
-
-
-                                 var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = DebitNoteNo,
-                 ActionType = "Debit Note Voucher Posted",
-                TenantName = TenantName 
-            };
-
-        await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -5138,6 +5321,7 @@ documentNo: InvoiceNo
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
+
                     var result = await dbContext.Tbl901CompanyDetails
                         .Select(g => new
                         {
@@ -5217,6 +5401,24 @@ documentNo: InvoiceNo
             {
                 try
                 {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
                     var resultWithVAT = new List<ExpandoObject>();
 
                     var result1 = dbContext.Qry201651proformaInvoiceChildren
@@ -5250,6 +5452,9 @@ documentNo: InvoiceNo
                         // Add new dynamic column
                         dict["UnitRateMethod"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
+
+                        item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
+                        item.CurrencySymbole = company.CurrencySymbol;
 
                         //dict["VAT"] = vatValue;
                         //dict["TotalVAT"] = totalValue;
@@ -5599,6 +5804,24 @@ documentNo: InvoiceNo
             {
                 try
                 {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
                     var resultWithVAT = new List<ExpandoObject>();
 
                     var result1 = dbContext.Qry201901vatdebitNoteChildren
@@ -5640,12 +5863,16 @@ documentNo: InvoiceNo
                         dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
+                        gridDetails.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
+                        gridDetails.CurrencySymbole = company.CurrencySymbol;
+
                         //dict["VAT"] = vatValue;
                         //dict["TotalVAT"] = totalValue;
 
                         resultWithVAT.Add(item);
                     }
 
+                   
                     return Json(resultWithVAT);
                 }
                 catch (Exception ex)
@@ -6080,8 +6307,8 @@ documentNo: DebitNoteNo
                              var notifyRequest = new NotificationRequest
              {
                  UserId = UserId, // or fetch from session/DB
-                 VoucherName = "DebitNoteNo",
-                 ActionType = "Debit Note Voucher Verified",
+                 VoucherName = DebitNoteNo,
+                 ActionType = "You have one Debit Note to approve",
                 TenantName = TenantName 
             };
 
@@ -6143,7 +6370,7 @@ documentNo: InvoiceNo
              {
                  UserId = UserId, // or fetch from session/DB
                  VoucherName = InvoiceNo,
-                 ActionType = "Purchase Voucher Verified",
+                 ActionType = "You have one Purchase Invoice to Approve",
                 TenantName = TenantName 
             };
 
@@ -6318,6 +6545,46 @@ documentNo: InvoiceNo
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetDefalutCompanyDetails()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID");
+                    byte defaultCompanyByte = 0;
+
+                    if (!string.IsNullOrWhiteSpace(defaultCompanyString))
+                    {
+                        // Safely try to parse the value
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    }
+
+                    byte companyId = defaultCompanyByte;
+
+                    var result = await dbContext.Tbl901CompanyDetails
+                        .Where(g => g.CompanyId == companyId)
+                        .Select(g => new
+                        {
+                            g.CompanyId,
+                           g.CurrencyType
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                // Logging the error is better than rethrowing directly
+                _logger.LogError(ex, "Error occurred in GetDefalutCompanyDetails");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving company branch.", success = false });
+            }
         }
 
 
