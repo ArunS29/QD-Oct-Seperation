@@ -610,7 +610,7 @@
             DevExpress.ui.notify("Voucher No is missing!", "error", 2000);
             return;
         }
-
+        Closepopup();
         // 🔁 Step 1: Get existing LineOrder count
         $.get("/api/JournalEntryEdit/GetNextLineOrderNo?voucherNo=" + voucherNo)
             .done(function (nextLineOrderNo) {

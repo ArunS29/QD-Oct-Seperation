@@ -1072,16 +1072,17 @@ bottom: -13px !important;
                     </div>
                 @section Scripts {
                 <script>
-                    const maintenanceDataSource = new DevExpress.data.CustomStore({
+                   const maintenanceDataSource = new DevExpress.data.CustomStore({
                         key: "MaintenanceRefNo",
-                        load: () => $.getJSON("/api/AssetView/GetMaintenance"),
+                        load: () => {
+                            const assetLedgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+
+                            return $.getJSON("/api/AssetView/GetMaintenance", { assetLedgerNo: assetLedgerNo });
+                        },
                         update: (key, values) => {
-                            // If you want to send full row, fetch original first (optional)
                             const grid = $("#maintenanceGrid").dxDataGrid("instance");
                             const originalData = grid.getDataSource().items().find(x => x.MaintenanceRefNo === key);
-
-                            const merged = Object.assign({}, originalData, values); // merge
-
+                            const merged = Object.assign({}, originalData, values);
                             merged.MaintenanceRefNo = key;
 
                             return $.ajax({
@@ -1091,7 +1092,8 @@ bottom: -13px !important;
                                 data: JSON.stringify(merged)
                             });
                         }
-                    });
+                   });
+
                 </script>
                 }
 
@@ -1104,7 +1106,7 @@ bottom: -13px !important;
                 })
                  .OnSelectionChanged("onTabSelectionChanged")
 )
-            )
+           
 
     </div>
 
@@ -2032,7 +2034,7 @@ bottom: -13px !important;
             data: JSON.stringify(updatedAsset),
             success: function (response) {
 
-                alert(response.message || "Asset updated successfully!");
+              DevExpress.ui.notify(response.message, "success", 2000);
                      if (window.parent && window.parent.$("#dataGrid").length) {
                                     let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
                                     if (dataGrid) {
