@@ -50,7 +50,7 @@ namespace QD.ERP.Web.Middlewares
             // 🔁 Redirect if unauthorized access (optional)
             if (exception is UnauthorizedAccessException)
             {
-                context.Response.Redirect("/pulse/Security/Login");
+                context.Response.Redirect("/Aicon/security/login");
                 return;
             }
 

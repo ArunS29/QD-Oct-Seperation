@@ -318,7 +318,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 
-app.MapGet("/", () => Results.Redirect("/Pulse/Security/Login"));
+app.MapGet("/", () => Results.Redirect("/Aicon/security/login"));
 
 app.MapControllerRoute(
     name: "default",
