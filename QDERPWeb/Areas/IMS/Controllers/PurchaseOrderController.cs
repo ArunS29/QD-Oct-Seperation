@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<PurchaseOrderController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -72,6 +76,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update Purchase Order Categories",
+                      actionDetail: $":Saved Purchase Order Categories  {model.PocategoryId}",
+                      documentNo: $"{model.PocategoryId}"
+                    );
                     return Ok(new { success = true, message = "Saved successfully", id = model.PocategoryId });
                 }
                 catch (Exception ex)
@@ -100,6 +109,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60404pocategories.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                     module: "IMS > Delete Purchase Order Categories",
+                     actionDetail: $":Deleted Purchase Order Categories  {id}",
+                     documentNo: $"{id}"
+                   );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }

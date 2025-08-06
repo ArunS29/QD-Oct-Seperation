@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -13,9 +14,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<MasterController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public SupplierCategoryController(ILogger<MasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public SupplierCategoryController(ILogger<MasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -72,6 +76,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl3019901SupplierCategories.Add(branch);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Add Branch",
+                      actionDetail: $":Added Branch  {branch.SupplierCategoryCode}",
+                      documentNo: $"{branch.SupplierCategoryCode}"
+                    );
 
                     return Ok(new { success = true, message = "Supplier Category added successfully." });
                 }
@@ -124,6 +133,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Entry(existingBranch).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Update Branch",
+                      actionDetail: $":Updated Branch  {branch.SupplierCategoryCode}",
+                      documentNo: $"{branch.SupplierCategoryCode}"
+                    );
+
 
                     return Ok(new { success = true, message = "Supplier Category updated successfully." });
                 }
@@ -152,6 +167,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl3019901SupplierCategories.Remove(BranchToDelete);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Delete Branch Master",
+                      actionDetail: $":Deleted Branch Master  {branch.SupplierCategoryCode}",
+                      documentNo: $"{branch.SupplierCategoryCode}"
+                    );
 
                     return Ok(new { success = true, message = "Supplier Category deleted successfully." });
                 }

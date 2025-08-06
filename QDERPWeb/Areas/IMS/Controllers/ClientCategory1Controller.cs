@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -14,9 +15,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<MasterController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public ClientCategory1Controller(ILogger<MasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public ClientCategory1Controller(ILogger<MasterController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -73,6 +77,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl30102ClientCategories.Add(branch);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                        module: "IMS > Add Branch",
+                        actionDetail: $":Branch Added {branch.ClientCategory}",
+                        documentNo: $"{branch.ClientCategory}"
+                    );
 
                     return Ok(new { success = true, message = "Client Category added successfully." });
                 }
@@ -125,6 +134,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Entry(existingBranch).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                       module: "IMS > Update Branch",
+                       actionDetail: $":Branch Updated {branch.ClientCategoryCode}",
+                       documentNo: $"{branch.ClientCategoryCode}"
+                    );
 
                     return Ok(new { success = true, message = "Client Category updated successfully." });
                 }
@@ -153,6 +167,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl30102ClientCategories.Remove(BranchToDelete);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                       module: "IMS > Delete Branch Master",
+                       actionDetail: $":Branch Master Deleted {branch.ClientCategoryCode}",
+                       documentNo: $"{branch.ClientCategoryCode}"
+                    );
 
                     return Ok(new { success = true, message = "Client Category deleted successfully." });
                 }

@@ -1,8 +1,9 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using QD.ERP.Web.Service;
-using QD.ERP.Web.DAL.Entities;
 using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.DAL.Entities;
+using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,10 +13,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<GoodsandServicesController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public GoodsandServicesController(ILogger<GoodsandServicesController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public GoodsandServicesController(ILogger<GoodsandServicesController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
 		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
         [HttpGet]
@@ -129,6 +133,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                       
                         dbContext.Tbl20164GoodsAndServicesMasters.Update(existingClient);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                           actionDetail: $":Inserted {clientMaster.Gscode}",
+                           documentNo: $"{clientMaster.Gscode}"
+                        );
 
                         return Ok(new { success = true, message = "Goods And Service Master Information Update Successfully." });
                     }
@@ -153,6 +161,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl20164GoodsAndServicesMasters.Add(newClient);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                           actionDetail: $":Inserted {clientMaster.Gscode}",
+                           documentNo: $"{clientMaster.Gscode}"
+                        );
 
                         return Ok(new { success = true, message = "Goods And Service Master Information Update Successfully." });
                     }
@@ -184,6 +196,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl20164GoodsAndServicesMasters.Remove(entity);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete Goods and Service",
+                           actionDetail: $":Deleted Goods and Service {GoodsCode}",
+                           documentNo: $"{GoodsCode}"
+                        );
 
                     return Ok(new { success = true, message = "Deleted successfully." });
                 }

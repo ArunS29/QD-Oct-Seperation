@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -16,9 +17,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         private ERPMasterWtDataContext _context;
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SalesOrdersController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public ClientCategoryController(ERPMasterWtDataContext context) {
-      
+
+        public ClientCategoryController(ERPMasterWtDataContext context, IUserActionLogger userActionLogger) 
+        {
+
+            _userActionLogger = userActionLogger;
+
             _context = context;
         }
 
@@ -76,6 +82,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 _context.Tbl30102ClientCategories.Add(newCategory);
                 _context.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Create Client Category",
+                         actionDetail: $":Created Client Category {vm.ClientCategoryCode}",
+                       documentNo: $"{vm.ClientCategoryCode}"
+                    );
+
 
                 var allData = _context.Tbl30102ClientCategories
              .OrderBy(e => e.ClientCategoryCode)
@@ -116,6 +127,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 _context.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Update Client Categories",
+                   actionDetail: $":Updated Client Categories {updatedList[0].ClientCategoryCode}",
+                   documentNo: $"{updatedList[0].ClientCategoryCode}"
+                );
                 return Ok(new { message = "Updated successfully" });
             }
             catch (Exception ex)

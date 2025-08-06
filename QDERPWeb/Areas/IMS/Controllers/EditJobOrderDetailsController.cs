@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -15,9 +16,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<EditJobOrderDetailsController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public EditJobOrderDetailsController(ILogger<EditJobOrderDetailsController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public EditJobOrderDetailsController(ILogger<EditJobOrderDetailsController> logger, TenantDbContextHelper tenantDbContextHelper , IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -194,6 +197,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl60801jobOrderMasters.Update(existingJobOrder);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                          actionDetail: $":Inserted {jobOrderMaster.JobOrderNo}",
+                          documentNo: $"{jobOrderMaster.JobOrderNo}"
+                        );
 
                         return Ok(new { success = true, message = "Job Order Data updated successfully." });
                     }
@@ -272,6 +279,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl60801jobOrderMasters.Add(newClient);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                          actionDetail: $":Inserted {jobOrderMaster.JobOrderNo}",
+                          documentNo: $"{jobOrderMaster.JobOrderNo}"
+                        );
 
                         return Ok(new { success = true, message = "Job Order data saved successfully." });
                     }
@@ -335,6 +346,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60801jobOrderMasters.Remove(jobOrder);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete JobOrder",
+                      actionDetail: $":Inserted {JobOrderNo}",
+                      documentNo: $"{JobOrderNo}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully." });
                 }

@@ -1,10 +1,9 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-using Microsoft.Data.SqlClient;
-
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
@@ -12,11 +11,12 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
-using System.Threading.Tasks;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -27,8 +27,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SalesOrdersController> _logger;
-        public SalesOrdersController(ILogger<SalesOrdersController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+
+        public SalesOrdersController(ILogger<SalesOrdersController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -716,6 +719,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                      module: "IMS > Save Sales Order",
+                      actionDetail: $":Saved SalesOrder {model.SalesOrderNo}",
+                       documentNo: $"{model.SalesOrderNo}"
+                );
 
                 if (!isUpdate)
                 {
@@ -781,7 +789,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					dbContext.Tbl60202salesOrderChildren.RemoveRange(toDelete);
 
 				var result = await dbContext.SaveChangesAsync();
-				_logger.LogInformation($"Child records updated/added/deleted. Save result = {result}");
+                await _userActionLogger.LogAsync(
+                     module: "IMS > Save Sales Order",
+                     actionDetail: $":Saved SalesOrder {model.SalesOrderNo}",
+                      documentNo: $"{model.SalesOrderNo}"
+               );
+                _logger.LogInformation($"Child records updated/added/deleted. Save result = {result}");
 
 
 				
@@ -1062,6 +1075,11 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             dbContext.Tbl60201salesOrderMasters.Remove(entity);
 
             await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+              module: "IMS > Delete Sales Order",
+               actionDetail: $":Saved SalesOrder {salesOrderNo}",
+                documentNo: $"{salesOrderNo}"
+            );
 
             return Ok(new { success = true, message = "Sales order and its child items deleted successfully." });
         }
@@ -1316,6 +1334,11 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 existingEntity.IsSubmitted = true;
                 dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Submit Sales Order1",
+                   actionDetail: $":Saved SalesOrder1 {salesOrderNo}",
+                   documentNo: $"{salesOrderNo}"
+                );
 
                 return Ok(new { success = true, message = "Sales Order submitted successfully." });
             }
@@ -1363,8 +1386,13 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
            salesOrder.SubmittedOn = DateTime.Now;
  
            await dbContext.SaveChangesAsync();
- 
-           return Ok(new { success = true, message = "Sales order submitted successfully." });
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Submit Sales Order",
+                   actionDetail: $":Saved Sales Order {salesOrderNo}",
+                   documentNo: $"{salesOrderNo}"
+                );
+
+                return Ok(new { success = true, message = "Sales order submitted successfully." });
 
        }
 
@@ -1404,6 +1432,11 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 dbContext.Tbl60201salesOrderMasters.Update(order);
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                 module: "IMS > Verify Sales Order1",
+                  actionDetail: $":Verified Sales Order1 {salesOrderNo}",
+                 documentNo: $"{salesOrderNo}"
+                );
 
                 return Ok(new { success = true, message = "Sales order verified successfully." });
             }
@@ -1442,6 +1475,11 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 order.VerifiedOn = DateTime.Now;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                 module: "IMS > Verify Sales Order",
+                  actionDetail: $":Verified Sales Order {salesOrderNo}",
+                 documentNo: $"{salesOrderNo}"
+                );
 
                 return Ok(new { success = true, message = "Sales order verified successfully." });
             }
@@ -1474,6 +1512,11 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 order.IsApproved = true;
                 dbContext.Tbl60201salesOrderMasters.Update(order);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Approve Sales Order1",
+                  actionDetail: $": Approved Sales Order1 {salesOrderNo}",
+                   documentNo: $"{salesOrderNo}"
+                );
 
                 return Ok(new { success = true, message = "Sales Order approved successfully." });
             }
@@ -1511,6 +1554,11 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 order.ApprovedOn = DateTime.Now;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Approve Sales Order",
+                  actionDetail: $":Approved Sales Order {salesOrderNo}",
+                  documentNo: $"{salesOrderNo}"
+                );
 
                 return Ok(new { success = true, message = "Sales order approved successfully." });
             }
@@ -1589,7 +1637,12 @@ public async Task<IActionResult> UnlockSalesOrder([FromBody] SalesorderViewModel
         {
             dbContext.Tbl60201salesOrderMasters.Update(existingEntity);
             await dbContext.SaveChangesAsync();
-            return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Unlock Sales Order",
+                       actionDetail: $":Unlocked Sales Order {request.SalesOrderNo}",
+                      documentNo: $"{request.SalesOrderNo}"
+                    );
+                    return Ok(new { success = true, message = "Sales Order has been unlocked successfully." });
         }
         else
         {

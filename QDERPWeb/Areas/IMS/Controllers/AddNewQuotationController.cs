@@ -7,6 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -17,10 +18,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 	{
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<AddNewQuotationController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public AddNewQuotationController(ILogger<AddNewQuotationController> logger, TenantDbContextHelper tenantDbContextHelper)
-		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+
+        public AddNewQuotationController(ILogger<AddNewQuotationController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        {
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 
@@ -403,8 +407,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Save Quotation",
+                   actionDetail: $"Saved Quotation: {VM.QuoteNo}",
+                    documentNo: $"{VM.QuoteNo}"
+                );
 
-				return Ok(new { success = true, message = "Quotation Details saved/updated successfully." });
+                return Ok(new { success = true, message = "Quotation Details saved/updated successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -445,8 +454,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				dbContext.Tbl60101quotationMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete Quotation",
+                   actionDetail: $"Quotation Deleted: {QuoteNo}",
+                   documentNo: $"{QuoteNo}"
+                );
 
-				return Ok(new { success = true, message = "Quotation details deleted successfully." });
+                return Ok(new { success = true, message = "Quotation details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -511,6 +525,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
            // master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
 
             await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+                   module: "IMS > Submit Quotation",
+                   actionDetail: $"Quotation Submitted: {QuoteNo}",
+                   documentNo: $"{QuoteNo}"
+                );
 
             return Ok(new
             {
@@ -567,6 +586,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Verify Quotation",
+                  actionDetail: $"Quotation Verified: {quoteNo}",
+                  documentNo: $"{quoteNo}"
+                );
 
                 return Ok(new
                 {
@@ -632,6 +656,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     voucher.ApprovedSignatory = (byte)signatoryId.Value;
                 }
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Approved Quotation",
+                  actionDetail: $"Quotation Approved: {QuoteNo}",
+                  documentNo: $"{QuoteNo}"
+                );
 
                 return Ok(new
                 {
@@ -716,6 +745,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60102quotationChildren.Remove(child);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Delete Child By Id",
+                  actionDetail: $" Deleted Child: {childId}",
+                  documentNo: $"{childId}"
+                );
 
                 return Ok(new { success = true, message = "Child row deleted successfully." });
             }
@@ -857,6 +891,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Entry(existingSalesPerson).State = EntityState.Modified;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                           module: "IMS > Update Sales Person",
+                           actionDetail: $" Updated Sales Person: {salesPerson.SalesPersonCode}",
+                            documentNo: $"{salesPerson.SalesPersonCode}"
+                    );
 
                     return Ok(new { success = true, message = "Salesperson updated successfully." });
                 }
