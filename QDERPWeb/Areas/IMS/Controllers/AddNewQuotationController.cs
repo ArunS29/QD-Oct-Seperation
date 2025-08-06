@@ -915,5 +915,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> IsDateLocked()
+        {
+            // ✅ Resolve tenant and DB context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { Message = "Invalid tenant." });
+
+            try
+            {
+                // ✅ Get Default Company ID from session
+                var companyIdStr = HttpContext.Session.GetString("DefaultcompanyID");
+                if (!int.TryParse(companyIdStr, out int companyId))
+                    return BadRequest(new { Message = "Invalid or missing Company ID." });
+
+                // ✅ Fetch IsDateLockingEnabled flag from company settings
+                var isDateLockingEnabled = await dbContext.Tbl901CompanyDetails02s
+                    .Where(x => x.CompanyId == companyId)
+                    .Select(x => x.IsDateLockingEnabled ?? false)
+                    .FirstOrDefaultAsync();
+
+                return Ok(isDateLockingEnabled);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in IsDateLocked: {ex}");
+                return StatusCode(500, new { Message = "Internal Server Error", Details = ex.Message });
+            }
+        }
+
+
+
+
     }
 }

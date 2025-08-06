@@ -295,6 +295,7 @@
 						.Label(new JS("formatMessage('Quotation Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
+						 .OnValueChanged("onQuotationDateChanged") // 🔁 hook event
                         )
                     </div>
               <div class="col-md-6" style="display:flex; align-items:flex-end;">
@@ -2161,6 +2162,19 @@
 				"btnBack",
 				"btnAttach"
 			]);
+			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+if (gridInstance) {
+    gridInstance.option({
+        editing: {
+            allowUpdating: false,
+            allowAdding: false,
+            allowDeleting: false
+        },
+        selection: {
+            mode: "none"
+        }
+    });
+}
 		}
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
@@ -2260,6 +2274,25 @@
 	});
 }
 
+function onQuotationDateChanged(e) {
+    checkDateLocking();
+}
+
+function checkDateLocking() {
+    $.ajax({
+        url: '/api/AddNewQuotation/IsDateLocked',
+        method: 'GET',
+        success: function (isLocked) {
+            if (isLocked) {
+                DevExpress.ui.notify("Quotation entry date is locked for editing.", "warning", 3000);
+
+              
+        },
+        error: function () {
+            DevExpress.ui.notify("Error checking date lock status.", "error", 3000);
+        }
+    });
+}
 
 
 	// Move the DataGrid configuration into a function for cleanliness
@@ -5568,7 +5601,7 @@ AddlDescription: null,
 		}
 	}
 
-
+	//Detailed description 
 	function receiveModalFieldData(modalData) {
 		console.log("📦 Received from modal:", modalData); // ✅ Step 1: Log
 
@@ -6272,38 +6305,55 @@ AddlDescription: null,
         type: "POST",
         url: `/api/AddNewQuotation/ApproveQuotation?QuoteNo=${encodeURIComponent(quoteNo)}`,
         contentType: "application/json",
-        success: function(response) {
+        success: function (response) {
             if (response && response.Message) {
-                // ✅ Update dropdown only on successful approval
                 if (response.VoucherApprovedBy) {
                     const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
                     if (approvedByBox) {
                         approvedByBox.option("value", response.VoucherApprovedBy);
-                        approvedByBox.getDataSource().reload();    // reload data source :contentReference[oaicite:1]{index=1}
-                        approvedByBox.repaint();                   // ensure display updates :contentReference[oaicite:2]{index=2}
+                        approvedByBox.getDataSource().reload();
+                        approvedByBox.repaint();
                     }
                 }
-				 syncWorkflowFromFields();
-           DevExpress.ui.notify("Quotation has been Approved.", "success", 3000);
-hideAllButtonsExcept([
-    "btnPrint",
-    "ddButtonLayout",
-    "btnBack",
-    "btnAttach"
-]);
 
+                syncWorkflowFromFields();
+                DevExpress.ui.notify("Quotation has been Approved.", "success", 3000);
+
+                hideAllButtonsExcept([
+                    "btnPrint",
+                    "ddButtonLayout",
+                    "btnBack",
+                    "btnAttach"
+                ]);
+
+                // ✅ Disable DataGrid after approval
+                const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+                if (gridInstance) {
+                    gridInstance.option({
+                        editing: {
+                            allowUpdating: false,
+                            allowAdding: false,
+                            allowDeleting: false
+                        },
+                        selection: {
+                            mode: "none"
+                        }
+                    });
+                }
             } else {
                 DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
                 approveBtn.option("disabled", false);
             }
         },
-        error: function(xhr) {
+        error: function (xhr) {
             approveBtn.option("disabled", false);
             const msg = xhr.responseJSON?.Message || "An error occurred.";
             DevExpress.ui.notify(msg, "error", 2000);
         }
     });
 }
+
+
 
 
 	function hideAllButtonsExcept(exceptions) {
@@ -6345,6 +6395,12 @@ hideAllButtonsExcept([
 				}
 			});
 		}
+
+
+
+
+
+
 
 	$("#btnPostToLedgers").on("click", function (e) {
 		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");

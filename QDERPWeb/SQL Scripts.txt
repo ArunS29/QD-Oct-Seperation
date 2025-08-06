@@ -2552,6 +2552,7 @@ Update tbl20169CurrencyExchange set CurrencyImage='<svg fill="#000000" width="30
 where CurrencyExchangeID=2
 
 
+
 Alter view Aicon.qry201SubLedgerReceivablesMaster as  
 
 SELECT Aicon.qry201SubLedgerReceivables.AccountHeadNo, Aicon.qry201SubLedgerReceivables.AccountHead, Aicon.qry201SubLedgerReceivables.ReferenceNo, Aicon.tbl201VoucherMaster.VoucherDate, Aicon.tbl201VoucherMaster.VoucherRefNo, Aicon.tbl201VoucherMaster.VoucherNarration,   
@@ -2618,3 +2619,8 @@ FROM   Aicon.qry201SubLedgerReceivablesWtRetention RIGHT OUTER JOIN
 
 WHERE (Aicon.tbl201ChartOfAccounts.AccountGroupID = 'A011')   
  
+
+---SalesPerson Master
+ALTER TABLE Aicon.tbl20101SalesPersonMaster
+ADD TargetPerMonth money NULL;
+
