@@ -206,37 +206,74 @@
 	#postedCount1 {
 		font-weight: bold;
 	}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
 </style>
 <div class="title">
 <input id="formId" value="frm20171VATDebitNoteView" type="hidden" />
 
-	<div class="card blue shine compact">
-		<h2 class="title-slide">VAT Debit Note Register</h2>
-		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
 
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">VAT Debit Note Register</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			@* <div class="tile-icon">
+					<!-- Icon as SVG -->
+					<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+						<!-- L-shape blocks -->
+						<rect x="8" y="8" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+						<rect x="8" y="32" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+						<rect x="32" y="32" width="16" height="16" rx="3" fill="white" opacity="0.6" />
+
+						<!-- Rotated diamonds -->
+						<rect x="34" y="10" width="12" height="12" rx="2" transform="rotate(45 40 16)" fill="white" opacity="0.6" />
+						<rect x="42" y="2" width="12" height="12" rx="2" transform="rotate(45 48 8)" fill="white" opacity="0.6" />
+						<rect x="50" y="18" width="12" height="12" rx="2" transform="rotate(45 56 24)" fill="white" opacity="0.6" />
+					</svg>
+
+				</div> *@
+		</div>
 	</div>
-	<div class="card orange-theme" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
-		<h4 style="margin-bottom: 10px; color: white;">Voucher Count</h4>
+
+	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
+		<h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;">Voucher Count</h4>
 
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4>No of Invoices Verified</h4>
-				<h3>Total <span id="verifiedCount1">0</span></h3>
+				<h4 style ="margin: 0;text-align: left;">No of Invoices Verified</h4>
+				<h3 id="verifiedCount1" style="margin: 0;text-align: left;">0</h3>
 			</div>
 			<div class="voucher-slide">
-				<h4>No of Invoices Approved</h4>
-				<h3>Total <span id="approvedCount1">0</span></h3>
+				<h4 style="margin: 0;text-align: left;">No of Invoices Approved</h4>
+				<h3 id="approvedCount1" style="margin: 0;text-align: left;">0</h3>
 			</div>
 			<div class="voucher-slide">
-				<h4>No of Invoices Posted</h4>
-				<h3>Total <span id="postedCount1">0</span></h3>
+				<h4 style="margin: 0;text-align: left;">No of Invoices Posted</h4>
+				<h3 id="postedCount1" style="margin: 0;text-align: left;">0</h3>
 			</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important;  padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Today</h4>
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important;  padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Today</h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
 				<h4>Debit Notes Raised Today</h4>
