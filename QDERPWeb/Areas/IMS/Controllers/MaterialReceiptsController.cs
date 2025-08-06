@@ -1,8 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -24,9 +24,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<MaterialReceiptsController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public MaterialReceiptsController(ILogger<MaterialReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public MaterialReceiptsController(ILogger<MaterialReceiptsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -154,6 +157,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 // ✅ 7. Save changes
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete Material Receipt View",
+                   actionDetail: $":Deleted Material Receipt View {ReceiptNo}",
+                    documentNo: $"{ReceiptNo}"
+                );
 
                 // ✅ 8. Log deletion
                 //string userId = HttpContext.Session.GetString("UserID") ?? "Unknown";
@@ -201,6 +208,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60501materialReceiptMasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Unlock Material Receipt",
+                  actionDetail: $":Unlocked Material Receipt  {request.ReceiptNo}",
+                  documentNo: $"{request.ReceiptNo}"
+                );
 
                 return Ok(new { success = true, message = "Material Receipt has been unlocked successfully." });
             }

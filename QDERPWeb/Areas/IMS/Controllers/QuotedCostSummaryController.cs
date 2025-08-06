@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Text.Json;
 
 
@@ -19,9 +20,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<QuotedCostSummaryController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public QuotedCostSummaryController(ILogger<QuotedCostSummaryController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public QuotedCostSummaryController(ILogger<QuotedCostSummaryController> logger, TenantDbContextHelper tenantDbContextHelper , IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -156,6 +160,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Insert Cost Distribution",
+                   actionDetail: $":Inserted Cost Distribution {models[0].QuotationNo}",
+                   documentNo: $"{models[0].QuotationNo}"
+                );
                 return Ok();
             }
 

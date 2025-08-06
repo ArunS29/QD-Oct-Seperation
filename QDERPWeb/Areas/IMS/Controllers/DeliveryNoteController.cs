@@ -1,20 +1,22 @@
 using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -24,9 +26,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<DeliveryNoteController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public DeliveryNoteController(ILogger<DeliveryNoteController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public DeliveryNoteController(ILogger<DeliveryNoteController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -151,6 +156,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                 module: "IMS > Save Delivery Note",
+                 actionDetail: $":Saved Delivery Note  {model.DeliveryNoteNo}",
+                   documentNo: $"{model.DeliveryNoteNo}"
+                );
 
                 return Ok(new
                 {
@@ -188,6 +198,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 existingNote.ApprovedOn = DateTime.Now;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Approve Delivery Note",
+                   actionDetail: $":Approved Approve Delivery Note  {deliveryNoteNo}",
+                   documentNo: $"{deliveryNoteNo}"
+                );
+
 
                 return Ok(new { message = "Delivery note approved successfully", success = true });
             }
@@ -370,6 +386,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     await dbContext.Qry60302deliveryNoteChildren.AddAsync(newItem);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Item",
+                      actionDetail: $":Saved Item {newItem.DeliveryNoteSlNo}",
+                      documentNo: $"{newItem.DeliveryNoteSlNo}"
+                    );
 
                     return Ok(new { success = true, message = "Item saved successfully." });
                 }
@@ -411,6 +432,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.BatchNo = updatedItem.BatchNo;
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Update Item",
+                      actionDetail: $":Updated Item  {updatedItem.DeliveryNoteSlNo}",
+                      documentNo: $"{updatedItem.DeliveryNoteSlNo}"
+                    );
 
                     return Ok(new { success = true, message = "Item updated successfully." });
                 }
@@ -560,6 +586,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update Delivery Note Items",
+                      actionDetail: $":Saved Delivery Note Items  {request.DeliveryNoteNo}",
+                      documentNo: $"{request.DeliveryNoteNo}"
+                    );
+
                     return Ok(new { success = true, message = "Items saved/updated successfully!" });
                 }
 
@@ -697,6 +729,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60301deliveryNoteMasters.Remove(entityToDelete);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Delete Delivery Item",
+                      actionDetail: $":Delete Delivery Item  {deliveryNoteNo}",
+                      documentNo: $"{deliveryNoteNo}"
+                    );
 
                     return Ok(new { success = true, message = $"Stock item '{deliveryNoteNo}' deleted successfully." });
                 }

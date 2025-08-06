@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +13,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ProjectSubUnitsController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public ProjectSubUnitsController(ILogger<ProjectSubUnitsController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public ProjectSubUnitsController(ILogger<ProjectSubUnitsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -79,6 +82,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                       module: "IMS > Save Or Update de",
+                       actionDetail: $":Saved Update Project Group  {model.ProjectSubUnitCode}",
+                        documentNo: $"{model.ProjectSubUnitCode}"
+                    );
+
 
                     return Ok(new { success = true, message = "Saved successfully", id = model.ProjectSubUnitCode });
                 }
@@ -105,6 +114,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60604purchaseRequestProjectSubUnits.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete1",
+                      actionDetail: $":Deleted {key}",
+                      documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 

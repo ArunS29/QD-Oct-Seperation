@@ -1,16 +1,17 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -24,8 +25,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<QuotationController> _logger;
-        public QuotationController(ILogger<QuotationController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+
+        public QuotationController(ILogger<QuotationController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -98,6 +102,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete ",
+                    actionDetail: $":Deleted  {model.ReportNo}",
+                    documentNo: $"{model.ReportNo}"
+                );
                 return Ok(new { message = "Field updated successfully." });
             }
 
@@ -360,6 +368,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         await dbContext.SaveChangesAsync();
 
+                        await _userActionLogger.LogAsync(
+                          module: "IMS > Save Or Update Quoted Cost item",
+                          actionDetail: $":Saved  Quoted Cost item {model.QuoteCostSlNo}",
+                          documentNo: $"{model.QuoteCostSlNo}"
+                        );
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.QuoteCostSlNo });
                     }
                     else
@@ -377,6 +390,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl60104quotationItemCosts.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                         module: "IMS > Save Or Update Quoted Cost item",
+                         actionDetail: $":Saved  Quoted Cost item {model.QuoteCostSlNo}",
+                         documentNo: $"{model.QuoteCostSlNo}"
+                       );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.QuoteCostSlNo });
                     }
@@ -407,6 +425,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60104quotationItemCosts.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Deletes ",
+                      actionDetail: $":Deleted  {key}",
+                      documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 
@@ -474,6 +496,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                         module: "IMS > Save Or Update Status",
+                         actionDetail: $":Saved Status {model.CostItemCode}",
+                         documentNo: $"{model.CostItemCode}"
+                       );
 
                     return Ok(new
                     {
@@ -509,6 +536,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60105quotationCostMasters.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                       module: "IMS > Delete Cost Item",
+                       actionDetail: $":Deleted CostI tem {id}",
+                       documentNo: $"{id}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }
@@ -575,6 +607,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 // DeleteDocumentPDF(QuoteNo, "VoucherScanned\\IMSQuote");
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete Quotation View ",
+                  actionDetail: $":Deleted Quotation View  {QuoteNo}",
+                   documentNo: $"{QuoteNo}"
+                );
 
                 // ✅ Log Deletion
                 //string userId = HttpContext.Session.GetString("UserID") ?? "Unknown";
@@ -622,6 +658,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60101quotationMasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                      module: "IMS > Unlock Quotation",
+                      actionDetail: $":Unlocked Quotation {request.QuoteNo}",
+                      documentNo: $"{request.QuoteNo}"
+                );
 
                 return Ok(new { success = true, message = "Quotation has been unlocked successfully." });
             }
@@ -682,6 +723,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete Quotation View ",
+                  actionDetail: $":Deleted Quotation View  {originalQuoteNo}",
+                  documentNo: $"{originalQuoteNo}"
+                );
 
                 return Ok(new { success = true, message = "Quotation duplicated successfully.", newQuoteNo });
             }
@@ -758,6 +803,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     oldQuote.QuoteStatus = 5;
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Revise Quotation ",
+                     actionDetail: $":Revised Quotation  {originalQuoteNo}",
+                     documentNo: $"{originalQuoteNo}"
+                    );
                 }
 
                 return Ok(new { success = true, message = "Quotation revised successfully.", newQuoteNo });
