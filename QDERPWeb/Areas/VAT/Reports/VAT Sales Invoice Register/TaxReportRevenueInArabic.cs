@@ -25,11 +25,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
             string companyNameAr,
             string companyAddressAr,
             string username,
-            TenantDbContextHelper tenantDbContextHelper)
+            TenantDbContextHelper tenantDbContextHelper,Decimal DefaultCurrencyDecimals)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username);
+            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, DefaultCurrencyDecimals);
             LoadCurrencySymbolAndImage();
         }
         
@@ -47,7 +47,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            string username)
+            string username, Decimal DefaultCurrencyDecimals)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -96,7 +96,41 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VAT_Sales_Invoice_Register
                 addressArLabel.Text = companyAddressAr;
             if (FindControl("xrLabelusername", true) is XRLabel usernameLabel)
                 usernameLabel.Text = username;
+            if (DefaultCurrencyDecimals == 3)
+            {
+                for (int i = 2; i <= 17; i++)
+                {
+                    string labelName = $"xrLabel{i}";
+                    if (FindControl(labelName, true) is XRLabel lbl)
+                        lbl.TextFormatString = "{0:n3}";
+                }
 
+            }
+            if (DefaultCurrencyDecimals == 3)
+            {
+                for (int i = 21; i <= 27; i++)
+                {
+                    string cellName = $"tableCell{i}";
+                    if (FindControl(cellName, true) is XRTableCell cell)
+                        cell.TextFormatString = "{0:n3}";
+                }
+
+            }
+            if (DefaultCurrencyDecimals == 3)
+            {
+                for (int i = 21; i <= 27; i++)
+                {
+                    string cellName = $"xrTableCell{i}";
+                    if (FindControl(cellName, true) is XRTableCell cell)
+                        cell.TextFormatString = "{0:n3}";
+                }
+                if (FindControl("xrTableCell18", true) is XRTableCell cell18)
+                    cell18.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell19", true) is XRTableCell cell19)
+                    cell19.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell20", true) is XRTableCell cell20)
+                    cell20.TextFormatString = "{0:n3}";
+            }
             ConfigureSqlDataSource(frmDate, toDate);
         }
 
