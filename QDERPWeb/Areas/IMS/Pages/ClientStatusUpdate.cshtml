@@ -327,15 +327,12 @@
         const urlParams = new URLSearchParams(window.location.search);
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
         const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
-         $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
-             $("#GetClientDropDown").dxDropDownBox("instance").option("value", data.ClientCode);
-            $("#reportedBy").dxTextBox("instance").option("value", data.ReportedBy);
-            $("#reportedOn").dxDateBox("instance").option("value", data.ReportedOn);
-            $("#reportRemarks").dxTextArea("instance").option("value", data.StatusRemarks);
-            $("#GetStatusDropDown").dxDropDownBox("instance").option("value", data.Status);
-            $("#followUpOn").dxDateBox("instance").option("value", data.FollowupOn);
+               $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
         getReportedBy();
-
+           if (clientStatusNo) {
+              bindClientStatusById(clientStatusNo);
+              $("#btnSave").dxButton("instance").option("text", "Update");
+          }
          const statusBox = $("#statusId").dxNumberBox("instance");
     if (statusBox) {
         statusBox.option("value", clientStatusNo || clientStatusNo);
@@ -343,14 +340,12 @@
        
 
 
-        if (clientStatusNo) {
-            bindClientStatusById(clientStatusNo);
-            $("#btnSave").dxButton("instance").option("text", "Update");
-        }
+       
 
 
     });
     function bindClientStatusById(clientStatusNo) {
+     
         $.ajax({
             url: `/api/ClientStatusUpdate/GetClientStatusById?clientStatusNo=${clientStatusNo}`,
             type: 'GET',

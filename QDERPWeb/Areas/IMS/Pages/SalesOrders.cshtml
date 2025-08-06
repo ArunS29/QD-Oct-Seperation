@@ -500,35 +500,77 @@ subColumns.Add().DataField("cost")
 		.Paging(p => p.Enabled(false))
 		.Pager(pager => pager.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.Summary(s => s
-		.TotalItems(totalItems =>
+		.Summary(summary =>
 		{
-			totalItems.AddFor(m => m.TotalBeforeDiscount)
-			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
+			
+			summary.TotalItems(items =>
+			{
 
-			totalItems.AddFor(m => m.Discount)
-			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
 
-			totalItems.AddFor(m => m.TotalAfterDiscount)
+				items.Add().Column("TotalBeforeDiscount")
 			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 
-			totalItems.AddFor(m => m.TotalTaxAmount)
+				items.Add().Column("Discount")
 			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
-
-			totalItems.AddFor(m => m.TotalWithTax)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("TotalAfterDiscount")
 			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("TotalTaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("TotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+			});
 		})
-		)
 		.ShowBorders(true)
 		.ShowRowLines(true)
 

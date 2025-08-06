@@ -278,27 +278,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         {
             try
             {
-                // Get tenant name from session
-                var tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-
-                // Resolve tenant and DB context
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    // Get company short name using tenant name
-                    var companyShortName = await dbContext.Tbl901CompanyDetails
-                        .Where(c => c.CompanyNameShort == tenantName)
-                        .Select(c => c.CompanyNameShort)
-                        .FirstOrDefaultAsync();
+                    // Step 1: Get DefaultcompanyID from session
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0;
 
-                    if (string.IsNullOrWhiteSpace(companyShortName))
-                        return BadRequest(new { message = "Company short name not found for tenant.", success = false });
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    }
 
-                    // Generate delivery note number
-                    string shortCode = GetAbbreviatedCompanyCode(companyShortName);
+                    byte companyId = defaultCompanyByte;
+
+                    // Step 2: Get company details by CompanyId
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .FirstOrDefaultAsync(c => c.CompanyId == companyId);
+
+                    if (company == null)
+                    {
+                        return NotFound(new { message = "Company not found.", success = false });
+                    }
+
+                    // Step 3: Build prefix using company abbreviation and year
+                    string shortCode = GetAbbreviatedCompanyCode(company.CompanyNameShort ?? "");
                     string prefix = $"{shortCode}-DN-{DateTime.Now.Year}";
 
+                    // Step 4: Get last delivery note number matching the prefix
                     var lastNote = await dbContext.Tbl60301deliveryNoteMasters
                         .Where(d => d.DeliveryNoteNo.StartsWith(prefix))
                         .OrderByDescending(d => d.DeliveryNoteNo)
@@ -309,22 +315,26 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     {
                         var lastNumberPart = lastNote.DeliveryNoteNo.Split('-').Last();
                         if (int.TryParse(lastNumberPart, out int lastNum))
+                        {
                             nextNumber = lastNum + 1;
+                        }
                     }
 
+                    // Step 5: Format and return new delivery note number
                     string formattedNumber = nextNumber.ToString("D5");
                     string deliveryNoteNo = $"{prefix}-{formattedNumber}";
 
                     return Ok(new { deliveryNoteNo, success = true });
                 }
 
-                return Unauthorized(new { message = "Tenant not found.", success = false });
+                return Unauthorized(new { message = "Invalid tenant context.", success = false });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, new { message = $"Server error: {ex.Message}", success = false });
             }
         }
+
 
         private string GetAbbreviatedCompanyCode(string companyNameShort)
         {
