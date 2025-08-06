@@ -33,9 +33,10 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
             _isApproved = isApproved;  // Store the approval status
 
             InitializeComponent();
-            LoadCurrencySymbolAndImage();
+          
             SetReportParameters(invoiceNo, tenantName, companyName, companyAddress, logoImage,  sealImage, companyNameAr, companyAddressAr);
-            LoadReportData(invoiceNo);  // Load the data synchronously
+            LoadReportData(invoiceNo);
+            LoadCurrencySymbolAndImage();
         }
 
         private void SetReportParameters(string invoiceNo, string tenantName, string companyName, string companyAddress, Image logoImage, Image sealImage, string companyNameAr, string companyAddressAr)
@@ -233,7 +234,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
+                string[] pictureBoxNames = { "xrPictureBox5", "xrPictureBox6", "xrPictureBox8", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", };
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -252,7 +253,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
         }
         private void SetCurrencyImageNull()
         {
-            string[] pictureBoxNames = { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
+            string[] pictureBoxNames = {"xrPictureBox8", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", };
 
             foreach (string name in pictureBoxNames)
             {
