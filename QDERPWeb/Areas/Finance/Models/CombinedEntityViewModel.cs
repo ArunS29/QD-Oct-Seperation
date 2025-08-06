@@ -575,8 +575,11 @@ namespace QD.ERP.Web.Areas.Finance.Models
 		public string RemarksByApprover { get; set; }
 
 		public string RemarksByVerifier { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
 
-		public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
+        public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
 		
 	}
     public class SalesorderViewModel
@@ -698,7 +701,10 @@ namespace QD.ERP.Web.Areas.Finance.Models
     }
     public class RFQViewModel
 	{
-		public string Rfqno { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
+        public string Rfqno { get; set; }
 
 		public DateTime? Rfqdate { get; set; }
 
@@ -906,7 +912,10 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
 		public string TransportationScope { get; set; }
 
-		public List<Tbl60102quotationChild> QuotationDetailses { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
+        public List<Tbl60102quotationChild> QuotationDetailses { get; set; }
 
 
 	}

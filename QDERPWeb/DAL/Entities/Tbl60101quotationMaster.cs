@@ -128,4 +128,7 @@ public partial class Tbl60101quotationMaster
     public DateTime? BidClosingDate { get; set; }
 
     public string TransportationScope { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }

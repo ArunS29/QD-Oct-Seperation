@@ -150,9 +150,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingNote.InventoryEffectiveDate = model.InventoryEffectiveDate;
                     existingNote.QuotationNo = model.QuotationNo;
                     existingNote.SalesOrderNo = model.SalesOrderNo;
-
+                    existingNote.CurrencyId = model.CurrencyId ?? 1;
+                    existingNote.CurrencyRate = model.CurrencyRate ?? 1;
+                    existingNote.BaseCurrencyId = model.BaseCurrencyId ?? 1;
                     existingNote.ModifiedBy = userName;
                     existingNote.ModifiedOn = DateTime.Now;
+
                 }
 
                 await dbContext.SaveChangesAsync();
@@ -497,6 +500,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         public class DeliveryNoteItemsRequest
         {
             public string DeliveryNoteNo { get; set; }
+            public decimal? CurrencyRate { get; set; }
+            public int? BaseCurrencyId { get; set; }
+            public int? CurrencyId { get; set; }
             public List<DeliveryNoteItemDto> Items { get; set; }
         }
 
@@ -557,9 +563,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             entity.DeliveryRemarks = item.DeliveryRemarks;
                             //entity.EmployeeNo = item.EmployeeNo;
                             //entity.PropertyNo = item.PropertyNo;
-                         
 
-               
+
+
                         }
                         else
                         {
@@ -652,7 +658,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     quotationNo = master.QuotationNo,
                     Dnsignatory = master.Dnsignatory,
                     IsApproved = master.IsApproved,
-
+                    CurrencyId = master.CurrencyId ?? 1,
+                    CurrencyRate = master.CurrencyRate ?? 1,
+                    BaseCurrencyId = master.BaseCurrencyId ?? 1,
                     items = children.Select(x => new
                     {
                         SNo = x.DeliveryNoteSlNo,
