@@ -3896,7 +3896,7 @@
             this.xrLabel142,
             this.xrLabel143,
             this.xrLabel162});
-            this.GroupFooter2.HeightF = 172.0001F;
+            this.GroupFooter2.HeightF = 176.2871F;
             this.GroupFooter2.Level = 1;
             this.GroupFooter2.Name = "GroupFooter2";
             // 

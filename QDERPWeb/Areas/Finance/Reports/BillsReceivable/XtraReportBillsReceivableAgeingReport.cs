@@ -94,7 +94,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
             if (FindControl("xrLabelCompanyAddress", true) is XRLabel addressLabel)
                 addressLabel.Text = companyAddress;
 
-            if (FindControl("xrPictureBox1", true) is XRPictureBox logoPictureBox)
+            if (FindControl("xrPictureBox0", true) is XRPictureBox logoPictureBox)
                 logoPictureBox.Image = logoImage;
 
             if (FindControl("xrLabelCompanyNameAr", true) is XRLabel companyNameArLabel)
@@ -208,7 +208,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.BillsReceivable
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox2",  "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12" };
+                string[] pictureBoxNames = { "xrPictureBox1","xrPictureBox2",  "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10", "xrPictureBox11", "xrPictureBox12" };
 
                 foreach (string name in pictureBoxNames)
                 {

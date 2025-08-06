@@ -1259,6 +1259,7 @@
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.tableCell23.BorderWidth = 1F;
+            this.tableCell23.CanGrow = false;
             this.tableCell23.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[DebitNoteDate]")});
             this.tableCell23.Font = new DevExpress.Drawing.DXFont("Cambria", 8.25F);
@@ -1279,6 +1280,7 @@
             | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrTableCell28.BorderWidth = 1F;
+            this.xrTableCell28.CanGrow = false;
             this.xrTableCell28.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[SupplierBillNo]")});
             this.xrTableCell28.Font = new DevExpress.Drawing.DXFont("Cambria", 8.25F);
