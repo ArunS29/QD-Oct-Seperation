@@ -246,9 +246,9 @@
         margin: 4px 0;
     }
 
-        .count.bounce {
+        /* .count.bounce {
             animation: bounceIn 0.4s ease;
-        }
+        } */
 
     .trend {
         font-size: 14px;
@@ -293,7 +293,7 @@
         }
     }
 
-    @@keyframes bounceIn {
+  /*   @@keyframes bounceIn {
         0% {
             transform: scale(0.9);
             opacity: 0;
@@ -307,7 +307,7 @@
         100% {
             transform: scale(1);
         }
-    }
+    } */
 
     @@keyframes gradientPulse {
         0% {
@@ -330,10 +330,10 @@
     }
 
 
-    .card:hover {
+    /* .card:hover {
         transform: translateY(-6px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-    }
+    } */
 
     h1 {
         font-size: 42px;
@@ -347,11 +347,11 @@
     }
 
     /* Count animation bounce */
-    h1.bounce {
+    /* h1.bounce {
         animation: bounceIn 0.5s ease;
-    }
+    } */
 
-    @@keyframes bounceIn {
+  /*   @@keyframes bounceIn {
         0% {
             transform: scale(0.9);
             opacity: 0;
@@ -365,11 +365,11 @@
         100% {
             transform: scale(1);
         }
-    }
+    } */
 
     /* Sparkle effect (optional) */
     .sparkle::after {
-        content: '✨';
+        /* content: '✨'; */
         position: absolute;
         top: 10px;
         right: 15px;
@@ -397,10 +397,10 @@
         background: linear-gradient(135deg, #e53935, #ef5350); /* rich red gradient */
     }
 
-    .card:hover {
+    /* .card:hover {
         transform: translateY(-6px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-    }
+    } */
 
     h4 {
         font-size: 13px;
@@ -425,7 +425,7 @@
         animation-delay: 0.5s;
     }
 
-    /* Animations */
+    /* Animations
     @@keyframes bounceIn {
         0% {
             transform: scale(0.9);
@@ -440,7 +440,7 @@
         100% {
             transform: scale(1);
         }
-    }
+    } */
 
     @@keyframes fadeIn {
         to {
@@ -598,37 +598,61 @@
             border-top-right-radius: 12px;
             border-bottom-right-radius: 12px;
         }
+
+    .tile-icon {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        height: 100%;
+        position: absolute;
+        left: 250px;
+        bottom: 10px;
+    }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 @* <div class="content-container-top"> *@
-<div class="title" style="display: flex; align-items: center;margin-top: 10px;width:55%">
+<div class="title" style="display: flex; align-items: center;margin-top: 10px;width:51%">
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
 
-	
-
     <div class="card blue shine compact with-sidebar">
-        <h2 class="title-slide">VAT Returns</h2>
-        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-        <h6 class="fade-in">QuickDice ERP Solutions</h6>
+        <div class="tile-content">
+            <div class="title-text">
+                <h2 class="title-slide">VAT Returns</h2>
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+                <h6 class="fade-in">Quick Dice ERP Solutions</h6>
+            </div>
+            <div class="tile-icon">
+                <svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+                </svg>
+            </div>
+        </div>
     </div>
-
+    
     <div class="card green sparkle with-sidebar">
         <h1 class="title-slide">VAT on Sales</h1>
         <h2 id="vatSalesTurnover">0</h2>
-
-        <i class="dx-icon-cart" style="font-size: 24px; color: white;"></i>
+        <div class="tile-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="31" fill="white" viewBox="0 0 24 25">
+                <path d="M7 18c-1.104 0-1.99.896-1.99 2S5.896 22 7 22s2-.896 2-2-.896-2-2-2zm10
+  0c-1.104 0-1.99.896-1.99 2S15.896 22 17 22s2-.896 2-2-.896-2-2-2zM7.01
+  16l.941-2H17c.768 0 1.434-.437 1.752-1.117l3.244-7.034A1 1 0 0
+  0 21.1 4H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52
+  14.37 5.48 16 7.01 16z" />
+            </svg>
+        </div>
     </div>
-
 
     <div class="card red shine with-sidebar">
         <h1 class="title-slide">VAT on Purchase</h1>
         <h2 id="vatPurchaseTurnover">0</h2>
-
-        <i class="dx-icon-box" style="font-size: 24px; color: white;"></i>
+        <div class="tile-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="31" fill="white" viewBox="0 0 24 24">
+                <path d="M21 16V8c0-.3-.1-.5-.3-.7l-8-5c-.4-.2-.9-.2-1.3 0l-8 5c-.2.2-.4.4-.4.7v8c0 .3.2.6.4.7l8 5c.4.2.9.2 1.3 0l8-5c.2-.1.3-.4.3-.7zM12 3.3L18.7 8 12 12.7 5.3 8 12 3.3zM4 9.5l7 4.4v6.8L4 16.2V9.5zm9 11.2v-6.8l7-4.4v6.7l-7 4.5z" />
+            </svg>
+        </div>
     </div>
-
-
 </div>
 
 <div class="horizontal-container">

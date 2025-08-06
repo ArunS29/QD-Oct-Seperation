@@ -331,8 +331,11 @@ h3 {
 	align-items: flex-end;
 	justify-content: flex-end;
 	height: 100%;
+	position: absolute;
+	left: 250px;
+	bottom: 10px;
 }
-.with-sidebar {
+	.with-sidebar {
 	position: relative;
 	overflow: hidden;
 }
