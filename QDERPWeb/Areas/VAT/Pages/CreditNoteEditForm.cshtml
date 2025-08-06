@@ -3146,6 +3146,55 @@
 
 	let accid=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsAmend="false",CrNoteNo=null,IsDirectApproval=true,IsDirectVerify=true,UnitCode=null;
+
+	let companyBranchList = [];
+
+	$(async function () {
+		// Fetch company list from API
+			await $.get("/api/VATModule/GetDefalutCompanyBranch", function (data) {
+			companyBranchList = data;
+
+			if (companyBranchList.length > 0) {
+				// You can replace '0' with a specific ID using .find()
+				const defaultCompany = companyBranchList[0]; // or: companyBranchList.find(c => c.CompanyId === 1);
+
+				const dropDown = $("#ddlGoodsGroup7").dxDropDownBox("instance");
+
+				// Set default selected value in DropDownBox
+				dropDown.option("value", defaultCompany.CompanyId);
+
+				// Fill other company fields
+				fillCompanyFields(defaultCompany);
+			}
+		});
+	});
+
+
+
+	// Populate all related fields based on selected company
+	function fillCompanyFields(company) {
+		$("#OurGroupVATNo").dxTextBox("instance").option("value", company.SellerGroupVatnumber);
+		$("#OurVATNo").dxTextBox("instance").option("value", company.CompanyVatno);
+		$("#OtherID1").dxTextBox("instance").option("value", company.SellerOtherSellerId);
+		$("#ddlGoodsGroup8").dxDropDownBox("instance").option("value", company.SellerOtherIdtype);
+		$("#OurCompanyRegisteredName").dxTextBox("instance").option("value", company.CompanyName);
+		$("#OurCompanyNameinArabic").dxTextBox("instance").option("value", company.CompanyNameAr);
+
+		$("#StreetName").dxTextBox("instance").option("value", company.SellerAddressStreet);
+		$("#StreetNameArabic").dxTextBox("instance").option("value", company.SellerAddressStreetAr);
+		$("#AdditionalAddress").dxTextBox("instance").option("value", company.SellerAdditionalStreet);
+		$("#AdditionalAddressArabic").dxTextBox("instance").option("value", company.SellerAdditionalStreetAr);
+		$("#BuildingNumber").dxTextBox("instance").option("value", company.SellerBuildingNumber);
+		$("#ClientCity").dxTextBox("instance").option("value", company.SellerCity);
+		$("#ClientCityArabic").dxTextBox("instance").option("value", company.SellerCityAr);
+		$("#AdditionalNumber").dxTextBox("instance").option("value", company.SellerAdditionalNumber);
+		$("#Province").dxTextBox("instance").option("value", company.SellerProvince);
+		$("#ProvinceArabic").dxTextBox("instance").option("value", company.SellerProvinceAr);
+		$("#PostalCode").dxTextBox("instance").option("value", company.SellerPostalCode);
+		$("#District").dxTextBox("instance").option("value", company.SellerNeighborhood);
+		$("#DistrictArabic").dxTextBox("instance").option("value", company.SellerNeighborhoodAr);
+	}
+				
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
 			const url = `/${tenantName}/VAT/VATDatabaseSignatories`;

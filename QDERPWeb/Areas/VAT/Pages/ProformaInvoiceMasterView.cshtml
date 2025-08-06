@@ -1419,6 +1419,18 @@
 		animateCount(countEls[0], counts[0]);
 	}
 
+
+		function onGridContentReady(e) {
+		updateApprovedCountFromGrid();
+
+		const component = e.component;
+		const data = component.getDataSource().items();
+
+		updateProformaAmountCard(component);     // ✅ Total invoice
+		updateTotalVATValuess(data);             // ✅ Total VAT
+		injectHeaderSVG();
+	}
+
 	function UnlockInvoice() {
 
 			if (InvoiceStatus === "Posted") {
@@ -1560,30 +1572,31 @@
 				injectHeaderSVG(); // slight delay to wait for DOM re-render
 			}
 		}
-		function injectHeaderSVG() {
-			debugger;
-			let gridElement = $('#dataGrid');
-			let dataGrid = gridElement.dxDataGrid("instance");
-			if (!dataGrid) return;
 
-			let dataSource = dataGrid.option("dataSource");
-			if (!dataSource || dataSource.length === 0) return;
 
-			let svgIcon = dataSource[0].CurrencyImage;
-			let currencySymbol = dataSource[0].CurrencySymbole;
+				function injectHeaderSVG() {
+			$.ajax({
+				url: '/api/AccountingLedgers/GetCurrencyIcon',
+				type: 'GET',
+				success: function (response) {
+					debugger;
+					let svgIcon = response.Icon;
+					if (!svgIcon) return;
 
-			if (!svgIcon && currencySymbol) {
-				svgIcon = `<span style="font-weight: bold;">${currencySymbol}</span>`;
-			} else if (svgIcon) {
-				svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
-			} else {
-				return; // if neither icon nor symbol is present, exit
-			}
+					// Set default width/height for SVG if needed
+					if (svgIcon.startsWith("<svg")) {
+						svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+					} else {
+						// If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+						svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+					}
 
-			gridElement.find(".dx-header-row td").each(function () {
+					let $grid = $('#dataGrid');
+					let gridInstance = $grid.dxDataGrid("instance");
+					if (!gridInstance) return;
 
-				const $cell = $(this);
-				const dataField = $cell.attr("data-field");  // 👈 This is key
+					$grid.find(".dx-header-row td").each(function () {
+						const $cell = $(this);
 
 					const $Currencyheader1 = $(".Currency-header1");
 					const CurrencyheaderText1 = $Currencyheader1.data("original-text") || $Currencyheader1.text().trim();
@@ -1630,7 +1643,9 @@
 						</div>
 					`);
 
-						const $Currencyheader5 = $(".Currency-header1");
+						
+
+						const $Currencyheader5 = $(".Currency-header5");
 					const CurrencyheaderText5 = $Currencyheader5.data("original-text") || $Currencyheader5.text().trim();
 					$Currencyheader5.data("original-text", CurrencyheaderText5); // Save original once
 
@@ -1736,6 +1751,17 @@
 
 
 
+					});
+				},
+				error: function (xhr) {
+					console.error("Failed to load currency icon:", xhr.responseText);
+				}
 			});
 		}
+			 $(document).ready(function () {
+		injectHeaderSVG();
+	});
+
+
+		
 </script>

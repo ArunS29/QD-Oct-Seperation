@@ -1267,6 +1267,7 @@
 		// ✅ Get data and update total VAT value
 		const data = e.component.getDataSource().items();
 		updateTotalVATValue(data);
+		 injectHeaderSVG();
 		
 	}
 
@@ -1968,214 +1969,220 @@
 	});
 
 
-
+		
 	function handleGridOptionChanged(e) {
 		if (e.name === "columns" || e.name === "visible") {
 			// Columns changed, so re-inject SVG
 			injectHeaderSVG(); // slight delay to wait for DOM re-render
 		}
 	}
-	function injectHeaderSVG() {
-		debugger;
-		let gridElement = $('#dataGrid');
-		let dataGrid = gridElement.dxDataGrid("instance");
-		if (!dataGrid) return;
 
-		let dataSource = dataGrid.option("dataSource");
-		if (!dataSource || dataSource.length === 0) return;
+		function injectHeaderSVG() {
+			$.ajax({
+				url: '/api/AccountingLedgers/GetCurrencyIcon',
+				type: 'GET',
+				success: function (response) {
+					debugger;
+					let svgIcon = response.Icon;
+					if (!svgIcon) return;
 
-		let svgIcon = dataSource[0].CurrencyImage;
-	    let currencySymbol = dataSource[0].CurrencySymbole;
-	    
-	    if (!svgIcon && currencySymbol) {
-	    	svgIcon = `<span style="font-weight: bold;">${currencySymbol}</span>`;
-	    } else if (svgIcon) {
-	    	svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
-	    } else {
-	    	return; // if neither icon nor symbol is present, exit
-	    }
+					// Set default width/height for SVG if needed
+					if (svgIcon.startsWith("<svg")) {
+						svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+					} else {
+						// If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+						svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+					}
 
-		gridElement.find(".dx-header-row td").each(function () {
+					let $grid = $('#dataGrid');
+					let gridInstance = $grid.dxDataGrid("instance");
+					if (!gridInstance) return;
 
-			const $cell = $(this);
-			const dataField = $cell.attr("data-field");  // 👈 This is key
+					$grid.find(".dx-header-row td").each(function () {
+						const $cell = $(this);
 
-				const $debitHeader = $(".Invoice-header");
-				const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
-				$debitHeader.data("original-text", debitText); // Save original once
-
-				$debitHeader.html(`
-					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-						${svgIcon}
-						<span style="font-weight: bold;">${debitText}</span>
-					</div>
-				`);
-
-						const $TotalVATAmtHeader = $(".TotalVATAmt-header");
-							const TotalVATAmtText = $TotalVATAmtHeader.data("original-text") || $TotalVATAmtHeader.text().trim();
-							$TotalVATAmtHeader.data("original-text", TotalVATAmtText); // Save original once
-
-						$TotalVATAmtHeader.html(`
+					const $debitHeader = $(".Invoice-header");
+					const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+					$debitHeader.data("original-text", debitText);
+					$debitHeader.html(`
 						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
 							${svgIcon}
-								<span style="font-weight: bold;">${TotalVATAmtText}</span>
+							<span style="font-weight: bold;">${debitText}</span>
 						</div>
 					`);
 
-							const $RevenueAmtHeader = $(".RevenueAmt-header");
-							const RevenueAmtText = $RevenueAmtHeader.data("original-text") || $RevenueAmtHeader.text().trim();
-										$RevenueAmtHeader.data("original-text", RevenueAmtText); // Save original once
-
-							$RevenueAmtHeader.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-										<span style="font-weight: bold;">${RevenueAmtText}</span>
-							</div>
-						`);
-						const $DomesticRevenueHeader = $(".DomesticRevenue-header1");
-										const DomesticRevenueText2 = $DomesticRevenueHeader.data("original-text") || $DomesticRevenueHeader.text().trim();
-											$DomesticRevenueHeader.data("original-text", DomesticRevenueText2); // Save original once
-
-							$DomesticRevenueHeader.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-											<span style="font-weight: bold;">${DomesticRevenueText2}</span>
-							</div>
-						`);
-							
-							const $DomesticRevenueHeader3 = $(".DomesticRevenue-header3");
-							const DomesticRevenueText3 = $DomesticRevenueHeader3.data("original-text") || $DomesticRevenueHeader3.text().trim();
-								 $DomesticRevenueHeader3.data("original-text", DomesticRevenueText3); // Save original once
-
-								$DomesticRevenueHeader3.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-											<span style="font-weight: bold;">${DomesticRevenueText3}</span>
-							</div>
-						`);
-
-							const $DomesticRevenueHeader4 = $(".DomesticRevenue-header4");
-							const DomesticRevenueText4 = $DomesticRevenueHeader4.data("original-text") || $DomesticRevenueHeader4.text().trim();
-								$DomesticRevenueHeader4.data("original-text", DomesticRevenueText4); // Save original once
-
-								$DomesticRevenueHeader4.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-											<span style="font-weight: bold;">${DomesticRevenueText4}</span>
-							</div>
-						`);
-								const $DomesticRevenueHeader5 = $(".DomesticRevenue-header5");
-								const DomesticRevenueText5 = $DomesticRevenueHeader5.data("original-text") || $DomesticRevenueHeader5.text().trim();
-									$DomesticRevenueHeader5.data("original-text", DomesticRevenueText5); // Save original once
-
-									$DomesticRevenueHeader5.html(`
-								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-									${svgIcon}
-												<span style="font-weight: bold;">${DomesticRevenueText5}</span>
-								</div>
-							`);
-
-								const $GGCRevenueHeader = $(".GGCRevenue-header");
-										const GGCRevenueText = $GGCRevenueHeader.data("original-text") || $GGCRevenueHeader.text().trim();
-											$GGCRevenueHeader.data("original-text", GGCRevenueText); // Save original once
-
-							$GGCRevenueHeader.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-										<span style="font-weight: bold;">${GGCRevenueText}</span>
-							</div>
-						`);
-
-						const $ExportRevenueHeader = $(".ExportRevenue-header");
-							const ExportRevenueText = $ExportRevenueHeader.data("original-text") || $ExportRevenueHeader.text().trim();
-							$ExportRevenueHeader.data("original-text", ExportRevenueText); // Save original once
-
-						$ExportRevenueHeader.html(`
+					const $TotalVATAmtHeader = $(".TotalVATAmt-header");
+					const TotalVATAmtText = $TotalVATAmtHeader.data("original-text") || $TotalVATAmtHeader.text().trim();
+					$TotalVATAmtHeader.data("original-text", TotalVATAmtText);
+					$TotalVATAmtHeader.html(`
 						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
 							${svgIcon}
-									<span style="font-weight: bold;">${ExportRevenueText}</span>
+							<span style="font-weight: bold;">${TotalVATAmtText}</span>
 						</div>
 					`);
-								const $DomesticVATHeader = $(".DomesticVAT-header");
-								const DomesticVATText = $DomesticVATHeader.data("original-text") || $DomesticVATHeader.text().trim();
-								$DomesticVATHeader.data("original-text", DomesticVATText); // Save original once
 
-							$DomesticVATHeader.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-										<span style="font-weight: bold;">${DomesticVATText}</span>
-							</div>
-						`);
+					const $RevenueAmtHeader = $(".RevenueAmt-header");
+					const RevenueAmtText = $RevenueAmtHeader.data("original-text") || $RevenueAmtHeader.text().trim();
+					$RevenueAmtHeader.data("original-text", RevenueAmtText);
+					$RevenueAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${RevenueAmtText}</span>
+						</div>
+					`);
 
-										const $DomesticVATHeader1 = $(".DomesticVAT-header1");
-										const DomesticVATText1 = $DomesticVATHeader1.data("original-text") || $DomesticVATHeader1.text().trim();
-											$DomesticVATHeader1.data("original-text", DomesticVATText1); // Save original once
+					const $DomesticRevenueHeader = $(".DomesticRevenue-header1");
+					const DomesticRevenueText2 = $DomesticRevenueHeader.data("original-text") || $DomesticRevenueHeader.text().trim();
+					$DomesticRevenueHeader.data("original-text", DomesticRevenueText2);
+					$DomesticRevenueHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenueText2}</span>
+						</div>
+					`);
 
-									$DomesticVATHeader1.html(`
-								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-									${svgIcon}
-											<span style="font-weight: bold;">${DomesticVATText1}</span>
-								</div>
-							`);
+					const $DomesticRevenueHeader3 = $(".DomesticRevenue-header3");
+					const DomesticRevenueText3 = $DomesticRevenueHeader3.data("original-text") || $DomesticRevenueHeader3.text().trim();
+					$DomesticRevenueHeader3.data("original-text", DomesticRevenueText3);
+					$DomesticRevenueHeader3.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenueText3}</span>
+						</div>
+					`);
 
-										const $DomesticVATHeader2 = $(".DomesticVAT-header2");
-									const DomesticVATText2 = $DomesticVATHeader2.data("original-text") || $DomesticVATHeader2.text().trim();
-									$DomesticVATHeader2.data("original-text", DomesticVATText2); // Save original once
+					const $DomesticRevenueHeader4 = $(".DomesticRevenue-header4");
+					const DomesticRevenueText4 = $DomesticRevenueHeader4.data("original-text") || $DomesticRevenueHeader4.text().trim();
+					$DomesticRevenueHeader4.data("original-text", DomesticRevenueText4);
+					$DomesticRevenueHeader4.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenueText4}</span>
+						</div>
+					`);
 
-								$DomesticVATHeader2.html(`
-								<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-									${svgIcon}
-											<span style="font-weight: bold;">${DomesticVATText2}</span>
-								</div>
-							`);
+					const $DomesticRevenueHeader5 = $(".DomesticRevenue-header5");
+					const DomesticRevenueText5 = $DomesticRevenueHeader5.data("original-text") || $DomesticRevenueHeader5.text().trim();
+					$DomesticRevenueHeader5.data("original-text", DomesticRevenueText5);
+					$DomesticRevenueHeader5.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenueText5}</span>
+						</div>
+					`);
 
-										const $DomesticVATHeader3 = $(".DomesticVAT-header3");
-								const DomesticVATText3 = $DomesticVATHeader3.data("original-text") || $DomesticVATHeader3.text().trim();
-							$DomesticVATHeader3.data("original-text", DomesticVATText3); // Save original once
+					const $GGCRevenueHeader = $(".GGCRevenue-header");
+					const GGCRevenueText = $GGCRevenueHeader.data("original-text") || $GGCRevenueHeader.text().trim();
+					$GGCRevenueHeader.data("original-text", GGCRevenueText);
+					$GGCRevenueHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${GGCRevenueText}</span>
+						</div>
+					`);
 
+					const $ExportRevenueHeader = $(".ExportRevenue-header");
+					const ExportRevenueText = $ExportRevenueHeader.data("original-text") || $ExportRevenueHeader.text().trim();
+					$ExportRevenueHeader.data("original-text", ExportRevenueText);
+					$ExportRevenueHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ExportRevenueText}</span>
+						</div>
+					`);
+
+					const $DomesticVATHeader = $(".DomesticVAT-header");
+					const DomesticVATText = $DomesticVATHeader.data("original-text") || $DomesticVATHeader.text().trim();
+					$DomesticVATHeader.data("original-text", DomesticVATText);
+					$DomesticVATHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticVATText}</span>
+						</div>
+					`);
+
+					const $DomesticVATHeader1 = $(".DomesticVAT-header1");
+					const DomesticVATText1 = $DomesticVATHeader1.data("original-text") || $DomesticVATHeader1.text().trim();
+					$DomesticVATHeader1.data("original-text", DomesticVATText1);
+					$DomesticVATHeader1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticVATText1}</span>
+						</div>
+					`);
+
+					const $DomesticVATHeader2 = $(".DomesticVAT-header2");
+					const DomesticVATText2 = $DomesticVATHeader2.data("original-text") || $DomesticVATHeader2.text().trim();
+					$DomesticVATHeader2.data("original-text", DomesticVATText2);
+					$DomesticVATHeader2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticVATText2}</span>
+						</div>
+					`);
+
+					const $DomesticVATHeader3 = $(".DomesticVAT-header3");
+					const DomesticVATText3 = $DomesticVATHeader3.data("original-text") || $DomesticVATHeader3.text().trim();
+					$DomesticVATHeader3.data("original-text", DomesticVATText3);
 					$DomesticVATHeader3.html(`
-					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-						${svgIcon}
-									<span style="font-weight: bold;">${DomesticVATText3}</span>
-					</div>
-	`);
-
-								const $DomesticExemptedVATHeader = $(".DomesticExemptedVAT-header");
-									const DomesticExemptedVATText = $DomesticExemptedVATHeader.data("original-text") || $DomesticExemptedVATHeader.text().trim();
-									$DomesticExemptedVATHeader.data("original-text", DomesticExemptedVATText); // Save original once
-
-							$DomesticExemptedVATHeader.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-										<span style="font-weight: bold;">${DomesticExemptedVATText}</span>
-							</div>
-						`);
-								const $GGCTaxHeader = $(".GGCTax-header");
-								const GGCTaxText = $GGCTaxHeader.data("original-text") || $GGCTaxHeader.text().trim();
-								$GGCTaxHeader.data("original-text", GGCTaxText); // Save original once
-
-							$GGCTaxHeader.html(`
-							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-								${svgIcon}
-										<span style="font-weight: bold;">${GGCTaxText}</span>
-							</div>
-						`);
-
-
-							const $ExportsHeader = $(".ExportsTax-header");
-									const ExportsText = $ExportsHeader.data("original-text") || $ExportsHeader.text().trim();
-									$ExportsHeader.data("original-text", ExportsText); // Save original once
-
-						$ExportsHeader.html(`
 						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
 							${svgIcon}
-									<span style="font-weight: bold;">${ExportsText}</span>
+							<span style="font-weight: bold;">${DomesticVATText3}</span>
 						</div>
 					`);
-						
 
-		});
-	}
-			
+					const $DomesticExemptedVATHeader = $(".DomesticExemptedVAT-header");
+					const DomesticExemptedVATText = $DomesticExemptedVATHeader.data("original-text") || $DomesticExemptedVATHeader.text().trim();
+					$DomesticExemptedVATHeader.data("original-text", DomesticExemptedVATText);
+					$DomesticExemptedVATHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticExemptedVATText}</span>
+						</div>
+					`);
+
+					const $GGCTaxHeader = $(".GGCTax-header");
+					const GGCTaxText = $GGCTaxHeader.data("original-text") || $GGCTaxHeader.text().trim();
+					$GGCTaxHeader.data("original-text", GGCTaxText);
+					$GGCTaxHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${GGCTaxText}</span>
+						</div>
+					`);
+
+					const $ExportsHeader = $(".ExportsTax-header");
+					const ExportsText = $ExportsHeader.data("original-text") || $ExportsHeader.text().trim();
+					$ExportsHeader.data("original-text", ExportsText);
+					$ExportsHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ExportsText}</span>
+						</div>
+					`);
+
+
+					});
+				},
+				error: function (xhr) {
+					console.error("Failed to load currency icon:", xhr.responseText);
+				}
+			});
+		}
+			 $(document).ready(function () {
+		injectHeaderSVG();
+	});
+
+
+	let currentSlideIndex = 0;
+	setInterval(() => {
+		const slides = document.querySelectorAll('.voucher-slide');
+		slides.forEach(slide => slide.classList.remove('active'));
+		currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+		slides[currentSlideIndex].classList.add('active');
+	}, 2000);
+
+
+
 </script>
 
