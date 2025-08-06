@@ -262,7 +262,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATCreditNote
 
         private void AlignCurrencyWithAmount(Bitmap bitmap, float iconSize = 14f, float padding = 12f)
         {
-            var fixedPictureBoxes = new[] { "xrPictureBox1", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",  "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15", "xrPictureBox16", "xrPictureBox17", "xrPictureBox18", "xrPictureBox19", "xrPictureBox20" };
+            var fixedPictureBoxes = new[] { "xrPictureBox1", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10",  "xrPictureBox12", "xrPictureBox13", "xrPictureBox14", "xrPictureBox15", "xrPictureBox16", "xrPictureBox17", "xrPictureBox18", "xrPictureBox19", "xrPictureBox11" };
             foreach (var name in fixedPictureBoxes)
             {
                 if (FindControl(name, true) is XRPictureBox picBox)

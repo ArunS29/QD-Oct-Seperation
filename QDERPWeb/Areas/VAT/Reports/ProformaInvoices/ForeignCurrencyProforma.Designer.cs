@@ -2497,7 +2497,6 @@
             // GroupFooter2
             // 
             this.GroupFooter2.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
-            this.xrLabel39,
             this.xrPictureBox7,
             this.xrPictureBox8,
             this.xrPictureBox10,
@@ -2528,7 +2527,8 @@
             this.xrLabel59,
             this.xrLabel63,
             this.xrLabel99,
-            this.xrLabel113});
+            this.xrLabel113,
+            this.xrLabel39});
             this.GroupFooter2.HeightF = 200.3053F;
             this.GroupFooter2.Level = 1;
             this.GroupFooter2.Name = "GroupFooter2";
@@ -3142,7 +3142,7 @@
             // 
             // xrPictureBox7
             // 
-            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(159.7806F, 22.99994F);
+            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(101.445F, 22.99998F);
             this.xrPictureBox7.Name = "xrPictureBox7";
             this.xrPictureBox7.SizeF = new System.Drawing.SizeF(18F, 18F);
             this.xrPictureBox7.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;

@@ -10,6 +10,7 @@ using System.Data.SqlClient;
 using System.Drawing;
 using System.Text;
 
+
 namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
 {
     public partial class BillsPurchases : DevExpress.XtraReports.UI.XtraReport
