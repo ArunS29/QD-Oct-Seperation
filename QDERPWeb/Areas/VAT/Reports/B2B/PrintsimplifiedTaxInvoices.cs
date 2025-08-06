@@ -348,5 +348,10 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE
                 };
             }
         }
+
+        private void xrLabel124_BeforePrint(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+
+        }
     }
 }

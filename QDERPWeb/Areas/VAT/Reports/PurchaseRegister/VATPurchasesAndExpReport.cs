@@ -211,7 +211,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
+                string[] pictureBoxNames = {  "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -230,7 +230,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
         }
         private void SetCurrencyImageNull()
         {
-            string[] pictureBoxNames = { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
+            string[] pictureBoxNames = {  "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
 
             foreach (string name in pictureBoxNames)
             {
