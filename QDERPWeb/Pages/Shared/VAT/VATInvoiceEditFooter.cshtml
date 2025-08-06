@@ -862,7 +862,7 @@
                             dataGrid.state(layout);
                         } catch (error) {
                             console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                           
                         }
                     }
                 },
@@ -1907,8 +1907,8 @@
 
             if (!isPosted) {
                 DevExpress.ui.dialog.alert(
-                    "This VAT Sales Invoice is not yet posted to your ledgers.\nPlease post the voucher before editing.",
-                    "Sales Invoice Not Posted"
+                    "This VAT Sales Invoice is not yet posted to your ledgers.\nPlease post the voucher before editing.","error",3000
+                    
                 );
                 return;
             }

@@ -432,7 +432,9 @@
                 items.Add()
                     .Text("Edit Voucher")
                     .Icon("folder")
-                    .Option("color", "#AB47BC"); // Purple
+                    .Option("color", "#AB47BC") // Purple
+                    .OnClick("showPurchaseVoucherEditPopup");
+
 
                 items.Add()
                     .Text("UploadItems Form Excel")
@@ -1816,6 +1818,53 @@
         const title = "Transaction Documents";
 
         openModal(url, title);
+    }
+
+             async function showPurchaseVoucherEditPopup() {
+        try {
+            debugger;
+            const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+
+            // Use value from TextBox if available
+            purchaseVoucherId = invoiceNoBox?.option("value");
+
+            if (!purchaseVoucherId) {
+                DevExpress.ui.notify("Invoice No is missing.", "Error");
+                return;
+            }
+
+            const response = await $.ajax({
+                url: `/api/VATModule/GetPurchaseApprovalStatus/${encodeURIComponent(purchaseVoucherId)}`,
+                method: 'GET',
+                dataType: 'json',
+            });
+
+            if (!response || typeof response.isPosted === "undefined") {
+                console.log("Error: Invalid response from server.");
+                DevExpress.ui.dialog.alert("Failed to retrieve invoice status.", "Error");
+                return;
+            }
+
+            console.log('Invoice Approval Status:', response.isPosted);
+            isPosted = response.isPosted;
+
+            if (!isPosted) {
+                DevExpress.ui.notify(
+                    "This VAT Purchase Invoice is not yet posted to your ledgers.\nPlease post the voucher before editing.","error",3000
+                
+                );
+                return;
+            }
+
+            let url = `/${tenantName}/Finance/PurchaseVoucher?argsledno=${encodeURIComponent(purchaseVoucherId)}`; // Example add page
+            let title = "Purchase Voucher";
+            openModal(url, title);
+
+
+        } catch (error) {
+            console.error("Exception while opening sales voucher popup:", error);
+            DevExpress.ui.dialog.alert("An unexpected error occurred.", "Error");
+        }
     }
 
 </script>

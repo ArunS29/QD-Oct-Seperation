@@ -1075,6 +1075,7 @@
 			updateApprovedCount(dataSource);
 			 updateCreditNoteTotal(dataSource);
 			 updateCreditToday(dataSource);
+			 injectHeaderSVG();
 
 			// Start sliding animation once (if not already started)
 			if (!window._voucherSliderStarted) {
@@ -1506,38 +1507,39 @@
 						console.log('End permission handling');
 					});
 
+	
 	function handleGridOptionChanged(e) {
 		if (e.name === "columns" || e.name === "visible") {
 			// Columns changed, so re-inject SVG
 			injectHeaderSVG(); // slight delay to wait for DOM re-render
 		}
 	}
-	function injectHeaderSVG() {
-		debugger;
-		let gridElement = $('#dataGrid');
-		let dataGrid = gridElement.dxDataGrid("instance");
-		if (!dataGrid) return;
 
-		let dataSource = dataGrid.option("dataSource");
-		if (!dataSource || dataSource.length === 0) return;
+			function injectHeaderSVG() {
+			$.ajax({
+				url: '/api/AccountingLedgers/GetCurrencyIcon',
+				type: 'GET',
+				success: function (response) {
+					debugger;
+					let svgIcon = response.Icon;
+					if (!svgIcon) return;
 
-		let svgIcon = dataSource[0].CurrencyImage;
-	    let currencySymbol = dataSource[0].CurrencySymbole;
-	    
-	    if (!svgIcon && currencySymbol) {
-	    	svgIcon = `<span style="font-weight: bold;">${currencySymbol}</span>`;
-	    } else if (svgIcon) {
-	    	svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
-	    } else {
-	    	return; // if neither icon nor symbol is present, exit
-	    }
+					// Set default width/height for SVG if needed
+					if (svgIcon.startsWith("<svg")) {
+						svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+					} else {
+						// If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+						svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+					}
 
-		gridElement.find(".dx-header-row td").each(function () {
+					let $grid = $('#dataGrid');
+					let gridInstance = $grid.dxDataGrid("instance");
+					if (!gridInstance) return;
 
-			const $cell = $(this);
-			const dataField = $cell.attr("data-field");  // 👈 This is key
+					$grid.find(".dx-header-row td").each(function () {
+						const $cell = $(this);
 
-				const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
+					const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
 				const AmtBeforeTaxText = $AmtBeforeTaxHeader.data("original-text") || $AmtBeforeTaxHeader.text().trim();
 				$AmtBeforeTaxHeader.data("original-text", AmtBeforeTaxText); // Save original once
 
@@ -1580,6 +1582,17 @@
 							</div>
 						`);
 
+						const $DomesticRevenueHeader1 = $(".DomesticRevenue-header1");
+										const DomesticRevenueText1 = $DomesticRevenueHeader1.data("original-text") || $DomesticRevenueHeader1.text().trim();
+											$DomesticRevenueHeader1.data("original-text", DomesticRevenueText1); // Save original once
+
+							$DomesticRevenueHeader1.html(`
+							<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+								${svgIcon}
+											<span style="font-weight: bold;">${DomesticRevenueText1}</span>
+							</div>
+						`);
+
 							const $DomesticRevenueHeader2 = $(".DomesticRevenue-header2");
 							const DomesticRevenueText2 = $DomesticRevenueHeader2.data("original-text") || $DomesticRevenueHeader2.text().trim();
 								 $DomesticRevenueHeader2.data("original-text", DomesticRevenueText2); // Save original once
@@ -1601,6 +1614,17 @@
 											<span style="font-weight: bold;">${DomesticRevenueText3}</span>
 							</div>
 						`);
+
+							const $DomesticRevenueHeader5 = $(".DomesticVAT-header5");
+								const DomesticRevenueText5 = $DomesticRevenueHeader5.data("original-text") || $DomesticRevenueHeader5.text().trim();
+									$DomesticRevenueHeader5.data("original-text", DomesticRevenueText5); // Save original once
+
+					$DomesticRevenueHeader5.html(`
+					<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+						${svgIcon}
+									<span style="font-weight: bold;">${DomesticRevenueText5}</span>
+					</div>
+	`);
 								const $ExemptedRevenueHeader = $(".ExemptedRevenue-header");
 								const ExemptedRevenueText = $ExemptedRevenueHeader.data("original-text") || $ExemptedRevenueHeader.text().trim();
 									$ExemptedRevenueHeader.data("original-text", ExemptedRevenueText); // Save original once
@@ -1612,7 +1636,7 @@
 								</div>
 							`);
 
-								
+
 
 						const $ExportRevenueHeader = $(".ExportsRevenue-header");
 							const ExportRevenueText = $ExportRevenueHeader.data("original-text") || $ExportRevenueHeader.text().trim();
@@ -1690,7 +1714,7 @@
 					</div>
 	`);
 
-							
+
 								const $GGCTaxHeader = $(".GGCTax-header");
 								const GGCTaxText = $GGCTaxHeader.data("original-text") || $GGCTaxHeader.text().trim();
 								$GGCTaxHeader.data("original-text", GGCTaxText); // Save original once
@@ -1714,9 +1738,19 @@
 						</div>
 					`);
 
+					});
+				},
+				error: function (xhr) {
+					console.error("Failed to load currency icon:", xhr.responseText);
+				}
+			});
+		}
+			 $(document).ready(function () {
+		injectHeaderSVG();
+	});
 
-		});
-	}
+
+
 	
 </script>
 
