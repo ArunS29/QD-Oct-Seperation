@@ -1027,19 +1027,33 @@ subColumns.Add().DataField("cost")
         }, "Create full Delivery for this sales order");
     }
 },
-							{
-		text: "create invoice for this sales order",
-		icon: "box",
-		onItemClick: function () {
-			const salesOrderNo = e.row.data.SalesOrderNo;
-			const clientCode = e.row.data.ClientCode; // Make sure this is available in your grid data
-			let tenantName = window.tenantName || "defaultTenant";
-			checkIfApprovedAndProceed(salesOrderNo, function () {
-			let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
-			window.location.href = url;
+								{
+			text: "create invoice for this sales order",
+			icon: "box",
+			onItemClick: function () {
+				const salesOrderNo = e.row.data.SalesOrderNo;
+				const clientCode = e.row.data.ClientCode; // Make sure this is available in your grid data
+				let tenantName = window.tenantName || "defaultTenant";
+				checkIfApprovedAndProceed(salesOrderNo, function () {
+					$.get("/api/SalesOrders/HasLedger", { clientCode: clientCode })
+					.done(function (hasLedger) {
+						if (!hasLedger) {
+							DevExpress.ui.notify(
+								"Client does not have a Ledger Account. Cannot proceed with invoice generation.",
+								"warning",
+								3000
+							);
+							return;
+						}
+				let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
+				window.location.href = url;
+	})
+					.fail(function () {
+						DevExpress.ui.notify("Error checking client ledger.", "error", 3000);
+					});
 			}, "create invoice for this sales order");
-		}
-	},
+			}
+		},
 
 					];
 				}

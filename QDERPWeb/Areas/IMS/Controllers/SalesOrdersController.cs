@@ -12,6 +12,7 @@ using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
+using SkiaSharp;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -1840,6 +1841,28 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HasLedger(string clientCode)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var hasLedger = await dbContext.Tbl30101ClientMasters
+                        .AnyAsync(c => c.ClientCode == clientCode && c.ClientName != null);
+
+
+                    return Ok(hasLedger);
+                }
+                return BadRequest("Tenant or database context not found.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetStoreToIssueItem: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading store data.", details = ex.Message });
+            }
         }
 
 
