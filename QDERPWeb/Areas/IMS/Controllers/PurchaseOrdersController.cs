@@ -612,7 +612,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingPo.SalesPersonCode = model.SalesPersonCode;
                     existingPo.Mprno = model.Mprno;
                     existingPo.ProjectSubUnitCode = model.ProjectSubUnitCode;
-
+                    existingPo.CurrencyId = model.CurrencyId ?? 1;
+                    existingPo.CurrencyRate = model.CurrencyRate ?? 1;
+                    existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
                     existingPo.ModifiedBy = userName;
                     existingPo.ModifiedOn = DateTime.Now;
                 }
@@ -733,7 +735,9 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 existingPo.SalesPersonCode = master.SalesPersonCode;
                 existingPo.PoverifiedSign = master.PoverifiedSign;
                 existingPo.PoapprovedSign = master.PoapprovedSign;
-
+                existingPo.CurrencyId = model.CurrencyId ?? 1;
+                existingPo.CurrencyRate = model.CurrencyRate ?? 1;
+                existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
                 // Submit
                 if (master.IsSubmitted == true && existingPo.IsSubmitted != true)
                 {
@@ -987,6 +991,9 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
             isApproved = master.IsApproved,
             approvedBy = master.ApprovedBy,
             approvedOn = master.ApprovedOn,
+            CurrencyRate = master.CurrencyRate,
+            BaseCurrencyId = master.BaseCurrencyId,
+            CurrencyId = master.CurrencyId,
 
             // Children - PascalCase property names
             items = children.Select(x => new
@@ -1884,7 +1891,11 @@ public async Task<IActionResult> GetOrderStatus(string pono)
     }
     public class PurchaseOrderViewModel
 {
-    public Tbl60401purchaseOrderMaster Master { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
+
+        public Tbl60401purchaseOrderMaster Master { get; set; }
     public List<Tbl60402purchaseOrderChild> Children { get; set; }
 }
 
