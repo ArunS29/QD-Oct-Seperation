@@ -1778,7 +1778,7 @@
             xrSummary2.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel64.Summary = xrSummary2;
             this.xrLabel64.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel64.TextFormatString = "{0:0.00}";
+            this.xrLabel64.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel63
             // 
@@ -1803,7 +1803,7 @@
             xrSummary3.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel63.Summary = xrSummary3;
             this.xrLabel63.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel63.TextFormatString = "{0:0.00}";
+            this.xrLabel63.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel62
             // 
@@ -1828,7 +1828,7 @@
             xrSummary4.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel62.Summary = xrSummary4;
             this.xrLabel62.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel62.TextFormatString = "{0:0.00}";
+            this.xrLabel62.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel61
             // 
@@ -1853,7 +1853,7 @@
             xrSummary5.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel61.Summary = xrSummary5;
             this.xrLabel61.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel61.TextFormatString = "{0:0.00}";
+            this.xrLabel61.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel60
             // 
@@ -1865,11 +1865,11 @@
             this.xrLabel60.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
             new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "sumSum([DomesticZeroTaxPurchases])")});
             this.xrLabel60.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
-            this.xrLabel60.LocationFloat = new DevExpress.Utils.PointFloat(1216.274F, 0F);
+            this.xrLabel60.LocationFloat = new DevExpress.Utils.PointFloat(1216.001F, 0F);
             this.xrLabel60.Multiline = true;
             this.xrLabel60.Name = "xrLabel60";
             this.xrLabel60.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel60.SizeF = new System.Drawing.SizeF(72.69678F, 36.33333F);
+            this.xrLabel60.SizeF = new System.Drawing.SizeF(72.96985F, 36.33333F);
             this.xrLabel60.StylePriority.UseBackColor = false;
             this.xrLabel60.StylePriority.UseBorderColor = false;
             this.xrLabel60.StylePriority.UseBorders = false;
@@ -1878,7 +1878,7 @@
             xrSummary6.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel60.Summary = xrSummary6;
             this.xrLabel60.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel60.TextFormatString = "{0:0.00}";
+            this.xrLabel60.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel59
             // 
@@ -1903,7 +1903,7 @@
             xrSummary7.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel59.Summary = xrSummary7;
             this.xrLabel59.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel59.TextFormatString = "{0:0.00}";
+            this.xrLabel59.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel58
             // 
@@ -1928,7 +1928,7 @@
             xrSummary8.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel58.Summary = xrSummary8;
             this.xrLabel58.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel58.TextFormatString = "{0:0.00}";
+            this.xrLabel58.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel57
             // 
@@ -1953,7 +1953,7 @@
             xrSummary9.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel57.Summary = xrSummary9;
             this.xrLabel57.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel57.TextFormatString = "{0:0.00}";
+            this.xrLabel57.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel56
             // 
@@ -1978,7 +1978,7 @@
             xrSummary10.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel56.Summary = xrSummary10;
             this.xrLabel56.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel56.TextFormatString = "{0:0.00}";
+            this.xrLabel56.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel55
             // 
@@ -2003,7 +2003,7 @@
             xrSummary11.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel55.Summary = xrSummary11;
             this.xrLabel55.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel55.TextFormatString = "{0:0.00}";
+            this.xrLabel55.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel54
             // 
@@ -2028,7 +2028,7 @@
             xrSummary12.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel54.Summary = xrSummary12;
             this.xrLabel54.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel54.TextFormatString = "{0:0.00}";
+            this.xrLabel54.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel53
             // 
@@ -2053,7 +2053,7 @@
             xrSummary13.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel53.Summary = xrSummary13;
             this.xrLabel53.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel53.TextFormatString = "{0:0.00}";
+            this.xrLabel53.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel52
             // 
@@ -2078,7 +2078,7 @@
             xrSummary14.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel52.Summary = xrSummary14;
             this.xrLabel52.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel52.TextFormatString = "{0:0.00}";
+            this.xrLabel52.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel51
             // 
@@ -2103,7 +2103,7 @@
             xrSummary15.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel51.Summary = xrSummary15;
             this.xrLabel51.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel51.TextFormatString = "{0:0.00}";
+            this.xrLabel51.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel50
             // 
@@ -2128,7 +2128,7 @@
             xrSummary16.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel50.Summary = xrSummary16;
             this.xrLabel50.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel50.TextFormatString = "{0:0.00}";
+            this.xrLabel50.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel49
             // 
@@ -2220,7 +2220,7 @@
             xrSummary17.Running = DevExpress.XtraReports.UI.SummaryRunning.Group;
             this.xrLabel70.Summary = xrSummary17;
             this.xrLabel70.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.xrLabel70.TextFormatString = "{0:0.00}";
+            this.xrLabel70.TextFormatString = "{0:#,##0.00}";
             // 
             // PageFooter
             // 
@@ -2228,7 +2228,7 @@
             this.xrLabel26,
             this.xrLabel146,
             this.pageInfo2});
-            this.PageFooter.HeightF = 59.06787F;
+            this.PageFooter.HeightF = 63.76302F;
             this.PageFooter.Name = "PageFooter";
             // 
             // xrLabel26
