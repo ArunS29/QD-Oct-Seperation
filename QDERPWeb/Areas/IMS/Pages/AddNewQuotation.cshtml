@@ -2285,8 +2285,7 @@ function checkDateLocking() {
         success: function (isLocked) {
             if (isLocked) {
                 DevExpress.ui.notify("Quotation entry date is locked for editing.", "warning", 3000);
-
-              
+            }
         },
         error: function () {
             DevExpress.ui.notify("Error checking date lock status.", "error", 3000);
