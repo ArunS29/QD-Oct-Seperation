@@ -88,4 +88,7 @@ public partial class Tbl60501materialReceiptMaster
     public bool? IsVerified { get; set; }
 
     public string StoreReceivedIn { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }
