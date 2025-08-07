@@ -701,9 +701,6 @@ namespace QD.ERP.Web.Areas.Finance.Models
     }
     public class RFQViewModel
 	{
-        public decimal? CurrencyRate { get; set; }
-        public int? BaseCurrencyId { get; set; }
-        public int? CurrencyId { get; set; }
         public string Rfqno { get; set; }
 
 		public DateTime? Rfqdate { get; set; }
@@ -783,6 +780,10 @@ namespace QD.ERP.Web.Areas.Finance.Models
 		public DateTime? VerifiedOn { get; set; }
 
 		public string SalesPersonCode { get; set; }
+
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
 
 		public List<Tbl60702rfqchild> RFQDetailses { get; set; }
 		
@@ -921,7 +922,13 @@ namespace QD.ERP.Web.Areas.Finance.Models
 	}
 	public class MaterialReceiptViewModel
 	{
-		public string ReceiptNo { get; set; }
+        public decimal? CurrencyRate { get; set; }
+
+        public int? BaseCurrencyId { get; set; }
+
+        public int? CurrencyId { get; set; }
+
+        public string ReceiptNo { get; set; }
 
 		public DateTime? ReceiptDate { get; set; }
 

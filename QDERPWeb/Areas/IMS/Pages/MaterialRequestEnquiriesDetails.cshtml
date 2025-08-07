@@ -275,7 +275,7 @@
 
 </style>
 <div class="title">
-	<input id="formId" value="frm201LedgerView" type="hidden" />
+	<input id="formId" value="frm60112PurchaseRequestView" type="hidden" />
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
@@ -1263,10 +1263,9 @@
 							const tenantName = window.tenantName || "defaultTenant";
 							let url = "";
 							let title = "";
-
 							switch (requestEnquiry) {
 								case "Client Request":
-									url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(response.newMprNo)}`;
+										url = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(response.newMprNo)}&RevNo=${encodeURIComponent(response.RevisionNo)}`;
 									title = "Edit Client Request";
 									break;
 								case "Project Request":
