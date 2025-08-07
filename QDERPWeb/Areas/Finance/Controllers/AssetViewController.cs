@@ -220,7 +220,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         return BadRequest(new { message = "Invalid asset data." });
                     }
-
+                    string userName = HttpContext.Session.GetString("UserName");
+                    DateTime now = DateTime.Now;
                     var existingAsset = await dbContext.Tbl20105AssetMasters
                         .FirstOrDefaultAsync(x => x.AssetLedgerNo == updatedAsset.AssetLedgerNo);
 
@@ -265,10 +266,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingAsset.ConversionCurrencyID = updatedAsset.ConversionCurrencyID;
                     existingAsset.BaseCurrencyID = updatedAsset.BaseCurrencyID; 
                     existingAsset.CurrencyRate = updatedAsset.CurrencyRate;
+                    if (string.IsNullOrEmpty(existingAsset.AddedBy))
+                    {
+                        existingAsset.AddedBy = userName;
+                    }
+                    if (existingAsset.AddedOn == null || existingAsset.AddedOn == default(DateTime))
+                    {
+                        existingAsset.AddedOn = now;
+                    }
 
-
-                    existingAsset.ModifiedBy = "Admin"; // Replace with actual current user
-                    existingAsset.ModifiedOn = DateTime.Now;
+                    existingAsset.ModifiedBy = userName; // Replace with actual current user
+                    existingAsset.ModifiedOn = now;
 
                     await dbContext.SaveChangesAsync();
 
@@ -448,14 +456,15 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetMaintenance()
+        public IActionResult GetMaintenance(string assetLedgerNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
             {
                 var data = dbContext.Tbl20111AssetMaintenanceMasters
+                    .Where(x => x.AssetLedgerNo == assetLedgerNo)
                     .Select(x => new {
                         x.MaintenanceRefNo,
-                        x.AssetLedgerNo,// ✅ This must be present
+                        x.AssetLedgerNo,
                         x.MaintenanceTypeId,
                         x.MaintenanceReading,
                         x.MaintenanceDate,
@@ -470,6 +479,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized();
         }
+
 
         [HttpGet]
         public IActionResult GetEditMaintenance()

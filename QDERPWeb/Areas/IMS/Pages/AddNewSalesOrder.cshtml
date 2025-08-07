@@ -976,7 +976,7 @@
         })
         .ColumnAutoWidth(true)
         .Width("100%")
-        .WordWrapEnabled(true)
+        .WordWrapEnabled(false)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
@@ -1068,11 +1068,9 @@
 											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 											.Columns(columns =>
 											{
-												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
 											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
 											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
-
-
 											})
 
 										)
@@ -2089,6 +2087,7 @@
     }
 
                 // ✅ Collect children grid data
+                const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
                 const children = gridInstance.getDataSource().items().map(row => ({
                     SalesOrderChildId: row.SalesOrderChildId ?? 0,
                     SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
@@ -2096,10 +2095,10 @@
                     QuotedQuantity: row.QuotedQuantity ?? null,
                     UnitRateMethod: row.UnitRateMethod ?? null,
                     Gscode: row.Gscode ?? "",
-                    QuotedUnitPrice: row.QuotedUnitPrice ?? null,
-                    QuotedDiscount: row.QuotedDiscount ?? null,
+                    QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
+                    QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
                     QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
-                    CostPrice: row.CostPrice ?? null,
+                    CostPrice: (row.CostPrice * CurrencyRate) ?? null,
                     AddlDescription:row.AddlDescription ?? null,
                     QuoteRemarks:row.QuoteRemarks ?? null,
                     DeliveryPeriod:row.DeliveryPeriod ?? null,
@@ -2331,6 +2330,7 @@
         }
 
                     // ✅ Collect children grid data
+                    const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
                     const children = gridInstance.getDataSource().items().map(row => ({
                         SalesOrderChildId: row.SalesOrderChildId ?? 0,
                         SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
@@ -2338,10 +2338,10 @@
                         QuotedQuantity: row.QuotedQuantity ?? null,
                         UnitRateMethod: row.UnitRateMethod ?? null,
                         Gscode: row.Gscode ?? "",
-                        QuotedUnitPrice: row.QuotedUnitPrice ?? null,
-                        QuotedDiscount: row.QuotedDiscount ?? null,
+                        QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
+                        QuotedDiscount: (row.QuotedDiscount * CurrencyRate)  ?? null,
                          QuotedTaxSlab: row.QuotedTaxSlab ?? null,
-                        CostPrice: row.CostPrice ?? null
+                        CostPrice: (row.CostPrice * CurrencyRate)  ?? null
                     }));
 
                     // ✅ Prepare full model for submission

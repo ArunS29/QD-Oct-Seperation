@@ -763,6 +763,110 @@
                 </div>
             </div>
         </text>);
+                    item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+                                                                                                                                                                <div class="p-3">
+                                                                                                                                                                    <table style="width:100%; font-size:14px; margin:5px;">
+                                                                                                                                                                        <tr>
+                                                                                                                                                                            <td style="width: 30%;">
+                                @(Html.DevExtreme().DropDownBox()
+                                                            .Label(new JS("formatMessage('Base Currency')"))
+                                                            .DataSource(d => d.WebApi()
+                                                            .Controller("VATModule")
+                                                            .LoadAction("GetTaxCurrency")
+                                                            .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("CurrencyExchangeId"))
+                                                            .LabelMode(EditorLabelMode.Floating)
+                                                            .ID("ddlGoodsGroup4")
+                                                            .ShowClearButton(true)
+                                                                                   @* .Value("Saudi Arabian Riyals") *@
+                                                            .AcceptCustomValue(true)
+                                                            .OpenOnFieldClick(false)
+                                                            .ValueChangeEvent("input")
+                                                            .HoverStateEnabled(true)
+                                                            .OnInitialized("onBaseCurrencyInitialized")
+                                                            .ValueExpr("CurrencyExchangeId")
+                                                            .DisplayExpr("CurrencyName")
+                                                            .OnInput("dropDownBoxOnInput")
+                                                            .OnOpened("onOpened")
+                                                            .TabIndex(1)
+                                                            .Disabled(true) // Entire DropDownBox is disabled
+                                                            .DropDownOptions(o => o.Width(470))
+                                                            .ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+                                                            .Width("100%")
+                                                            .Buttons(buttons =>
+                                                            {
+                                                                buttons.Add()
+                                                            .Name("btnEditTaxCurrency")
+                                                            .Location(TextEditorButtonLocation.After)
+                                                            .Widget(w => w.Button()
+                                                            .Type(ButtonType.Default)
+                                                            .Icon("edit")
+                                                            .Disabled(true) // Button is also disabled
+                                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                            .OnClick("CurrencyClick"));
+
+                                                                buttons.Add().Name("dropDown");
+                                                            }))
+                                                           </td>
+                                                           <td style="width: 30%;">
+                                @(Html.DevExtreme().DropDownBox()
+                                                            .Label(new JS("formatMessage('Convertion Currency')"))
+                                                            .DataSource(d => d.WebApi()
+                                                            .Controller("VATModule")
+                                                            .LoadAction("GetInvoiceCurrency")
+                                                            .LoadMode(DataSourceLoadMode.Raw)
+                                                            .Key("CurrencyExchangeId"))
+                                                            .LabelMode(EditorLabelMode.Floating)
+                                                            .ID("ddlGoodsGroup3")
+                                                            .ShowClearButton(true)
+                                                                                   @* .Value("Saudi Arabian Riyals") *@
+                                                            .AcceptCustomValue(true)
+                                                            .OpenOnFieldClick(false)
+                                                            .ValueChangeEvent("input")
+                                                            .HoverStateEnabled(true)
+                                                            .OnInitialized("onBaseCurrencyInitialized")
+                                                            .ValueExpr("CurrencyExchangeId")
+                                                            .DisplayExpr("CurrencyName")
+                                                            .OnInput("dropDownBoxOnInput")
+                                                            .OnOpened("onOpened")
+                                                            .TabIndex(1)
+                                                            .DropDownOptions(o => o.Width(470))
+                                                            .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
+                                                            .Width("100%")
+                                                            .Buttons(buttons =>
+                                                            {
+                                                                buttons.Add()
+                                                            .Name("btnAddInvoiceCurrency")
+                                                            .Location(TextEditorButtonLocation.After)
+                                                            .Widget(w => w.Button()
+                                                            .Type(ButtonType.Default)
+                                                            .Icon("edit") // Use "plus" or any other if needed
+                                                            .Hint("Edit Description")
+                                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                            .OnClick("CurrencyClick")); // 👈 your existing handler
+
+                                                                buttons.Add().Name("dropDown");
+                                                            }))
+                                                           </td>
+                                                           <td>
+                                @(Html.DevExtreme().NumberBox()
+                                                            .ID("currencyexchangerate")
+                                                            .Label(new JS("formatMessage('Currency Exchange Rate:')"))
+                                                            .LabelMode(EditorLabelMode.Floating)
+                                                            .Min(1)
+                                                            .Step(1)
+                                                            .ShowSpinButtons(true)
+                                                            .Value(1)
+                                                            .Width("100%")
+                                                            )
+                        </td>
+                    </tr>
+                </table>
+            </div>
+
+
+                    </text>);
+
 
                     })
                 )
@@ -821,6 +925,88 @@
             .ShowRowLines(true)
             )
 </div>
+
+
+
+@using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+
+                                                    .ID("taxcurrecy-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("VATModule")
+                                                            .LoadAction("GetTaxCurrency")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                            ///   .Key("AccountHead") //salary paid entry
+                                                            .Key("CurrencyExchangeId")
+
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                                    .OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
+                                                    .OnInitialized("onBaseCurrencyInitialized")
+                                                                                                // .HeaderFilter(p => p.Visible(true))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+                                                    .FilterRow(f => f.Visible(true))
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(345)
+                                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+                                                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+                                                    })
+
+                                                )
+
+}
+@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+
+                                                    .ID("invoicecurrecy-datagrid")
+                                                .DataSource(d => d.WebApi()
+                                                .Controller("VATModule")
+                                                        .LoadAction("GetInvoiceCurrency")
+                                                .LoadMode(DataSourceLoadMode.Raw)
+                                                        ///   .Key("AccountHead") //salary paid entry
+                                                        .Key("CurrencyExchangeId")
+
+                                                )
+                                                .WordWrapEnabled(true)
+                                                .ShowBorders(true)
+                                                .SearchPanel(sp => sp.HighlightSearchText(true))
+                                                .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                .OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
+                                                .OnInitialized("onBaseCurrencyInitialized")
+                                                .ShowBorders(true)
+                                                .HoverStateEnabled(true)
+                                                .Paging(p => p.PageSize(15))
+                                                .FilterRow(f => f.Visible(false))
+                                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                .Height(345)
+                                                .Selection(s => s.Mode(SelectionMode.Single))
+                                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                .Columns(columns =>
+                                                {
+                                                    columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
+                                                    columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+                                                    columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+                                                    columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+                                                })
+                                            )
+}
+
 @using (Html.DevExtreme().NamedTemplate("PreparedByTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1925,5 +2111,56 @@ $(function () {
                 dataGridInstance.cellValue(rowIndex, "EmployeeNo", modalData.EmployeeNo || "");
                 dataGridInstance.cellValue(rowIndex, "PropertyNo", modalData.PropertyNo || "");
         }
+               function onBaseCurrencyInitialized(e) {
+                  const ddb = e.component;
 
+                  setTimeout(() => {
+                      const ds = ddb.getDataSource();
+
+                      if (ds) {
+                          ds.load().done(function (data) {
+                              if (data && data.length > 0) {
+                                  const firstItemId = data[0].CurrencyExchangeId;
+                                  ddb.option("value", firstItemId);
+                              }
+                          });
+                      } else {
+                          console.warn("DataSource is not available yet.");
+                      }
+                  }, 100);
+              }
+               function CurrencyClick() {
+              let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+              let title = "Currency Master";
+              openModal(url, title);
+          }
+            function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
+              const selectedRow = e.selectedRowsData[0]; // full object
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey); // CurrencyId
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  // Set CurrencyRate from the selected grid row
+                  const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
+                  $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
+              }
+          }
+
+          function dataGridTaxCurrencyHeadSelectionChanged(e) {
+              debugger;
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey); // BaseCurrencyId
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+              }
+          }
    </script>

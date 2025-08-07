@@ -317,7 +317,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					existingMaster.ApprovedSignatory = VM.ApprovedSignatory.HasValue ? (byte?)VM.ApprovedSignatory.Value : null;
 					existingMaster.RevisionNo = VM.RevisionNo;
 					existingMaster.QuoteValidity = VM.QuoteValidity;
-				}
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
+
+                }
 				else
 				{
 					// Insert new master
@@ -325,40 +329,43 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					{
 
 						 QuoteNo= VM.QuoteNo,
-    QuoteDate= VM.QuoteDate,
-    ClientCode= VM.ClientCode,
-    SalesPersonCode= VM.SalesPersonCode,
-	Mprno = VM.Mprno,
-    Attention= VM.Attention,
-    ClientContactEmail= VM.ClientContactEmail,
-    ClientContactNo=VM.ClientContactNo,
-    ModeOfRequest=Convert.ToByte(VM.ModeOfRequest),
-    TypeOfRequest=Convert.ToByte(VM.TypeOfRequest),
-    ProjectMasterCode= VM.ProjectMasterCode,
-    Project=VM.Project,
-    SubjectTitle= VM.SubjectTitle,
-    QuotationSummary= VM.QuotationSummary,
-    QuoteIntro= VM.QuoteIntro,
-    QuoteThanksNote= VM.QuoteThanksNote,
-    CompanyBranch=Convert.ToByte(VM.CompanyBranch),
-    InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
-    ClientRefNo= VM.ClientRefNo,
-    QuoteSubmittedBy= VM.QuoteSubmittedBy,
-    QuoteSubmittedOn= VM.QuoteSubmittedOn,
-    BidClosingDate= VM.BidClosingDate,
-    QuoteStatus=Convert.ToByte(VM.QuoteStatus),
-    TransportationScope=VM.TransportationScope,
-    AdditionsText= VM.AdditionsText,
-    QuoteTransport= VM.QuoteTransport,
-    DiscountsText= VM.DiscountsText,
-    QuoteDiscount= VM.QuoteDiscount,
-    QuoteSignatory=Convert.ToByte(VM.QuoteSignatory),
-    VerifiedSignatory=Convert.ToByte(VM.VerifiedSignatory),
-    ApprovedSignatory= Convert.ToByte(VM.ApprovedSignatory),
-	RevisionNo=VM.RevisionNo,
-	QuoteValidity=VM.QuoteValidity,
+                    QuoteDate= VM.QuoteDate,
+                    ClientCode= VM.ClientCode,
+                    SalesPersonCode= VM.SalesPersonCode,
+	                Mprno = VM.Mprno,
+                    Attention= VM.Attention,
+                    ClientContactEmail= VM.ClientContactEmail,
+                    ClientContactNo=VM.ClientContactNo,
+                    ModeOfRequest=Convert.ToByte(VM.ModeOfRequest),
+                    TypeOfRequest=Convert.ToByte(VM.TypeOfRequest),
+                    ProjectMasterCode= VM.ProjectMasterCode,
+                    Project=VM.Project,
+                    SubjectTitle= VM.SubjectTitle,
+                    QuotationSummary= VM.QuotationSummary,
+                    QuoteIntro= VM.QuoteIntro,
+                    QuoteThanksNote= VM.QuoteThanksNote,
+                    CompanyBranch=Convert.ToByte(VM.CompanyBranch),
+                    InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
+                    ClientRefNo= VM.ClientRefNo,
+                    QuoteSubmittedBy= VM.QuoteSubmittedBy,
+                    QuoteSubmittedOn= VM.QuoteSubmittedOn,
+                    BidClosingDate= VM.BidClosingDate,
+                    QuoteStatus=Convert.ToByte(VM.QuoteStatus),
+                    TransportationScope=VM.TransportationScope,
+                    AdditionsText= VM.AdditionsText,
+                    QuoteTransport= VM.QuoteTransport,
+                    DiscountsText= VM.DiscountsText,
+                    QuoteDiscount= VM.QuoteDiscount,
+                    QuoteSignatory=Convert.ToByte(VM.QuoteSignatory),
+                    VerifiedSignatory=Convert.ToByte(VM.VerifiedSignatory),
+                    ApprovedSignatory= Convert.ToByte(VM.ApprovedSignatory),
+	                RevisionNo=VM.RevisionNo,
+	                QuoteValidity=VM.QuoteValidity,
+                    CurrencyId = VM.CurrencyId ?? 1,
+                    CurrencyRate = VM.CurrencyRate ?? 1,
+                    BaseCurrencyId = VM.BaseCurrencyId ?? 1,
 
-					};
+                    };
 
 					await dbContext.Tbl60101quotationMasters.AddAsync(newMaster);
 				}
@@ -908,5 +915,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<IActionResult> IsDateLocked()
+        {
+            // ✅ Resolve tenant and DB context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { Message = "Invalid tenant." });
+
+            try
+            {
+                // ✅ Get Default Company ID from session
+                var companyIdStr = HttpContext.Session.GetString("DefaultcompanyID");
+                if (!int.TryParse(companyIdStr, out int companyId))
+                    return BadRequest(new { Message = "Invalid or missing Company ID." });
+
+                // ✅ Fetch IsDateLockingEnabled flag from company settings
+                var isDateLockingEnabled = await dbContext.Tbl901CompanyDetails02s
+                    .Where(x => x.CompanyId == companyId)
+                    .Select(x => x.IsDateLockingEnabled ?? false)
+                    .FirstOrDefaultAsync();
+
+                return Ok(isDateLockingEnabled);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in IsDateLocked: {ex}");
+                return StatusCode(500, new { Message = "Internal Server Error", Details = ex.Message });
+            }
+        }
+
+
+
+
     }
 }

@@ -6104,7 +6104,9 @@
 			RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 			RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
 
-	
+			ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+		    TaxCurrencyCode:TaxCurrencyExchangeId|| "1",
+			InvoiceCurrencyCode:InvoiceCurrencyExchangeId|| "1",
 			AdvanceText: $("#LessAdvance").dxTextBox("instance").option("value")|| null,
 			AdvanceAmount: $("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
 			RetentionText: $("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,
@@ -6259,7 +6261,9 @@
 				RemarksInEn: $("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
 				RemarksInAr: $("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
 
-
+				ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+				TaxCurrencyCode:TaxCurrencyExchangeId|| "1",
+				InvoiceCurrencyCode:InvoiceCurrencyExchangeId|| "1",
 				AdvanceText: $("#LessAdvance").dxTextBox("instance").option("value")|| null,
 				AdvanceAmount: $("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
 				RetentionText: $("#LessOtherDeductions").dxTextBox("instance").option("value")|| null,

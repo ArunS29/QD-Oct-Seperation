@@ -402,11 +402,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
         //New RFQ
+
+        [HttpGet]
+        public async Task<IActionResult> GetIsEnableMPRWorkflow()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var companyIdStr = HttpContext.Session.GetString("DefaultcompanyID");
+                if (!int.TryParse(companyIdStr, out int companyId))
+                    return BadRequest("Invalid Company ID");
+
+                var isEnabled = await dbContext.Tbl901CompanyDetails02s
+                    .Where(x => x.CompanyId == companyId)
+                    .Select(x => x.IsEnableMprworkflow ?? false)
+                    .FirstOrDefaultAsync();
+
+                return Ok(isEnabled);
+            }
+
+            return BadRequest("Invalid tenant or DB context.");
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> CheckIfApproved(string mprNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+
+
+
+
                 var isApproved = await dbContext.Tbl60601purchaseRequestMasters
                     .Where(x => x.Mprno == mprNo)
                     .Select(x => x.IsApproved ?? false)

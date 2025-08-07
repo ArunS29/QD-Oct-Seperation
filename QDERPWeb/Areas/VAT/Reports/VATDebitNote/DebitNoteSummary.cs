@@ -27,11 +27,11 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
             string companyNameAr,
             string companyAddressAr,
             string username,
-            TenantDbContextHelper tenantDbContextHelper)
+            TenantDbContextHelper tenantDbContextHelper,Decimal DefaultCurrencyDecimals)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
-            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username);
+            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username, DefaultCurrencyDecimals);
             LoadCurrencySymbolAndImage();
         }
 
@@ -44,7 +44,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            string username)
+            string username,Decimal DefaultCurrencyDecimals)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -93,7 +93,77 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
                 addressArLabel.Text = companyAddressAr;
             if (FindControl("xrLabelUaserName", true) is XRLabel usernameLabel)
                 usernameLabel.Text = companyAddressAr;
+            // ✅ Change decimal formatting only if value is 3
+            if (DefaultCurrencyDecimals == 3)
+            {
+                if (FindControl("xrTableCell27", true) is XRLabel lbl27)
+                    lbl27.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell26", true) is XRLabel lbl26)
+                    lbl26.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell25", true) is XRLabel lbl25)
+                    lbl25.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell26", true) is XRLabel lbl32)
+                    lbl32.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell33", true) is XRLabel lbl33)
+                    lbl33.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell24", true) is XRLabel lbl24)
+                    lbl24.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell31", true) is XRLabel lbl31)
+                    lbl31.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell30", true) is XRLabel lbl30)
+                    lbl30.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell29", true) is XRLabel lbl29)
+                    lbl29.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell34", true) is XRLabel lbl34)
+                    lbl34.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell26", true) is XRLabel lbl35)
+                    lbl35.TextFormatString = "{0:n3}";
+                if (FindControl("tableCell32", true) is XRTableCell cell32)
+                    cell32.TextFormatString = "{0:n3}";
+                if (FindControl("tableCell34", true) is XRTableCell cell34)
+                    cell34.TextFormatString = "{0:n3}";
+                if (FindControl("tableCell35", true) is XRTableCell cell35)
+                    cell35.TextFormatString = "{0:n3}";
+                if (FindControl("tableCell27", true) is XRTableCell cell27)
+                    cell27.TextFormatString = "{0:n3}";
 
+                if (FindControl("xrLabel2", true) is XRLabel lbl2)
+                    lbl2.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel3", true) is XRLabel lbl3)
+                    lbl3.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel4", true) is XRLabel lbl4)
+                    lbl4.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel5", true) is XRLabel lbl5)
+                    lbl5.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel6", true) is XRLabel lbl6)
+                    lbl6.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel7", true) is XRLabel lbl7)
+                    lbl7.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel8", true) is XRLabel lbl8)
+                    lbl8.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel9", true) is XRLabel lbl9)
+                    lbl9.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel14", true) is XRLabel lbl14)
+                    lbl14.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel15", true) is XRLabel lbl15)
+                    lbl15.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel16", true) is XRLabel lbl16)
+                    lbl16.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel20", true) is XRLabel lbl20)
+                    lbl20.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel21", true) is XRLabel lbl21)
+                    lbl21.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel22", true) is XRLabel lbl22)
+                    lbl22.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel23", true) is XRLabel lbl23)
+                    lbl23.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel18", true) is XRLabel lbl18)
+                    lbl18.TextFormatString = "{0:n3}";
+                if (FindControl("xrLabel19", true) is XRLabel lbl19)
+                    lbl19.TextFormatString = "{0:n3}";
+            
+
+        }
             ConfigureSqlDataSource(frmDate, toDate);
         }
 

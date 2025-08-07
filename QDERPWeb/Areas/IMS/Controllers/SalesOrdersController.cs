@@ -77,7 +77,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalAfterDiscount,
                         i.TotalTaxAmount,
                         i.TotalWithTax,
-                        cost = i.TotalWithTax * i.CurrencyRate,
+                        cost = i.TotalWithTax / i.CurrencyRate,
                     }).ToListAsync();
 
                     return Json(data);
@@ -975,13 +975,13 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
                     Gsdescrpition = g.Gsdescrpition,
                     c.UnitRateMethod,
                     c.QuotedQuantity,
-                    c.CostPrice,
-                    c.QuotedUnitPrice,
+                    CostPrice =  c.CostPrice / order.CurrencyRate,
+                    QuotedUnitPrice = c.QuotedUnitPrice / order.CurrencyRate,
                     c.QuotedDiscount,
                     c.QuotedTaxSlab,
-                    c.LineTotalAfterDiscount,
-                    c.LineTotalWithTax,
-                    c.LineTaxAmount,
+                    LineTotalAfterDiscount =  c.LineTotalAfterDiscount / order.CurrencyRate,
+                    LineTotalWithTax =  c.LineTotalWithTax / order.CurrencyRate,
+                    LineTaxAmount =  c.LineTaxAmount / order.CurrencyRate,
                     c.AddlDescription,
                     c.QuoteRemarks,
                     c.DeliveryPeriod,

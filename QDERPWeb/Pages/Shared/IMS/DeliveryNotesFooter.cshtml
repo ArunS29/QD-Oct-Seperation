@@ -447,7 +447,11 @@
             salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
             quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
             enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
-            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value")
+            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
+                CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
+
         };
 
         // Get grid data (items)
@@ -517,7 +521,10 @@
             salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
             quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
             enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
-            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value")
+            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
+                CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
         };
 
         // Get grid data (items)
@@ -642,6 +649,8 @@
             .then(result => {
                 DevExpress.ui.notify(result.message, "success", 3000);
                 disableEditing(); // Disable form fields after approval
+             $("#btnPrint").dxDropDownButton("instance").option("disabled", false);
+
             })
             .catch(error => {
                 DevExpress.ui.notify(error.message || "Approval failed", "error", 3000);
@@ -651,20 +660,23 @@
 
 
 
-          function disableEditing() {
+    function disableEditing() {
         // Disable all standard HTML form fields
         $('input, select, textarea').prop('disabled', true);
 
         // Allowed buttons to NOT disable
-        const allowedButtons = [
-             'btnPrint','btnBack'
-        ];
+        const allowedButtons = ['btnPrint', 'btnBack'];
 
         // Disable all DevExtreme widgets (TextBox, DateBox, DropDownBox, etc.)
         $(".dx-widget").each(function () {
             const $el = $(this);
             const widgetType = $el.data("dxWidgetName");
             if (!widgetType) return;
+
+            // Skip if element or its closest parent has an allowed ID
+            const elId = $el.attr("id") || $el.closest("[id]").attr("id");
+            if (allowedButtons.includes(elId)) return;
+
             try {
                 const instance = $el.data(widgetType);
                 if (instance && typeof instance.option === "function") {
@@ -677,6 +689,9 @@
 
         // Explicitly disable DateBox and DropDownBox (in case missed above)
         $('.dx-datebox, .dx-dropdownbox').each(function () {
+            const elId = $(this).attr("id") || $(this).closest("[id]").attr("id");
+            if (allowedButtons.includes(elId)) return;
+
             try {
                 const instance = $(this).data("dxDateBox") || $(this).data("dxDropDownBox");
                 if (instance && typeof instance.option === "function") {
@@ -687,23 +702,26 @@
             }
         });
 
-        // Disable buttons except allowed ones
+        // Disable buttons (dxButton or dxDropDownButton) except allowed ones
         $('.dx-button, .dx-dropdownbutton').each(function () {
-            const id = $(this).attr('id');
-            if (!id || !allowedButtons.includes(id)) {
-                try {
-                    const btnInstance = $(this).data('dxButton') || $(this).data('dxDropDownButton');
-                    if (btnInstance && typeof btnInstance.option === "function") {
-                        btnInstance.option("disabled", true);
-                    }
-                } catch (e) {
-                    console.warn("Error disabling button:", e);
+            const id = $(this).attr('id') || $(this).closest("[id]").attr("id");
+            if (!id || allowedButtons.includes(id)) return;
+
+            try {
+                const btnInstance = $(this).data('dxButton') || $(this).data('dxDropDownButton');
+                if (btnInstance && typeof btnInstance.option === "function") {
+                    btnInstance.option("disabled", true);
                 }
+            } catch (e) {
+                console.warn("Error disabling button:", e);
             }
         });
 
         // Disable SelectBox and NumberBox explicitly
         $('.dx-selectbox, .dx-numberbox').each(function () {
+            const elId = $(this).attr("id") || $(this).closest("[id]").attr("id");
+            if (allowedButtons.includes(elId)) return;
+
             try {
                 const instance = $(this).data("dxSelectBox") || $(this).data("dxNumberBox");
                 if (instance && typeof instance.option === "function") {
@@ -721,12 +739,13 @@
             dataGrid.option("editing.allowDeleting", false);
         }
 
-        // Disable specific buttons
+        // Disable specific buttons explicitly
         ["btnApprove", "btnSave", "btnSaveAndClose", "btnDelete", "btnAddNewPayment"].forEach(id => {
             const btn = $("#" + id).dxButton("instance");
             if (btn) btn.option("disabled", true);
         });
     }
+
 
 
 
