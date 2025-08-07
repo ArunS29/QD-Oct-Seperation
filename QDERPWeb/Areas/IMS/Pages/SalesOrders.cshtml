@@ -1035,8 +1035,21 @@ subColumns.Add().DataField("cost")
 			const clientCode = e.row.data.ClientCode; // Make sure this is available in your grid data
 			let tenantName = window.tenantName || "defaultTenant";
 			checkIfApprovedAndProceed(salesOrderNo, function () {
-			let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
-			window.location.href = url;
+				$.get("/api/SalesOrders/HasLedger", { clientCode: clientCode }) // 👈 fixed here
+					.done(function (hasLedger) {
+						if (!hasLedger) {
+							DevExpress.ui.dialog.alert(e
+								"Client does not have a Ledger Account.",
+								"Can't Generate Invoice"
+							);
+							return; // 👈 make sure return is outside .done()
+						}
+					let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
+					window.location.href = url;
+				})
+				.fail(function () {
+					DevExpress.ui.notify("Error checking client ledger.", "error", 3000);
+				});
 			}, "create invoice for this sales order");
 		}
 	},
