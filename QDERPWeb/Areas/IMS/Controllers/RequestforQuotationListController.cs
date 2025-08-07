@@ -552,7 +552,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update RFQ",
-                      actionDetail: $":Saved RFQ {VM.Rfqno}",
+                      actionDetail: $"Saved RFQ {VM.Rfqno}",
                        documentNo: $"{VM.Rfqno}"
                 );
 

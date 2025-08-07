@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using System.Globalization;
 using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -78,7 +79,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update Purchase Order Categories",
-                      actionDetail: $":Saved Purchase Order Categories  {model.PocategoryId}",
+                      actionDetail: $"Saved Purchase Order Categories  {model.PocategoryId}",
                       documentNo: $"{model.PocategoryId}"
                     );
                     return Ok(new { success = true, message = "Saved successfully", id = model.PocategoryId });
@@ -126,6 +127,33 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseItemDetailsByPoDate(string frmDate, string toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid fromDate format. Use MM/dd/yyyy.");
 
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid toDate format. Use MM/dd/yyyy.");
+
+                    var data = await dbContext.Qry60410purchaseItemDetails
+                        .Where(x => x.Podate >= from && x.Podate <= to)
+                        .ToListAsync();
+
+                    return Ok(data);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
     }
 }

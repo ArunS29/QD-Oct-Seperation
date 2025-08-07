@@ -370,7 +370,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         await _userActionLogger.LogAsync(
                           module: "IMS > Save Or Update Quoted Cost item",
-                          actionDetail: $":Saved  Quoted Cost item {model.QuoteCostSlNo}",
+                          actionDetail: $"Saved  Quoted Cost item {model.QuoteCostSlNo}",
                           documentNo: $"{model.QuoteCostSlNo}"
                         );
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.QuoteCostSlNo });
@@ -392,7 +392,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         await dbContext.SaveChangesAsync();
                         await _userActionLogger.LogAsync(
                          module: "IMS > Save Or Update Quoted Cost item",
-                         actionDetail: $":Saved  Quoted Cost item {model.QuoteCostSlNo}",
+                         actionDetail: $"Saved  Quoted Cost item {model.QuoteCostSlNo}",
                          documentNo: $"{model.QuoteCostSlNo}"
                        );
 
@@ -498,7 +498,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                          module: "IMS > Save Or Update Status",
-                         actionDetail: $":Saved Status {model.CostItemCode}",
+                         actionDetail: $"Saved Status {model.CostItemCode}",
                          documentNo: $"{model.CostItemCode}"
                        );
 

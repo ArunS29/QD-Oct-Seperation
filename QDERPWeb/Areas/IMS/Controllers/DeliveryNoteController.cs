@@ -161,7 +161,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Save Delivery Note",
-                 actionDetail: $":Saved Delivery Note  {model.DeliveryNoteNo}",
+                 actionDetail: $"Saved Delivery Note  {model.DeliveryNoteNo}",
                    documentNo: $"{model.DeliveryNoteNo}"
                 );
 
@@ -391,7 +391,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Item",
-                      actionDetail: $":Saved Item {newItem.DeliveryNoteSlNo}",
+                      actionDetail: $"Saved Item {newItem.DeliveryNoteSlNo}",
                       documentNo: $"{newItem.DeliveryNoteSlNo}"
                     );
 
@@ -594,7 +594,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update Delivery Note Items",
-                      actionDetail: $":Saved Delivery Note Items  {request.DeliveryNoteNo}",
+                      actionDetail: $"Saved Delivery Note Items  {request.DeliveryNoteNo}",
                       documentNo: $"{request.DeliveryNoteNo}"
                     );
 

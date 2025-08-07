@@ -156,7 +156,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update Job Order Status",
-                      actionDetail: $":Saved Job Order Status  {model.JobOrderStatusId}",
+                      actionDetail: $"Saved Job Order Status  {model.JobOrderStatusId}",
                       documentNo: $"{model.JobOrderStatusId}"
                     );
 

@@ -86,7 +86,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Project Document",
-                      actionDetail: $":Saved Project Document  {model.StoreId}",
+                      actionDetail: $"Saved Project Document  {model.StoreId}",
                       documentNo: $"{model.StoreId}"
                     );
 

@@ -567,7 +567,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Save Or Update Material Receipt",
-                   actionDetail: $":Saved MaterialReceipt  {VM.ReceiptNo}",
+                   actionDetail: $"Saved MaterialReceipt  {VM.ReceiptNo}",
                    documentNo: $"{VM.ReceiptNo}"
                 );
 
