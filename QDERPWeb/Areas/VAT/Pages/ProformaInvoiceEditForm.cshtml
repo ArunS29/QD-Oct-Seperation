@@ -7618,14 +7618,14 @@
 				if (response.success) {
 					let newInvoiceNo = response.toInvoiceNo;
 					DevExpress.ui.notify("Invoice created successfully: " + newInvoiceNo,"success",2000);
-					if(VATInvoiceSubType=="Tax Invoice")
+					if(VATInvoiceSubType=="01")
 					{
 					  const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 					  window.location.href = url;
 					}
-					else if(VATInvoiceSubType=="Simplified Tax Invoice")
+					else if(VATInvoiceSubType=="02")
 					{
-						const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+						const url = `/${tenantName}/VAT/frmVATInvoiceEditB2C?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 						window.location.href = url;
 					}
 		
