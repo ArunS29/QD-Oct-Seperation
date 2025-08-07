@@ -1,4 +1,6 @@
-﻿namespace QD.ERP.Web.Areas.VAT.Reports.B2B
+﻿using System.ComponentModel;
+
+namespace QD.ERP.Web.Areas.VAT.Reports.B2B
 {
     partial class withsignatories2
     {
@@ -4543,6 +4545,11 @@
             ((System.ComponentModel.ISupportInitialize)(this.xrTable3)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this)).EndInit();
 
+        }
+
+        private void withsignatories2_BeforePrint(object sender, CancelEventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion
