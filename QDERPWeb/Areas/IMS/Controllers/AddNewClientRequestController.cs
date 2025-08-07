@@ -679,14 +679,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-                await _userActionLogger.LogAsync(
-                      module: "IMS > PurchaseRequest",
-                      actionDetail: $"Saved  Purchase Request: {VM.Mprno}",
-                        documentNo: VM.Mprno
-                );
 
+				return Ok(new { success = true, message = "Request Details Updated Successfully.", mprno = VM.Mprno });
 
-                return Ok(new { success = true, message = "Request Details Updated Successfully." });
 			}
 			catch (Exception ex)
 			{

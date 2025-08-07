@@ -1127,6 +1127,32 @@
 				}
 			});
 		}
+			// ✅ Define globally after or before onContextMenuPreparing
+	function confirmAndCreateRFQ(mprNo, tenantName) {
+		DevExpress.ui.dialog.confirm("You are about to create a new RFQ. Proceed?", "Confirmation")
+			.done(function (confirmResult) {
+				if (confirmResult) {
+					$.ajax({
+						url: "/api/MaterialRequestEnquiriesDetails/CreateRfqFromMpr",
+						method: "POST",
+						contentType: "application/json",
+						data: JSON.stringify(mprNo),
+						success: function (result) {
+							if (result.success) {
+								DevExpress.ui.notify(result.message, "success", 2000);
+								window.location.href = `/${tenantName}/IMS/AddNewRFQ?Mprno=${encodeURIComponent(mprNo)}&Rfqno=${encodeURIComponent(result.rfqno)}`;
+							} else {
+								DevExpress.ui.notify(result.message || "Failed to create RFQ.", "error", 2000);
+							}
+						},
+						error: function () {
+							DevExpress.ui.notify("Error while creating RFQ.", "error", 2000);
+						}
+					});
+				}
+			});
+	}
+
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {
 			e.items = [
@@ -1312,7 +1338,7 @@
 			});
 		}
 	},
-		{
+			{
 		text: "Create a RFQ",
 		icon: "plus",
 		onItemClick: function () {
@@ -1324,44 +1350,36 @@
 				return;
 			}
 
-			// Step 1: Check approval status
-			$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
-				.done(function (isApproved) {
-					if (!isApproved) {
-						DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
-						return;
-					}
+			// 🔹 Step 1: Get IsEnableMPRWorkflow
+			$.get("/api/MaterialRequestEnquiriesDetails/GetIsEnableMPRWorkflow")
+				.done(function (isWorkflowEnabled) {
 
-					// Step 2: Confirm
-					DevExpress.ui.dialog.confirm("You are about to create a new RFQ. Proceed?", "Confirmation")
-						.done(function (confirmResult) {
-							if (confirmResult) {
-								// Step 3: Call API
-								$.ajax({
-									url: "/api/MaterialRequestEnquiriesDetails/CreateRfqFromMpr",
-									method: "POST",
-									contentType: "application/json",
-									data: JSON.stringify(mprNo),
-									success: function (result) {
-										if (result.success) {
-											DevExpress.ui.notify(result.message, "success", 2000);
-											window.location.href = `/${tenantName}/IMS/AddNewRFQ?Mprno=${encodeURIComponent(mprNo)}&Rfqno=${encodeURIComponent(result.rfqno)}`;
-										} else {
-											DevExpress.ui.notify(result.message || "Failed to create RFQ.", "error", 2000);
-										}
-									},
-									error: function () {
-										DevExpress.ui.notify("Error while creating RFQ.", "error", 2000);
-									}
-								});
-							}
-						});
+					// 🔸 If workflow is enabled, check approval status
+					if (isWorkflowEnabled) {
+						$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
+							.done(function (isApproved) {
+								if (!isApproved) {
+									DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
+									return;
+								}
+								confirmAndCreateRFQ(mprNo, tenantName);
+							})
+							.fail(function () {
+								DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
+							});
+					}
+					else {
+						// 🔹 If workflow is disabled, skip approval check
+						confirmAndCreateRFQ(mprNo, tenantName);
+					}
 				})
 				.fail(function () {
-					DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
+					DevExpress.ui.notify("Failed to get MPR workflow setting.", "error", 3000);
 				});
 		}
 	},
+
+	
 		{
 		text: "Create a Quotation",
 		icon: "plus",
@@ -1447,7 +1465,7 @@
 								DevExpress.ui.notify("Purchase Order created: " + res.poNo, "success", 2000);
 
 								// Redirect to AddNewPurchaseOrder page with PO No
-													window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&&mode=edit&Mprno=${encodeURIComponent(mprNo)}`;
+							window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&&mode=edit&Mprno=${encodeURIComponent(mprNo)}`;
 							
 							} else {
 								DevExpress.ui.notify(res.message || "Failed to create PO.", "error", 3000);
@@ -1672,6 +1690,7 @@ $(document).ready(function () {
 		console.log('End permission handling');
 	});
 
+
 			 function onRowPrepared(e) {
 			if (e.rowType === "data" && e.data.IsCancelled) {
 				e.rowElement.css({
@@ -1680,4 +1699,5 @@ $(document).ready(function () {
 				});
 			}
 		}
+			
 </script>
