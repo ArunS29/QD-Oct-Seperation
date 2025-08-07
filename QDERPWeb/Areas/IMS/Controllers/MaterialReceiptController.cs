@@ -477,6 +477,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingMaster.JobCode = VM.JobCode;
                     existingMaster.ClientCode = VM.ClientCode;
                     existingMaster.Rfqno = VM.Rfqno;
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
                     existingMaster.OurPurchaseOrderNo = VM.OurPurchaseOrderNo;
                     existingMaster.SalesPersonCode = VM.SalesPersonCode;
                     existingMaster.StoreReceivedIn = VM.StoreReceivedIn;
@@ -509,7 +512,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         IssueRemarks = VM.IssueRemarks,
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
                         InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
-                        ModeOfReceiptId = Convert.ToByte(VM.ModeOfReceiptId)
+                        ModeOfReceiptId = Convert.ToByte(VM.ModeOfReceiptId),
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1
+
                     };
 
                     await dbContext.Tbl60501materialReceiptMasters.AddAsync(newMaster);
@@ -560,7 +567,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Save Or Update Material Receipt",
-                   actionDetail: $":Saved MaterialReceipt  {VM.ReceiptNo}",
+                   actionDetail: $"Saved MaterialReceipt  {VM.ReceiptNo}",
                    documentNo: $"{VM.ReceiptNo}"
                 );
 

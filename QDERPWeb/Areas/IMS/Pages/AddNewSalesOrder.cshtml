@@ -860,7 +860,7 @@
     @(Html.DevExtreme().DataGrid()
         .ID("itemGrid")
         .Height("40vh")
-        .DataSource(new JS("window.itemGridDataSource"))
+        .DataSource(new JS("window.itemGridDataSource"))        
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -868,18 +868,13 @@
         .Columns(columns =>
         {
             columns.Add().DataField("SalesOrderChildId").Visible(false).AllowEditing(false);
-            columns.Add().Caption("#").Width(60).CellTemplate(new JS("serialTemplate"));
-
-            columns.Add()
-            .Caption("Item Code")
-            .Width(150)
-            .AllowEditing(false)
-            .CellTemplate(new JS(@"
-    function(container, options) {
-    container.text(options.data?.Gscode || '');
-    }
-    "));
-
+            columns.Add().Caption(new JS("formatMessage('#')")).Width(50).AllowEditing(false).CellTemplate(new JS("serialTemplate")); 
+            columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(120).AllowEditing(false)
+                .CellTemplate(new JS(@"
+                    function(container, options) {
+                    container.text(options.data?.Gscode || '');
+                    }
+                "));
             columns.Add()
             .DataField("Gscode") // ✅ this is the field stored in DB or model
             .Caption("Description")
@@ -992,7 +987,7 @@
         .Mode(GridEditMode.Cell)
         .AllowUpdating(true)
         .AllowDeleting(true)
-        )
+        )     
         .OnContextMenuPreparing("onGridRightClick")
         )
 </div>
@@ -2826,4 +2821,131 @@ $(document).ready(function () {
 			openModal(url, 'Client Contact List');
 		});
 	}
+
+    // Grid moveup and movedown
+            // ✅ Declare global variable
+    let selectedSNo = null;
+
+    // On document ready
+    $(document).ready(function () {
+        const dataGrid = $("#itemGrid").dxDataGrid("instance");
+
+        dataGrid.on("selectionChanged", function (e) {
+            const selectedRowData = e.selectedRowsData[0];
+            if (selectedRowData) {
+                selectedSNo = selectedRowData.LineOrderNo;
+                console.log("Selected LineOrderNo: ", selectedSNo);
+            }
+        });
+
+        $("#btnMoveUp").dxButton({
+            onClick: function () {
+                moveRowUp();
+            }
+        });
+
+        $("#btnMoveDown").dxButton({
+            onClick: function () {
+                moveRowDown();
+            }
+        });
+    });
+
+
+        function getFlatData(items) {
+            var flatData = [];
+
+            function flatten(items) {
+                items.forEach(item => {
+                    if (item.items) {
+                        flatten(item.items); // Recursively flatten groups
+                    } else {
+                        flatData.push(item); // Push raw row data
+                    }
+                });
+            }
+
+            flatten(items); // Flatten all grouped items
+
+            return flatData;
+        }
+
+            //MoveupDown functionality
+        function moveRowUp() {
+            debugger;
+                var dataGrid = $("#itemGrid").dxDataGrid("instance");
+            var dataSource = dataGrid.getDataSource();
+            var data = getFlatData(dataSource.items()); // Flatten the grouped data
+            //   var selectedRowKeys = dataGrid.option("selectedRowKeys");
+
+            console.log("Flattened Data:", data); // Log flattened data for debugging
+
+
+            // Find the row index based on the selected row key (AccountGroupId)
+            var rowIndex = data.findIndex(item => item.LineOrderNo === selectedSNo);
+
+            console.log("Row Index:", rowIndex); // Log row index for debugging
+
+            // Proceed only if a valid row is selected and it's not the first row
+            if (rowIndex > 0) {
+                swapRows(data, rowIndex, rowIndex - 1); // Swap rows in the data
+
+                // Update the data source with the new data order
+                dataSource.store().update(data[rowIndex].LineOrderNo, data[rowIndex]);
+                dataSource.store().update(data[rowIndex - 1].LineOrderNo, data[rowIndex - 1]);
+
+                // After swap, select the moved row
+                dataGrid.selectRows([data[rowIndex - 1].LineOrderNo]);
+            }
+        }
+
+
+        function moveRowDown() {
+
+            var dataGrid = $("#itemGrid").dxDataGrid("instance");
+            var dataSource = dataGrid.getDataSource();
+            var data = getFlatData(dataSource.items()); // Get flattened data
+            // var selectedRowKeys = dataGrid.option("selectedRowKeys");
+
+
+            var rowIndex = data.findIndex(item => item.LineOrderNo === selectedSNo);
+
+            console.log("Row Index:", rowIndex);
+
+            if (rowIndex < data.length - 1) {
+                swapRows(data, rowIndex, rowIndex + 1);
+                dataGrid.refresh();
+                dataGrid.selectRows([data[rowIndex + 1].LineOrderNo]);
+            } else {
+                console.log("Cannot move row down: Row is already at the bottom.");
+            }
+        }
+
+
+        function swapRows(data, index1, index2) {
+            var temp = data[index1];
+            console.log("Swap Data1:", temp);
+
+            // Swap the rows
+            data[index1] = data[index2];
+            console.log("Swap Data2:", data[index2]);
+
+            data[index2] = temp;
+            console.log("Swapped Data:", data);
+                    // ✅ Reassign LineOrderNo sequentially
+            data.forEach((row, idx) => {
+                row.LineOrderNo = idx + 1;
+            });
+
+
+            // Get the DataGrid instance and update the data source
+            var dataGrid1 = $("#itemGrid").dxDataGrid("instance");
+            var dataGrid = $("#itemGrid").dxDataGrid("instance").option("dataSource", data);
+
+
+            dataGrid1.refresh();
+        }
+
+
+
 </script>

@@ -472,6 +472,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingMaster.Rfqsignatory = VM.Rfqsignatory.HasValue ? (byte?)VM.Rfqsignatory.Value : null;
                     existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
                     existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
                 }
                 else
                 {
@@ -494,7 +497,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         SalesPersonCode = VM.SalesPersonCode,
                         Rfqsignatory = Convert.ToByte(VM.Rfqsignatory),
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId)
+                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1,
+
                     };
 
                     await dbContext.Tbl60701rfqmasters.AddAsync(newMaster);
@@ -545,7 +552,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update RFQ",
-                      actionDetail: $":Saved RFQ {VM.Rfqno}",
+                      actionDetail: $"Saved RFQ {VM.Rfqno}",
                        documentNo: $"{VM.Rfqno}"
                 );
 

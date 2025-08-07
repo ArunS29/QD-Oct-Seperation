@@ -619,7 +619,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         await dbContext.SaveChangesAsync();
                         await _userActionLogger.LogAsync(
                             module: "IMS > Save Or Update Store",
-                            actionDetail: $":Saved Store {model.StoreId}",
+                            actionDetail: $"Saved Store {model.StoreId}",
                             documentNo: $"{model.StoreId}"
                         );
 
@@ -633,7 +633,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         await dbContext.SaveChangesAsync();
                         await _userActionLogger.LogAsync(
                             module: "IMS > Save Or Update Store",
-                            actionDetail: $":Saved Store {model.StoreId}",
+                            actionDetail: $"Saved Store {model.StoreId}",
                             documentNo: $"{model.StoreId}"
                         );
 
@@ -905,7 +905,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                             module: "IMS > Save",
-                            actionDetail: $":Saved  {model.Gscode}",
+                            actionDetail: $"Saved  {model.Gscode}",
                             documentNo: $"{model.Gscode}"
                 );
 
@@ -1400,7 +1400,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Save Document",
-                    actionDetail: $":Saved Document  {model.DocumentNo}",
+                    actionDetail: $"Saved Document  {model.DocumentNo}",
                      documentNo: $"{model.DocumentNo}"
                 );
                 return Json(new { success = true, documentNo = model.DocumentNo });

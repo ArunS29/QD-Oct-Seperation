@@ -75,7 +75,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                             dbContext.SaveChanges();
                             _userActionLogger.LogAsync(module: "IMS > Save Or Update Client Contact",
-                              actionDetail: $":Saved Client Contact {item.ClientCode}",
+                              actionDetail: $"Saved Client Contact {item.ClientCode}",
                               documentNo: $"{item.ClientCode}"
                             );
 
@@ -97,7 +97,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         dbContext.Tbl3010102clientContactLists.Add(item);
                         dbContext.SaveChanges();
                         _userActionLogger.LogAsync(module: "IMS > Save Or Update Client Contact",
-                              actionDetail: $":Saved Client Contact {item.ClientCode}",
+                              actionDetail: $"Saved Client Contact {item.ClientCode}",
                               documentNo: $"{item.ClientCode}"
                             );
 

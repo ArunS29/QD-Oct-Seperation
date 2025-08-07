@@ -86,4 +86,8 @@ public partial class Tbl60701rfqmaster
     public DateTime? VerifiedOn { get; set; }
 
     public string SalesPersonCode { get; set; }
+
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }
