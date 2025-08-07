@@ -2,6 +2,14 @@
 var dictionary = {
 
     "en": {
+        "Revision No":"Revision No",
+        "PO Due Date":"PO Due Date",
+        "Ordered Qty":"Ordered Qty",
+        "Quoted Quality":"Quoted Quality",
+        "Supplier Ref No":"Supplier Ref No",
+        "Suppiler Quote No":"Suppiler Quote No",
+        "Purchase Order Item Details":"Purchase Order Item Details",
+        "PONo":"PONo",
         "Sales Target":"Sales Target",
         ClientCode: "Client Code",
         ClientName: "Client Name",

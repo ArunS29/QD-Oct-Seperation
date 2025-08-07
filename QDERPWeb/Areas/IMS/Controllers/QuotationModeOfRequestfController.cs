@@ -85,7 +85,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update Mode",
-                      actionDetail: $":Saved Mode {model.ModeOfRequestId}",
+                      actionDetail: $"Saved Mode {model.ModeOfRequestId}",
                       documentNo: $"{model.ModeOfRequestId}"
                     );
 

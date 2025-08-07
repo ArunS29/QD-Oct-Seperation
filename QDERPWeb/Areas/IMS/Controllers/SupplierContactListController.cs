@@ -76,7 +76,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                             dbContext.SaveChanges();
                             _userActionLogger.LogAsync(module: "IMS > Save Or Update Supplier Contact",
-                                actionDetail: $":Saved Supplier Contact {item.SupplierCode}",
+                                actionDetail: $"Saved Supplier Contact {item.SupplierCode}",
                                 documentNo: $"{item.SupplierCode}"
                             );
 
@@ -95,7 +95,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         dbContext.Tbl3019902SupplierContactLists.Add(item);
                         dbContext.SaveChanges();
                         _userActionLogger.LogAsync(module: "IMS > Save Or Update Supplier Contact",
-                               actionDetail: $":Saved Supplier Contact {item.SupplierCode}",
+                               actionDetail: $"Saved Supplier Contact {item.SupplierCode}",
                                documentNo: $"{item.SupplierCode}"
                            );
 

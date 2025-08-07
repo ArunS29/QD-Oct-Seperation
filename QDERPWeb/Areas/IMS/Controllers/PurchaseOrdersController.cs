@@ -622,7 +622,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Save Purchase Order1",
-                  actionDetail: $":Saved Purchase Order1  {model.PocategoryId}",
+                  actionDetail: $"Saved Purchase Order1  {model.PocategoryId}",
                   documentNo: $"{model.PocategoryId}"
                 );
 
@@ -804,7 +804,7 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Save Purchase Order",
-              actionDetail: $":Saved Purchase Order  {model.Master.Pono}",
+              actionDetail: $"Saved Purchase Order  {model.Master.Pono}",
               documentNo: $"{model.Master.Pono}"
             );
             await transaction.CommitAsync();
@@ -838,7 +838,7 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Save Item",
-                  actionDetail: $":Saved Item  {items[0].Pono}",
+                  actionDetail: $"Saved Item  {items[0].Pono}",
                   documentNo: $"{items[0].Pono}"
                 );
 
@@ -888,7 +888,7 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Item",
-                      actionDetail: $":Saved Item  {updatedItem.PochildNo}",
+                      actionDetail: $"Saved Item  {updatedItem.PochildNo}",
                       documentNo: $"{updatedItem.PochildNo}"
                     );
 
@@ -1782,7 +1782,7 @@ public async Task<IActionResult> GetOrderStatus(string pono)
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Save Report Attribute View ",
-                  actionDetail: $":Saved Report Attribute {model.ReportNo}",
+                  actionDetail: $"Saved Report Attribute {model.ReportNo}",
                     documentNo: $"{model.ReportNo}"
                 );
                 return Ok(new { message = "Field updated successfully." });

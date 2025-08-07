@@ -125,7 +125,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                             dbContext.SaveChanges();
                             _userActionLogger.LogAsync(module: "IMS > SaveOrUpdateClientStatusUpdate",
-                              actionDetail: $":Saved Client Status Update {item.ClientStatusNo}",
+                              actionDetail: $"Saved Client Status Update {item.ClientStatusNo}",
                               documentNo: $"{item.ClientStatusNo}"
                             );
 
@@ -147,7 +147,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         dbContext.Tbl30104ClientStatuses.Add(item);
                         dbContext.SaveChanges();
                         _userActionLogger.LogAsync(module: "IMS > SaveOrUpdateClientStatusUpdate",
-                              actionDetail: $":Saved Client Status Update {item.ClientStatusNo}",
+                              actionDetail: $"Saved Client Status Update {item.ClientStatusNo}",
                               documentNo: $"{item.ClientStatusNo}"
                             );
 

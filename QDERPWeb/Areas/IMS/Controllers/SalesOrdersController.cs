@@ -721,7 +721,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                       module: "IMS > Save Sales Order",
-                      actionDetail: $":Saved SalesOrder {model.SalesOrderNo}",
+                      actionDetail: $"Saved SalesOrder {model.SalesOrderNo}",
                        documentNo: $"{model.SalesOrderNo}"
                 );
 
@@ -791,7 +791,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				var result = await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                      module: "IMS > Save Sales Order",
-                     actionDetail: $":Saved SalesOrder {model.SalesOrderNo}",
+                     actionDetail: $"Saved SalesOrder {model.SalesOrderNo}",
                       documentNo: $"{model.SalesOrderNo}"
                );
                 _logger.LogInformation($"Child records updated/added/deleted. Save result = {result}");
@@ -1077,7 +1077,7 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Delete Sales Order",
-               actionDetail: $":Saved SalesOrder {salesOrderNo}",
+               actionDetail: $"Saved SalesOrder {salesOrderNo}",
                 documentNo: $"{salesOrderNo}"
             );
 
@@ -1336,7 +1336,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Submit Sales Order1",
-                   actionDetail: $":Saved SalesOrder1 {salesOrderNo}",
+                   actionDetail: $"Saved SalesOrder1 {salesOrderNo}",
                    documentNo: $"{salesOrderNo}"
                 );
 
@@ -1388,7 +1388,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
            await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Submit Sales Order",
-                   actionDetail: $":Saved Sales Order {salesOrderNo}",
+                   actionDetail: $"Saved Sales Order {salesOrderNo}",
                    documentNo: $"{salesOrderNo}"
                 );
 
