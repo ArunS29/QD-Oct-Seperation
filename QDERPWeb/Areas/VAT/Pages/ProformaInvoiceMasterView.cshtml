@@ -364,7 +364,7 @@
 		<h5 id="statusHeading3" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Invoice Amount</h5>
 
 		<!-- Value with SVG -->
-		<div id="switchValue" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
+		<div id="switchValue33" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
 			<!-- SVG icon -->
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -606,7 +606,7 @@
 
 				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue)
+				subColumns.AddFor(m => m.GccexpemptedRevenue)
 			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
@@ -781,7 +781,7 @@
 				totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
-				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("GccexpemptedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
@@ -830,7 +830,77 @@
 </div>
 
 <script>
+		const card = document.getElementById('mainCard');
+	const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
+	const countEls = [
+	  document.getElementById("count0"),
+	  document.getElementById("count1"),
+	  document.getElementById("count2"),
+	];
+	const tabs = document.querySelectorAll(".tab-text");
+	const contents = document.querySelectorAll(".tab-content");
 
+	function animateCount(el, target) {
+	  let i = 0;
+	  el.innerText = i;
+	  el.classList.remove('bounce');
+	  const interval = setInterval(() => {
+		if (i >= target) {
+		  el.innerText = target;
+		  el.classList.add('bounce');
+		  clearInterval(interval);
+		} else {
+		  el.innerText = i++;
+		}
+	  }, 30);
+	}
+
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  // Change background class
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  // Animate count
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// ✅ Count Approved Invoices From Grid
+		function updateApprovedCountFromGrid() {
+		const grid = $("#dataGrid").dxDataGrid("instance");
+		const data = grid.getVisibleRows().map(row => row.data);
+
+		// Update dynamic counts based on status
+		counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
+		counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
+		counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
+
+		// Update visible numbers
+		countEls[0].textContent = counts[0];
+		countEls[1].textContent = counts[1];
+		countEls[2].textContent = counts[2];
+
+		// Animate default tab (Verified)
+		animateCount(countEls[0], counts[0]);
+	}
+
+
+		function onGridContentReady(e) {
+		updateApprovedCountFromGrid();
+		debugger;
+		const component = e.component;
+		const data = component.getDataSource().items();
+
+	updateProformaAmountCard(data);  // ✅ Total invoice
+		updateTotalVATValuess(data);             // ✅ Total VAT
+		injectHeaderSVG();
+	}
 
 	const headings = ["Invoice Amount", "VAT Value"];
 	let currentIndex = 0;
@@ -839,30 +909,36 @@
 	let invoiceAmountss = "0.00";
 	let vatTotalValuess = "0.00";
 
-	// Update values from your data functions:
+	// Format helper
+	function formatNumber(num) {
+		return Number(num || 0).toLocaleString("en-US", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+	}
+
+	// Update values from your data functions
 	function updateProformaAmountCard(data) {
-		let total = 0;
 		if (Array.isArray(data)) {
-			total = data.reduce((sum, item) => {
-				const val = parseFloat(item.CalcLineAmount);
-				return sum + (isNaN(val) ? 0 : val);
-			}, 0);
+			const total = data.reduce((sum, item) => sum + (parseFloat(item.CalcLineAmount) || 0), 0);
+			invoiceAmountss = formatNumber(total);
+		} else {
+			invoiceAmountss = formatNumber(0);
 		}
-		invoiceAmountss = total.toFixed(2);
 	}
 
 	function updateTotalVATValuess(data) {
-		let total = 0;
 		if (Array.isArray(data)) {
-			data.forEach(item => {
-				const vat5 = parseFloat(item.DomesticStandartRatedTax) || 0;
-				const vat10 = parseFloat(item.DomesticZeroRatedTax) || 0;
-				const vat15 = parseFloat(item.DomesticExemptedTax) || 0;
-
-				total += vat5 + vat10 + vat15;
-			});
+			const total = data.reduce((sum, item) =>
+				sum +
+				(parseFloat(item.DomesticStandartRatedTax) || 0) +
+				(parseFloat(item.DomesticZeroRatedTax) || 0) +
+				(parseFloat(item.DomesticExemptedTax) || 0), 0
+			);
+			vatTotalValuess = formatNumber(total);
+		} else {
+			vatTotalValuess = formatNumber(0);
 		}
-		vatTotalValuess = total.toFixed(2);
 	}
 
 	// Switch every 2 seconds
@@ -870,18 +946,18 @@
 		currentIndex = (currentIndex + 1) % 2;
 
 		const headingEl = document.getElementById("statusHeading3");
-		const valueEl = document.getElementById("switchValue");
+		const valueEl = document.getElementById("switchValue33");
 
 		headingEl.textContent = headings[currentIndex];
 		valueEl.innerHTML = `
-
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
-		<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
-		<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
-	</svg>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>
 			${currentIndex === 0 ? invoiceAmountss : vatTotalValuess}
 		`;
 	}, 2000);
+
 
 	function animateTodayVoucherCount(target) {
 		let i = 0;
@@ -1388,77 +1464,6 @@
 	});
 
 
-	const card = document.getElementById('mainCard');
-	const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
-	const countEls = [
-	  document.getElementById("count0"),
-	  document.getElementById("count1"),
-	  document.getElementById("count2"),
-	];
-	const tabs = document.querySelectorAll(".tab-text");
-	const contents = document.querySelectorAll(".tab-content");
-
-	function animateCount(el, target) {
-	  let i = 0;
-	  el.innerText = i;
-	  el.classList.remove('bounce');
-	  const interval = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(interval);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
-	}
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// ✅ Count Approved Invoices From Grid
-		function updateApprovedCountFromGrid() {
-		const grid = $("#dataGrid").dxDataGrid("instance");
-		const data = grid.getVisibleRows().map(row => row.data);
-
-		// Update dynamic counts based on status
-		counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
-		counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
-		counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
-
-		// Update visible numbers
-		countEls[0].textContent = counts[0];
-		countEls[1].textContent = counts[1];
-		countEls[2].textContent = counts[2];
-
-		// Animate default tab (Verified)
-		animateCount(countEls[0], counts[0]);
-	}
-
-
-		function onGridContentReady(e) {
-		updateApprovedCountFromGrid();
-		debugger;
-		const component = e.component;
-		const data = component.getDataSource().items();
-
-		updateProformaAmountCard(component);     // ✅ Total invoice
-		updateTotalVATValuess(data);             // ✅ Total VAT
-		injectHeaderSVG();
-	}
 
 	function UnlockInvoice() {
 
