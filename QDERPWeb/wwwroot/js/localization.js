@@ -3972,6 +3972,8 @@ var dictionary = {
  
     },
     ar: {
+        "AccountHeadArabic": "رأس الحساب بالعربية",
+        "AccountId":"معرف الحساب",
         "Sub Group Notes:": "ملاحظات المجموعة الفرعية:",
         "Exports": "الصادرات",
         "Add New Debit Note Register": "إضافة سجل إشعار الخصم الجديد",
