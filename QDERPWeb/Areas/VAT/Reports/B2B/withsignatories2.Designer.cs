@@ -4549,7 +4549,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
 
         private void withsignatories2_BeforePrint(object sender, CancelEventArgs e)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
         }
 
         #endregion

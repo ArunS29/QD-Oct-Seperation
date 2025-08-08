@@ -102,6 +102,16 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
                 this.DataSource = dt;
                 this.DataMember = "";
                 SetWatermark();
+                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(BalanceDueAmount)", ""));
+
+
+                if (FindControl("xrLabel59", true) is XRLabel labelEnglish)
+
+                    labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
+
+                if (FindControl("xrLabel60", true) is XRLabel labelArabic)
+
+                    labelArabic.Text = $"المبلغ كتابةً: {NumberToWordsHelper.ToArabicWords(totalAmount)}";
             }
         }
 
@@ -331,7 +341,120 @@ namespace QD.ERP.Web.Areas.VAT.Reports.B2B
                 };
             }
         }
+        public static class NumberToWordsHelper
+        {
+            public static string ToEnglishWords(decimal number)
+            {
+                var integer = (int)number;
+                var fraction = (int)((number - integer) * 100);
 
+                string result = NumberToWords(integer);
+
+                if (fraction > 0)
+                    result += " and " + NumberToWords(fraction);
+
+                return result + " Riyals Only";
+            }
+
+            public static string ToArabicWords(decimal number)
+            {
+                var integer = (int)number;
+                var fraction = (int)((number - integer) * 100);
+
+                string result = ConvertToArabic(integer);
+
+                if (fraction > 0)
+                    result += " و " + ConvertToArabic(fraction);
+
+                return result + " فقط";
+            }
+
+            private static string ConvertToArabic(int number)
+            {
+                string[] ones = {
+      "صفر", "واحد", "اثنان", "ثلاثة", "أربعة", "خمسة", "ستة", "سبعة", "ثمانية", "تسعة",
+      "عشرة", "أحد عشر", "اثنا عشر", "ثلاثة عشر", "أربعة عشر", "خمسة عشر",
+      "ستة عشر", "سبعة عشر", "ثمانية عشر", "تسعة عشر"
+  };
+
+                string[] tens = {
+      "", "", "عشرون", "ثلاثون", "أربعون", "خمسون", "ستون", "سبعون", "ثمانون", "تسعون"
+  };
+
+                if (number < 20)
+                    return ones[number];
+
+                if (number < 100)
+                {
+                    int unit = number % 10;
+                    int ten = number / 10;
+                    return (unit == 0) ? tens[ten] : ones[unit] + " و " + tens[ten];
+                }
+
+                if (number < 1000)
+                {
+                    int hundred = number / 100;
+                    int remainder = number % 100;
+                    string hundredText = (hundred == 1) ? "مائة" :
+                                         (hundred == 2) ? "مئتان" :
+                                         ones[hundred] + " مائة";
+                    return (remainder == 0) ? hundredText : hundredText + " و " + ConvertToArabic(remainder);
+                }
+
+                return number.ToString();
+            }
+
+            private static string NumberToWords(int number)
+            {
+                if (number == 0)
+                    return "Zero";
+
+                if (number < 0)
+                    return "Minus " + NumberToWords(Math.Abs(number));
+
+                string words = "";
+
+                if ((number / 1000000) > 0)
+                {
+                    words += NumberToWords(number / 1000000) + " Million ";
+                    number %= 1000000;
+                }
+
+                if ((number / 1000) > 0)
+                {
+                    words += NumberToWords(number / 1000) + " Thousand ";
+                    number %= 1000;
+                }
+
+                if ((number / 100) > 0)
+                {
+                    words += NumberToWords(number / 100) + " Hundred ";
+                    number %= 100;
+                }
+
+                if (number > 0)
+                {
+                    var unitsMap = new[] {
+          "Zero", "One", "Two", "Three", "Four", "Five", "Six", "Seven", "Eight", "Nine", "Ten",
+          "Eleven", "Twelve", "Thirteen", "Fourteen", "Fifteen", "Sixteen", "Seventeen", "Eighteen", "Nineteen"
+      };
+                    var tensMap = new[] {
+          "Zero", "Ten", "Twenty", "Thirty", "Forty", "Fifty", "Sixty", "Seventy", "Eighty", "Ninety"
+      };
+
+                    if (number < 20)
+                        words += unitsMap[number];
+                    else
+                    {
+                        words += tensMap[number / 10];
+                        if ((number % 10) > 0)
+                            words += "-" + unitsMap[number % 10];
+                    }
+                }
+
+                return words.Trim();
+            }
+        }
     }
 }
 
