@@ -670,7 +670,7 @@
 			.Visible(true);
 
 
-					columns.AddFor(m => m.ConvertedDrAmount)
+					columns.AddFor(m => m.DrAmount)
 					.Caption(new JS("formatMessage('Debit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -680,12 +680,12 @@
 								 		</text>)
 					.CellTemplate(@<text>
 						   			<div class="debit-pill">
-						   				<%- data.ConvertedDrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+						   				<%- data.DrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 						   			</div>
 						   		</text>)
 					.Visible(true);
 
-					columns.AddFor(m => m.ConvertedCrAmount)
+					columns.AddFor(m => m.CrAmount)
 					.Caption(new JS("formatMessage('Credit')"))
 					.Alignment(HorizontalAlignment.Right)
 					.HeaderCellTemplate(@<text>
@@ -695,11 +695,11 @@
 								 		</text>)
 					.CellTemplate(@<text>
 						   			<div class="credit-pill">
-						   				<%- data.ConvertedCrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
+						   				<%- data.CrAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
 						   			</div>
 						   		</text>)
 					.Visible(true);
-					columns.AddFor(m => m.CrAmount)
+					@* columns.AddFor(m => m.CrAmount)
 					.Caption("Trans Credit")
 					.Alignment(HorizontalAlignment.Right)
 					.CellTemplate(@<text>
@@ -771,9 +771,9 @@
 					%>
 				</div>
 			</text>)
-					.Visible(false);
+					.Visible(false); *@
 
-			columns.AddFor(m => m.ConvertedAmount)
+			columns.AddFor(m => m.VoucherAmountFormatted)
 			.Caption(new JS("formatMessage('VoucherAmountFormatted')"))
 			.Alignment(HorizontalAlignment.Left)
 			.Visible(false);

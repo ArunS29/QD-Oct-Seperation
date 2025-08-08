@@ -806,7 +806,7 @@ namespace Form.Areas.Finance.Controllers
                 return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
             }
         }
-        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo,decimal currencyRate)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -814,9 +814,10 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.VoucherAmount = voucherAmount;
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
+            ViewBag.CurrencyRate = currencyRate;
             return PartialView("~/Areas/Finance/Views/_CostAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
-        public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId, decimal currencyRate)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -825,10 +826,11 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
             ViewBag.AccountID = accountId;
+            ViewBag.CurrencyRate = currencyRate;
             return PartialView("~/Areas/Finance/Views/_PropertyAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
 
-        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId, decimal currencyRate)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -837,6 +839,7 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
             ViewBag.AccountID = accountId;
+            ViewBag.CurrencyRate = currencyRate;
             return PartialView("~/Areas/Finance/Views/_EmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
         public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
