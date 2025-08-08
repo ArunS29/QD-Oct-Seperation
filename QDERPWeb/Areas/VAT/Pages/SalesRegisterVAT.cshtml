@@ -1095,37 +1095,37 @@
 @* <div id="testSvgPreview" style="width:100px; height:100px; border:1px solid #ccc;"></div> *@
 
 <script>
-			
-	const headings = ["Invoice Amount", "VAT Value"];
+
+		const headings = ["Invoice Amount", "VAT Value"];
 	let currentIndex = 0;
 
 	// Default values
-	let invoiceAmount = "0.00";
-	let vatAmount = "0.00";
+	let invoiceAmounted = "0.00";
+	let vatAmounted = "0.00";
 
-	// Update values from your data functions:
+	// Format helper
+	function formatNumber(num) {
+		return Number(num || 0).toLocaleString("en-US", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+	}
+
 	function updateInvoiceAmountCard(data) {
-		let total = 0;
-		if (Array.isArray(data)) {
-			total = data.reduce((sum, item) => {
-				const val = parseFloat(item.TotalInvoiceAmount);
-				return sum + (isNaN(val) ? 0 : val);
-			}, 0);
-		}
-		invoiceAmount = total.toFixed(2);
+		if (!Array.isArray(data)) return;
+		const total = data.reduce((sum, item) => sum + (parseFloat(item.TotalInvoiceAmount) || 0), 0);
+		invoiceAmounted = formatNumber(total);
 	}
 
 	function updateTotalVATValue(data) {
-		let total = 0;
-		if (Array.isArray(data)) {
-			data.forEach(item => {
-				const vat5 = parseFloat(item.DomesticStandartRatedTax) || 0;
-				const vat10 = parseFloat(item.TotalTaxOf10Perc) || 0;
-				const vat15 = parseFloat(item.TotalTaxOf15Perc) || 0;
-				total += vat5 + vat10 + vat15;
-			});
-		}
-		vatAmount = total.toFixed(2);
+		if (!Array.isArray(data)) return;
+		const total = data.reduce((sum, item) =>
+			sum +
+			(parseFloat(item.DomesticStandartRatedTax) || 0) +
+			(parseFloat(item.TotalTaxOf10Perc) || 0) +
+			(parseFloat(item.TotalTaxOf15Perc) || 0), 0
+		);
+		vatAmounted = formatNumber(total);
 	}
 
 	// Switch every 2 seconds
@@ -1142,7 +1142,7 @@
 		<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
 		<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
 	</svg>
-			${currentIndex === 0 ? invoiceAmount : vatAmount}
+			${currentIndex === 0 ? invoiceAmounted : vatAmounted}
 		`;
 	}, 2000);
 	
@@ -1270,17 +1270,14 @@
 	}
 	document.getElementById("count0").textContent = counts[0]; // Verified count
 
-	// 🔁 Called after DataGrid loads
 		function onGridContentReady(e) {
-		// ✅ Update status counts like Verified / Approved / Submitted
 		updateApprovedCountFromGrid();
-			
-		// ✅ Get data and update total VAT value
 		const data = e.component.getDataSource().items();
-		updateTotalVATValue(data);
-		 injectHeaderSVG();
-		
+		updateInvoiceAmountCard(data);    // ✅ update invoice total too
+		updateTotalVATValue(data);        // ✅ now both values are set
+		injectHeaderSVG();
 	}
+
 
 
 	 $(function () {
