@@ -440,7 +440,7 @@
                 .ValueExpr("AccountId")
                 .DisplayExpr("SupplierName")
                 .LabelMode(EditorLabelMode.Floating)
-				.DropDownOptions(o => o.Width(1000))
+				.DropDownOptions(o => o.Width(800))
 			    .ContentTemplate(new TemplateName("SupplierNameTemplate"))
             )
         </div>
@@ -1323,6 +1323,17 @@
 											.ShowBorders(true)
 											.HoverStateEnabled(true)
 											.Paging(p => p.PageSize(15))
+												.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 											.FilterRow(f => f.Visible(true))
 											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 											.Height(345)
@@ -1365,6 +1376,17 @@
 											.ShowBorders(true)
 											.HoverStateEnabled(true)
 											.Paging(p => p.PageSize(15))
+												.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 											.FilterRow(f => f.Visible(true))
 											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 											.Height(345)
