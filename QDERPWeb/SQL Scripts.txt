@@ -3183,3 +3183,16 @@ Go
 
 ALTER TABLE [Aicon].tbl20166VATPurchaseMaster  
 ADD InvoiceCurrencyCode varchar(10),ExchangeRate decimal(19,4),TaxCurrencyCode varchar(10);
+------------------------------
+//IMS New field
+IF COL_LENGTH('Aicon.tbl20101SalesPersonMaster', 'TargetPerMonth') IS NULL
+BEGIN
+    ALTER TABLE Aicon.tbl20101SalesPersonMaster
+        ADD TargetPerMonth MONEY NULL;
+    PRINT 'Added column: TargetPerMonth';
+END
+ELSE
+BEGIN
+    PRINT 'Column already exists: TargetPerMonth';
+END
+GO

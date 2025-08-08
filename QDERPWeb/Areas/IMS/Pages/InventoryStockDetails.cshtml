@@ -865,7 +865,9 @@
                             <label  id="AvgCostPriceLabel"></label>
                             @(Html.DevExtreme().TextBox()
                                 .ID("AvgCostPrice")
-                                .LabelMode(EditorLabelMode.Floating))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Disabled(true)
+                            )
                         </td>
                         <td>
                             <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
