@@ -5,7 +5,7 @@
 
 <style>
     .dx-fieldset {
-        margin-bottom: 20px;
+        margin-bottom: 5px;
     }
 
     .dx-field-container{
@@ -22,8 +22,8 @@
 
     .dx-field {
         display: flex;
-        align-items: center;
-       margin: 5px;
+        align-items: flex-end;
+      
        /*  width: 400px ! important ; */
       /*   height: 100px ! important ; */
 
@@ -58,9 +58,26 @@
         display: flex;
         align-items: center;
     }
-    .plus{
-        width:40px;
+
+    .dx-button-custom .dx-button-content {
+        border-radius: 6px;
+        font-weight: 600;
+        min-width: 120px; /* Reduced min-width for small screens */
+        max-width: 100%; /* Avoid overflow */
+        padding: 8px 14px;
+        transition: background-color 0.3s, color 0.3s;
+        text-align: center;
     }
+    .dx-button-custom.btn-save .dx-button-content {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
+    }
+
+    .dx-button-custom.btn-save:hover .dx-button-content {
+        background-color: #0069d9;
+    }
+    
 
     .container {
         display: none !important;
@@ -90,66 +107,84 @@
     </div>
 </div>
         <div id="TypeCurrency" class="no-border-input"></div>
-<div class="dx-fieldset">
+<div class="dx-fieldset" style="display:flex; align-items: flex-end;">
 
-    <div class="dx-field">
-        @(Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Currency Name:')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .ID("txtCurrencyName")
-            .Width("60%")
-            )
-    </div>
+    <div style="display:flex; align-items: flex-end;">
+        <div class="dx-field">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Currency Name:')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("txtCurrencyName")
+                .Width(400)
+                )
+            @(Html.DevExtreme().Button()
+                .ID("currencyNameArabicConvert")
+                .Icon("fas fa-language")
+                .ElementAttr(new { @class = "input-button" })
+                .OnClick("function() { convertCurrencyNameToArabic(); }")
+                )
+        </div>
+        <div class="dx-field">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Currency Name (In Arabic):')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("txtCurrencyNameAr")
+                .Width(400)
 
-    <div class="dx-field">
-        @(Html.DevExtreme().TextBox()
-            .Label(new JS("formatMessage('Currency Name (In Arabic):')"))
-            .LabelMode(EditorLabelMode.Floating)
-            .ID("txtCurrencyNameAr")
-            .Width("60%")
-           
-            )
-    </div>
-    <div class="dx-field">
-        @(Html.DevExtreme().NumberBox()
-            .ID("currencyexchangerate")
-            .Label(new JS("formatMessage('Currency Exchange Rate:')"))
-            .LabelMode(EditorLabelMode.Floating)       
-            .Min(1)
-            .Step(1)
-            .ShowSpinButtons(true)
-            .Width("60%")
-            )
-    </div>
-    </div>
-
-    <div class="dx-fieldset">
-        <div class="dx-field-container" style="margin-left:0px;">
-            <div> 
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Currency Code:')"))
-                    .LabelMode(EditorLabelMode.Floating)
-                    .ID("txtCurrencyCode")
-                    .Width(400))
-            </div>
-            <div>
-                @(Html.DevExtreme().TextBox()
-                    .Label(new JS("formatMessage('Currency Code (In Arabic):')"))
-                    .LabelMode(EditorLabelMode.Floating)
-                    .ID("txtCurrencyCodeAr")
-                    .Width(400))
-            </div>
-            <div class="plus">
-                @(Html.DevExtreme().Button()
-                    .ID("btnAddCurrency")
-                    .Text("Add")
-                    .Icon("plus")
-                    .Type(ButtonType.Success)
-                    
-                    .OnClick("addCurrency"))
-            </div>
+                )
         </div>
     </div>
+</div>
+
+<div class="dx-fieldset" style="display:flex; align-items: flex-end;">
+    <div style="display:flex; align-items: flex-end;"> 
+        <div class="dx-field">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Currency Code:')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("txtCurrencyCode")
+                .Width(400))
+            @(Html.DevExtreme().Button()
+                .ID("currencyCodeArabicConvert")
+                .Icon("fas fa-language")
+                .ElementAttr(new { @class = "input-button" })
+                .OnClick("function() { convertDetailedDescToArabic(); }")
+                )
+         </div>
+        <div class="dx-field">
+            @(Html.DevExtreme().TextBox()
+                .Label(new JS("formatMessage('Currency Code (In Arabic):')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .ID("txtCurrencyCodeAr")
+                .Width(400))
+        </div>
+    </div>   
+ </div>
+
+<div class="dx-fieldset" style="display:flex; align-items: flex-end;">
+    <div style="display:flex; align-items: flex-end;">
+        <div class="dx-field">
+            @(Html.DevExtreme().NumberBox()
+                .ID("currencyexchangerate")
+                .Label(new JS("formatMessage('Currency Exchange Rate:')"))
+                .LabelMode(EditorLabelMode.Floating)
+                .Min(1)
+                .Step(1)
+                .ShowSpinButtons(true)
+                .Width(400)
+                )
+        </div>
+        <div class ="dx-field">
+            @(Html.DevExtreme().Button()
+                .ID("btnAddCurrency")
+                .Icon("plus")
+                .Text(new JS("formatMessage('Add')"))
+                .Width(100)
+                .OnClick("addCurrency")
+                )
+        </div>
+    </div>
+</div>
 
 <div class="ledgerResult">
 
@@ -223,5 +258,56 @@
             
         });
     });
+
+
+    async function convertDetailedDescToArabic() {
+        const englishBox = $("#txtCurrencyCode").dxTextBox("instance");
+            const arabicBox = $("#txtCurrencyCodeAr").dxTextBox("instance");
+
+        if (!englishBox || !arabicBox) {
+            console.error("TextBox/TextArea not initialized.");
+            return;
+        }
+
+        const englishText = englishBox.option("value");
+
+        if (!englishText || englishText.trim() === "") {
+            alert("Please enter a detailed description to translate.");
+            return;
+        }
+
+        try {
+            const translatedText = await translateToArabic(englishText);
+            arabicBox.option("value", translatedText);
+        } catch (error) {
+            console.error("Translation failed", error);
+            alert("Translation failed. Please try again.");
+        }
+    }
+
+    async function convertCurrencyNameToArabic() {
+        const englishBox = $("#txtCurrencyName").dxTextBox("instance");
+            const arabicBox = $("#txtCurrencyNameAr").dxTextBox("instance");
+
+        if (!englishBox || !arabicBox) {
+            console.error("TextBox/TextArea not initialized.");
+            return;
+        }
+
+        const englishText = englishBox.option("value");
+
+        if (!englishText || englishText.trim() === "") {
+            alert("Please enter a detailed description to translate.");
+            return;
+        }
+
+        try {
+            const translatedText = await translateToArabic(englishText);
+            arabicBox.option("value", translatedText);
+        } catch (error) {
+            console.error("Translation failed", error);
+            alert("Translation failed. Please try again.");
+        }
+    }
 </script>
 

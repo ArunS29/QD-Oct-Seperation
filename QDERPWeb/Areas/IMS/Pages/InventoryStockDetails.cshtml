@@ -6,12 +6,12 @@
 @using QD.ERP.Web.Pages.Shared.IMS
 @{
 }
-@{
-    var enteredBy = HttpContext.Session.GetString("UserName");
-    var enteredOn = DateTime.Now.ToString("dd-MMM-yyyy");
-    var modifiedBy = HttpContext.Session.GetString("UserName");
-    var modifiedOn = DateTime.Now.ToString("dd-MMM-yyyy");
-}
+@* @{ *@
+@*     var enteredBy = HttpContext.Session.GetString("UserName"); *@
+@*     var enteredOn = DateTime.Now.ToString("dd-MMM-yyyy"); *@
+@*     var modifiedBy = HttpContext.Session.GetString("UserName"); *@
+@*     var modifiedOn = DateTime.Now.ToString("dd-MMM-yyyy"); *@
+@* } *@
 <style>
     .form-tablee {
         width: 100%;
@@ -883,8 +883,7 @@
                     <!-- Entered By -->
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
-                                                .ID("EnteredBy")
-                                                .Value(enteredBy)
+                                                .ID("EnteredBy")                                                
                                                 .Label(new JS("formatMessage('Entered By')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ReadOnly(true)
@@ -895,7 +894,6 @@
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                                 .ID("EnteredOn")
-                                                .Value(enteredOn)
                                                 .Label(new JS("formatMessage('Entered On : ')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ReadOnly(true)
@@ -907,7 +905,6 @@
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                     .ID("ModifiedBy")
-                                    .Value(modifiedBy)
                                     .Label(new JS("formatMessage('Modified By')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ReadOnly(true)
@@ -919,7 +916,6 @@
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                     .ID("ModifiedOn")
-                                    .Value(modifiedOn)
                                     .Label(new JS("formatMessage('Modified On')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ReadOnly(true)
@@ -959,13 +955,8 @@
                     const title = "Unit Of Measure";
                         openModal(url, title,"70%","70%");
                     }
-                                            $(function () {
-                        // Direct assignment using Razor variables
-                        $("#EnteredBy").dxTextArea("instance").option("value", "@enteredBy");
-                        $("#EnteredOn").dxTextArea("instance").option("value", "@enteredOn");
-                        $("#ModifiedBy").dxTextArea("instance").option("value", "@modifiedBy");
-                        $("#ModifiedOn").dxTextArea("instance").option("value", "@modifiedOn");
-                    });
+                         
+                    
 
                 </script>
             </div>
@@ -2929,7 +2920,10 @@
         if (code) {
             isEditMode = mode === "edit";
             isViewMode = mode === "view";
-
+            if (isEditMode || isViewMode) {
+                var btn = $("#btnSave").dxButton("instance");
+                btn.option("text", "Update");
+            }
             setTimeout(() => {
                 fetch(`/api/StockInventory/GetByCode?code=${encodeURIComponent(code)}`)
                     .then(response => {
@@ -2965,7 +2959,13 @@
                             $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
                             $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
                             $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
+                                var dt = new Date(data.CreatedOn);
+                                var dateOnly = dt.toISOString().split('T')[0];  // "YYYY-MM-DD"
+                            $("#EnteredOn").dxTextArea("instance").option("value", dateOnly);
                             $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
+                                var dt2 = new Date(data.ModifiedOn);
+                                var dateOnly2 = dt2.toISOString().split('T')[0];
+                            $("#ModifiedOn").dxTextArea("instance").option("value", dateOnly2);
                             $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
                                 // Load Item Image (Base64)
                             if (data.ItemImage) {

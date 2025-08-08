@@ -241,7 +241,7 @@
 </div> *@
 
 		
-		@await Html.PartialAsync("/Pages/Shared/IMS/SaleorderFooter.cshtml")
+		@await Html.PartialAsync("/Pages/Shared/IMS/SaleOrderFooter.cshtml")
 
 <div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
@@ -1038,11 +1038,12 @@ subColumns.Add().DataField("cost")
 					$.get("/api/SalesOrders/HasLedger", { clientCode: clientCode })
 					.done(function (hasLedger) {
 						if (!hasLedger) {
-							DevExpress.ui.notify(
-								"Client does not have a Ledger Account. Cannot proceed with invoice generation.",
-								"warning",
-								3000
-							);
+							DevExpress.ui.dialog.alert(
+								"Client does not have a Ledger Account.", // Message
+								"Can't Generate Invoice" // Title
+							).done(function () {
+								
+							});
 							return;
 						}
 				let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
@@ -1097,6 +1098,7 @@ $(document).ready(function () {
 						"btnPrint": { "Visible": false, "Enabled": false },
 						"btnToggleSearch": { "Visible": false, "Enabled": false },
 						"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+						"btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
 						"btnColumnChooser": { "Visible": false, "Enabled": false },
 						"btnSalesOrderDetails": { "Visible": false, "Enabled": false },
 						"btnAddSalesOrder": { "Visible": false, "Enabled": false },

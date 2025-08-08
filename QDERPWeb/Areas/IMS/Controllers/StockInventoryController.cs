@@ -840,9 +840,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 var existingItem = await dbContext.Tbl20164GoodsAndServicesMasters
                     .FirstOrDefaultAsync(x => x.Gscode == model.Gscode);
+                var addedBy = HttpContext.Session.GetString("UserName") ?? "System";
 
                 if (existingItem == null)
                 {
+                    // set default value
+                    model.CreatedBy = addedBy;
+                    model.CreatedOn = DateTime.Now;
                     // Add new item in main table
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
 
@@ -889,7 +893,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.ReorderQty = model.ReorderQty;
                     existingItem.ReorderLevel = model.ReorderLevel;
                     existingItem.ReorderLeadTime = model.ReorderLeadTime;
-                    existingItem.ModifiedBy = User.Identity?.Name ?? "Unknown";
+                    existingItem.ModifiedBy = addedBy;
                     existingItem.ModifiedOn = DateTime.Now;
                     existingItem.ItemImage = model.ItemImage;
 
