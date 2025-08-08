@@ -536,7 +536,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     var existingItems = await dbContext.Tbl60302deliveryNoteChildren
                         .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
                         .ToListAsync();
-
+                    var currencyRate = await dbContext.Tbl60301deliveryNoteMasters
+                            .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
                     // Find max DeliveryNoteSlNo across all records (or filter by DeliveryNoteNo if preferred)
                     long maxSlNo = existingItems.Any() ? existingItems.Max(x => x.DeliveryNoteSlNo) : 0;
 
@@ -556,7 +559,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             entity.Gscode = item.ItemCode;
                             entity.UnitRateMethod = item.UnitRateMethod;
                             entity.IssuedQty = item.Qty;
-                            entity.IssuedUnitPrice = item.UnitCostPrice;
+                            entity.IssuedUnitPrice = item.UnitCostPrice * currencyRate;
                             entity.EmployeeNo = item.EmployeeNo;
                             entity.PropertyNo = item.PropertyNo;
                             entity.AddlDescription = item.AddlDescription;
@@ -577,7 +580,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                                 Gscode = item.ItemCode,
                                 UnitRateMethod = item.UnitRateMethod,
                                 IssuedQty = item.Qty,
-                                IssuedUnitPrice = item.UnitCostPrice,
+                                IssuedUnitPrice = item.UnitCostPrice * currencyRate,
                                 EmployeeNo = item.EmployeeNo,
                                 PropertyNo = item.PropertyNo,
                                 AddlDescription = item.AddlDescription,
@@ -667,7 +670,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         ItemCode = x.Gscode,
                         UnitRateMethod = x.UnitRateMethod,
                         Qty = x.IssuedQty,
-                        UnitCostPrice = x.IssuedUnitPrice,
+                        UnitCostPrice = x.IssuedUnitPrice / master.CurrencyRate,
                         EmployeeNo = x.EmployeeNo,
                         PropertyNo = x.PropertyNo,
                         AddlDescription = x.AddlDescription,

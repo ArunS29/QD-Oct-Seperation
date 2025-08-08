@@ -445,6 +445,7 @@
             reader.readAsText(file);
         }
     });
+
     function onSaveClicked(e) {
         let stockCode = $("#StockNoItemCode").dxTextBox("instance").option("value");
         let stockGroupName = $("#StockGroup").dxDropDownBox("instance").option("value");
@@ -591,6 +592,7 @@
             }
         });
     }
+
     function onBackButtonClick(e) {
         window.history.back();
     }
