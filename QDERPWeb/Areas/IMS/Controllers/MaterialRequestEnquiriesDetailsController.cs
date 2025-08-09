@@ -42,11 +42,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
 						return BadRequest("Invalid toDate format. Use MM/dd/yyyy.");
 
-					var data = await dbContext.Qry60604purchaseRequestViewMasters
-						.Where(x => x.Mprdate >= from && x.Mprdate <= to)
-						.ToListAsync();
+                    var data = await dbContext.Qry60604purchaseRequestViewMasters
+                        .Where(x => x.Mprdate >= from && x.Mprdate <= to)
+                        .Where(x => !EF.Functions.Like(x.Mprno, "%(R%)")) // excludes any (R...)
+                        .ToListAsync();
 
-					return Ok(data);
+
+                    return Ok(data);
 				}
 				catch (Exception ex)
 				{

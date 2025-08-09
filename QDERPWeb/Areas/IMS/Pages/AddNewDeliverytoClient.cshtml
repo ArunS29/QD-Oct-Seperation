@@ -377,13 +377,24 @@
                         .Label("Client Ref. Name / Attention To:")
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
-                        )
+                        .Buttons(buttons =>
+					   {
+						   buttons.Add()
+						   .Name("btnClientContact")
+						   .Location(TextEditorButtonLocation.After)
+						   .Widget(w => w.Button()
+						   .Type(ButtonType.Default)
+						   .Icon("plus")
+						   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+						.OnClick("onClientContactClick"));
+					   }))
                     </div>
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientContactNo")
                         .Label("Client Contact No:")
                         .LabelMode(EditorLabelMode.Floating)
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                         .Width("100%")
                         )
                     </div>
@@ -465,6 +476,7 @@
                         .Mode(TextBoxMode.Email)
                         .Label("Client Email:")
                         .LabelMode(EditorLabelMode.Floating)
+                        .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%")
                         )
                     </div>
@@ -2137,4 +2149,36 @@
               }
           }
       }
+
+    function onClientContactClick() {
+        var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+        var selectedValue = dropDownBox.option('value'); // clientCode
+
+        if (!selectedValue) {
+            DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+            return;
+        }
+
+        // Get the full item directly from dataSource using selected value
+        var dataSource = dropDownBox.getDataSource();
+
+        dataSource.load().done(function (data) {
+            var selectedItem = data.find(x => x.ClientCode === selectedValue);
+
+            if (!selectedItem || !selectedItem.ClientName) {
+                DevExpress.ui.notify('Client details not found.', 'error', 2000);
+                return;
+            }
+
+            var clientCode = selectedValue;
+            var clientName = selectedItem.ClientName;
+
+            var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' +
+                encodeURIComponent(clientCode) + '&clientName=' +
+                encodeURIComponent(clientName);
+
+            openModal(url, 'Client Contact List');
+        });
+    }
+
    </script>

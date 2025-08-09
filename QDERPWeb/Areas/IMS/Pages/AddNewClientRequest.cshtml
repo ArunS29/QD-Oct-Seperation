@@ -566,6 +566,7 @@
 														.Label(new JS("formatMessage('Requester Email:')"))
 														.ID("txtReqEmail")
 														.LabelMode(EditorLabelMode.Floating)
+														.ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
 														.Width("100%")
 														)
 
@@ -575,6 +576,7 @@
 														.ID("ContactNo")
 														.Label(new JS("formatMessage('Contact No:')"))
 														.LabelMode(EditorLabelMode.Floating)
+														.InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
 														.Width("100%"))
 
 						</td>
@@ -7953,10 +7955,18 @@ $("#btnAddNew").on("click", function (e) {
 		});
 	}
 
-    // function setContactName(name) {
-    //     $("#txtContactName").val(name);
+		function selectContact(name, email, mobile, phone) {
+			$("#txtContactName").dxTextBox("instance").option("value", name);
+			$("#txtReqEmail").dxTextBox("instance").option("value", email);
+			$("#ContactNo").dxTextBox("instance").option(
+				"value",
+				mobile && mobile.trim() !== "" ? mobile : phone
+			);
+			DevExpress.ui.notify("Contact details added", "success", 2000);
 
-    // }
+			// ✅ Close the modal after selection
+			closeModal();
+		}
 
 
 
