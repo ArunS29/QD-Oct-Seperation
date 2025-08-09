@@ -234,9 +234,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 							.FirstOrDefaultAsync();
 
 
-
-						// Retrieve Gsdescription based on Gscode
-						var gsDescription = await dbContext.Tbl20164GoodsAndServicesMasters
+                        var currencyRate = await dbContext.Tbl60101quotationMasters
+                            .Where(x => x.QuoteNo == QuoteNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                        // Retrieve Gsdescription based on Gscode
+                        var gsDescription = await dbContext.Tbl20164GoodsAndServicesMasters
 							.Where(x => x.Gscode == gridDetails.Gscode)
 							.Select(x => x.Gsdescrpition)
 							.FirstOrDefaultAsync();
@@ -247,6 +250,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						dict["GsDescription"] = gsDescription;
                        
                         dict["GSCode"] = gridDetails.Gscode;
+                        dict["CostPrice"] = gridDetails.CostPrice / currencyRate;
+                        dict["QuotedUnitPrice"] = gridDetails.QuotedUnitPrice / currencyRate;
+                        dict["QuotedDiscount"] = gridDetails.QuotedDiscount / currencyRate;
+                        dict["LineTaxAmount"] = gridDetails.LineTaxAmount / currencyRate;
+                        dict["LineTotalWithTax"] = gridDetails.LineTotalWithTax / currencyRate;
+                        dict["TotalCostOfItem"] = gridDetails.TotalCostOfItem / currencyRate;
+                        dict["ItemProfitOrLoss"] = gridDetails.ItemProfitOrLoss / currencyRate;
+                        dict["UnitCostPriceTotal"] = gridDetails.UnitCostPriceTotal / currencyRate;
+                        dict["LineTotalAfterDiscount"] = gridDetails.LineTotalAfterDiscount / currencyRate;
+                        dict["LineTotalBeforeDiscount"] = gridDetails.LineTotalBeforeDiscount / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -374,7 +387,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				var existingChildren = await dbContext.Tbl60102quotationChildren
 					.Where(x => x.QuoteNo == VM.QuoteNo)
 					.ToListAsync();
-
+                var currencyRate = await dbContext.Tbl60101quotationMasters
+                            .Where(x => x.QuoteNo == VM.QuoteNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
                 // Track QuoteChildId from client
                 var incomingIds = VM.QuotationDetailses
                     .Where(x => x.QuoteChildId > 0)
@@ -398,6 +414,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					{
 						// New child entry
 						child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
+						child.CostPrice = child.CostPrice * currencyRate;
+						child.QuotedUnitPrice = child.QuotedUnitPrice * currencyRate;
+						child.QuotedDiscount = child.QuotedDiscount * currencyRate;
 						await dbContext.Tbl60102quotationChildren.AddAsync(child);
 					}
 					else
