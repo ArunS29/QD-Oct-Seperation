@@ -355,6 +355,7 @@
                                     .LabelMode(EditorLabelMode.Floating)
                                     .Mode(TextBoxMode.Email)
                                     .StylingMode(EditorStylingMode.Outlined)
+                                    .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                                     .Width("100%"))
                                 </div>
                                 <div class="col-md-4">
@@ -363,6 +364,7 @@
                                     .Label("Client Contact No:")
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
+                                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                                     .Width("100%"))
                                 </div>
                             </div>
@@ -2828,6 +2830,19 @@ $(document).ready(function () {
 			openModal(url, 'Client Contact List');
 		});
 	}
+
+    function selectContact(name, email, mobile, phone) {
+        $("#ClientRefName").dxTextBox("instance").option("value", name);
+        $("#ClientEmail").dxTextBox("instance").option("value", email);
+        $("#ClientContact").dxTextBox("instance").option(
+            "value",
+            mobile && mobile.trim() !== "" ? mobile : phone
+        );
+        DevExpress.ui.notify("Contact details added", "success", 2000);
+
+        // ✅ Close the modal after selection
+        closeModal();
+    }
 
     // Grid moveup and movedown
             // ✅ Declare global variable

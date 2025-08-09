@@ -2864,18 +2864,24 @@
 
       function AddItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
-              const title = "Item Store";
-                  openModal(url, title, "","60%");
+                var dropDownBox = $("#ItemStore").dxDropDownBox("instance");
+                dropDownBox.close();
+                const title = "Item Store";
+                openModal(url, title, "","60%");
           }
             function StockGroup(){
                 const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
-              const title = "Stock Group";
-                  openModal(url, title,"","70%");
+                var dropDownBox = $("#StockGroup").dxDropDownBox("instance");
+                dropDownBox.close();
+                const title = "Stock Group";
+                openModal(url, title,"","70%");
           }
             function AddItemClassification(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
-              const title = "Item Classification";
-                  openModal(url, title);
+                var dropDownBox = $("#ItemClassification").dxDropDownBox("instance");
+                dropDownBox.close();
+                const title = "Item Classification";
+                openModal(url, title);
           }
             $(document).ready(function () {
           // Ensure dxTabs has loaded, then get the selected index

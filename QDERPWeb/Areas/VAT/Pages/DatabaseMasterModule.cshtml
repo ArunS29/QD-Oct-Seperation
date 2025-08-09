@@ -5,7 +5,7 @@
 
 <style>
     .dx-fieldset {
-        margin-bottom: 5px;
+        margin: 0px 20px;
     }
 
     .dx-field-container{
@@ -34,7 +34,7 @@
     .dx-fieldset .dx-field-container {
         display: flex;
         align-items: flex-end;
-        gap: 10px;
+        gap: 2px;
         /* margin-top: 12px; */
       
     }
@@ -52,32 +52,30 @@
         display: none !important;
     }
 
-    .dx-button {
-        margin-top: 10px;
-        height: 38px;
-        display: flex;
-        align-items: center;
+    .dx-button-mode-contained.dx-button-default {
+        color: black;
     }
 
-    .dx-button-custom .dx-button-content {
-        border-radius: 6px;
-        font-weight: 600;
-        min-width: 120px; /* Reduced min-width for small screens */
-        max-width: 100%; /* Avoid overflow */
-        padding: 8px 14px;
-        transition: background-color 0.3s, color 0.3s;
-        text-align: center;
-    }
-    .dx-button-custom.btn-save .dx-button-content {
-        background-color: #007bff;
-        color: #fff;
-        border: 1px solid #007bff;
+    .dx-button-mode-contained.dx-button-success {
+        color: black;
     }
 
-    .dx-button-custom.btn-save:hover .dx-button-content {
-        background-color: #0069d9;
+    .icon-button-ledger.dx-button {
+        background-color: #65bcfc !important;
+        min-width: 150px;
+        
     }
-    
+
+    .icon-button-ledger .dx-button-content {
+        color: white !important;
+        font-size: 2rem !important;
+    }
+
+    .icon-button-ledger .dx-icon {
+        color: black !important;
+        font-size: 2rem !important;
+    }
+
 
     .container {
         display: none !important;
@@ -124,7 +122,7 @@
                 .OnClick("function() { convertCurrencyNameToArabic(); }")
                 )
         </div>
-        <div class="dx-field">
+        <div class="dx-field" style="margin: 0px 0px 10px 10px;">
             @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Currency Name (In Arabic):')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -151,7 +149,7 @@
                 .OnClick("function() { convertDetailedDescToArabic(); }")
                 )
          </div>
-        <div class="dx-field">
+        <div class="dx-field" style="margin: 0px 0px 10px 10px;">
             @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Currency Code (In Arabic):')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -174,14 +172,15 @@
                 .Width(400)
                 )
         </div>
-        <div class ="dx-field">
+        <div class="dx-field" style="margin: 0px 0px 10px 10px;">
             @(Html.DevExtreme().Button()
                 .ID("btnAddCurrency")
                 .Icon("plus")
                 .Text(new JS("formatMessage('Add')"))
                 .Width(100)
                 .OnClick("addCurrency")
-                )
+                .ElementAttr(new { @class = "icon-button-ledger" }))
+                
         </div>
     </div>
 </div>
