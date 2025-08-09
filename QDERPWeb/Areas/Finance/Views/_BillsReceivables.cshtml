@@ -7,8 +7,10 @@
     string accountId = ViewBag.AccountId;
     string voucherAmount = ViewBag.VoucherAmount;
     long voucherEntryNo = ViewBag.VoucherEntryNo;
+    decimal currencyRate = ViewBag.CurrencyRate;
+    int CurrencyId = ViewBag.CurrencyId;
     double? voucherAmountParsed = null;
-
+    double? originalAmount = null;
     // Try parsing the voucherAmount
     if (!string.IsNullOrEmpty(voucherAmount))
     {
@@ -16,6 +18,7 @@
         if (double.TryParse(voucherAmount, out parsedAmount))
         {
             voucherAmountParsed = Math.Round(parsedAmount, 2);
+            originalAmount = (double)(voucherAmountParsed.Value / (double)currencyRate);
         }
     }
 
@@ -55,6 +58,11 @@
         bottom:0px!important;
     }
 </style>
+<script>
+    var currencyRate =' @currencyRate';
+    let dataGridInstance2 = null; // Reference to DataGrid
+    let selectedRowData = null;   // Store selected row data
+</script>
 <div class="content-container-top" style="background-color:#909ead00;" >
 <div class="title">
     <div class="header-container">
@@ -97,7 +105,7 @@
                         .ID("AmountId")
                         .Label("Amount:")
                         .LabelMode(EditorLabelMode.Floating)
-                        .Value(voucherAmountParsed)
+                        .Value(originalAmount)
                         .ShowSpinButtons(true)
                        
                         .Format("#,##0.00")
@@ -161,7 +169,7 @@
                         .DataSource(d => d.WebApi()
                         .Controller("BillsReceivable")
                         .LoadAction("GetSubLedgerReceivables")
-                        .LoadParams(new { voucherType = voucherType, accountId = accountId, isPayable = isPayable })
+                        .LoadParams(new { voucherType = voucherType, accountId = accountId, isPayable = isPayable, CurrencyId = CurrencyId })
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("ReferenceNo")
                         )
@@ -174,7 +182,7 @@
                                 .DataSource(d => d.WebApi()
                                 .Controller("BillsReceivable")
                                 .LoadAction("GetSubLedgerReceivables")
-                                .LoadParams(new { voucherType = voucherType, accountId = accountId, isPayable = isPayable })
+                                .LoadParams(new { voucherType = voucherType, accountId = accountId, isPayable = isPayable, CurrencyId = CurrencyId })
                                 .LoadMode(DataSourceLoadMode.Raw)
                                 .Key("ReferenceNo")
                                 )
@@ -186,11 +194,31 @@
                                 .Columns(columns =>
                                 {
                                     columns.Add().DataField("ReferenceNo").Caption("Reference No");
-                                    columns.Add().DataField("ReceivableAmount").Caption("Receivable Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("Received").Caption("Received").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("Balance").Caption("Balance").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("RetentionAmount").Caption("Retention Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("BalanceDueWithOutRetention").Caption("Balance Due Without Retention").Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("ReceivableAmount").Caption("Receivable Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    "if (data.ReceivableAmount != null && currencyRate != 0) " +
+                                    "    return data.ReceivableAmount / currencyRate; " +
+                                    "return null;" +
+                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("Received").Caption("Received").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    "if (data.Received != null && currencyRate != 0) " +
+                                    "    return data.Received / currencyRate; " +
+                                    "return null;" +
+                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("Balance").Caption("Balance").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    "if (data.Balance != null && currencyRate != 0) " +
+                                    "    return data.Balance / currencyRate; " +
+                                    "return null;" +
+                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("RetentionAmount").Caption("Retention Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    "if (data.RetentionAmount != null && currencyRate != 0) " +
+                                    "    return data.RetentionAmount / currencyRate; " +
+                                    "return null;" +
+                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    columns.Add().DataField("BalanceDueWithOutRetention").Caption("Balance Due Without Retention").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    "if (data.BalanceDueWithOutRetention != null && currencyRate != 0) " +
+                                    "    return data.BalanceDueWithOutRetention / currencyRate; " +
+                                    "return null;" +
+                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                 })
                                 .OnSelectionChanged("onReferenceGridSelectionChanged")
                                 )
@@ -255,6 +283,11 @@
             .ID("ReceivabledataGrid")
             .KeyExpr("ReferenceNo")
             .RemoteOperations(false)
+                .DataSource(ds => ds.Mvc()
+                .Controller("BillsReceivable")
+
+                .LoadAction("GetSubLedgerByVoucher")
+                .LoadParams(new { voucherNo = voucherEntryNo }))
             .OnInitialized("dataGridInitialized")
             
             .Columns(columns =>
@@ -264,17 +297,14 @@
                 columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center).AllowEditing(false);
                 columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left).AllowEditing(false);
                 columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).AllowEditing(false);
-                columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(@"
-        function(e) {
-        if(e.value === null || e.value === undefined) {
-        return ''; // Return empty string for null values
-        }
-        return e.value.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        }
-        ");
+                    columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).AllowEditing(false).CalculateCellValue("function(data) { " +
+                    "if (data.Amount != null && currencyRate != 0) " +
+                    "    return data.Amount / currencyRate; " +
+                    "return null;" +
+                    " }")
+                    .CustomizeText("function(e) { " +
+                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                    "}");
                 columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center).Visible(!hideRetentionAmount).CustomizeText(@"
                 function(e) {
                 if(e.value === null || e.value === undefined) {
@@ -397,8 +427,8 @@
         const drCr = $("#DrCrId").dxSelectBox("instance").option("value");
         const referenceType = $("#Reference").dxSelectBox("instance").option("value");
         const referenceNo = $("#ReferenceAcountHead").dxDropDownBox("instance").option("value");
-        const amount = $("#txtAmount2").dxNumberBox("instance").option("value");
-
+        const voucherAmount = $("#txtAmount2").dxNumberBox("instance").option("value");
+        var amount = voucherAmount * currencyRate;
         var referenceValidator = $("#ReferenceAcountHead").dxValidator("instance");
 
         var AmtValidator = $("#txtAmount2").dxValidator("instance");
@@ -523,8 +553,7 @@
     }
 
 
-    let dataGridInstance2 = null; // Reference to DataGrid
-    let selectedRowData = null;   // Store selected row data
+    
 
     // Store the DataGrid instance when initialized
     function dataGridInitialized(e) {
@@ -665,8 +694,8 @@
 
         // Get AmountId NumberBox value
         const numberBox = $("#AmountId").dxNumberBox("instance");
-        const amountBoxValue = parseFloat(numberBox.option("value") || 0);
-
+        const BoxValue = parseFloat(numberBox.option("value") || 0);
+        const amountBoxValue = BoxValue * currencyRate;
         // Compare total
         if (Math.abs(totalGridAmount - amountBoxValue) > 0.01) {
             // Show error alert if they don't match

@@ -1173,7 +1173,7 @@ function addVoucherEntry() {
             var voucherAmount = $("#Amount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
             var amount = voucherAmount * currencyRate;
-
+             var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
             var accountHead = $("#AccountHeadDropDown").dxDropDownBox("instance").option("value");
 
             var sbDrCr = $("#TransactionTypeComboBox").dxSelectBox("instance").option("value");
@@ -1426,7 +1426,8 @@ function addVoucherEntry() {
                                                 VoucherAmount: encodeURIComponent(amount),
                                                 DrCr: encodeURIComponent(sbDrCr),
                                                 AccountID: encodeURIComponent(accheadid),
-                                                 CurrencyRate: encodeURIComponent(currencyRate)
+                                                 CurrencyRate: encodeURIComponent(currencyRate),
+                                                 CurrencyId: encodeURIComponent(CurrencyId),
                                             };
                                             successCallback(params);
                                         }
@@ -2532,7 +2533,8 @@ function addVoucherEntry() {
              window.editBillsReceivable = function () {
                  let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
                  let dataGrid = $("#dataGrid").dxDataGrid("instance");
-
+                 var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+                  var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
                  if (!rowIndex || rowIndex < 0) {
                      console.error("Invalid row index detected.");
                      return;
@@ -2555,18 +2557,25 @@ function addVoucherEntry() {
                  // Selecting VoucherEntryNo based on DrCr value
                  let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
 
-                 let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
-                 let params = {
-                     VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
-                     VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
-                     DrCr: drCr,
-                     AccountHead: accountHead,
-                     VoucherAmount: amount,
-                     AccountID: accountid
-                 };
-     
-    
-                     openBillsReceivablePopup(params);
+                // Fetch AccountID from server based on AccountHead
+                $.get(`/api/VoucherEntryReceipts/GetAccountIdByAccountHead`, { accountHead: accountHead })
+                    .done(function (accountId) {
+                        let params = {
+                            VoucherNo: voucherNo,
+                            VoucherEntryNo: voucherEntryNo,
+                            DrCr: drCr,
+                            AccountHead: accountHead,
+                            VoucherAmount: amount,
+                            AccountID: accountId,
+                            CurrencyRate: currencyRate,
+                            CurrencyId: CurrencyId
+                        };
+
+                        openBillsReceivablePopup(params);
+                    })
+                    .fail(function () {
+                        console.error("Failed to fetch AccountID for AccountHead:", accountHead);
+                    });
     
 
              };
@@ -2802,26 +2811,17 @@ function addVoucherEntry() {
                 type: "GET",
                 dataType: "html",
                 success: function (data) {
-                    // Get the popup's unique identifier, for example, use the voucher number
-                    const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
-
-                    // Check if the popup is already opened
-                    if (!openedPopups[popupId]) {
+                   
                         // Create and store the popup instance
                         let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
                         popupInstance.option("contentTemplate", function () {
                             return $("<div>").html(data);
                         });
 
-                        // Store the popup instance in the openedPopups map
-                        openedPopups[popupId] = popupInstance;
-                        // popupInstance.popupId = popupId;
-                        console.log(openedPopups);
+                        
+                        
                         popupInstance.show();
-                    } else {
-                        // If the popup is already opened, just show it
-                        openedPopups[popupId].show();
-                    }
+                   
                 },
                 error: function (xhr, status, error) {
                     console.error("Error loading Cost Allocation view:", error);

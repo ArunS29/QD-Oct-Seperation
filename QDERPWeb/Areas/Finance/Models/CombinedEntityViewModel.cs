@@ -1217,7 +1217,13 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string FormId { get; set; }
         public string LayoutJson { get; set; }
     }
-
+    public class CurrencyUpdateModel
+    {
+        public string VoucherNo { get; set; }
+        public int BaseCurrency { get; set; }
+        public int Currency { get; set; }
+        public decimal CurrencyRate { get; set; }
+    }
 
 }
 

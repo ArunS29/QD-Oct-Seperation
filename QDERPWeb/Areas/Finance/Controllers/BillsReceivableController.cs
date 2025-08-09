@@ -96,7 +96,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
         [HttpGet]
-        public IActionResult GetSubLedgerReceivables(string voucherType, string accountId, bool isPayable)
+        public IActionResult GetSubLedgerReceivables(string voucherType, string accountId, bool isPayable, int CurrencyId)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
@@ -104,7 +104,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (isPayable)
             {
                 var payables = dbContext.Qry201SubLedgerPayablesMasters
-                    .Where(x => x.VoucherType == voucherType && x.AccountHeadNo == accountId)
+                    .Where(x => x.VoucherType == voucherType && x.AccountHeadNo == accountId && x.Currencyid == CurrencyId)
                     .Select(x => new
                     {
                         x.ReferenceNo,
@@ -120,7 +120,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             else
             {
                 var receivables = dbContext.Qry201SubLedgerReceivablesMasters
-                    .Where(x => x.VoucherType == voucherType && x.AccountHeadNo == accountId)
+                    .Where(x => x.VoucherType == voucherType && x.AccountHeadNo == accountId && x.Currencyid == CurrencyId)
                     .Select(x => new
                     {
                         x.ReferenceNo,
