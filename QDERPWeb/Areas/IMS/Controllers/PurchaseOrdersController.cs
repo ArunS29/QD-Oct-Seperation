@@ -735,9 +735,9 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 existingPo.SalesPersonCode = master.SalesPersonCode;
                 existingPo.PoverifiedSign = master.PoverifiedSign;
                 existingPo.PoapprovedSign = master.PoapprovedSign;
-                existingPo.CurrencyId = model.CurrencyId ?? 1;
-                existingPo.CurrencyRate = model.CurrencyRate ?? 1;
-                existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
+                existingPo.CurrencyId = master.CurrencyId ?? 1;
+                existingPo.CurrencyRate = master.CurrencyRate ?? 1;
+                existingPo.BaseCurrencyId = master.BaseCurrencyId ?? 1;
                 // Submit
                 if (master.IsSubmitted == true && existingPo.IsSubmitted != true)
                 {
@@ -793,6 +793,8 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
             foreach (var child in newChildren)
             {
                 child.Pono = pono;
+                child.ItemDiscount = child.ItemDiscount * master.CurrencyRate;
+                child.UnitPrice = child.UnitPrice * master.CurrencyRate;
                 await dbContext.Tbl60402purchaseOrderChildren.AddAsync(child);
             }
 
@@ -1011,8 +1013,8 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
     //? (unitDescriptions.ContainsKey(x.UnitRateMethod.Value) ? unitDescriptions[x.UnitRateMethod.Value] : null)
     //: null,
 
-                UnitPrice = x.UnitPrice,
-                ItemDiscount = x.ItemDiscount,
+                UnitPrice = x.UnitPrice / master.CurrencyRate,
+                ItemDiscount = x.ItemDiscount / master.CurrencyRate,
                 PotaxSlab = x.PotaxSlab,
                 PoitemRemarks = x.PoitemRemarks,
                 LineOrderNo = x.LineOrderNo,
@@ -1021,10 +1023,10 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 MritemNo = x.MritemNo,
                 Currency = x.Currency,
                 ExchangeRate = x.ExchangeRate,
-                LineTotalWithTax = x.LineTotalWithTax,
-                LineTaxAmount = x.LineTaxAmount,
-                UnitRateInOc = x.UnitRateInOc,
-                DiscountInOc = x.DiscountInOc
+                LineTotalWithTax = x.LineTotalWithTax / master.CurrencyRate,
+                LineTaxAmount = x.LineTaxAmount / master.CurrencyRate,
+                UnitRateInOc = (x.UnitRateInOc ?? 0) / master.CurrencyRate,
+                DiscountInOc = (x.DiscountInOc ?? 0) / master.CurrencyRate
             })
         });
     }
@@ -1076,7 +1078,7 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Delete Purchase Order",
-                  actionDetail: $":Deleted Purchase Order {Pono}",
+                  actionDetail: $"Deleted Purchase Order {Pono}",
                   documentNo: $"{Pono}"
                 );
 
@@ -1141,7 +1143,7 @@ public async Task<IActionResult> SubmitPurchaseOrder([FromBody] Tbl60401purchase
         await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Submit Purchase Order",
-                  actionDetail: $":Submited Purchase Order {data.Pono}",
+                  actionDetail: $"Submited Purchase Order {data.Pono}",
                   documentNo: $"{data.Pono}"
                 );
 
@@ -1186,7 +1188,7 @@ var po = await dbContext.Tbl60401purchaseOrderMasters.FirstOrDefaultAsync(x => x
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Delete Purchase Order",
-                   actionDetail: $":Deleted Purchase Order {data.Pono}",
+                   actionDetail: $"Deleted Purchase Order {data.Pono}",
                   documentNo: $"{data.Pono}"
                 );
 
@@ -1230,7 +1232,7 @@ var po = await dbContext.Tbl60401purchaseOrderMasters.FirstOrDefaultAsync(x => x
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Approve Purchase Order",
-                   actionDetail: $":Approved Purchase Order {data.Pono}",
+                   actionDetail: $"Approved Purchase Order {data.Pono}",
                   documentNo: $"{data.Pono}"
                 );
 
@@ -1432,18 +1434,26 @@ public async Task<IActionResult> ReceiveItemFully([FromBody] Tbl60401purchaseOrd
         if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
             return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-        // --- Generate receiptNoteNo using company settings and last number in Tbl60501materialReceiptMasters ---
-        string tenantName = HttpContext.Session.GetString("TenantName");
-        if (string.IsNullOrWhiteSpace(tenantName))
-            return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-        var company = dbContext.Tbl901CompanyDetails
-            .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
 
-        if (company == null)
-            return NotFound("Company not found.");
+                byte companyId = defaultCompanyByte;
 
-        string requestAbbrv = company.RequestAbbrv ?? "MRN";
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+
+                string requestAbbrv = company.RequestAbbrv ?? "MRN";
         int yearInDigit = company.InvoiceYearDigits ?? 0;
         bool isResetByYear = company.IsResetInvoiceInYear ?? false;
         DateTime receiptDate = DateTime.Now;

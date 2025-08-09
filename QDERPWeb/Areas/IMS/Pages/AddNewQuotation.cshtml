@@ -444,6 +444,7 @@
                         .Mode(TextBoxMode.Email)
 						.Label(new JS("formatMessage('Client Email:')"))
                         .LabelMode(EditorLabelMode.Floating)
+						.ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%")
                         )
                     </div>
@@ -452,6 +453,7 @@
                         .ID("ClientContactNo")
 						.Label(new JS("formatMessage('Client Contact No:')"))
                         .LabelMode(EditorLabelMode.Floating)
+						.InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                         .Width("100%")
                         )
                     </div>
@@ -6972,6 +6974,19 @@ function onClientContactClick() {
         openModal(url, 'Client Contact List');
     });
 }
+
+	function selectContact(name, email, mobile, phone) {
+		$("#ClientRefName").dxTextBox("instance").option("value", name);
+		$("#ClientEmail").dxTextBox("instance").option("value", email);
+		$("#ClientContactNo").dxTextBox("instance").option(
+			"value",
+			mobile && mobile.trim() !== "" ? mobile : phone
+		);
+		DevExpress.ui.notify("Contact details added", "success", 2000);
+
+		// ✅ Close the modal after selection
+		closeModal();
+	}
 
  $(function () {
     $.ajax({

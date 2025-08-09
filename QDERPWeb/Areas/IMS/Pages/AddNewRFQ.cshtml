@@ -306,7 +306,7 @@
 											.Type(ButtonType.Default)
 											.Icon("plus")
 											.ElementAttr(new { @class = "custom-hover-button add-hover" })
-										);
+											.OnClick("onSupplierContactClick"));
 								})
 						)
                     </div>
@@ -316,6 +316,7 @@
 						.Label(new JS("formatMessage('Supplier Email:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Mode(TextBoxMode.Email)
+						.ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%"))
                     </div>
                     <div class="col-md-2">
@@ -323,6 +324,7 @@
                         .ID("SupplierContact")
 						.Label(new JS("formatMessage('Supplier Contact No:')"))
                         .LabelMode(EditorLabelMode.Floating)
+						.InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                         .Width("100%"))
                     </div>
                   
@@ -5831,4 +5833,36 @@ $("#btnCreatePo").on("click", function () {
                   }
               }
           }
+
+	function onSupplierContactClick() {
+		var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+		var selectedValue = dropDownBox.option('value'); // clientCode
+
+		if (!selectedValue) {
+			DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+			return;
+		}
+
+		// Get the full item directly from dataSource using selected value
+		var dataSource = dropDownBox.getDataSource();
+
+		dataSource.load().done(function (data) {
+			var selectedItem = data.find(x => x.ClientCode === selectedValue);
+
+			if (!selectedItem || !selectedItem.ClientName) {
+				DevExpress.ui.notify('Client details not found.', 'error', 2000);
+				return;
+			}
+
+			var clientCode = selectedValue;
+			var clientName = selectedItem.ClientName;
+
+			var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' +
+				encodeURIComponent(clientCode) + '&clientName=' +
+				encodeURIComponent(clientName);
+
+			openModal(url, 'Client Contact List');
+		});
+	}
+
 </script>

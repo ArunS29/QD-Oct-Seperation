@@ -622,7 +622,7 @@
     });
 
     $(document).on("click", "#btnBack", function () {
-        window.history.back();
+       window.parent.closeModal();
     });
 
      function onOpened(e) {
@@ -744,16 +744,6 @@
                 inventoryGroupValid &&
                 gsgroupNameValid 
             ) {
-                
-             //    const groupCode = $("#GroupCode").dxTextBox("instance").option("value");
-             //  const category = $("#Category").dxTextBox("instance").option("value");
-             //    const inventoryGroupId = $("#InventoryMasterGroups").dxDropDownBox("instance").option("value");
-             // const inventoryLedger = $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value");
-             //   const costLedger = $("#CostLedgerAccount").dxDropDownBox("instance").option("value");
-             //   const isServiceGroup = $("#ServicesGroup").dxCheckBox("instance").option("value");
-             //    const gsgroupName = $("#NewStockServicesGroups").dxTextArea("instance").option("value");
-             // const gsgroupNameAr = $("#StockServicesGroups").dxTextArea("instance").option("value");
-
                 const data = {
                     GsgroupCode: $("#GroupCode").dxTextBox("instance").option("value"),
                     Gscategory: $("#Category").dxTextBox("instance").option("value"),
@@ -774,15 +764,19 @@
                         DevExpress.ui.notify('Saved successfully', 'success', 2000);
                         $("#dataGrid").dxDataGrid("instance").refresh();
 
-                    $("#GroupCode").dxTextBox("instance").option("value","");
-                    $("#Category").dxTextBox("instance").option("value","");
-                    $("#InventoryMasterGroups").dxDropDownBox("instance").option("value","");
-                    $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value","");
-                     $("#CostLedgerAccount").dxDropDownBox("instance").option("value","");
-                    $("#ServicesGroup").dxCheckBox("instance").option("value","");
-                    $("#NewStockServicesGroups").dxTextArea("instance").option("value","");
-                    $("#StockServicesGroups").dxTextArea("instance").option("value","");
+                        $("#GroupCode").dxTextBox("instance").option("value","");
+                        $("#Category").dxTextBox("instance").option("value","");
+                        $("#InventoryMasterGroups").dxDropDownBox("instance").option("value","");
+                        $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value","");
+                        $("#CostLedgerAccount").dxDropDownBox("instance").option("value","");
+                        $("#ServicesGroup").dxCheckBox("instance").option("value","");
+                        $("#NewStockServicesGroups").dxTextArea("instance").option("value","");
+                        $("#StockServicesGroups").dxTextArea("instance").option("value","");
 
+                       // Reset validation states
+                        groupCodeValidator.reset();
+                        inventoryGroupValidator.reset();
+                        gsgroupNameValidator.reset();
                     },
                          error: function (xhr) {
             let message = "Save failed";
@@ -810,15 +804,15 @@
     function onProjectUpdating(e) {
 
         const data = {
-            GsgroupId: e.oldData.GsgroupId,
-             GsgroupCode: e.newData.GsgroupCode ?? e.oldData.GsgroupCode,
-            Gscategory: e.newData.Gscategory ?? e.oldData.Gscategory,
-            InventoryMasterGroupId: e.newData.InventoryMasterGroupId ?? e.oldData.InventoryMasterGroupId,
-            GsgroupInventoryLedger: e.newData.GsgroupInventoryLedger ?? e.oldData.GsgroupInventoryLedger,
-               GsgroupExpenseLedger: e.newData.GsgroupExpenseLedger ?? e.oldData.GsgroupExpenseLedger,
-                  IsServicesGroup: e.newData.IsServicesGroup ?? e.oldData.IsServicesGroup,
-                     GsgroupName: e.newData.GsgroupName ?? e.oldData.GsgroupName,
-                     GsgroupNameAr: e.newData.GsgroupNameAr ?? e.oldData.GsgroupNameAr
+        GsgroupId: e.oldData.GsgroupId,
+            GsgroupCode: e.newData.GsgroupCode ?? e.oldData.GsgroupCode,
+        Gscategory: e.newData.Gscategory ?? e.oldData.Gscategory,
+        InventoryMasterGroupId: e.newData.InventoryMasterGroupId ?? e.oldData.InventoryMasterGroupId,
+        GsgroupInventoryLedger: e.newData.GsgroupInventoryLedger ?? e.oldData.GsgroupInventoryLedger,
+            GsgroupExpenseLedger: e.newData.GsgroupExpenseLedger ?? e.oldData.GsgroupExpenseLedger,
+                IsServicesGroup: e.newData.IsServicesGroup ?? e.oldData.IsServicesGroup,
+                    GsgroupName: e.newData.GsgroupName ?? e.oldData.GsgroupName,
+                    GsgroupNameAr: e.newData.GsgroupNameAr ?? e.oldData.GsgroupNameAr
 
 
            };
@@ -839,31 +833,74 @@
             }
         });
     }
-      function onDeleteButtonClicks(e) {
-        e.event.preventDefault(); // prevent default delete
+        function onDeleteButtonClicks(e) {
+        e.event.preventDefault();
 
         var grid = $("#dataGrid").dxDataGrid("instance");
-        var key = e.row.data.GsgroupId; // get the ID of the row
+        var key = e.row.data.GsgroupId;
 
-        if (confirm("Are you sure you want to delete this row?")) {
-            $.ajax({
-                url: '/api/StockInventory/DeleteStock?key=' + key,
-                type: 'DELETE',
-                success: function () {
-                    grid.refresh();
-                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                    setTimeout(() => {
-                        if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
-                            window.parent.refreshModeOfRequestDropDown();
+        // DevExpress confirmation dialog
+        var result = DevExpress.ui.dialog.confirm(
+            "Are you sure you want to delete this row?",
+            "Delete Confirmation"
+        );
+
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: '/api/StockInventory/DeleteStock?key=' + key,
+                    type: 'DELETE',
+                    success: function () {
+                        grid.refresh();
+                        DevExpress.ui.notify("Deleted successfully", "success", 2000);
+
+                        setTimeout(() => {
+                            if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
+                                window.parent.refreshModeOfRequestDropDown();
+                            }
+                        }, 300);
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Delete failed", "error", 2000);
+                    }
+                });
+            }
+        });
+    function onDeleteButtonClicks(e) {
+        e.event.preventDefault(); // Stop default action
+
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        const key = e.row?.data?.GsgroupId; // Safe check in case data is missing
+
+        if (!key) {
+            DevExpress.ui.notify("Invalid row ID", "error", 2000);
+            return;
+        }
+
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete this row?", "Confirm Delete")
+            .done(function (dialogResult) {
+                if (dialogResult) {
+                    $.ajax({
+                        url: `/api/StockInventory/DeleteStock?key=${encodeURIComponent(key)}`,
+                        type: 'DELETE',
+                        success: function () {
+                            grid.refresh();
+                            DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                            setTimeout(() => {
+                                if (window.parent?.refreshModeOfRequestDropDown) {
+                                    window.parent.refreshModeOfRequestDropDown();
+                                }
+                            }, 300);
+                        },
+                        error: function (xhr) {
+                            const errMsg = xhr.responseText || "Delete failed";
+                            DevExpress.ui.notify(errMsg, "error", 3000);
                         }
-                    }, 300); // ✅ Properly closed
-                }, // ✅ This comma was missing in your version!
-                error: function () {
-                    DevExpress.ui.notify("Delete failed", "error", 2000);
+                    });
                 }
             });
-        }
     }
+
 
     $(function () {
         var grid = $("#dataGrid").dxDataGrid("instance");

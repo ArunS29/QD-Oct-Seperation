@@ -285,7 +285,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						return NotFound("Company not found.");
 					}
 
-					string RequestAbbrv = company.RequestAbbrv;
+					string RequestAbbrv = company.MaterialReceiptAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
@@ -401,7 +401,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         .Where(x => x.ReceiptNo == ReceiptNo)
 						.ToList();
 
-					foreach (var gridDetails in result)
+                    var currencyRate = await dbContext.Tbl60501materialReceiptMasters
+                            .Where(x => x.ReceiptNo == ReceiptNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                    foreach (var gridDetails in result)
 					{
 						dynamic item = new ExpandoObject();
 						var dict = (IDictionary<string, object>)item;
@@ -432,6 +436,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 						dict["GsDescription"] = gsDescription;
                         dict["GScode"] = gridDetails.Gscode;
+                        dict["UnitPrice"] = gridDetails.UnitPrice / currencyRate;
+                        dict["ItemDiscount"] = gridDetails.ItemDiscount / currencyRate;
+                        dict["PurchaseTaxRate"] = gridDetails.PurchaseTaxRate / currencyRate;
+                        dict["LineTotalBeforeTax"] = gridDetails.LineTotalBeforeTax / currencyRate;
+                        dict["LineTotalAfterDisc"] = gridDetails.LineTotalAfterDisc / currencyRate;
+                        dict["LineTaxAmount"] = gridDetails.LineTaxAmount / currencyRate;
+                        dict["LineTotalWithTax"] = gridDetails.LineTotalWithTax / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -547,6 +558,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 foreach (var child in VM.MaterialReceiptDetailses)
                 {
                     child.ReceiptNo = VM.ReceiptNo;
+                    child.UnitPrice = child.UnitPrice * VM.CurrencyRate;
+                    child.ItemDiscount = child.ItemDiscount * VM.CurrencyRate;
 
                     if (child.ReceiptChildSlNo == 0)
                     {
@@ -616,7 +629,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Delete Material Receipt",
-                   actionDetail: $":Deleted Material Receipt  {ReceiptNo}",
+                   actionDetail: $"Deleted Material Receipt  {ReceiptNo}",
                    documentNo: $"{ReceiptNo}"
                 );
 
@@ -673,7 +686,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Submit Material Receipt",
-                   actionDetail: $":Submited Material Receipt  {ReceiptNo}",
+                   actionDetail: $"Submited Material Receipt  {ReceiptNo}",
                    documentNo: $"{ReceiptNo}"
                 );
 
@@ -736,7 +749,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
              await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Verify Material Receipt",
-              actionDetail: $":Verified Material Receipt  {ReceiptNo}",
+              actionDetail: $"Verified Material Receipt  {ReceiptNo}",
               documentNo: $"{ReceiptNo}"
             );
 
@@ -788,7 +801,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Approve Material Receipt",
-                 actionDetail: $":Approved Material Receipt {ReceiptNo}",
+                 actionDetail: $"Approved Material Receipt {ReceiptNo}",
                   documentNo: $"{ReceiptNo}"
                 );
 
@@ -827,7 +840,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Delete Child By Id",
-                  actionDetail: $":Deleted Child By Id  {childId}",
+                  actionDetail: $"Deleted Child By Id  {childId}",
                    documentNo: $"{childId}"
                 );
 

@@ -566,6 +566,7 @@
 														.Label(new JS("formatMessage('Requester Email:')"))
 														.ID("txtReqEmail")
 														.LabelMode(EditorLabelMode.Floating)
+														.ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
 														.Width("100%")
 														)
 
@@ -575,6 +576,7 @@
 														.ID("ContactNo")
 														.Label(new JS("formatMessage('Contact No:')"))
 														.LabelMode(EditorLabelMode.Floating)
+														.InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
 														.Width("100%"))
 
 						</td>
@@ -3301,7 +3303,7 @@ $("<div>").dxButton({
 													columns: [
 
 
-														//	{ dataField: "UnitCode", caption: "Code", width: 80 },
+														{ dataField: "UnitCode", caption: "Code", width: 80,visible:false },
 
 													//	{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
 
@@ -3318,9 +3320,9 @@ $("<div>").dxButton({
 
 														if (selectedItem) {
 
-															e.component.option("value", selectedItem.UnitType);
+															e.component.option("value", selectedItem.UnitCode);
 
-													cellInfo.setValue(selectedItem.UnitType);
+													cellInfo.setValue(selectedItem.UnitCode);
 
 															let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
@@ -3328,7 +3330,7 @@ $("<div>").dxButton({
 
 															if (rowIndex !== -1) {
 
-																grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitDesc);
+																grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.UnitType);
 
 															}
 
@@ -4086,7 +4088,7 @@ $("<div>").dxButton({
 											columns: [
 
 
-													//{ dataField: "UnitCode", caption: formatMessage("Code"),width: 80 },
+													{ dataField: "UnitCode", caption: formatMessage("Code"),width: 80,visible: false },
 
 													//{ dataField: "UnitDesc",caption: formatMessage("Unit Rate Method"), width: 200 },
 
@@ -4101,9 +4103,9 @@ $("<div>").dxButton({
 												let selectedItem = selectedItems.selectedRowsData[0];
 												if (selectedItem) {
 													// Set the value of the DropDownBox
-													e.component.option("value", selectedItem.UnitType);
+													e.component.option("value", selectedItem.UnitCode);
 													// Update the cell value in the grid
-													cellInfo.setValue(selectedItem.UnitType);
+													cellInfo.setValue(selectedItem.UnitCode);
 													// Close the DropDownBox
 													e.component.close();
 												}
@@ -7953,10 +7955,18 @@ $("#btnAddNew").on("click", function (e) {
 		});
 	}
 
-    // function setContactName(name) {
-    //     $("#txtContactName").val(name);
+		function selectContact(name, email, mobile, phone) {
+			$("#txtContactName").dxTextBox("instance").option("value", name);
+			$("#txtReqEmail").dxTextBox("instance").option("value", email);
+			$("#ContactNo").dxTextBox("instance").option(
+				"value",
+				mobile && mobile.trim() !== "" ? mobile : phone
+			);
+			DevExpress.ui.notify("Contact details added", "success", 2000);
 
-    // }
+			// ✅ Close the modal after selection
+			closeModal();
+		}
 
 
 

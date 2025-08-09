@@ -387,15 +387,15 @@
 
 
 
-        // Hide context menu on click outside
-              let isHeaderFilterEnabled = false;
+        // // Hide context menu on click outside
+        //       let isHeaderFilterEnabled = false;
 
-        function toggleHeaderFilter() {
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        // function toggleHeaderFilter() {
+        //     var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-           isHeaderFilterEnabled = !isHeaderFilterEnabled;
-           dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
-        }
+        //    isHeaderFilterEnabled = !isHeaderFilterEnabled;
+        //    dataGrid.option("headerFilter.visible", isHeaderFilterEnabled); // Toggle the header filter visibility
+        // }
         $(document).on("click", function () {
             var contextMenu = $("#contextMenu");
             contextMenu.hide();

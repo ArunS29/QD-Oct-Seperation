@@ -564,7 +564,7 @@
 																	.DisplayExpr("BuyerIdtypeName")
 																	.Width("100%")
 																	.TabIndex(1)
-																	.DropDownOptions(o => o.Width(1000))
+																	.DropDownOptions(o => o.Width(700))
 																	.OnKeyDown("onKeyDown")
 																	.ContentTemplate(new TemplateName("ClientNameContent"))
 																	)
@@ -806,7 +806,7 @@
 												.TabIndex(1)
 												.DropDownOptions(o => o
 												//.Width("100%") // Set the desired width for the dropdown content*@
-												.Width(1000)
+												.Width(500)
 												)
 												.OnKeyDown("onKeyDown")
 												.ContentTemplate(new TemplateName("PaymentmeansContentTemplate"))
@@ -891,7 +891,7 @@
 																	.DisplayExpr("ReasonForCreditNote")
 																	.Width("100%")
 																	.TabIndex(1)
-																	.DropDownOptions(o => o.Width(1000))
+																	.DropDownOptions(o => o.Width(500))
 																	.OnKeyDown("onKeyDown")
 																	.ContentTemplate(new TemplateName("CreditNoteContentTemplate"))
 																	)
@@ -949,7 +949,7 @@
 																					//.Width(650)
 																					.TabIndex(1)
 																					.DropDownOptions(o => o
-																					.Width(1000)
+																					.Width(700)
 																					)
 																					//  .OnKeyDown("onKeyDown")
 																					//.OnValueChanged("dropDownBoxValueChanged")
@@ -1056,7 +1056,7 @@
 																					//.Width(650)
 																					.TabIndex(1)
 																					.DropDownOptions(o => o
-																					.Width(1000)
+																					.Width(700)
 																					)
 																					//  .OnKeyDown("onKeyDown")
 																					//.OnValueChanged("dropDownBoxValueChanged")
@@ -1085,7 +1085,7 @@
 								<td>
 									
 									@(
-																		Html.DevExtreme().DropDownBox()
+									    Html.DevExtreme().DropDownBox()
 										.ID("ddlGoodsGroup3")
 										.Label(new JS("formatMessage('Invoice Currency')"))
 										.LabelMode(EditorLabelMode.Floating)
@@ -1105,7 +1105,7 @@
 										.OnOpened("onOpened")
 										.TabIndex(1)
 										.Width("100%")
-										.DropDownOptions(o => o.Width(1000))
+										.DropDownOptions(o => o.Width(800))
 										.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
 										.Buttons(buttons =>
 										{
@@ -1194,7 +1194,7 @@
 										.OnOpened("onOpened")
 										.TabIndex(1)
 										.Width("100%")
-										.DropDownOptions(o => o.Width(1000))
+										.DropDownOptions(o => o.Width(700))
 										.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
 										.Buttons(buttons =>
 										{
@@ -1400,7 +1400,7 @@
 																						.DisplayExpr("BranchName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
-																						.DropDownOptions(o => o.Width(1000))
+																						.DropDownOptions(o => o.Width(550))
 																						.ContentTemplate(new TemplateName("DivisionTemplate"))
 																						.Width("100%")
 																						)
@@ -1419,7 +1419,7 @@
 																					.DisplayExpr("SalesPersonName")
 																					.OnInput("dropDownBoxOnInput")
 																					.OnOpened("onOpened")
-																					.DropDownOptions(o => o.Width(1000))
+																					.DropDownOptions(o => o.Width(250))
 																					.ContentTemplate(new TemplateName("SalesPersonTemplate"))
 																					.Width("100%")
 																					)
@@ -1471,7 +1471,7 @@
 																						.DisplayExpr("StoreName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
-																						.DropDownOptions(o => o.Width(1000))
+																						.DropDownOptions(o => o.Width(500))
 																						.ContentTemplate(new TemplateName("ItemsReturnTemplate"))
 																						.Width("100%")
 																						)
@@ -1510,7 +1510,7 @@
 												  							//.Width(650)
 														.TabIndex(1)
 														.DropDownOptions(o => o
-														.Width(1000)
+														.Width(600)
 														)
 							  							//  .OnKeyDown("onKeyDown")
 							  							//.OnValueChanged("dropDownBoxValueChanged")
@@ -1559,7 +1559,7 @@
 																						//.Width(650)
 																						.TabIndex(1)
 																						.DropDownOptions(o => o
-																						.Width(1000)
+																						.Width(500)
 																						)
 																						//  .OnKeyDown("onKeyDown")
 																						//.OnValueChanged("dropDownBoxValueChanged")
@@ -1739,7 +1739,7 @@
 												.DisplayExpr("SignatoryName")
 												.OnInput("dropDownBoxOnInput")
 												.OnOpened("onOpened")
-												.DropDownOptions(o => o.Width(1000))
+												.DropDownOptions(o => o.Width(500))
 												.ContentTemplate(new TemplateName("PreparedByTemplate"))
 												.Width("25%")
 												.Buttons(buttons =>
@@ -2072,10 +2072,21 @@
 								.ShowBorders(true)
 								.HoverStateEnabled(true)
 								.Paging(p => p.PageSize(15))
+					.ColumnChooser(c => c
+					.Enabled(true)
+					.Title(new JS("formatMessage('Show/Hide Column')"))
+					.Mode(GridColumnChooserMode.DragAndDrop)
+					)
+					.Pager(pager => pager
+					.Visible(true)                            // show pager UI (page numbers etc)
+					.ShowPageSizeSelector(true)              // allow user to change page size
+					.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+					.ShowInfo(true)                          // show info like "Page 1 of 10"
+					)
 								@*  .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) *@
 								.FilterRow(f => f.Visible(true))
 								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-								.Height(200)
+								.Height(330)
 								.WordWrapEnabled(true)
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 								.Columns(columns =>
@@ -2137,9 +2148,19 @@
 								.ShowBorders(true)
 								.HoverStateEnabled(true)
 								.Paging(p => p.PageSize(15))
-
+					.ColumnChooser(c => c
+					.Enabled(true)
+					.Title(new JS("formatMessage('Show/Hide Column')"))
+					.Mode(GridColumnChooserMode.DragAndDrop)
+					)
+					.Pager(pager => pager
+					.Visible(true)                            // show pager UI (page numbers etc)
+					.ShowPageSizeSelector(true)              // allow user to change page size
+					.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+					.ShowInfo(true)                          // show info like "Page 1 of 10"
+					)
 								.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-								.Height(200)
+								.Height(400)
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 								.Columns(columns =>
 								{
@@ -2307,7 +2328,17 @@
 														.ShowBorders(true)
 														.HoverStateEnabled(true)
 														.Paging(p => p.PageSize(15))
-														.FilterRow(f => f.Visible(true))
+														.FilterRow(f => f.Visible(true)).ColumnChooser(c => c
+														.Enabled(true)
+														.Title(new JS("formatMessage('Show/Hide Column')"))
+														.Mode(GridColumnChooserMode.DragAndDrop)
+														)
+														.Pager(pager => pager
+														.Visible(true)                            // show pager UI (page numbers etc)
+														.ShowPageSizeSelector(true)              // allow user to change page size
+														.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+														.ShowInfo(true)                          // show info like "Page 1 of 10"
+														   )
 														.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 														.Height(345)
 														.Selection(s => s.Mode(SelectionMode.Single))
@@ -2346,6 +2377,17 @@
 										.ShowBorders(true)
 										.HoverStateEnabled(true)
 										.Paging(p => p.PageSize(15))
+										.ColumnChooser(c => c
+										.Enabled(true)
+										.Title(new JS("formatMessage('Show/Hide Column')"))
+										.Mode(GridColumnChooserMode.DragAndDrop)
+										)
+										.Pager(pager => pager
+										.Visible(true)                            // show pager UI (page numbers etc)
+										.ShowPageSizeSelector(true)              // allow user to change page size
+										.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+										.ShowInfo(true)                          // show info like "Page 1 of 10"
+										   )
 										.FilterRow(f => f.Visible(true))
 										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 										.Height(345)
@@ -2386,6 +2428,17 @@
 											.HoverStateEnabled(true)
 											.Paging(p => p.PageSize(15))
 											.FilterRow(f => f.Visible(true))
+											.ColumnChooser(c => c
+											.Enabled(true)
+											.Title(new JS("formatMessage('Show/Hide Column')"))
+											.Mode(GridColumnChooserMode.DragAndDrop)
+											)
+											.Pager(pager => pager
+											.Visible(true)                            // show pager UI (page numbers etc)
+											.ShowPageSizeSelector(true)              // allow user to change page size
+											.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+											.ShowInfo(true)                          // show info like "Page 1 of 10"
+											   )
 											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 											.Height(345)
 											.Selection(s => s.Mode(SelectionMode.Single))
@@ -2427,6 +2480,17 @@
 												.HoverStateEnabled(true)
 												.Paging(p => p.PageSize(15))
 												.FilterRow(f => f.Visible(true))
+												.ColumnChooser(c => c
+												.Enabled(true)
+												.Title(new JS("formatMessage('Show/Hide Column')"))
+												.Mode(GridColumnChooserMode.DragAndDrop)
+												)
+												.Pager(pager => pager
+												.Visible(true)                            // show pager UI (page numbers etc)
+												.ShowPageSizeSelector(true)              // allow user to change page size
+												.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+												.ShowInfo(true)                          // show info like "Page 1 of 10"
+												   )
 												.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 												.Height(345)
 												.Selection(s => s.Mode(SelectionMode.Single))
@@ -2465,6 +2529,17 @@
 												.ShowBorders(true)
 												.HoverStateEnabled(true)
 												.Paging(p => p.PageSize(15))
+													.ColumnChooser(c => c
+												.Enabled(true)
+												.Title(new JS("formatMessage('Show/Hide Column')"))
+												.Mode(GridColumnChooserMode.DragAndDrop)
+												)
+												.Pager(pager => pager
+												.Visible(true)                            // show pager UI (page numbers etc)
+												.ShowPageSizeSelector(true)              // allow user to change page size
+												.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+												.ShowInfo(true)                          // show info like "Page 1 of 10"
+												   )
 												.FilterRow(f => f.Visible(true))
 												.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 												.Height(345)
@@ -2474,7 +2549,7 @@
 												{
 													columns.Add().DataField("InvoiceNo")
 													.Caption(new JS("formatMessage('Invoice No')"))
-													.Alignment(HorizontalAlignment.Left)
+													.Alignment(HorizontalAlignment.Center)
 													.DataType(GridColumnDataType.String)
 													.AllowFiltering(true);
 
@@ -2487,32 +2562,30 @@
 
 												columns.Add().DataField("InvoicedAmount")
 													.Caption(new JS("formatMessage('Invoiced Amount')"))
-													.Alignment(HorizontalAlignment.Right);
+													.AllowFiltering(true)
+													.Alignment(HorizontalAlignment.Center);
 													@* .DataType(GridColumnDataType.Number) *@
   
 
 												columns.Add().DataField("PostedAmount")
 													.Caption(new JS("formatMessage('Posted Amount')"))
-													.Alignment(HorizontalAlignment.Right);
+													.AllowFiltering(true)
+													.Alignment(HorizontalAlignment.Center);
 												@* 	.DataType(GridColumnDataType.Number) *@
    
 
 												columns.Add().DataField("Received")
 													.Caption(new JS("formatMessage('Received')"))
-													.Alignment(HorizontalAlignment.Right);
-														@* .DataType(GridColumnDataType.Number) *@
+													.AllowFiltering(true)
+													.Alignment(HorizontalAlignment.Center);
+													@* .DataType(GridColumnDataType.Number) *@
 
-														columns.Add().DataField("Balance")
-																							.Caption(new JS("formatMessage('Balance')"))
-																							.Alignment(HorizontalAlignment.Right);
-														@* .DataType(GridColumnDataType.Number) *@
-
-
-														
-   
-
+												columns.Add().DataField("Balance")
+													.Caption(new JS("formatMessage('Balance')"))
+													.AllowFiltering(true)
+													.Alignment(HorizontalAlignment.Center);
+													@* .DataType(GridColumnDataType.Number) *@
 												})
-
 											)
 
 }
@@ -2540,6 +2613,17 @@
 													.HoverStateEnabled(true)
 													.Paging(p => p.PageSize(15))
 													.FilterRow(f => f.Visible(true))
+													.ColumnChooser(c => c
+													.Enabled(true)
+													.Title(new JS("formatMessage('Show/Hide Column')"))
+													.Mode(GridColumnChooserMode.DragAndDrop)
+													)
+													.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+													.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+													.ShowInfo(true)                          // show info like "Page 1 of 10"
+													   )
 													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 													.Height(345)
 													.Selection(s => s.Mode(SelectionMode.Single))
@@ -2600,7 +2684,7 @@
 
 														.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-														.Height(345)
+														.Height(350)
 
 														.Selection(s => s.Mode(SelectionMode.Single))
 
@@ -2657,6 +2741,17 @@
 														.HoverStateEnabled(true)
 
 														.Paging(p => p.PageSize(15))
+														.ColumnChooser(c => c
+														.Enabled(true)
+														.Title(new JS("formatMessage('Show/Hide Column')"))
+														.Mode(GridColumnChooserMode.DragAndDrop)
+														)
+														.Pager(pager => pager
+														.Visible(true)                            // show pager UI (page numbers etc)
+														.ShowPageSizeSelector(true)              // allow user to change page size
+														.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+														.ShowInfo(true)                          // show info like "Page 1 of 10"
+														   )
 
 														.FilterRow(f => f.Visible(true))
 
@@ -2725,12 +2820,23 @@
 																		.HoverStateEnabled(true)
 
 																		.Paging(p => p.PageSize(15))
+																		.ColumnChooser(c => c
+																		.Enabled(true)
+																		.Title(new JS("formatMessage('Show/Hide Column')"))
+																		.Mode(GridColumnChooserMode.DragAndDrop)
+																		)
+																		.Pager(pager => pager
+																		.Visible(true)                            // show pager UI (page numbers etc)
+																		.ShowPageSizeSelector(true)              // allow user to change page size
+																		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+																		.ShowInfo(true)                          // show info like "Page 1 of 10"
+																		   )
 
 																		.FilterRow(f => f.Visible(true))
 
 																		.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-																		.Height(345)
+																		.Height(550)
 
 																		.Selection(s => s.Mode(SelectionMode.Single))
 
@@ -2794,12 +2900,23 @@
 																			.HoverStateEnabled(true)
 
 																			.Paging(p => p.PageSize(15))
+																			.ColumnChooser(c => c
+																			.Enabled(true)
+																			.Title(new JS("formatMessage('Show/Hide Column')"))
+																			.Mode(GridColumnChooserMode.DragAndDrop)
+																			)
+																			.Pager(pager => pager
+																			.Visible(true)                            // show pager UI (page numbers etc)
+																			.ShowPageSizeSelector(true)              // allow user to change page size
+																			.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+																			.ShowInfo(true)                          // show info like "Page 1 of 10"
+																			   )
 
 																			.FilterRow(f => f.Visible(true))
 
 																			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-																			.Height(345)
+																			.Height(300)
 
 																			.Selection(s => s.Mode(SelectionMode.Single))
 
@@ -2982,6 +3099,17 @@
 																	.ShowBorders(true)
 																	.HoverStateEnabled(true)
 																	.Paging(p => p.PageSize(15))
+																	.ColumnChooser(c => c
+																	.Enabled(true)
+																	.Title(new JS("formatMessage('Show/Hide Column')"))
+																	.Mode(GridColumnChooserMode.DragAndDrop)
+																	)
+																	.Pager(pager => pager
+																	.Visible(true)                            // show pager UI (page numbers etc)
+																	.ShowPageSizeSelector(true)              // allow user to change page size
+																	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+																	.ShowInfo(true)                          // show info like "Page 1 of 10"
+																	   )
 																	.FilterRow(f => f.Visible(true))
 																	.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 																	.Height(345)
@@ -3016,8 +3144,19 @@
         .ShowBorders(true)
         .HoverStateEnabled(true)
         .Paging(p => p.PageSize(15))
+		.ColumnChooser(c => c
+	    .Enabled(true)
+	    .Title(new JS("formatMessage('Show/Hide Column')"))
+	    .Mode(GridColumnChooserMode.DragAndDrop)
+	    )
+	   .Pager(pager => pager
+	   .Visible(true)                            // show pager UI (page numbers etc)
+	   .ShowPageSizeSelector(true)              // allow user to change page size
+	   .AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	   .ShowInfo(true)                          // show info like "Page 1 of 10"
+ 	   )
         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-        .Height(200)
+        .Height(400)
         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
         .Columns(columns =>
         {
@@ -3089,8 +3228,19 @@
         .ShowBorders(true)
         .HoverStateEnabled(true)
         .Paging(p => p.PageSize(15))
+		.ColumnChooser(c => c
+	    .Enabled(true)
+	    .Title(new JS("formatMessage('Show/Hide Column')"))
+	    .Mode(GridColumnChooserMode.DragAndDrop)
+	     )
+	    .Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+    	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+    	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-        .Height(200)
+        .Height(400)
         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
         .Columns(columns =>
         {	
@@ -3560,91 +3710,141 @@
                 caption: formatMessage('Description'),
                 width: 550,
                 sortOrder: "asc",
-                editCellTemplate: function (cellElement, cellInfo) {
-                    getDropdownData().done(function (dropdownData) {
-                        let $container = $("<div>").css({ display: "flex", alignItems: "center", gap: "5px", width: "100%" }).appendTo(cellElement);
+					editCellTemplate: function (cellElement, cellInfo) {
+			let $container = $("<div>").css({
+				display: "flex",
+				alignItems: "center",
+				gap: "5px",
+				width: "100%"
+			}).appendTo(cellElement);
 
-                        $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-                            dataSource: dropdownData,
-                            valueExpr: "GSCode",
-                            displayExpr: "GSDescrpition",
-                            value: cellInfo.value,
-                            dropDownOptions: { width: 800 },
-                            onValueChanged: function (e) {
-                                let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-                                if (selectedItem) {
-                                    cellInfo.setValue(selectedItem.GSDescrpition);
-                                    let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-                                    let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-                                    if (rowIndex !== -1) {
-                                        dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-                                        dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-                                        dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-                                    }
-                                }
-                            },
-                            contentTemplate: function (e) {
-                                return $("<div>").dxDataGrid({
-                                    dataSource: dropdownData,
-                                    selection: { mode: "single" },
-                                    keyExpr: "GSCode",
-                                    height: 300,
-                                    scrolling: { mode: "virtual" },
-                                    columns: [
-                                        { dataField: "GSCode", caption: "Code", width: 80 },
-                                        { dataField: "GSDescrpition", caption: "Description", width: 200 },
-                                        { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-                                        { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-                                        { dataField: "CostPrice", caption: "Cost Price", width: 100 },
-                                        { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-                                        { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-                                    ],
-                                    onSelectionChanged: function (selectedItems) {
-                                        let selectedItem = selectedItems.selectedRowsData[0];
-                                        if (selectedItem) {
-                                            e.component.option("value", selectedItem.GSCode);
-                                            cellInfo.setValue(selectedItem.GSDescrpition);
-                                            let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-                                            let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-                                            if (rowIndex !== -1) {
-                                                dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-                                                dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-                                                dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-                                                dataGrid.cellValue(rowIndex, "Qty", 1);
-                                                dataGrid.cellValue(rowIndex, "VAT%", "15%");
-                                            }
-                                            e.component.close();
-                                        }
-                                    }
-                                });
-                            }
-                        });
+			let selectedItemData = {};
 
-                        $("<div>").dxButton({
-                            icon: "plus",
-                            hint: "Add new item",
-                            onClick: function () {
-                                let url = `/${tenantName}/VAT/VATGoodsandServices`;
-                                let title = "Goods and Services";
-                                openModal(url, title);
-                            },
-                            width: 60,
-                            height: 30
-                        }).appendTo($container);
+			const dropdownStore = new DevExpress.data.CustomStore({
+				key: "GSCode",
+				load: function (loadOptions) {
+					const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
+					const pageSize = loadOptions.take;
+				  //  const searchValue = loadOptions.searchValue || "";
 
-                        $("<div>").dxButton({
-                            icon: "edit",
-                            hint: "Edit item",
-                            onClick: function () {
-                                let url = `/${tenantName}/VAT/VATGoodsandServices`;
-                                let title = "Goods and Services";
-                                openModal(url, title);
-                            },
-                            width: 60,
-                            height: 30
-                        }).appendTo($container);
-                    });
-                }
+					// if (searchValue.length < 3) {
+						//return Promise.resolve({ data: [], totalCount: 0 });
+						 return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+						pageNumber,
+						pageSize
+					  //  searchText: searchValue
+					}).then(response => {
+						return {
+							data: response.data,
+							totalCount: response.totalCount
+						};
+					});
+					//}
+
+
+				},
+				byKey: function (key) {
+				   // return $.getJSON(`/api/VATModule/GetDropdownItemByCode?code=${encodeURIComponent(key)}`);
+				}
+			});
+
+			const $dropDownBox = $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+				valueExpr: "GSCode",
+				displayExpr: "GSDescrpition",
+				value: cellInfo.value,
+				dataSource: dropdownStore,
+				searchEnabled: true,
+				searchExpr: "GSDescrpition",
+				searchMode: "contains",
+				minSearchLength: 3,
+				deferRendering: true,
+				dropDownOptions: { width: 800 },
+				contentTemplate: function (e) {
+					return $("<div>").dxDataGrid({
+						dataSource: e.component.getDataSource(),
+						keyExpr: "GSCode",
+						height: 300,
+						remoteOperations: true,
+						scrolling: { mode: "virtual" },
+						paging: { enabled: true, pageSize: 15 },
+						pager: {
+							visible: true,
+							showPageSizeSelector: true,
+							allowedPageSizes: [10, 15, 30],
+							showInfo: true
+						},
+						searchPanel: {
+							visible: true,
+							width: 240,
+							placeholder: "Search..."
+						},
+						selection: { mode: "single" },
+						columns: [
+							{ dataField: "GSCode", caption: "Code", width: 80 },
+							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
+							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+						],
+						onSelectionChanged: function (selectedItems) {
+							const selectedItem = selectedItems.selectedRowsData[0];
+							if (!selectedItem) return;
+
+							selectedItemData = selectedItem;
+							cellInfo.setValue(selectedItem.GSDescrpition);
+
+							const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+							const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+							if (rowIndex !== -1) {
+								dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
+								dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+								dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+								dataGrid.cellValue(rowIndex, "Qty", 1);
+								dataGrid.cellValue(rowIndex, "VAT%", "15%");
+								dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+							}
+
+							e.component.close();
+						}
+					});
+				}
+			});
+
+			// Action buttons
+			const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
+
+			$("<div>").dxButton({
+				icon: "plus",
+				hint: "Add new item",
+				onClick: function () {
+					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+				},
+				width: 60,
+				height: 30
+			}).appendTo($actionButtonWrapper);
+
+			$("<div>").dxButton({
+				icon: "edit",
+				hint: "Edit item",
+				onClick: function () {
+					if (!selectedItemData || !selectedItemData.GSCode) {
+						DevExpress.ui.notify("Please select an item first", "warning", 2000);
+						return;
+					}
+
+					const selected = selectedItemData;
+					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+					openModal(url, "Goods and Services");
+				},
+				width: 60,
+				height: 30
+			}).appendTo($actionButtonWrapper);
+
+
+		}
             },
             {
                 dataField: "Descriptions",
@@ -3957,186 +4157,335 @@
 
 			 sortOrder: "asc", // auto-sort
 
-			  editCellTemplate: function (cellElement, cellInfo) {
+	    editCellTemplate: function (cellElement, cellInfo) {
+		let $container = $("<div>").css({
+			display: "flex",
+			alignItems: "center",
+			gap: "5px",
+			width: "100%"
+		}).appendTo(cellElement);
+
+		let selectedItemData = {};
+
+		const dropdownStore = new DevExpress.data.CustomStore({
+			key: "GSCode",
+			load: function (loadOptions) {
+				const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
+				const pageSize = loadOptions.take;
+			  //  const searchValue = loadOptions.searchValue || "";
+
+				// if (searchValue.length < 3) {
+					//return Promise.resolve({ data: [], totalCount: 0 });
+					 return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+					pageNumber,
+					pageSize
+				  //  searchText: searchValue
+				}).then(response => {
+					return {
+						data: response.data,
+						totalCount: response.totalCount
+					};
+				});
+				//}
+
+
+			},
+			byKey: function (key) {
+			   // return $.getJSON(`/api/VATModule/GetDropdownItemByCode?code=${encodeURIComponent(key)}`);
+			}
+		});
+
+		const $dropDownBox = $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+			valueExpr: "GSCode",
+			displayExpr: "GSDescrpition",
+			value: cellInfo.value,
+			dataSource: dropdownStore,
+			searchEnabled: true,
+			searchExpr: "GSDescrpition",
+			searchMode: "contains",
+			minSearchLength: 3,
+			deferRendering: true,
+			dropDownOptions: { width: 800 },
+			contentTemplate: function (e) {
+				return $("<div>").dxDataGrid({
+					dataSource: e.component.getDataSource(),
+					keyExpr: "GSCode",
+					height: 300,
+					remoteOperations: true,
+					scrolling: { mode: "virtual" },
+					paging: { enabled: true, pageSize: 15 },
+					pager: {
+						visible: true,
+						showPageSizeSelector: true,
+						allowedPageSizes: [10, 15, 30],
+						showInfo: true
+					},
+					searchPanel: {
+						visible: true,
+						width: 240,
+						placeholder: "Search..."
+					},
+					selection: { mode: "single" },
+					columns: [
+						{ dataField: "GSCode", caption: "Code", width: 80 },
+						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
+						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+					],
+					onSelectionChanged: function (selectedItems) {
+						const selectedItem = selectedItems.selectedRowsData[0];
+						if (!selectedItem) return;
+
+						selectedItemData = selectedItem;
+						cellInfo.setValue(selectedItem.GSDescrpition);
+
+						const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+						const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+						if (rowIndex !== -1) {
+							dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
+							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+							dataGrid.cellValue(rowIndex, "Qty", 1);
+							dataGrid.cellValue(rowIndex, "VAT%", "15%");
+							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+						}
+
+						e.component.close();
+					}
+				});
+			}
+		});
 
-							getDropdownData().done(function (dropdownData) {
+		// Action buttons
+		const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
 
-								let $container = $("<div>").css({
+		$("<div>").dxButton({
+			icon: "plus",
+			hint: "Add new item",
+			onClick: function () {
+				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+			},
+			width: 60,
+			height: 30
+		}).appendTo($actionButtonWrapper);
 
-									display: "flex",
+		$("<div>").dxButton({
+			icon: "edit",
+			hint: "Edit item",
+			onClick: function () {
+				if (!selectedItemData || !selectedItemData.GSCode) {
+					DevExpress.ui.notify("Please select an item first", "warning", 2000);
+					return;
+				}
 
-									alignItems: "center",
+				const selected = selectedItemData;
+				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+				openModal(url, "Goods and Services");
+			},
+			width: 60,
+			height: 30
+		}).appendTo($actionButtonWrapper);
 
-									gap: "5px",
+		
+	}
 
-									width: "100%"
 
-								}).appendTo(cellElement);
+			  // editCellTemplate: function (cellElement, cellInfo) {
 
-								$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+					// 		getDropdownData().done(function (dropdownData) {
 
-									dataSource: dropdownData,
+					// 			let $container = $("<div>").css({
 
-									valueExpr: "GSCode",
+					// 				display: "flex",
 
-									displayExpr: "GSDescrpition",
+					// 				alignItems: "center",
 
-									value: cellInfo.value,
+					// 				gap: "5px",
 
-									dropDownOptions: { width: 800 },
+					// 				width: "100%"
 
-									onValueChanged: function (e) {
+					// 			}).appendTo(cellElement);
 
-										let selectedItem = dropdownData.find(item => item.GSCode === e.value);
+					// 			$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
 
-										if (selectedItem) {
+					// 				dataSource: dropdownData,
 
-											cellInfo.setValue(selectedItem.GSDescrpition);
+					// 				valueExpr: "GSCode",
 
-											let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+					// 				displayExpr: "GSDescrpition",
 
-											let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+					// 				value: cellInfo.value,
 
-											if (rowIndex !== -1) {
+					// 				dropDownOptions: { width: 800 },
 
-												dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+					// 				onValueChanged: function (e) {
 
-												dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+					// 					let selectedItem = dropdownData.find(item => item.GSCode === e.value);
 
-												dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+					// 					if (selectedItem) {
 
-											}
+					// 						cellInfo.setValue(selectedItem.GSDescrpition);
 
-											let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
+					// 						let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
-										}
+					// 						let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
-									},
+					// 						if (rowIndex !== -1) {
 
-									contentTemplate: function (e) {
+					// 							dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-										return $("<div>").dxDataGrid({
+					// 							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
-											dataSource: dropdownData,
+					// 							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
-											selection: { mode: "single" },
+					// 						}
 
-											keyExpr: "GSCode",
+					// 						let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
 
-											height: 300, // ✅ Add fixed height to enable scrolling
+					// 					}
 
-											scrolling: { mode: "virtual" },
+					// 				},
 
-											columns: [
+					// 				contentTemplate: function (e) {
 
-												{ dataField: "GSCode", caption: "Code", width: 80 },
+					// 					return $("<div>").dxDataGrid({
 
-												{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+					// 						dataSource: dropdownData,
 
-												{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+					// 						selection: { mode: "single" },
 
-												{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+					// 						keyExpr: "GSCode",
 
-												{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+					// 						height: 300, // ✅ Add fixed height to enable scrolling
 
-												{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+					// 						scrolling: { mode: "virtual" },
+					// 					    paging: { enabled: true, pageSize: 15 },
+					//                                      pager: {
+					//                                      	visible: true,
+					//                                      	showPageSizeSelector: true,
+					//                                      	allowedPageSizes: [10, 15, 30],
+					//                                      	showInfo: true
+					//                                      },
+					//                                      searchPanel: {
+					//                                      	visible: true,
+					//                                      	width: 240,
+					//                                      	placeholder: "Search..."
+					//                                      },
 
-												{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+					// 						columns: [
 
-											],
+					// 							{ dataField: "GSCode", caption: "Code", width: 80 },
 
-											onSelectionChanged: function (selectedItems) {
+					// 							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
 
-												let selectedItem = selectedItems.selectedRowsData[0];
+					// 							{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
 
-												if (selectedItem) {
+					// 							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
 
-													e.component.option("value", selectedItem.GSCode);
+					// 							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
 
-													cellInfo.setValue(selectedItem.GSDescrpition);
+					// 							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
 
-													let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+					// 							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
 
-													let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+					// 						],
 
-													if (rowIndex !== -1) {
+					// 						onSelectionChanged: function (selectedItems) {
 
-														dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+					// 							let selectedItem = selectedItems.selectedRowsData[0];
 
-														dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+					// 							if (selectedItem) {
 
-														dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+					// 								e.component.option("value", selectedItem.GSCode);
 
-														dataGrid.cellValue(rowIndex, "Qty", 1);
+					// 								cellInfo.setValue(selectedItem.GSDescrpition);
 
-														dataGrid.cellValue(rowIndex, "VAT%", "15%");
+					// 								let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
-													}
+					// 								let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
-													e.component.close();
+					// 								if (rowIndex !== -1) {
 
-												}
+					// 									dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-											}
+					// 									dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
-										});
+					// 									dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
-									}
+					// 									dataGrid.cellValue(rowIndex, "Qty", 1);
 
-								});
+					// 									dataGrid.cellValue(rowIndex, "VAT%", "15%");
 
-								// ✅ Add icon with navigation
+					// 								}
 
-								$("<div>").dxButton({
+					// 								e.component.close();
 
-									icon: "plus",
+					// 							}
 
-									hint: "Add new item",
+					// 						}
 
-									onClick: function () {
+					// 					});
 
-									  // Replace or fetch dynamically
+					// 				}
 
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
-									let title = "Goods and Services";
-									openModal(url, title);
+					// 			});
 
-									},
+					// 			// ✅ Add icon with navigation
 
-									width: 60,
+					// 			$("<div>").dxButton({
 
-									height: 30
+					// 				icon: "plus",
 
-								}).appendTo($container);
+					// 				hint: "Add new item",
 
-								// ✅ Edit icon with navigation
+					// 				onClick: function () {
 
-								$("<div>").dxButton({
+					// 				  // Replace or fetch dynamically
 
-									icon: "edit",
+					// 				let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+					// 				let title = "Goods and Services";
+					// 				openModal(url, title);
 
-									hint: "Edit item",
+					// 				},
 
-									onClick: function () {
+					// 				width: 60,
 
-									  // Replace or fetch dynamically
+					// 				height: 30
+
+					// 			}).appendTo($container);
+
+					// 			// ✅ Edit icon with navigation
+
+					// 			$("<div>").dxButton({
+
+					// 				icon: "edit",
+
+					// 				hint: "Edit item",
+
+					// 				onClick: function () {
+
+					// 				  // Replace or fetch dynamically
 
 											
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; 
-											let title = "Goods and Services";
-													openModal(url, title);
+					// 				let url = `/${tenantName}/VAT/VATGoodsandServices`; 
+					// 						let title = "Goods and Services";
+					// 								openModal(url, title);
 
-									},
+					// 				},
 
-									width: 60,
+					// 				width: 60,
 
-									height: 30
+					// 				height: 30
 
-								}).appendTo($container);
+					// 			}).appendTo($container);
 
-							});
+					// 		});
 
-						}
+					// 	}
 
 					},
 

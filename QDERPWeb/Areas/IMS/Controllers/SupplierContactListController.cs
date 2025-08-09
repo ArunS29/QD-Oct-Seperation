@@ -135,7 +135,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl3019902SupplierContactLists.Remove(entity);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete Supplier Contact List",
-                               actionDetail: $":Deleted upplier ContactList {SupplierContactSlNo}",
+                               actionDetail: $"Deleted upplier ContactList {SupplierContactSlNo}",
                                documentNo: $"{SupplierContactSlNo}"
                            );
 
