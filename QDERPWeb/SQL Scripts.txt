@@ -3436,3 +3436,321 @@ SET NoOfDigitsToInventoryQuotation = 5
 WHERE CompanyID = 2;
 
  
+ --------IMS Report---------
+
+ 
+ALTER VIEW [Aicon].[qry602_13SalesOrderReport]
+AS
+SELECT     Aicon.tbl602_01SalesOrderMaster.SalesOrderNo, Aicon.tbl602_01SalesOrderMaster.SalesOrderDate, Aicon.tbl602_01SalesOrderMaster.ClientPONo, Aicon.tbl602_01SalesOrderMaster.ClientPODate, 
+                      Aicon.tbl602_01SalesOrderMaster.QuoteNo, Aicon.tbl602_01SalesOrderMaster.QuoteDate, Aicon.tbl602_01SalesOrderMaster.ClientRefNo, Aicon.qry602_02SalesOrderChild.LineOrderNo, 
+                      Aicon.qry602_02SalesOrderChild.GSCode, Aicon.qry602_02SalesOrderChild.QuotedUnitPrice, Aicon.qry602_02SalesOrderChild.TaxSlab, Aicon.qry602_02SalesOrderChild.GSDescrpition, 
+                      Aicon.qry602_02SalesOrderChild.UnitType, Aicon.qry602_02SalesOrderChild.UnitDesc, Aicon.qry602_02SalesOrderChild.AddlDescription, Aicon.qry602_02SalesOrderChild.QuotedTaxSlab, 
+                      Aicon.qry602_02SalesOrderChild.QuotedDiscount, Aicon.qry602_02SalesOrderChild.LineTotalBeforeDiscount, Aicon.qry602_02SalesOrderChild.LineTotalAfterDiscount, 
+                      Aicon.qry602_02SalesOrderChild.LineTaxAmount, Aicon.qry602_02SalesOrderChild.LineTotalWithTax, Aicon.qry602_02SalesOrderChild.BalanceToDeliver, 
+                      Aicon.qry602_02SalesOrderChild.TotalOrderedQty, Aicon.qry602_02SalesOrderChild.TotalIssdQty, Aicon.qry602_02SalesOrderChild.PlanNo, Aicon.qry602_02SalesOrderChild.DeliveryPeriod, 
+                      Aicon.qry602_02SalesOrderChild.ItemSize, Aicon.qry602_02SalesOrderChild.ItemPartNo, Aicon.qry602_02SalesOrderChild.ItemBrand, Aicon.qry602_02SalesOrderChild.ItemMake, 
+                      Aicon.qry602_02SalesOrderChild.CostPrice, Aicon.qry602_03SalesOrderItemsWithTotal.NoOfItems, Aicon.qry602_03SalesOrderItemsWithTotal.TotalBeforeDiscount, 
+                      Aicon.qry602_03SalesOrderItemsWithTotal.Discount AS TotalDiscount, Aicon.qry602_03SalesOrderItemsWithTotal.TotalAfterDiscount, Aicon.qry602_03SalesOrderItemsWithTotal.TotalTaxAmount, 
+                      Aicon.qry602_03SalesOrderItemsWithTotal.TotalWithTax, Aicon.tbl602_01SalesOrderMaster.ClientCode, Aicon.tbl602_01SalesOrderMaster.ClientContactNo, 
+                      Aicon.tbl602_01SalesOrderMaster.ClientContactEmail, Aicon.tbl602_01SalesOrderMaster.QuoteDueDate, Aicon.tbl602_01SalesOrderMaster.OrderExpiryDate, 
+                      Aicon.qry602_02SalesOrderChild.QuotedQuantity, Aicon.tbl602_01SalesOrderMaster.SalesOrderRemarks, Aicon.tbl602_01SalesOrderMaster.ExpectedDeliveryDate,Aicon.tbl602_01SalesOrderMaster.CurrencyRate,Aicon.tbl602_01SalesOrderMaster.BaseCurrencyId,Aicon.tbl602_01SalesOrderMaster.CurrencyId
+FROM         Aicon.tbl602_01SalesOrderMaster LEFT OUTER JOIN
+                      Aicon.qry602_03SalesOrderItemsWithTotal ON Aicon.tbl602_01SalesOrderMaster.SalesOrderNo = Aicon.qry602_03SalesOrderItemsWithTotal.SalesOrderNo LEFT OUTER JOIN
+                      Aicon.qry602_02SalesOrderChild ON Aicon.tbl602_01SalesOrderMaster.SalesOrderNo = Aicon.qry602_02SalesOrderChild.SalesOrderNo
+GO
+
+ALTER VIEW [Aicon].[qry603_05DeliveryNoteReport]
+AS
+SELECT     Aicon.tbl603_01DeliveryNoteMaster.DeliveryNoteNo, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl603_01DeliveryNoteMaster.DeliveryDate), 0) AS DeliveryDate, 
+                      Aicon.tbl603_01DeliveryNoteMaster.DeliveryType, Aicon.tbl603_01DeliveryNoteMaster.ClientPONo, Aicon.tbl603_01DeliveryNoteMaster.QuotationNo, Aicon.tbl603_01DeliveryNoteMaster.SalesOrderNo, 
+                      Aicon.tbl603_01DeliveryNoteMaster.MaterialRequestNo, Aicon.tbl603_01DeliveryNoteMaster.StoreID, Aicon.tbl603_01DeliveryNoteMaster.ProjectID, Aicon.tbl603_01DeliveryNoteMaster.ClientProject, 
+                      Aicon.tbl603_01DeliveryNoteMaster.IsVerified, Aicon.tbl603_01DeliveryNoteMaster.IsApproved, Aicon.tbl30101ClientMaster.ClientName, Aicon.tbl30101ClientMaster.ClientAddress, 
+                      Aicon.tbl30101ClientMaster.ContactPerson, Aicon.tbl30101ClientMaster.ContactPersonTitle, Aicon.tbl30101ClientMaster.ContactMobile1, Aicon.tbl30101ClientMaster.ContactMobile2, 
+                      Aicon.tbl30101ClientMaster.ContactPhone1, Aicon.tbl30101ClientMaster.ContactPhone2, Aicon.tbl30101ClientMaster.ContactEmail, tbl20101SalesPersonMaster_1.SalesPersonName, 
+                      tbl20101SalesPersonMaster_1.EmailAddress, Aicon.qry603_02DeliveryNoteChild.GSCode, Aicon.qry603_02DeliveryNoteChild.IssuedQty, Aicon.qry603_02DeliveryNoteChild.IssuedUOM, 
+                      Aicon.qry603_02DeliveryNoteChild.UnitRateMethod, Aicon.qry603_02DeliveryNoteChild.DeliveryRemarks, Aicon.qry603_02DeliveryNoteChild.LineOrderNo, 
+                      Aicon.qry603_02DeliveryNoteChild.AddlDescription, Aicon.qry603_02DeliveryNoteChild.GSDescrpition, Aicon.qry603_02DeliveryNoteChild.UnitType, Aicon.qry603_02DeliveryNoteChild.UnitDesc, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryName, Aicon.tbl90104DocumentSignatories.SignatoryPosition, Aicon.tbl90104DocumentSignatories.SignatoryContact, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryEmail, Aicon.tbl90104DocumentSignatories.SignatureImage, Aicon.tbl603_01DeliveryNoteMaster.Salesman, 
+                      Aicon.tbl603_01DeliveryNoteMaster.TransportedBy, Aicon.tbl603_01DeliveryNoteMaster.DriversName, Aicon.tbl603_01DeliveryNoteMaster.DriversID, Aicon.tbl603_01DeliveryNoteMaster.VehicleNo, 
+                      Aicon.tbl603_01DeliveryNoteMaster.DeliveryNoteRemarks, Aicon.tbl30101ClientMaster.VendorNo, tbl600_01StoreMaster_1.StoreName, Aicon.tbl603_01DeliveryNoteMaster.StoreCode, 
+                      Aicon.tbl603_01DeliveryNoteMaster.ClientPODate, Aicon.qry603_04DeliveryNoteViewMaster.MPRNo, Aicon.tbl603_01DeliveryNoteMaster.RevisionNo, Aicon.tbl603_01DeliveryNoteMaster.InvoiceNo, 
+                      Aicon.qry603_02DeliveryNoteChild.IssuedUnitPrice, Aicon.tbl603_01DeliveryNoteMaster.AddedOn, Aicon.qry603_02DeliveryNoteChild.ExpiryDate, Aicon.qry603_02DeliveryNoteChild.BatchNo, 
+                      Aicon.tbl603_01DeliveryNoteMaster.Attention, Aicon.tbl603_01DeliveryNoteMaster.ClientContactNo, Aicon.tbl603_01DeliveryNoteMaster.ClientContactEmail, 
+                      Aicon.tbl603_01DeliveryNoteMaster.StoreIssuedFrom AS IssuedFromStoreCode, Aicon.tbl600_01StoreMaster.StoreName AS IssuedFromStoreName, 
+                      Aicon.tbl603_03DeliveryType.DeliveryType AS DeliveryTypeName, Aicon.tbl603_01DeliveryNoteMaster.VoucherNo, Aicon.tbl603_01DeliveryNoteMaster.IsPosted, 
+                      Aicon.tbl603_01DeliveryNoteMaster.PostedOn, Aicon.tbl603_01DeliveryNoteMaster.PostedBy, Aicon.tbl603_01DeliveryNoteMaster.ProjectMasterCode, Aicon.qry600_01InventoryStockView.GSGroupName, 
+                      Aicon.qry600_01InventoryStockView.ItemSize, ISNULL(Aicon.qry600_01InventoryStockView.ItemPartNo, '') AS ItemPartNo, Aicon.qry600_01InventoryStockView.ItemBrand, 
+                      Aicon.qry600_01InventoryStockView.ItemMake, Aicon.qry600_01InventoryStockView.StockClassification, Aicon.qry600_01InventoryStockView.HSCode, Aicon.qry600_01InventoryStockView.ActualSize, 
+                      Aicon.qry600_01InventoryStockView.Identification, Aicon.tbl700_01ProjectMaster.ProjectDescription, ISNULL(Aicon.qry600_01InventoryStockView.GSDescriptionAr, N'') AS GSDescriptionAr, 
+                      Aicon.tbl603_01DeliveryNoteMaster.InventoryMasterGroupID, Aicon.tbl603_01DeliveryNoteMaster.CurrencyId, Aicon.tbl603_01DeliveryNoteMaster.CurrencyRate, Aicon.tbl603_01DeliveryNoteMaster.BaseCurrencyId, Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroup, Aicon.qry603_02DeliveryNoteChild.DeliveryNoteSlNo, 
+                      Aicon.tbl700_01ProjectMaster.ProjectLocation, Aicon.tbl20101SalesPersonMaster.SalesPersonName AS ProjectInchargeName, Aicon.tbl20101SalesPersonMaster.EmailAddress AS ProjectInchargeEmail, 
+                      Aicon.tbl20101SalesPersonMaster.SalesPersonContactNo AS ProjectInchargeContactNo, tbl20101SalesPersonMaster_1.SalesPersonContactNo, Aicon.qry603_02DeliveryNoteChild.EmployeeNo, 
+                      Aicon.qry603_02DeliveryNoteChild.EmployeeName, Aicon.qry603_02DeliveryNoteChild.PropertyNo, Aicon.qry603_02DeliveryNoteChild.PropertyDescription, 
+                      Aicon.qry603_04DeliveryNoteViewMaster.SaesPersonUserID, Aicon.qry603_04DeliveryNoteViewMaster.TotalIssuedQty, ISNULL(Aicon.qry600_01InventoryStockView.IsServicesGroup, 0) 
+                      AS IsServicesGroup, Aicon.qry603_02DeliveryNoteChild.LineTotalBeforeDiscount, Aicon.qry603_02DeliveryNoteChild.LineTotalAfterDiscount, Aicon.qry603_02DeliveryNoteChild.IssuedQuoteUnitPrice, 
+                      Aicon.qry603_02DeliveryNoteChild.QuoteTotalBeforeDiscount, Aicon.qry603_04DeliveryNoteViewMaster.QuoteTotalBeforeDiscount AS TotalAmountBeforeDiscount
+FROM         Aicon.qry603_02DeliveryNoteChild LEFT OUTER JOIN
+                      Aicon.qry600_01InventoryStockView ON Aicon.qry603_02DeliveryNoteChild.GSCode = Aicon.qry600_01InventoryStockView.GSCode RIGHT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories RIGHT OUTER JOIN
+                      Aicon.tbl20101SalesPersonMaster RIGHT OUTER JOIN
+                      Aicon.tbl700_01ProjectMaster ON Aicon.tbl20101SalesPersonMaster.SalesPersonCode = Aicon.tbl700_01ProjectMaster.ProjectInchargeCode RIGHT OUTER JOIN
+                      Aicon.tbl603_01DeliveryNoteMaster LEFT OUTER JOIN
+                      Aicon.tbl600_08InventoryMasterGroup ON Aicon.tbl603_01DeliveryNoteMaster.InventoryMasterGroupID = Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroupID ON 
+                      Aicon.tbl700_01ProjectMaster.ProjectID = Aicon.tbl603_01DeliveryNoteMaster.ProjectMasterCode LEFT OUTER JOIN
+                      Aicon.tbl603_03DeliveryType ON Aicon.tbl603_01DeliveryNoteMaster.DeliveryType = Aicon.tbl603_03DeliveryType.DeliveryTypeCode LEFT OUTER JOIN
+                      Aicon.tbl600_01StoreMaster ON Aicon.tbl603_01DeliveryNoteMaster.StoreIssuedFrom = Aicon.tbl600_01StoreMaster.StoreID LEFT OUTER JOIN
+                      Aicon.qry603_04DeliveryNoteViewMaster ON Aicon.tbl603_01DeliveryNoteMaster.DeliveryNoteNo = Aicon.qry603_04DeliveryNoteViewMaster.DeliveryNoteNo LEFT OUTER JOIN
+                      Aicon.tbl600_01StoreMaster AS tbl600_01StoreMaster_1 ON Aicon.tbl603_01DeliveryNoteMaster.StoreCode = tbl600_01StoreMaster_1.StoreID ON 
+                      Aicon.tbl90104DocumentSignatories.SignatoryID = Aicon.tbl603_01DeliveryNoteMaster.DNSignatory LEFT OUTER JOIN
+                      Aicon.tbl30101ClientMaster ON Aicon.tbl603_01DeliveryNoteMaster.ClientCode = Aicon.tbl30101ClientMaster.ClientCode LEFT OUTER JOIN
+                      Aicon.tbl20101SalesPersonMaster AS tbl20101SalesPersonMaster_1 ON Aicon.tbl603_01DeliveryNoteMaster.SalesPersonCode = tbl20101SalesPersonMaster_1.SalesPersonCode ON 
+                      Aicon.qry603_02DeliveryNoteChild.DeliveryNoteNo = Aicon.tbl603_01DeliveryNoteMaster.DeliveryNoteNo
+GO
+
+
+ALTER VIEW [Aicon].[qry606_05PurchaseRequestReport]
+AS
+SELECT     Aicon.tbl606_01PurchaseRequestMaster.MPRNo, Aicon.tbl606_01PurchaseRequestMaster.MPRDate, Aicon.tbl606_01PurchaseRequestMaster.TypeOfMPR, 
+                      Aicon.tbl606_01PurchaseRequestMaster.ClientCode, Aicon.tbl30101ClientMaster.ClientName, Aicon.tbl30101ClientMaster.ClientNameAr, Aicon.tbl30101ClientMaster.ClientAddress, 
+                      Aicon.tbl606_01PurchaseRequestMaster.StoreCode, Aicon.tbl600_01StoreMaster.StoreName, Aicon.tbl30104TypeOfRequestMaster.TypeOfRequest, Aicon.tbl30103ModeOfRequestMaster.ModeOfRequest, 
+                      Aicon.tbl606_01PurchaseRequestMaster.MPRRemarks, Aicon.qry606_02PurchaseRequestChild.GSCode, Aicon.qry606_02PurchaseRequestChild.GSDescrpition, 
+                      Aicon.qry606_02PurchaseRequestChild.QtyRequested, Aicon.qry606_02PurchaseRequestChild.UnitRateMethod, Aicon.qry606_02PurchaseRequestChild.UnitCode, 
+                      Aicon.qry606_02PurchaseRequestChild.UnitType, Aicon.qry606_02PurchaseRequestChild.UnitDesc, Aicon.qry606_02PurchaseRequestChild.ItemRemarks, 
+                      Aicon.qry606_02PurchaseRequestChild.LineOrderNo, Aicon.qry606_02PurchaseRequestChild.AddlDescription, Aicon.qry606_02PurchaseRequestChild.PlanNo, 
+                      Aicon.qry606_02PurchaseRequestChild.DeliveryPeriod, Aicon.qry606_02PurchaseRequestChild.ItemSize, Aicon.qry606_02PurchaseRequestChild.ItemPartNo, 
+                      Aicon.qry606_02PurchaseRequestChild.ItemBrand, Aicon.qry606_02PurchaseRequestChild.ItemMake, Aicon.tbl606_01PurchaseRequestMaster.PurposeOfRequest, 
+                      Aicon.tbl606_01PurchaseRequestMaster.Priority, Aicon.tbl606_01PurchaseRequestMaster.ExpectedDate, Aicon.tbl606_01PurchaseRequestMaster.Remarks, 
+                      CASE WHEN Aicon.tbl606_01PurchaseRequestMaster.ClientCode IS NOT NULL 
+                      THEN Aicon.tbl30101ClientMaster.ClientName ELSE (CASE WHEN Aicon.tbl606_01PurchaseRequestMaster.ProjectMasterCode IS NOT NULL 
+                      THEN Aicon.tbl700_01ProjectMaster.ProjectDescription ELSE (CASE WHEN Aicon.tbl101Departments.DepartmentCode IS NOT NULL 
+                      THEN Aicon.tbl101Departments.Department ELSE (CASE WHEN Aicon.tbl606_01PurchaseRequestMaster.StoreCode IS NOT NULL THEN Aicon.tbl600_01StoreMaster.StoreName ELSE '' END) END) END) 
+                      END AS RequestedNameRef, Aicon.qry606_02PurchaseRequestChild.ItemReqPurpose, Aicon.qry606_02PurchaseRequestChild.ItemReqPriority, 
+                      Aicon.qry606_02PurchaseRequestChild.ItemReqExpectedDate, Aicon.qry606_02PurchaseRequestChild.ExpectedUnitRate, Aicon.qry606_02PurchaseRequestChild.LineTotal, 
+                      Aicon.qry606_07PurchaseRequestWithTotalTax.ExpectedTaxAmount, Aicon.qry606_07PurchaseRequestWithTotalTax.ExpectedTotalAmount, 
+                      Aicon.qry606_07PurchaseRequestWithTotalTax.TotalRequestCost, Aicon.tbl606_01PurchaseRequestMaster.CostCenterText, Aicon.tbl606_01PurchaseRequestMaster.ProjectMasterCode, 
+                      Aicon.tbl700_01ProjectMaster.ProjectDescription, Aicon.tbl700_01ProjectMaster.ProjectID, Aicon.tbl600_02RequestedBy.RequestedBy, Aicon.tbl606_01PurchaseRequestMaster.RequesterContact, 
+                      Aicon.tbl606_01PurchaseRequestMaster.RequesterContactEmail, Aicon.tbl606_01PurchaseRequestMaster.RequestedBy AS RequestingPersonName, 
+                      Aicon.tbl20101SalesPersonMaster.SalesPersonCode, Aicon.tbl20101SalesPersonMaster.SalesPersonName, Aicon.tbl20101SalesPersonMaster.UserCode AS SalesPersonUserID, 
+                      tbl90104DocumentSignatories_2.SignatoryName AS MPR_PreparedBySignatoryName, tbl90104DocumentSignatories_2.SignatoryPosition AS MPR_PreparedBySignatoryPosition, 
+                      tbl90104DocumentSignatories_2.SignatoryContact AS MPR_PreparedBySignatoryContact, tbl90104DocumentSignatories_2.SignatoryEmail AS MPR_PreparedBySignatoryEmail, 
+                      tbl90104DocumentSignatories_2.SignatureImage AS MPR_PreparedBySignatoryImage, tbl90104DocumentSignatories_2.SignatoryMobile1 AS MPR_PreparedBySignatoryMobile1, 
+                      tbl90104DocumentSignatories_2.SignatoryMobile2 AS MPR_PreparedBySignatoryMobile2, tbl90104DocumentSignatories_2.SignatoryNameAr AS MPR_PreparedBySignatoryNameAr, 
+                      tbl90104DocumentSignatories_2.SignatoryPositionAr AS MPR_PreparedBySignatoryPositionAr, Aicon.tbl90104DocumentSignatories.SignatoryName AS MPR_VerifiedBySignatoryName, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryPosition AS MPR_VerifiedBySignatoryPosition, Aicon.tbl90104DocumentSignatories.SignatoryContact AS MPR_VerifiedBySignatoryContact, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryEmail AS MPR_VerifiedBySignatoryEmail, Aicon.tbl90104DocumentSignatories.SignatureImage AS MPR_VerifiedBySignatoryImage, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryMobile1 AS MPR_VerifiedBySignatoryMobile1, Aicon.tbl90104DocumentSignatories.SignatoryMobile2 AS MPR_VerifiedBySignatoryMobile2, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryNameAr AS MPR_VerifiedBySignatoryNameAr, Aicon.tbl90104DocumentSignatories.SignatoryPositionAr AS MPR_VerifiedBySignatoryPositionAr, 
+                      tbl90104DocumentSignatories_1.SignatoryName AS MPR_ApprovedBySignatoryName, tbl90104DocumentSignatories_1.SignatoryPosition AS MPR_ApprovedBySignatoryPosition, 
+                      tbl90104DocumentSignatories_1.SignatoryContact AS MPR_ApprovedBySignatoryContact, tbl90104DocumentSignatories_1.SignatoryEmail AS MPR_ApprovedBySignatoryEmail, 
+                      tbl90104DocumentSignatories_1.SignatureImage AS MPR_ApprovedBySignatoryImage, tbl90104DocumentSignatories_1.SignatoryMobile1 AS MPR_ApprovedBySignatoryMobile1, 
+                      tbl90104DocumentSignatories_1.SignatoryMobile2 AS MPR_ApprovedBySignatoryMobile2, tbl90104DocumentSignatories_1.SignatoryNameAr AS MPR_ApprovedBySignatoryNameAr, 
+                      tbl90104DocumentSignatories_1.SignatoryPositionAr AS MPR_ApprovedBySignatoryPositionAr, ISNULL(Aicon.tbl606_01PurchaseRequestMaster.IsObseleteVersion, 0) AS IsObseleteVersion, 
+                      Aicon.tbl606_01PurchaseRequestMaster.MPRRevisionID, Aicon.tbl606_01PurchaseRequestMaster.MPRRevisionNo,Aicon.tbl606_01PurchaseRequestMaster.BaseCurrencyId,Aicon.tbl606_01PurchaseRequestMaster.CurrencyId,Aicon.tbl606_01PurchaseRequestMaster.CurrencyRate, Aicon.tbl606_04PurchaseRequestProjectSubUnits.ProjectSubUnitName
+FROM         Aicon.qry606_02PurchaseRequestChild RIGHT OUTER JOIN
+                      Aicon.tbl30104TypeOfRequestMaster RIGHT OUTER JOIN
+                      Aicon.tbl700_01ProjectMaster RIGHT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories AS tbl90104DocumentSignatories_1 RIGHT OUTER JOIN
+                      Aicon.tbl606_04PurchaseRequestProjectSubUnits RIGHT OUTER JOIN
+                      Aicon.tbl606_01PurchaseRequestMaster ON Aicon.tbl606_04PurchaseRequestProjectSubUnits.ProjectSubUnitCode = Aicon.tbl606_01PurchaseRequestMaster.ProjectSubUnitCode ON 
+                      tbl90104DocumentSignatories_1.SignatoryID = Aicon.tbl606_01PurchaseRequestMaster.MPRApprovedSign LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories ON Aicon.tbl606_01PurchaseRequestMaster.MPRVerifiedSign = Aicon.tbl90104DocumentSignatories.SignatoryID LEFT OUTER JOIN
+                      Aicon.tbl20101SalesPersonMaster ON Aicon.tbl606_01PurchaseRequestMaster.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode LEFT OUTER JOIN
+                      Aicon.tbl600_02RequestedBy ON Aicon.tbl606_01PurchaseRequestMaster.TypeOfMPR = Aicon.tbl600_02RequestedBy.RequestedByCode ON 
+                      Aicon.tbl700_01ProjectMaster.ProjectID = Aicon.tbl606_01PurchaseRequestMaster.ProjectMasterCode LEFT OUTER JOIN
+                      Aicon.tbl30101ClientMaster ON Aicon.tbl606_01PurchaseRequestMaster.ClientCode = Aicon.tbl30101ClientMaster.ClientCode LEFT OUTER JOIN
+                      Aicon.qry606_07PurchaseRequestWithTotalTax ON Aicon.tbl606_01PurchaseRequestMaster.MPRNo = Aicon.qry606_07PurchaseRequestWithTotalTax.MPRNo LEFT OUTER JOIN
+                      Aicon.tbl101Departments ON Aicon.tbl606_01PurchaseRequestMaster.DepartmentID = Aicon.tbl101Departments.DepartmentCode LEFT OUTER JOIN
+                      Aicon.tbl30103ModeOfRequestMaster ON Aicon.tbl606_01PurchaseRequestMaster.ModeOfRequest = Aicon.tbl30103ModeOfRequestMaster.ModeOfRequestID ON 
+                      Aicon.tbl30104TypeOfRequestMaster.TypeOfRequestID = Aicon.tbl606_01PurchaseRequestMaster.TypeOfRequest LEFT OUTER JOIN
+                      Aicon.tbl600_01StoreMaster ON Aicon.tbl606_01PurchaseRequestMaster.StoreCode = Aicon.tbl600_01StoreMaster.StoreID ON 
+                      Aicon.qry606_02PurchaseRequestChild.MPRNo = Aicon.tbl606_01PurchaseRequestMaster.MPRNo LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories AS tbl90104DocumentSignatories_2 ON Aicon.tbl606_01PurchaseRequestMaster.RequestSignatory = tbl90104DocumentSignatories_2.SignatoryID
+GO
+
+
+ALTER VIEW [Aicon].[qry604_05PurchaseOrderReport]
+AS
+SELECT     Aicon.tbl604_01PurchaseOrderMaster.PONo, Aicon.tbl604_01PurchaseOrderMaster.PODate, Aicon.tbl604_01PurchaseOrderMaster.SupplierCode, Aicon.tbl604_01PurchaseOrderMaster.SupplierQuoteNo, 
+                      Aicon.tbl604_01PurchaseOrderMaster.SupplierQuoteDate, Aicon.tbl604_01PurchaseOrderMaster.SupplierRefNo, Aicon.tbl604_01PurchaseOrderMaster.Attention, 
+                      Aicon.tbl604_01PurchaseOrderMaster.SupplierContactNo, Aicon.tbl604_01PurchaseOrderMaster.SupplierContactEmail, Aicon.tbl604_01PurchaseOrderMaster.SubjectTitle, 
+                      Aicon.tbl604_01PurchaseOrderMaster.PreparedBy, Aicon.tbl604_01PurchaseOrderMaster.PreparedOn, Aicon.tbl604_01PurchaseOrderMaster.ApprovedBy, 
+                      Aicon.tbl604_01PurchaseOrderMaster.ApprovedOn, Aicon.tbl604_01PurchaseOrderMaster.AddedBy, Aicon.tbl604_01PurchaseOrderMaster.AddedOn, Aicon.tbl604_01PurchaseOrderMaster.ModifiedBy, 
+                      Aicon.tbl604_01PurchaseOrderMaster.ModifiedOn, Aicon.tbl604_01PurchaseOrderMaster.IsApproved, Aicon.tbl604_01PurchaseOrderMaster.Project, Aicon.tbl604_01PurchaseOrderMaster.POIntroduction, 
+                      Aicon.tbl604_01PurchaseOrderMaster.POSummary, Aicon.tbl604_01PurchaseOrderMaster.RevisionNo, Aicon.tbl604_01PurchaseOrderMaster.CompanyBranch, 
+                      Aicon.tbl604_01PurchaseOrderMaster.AdditionsText, Aicon.tbl604_01PurchaseOrderMaster.DiscountsText, Aicon.tbl604_01PurchaseOrderMaster.PODueDate, 
+                      Aicon.tbl604_01PurchaseOrderMaster.POSignatory, Aicon.tbl604_01PurchaseOrderMaster.AdditionsAmount, Aicon.tbl604_01PurchaseOrderMaster.DeductionsAmount, 
+                      Aicon.qry604_04PurchaseOrderViewMaster.TotalBeforeTax, Aicon.qry604_04PurchaseOrderViewMaster.TotalDiscount, Aicon.qry604_04PurchaseOrderViewMaster.TotalAfterDiscount, 
+                      Aicon.qry604_04PurchaseOrderViewMaster.TotalTaxAmount, Aicon.qry604_04PurchaseOrderViewMaster.TotalWithTax, Aicon.qry604_04PurchaseOrderViewMaster.GrandTotal, 
+                      Aicon.tbl901CompanyDetails.CompanyName, Aicon.qry604_02PurchaseOrderChild.GSCode, Aicon.qry604_02PurchaseOrderChild.GSDescrpition, Aicon.qry604_02PurchaseOrderChild.GSDescriptionAr, 
+                      Aicon.qry604_02PurchaseOrderChild.AddlDescription, Aicon.qry604_02PurchaseOrderChild.QuotedQuantity, Aicon.qry604_02PurchaseOrderChild.UnitRateMethod, 
+                      Aicon.qry604_02PurchaseOrderChild.UnitType, Aicon.qry604_02PurchaseOrderChild.UnitDesc, Aicon.qry604_02PurchaseOrderChild.UnitPrice, Aicon.qry604_02PurchaseOrderChild.ItemDiscount, 
+                      Aicon.qry604_02PurchaseOrderChild.POTaxSlab, Aicon.qry604_02PurchaseOrderChild.POItemRemarks, Aicon.qry604_02PurchaseOrderChild.LineOrderNo, 
+                      Aicon.qry604_02PurchaseOrderChild.PurchaseTaxSlab, Aicon.qry604_02PurchaseOrderChild.PurchaseTaxRate, Aicon.qry604_02PurchaseOrderChild.LineTotalBeforeTax, 
+                      Aicon.qry604_02PurchaseOrderChild.LineTotalAfterDisc, Aicon.qry604_02PurchaseOrderChild.LineTaxAmount, Aicon.qry604_02PurchaseOrderChild.LineTotalWithTax, 
+                      tbl90104DocumentSignatories_1.SignatoryName, tbl90104DocumentSignatories_1.SignatoryPosition, tbl90104DocumentSignatories_1.SignatoryContact, 
+                      tbl90104DocumentSignatories_1.SignatoryEmail, tbl90104DocumentSignatories_1.SignatureImage, Aicon.tbl30199_SupplierMaster.SupplierName, Aicon.tbl30199_SupplierMaster.SupplierNameAr, 
+                      Aicon.tbl30199_SupplierMaster.SupplierAddress, Aicon.qry604_04PurchaseOrderViewMaster.MPRNo, Aicon.tbl604_01PurchaseOrderMaster.POThanksNote, Aicon.qry604_02PurchaseOrderChild.HSCode, 
+                      tbl90104DocumentSignatories_2.SignatoryName AS VerifiedName, tbl90104DocumentSignatories_2.SignatoryPosition AS VerifiedPosition, 
+                      tbl90104DocumentSignatories_2.SignatoryContact AS VerifiedContactNo, tbl90104DocumentSignatories_2.SignatoryEmail AS VerifiedEmail, 
+                      tbl90104DocumentSignatories_2.SignatureImage AS VerifiedImage, Aicon.tbl90104DocumentSignatories.SignatoryName AS ApprovedName, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryPosition AS ApprovedPosition, Aicon.tbl90104DocumentSignatories.SignatoryContact AS ApprovedContact, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryEmail AS ApprovedEmail, Aicon.tbl90104DocumentSignatories.SignatureImage AS ApprovedImage, Aicon.tbl604_01PurchaseOrderMaster.POPaymentTerm, 
+                      Aicon.tbl604_01PurchaseOrderMaster.PODeliveryTerm, Aicon.tbl604_01PurchaseOrderMaster.PODeliveryPeriod, Aicon.tbl604_01PurchaseOrderMaster.PODocRequired, 
+                      Aicon.tbl604_01PurchaseOrderMaster.POWarrantyPeriod, Aicon.tbl604_01PurchaseOrderMaster.POShipTo, Aicon.tbl604_01PurchaseOrderMaster.POBillTo, 
+                      Aicon.tbl604_01PurchaseOrderMaster.PORevisionNo, Aicon.qry604_02PurchaseOrderChild.MRItemNo, Aicon.qry604_02PurchaseOrderChild.Currency, Aicon.qry604_02PurchaseOrderChild.ExchangeRate, 
+                      Aicon.qry604_02PurchaseOrderChild.UnitRateInOC, Aicon.qry604_02PurchaseOrderChild.DiscountInOC, Aicon.qry604_02PurchaseOrderChild.CurrencyName, 
+                      Aicon.qry604_02PurchaseOrderChild.CurrencyNameAr, Aicon.qry604_02PurchaseOrderChild.CurrencyCode, Aicon.qry604_02PurchaseOrderChild.CurrencyCodeAr, 
+                      Aicon.qry604_02PurchaseOrderChild.LineTotalB4TaxOC, Aicon.qry604_02PurchaseOrderChild.LineTotalAfterDiscOC, Aicon.qry604_02PurchaseOrderChild.LineTaxAmountOC, 
+                      Aicon.qry604_02PurchaseOrderChild.LineTotalWithTaxOC, Aicon.qry604_04PurchaseOrderViewMaster.Currency AS Expr1, Aicon.qry604_04PurchaseOrderViewMaster.ExchangeRate AS Expr2, 
+                      Aicon.qry604_04PurchaseOrderViewMaster.TotalAmountB4TaxInOC, Aicon.qry604_04PurchaseOrderViewMaster.TotalAmountAfterDiscInOC, 
+                      Aicon.qry604_04PurchaseOrderViewMaster.TotalTaxAmountInOC, Aicon.qry604_04PurchaseOrderViewMaster.TotalDiscountInOC, Aicon.qry604_04PurchaseOrderViewMaster.TotalWithTaxInOC, 
+                      Aicon.qry604_04PurchaseOrderViewMaster.GrandTotalInOC, Aicon.tbl20169CurrencyExchange.CurrencyCode AS CurrencyCodeFromPOMaster, Aicon.tbl604_01PurchaseOrderMaster.ProjectMasterCode, 
+                      Aicon.tbl700_01ProjectMaster.ProjectDescription, Aicon.tbl700_01ProjectMaster.ProjectLocation, Aicon.qry604_02PurchaseOrderChild.POChildNo, Aicon.tbl20164GoodsAndServicesMaster.ItemPartNo, 
+                      CASE WHEN ISNULL(Aicon.tbl20164GoodsAndServicesMaster.ItemPartNo, '') = '' THEN ISNULL(Aicon.tbl20164GoodsAndServicesMaster.GSDescrpition, '') 
+                      ELSE 'Catalog #: ' + ISNULL(Aicon.tbl20164GoodsAndServicesMaster.ItemPartNo, '') + ' || ' + ISNULL(Aicon.tbl20164GoodsAndServicesMaster.GSDescrpition, '') END AS DescriptionWithItemPartNo, 
+                      Aicon.tbl604_01PurchaseOrderMaster.InventoryMasterGroupID, Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroup, Aicon.qry604_02PurchaseOrderChild.DeliveryPeriod, 
+                      Aicon.qry604_04PurchaseOrderViewMaster.SalesPersonCode, Aicon.qry604_04PurchaseOrderViewMaster.SalesPersonName, Aicon.qry604_04PurchaseOrderViewMaster.SalesPersonUserID, 
+                      Aicon.tbl604_01PurchaseOrderMaster.IsObseleteVersion, Aicon.tbl604_01PurchaseOrderMaster.BaseCurrencyId, Aicon.tbl604_01PurchaseOrderMaster.CurrencyId, Aicon.tbl604_01PurchaseOrderMaster.CurrencyRate
+FROM         Aicon.tbl901CompanyDetails RIGHT OUTER JOIN
+                      Aicon.tbl30199_SupplierMaster RIGHT OUTER JOIN
+                      Aicon.tbl604_01PurchaseOrderMaster LEFT OUTER JOIN
+                      Aicon.tbl600_08InventoryMasterGroup ON Aicon.tbl604_01PurchaseOrderMaster.InventoryMasterGroupID = Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroupID LEFT OUTER JOIN
+                      Aicon.tbl700_01ProjectMaster ON Aicon.tbl604_01PurchaseOrderMaster.ProjectMasterCode = Aicon.tbl700_01ProjectMaster.ProjectID LEFT OUTER JOIN
+                      Aicon.tbl20169CurrencyExchange ON Aicon.tbl604_01PurchaseOrderMaster.Currency = Aicon.tbl20169CurrencyExchange.CurrencyExchangeID LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories ON Aicon.tbl604_01PurchaseOrderMaster.POApprovedSign = Aicon.tbl90104DocumentSignatories.SignatoryID LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories AS tbl90104DocumentSignatories_2 ON Aicon.tbl604_01PurchaseOrderMaster.POVerifiedSign = tbl90104DocumentSignatories_2.SignatoryID LEFT OUTER JOIN
+                      Aicon.qry604_04PurchaseOrderViewMaster ON Aicon.tbl604_01PurchaseOrderMaster.PONo = Aicon.qry604_04PurchaseOrderViewMaster.PONo ON 
+                      Aicon.tbl30199_SupplierMaster.SupplierCode = Aicon.tbl604_01PurchaseOrderMaster.SupplierCode LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories AS tbl90104DocumentSignatories_1 ON Aicon.tbl604_01PurchaseOrderMaster.POSignatory = tbl90104DocumentSignatories_1.SignatoryID ON 
+                      Aicon.tbl901CompanyDetails.CompanyID = Aicon.tbl604_01PurchaseOrderMaster.CompanyBranch LEFT OUTER JOIN
+                      Aicon.tbl20164GoodsAndServicesMaster RIGHT OUTER JOIN
+                      Aicon.qry604_02PurchaseOrderChild ON Aicon.tbl20164GoodsAndServicesMaster.GSCode = Aicon.qry604_02PurchaseOrderChild.GSCode ON 
+                      Aicon.tbl604_01PurchaseOrderMaster.PONo = Aicon.qry604_02PurchaseOrderChild.PONo
+GO
+
+
+
+ALTER VIEW [Aicon].[qry601_05QuotationReport]
+AS
+SELECT     Aicon.tbl601_01QuotationMaster.QuoteNo, DATEADD(dd, DATEDIFF(dd, 0, Aicon.tbl601_01QuotationMaster.QuoteDate), 0) AS QuoteDate, Aicon.qry601_02QuotationChild.GSCode, 
+                      Aicon.qry601_02QuotationChild.GSDescrpition, Aicon.tbl601_01QuotationMaster.ClientRefNo, Aicon.tbl601_01QuotationMaster.Attention, Aicon.tbl601_01QuotationMaster.SubjectTitle, 
+                      Aicon.tbl601_01QuotationMaster.PaymentTerms, Aicon.tbl601_01QuotationMaster.DeliveryPeriod, Aicon.tbl601_01QuotationMaster.DeliveryTerms, Aicon.tbl601_01QuotationMaster.QuoteValidity, 
+                      Aicon.tbl601_01QuotationMaster.RFQCode, Aicon.tbl601_01QuotationMaster.ClientContactNo, Aicon.tbl601_01QuotationMaster.ClientContactEmail, Aicon.tbl601_01QuotationMaster.ClientCode, 
+                      Aicon.tbl601_01QuotationMaster.QuotationSummary, Aicon.tbl601_01QuotationMaster.QuoteSignatory, Aicon.tbl601_01QuotationMaster.QuoteIntro, Aicon.tbl30103ModeOfRequestMaster.ModeOfRequest, 
+                      Aicon.tbl30104TypeOfRequestMaster.TypeOfRequest, Aicon.tbl601_01QuotationMaster.AdditionsText, Aicon.tbl601_01QuotationMaster.DiscountsText, Aicon.tbl601_01QuotationMaster.QuoteDueDate, 
+                      Aicon.tbl601_01QuotationMaster.Project, Aicon.tbl20101SalesPersonMaster.SalesPersonName, Aicon.tbl901CompanyDetails.CompanyName, Aicon.tbl901CompanyDetails.CompanyFullAddress, 
+                      Aicon.qry601_02QuotationChild.QuotedQuantity, Aicon.qry601_02QuotationChild.UnitType, Aicon.qry601_02QuotationChild.UnitDesc, Aicon.qry601_02QuotationChild.QuotedUnitPrice, 
+                      Aicon.qry601_02QuotationChild.QuotedTaxSlab, Aicon.qry601_02QuotationChild.TaxRate, Aicon.qry601_02QuotationChild.LineOrderNo, Aicon.qry601_02QuotationChild.LineTotalBeforeDiscount, 
+                      Aicon.qry601_02QuotationChild.QuotedDiscount, Aicon.qry601_02QuotationChild.LineTotalAfterDiscount, Aicon.qry601_02QuotationChild.LineTaxAmount, Aicon.qry601_02QuotationChild.LineTotalWithTax, 
+                      Aicon.qry601_02QuotationChild.UnitRateMethod, Aicon.qry601_02QuotationChild.DeliveryTerms AS Expr1, Aicon.qry601_02QuotationChild.QuoteRemarks, Aicon.qry601_02QuotationChild.AddlDescription, 
+                      Aicon.qry601_02QuotationChild.QuoteChildID, Aicon.qry601_02QuotationChild.QuotedUOM, Aicon.tbl30101ClientMaster.ClientName, Aicon.tbl30101ClientMaster.ClientAddress, 
+                      Aicon.qry601_03QuotationItemsWithTotal.TotalBeforeDiscount, Aicon.qry601_03QuotationItemsWithTotal.Discount, Aicon.qry601_03QuotationItemsWithTotal.TotalAfterDiscount, 
+                      Aicon.qry601_03QuotationItemsWithTotal.TotalTaxAmount, Aicon.qry601_03QuotationItemsWithTotal.TotalWithTax, tbl90104DocumentSignatories_1.SignatoryName, 
+                      tbl90104DocumentSignatories_1.SignatoryPosition, tbl90104DocumentSignatories_1.SignatoryContact, tbl90104DocumentSignatories_1.SignatoryEmail, 
+                      tbl90104DocumentSignatories_1.SignatureImage, tbl90104DocumentSignatories_1.SignatoryMobile1, Aicon.tbl601_01QuotationMaster.QuoteTransport, Aicon.tbl601_01QuotationMaster.QuoteDiscount, 
+                      ISNULL(Aicon.qry601_03QuotationItemsWithTotal.TotalWithTax, 0) + ISNULL(Aicon.tbl601_01QuotationMaster.QuoteTransport, 0) - ISNULL(Aicon.tbl601_01QuotationMaster.QuoteDiscount, 0) 
+                      AS FinalTotal, Aicon.qry601_02QuotationChild.AddlDescriptionRTF, Aicon.tbl30101ClientMaster.VendorNo, Aicon.tbl601_01QuotationMaster.MPRNo, Aicon.tbl601_01QuotationMaster.QuoteThanksNote, 
+                      Aicon.qry601_02QuotationChild.PlanNo, Aicon.qry601_02QuotationChild.DeliveryPeriod AS Expr2, Aicon.qry601_02QuotationChild.ItemSize, ISNULL(Aicon.qry601_02QuotationChild.ItemPartNo, '') 
+                      AS ItemPartNo, Aicon.qry601_02QuotationChild.ItemBrand, Aicon.qry601_02QuotationChild.ItemMake, Aicon.tbl20101SalesPersonMaster.SalesPersonContactNo, 
+                      Aicon.tbl20101SalesPersonMaster.EmailAddress AS SalesPersonEmail, Aicon.tbl606_01PurchaseRequestMaster.MPRDate, ISNULL(Aicon.qry601_02QuotationChild.GSDescriptionAr, N'') 
+                      AS GSDescriptionAr, Aicon.qry601_04QuotationViewMaster.SalesOrderNo, Aicon.qry601_04QuotationViewMaster.SalesOrderDate, Aicon.qry601_04QuotationViewMaster.QuoteSubmittedOn, 
+                      Aicon.qry601_04QuotationViewMaster.QuoteSubmittedBy, Aicon.tbl601_01QuotationMaster.InventoryMasterGroupID, Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroup, 
+                      Aicon.qry601_04QuotationViewMaster.UserCode AS SalesPersonUserID, Aicon.qry601_02QuotationChild.ItemImage, Aicon.tbl90104DocumentSignatories.SignatoryName AS VerifiedBySignatoryName, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryPosition AS VerifiedBySignatoryPosition, Aicon.tbl90104DocumentSignatories.SignatoryContact AS VerifiedBySignatoryContact, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryEmail AS VerifiedBySignatoryEmail, Aicon.tbl90104DocumentSignatories.SignatureImage AS VerifiedBySignatoryImage, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryMobile1 AS VerifiedBySignatoryMobile1, tbl90104DocumentSignatories_2.SignatoryName AS ApprovedBySignatoryName, 
+                      tbl90104DocumentSignatories_2.SignatoryPosition AS ApprovedBySignatoryPosition, tbl90104DocumentSignatories_2.SignatoryContact AS ApprovedBySignatoryContact, 
+                      tbl90104DocumentSignatories_2.SignatoryEmail AS ApprovedBySignatoryEmail, tbl90104DocumentSignatories_2.SignatureImage AS ApprovedBySignatoryImage, 
+                      tbl90104DocumentSignatories_2.SignatoryMobile1 AS ApprovedBySignatoryMobile1, Aicon.qry601_02QuotationChild.QuoteGroupCode, Aicon.qry601_02QuotationChild.ClientItemLineRefNo, 
+                      Aicon.tbl601_07QuotationChildItemGroup.GroupCode, Aicon.tbl601_07QuotationChildItemGroup.GroupName, Aicon.tbl601_07QuotationChildItemGroup.GroupRemarks, 
+                      ISNULL(Aicon.tbl601_07QuotationChildItemGroup.IsShowLineItemsTotal, 0) AS IsShowLineItemsTotal, Aicon.tbl601_01QuotationMaster.ProjectMasterCode, 
+                      Aicon.tbl601_01QuotationMaster.TransportationScope, Aicon.tbl601_01QuotationMaster.BaseCurrencyId, Aicon.tbl601_01QuotationMaster.CurrencyId, Aicon.tbl601_01QuotationMaster.CurrencyRate
+FROM         Aicon.tbl601_07QuotationChildItemGroup RIGHT OUTER JOIN
+                      Aicon.qry601_02QuotationChild ON Aicon.tbl601_07QuotationChildItemGroup.QuoteGroupItemSlNo = Aicon.qry601_02QuotationChild.QuoteGroupItemSlNo RIGHT OUTER JOIN
+                      Aicon.tbl601_01QuotationMaster LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories AS tbl90104DocumentSignatories_2 ON Aicon.tbl601_01QuotationMaster.ApprovedSignatory = tbl90104DocumentSignatories_2.SignatoryID LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories ON Aicon.tbl601_01QuotationMaster.VerifiedSignatory = Aicon.tbl90104DocumentSignatories.SignatoryID LEFT OUTER JOIN
+                      Aicon.tbl600_08InventoryMasterGroup ON Aicon.tbl601_01QuotationMaster.InventoryMasterGroupID = Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroupID LEFT OUTER JOIN
+                      Aicon.qry601_04QuotationViewMaster ON Aicon.tbl601_01QuotationMaster.QuoteNo = Aicon.qry601_04QuotationViewMaster.QuoteNo LEFT OUTER JOIN
+                      Aicon.tbl606_01PurchaseRequestMaster ON Aicon.tbl601_01QuotationMaster.MPRNo = Aicon.tbl606_01PurchaseRequestMaster.MPRNo LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories AS tbl90104DocumentSignatories_1 ON Aicon.tbl601_01QuotationMaster.QuoteSignatory = tbl90104DocumentSignatories_1.SignatoryID LEFT OUTER JOIN
+                      Aicon.qry601_03QuotationItemsWithTotal ON Aicon.tbl601_01QuotationMaster.QuoteNo = Aicon.qry601_03QuotationItemsWithTotal.QuoteNo ON 
+                      Aicon.qry601_02QuotationChild.QuoteNo = Aicon.tbl601_01QuotationMaster.QuoteNo LEFT OUTER JOIN
+                      Aicon.tbl30101ClientMaster ON Aicon.tbl601_01QuotationMaster.ClientCode = Aicon.tbl30101ClientMaster.ClientCode LEFT OUTER JOIN
+                      Aicon.tbl901CompanyDetails ON Aicon.tbl601_01QuotationMaster.CompanyBranch = Aicon.tbl901CompanyDetails.CompanyID LEFT OUTER JOIN
+                      Aicon.tbl20101SalesPersonMaster ON Aicon.tbl601_01QuotationMaster.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode LEFT OUTER JOIN
+                      Aicon.tbl30104TypeOfRequestMaster ON Aicon.tbl601_01QuotationMaster.TypeOfRequest = Aicon.tbl30104TypeOfRequestMaster.TypeOfRequestID LEFT OUTER JOIN
+                      Aicon.tbl30103ModeOfRequestMaster ON Aicon.tbl601_01QuotationMaster.ModeOfRequest = Aicon.tbl30103ModeOfRequestMaster.ModeOfRequestID
+GO
+
+
+ALTER VIEW [Aicon].[qry607_01RFQView]
+AS
+SELECT Aicon.tbl607_01RFQMaster.RFQNo, Aicon.tbl607_01RFQMaster.RFQDate, Aicon.tbl607_01RFQMaster.MPRNo, Aicon.tbl607_01RFQMaster.SupplierCode, Aicon.tbl607_01RFQMaster.IsQuoted, Aicon.tbl607_01RFQMaster.IsWon, 
+                  Aicon.tbl607_01RFQMaster.ReasonWon, Aicon.tbl607_01RFQMaster.DeliveryPeriod, Aicon.tbl607_01RFQMaster.PaymentTerms, Aicon.tbl607_01RFQMaster.QuoteValidTo, Aicon.tbl607_01RFQMaster.QuoteValidDate, 
+                  Aicon.tbl607_01RFQMaster.SupplierQuotationNo, Aicon.tbl607_01RFQMaster.SupplierQuotationDt, Aicon.tbl607_01RFQMaster.PreparedBy, Aicon.tbl607_01RFQMaster.PreparedOn, Aicon.tbl607_01RFQMaster.AddedBy, 
+                  Aicon.tbl607_01RFQMaster.AddedOn, Aicon.tbl607_01RFQMaster.ModifiedBy, Aicon.tbl607_01RFQMaster.ModifiedOn, Aicon.tbl901CompanyDetails.CompanyName, Aicon.tbl30199_SupplierMaster.SupplierName, 
+                  Aicon.qry607_03RFQWithTotal.NoOfItems, Aicon.qry607_03RFQWithTotal.TotalBeforeTax, Aicon.qry607_03RFQWithTotal.TotalDiscount, Aicon.qry607_03RFQWithTotal.TotalAfterDiscount, Aicon.tbl607_01RFQMaster.Attention, 
+                  Aicon.tbl607_01RFQMaster.SupplierContactNo, Aicon.tbl607_01RFQMaster.SupplierContactEmail, Aicon.tbl30199_SupplierMaster.SupplierAddress, Aicon.tbl607_01RFQMaster.RFQSubject, Aicon.tbl607_01RFQMaster.RFQIntro, 
+                  Aicon.tbl607_01RFQMaster.RFQSummary, Aicon.tbl607_01RFQMaster.RFQSignatory, Aicon.tbl607_01RFQMaster.Project, Aicon.tbl606_01PurchaseRequestMaster.ClientRefNo, Aicon.tbl607_01RFQMaster.InventoryMasterGroupID, 
+                  Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroup, Aicon.tbl607_01RFQMaster.ProjectMasterCode, Aicon.tbl700_01ProjectMaster.ProjectDescription, Aicon.tbl20101SalesPersonMaster.SalesPersonCode, 
+                  Aicon.tbl20101SalesPersonMaster.SalesPersonName, Aicon.tbl20101SalesPersonMaster.UserCode,Aicon.tbl607_01RFQMaster.BaseCurrencyId,Aicon.tbl607_01RFQMaster.CurrencyId,Aicon.tbl607_01RFQMaster.CurrencyRate
+FROM     Aicon.tbl607_01RFQMaster LEFT OUTER JOIN
+                  Aicon.tbl20101SalesPersonMaster ON Aicon.tbl607_01RFQMaster.SalesPersonCode = Aicon.tbl20101SalesPersonMaster.SalesPersonCode LEFT OUTER JOIN
+                  Aicon.tbl700_01ProjectMaster ON Aicon.tbl607_01RFQMaster.ProjectMasterCode = Aicon.tbl700_01ProjectMaster.ProjectID LEFT OUTER JOIN
+                  Aicon.tbl600_08InventoryMasterGroup ON Aicon.tbl607_01RFQMaster.InventoryMasterGroupID = Aicon.tbl600_08InventoryMasterGroup.InventoryMasterGroupID LEFT OUTER JOIN
+                  Aicon.tbl606_01PurchaseRequestMaster ON Aicon.tbl607_01RFQMaster.MPRNo = Aicon.tbl606_01PurchaseRequestMaster.MPRNo LEFT OUTER JOIN
+                  Aicon.qry607_03RFQWithTotal ON Aicon.tbl607_01RFQMaster.RFQNo = Aicon.qry607_03RFQWithTotal.RFQNo LEFT OUTER JOIN
+                  Aicon.tbl901CompanyDetails ON Aicon.tbl607_01RFQMaster.CompanyBranch = Aicon.tbl901CompanyDetails.CompanyID LEFT OUTER JOIN
+                  Aicon.tbl30199_SupplierMaster ON Aicon.tbl607_01RFQMaster.SupplierCode = Aicon.tbl30199_SupplierMaster.SupplierCode
+GO
+
+
+ALTER VIEW [Aicon].[qry607_04RFQViewMaster]
+AS
+SELECT     Aicon.qry607_01RFQView.RFQNo, Aicon.qry607_01RFQView.RFQDate, Aicon.qry607_01RFQView.MPRNo, Aicon.qry607_01RFQView.SupplierCode, Aicon.qry607_01RFQView.IsQuoted, 
+                      Aicon.qry607_01RFQView.IsWon, Aicon.qry607_01RFQView.ReasonWon, Aicon.qry607_01RFQView.DeliveryPeriod, Aicon.qry607_01RFQView.PaymentTerms, Aicon.qry607_01RFQView.QuoteValidTo, 
+                      Aicon.qry607_01RFQView.QuoteValidDate, Aicon.qry607_01RFQView.SupplierQuotationNo, Aicon.qry607_01RFQView.SupplierQuotationDt, Aicon.qry607_01RFQView.PreparedBy, 
+                      Aicon.qry607_01RFQView.PreparedOn, Aicon.qry607_01RFQView.AddedBy, Aicon.qry607_01RFQView.AddedOn, Aicon.qry607_01RFQView.ModifiedBy, Aicon.qry607_01RFQView.ModifiedOn, 
+                      Aicon.qry607_01RFQView.CompanyName, Aicon.qry607_01RFQView.SupplierName, Aicon.qry607_01RFQView.NoOfItems, Aicon.qry607_01RFQView.TotalBeforeTax, Aicon.qry607_01RFQView.TotalDiscount, 
+                      Aicon.qry607_01RFQView.TotalAfterDiscount, Aicon.qry607_01RFQView.Attention, Aicon.qry607_01RFQView.SupplierContactNo, Aicon.qry607_01RFQView.SupplierContactEmail, 
+                      Aicon.qry607_01RFQView.SupplierAddress, Aicon.qry607_01RFQView.RFQSubject, Aicon.qry607_01RFQView.RFQIntro, Aicon.qry607_01RFQView.RFQSummary, Aicon.qry607_01RFQView.RFQSignatory, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryName, Aicon.tbl90104DocumentSignatories.SignatoryPosition, Aicon.tbl90104DocumentSignatories.SignatoryContact, 
+                      Aicon.tbl90104DocumentSignatories.SignatoryEmail, Aicon.tbl90104DocumentSignatories.SignatureImage, Aicon.qry607_01RFQView.Project, 
+                      ISNULL(Aicon.qry607_11QuoteHasItemsToPO.QuoteHasItemsToPO, 0) AS QuoteHasItemsToPO, Aicon.qry604_16POWithoutObseleteVersion.PONo, Aicon.qry607_01RFQView.ClientRefNo, 
+                      Aicon.qry607_01RFQView.InventoryMasterGroupID, Aicon.qry607_01RFQView.InventoryMasterGroup, Aicon.qry607_01RFQView.ProjectMasterCode, Aicon.qry607_01RFQView.ProjectDescription, 
+                      Aicon.qry607_01RFQView.SalesPersonCode, Aicon.qry607_01RFQView.SalesPersonName, Aicon.qry607_01RFQView.UserCode,Aicon.qry607_01RFQView.BaseCurrencyId,Aicon.qry607_01RFQView.CurrencyId,Aicon.qry607_01RFQView.CurrencyRate
+FROM         Aicon.qry607_01RFQView LEFT OUTER JOIN
+                      Aicon.qry604_16POWithoutObseleteVersion ON Aicon.qry607_01RFQView.RFQNo = Aicon.qry604_16POWithoutObseleteVersion.RFQNo LEFT OUTER JOIN
+                      Aicon.qry607_11QuoteHasItemsToPO ON Aicon.qry607_01RFQView.RFQNo = Aicon.qry607_11QuoteHasItemsToPO.RFQNo LEFT OUTER JOIN
+                      Aicon.tbl90104DocumentSignatories ON Aicon.qry607_01RFQView.RFQSignatory = Aicon.tbl90104DocumentSignatories.SignatoryID
+
+GO
+
+
+ALTER VIEW [Aicon].[qry607_05RFQReport]
+AS
+SELECT     Aicon.qry607_04RFQViewMaster.RFQNo, Aicon.qry607_04RFQViewMaster.RFQDate, Aicon.qry607_04RFQViewMaster.MPRNo, Aicon.qry607_04RFQViewMaster.SupplierCode, 
+                      Aicon.qry607_04RFQViewMaster.IsQuoted, Aicon.qry607_04RFQViewMaster.IsWon, Aicon.qry607_04RFQViewMaster.ReasonWon, Aicon.qry607_04RFQViewMaster.DeliveryPeriod, 
+                      Aicon.qry607_04RFQViewMaster.PaymentTerms, Aicon.qry607_04RFQViewMaster.QuoteValidTo, Aicon.qry607_04RFQViewMaster.QuoteValidDate, Aicon.qry607_04RFQViewMaster.SupplierQuotationNo, 
+                      Aicon.qry607_04RFQViewMaster.SupplierQuotationDt, Aicon.qry607_04RFQViewMaster.PreparedBy, Aicon.qry607_04RFQViewMaster.PreparedOn, Aicon.qry607_04RFQViewMaster.AddedBy, 
+                      Aicon.qry607_04RFQViewMaster.AddedOn, Aicon.qry607_04RFQViewMaster.ModifiedBy, Aicon.qry607_04RFQViewMaster.ModifiedOn, Aicon.qry607_04RFQViewMaster.CompanyName, 
+                      Aicon.qry607_04RFQViewMaster.SupplierName, Aicon.qry607_04RFQViewMaster.NoOfItems, Aicon.qry607_04RFQViewMaster.TotalBeforeTax, Aicon.qry607_04RFQViewMaster.TotalDiscount, 
+                      Aicon.qry607_04RFQViewMaster.TotalAfterDiscount, Aicon.qry607_02RFQChild.GSCode, Aicon.qry607_02RFQChild.QuotedQuantity, Aicon.qry607_02RFQChild.UnitRateMethod, 
+                      Aicon.qry607_02RFQChild.UnitPrice, Aicon.qry607_02RFQChild.ItemDiscount, Aicon.qry607_02RFQChild.QuotationRemarks, Aicon.qry607_02RFQChild.LineOrderNo, 
+                      Aicon.qry607_02RFQChild.GSDescrpition, Aicon.qry607_02RFQChild.UnitType, Aicon.qry607_02RFQChild.UnitDesc, Aicon.qry607_02RFQChild.LineTotalBeforeTax, 
+                      Aicon.qry607_02RFQChild.LineTotalAfterDisc, Aicon.qry607_02RFQChild.AddlDescription, Aicon.qry607_04RFQViewMaster.Attention, Aicon.qry607_04RFQViewMaster.SupplierContactNo, 
+                      Aicon.qry607_04RFQViewMaster.SupplierContactEmail, Aicon.qry607_04RFQViewMaster.SupplierAddress, Aicon.qry607_04RFQViewMaster.RFQSubject, Aicon.qry607_04RFQViewMaster.RFQIntro, 
+                      Aicon.qry607_04RFQViewMaster.RFQSummary, Aicon.qry607_04RFQViewMaster.SignatoryName, Aicon.qry607_04RFQViewMaster.SignatoryPosition, Aicon.qry607_04RFQViewMaster.SignatoryContact, 
+                      Aicon.qry607_04RFQViewMaster.SignatoryEmail, Aicon.qry607_04RFQViewMaster.SignatureImage, Aicon.qry607_02RFQChild.RFQChildSlNo, Aicon.qry607_02RFQChild.IsWonForPO, 
+                      Aicon.qry607_02RFQChild.IsWonUpdatedBy, Aicon.qry607_02RFQChild.IsWonUpdatedDate, Aicon.qry607_04RFQViewMaster.Project, Aicon.qry607_02RFQChild.PlanNo, 
+                      Aicon.qry607_02RFQChild.DeliveryPeriod AS Expr1, Aicon.qry607_02RFQChild.ItemSize, Aicon.qry607_02RFQChild.ItemPartNo, Aicon.qry607_02RFQChild.ItemBrand, Aicon.qry607_02RFQChild.ItemMake, 
+                      Aicon.qry607_04RFQViewMaster.InventoryMasterGroupID, Aicon.qry607_04RFQViewMaster.InventoryMasterGroup, Aicon.qry607_04RFQViewMaster.ClientRefNo, Aicon.qry607_04RFQViewMaster.PONo, 
+                      Aicon.qry607_04RFQViewMaster.QuoteHasItemsToPO, Aicon.qry607_04RFQViewMaster.ProjectMasterCode, Aicon.qry607_04RFQViewMaster.ProjectDescription, 
+                      Aicon.qry607_02RFQChild.ReasonForSelection, Aicon.qry607_04RFQViewMaster.SalesPersonCode, Aicon.qry607_04RFQViewMaster.SalesPersonName, Aicon.qry607_04RFQViewMaster.UserCode,Aicon.qry607_04RFQViewMaster.BaseCurrencyId,Aicon.qry607_04RFQViewMaster.CurrencyId,Aicon.qry607_04RFQViewMaster.CurrencyRate
+FROM         Aicon.qry607_04RFQViewMaster LEFT OUTER JOIN
+                      Aicon.qry607_02RFQChild ON Aicon.qry607_04RFQViewMaster.RFQNo = Aicon.qry607_02RFQChild.RFQNo
+GO
+
+
