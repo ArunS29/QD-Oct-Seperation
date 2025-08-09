@@ -755,7 +755,7 @@
             // ✅ Cell rendering here
               onCellPrepared: function (e) {
         if (e.area === "data" && typeof e.cell.value === "number") {
-            debugger;
+            
             const val = Math.abs(e.cell.value);
             const formatted = val.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
@@ -1109,7 +1109,7 @@
         }
     }
     function injectHeaderSVG() {
-         debugger;
+         
            let gridElement = $('#pivotGridContainer');
     let dataGrid = gridElement.dxDataGrid("instance");
     if (!dataGrid) return;

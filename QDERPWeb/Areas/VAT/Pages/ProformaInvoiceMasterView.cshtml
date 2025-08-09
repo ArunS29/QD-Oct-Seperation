@@ -893,7 +893,7 @@
 
 		function onGridContentReady(e) {
 		updateApprovedCountFromGrid();
-		debugger;
+		
 		const component = e.component;
 		const data = component.getDataSource().items();
 
@@ -1417,7 +1417,7 @@
 			dataType: 'json',
 			success: function (data) {
 				const gridInstance = $("#dataGrid").dxDataGrid("instance");
-				debugger;
+				
 				if (gridInstance) {
 					// If grid already exists, just update its dataSource
 					gridInstance.option("dataSource", data);
@@ -1616,7 +1616,7 @@
 			url: '/api/AccountingLedgers/GetCurrencyIcon',
 			type: 'GET',
 			success: function (response) {
-					debugger;
+					
 				let svgIcon = response.Icon;
 				if (!svgIcon) return;
 

@@ -1593,7 +1593,7 @@ buttons.Add()
 
         const visibleRows = grid.getVisibleRows();
         const match = visibleRows.find(r => r.data.AccountHead === typedText);
-        debugger;
+        
         if (match) {
             const selectedKey = match.data.AccountId;
             grid.selectRows([selectedKey], false); // select the row in the grid
@@ -3569,7 +3569,7 @@ accountGrid.clearSelection();
             {
                 $(function () {
                     
-                    debugger;
+                    
                     $.ajax({
                         url: "/api/VoucherMaster/GetNewCPVoucherNo",
                         type: 'GET',
@@ -4444,7 +4444,7 @@ tippy('#circle-approve', {
 }
 
     function loadCurrencyGridOnOpen(e) {
-    debugger;
+    
     const dropDown = e.component;
     const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 

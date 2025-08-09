@@ -707,7 +707,7 @@
 						   				<span id="currencySpan_<%- data.VoucherEntryNo %>" style="color: black; font-weight: bold;"></span>
 						   				<script>
 						   					(function() {
-						   						debugger;
+						   						
 						   						const spanId = "currencySpan_<%- data.VoucherEntryNo %>";
 						   						const span = document.getElementById(spanId);
 						   						if (!span) return;
@@ -1233,7 +1233,7 @@
 			url: '/api/AccountingLedgers/GetCurrencyIcon',
 			type: 'GET',
 			success: function (response) {
-				debugger;
+				
 				let svgIcon = response.Icon;
 				if (!svgIcon) return;
 
@@ -1294,7 +1294,7 @@
 			url: "/api/AccountingLedgers/GetCurrencyIcon",
 			method: "GET",
 			success: function (response) {
-				debugger;
+				
 				if (!response || !response.Icon) return;
 
 				const icon = response.Icon.trim();

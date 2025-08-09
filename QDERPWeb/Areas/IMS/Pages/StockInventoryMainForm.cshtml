@@ -287,7 +287,7 @@
         )
         .ValueExpr("GsgroupId")
         .DisplayExpr("GsgroupName")
-        .Label("Select Stock Group")
+        .Label(new JS("formatMessage('Select Stock Group')"))
         .LabelMode(EditorLabelMode.Floating)
         .ShowClearButton(true)
         .Width(400)
@@ -297,7 +297,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnFilterByStockGroup")
-        .Text("Show Records")
+        .Text(new JS("formatMessage('Show Records')"))
         .Icon("search")
         .OnClick("onFilterStockGroup")
         .ElementAttr(new { style = "margin-left: 10px;" })
@@ -305,7 +305,7 @@
 
     @(Html.DevExtreme().Button()
         .ID("btnClearStockGroupFilter")
-        .Text("Show All Records")
+        .Text(new JS("formatMessage('Show All Records')"))
         .Icon("clear")
        .OnClick("onClearStockGroupFilter")
         .ElementAttr(new { style = "margin-left: 10px;" })
@@ -800,23 +800,20 @@
 
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridSelectionChanged")
-                            .OnRowClick("dataGridRowClicked")
+                        .OnRowClick("dataGridRowClicked")
                         .OnInitialized("dataGridInitialized")
                         .HeaderFilter(p => p.Visible(true))
                         .FilterRow(f => f.Visible(false))
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
-                       .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                           .Height(345)
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                                columns.Add().DataField("GsgroupName").Caption("Group Name").Width(350);
-
-
-
+                                columns.Add().DataField("GsgroupName").Caption("Group Name").Width(400);    
                         })
                         )
 				}

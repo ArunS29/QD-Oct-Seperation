@@ -3968,7 +3968,7 @@
                     let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
                     if (selectedItem) {
                         cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-                        debugger;
+                        
                         let grid = $("#B2BdataGrid").dxDataGrid("instance");
                         let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                         if (rowIndex !== -1) {
@@ -4066,7 +4066,7 @@
 				
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 					let rowIndex = e.row.rowIndex;
-						debugger;
+						
 					let newValue = args.value;
 
 					// Get existing values or updated ones
@@ -4953,7 +4953,7 @@ openModal(url, title);
 			}
 
 			  function ClientCodedataGridSelectionChanged(e) {
-						 debugger;
+						 
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
 
@@ -6672,7 +6672,7 @@ openModal(url, title);
 			e.editorOptions.onValueChanged = function (args) {
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
-					debugger;
+					
 				let newValue = args.value;
 
 				// Get existing values or updated ones
@@ -6708,7 +6708,7 @@ openModal(url, title);
 	}
 
 	$("#btnSave").on("click", function (e) {
-		debugger;
+		
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();	
 		if(clientnameValidation.isValid)
@@ -6872,7 +6872,7 @@ openModal(url, title);
 
 
 				$("#btnSaveAndClose").on("click", function (e) {
-			debugger;
+			
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 			if(clientnameValidation.isValid)
@@ -7059,7 +7059,7 @@ openModal(url, title);
 
 	function VATPercentage(newValue, rowIndex,TaxSlabCode) {
 			let grid = $("#B2BdataGrid").dxDataGrid("instance");
- // debugger;
+ // 
 
 // Get existing values or updated ones
 let qty = grid.cellValue(rowIndex, "QuantityCredited") || 0;
