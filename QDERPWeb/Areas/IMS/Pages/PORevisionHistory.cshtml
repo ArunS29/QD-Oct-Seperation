@@ -1,4 +1,5 @@
 @page
+@using QD.ERP.Web.DAL.Entities
 @model QD.ERP.Web.Areas.IMS.Pages.PORevisionHistoryModel
 @{
 }
@@ -152,10 +153,17 @@
 </style>
 
 <div style="padding: 20px;">
-    @(Html.DevExtreme().DataGrid()
+    @(
+        Html.DevExtreme().DataGrid<Qry60404purchaseOrderViewMaster>()
         .ID("PurchaseOrderRevisionGrid")
+        .DataSource(ds => ds.Mvc()
+        .Controller("PurchaseOrder")   // Controller name
+        .LoadAction("Get")
+        .LoadParams(new { Mprno = new JS("cleanmprno") })// Action method for loading data
+        )
+        .RemoteOperations(true)
         .ShowBorders(true)
-        .Height("600px")
+        .Height(600)
         .Selection(s => s
         .Mode(SelectionMode.Multiple)
         .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -165,28 +173,43 @@
         .HeaderFilter(h => h.Visible(true))
         .Columns(columns =>
         {
-            columns.Add().Type(GridCommandColumnType.Selection)
-            .Width(50);
+            columns.Add().Type(GridCommandColumnType.Selection).Width(50);
 
-            columns.Add().Caption("PONo")
-            .DataField("PONo");
+            columns.Add()
+            .Caption("PONo")
+            .DataField("Pono");
 
-            columns.Add().Caption("PO Date")
-            .DataField("PODate")
+            columns.Add()
+            .Caption("PO Date")
+            .DataField("Podate")
             .DataType(GridColumnDataType.Date);
 
-            columns.Add().Caption("Supplier Code")
+            columns.Add()
+            .Caption("Supplier Code")
             .DataField("SupplierCode");
 
-            columns.Add().Caption("Supplier Name")
+            columns.Add()
+            .Caption("Supplier Name")
             .DataField("SupplierName");
 
-            columns.Add().Caption("PO Revision No")
-            .DataField("PORevisionNo");
+            columns.Add()
+            .Caption("PO Revision No")
+            .DataField("PorevisionNo");
 
-            columns.Add().Caption("Is Obselete Version")
+            columns.Add()
+            .Caption("Is Obselete Version")
             .DataField("IsObseleteVersion")
             .DataType(GridColumnDataType.Boolean);
         })
         )
 </div>
+<script>
+     function getQueryParam(param) {
+        const urlParams = new URLSearchParams(window.location.search);
+        return urlParams.get(param);
+    }
+
+    const mprno = getQueryParam("PONo");
+    const cleanmprno = mprno ? mprno.split("?")[0] : null;
+
+</script>

@@ -417,8 +417,6 @@
                             )
                         </div>
                        <div class="col-6">
-    <div style="display: flex; align-items: flex-end; gap: 8px;">
-        <div style="flex-grow: 1;">
             @(Html.DevExtreme().DropDownBox()
                 .Label(new JS("formatMessage('Supplier Name:')"))
                 .ID("VATSupplierName")
@@ -442,24 +440,47 @@
                 .LabelMode(EditorLabelMode.Floating)
 				.DropDownOptions(o => o.Width(800))
 			    .ContentTemplate(new TemplateName("SupplierNameTemplate"))
+				.Buttons(buttons => {
+								// Clear Button
+								buttons.Add()
+									.Name("clear");
+
+								// Add Client Button
+								buttons.Add()
+									.Name("AddDebits")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									);
+
+								// Edit Client Button
+								buttons.Add()
+									.Name("EditDebit")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+										.OnClick(@<text>
+											function() {
+												var dropDownBox = $('#VATSupplierName').dxDropDownBox('instance');
+												var selectedValue = dropDownBox.option('value');
+												if (!selectedValue) {
+													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+													return;
+												}
+												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+												openModal(url, 'Client Master');
+											}
+										</text>)
+									);
+									  buttons.Add()
+									   .Name("dropDown");
+							})
             )
-        </div>
-
-        @(Html.DevExtreme().Button()
-            .ID("AddDebit")
-            .Icon("plus")
-            .Hint("Add Description")
-            .Width("12%")  
-        )
-
-        @(Html.DevExtreme().Button()
-            .ID("EditDebit")
-            .Icon("edit")
-            .Hint("Edit Description")
-            .Width("12%")
-        )
     </div>
-</div>
 
                        
                         <div class="col-6">
@@ -537,7 +558,7 @@
                                     .Label(new JS("formatMessage('Supplier Name Arabic:')"))
                                     .DataSource(d => d.WebApi()
                                         .Controller("VATModule")
-                                        .LoadAction("")
+                                        .LoadAction("GetSupplierCode")
                                         .LoadMode(DataSourceLoadMode.Raw)
                                         .Key("AccountId"))
                                     .LabelMode(EditorLabelMode.Floating)
@@ -553,18 +574,45 @@
                                     .TabIndex(4)
                                     .DropDownOptions(o => o.Width(1000))
                                     .ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
-                                )
-								@(Html.DevExtreme().Button()
-                                    .ID("AddDebit1")
-                                    .Icon("plus")
-                                    .Hint("Add Description")
-                                    .Width("15%")
-                                )
-                                @(Html.DevExtreme().Button()
-                                    .ID("EditDebit1")
-                                    .Icon("edit")
-                                    .Hint("Edit Description")
-                                    .Width("15%")
+									.Buttons(buttons => {
+								// Clear Button
+								buttons.Add()
+									.Name("clear");
+
+								// Add Client Button
+								buttons.Add()
+									.Name("AddDebits")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									);
+
+								// Edit Client Button
+								buttons.Add()
+									.Name("EditDebit")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+										.OnClick(@<text>
+											function() {
+												var dropDownBox = $('#ddlSupplierNameArabic').dxDropDownBox('instance');
+												var selectedValue = dropDownBox.option('value');
+												if (!selectedValue) {
+													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+													return;
+												}
+												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
+												openModal(url, 'Client Master');
+											}
+										</text>)
+									);
+									  buttons.Add()
+									   .Name("dropDown");
+							})
                                 )
                             </div>
                         </div>
@@ -614,11 +662,12 @@
                                 .DisplayExpr("StoreName")
                                 .Width("100%")
                                 .TabIndex(4)
-                                .DropDownOptions(o => o.Width(1000))
+                                .DropDownOptions(o => o.Width(500))
                                 .ContentTemplate(new TemplateName("ItemsReturnedfromStoreTemplate"))
                             )
                         </div>
-						</table>
+						
+
                     </div>
                 </div>
            
@@ -672,7 +721,7 @@
 											.DisplayExpr("IncomeLedger")
 											.OnInput("dropDownBoxOnInput")
 											.OnOpened("onOpened")
-											.DropDownOptions(o => o.Width(1000))
+											.DropDownOptions(o => o.Width(700))
 											.ContentTemplate(new TemplateName("PurchaseAccountTemplate"))
 											.Width("100%"))
 								</td>
@@ -696,7 +745,7 @@
 											.DisplayExpr("CostAllocationUnit")
 											.OnInput("dropDownBoxOnInput")
 											.OnOpened("onOpened")
-											.DropDownOptions(o => o.Width(1000))
+											.DropDownOptions(o => o.Width(700))
 											.ContentTemplate(new TemplateName("CostCenterAccountTemplate"))
 											.Width("100%"))
 								</td>
@@ -838,7 +887,7 @@
 																						.DisplayExpr("BranchName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
-																						.DropDownOptions(o => o.Width(1000))
+																						.DropDownOptions(o => o.Width(700))
 																						.ContentTemplate(new TemplateName("DivisionTemplate"))
 																						.Width("100%")
 																						)
@@ -860,7 +909,7 @@
 																						.DisplayExpr("CompanyName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
-																						.DropDownOptions(o => o.Width(1000))
+																						.DropDownOptions(o => o.Width(700))
 																						.ContentTemplate(new TemplateName("DebitNoteDivisionTemplate"))
 																						.Width("100%")
 																						)
@@ -1282,6 +1331,64 @@
 										.ShowBorders(true)
 										.HoverStateEnabled(true)
 										.Paging(p => p.PageSize(15))
+										.ColumnChooser(c => c
+.Enabled(true)
+.Title(new JS("formatMessage('Show/Hide Column')"))
+.Mode(GridColumnChooserMode.DragAndDrop))
+.Pager(pager => pager
+.Visible(true)                            // show pager UI (page numbers etc)
+.ShowPageSizeSelector(true)              // allow user to change page size
+.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+.ShowInfo(true))   
+										.FilterRow(f => f.Visible(true))
+										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+										.Height(400)
+										.Selection(s => s.Mode(SelectionMode.Single))
+										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+										.Columns(columns =>
+										{
+											columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('CostAllocationUnit')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('CostAllocationUnit')")).Alignment(HorizontalAlignment.Center);
+
+
+										})
+
+									)
+
+}
+@using (Html.DevExtreme().NamedTemplate("ClientCodeContentTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
+
+										.ID("ddlSupplierNameArabic-datagrid")
+										.DataSource(d => d.WebApi()
+										.Controller("VATModule")
+											.LoadAction("GetSupplierCode")
+										.LoadMode(DataSourceLoadMode.Raw)
+											///   .Key("AccountHead") //salary paid entry
+											.Key("AccountId")
+
+										)
+										.ColumnChooser(c => c
+														.Enabled(true)
+														.Title(new JS("formatMessage('Show/Hide Column')"))
+														.Mode(GridColumnChooserMode.DragAndDrop))
+														.Pager(pager => pager
+														.Visible(true)                            // show pager UI (page numbers etc)
+														.ShowPageSizeSelector(true)              // allow user to change page size
+														.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+														.ShowInfo(true))   
+										.WordWrapEnabled(true)
+										.ShowBorders(true)
+										.SearchPanel(sp => sp.HighlightSearchText(true))
+										.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+										.OnSelectionChanged("dataGridCostCenterAccountHeadSelectionChanged")
+										.OnInitialized("dataGridCostCenterAccountHeadInitialized")
+										// .HeaderFilter(p => p.Visible(true))
+										.ShowBorders(true)
+										.HoverStateEnabled(true)
+										.Paging(p => p.PageSize(15))
+
 										.FilterRow(f => f.Visible(true))
 										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 										.Height(345)
@@ -1289,8 +1396,8 @@
 										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 										.Columns(columns =>
 										{
-											columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('CostAllocationUnit')")).Alignment(HorizontalAlignment.Center);
-											columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('CostAllocationUnit')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("AccountHeadArabic").Caption("رأس الحساب بالعربية").Alignment(HorizontalAlignment.Right);
+											columns.Add().DataField("AccountID").Caption("معرف الحساب").Alignment(HorizontalAlignment.Right);
 
 
 										})
@@ -1506,9 +1613,18 @@
 													.ShowBorders(true)
 													.HoverStateEnabled(true)
 													.Paging(p => p.PageSize(15))
+													.ColumnChooser(c => c
+.Enabled(true)
+.Title(new JS("formatMessage('Show/Hide Column')"))
+.Mode(GridColumnChooserMode.DragAndDrop))
+.Pager(pager => pager
+.Visible(true)                            // show pager UI (page numbers etc)
+.ShowPageSizeSelector(true)              // allow user to change page size
+.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+.ShowInfo(true))   
 													.FilterRow(f => f.Visible(true))
 													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-													.Height(345)
+													.Height(400)
 													.Selection(s => s.Mode(SelectionMode.Single))
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
@@ -1637,10 +1753,18 @@
 																				.Paging(p => p.PageSize(15))
 
 																				.FilterRow(f => f.Visible(true))
-
+																				.ColumnChooser(c => c
+.Enabled(true)
+.Title(new JS("formatMessage('Show/Hide Column')"))
+.Mode(GridColumnChooserMode.DragAndDrop))
+.Pager(pager => pager
+.Visible(true)                            // show pager UI (page numbers etc)
+.ShowPageSizeSelector(true)              // allow user to change page size
+.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+.ShowInfo(true))   
 																				.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-																				.Height(345)
+																				.Height(400)
 
 																				.Selection(s => s.Mode(SelectionMode.Single))
 
@@ -1686,9 +1810,18 @@
 																	.ShowBorders(true)
 																	.HoverStateEnabled(true)
 																	.Paging(p => p.PageSize(15))
+																	.ColumnChooser(c => c
+.Enabled(true)
+.Title(new JS("formatMessage('Show/Hide Column')"))
+.Mode(GridColumnChooserMode.DragAndDrop))
+.Pager(pager => pager
+.Visible(true)                            // show pager UI (page numbers etc)
+.ShowPageSizeSelector(true)              // allow user to change page size
+.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+.ShowInfo(true))   
 																	.FilterRow(f => f.Visible(true))
 																	.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-																	.Height(345)
+																	.Height(400)
 																	.Selection(s => s.Mode(SelectionMode.Single))
 																	.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 																	.Columns(columns =>
@@ -1723,8 +1856,17 @@
 													.HoverStateEnabled(true)
 													.Paging(p => p.PageSize(15))
 													.FilterRow(f => f.Visible(true))
+													.ColumnChooser(c => c
+.Enabled(true)
+.Title(new JS("formatMessage('Show/Hide Column')"))
+.Mode(GridColumnChooserMode.DragAndDrop))
+.Pager(pager => pager
+.Visible(true)                            // show pager UI (page numbers etc)
+.ShowPageSizeSelector(true)              // allow user to change page size
+.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+.ShowInfo(true))   
 													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-													.Height(345)
+													.Height(400)
 													.Selection(s => s.Mode(SelectionMode.Single))
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>

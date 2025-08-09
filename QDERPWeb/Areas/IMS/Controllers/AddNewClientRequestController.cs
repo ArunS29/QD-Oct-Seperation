@@ -1,7 +1,7 @@
 ﻿using DevExpress.DataProcessing.InMemoryDataProcessor;
 using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Data;
-using DevExtreme.AspNet.Data;
+
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
