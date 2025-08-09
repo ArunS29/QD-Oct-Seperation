@@ -197,7 +197,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Delete Job Order Status",
-                      actionDetail: $":Deleted Job Order Status  {id}",
+                      actionDetail: $"Deleted Job Order Status  {id}",
                       documentNo: $"{id}"
                     );
 
@@ -268,7 +268,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete Job Order View ",
-                 actionDetail: $":Deleted Job Order View{JobOrderNo}",
+                 actionDetail: $"Deleted Job Order View{JobOrderNo}",
                  documentNo: $"{JobOrderNo}"
                 );
 

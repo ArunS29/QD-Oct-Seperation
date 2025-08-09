@@ -927,6 +927,7 @@
                         <td>
                             @(Html.DevExtreme().TextBox()
                                 .ID("AvgCostPrice")
+                                .Disabled(true)
                                 .Label(new JS("formatMessage('Avg Cost Price :')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .ReadOnly(true))

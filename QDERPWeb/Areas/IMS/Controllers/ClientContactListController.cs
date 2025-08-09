@@ -161,7 +161,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 dbContext.Tbl3010102clientContactLists.Remove(entity);
                 dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete Client Category",
-                              actionDetail: $":Deleted Client Category {ClientContactSlNo}",
+                              actionDetail: $"Deleted Client Category {ClientContactSlNo}",
                               documentNo: $"{ClientContactSlNo}"
                             );
 

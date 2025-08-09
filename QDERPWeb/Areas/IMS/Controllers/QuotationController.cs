@@ -103,7 +103,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete ",
-                    actionDetail: $":Deleted  {model.ReportNo}",
+                    actionDetail: $"Deleted  {model.ReportNo}",
                     documentNo: $"{model.ReportNo}"
                 );
                 return Ok(new { message = "Field updated successfully." });
@@ -426,7 +426,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl60104quotationItemCosts.Remove(record);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Deletes ",
-                      actionDetail: $":Deleted  {key}",
+                      actionDetail: $"Deleted  {key}",
                       documentNo: $"{key}"
                     );
                     return Ok();
@@ -538,7 +538,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                        module: "IMS > Delete Cost Item",
-                       actionDetail: $":Deleted CostI tem {id}",
+                       actionDetail: $"Deleted CostI tem {id}",
                        documentNo: $"{id}"
                     );
 
@@ -608,7 +608,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete Quotation View ",
-                  actionDetail: $":Deleted Quotation View  {QuoteNo}",
+                  actionDetail: $"Deleted Quotation View  {QuoteNo}",
                    documentNo: $"{QuoteNo}"
                 );
 
@@ -684,15 +684,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             try
             {
-                // Get tenant name
-                var tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name missing from session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // Get company details
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 // Get digit config
                 int digits = dbContext.Tbl901CompanyDetails02s
@@ -724,7 +733,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete Quotation View ",
-                  actionDetail: $":Deleted Quotation View  {originalQuoteNo}",
+                  actionDetail: $"Deleted Quotation View  {originalQuoteNo}",
                   documentNo: $"{originalQuoteNo}"
                 );
 
@@ -829,16 +838,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-                // Step 2: Get tenant name from session
-                string tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // Step 3: Get company info
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
                 var company = dbContext.Tbl901CompanyDetails
-                    .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 string salesOrderAbbrv = company.SalesOrderAbbrv ?? "SO";
                 int yearDigits = company.InvoiceYearDigits ?? 0;

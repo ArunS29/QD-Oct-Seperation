@@ -626,7 +626,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Delete Rfq",
-                  actionDetail: $":Deleted Rfq {Rfqno}",
+                  actionDetail: $"Deleted Rfq {Rfqno}",
                   documentNo: $"{Rfqno}"
                 );
 
@@ -724,7 +724,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Verify RFQ",
-               actionDetail: $":Verified RFQ {Rfqno}",
+               actionDetail: $"Verified RFQ {Rfqno}",
                documentNo: $"{Rfqno}"
             );
 
@@ -776,7 +776,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
               module: "IMS > Approve RFQ",
-               actionDetail: $":Approved RFQ {Rfqno}",
+               actionDetail: $"Approved RFQ {Rfqno}",
                documentNo: $"{Rfqno}"
             );
 
@@ -827,7 +827,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 // Save Changes
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete RFQ View ",
-                        actionDetail: $":Deleted RFQ View  {Rfqno}",
+                        actionDetail: $"Deleted RFQ View  {Rfqno}",
                         documentNo: $"{Rfqno}"
                        );
 
@@ -940,12 +940,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 string addedBy = User.Identity?.Name ?? "System";
 
-                // Step 1: Get Company Info
-                var company = await dbContext.Tbl901CompanyDetails
-                    .FirstOrDefaultAsync(c => c.CompanyNameShort == tenant.Name);
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
+
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
 
                 if (company == null)
-                    return NotFound(new { message = "Company not found in Tbl901CompanyDetails.", success = false });
+                    return NotFound(new { success = false, message = "Company not found." });
+
 
                 // Step 2: Setup PO number prefix
                 string prefix = company.PurchaseOrderAbbrv ?? "";
@@ -1054,7 +1066,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Delete Child By Id",
-                  actionDetail: $":Deleted Child By Id {childId}",
+                  actionDetail: $"Deleted Child By Id {childId}",
                   documentNo: $"{childId}"
                 );
 

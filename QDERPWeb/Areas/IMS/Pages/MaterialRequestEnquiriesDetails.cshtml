@@ -1217,6 +1217,7 @@
 						data: JSON.stringify(mprNo), // ✅ pass as string
 						success: function (response) {
 							DevExpress.ui.notify(response.message, "success", 2000);
+								ddBtnShowRecords_click('range');
 							$("#dataGrid").dxDataGrid("instance").refresh(); // ✅ refresh grid
 						},
 						error: function (xhr) {
@@ -1319,14 +1320,14 @@
 			const Mprno = e.row.data.Mprno;
 
 			$.ajax({
-				url: "/api/MaterialRequestEnquiriesDetails/UnlockMaterialRequest",
-				type: "POST",
+					url: "/api/MaterialRequestEnquiriesDetails/UnlockPurchaseRequest",
+					type: "POST",
 				contentType: "application/json",
 				data: JSON.stringify({ Mprno: Mprno }), // ✅ sending request data
 				success: function (response) {
 					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
 					if (response.success) {
-						ddBtnShowRecords_click('range'); // ✅ refresh or reload the grid
+						ddBtnShowRecords_click('range'); 
 					}
 				},
 				error: function (xhr) {

@@ -285,7 +285,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						return NotFound("Company not found.");
 					}
 
-					string RequestAbbrv = company.RequestAbbrv;
+					string RequestAbbrv = company.MaterialReceiptAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
@@ -629,7 +629,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Delete Material Receipt",
-                   actionDetail: $":Deleted Material Receipt  {ReceiptNo}",
+                   actionDetail: $"Deleted Material Receipt  {ReceiptNo}",
                    documentNo: $"{ReceiptNo}"
                 );
 
@@ -686,7 +686,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Submit Material Receipt",
-                   actionDetail: $":Submited Material Receipt  {ReceiptNo}",
+                   actionDetail: $"Submited Material Receipt  {ReceiptNo}",
                    documentNo: $"{ReceiptNo}"
                 );
 
@@ -749,7 +749,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
              await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Verify Material Receipt",
-              actionDetail: $":Verified Material Receipt  {ReceiptNo}",
+              actionDetail: $"Verified Material Receipt  {ReceiptNo}",
               documentNo: $"{ReceiptNo}"
             );
 
@@ -801,7 +801,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Approve Material Receipt",
-                 actionDetail: $":Approved Material Receipt {ReceiptNo}",
+                 actionDetail: $"Approved Material Receipt {ReceiptNo}",
                   documentNo: $"{ReceiptNo}"
                 );
 
@@ -840,7 +840,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Delete Child By Id",
-                  actionDetail: $":Deleted Child By Id  {childId}",
+                  actionDetail: $"Deleted Child By Id  {childId}",
                    documentNo: $"{childId}"
                 );
 

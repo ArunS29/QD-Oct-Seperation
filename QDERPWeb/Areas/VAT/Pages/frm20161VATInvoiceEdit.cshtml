@@ -593,6 +593,7 @@
 																		.ShowClearButton(true)
 																		.AcceptCustomValue(true)
 																		.OpenOnFieldClick(true)
+																		.MaxLength(5)
 																		.ValueChangeEvent("input")
 																		.HoverStateEnabled(true)
 																		.ValueExpr("AccountId")
@@ -2251,8 +2252,8 @@
 						)
 					</div>
 				</div>
-			</text>)
-						.EditCellTemplate(@<text>
+			</text>);
+@* 						.EditCellTemplate(@<text>
 				<div style="display: flex; justify-content: space-between; align-items: center;">
 					@(Html.DevExtreme().DropDownBox()
 					.DataSource(d => d.WebApi()
@@ -2289,7 +2290,7 @@
 						)
 					</div>
 				</div>
-			</text>);
+			</text>); *@
 								columns.Add().DataField("DescriptionDetails")
 							.Caption(new JS("formatMessage('Unit Rate Method')"))
 							.Width(200)
@@ -2742,7 +2743,7 @@
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
 					.FilterRow(f => f.Visible(true))
-					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+				//	.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 					.Height(345)
 					.Selection(s => s.Mode(SelectionMode.Single))
 
@@ -3930,158 +3931,303 @@
 					caption: formatMessage('Description'),
 					width: 550,
 
-					editCellTemplate: function (cellElement, cellInfo) {
-						getDropdownData().done(function (dropdownData) {
-							let $container = $("<div>").css({ display: "flex", alignItems: "center", gap: "5px", width: "100%" }).appendTo(cellElement);
+					// editCellTemplate: function (cellElement, cellInfo) {
+					// 	getDropdownData().done(function (dropdownData) {
+					// 		let $container = $("<div>").css({ display: "flex", alignItems: "center", gap: "5px", width: "100%" }).appendTo(cellElement);
 
-							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-								dataSource: dropdownData,
-								valueExpr: "GSCode",
-								displayExpr: "GSDescrpition",
-								value: cellInfo.value,
-								dropDownOptions: { width: 800 },
-								onValueChanged: function (e) {
-									let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-									if (selectedItem) {
-										Desc = selectedItem.GSDescrpition;
-										cellInfo.setValue(selectedItem.GSDescrpition);
-										let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-										let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-										if (rowIndex !== -1) {
-											dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-											dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-											dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-										}
-									}
-								},
-								contentTemplate: function (e) {
-									return $("<div>").dxDataGrid({
-										dataSource: dropdownData,
-										selection: { mode: "single" },
-										keyExpr: "GSCode",
-										height: 300,
-										scrolling: { mode: "virtual" },
-										 searchPanel: {
-                                                       visible: true,
-                                                       width: 240,
-                                                          placeholder: "Search..."
-                                                      },
+					// 		$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+					// 			dataSource: dropdownData,
+					// 			valueExpr: "GSCode",
+					// 			displayExpr: "GSDescrpition",
+					// 			value: cellInfo.value,
+					// 			dropDownOptions: { width: 800 },
+					// 			onValueChanged: function (e) {
+					// 				let selectedItem = dropdownData.find(item => item.GSCode === e.value);
+					// 				if (selectedItem) {
+					// 					Desc = selectedItem.GSDescrpition;
+					// 					cellInfo.setValue(selectedItem.GSDescrpition);
+					// 					let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+					// 					let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+					// 					if (rowIndex !== -1) {
+					// 						dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+					// 						dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+					// 						dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+					// 					}
+					// 				}
+					// 			},
+					// 			contentTemplate: function (e) {
+					// 				return $("<div>").dxDataGrid({
+					// 					dataSource: dropdownData,
+					// 					selection: { mode: "single" },
+					// 					keyExpr: "GSCode",
+					// 					height: 300,
+					// 					scrolling: { mode: "virtual" },
+					// 					 searchPanel: {
+     //                                                   visible: true,
+     //                                                   width: 240,
+     //                                                      placeholder: "Search..."
+     //                                                  },
                                                   
-										columns: [
-											{ dataField: "GSCode", caption: "Code", width: 80 },
-											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-										],
-										onSelectionChanged: function (selectedItems) {
-											let selectedItem = selectedItems.selectedRowsData[0];
-											if (selectedItem) {
-												// e.component.option("value", selectedItem.GSCode);
-												cellInfo.setValue(selectedItem.GSDescrpition);
-												let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-												let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-												if (rowIndex !== -1) {
-													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-													dataGrid.cellValue(rowIndex, "Qty", 1);
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
-												}
-												e.component.close();
-											}
-										}
-									});
-								}
-							});
-            $("<div>").css({ flex: 1 }).dxDropDownBox({
-                dataSource: dropdownData,
-                valueExpr: "GSCode",
-                displayExpr: "GSDescrpition",
-                value: options.value,
-                dropDownOptions: { width: 800 },
-                contentTemplate: function (e) {
-                    return $("<div>").dxDataGrid({
-                        dataSource: dropdownData,
-                        selection: { mode: "single" },
-                        keyExpr: "GSCode",
-                        height: 300,
-                        scrolling: { mode: "virtual" },
-						 searchPanel: {
-						visible: true,
-						highlightCaseSensitive: true,
-						width: 130,
-						placeholder: "Search..."
-						},
-                        columns: [
-                            { dataField: "GSCode", caption: "Code", width: 80 },
-                            { dataField: "GSDescrpition", caption: "Description", width: 200 },
-                            { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-                            { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-                            { dataField: "CostPrice", caption: "Cost Price", width: 100 },
-                            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-                            { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-                        ],
-                        onSelectionChanged: function (selectedItems) {
-                            let selectedItem = selectedItems.selectedRowsData[0];
-                            if (selectedItem) {
-                                let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-                                let rowIndex = dataGrid.getRowIndexByKey(options.key);
-                                if (rowIndex !== -1) {
-                                    dataGrid.cellValue(rowIndex, "DetailedDescription", selectedItem.GSDescrpition || "");
-                                    dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-                                    dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-                                    dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-                                    dataGrid.cellValue(rowIndex, "Qty", 1);
-                                    dataGrid.cellValue(rowIndex, "VAT%", "15%");
-									dataGrid.cellValue(rowIndex, "UnitRateMethod",selectedItem.UnitDescription);
-                                }
-                                e.component.close();
-                            }
-                        }
-                    });
+					// 					columns: [
+					// 						{ dataField: "GSCode", caption: "Code", width: 80 },
+					// 						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
+					// 						{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+					// 						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+					// 						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
+					// 						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+					// 						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+					// 					],
+					// 					onSelectionChanged: function (selectedItems) {
+					// 						let selectedItem = selectedItems.selectedRowsData[0];
+					// 						if (selectedItem) {
+					// 							// e.component.option("value", selectedItem.GSCode);
+					// 							cellInfo.setValue(selectedItem.GSDescrpition);
+					// 							let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+					// 							let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+					// 							if (rowIndex !== -1) {
+					// 								dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+					// 								dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+					// 								dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+					// 								dataGrid.cellValue(rowIndex, "Qty", 1);
+					// 								dataGrid.cellValue(rowIndex, "VAT%", "15%");
+					// 							}
+					// 							e.component.close();
+					// 						}
+					// 					}
+					// 				});
+					// 			}
+					// 		});
+     //        $("<div>").css({ flex: 1 }).dxDropDownBox({
+     //            dataSource: dropdownData,
+     //            valueExpr: "GSCode",
+     //            displayExpr: "GSDescrpition",
+     //            value: options.value,
+     //            dropDownOptions: { width: 800 },
+     //            contentTemplate: function (e) {
+     //                return $("<div>").dxDataGrid({
+     //                    dataSource: dropdownData,
+     //                    selection: { mode: "single" },
+     //                    keyExpr: "GSCode",
+     //                    height: 300,
+     //                  //  scrolling: { mode: "virtual" },
+					// 	 searchPanel: {
+					// 	visible: true,
+					// 	highlightCaseSensitive: true,
+					// 	width: 130,
+					// 	placeholder: "Search..."
+					// 	},
+     //                    columns: [
+     //                        { dataField: "GSCode", caption: "Code", width: 80 },
+     //                        { dataField: "GSDescrpition", caption: "Description", width: 200 },
+     //                        { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+     //                        { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+     //                        { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+     //                        { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+     //                        { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+     //                    ],
+     //                    onSelectionChanged: function (selectedItems) {
+     //                        let selectedItem = selectedItems.selectedRowsData[0];
+     //                        if (selectedItem) {
+     //                            let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+     //                            let rowIndex = dataGrid.getRowIndexByKey(options.key);
+     //                            if (rowIndex !== -1) {
+     //                                dataGrid.cellValue(rowIndex, "DetailedDescription", selectedItem.GSDescrpition || "");
+     //                                dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+     //                                dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+     //                                dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+     //                                dataGrid.cellValue(rowIndex, "Qty", 1);
+     //                                dataGrid.cellValue(rowIndex, "VAT%", "15%");
+					// 				dataGrid.cellValue(rowIndex, "UnitRateMethod",selectedItem.UnitDescription);
+     //                            }
+     //                            e.component.close();
+     //                        }
+     //                    }
+     //                });
+     //            }
+     //        }).appendTo($container);
+
+					// 		$("<div>").dxButton({
+					// 			icon: "plus",
+					// 			hint: "Add new item",
+					// 			onClick: function () {
+					// 				let url = `/${tenantName}/VAT/VATGoodsandServices`;
+					// 				let title = "";
+					// 				openModal(url, title);
+					// 			},
+					// 			width: 60,
+					// 			height: 30
+					// 		}).appendTo($container);
+
+					// 		$("<div>").dxButton({
+					// 			icon: "edit",
+					// 			hint: "Edit item",
+					// 			onClick: function () {
+					// 				let url = `/${tenantName}/VAT/VATGoodsandServices`;
+					// 				let title = "";
+					// 				openModal(url, title);
+					// 			},
+					// 			width: 60,
+					// 			height: 30
+					// 		}).appendTo($container);
+
+					// 		 $("<div>").dxButton({
+     //                        icon: "paste",
+     //                        hint: "Stock Inventory Edit",
+     //                        onClick: function () {
+     //                            let url = `/${tenantName}/IMS/InventoryStockDetails`;
+     //                            let title = "";
+     //                            openModal(url, title);
+     //                        },
+     //                        width: 60,
+     //                        height: 30
+     //                    }).appendTo($container);
+					// 	});
+					// }
+
+				editCellTemplate: function (cellElement, cellInfo) {
+    let $container = $("<div>").css({
+        display: "flex",
+        alignItems: "center",
+        gap: "5px",
+        width: "100%"
+    }).appendTo(cellElement);
+
+    let selectedItemData = {};
+
+    const dropdownStore = new DevExpress.data.CustomStore({
+        key: "GSCode",
+        load: function (loadOptions) {
+            const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
+            const pageSize = loadOptions.take;
+          //  const searchValue = loadOptions.searchValue || "";
+
+            // if (searchValue.length < 3) {
+                //return Promise.resolve({ data: [], totalCount: 0 });
+				 return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+                pageNumber,
+                pageSize
+              //  searchText: searchValue
+            }).then(response => {
+                return {
+                    data: response.data,
+                    totalCount: response.totalCount
+                };
+            });
+            //}
+
+           
+        },
+        byKey: function (key) {
+           // return $.getJSON(`/api/VATModule/GetDropdownItemByCode?code=${encodeURIComponent(key)}`);
+        }
+    });
+
+    const $dropDownBox = $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+        valueExpr: "GSCode",
+        displayExpr: "GSDescrpition",
+        value: cellInfo.value,
+        dataSource: dropdownStore,
+        searchEnabled: true,
+        searchExpr: "GSDescrpition",
+        searchMode: "contains",
+        minSearchLength: 3,
+        deferRendering: true,
+        dropDownOptions: { width: 800 },
+        contentTemplate: function (e) {
+            return $("<div>").dxDataGrid({
+                dataSource: e.component.getDataSource(),
+                keyExpr: "GSCode",
+                height: 300,
+                remoteOperations: true,
+                scrolling: { mode: "virtual" },
+                paging: { enabled: true, pageSize: 15 },
+                pager: {
+                    visible: true,
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 15, 30],
+                    showInfo: true
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Search..."
+                },
+                selection: { mode: "single" },
+                columns: [
+                    { dataField: "GSCode", caption: "Code", width: 80 },
+                    { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                    { dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
+                    { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                    { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+                    { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+                    { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                ],
+                onSelectionChanged: function (selectedItems) {
+                    const selectedItem = selectedItems.selectedRowsData[0];
+                    if (!selectedItem) return;
+
+                    selectedItemData = selectedItem;
+                    cellInfo.setValue(selectedItem.GSDescrpition);
+
+                    const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                    const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+                    if (rowIndex !== -1) {
+                        dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
+                        dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                        dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                        dataGrid.cellValue(rowIndex, "Qty", 1);
+                        dataGrid.cellValue(rowIndex, "VAT%", "15%");
+                        dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+                    }
+
+                    e.component.close();
                 }
-            }).appendTo($container);
+            });
+        }
+    });
 
-							$("<div>").dxButton({
-								icon: "plus",
-								hint: "Add new item",
-								onClick: function () {
-									let url = `/${tenantName}/VAT/VATGoodsandServices`;
-									let title = "";
-									openModal(url, title);
-								},
-								width: 60,
-								height: 30
-							}).appendTo($container);
+    // Action buttons
+    const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
 
-							$("<div>").dxButton({
-								icon: "edit",
-								hint: "Edit item",
-								onClick: function () {
-									let url = `/${tenantName}/VAT/VATGoodsandServices`;
-									let title = "";
-									openModal(url, title);
-								},
-								width: 60,
-								height: 30
-							}).appendTo($container);
+    $("<div>").dxButton({
+        icon: "plus",
+        hint: "Add new item",
+        onClick: function () {
+            openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+        },
+        width: 60,
+        height: 30
+    }).appendTo($actionButtonWrapper);
 
-							 $("<div>").dxButton({
-                            icon: "paste",
-                            hint: "Stock Inventory Edit",
-                            onClick: function () {
-                                let url = `/${tenantName}/IMS/InventoryStockDetails`;
-                                let title = "";
-                                openModal(url, title);
-                            },
-                            width: 60,
-                            height: 30
-                        }).appendTo($container);
-						});
-					}
+    $("<div>").dxButton({
+        icon: "edit",
+        hint: "Edit item",
+        onClick: function () {
+            if (!selectedItemData || !selectedItemData.GSCode) {
+                DevExpress.ui.notify("Please select an item first", "warning", 2000);
+                return;
+            }
+
+            const selected = selectedItemData;
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+            openModal(url, "Goods and Services");
+        },
+        width: 60,
+        height: 30
+    }).appendTo($actionButtonWrapper);
+
+    $("<div>").dxButton({
+        icon: "paste",
+        hint: "Stock Inventory Edit",
+        onClick: function () {
+            openModal(`/${tenantName}/IMS/InventoryStockDetails`, "");
+        },
+        width: 60,
+        height: 30
+    }).appendTo($actionButtonWrapper);
+}
+
 				},
 			   {
 					dataField: "Descriptions",
@@ -4532,212 +4678,157 @@
 
 					caption: formatMessage('Description'),
 
-						cssClass: "center-header",
+					cssClass: "center-header",
 
 					width: 550,
 						
-					editCellTemplate: function (cellElement, cellInfo) {
+editCellTemplate: function (cellElement, cellInfo) {
+    let $container = $("<div>").css({
+        display: "flex",
+        alignItems: "center",
+        gap: "5px",
+        width: "100%"
+    }).appendTo(cellElement);
+
+    let selectedItemData = {};
+
+    const dropdownStore = new DevExpress.data.CustomStore({
+        key: "GSCode",
+        load: function (loadOptions) {
+            const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
+            const pageSize = loadOptions.take;
+          //  const searchValue = loadOptions.searchValue || "";
+
+            // if (searchValue.length < 3) {
+                //return Promise.resolve({ data: [], totalCount: 0 });
+				 return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+                pageNumber,
+                pageSize
+              //  searchText: searchValue
+            }).then(response => {
+                return {
+                    data: response.data,
+                    totalCount: response.totalCount
+                };
+            });
+            //}
+
+           
+        },
+        byKey: function (key) {
+           // return $.getJSON(`/api/VATModule/GetDropdownItemByCode?code=${encodeURIComponent(key)}`);
+        }
+    });
+
+    const $dropDownBox = $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+        valueExpr: "GSCode",
+        displayExpr: "GSDescrpition",
+        value: cellInfo.value,
+        dataSource: dropdownStore,
+        searchEnabled: true,
+        searchExpr: "GSDescrpition",
+        searchMode: "contains",
+        minSearchLength: 3,
+        deferRendering: true,
+        dropDownOptions: { width: 800 },
+        contentTemplate: function (e) {
+            return $("<div>").dxDataGrid({
+                dataSource: e.component.getDataSource(),
+                keyExpr: "GSCode",
+                height: 300,
+                remoteOperations: true,
+                scrolling: { mode: "virtual" },
+                paging: { enabled: true, pageSize: 15 },
+                pager: {
+                    visible: true,
+                    showPageSizeSelector: true,
+                    allowedPageSizes: [10, 15, 30],
+                    showInfo: true
+                },
+                searchPanel: {
+                    visible: true,
+                    width: 240,
+                    placeholder: "Search..."
+                },
+                selection: { mode: "single" },
+                columns: [
+                    { dataField: "GSCode", caption: "Code", width: 80 },
+                    { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                    { dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
+                    { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                    { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+                    { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+                    { dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+                ],
+                onSelectionChanged: function (selectedItems) {
+                    const selectedItem = selectedItems.selectedRowsData[0];
+                    if (!selectedItem) return;
+
+                    selectedItemData = selectedItem;
+                    cellInfo.setValue(selectedItem.GSDescrpition);
+
+                    const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+                    const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+
+                    if (rowIndex !== -1) {
+                        dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
+                        dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+                        dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+                        dataGrid.cellValue(rowIndex, "Qty", 1);
+                        dataGrid.cellValue(rowIndex, "VAT%", "15%");
+                        dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+                    }
+
+                    e.component.close();
+                }
+            });
+        }
+    });
+
+    // Action buttons
+    const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
+
+    $("<div>").dxButton({
+        icon: "plus",
+        hint: "Add new item",
+        onClick: function () {
+            openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+        },
+        width: 60,
+        height: 30
+    }).appendTo($actionButtonWrapper);
+
+    $("<div>").dxButton({
+        icon: "edit",
+        hint: "Edit item",
+        onClick: function () {
+            if (!selectedItemData || !selectedItemData.GSCode) {
+                DevExpress.ui.notify("Please select an item first", "warning", 2000);
+                return;
+            }
+
+            const selected = selectedItemData;
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+            openModal(url, "Goods and Services");
+        },
+        width: 60,
+        height: 30
+    }).appendTo($actionButtonWrapper);
+
+    $("<div>").dxButton({
+        icon: "paste",
+        hint: "Stock Inventory Edit",
+        onClick: function () {
+            openModal(`/${tenantName}/IMS/InventoryStockDetails`, "");
+        },
+        width: 60,
+        height: 30
+    }).appendTo($actionButtonWrapper);
+}
 
-						getDropdownData().done(function (dropdownData) {
 
-							let $container = $("<div>").css({
 
-								display: "flex",
 
-								alignItems: "center",
-
-								gap: "5px",
-
-								width: "100%"
-
-							}).appendTo(cellElement);
-
-							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-
-								dataSource: dropdownData,
-
-								valueExpr: "GSCode",
-
-								displayExpr: "GSDescrpition",
-
-								value: cellInfo.value,
-
-								dropDownOptions: { width: 800 },
-
-								onValueChanged: function (e) {
-
-									let selectedItem = dropdownData.find(item => item.GSCode === e.value);
-										
-
-									if (selectedItem) {
-
-										Desc = selectedItem.GSDescrpition;
-										alret(Desc)
-										cellInfo.setValue(selectedItem.GSDescrpition);
-
-										let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-
-										let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-
-										if (rowIndex !== -1) {
-										
-											dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-
-											dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-
-											dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-
-
-										}
-
-										let unitprice = dataGrid.cellValue(rowIndex, "Unit Price");
-
-									}
-
-								},
-
-								contentTemplate: function (e) {
-
-									return $("<div>").dxDataGrid({
-
-										dataSource: dropdownData,
-
-										selection: { mode: "single" },
-
-										keyExpr: "GSCode",
-
-										height: 300, // ✅ Add fixed height to enable scrolling
-
-										scrolling: { mode: "virtual" },
-										searchPanel: {
-                  visible: true,
-                  width: 240,
-                  placeholder: "Search..."
-              },
-
-										columns: [
-
-											{ dataField: "GSCode", caption: "Code", width: 80 },
-
-											{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-
-											{ dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
-
-											{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-
-											{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-
-											{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-
-											{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-
-										],
-
-										onSelectionChanged: function (selectedItems) {
-
-											let selectedItem = selectedItems.selectedRowsData[0];
-
-											if (selectedItem) {
-
-												//e.component.option("value", selectedItem.GSCode);
-
-												cellInfo.setValue(selectedItem.GSDescrpition);
-
-												let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-
-												let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-
-												if (rowIndex !== -1) {
-													
-
-													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
-
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-
-													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-
-													dataGrid.cellValue(rowIndex, "Qty", 1);
-
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
-
-													dataGrid.cellValue(rowIndex, "UnitRateMethod",selectedItem.UnitDescription);
-
-												ItemNo = selectedItem.GSCode;
-												Gsdescrpition = selectedItem.GSDescrpition;
-												GsdescriptionAr = selectedItem.GsdescriptionAr;
-												ItemPartNo = selectedItem.ItemPartNo;
-												CostPrice = selectedItem.CostPrice;
-												GssellingRate = selectedItem.GSSellingRate;
-												ReorderQty = selectedItem.ReorderQty;
-												UnitOfMeasure = selectedItem.UnitDescription;
-
-												}
-
-												e.component.close();
-
-											}
-
-										}
-
-									});
-
-								}
-
-							});
-
-							$("<div>").dxButton({
-								icon: "plus",
-								hint: "Add new item",
-								onClick: function () {
-									let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
-									let title = "";
-									openModal(url, title); // Opens the form in a modal
-									// Or use: window.location.href = url; if navigating directly
-								},
-								width: 60,
-								height: 30
-							}).appendTo($container);
-
-
-							// ✅ Edit icon with navigation
-
-							$("<div>").dxButton({
-
-								icon: "edit",
-
-								hint: "Edit item",
-
-								onClick: function () {
-
-									//let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-						          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-								  let title = "Goods and Services";
-								  openModal(url, title);
-									//window.location.href = url;
-
-								},
-
-								width: 60,
-
-								height: 30
-
-							}).appendTo($container);
-
-							 $("<div>").dxButton({
-                            icon: "paste",
-                            hint: "Stock Inventory Edit",
-                            onClick: function () {
-                                let url = `/${tenantName}/IMS/InventoryStockDetails`;
-                                let title = "";
-                                openModal(url, title);
-                            },
-                            width: 60,
-                            height: 30
-                        }).appendTo($container);
-
-						});
-
-					}
 
 				},
 		{
@@ -5174,42 +5265,79 @@
 
 
 
-		$("#btnAddNew").on("click", function (e) {
-		const grid = $("#B2BdataGrid").dxDataGrid("instance");
-		const store = grid.getDataSource().store();
-		const currentData = grid.getDataSource().items();
+	$("#btnAddNew").on("click", function (e) {
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
+    const store = grid.getDataSource().store();
+    const currentData = grid.getDataSource().items();
 
-		// Calculate next SNo safely based on existing items
-		const nextSNo = currentData.length > 0
-			? Math.max(...currentData.map(row => row.SNo || 0)) + 1
-			: 1;
+    const nextSNo = currentData.length > 0
+        ? Math.max(...currentData.map(row => row.SNo || 0)) + 1
+        : 1;
 
-		const newRow = {
-			SNo: nextSNo,
-			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
-            ItemCode:"", 
-			DetailedDescription: "",
-			DescriptionDetails: "",
-			QuantityInvoiced: 0,
-			UnitRate: 0.00,
-			CalcLineAmountBeforeDiscount: 0.00,
-			Discount: 0,
-			DiscountDetails: "",
-			CalcLineAmount: 0.00,
-			ExcemptionCode: "",
-			CalcTaxAmount: "",
-			LineTotal: 0.00
-		};
+    const newRow = {
+        SNo: nextSNo,
+        ItemCode: "", 
+        DetailedDescription: "",
+        DescriptionDetails: "",
+        QuantityInvoiced: 0,
+        UnitRate: 0.00,
+        CalcLineAmountBeforeDiscount: 0.00,
+        Discount: 0,
+        DiscountDetails: "",
+        CalcLineAmount: 0.00,
+        ExcemptionCode: "",
+        CalcTaxAmount: "",
+        LineTotal: 0.00
+    };
 
-		// Efficient insert without replacing entire dataSource
-		store.insert(newRow)
-			.then(() => {
-				grid.refresh(); // Ensure the UI updates with the new row
-			})
-			.catch(error => {
-				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
-			});
-	});
+    store.insert(newRow)
+        .then(() => {
+            grid.refresh();
+            // ✅ Show the action button containers
+            $(".action-buttons-container").show();
+        })
+        .catch(error => {
+            DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+        });
+});
+
+
+	// 	$("#btnAddNew").on("click", function (e) {
+	// 	const grid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 	const store = grid.getDataSource().store();
+	// 	const currentData = grid.getDataSource().items();
+
+	// 	// Calculate next SNo safely based on existing items
+	// 	const nextSNo = currentData.length > 0
+	// 		? Math.max(...currentData.map(row => row.SNo || 0)) + 1
+	// 		: 1;
+
+	// 	const newRow = {
+	// 		SNo: nextSNo,
+	// 		//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
+ //            ItemCode:"", 
+	// 		DetailedDescription: "",
+	// 		DescriptionDetails: "",
+	// 		QuantityInvoiced: 0,
+	// 		UnitRate: 0.00,
+	// 		CalcLineAmountBeforeDiscount: 0.00,
+	// 		Discount: 0,
+	// 		DiscountDetails: "",
+	// 		CalcLineAmount: 0.00,
+	// 		ExcemptionCode: "",
+	// 		CalcTaxAmount: "",
+	// 		LineTotal: 0.00
+	// 	};
+
+	// 	// Efficient insert without replacing entire dataSource
+	// 	store.insert(newRow)
+	// 		.then(() => {
+	// 			grid.refresh(); // Ensure the UI updates with the new row
+	// 		})
+	// 		.catch(error => {
+	// 			DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+	// 		});
+	// });
 
 	
 		// $("#btnAddNew").on("click", function (e) {
@@ -5382,8 +5510,9 @@
 				ItemPartNo: item.ItemPartNo,
 				CostPrice: item.CostPrice,
 				GSSellingRate: item.GssellingRate,
-				ReorderQty: item.ReorderQty,
-                UnitDescription:item.UnitRateMethod
+				ReorderQty: item.ReorderQty
+				//,
+               // UnitDescription:item.UnitRateMethod
 			}));
 		}).always(function () {
 			// Hide loader after AJAX call finishes (success or error)

@@ -370,4 +370,36 @@ public partial class Qry201607vatinvoiceRegisterMainView
     public string CurrencyImage { get; set; }
     public string CurrencySymbole { get; set; }
 
+
+    public decimal? ConvertedTotalDiscount { get; set; }
+    public decimal? ConvertedAdvanceAmount { get; set; }
+    public decimal? ConvertedRetentionAmount { get; set; }
+    public decimal? ConvertedOtherDeductionAmount { get; set; }
+    public decimal? ConvertedNetAmountAfterAllDeductions { get; set; }
+    public decimal? ConvertedCalcLineAmount { get; set; }
+    public decimal? ConvertedCalcTaxAmount { get; set; }
+
+    public decimal? ConvertedDomesticStandartRatedRevenue { get; set; }
+    public decimal? ConvertedDomesticZeroRatedRevenue { get; set; }
+    public decimal? ConvertedDomesticExemptedRevenue { get; set; }
+    public decimal? ConvertedGCCStandardRatedRevenue { get; set; }
+    public decimal? ConvertedGCCZeroRatedRevenue { get; set; }
+    public decimal? ConvertedGCCExpemptedRevenue { get; set; }
+    public decimal? ConvertedExportsRevenue { get; set; }
+
+    public decimal? ConvertedDomesticStandartRatedTax { get; set; }
+    public decimal? ConvertedDomesticZeroRatedTax { get; set; }
+    public decimal? ConvertedDomesticExemptedTax { get; set; }
+    public decimal? ConvertedGCCStandardRatedTax { get; set; }
+    public decimal? ConvertedGCCZeroRatedTax { get; set; }
+    public decimal? ConvertedGCCExpemptedTax { get; set; }
+    public decimal? ConvertedExportsTax { get; set; }
+
+
+    public decimal? ConvertedTotalRevenueOf10Perc { get; set; }
+    public decimal? ConvertedTotalRevenueOf15Perc { get; set; }
+    //public decimal? ConvertedGccstandardRatedRevenue { get; set; }
+    public decimal? ConvertedTotalTaxOf15Perc { get; set; }
+
+
 }

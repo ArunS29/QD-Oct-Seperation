@@ -157,7 +157,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                        module: "IMS > Delete Document Type",
-                      actionDetail: $":Deleted Document Type  {documentType.DocumentTypeId}",
+                      actionDetail: $"Deleted Document Type  {documentType.DocumentTypeId}",
                       documentNo: $"{documentType.DocumentTypeId}"
                     );
 
