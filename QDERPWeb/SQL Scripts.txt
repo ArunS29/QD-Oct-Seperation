@@ -3296,7 +3296,6 @@ FROM   [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
 
 
 
-
 ALTER TABLE [Aicon].tbl20166VATPurchaseMaster  
 ADD InvoiceCurrencyCode varchar(10),ExchangeRate decimal(19,4),TaxCurrencyCode varchar(10);
 ------------------------------

@@ -658,21 +658,21 @@
             switch (e.itemData.text) {
                 case (formatMessage('Upload Items from Excel')):
                     url = `/${tenantName}/Finance/InventoryListtoUpload`;
-                    title = "";
+                    window.location.href = url;
                     break;
                 case (formatMessage('Profit On Sale')):
                     url = `/${tenantName}/Finance/InvoiceProfitorLossSummary`;
-                    title = "";
+                    window.location.href = url; 
                     break;
                 case (formatMessage('Invoice Cost Posting')):
                     url = `/${tenantName}/Finance/InvoiceCostPosting`;
-                    title = "";
+                    window.location.href = url;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);
                     return;
             }
-            openModal(url, title);
+            //openModal(url, title);
         }
 
      function exportGridToPDF() {
