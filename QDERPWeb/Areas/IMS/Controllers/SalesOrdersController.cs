@@ -12,6 +12,7 @@ using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
+using SkiaSharp;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -721,7 +722,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                       module: "IMS > Save Sales Order",
-                      actionDetail: $":Saved SalesOrder {model.SalesOrderNo}",
+                      actionDetail: $"Saved SalesOrder {model.SalesOrderNo}",
                        documentNo: $"{model.SalesOrderNo}"
                 );
 
@@ -791,7 +792,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				var result = await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                      module: "IMS > Save Sales Order",
-                     actionDetail: $":Saved SalesOrder {model.SalesOrderNo}",
+                     actionDetail: $"Saved SalesOrder {model.SalesOrderNo}",
                       documentNo: $"{model.SalesOrderNo}"
                );
                 _logger.LogInformation($"Child records updated/added/deleted. Save result = {result}");
@@ -1077,7 +1078,7 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Delete Sales Order",
-               actionDetail: $":Saved SalesOrder {salesOrderNo}",
+               actionDetail: $"Saved SalesOrder {salesOrderNo}",
                 documentNo: $"{salesOrderNo}"
             );
 
@@ -1336,7 +1337,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Submit Sales Order1",
-                   actionDetail: $":Saved SalesOrder1 {salesOrderNo}",
+                   actionDetail: $"Saved SalesOrder1 {salesOrderNo}",
                    documentNo: $"{salesOrderNo}"
                 );
 
@@ -1388,7 +1389,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
            await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Submit Sales Order",
-                   actionDetail: $":Saved Sales Order {salesOrderNo}",
+                   actionDetail: $"Saved Sales Order {salesOrderNo}",
                    documentNo: $"{salesOrderNo}"
                 );
 
@@ -1840,6 +1841,28 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> HasLedger(string clientCode)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var hasLedger = await dbContext.Tbl30101ClientMasters
+                        .AnyAsync(c => c.ClientCode == clientCode && c.ClientName != null);
+
+
+                    return Ok(hasLedger);
+                }
+                return BadRequest("Tenant or database context not found.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetStoreToIssueItem: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while loading store data.", details = ex.Message });
+            }
         }
 
 

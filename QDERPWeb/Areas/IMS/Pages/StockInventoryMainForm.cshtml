@@ -5,6 +5,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <script src="~/js/global/print.js"></script>
 <link rel="stylesheet" href="~/css/animationCard.css" />
+<link rel="stylesheet" href="~/css/loader.css" />
 
 
 <style>
@@ -149,7 +150,7 @@
         justify-content: flex-end;
         height: 100%;
         position: absolute;
-        left: 330px;
+        left: 360px;
         bottom: 10px;
     }
 
@@ -249,13 +250,18 @@
 
     
 </div>
+<div id="loadingSpinner" class="spinner-overlay">
+    <div class="loader"></div>
+</div>
 @* <div class="container-fluid"></div> *@
 @* <div class="title">
     <div class="header-container">
         <div id="StockInventoryMainForm" class="no-border-title"></div>
     </div>
 </div> *@
+<input id="formId" value="frmIMSStockInventory" type="hidden" />
 <div class="Footer">
+    
     @await Html.PartialAsync("/Pages/Shared/IMS/StockInventoryFooter.cshtml")
 </div>
 <div class="context-menuInvoice" id="contextMenu">
@@ -1107,17 +1113,22 @@
     }
 
 
-    function onClearStockGroupFilter() {
+       function onClearStockGroupFilter() {
         $("#stockGroupDropDownBox").dxDropDownBox("instance").option("value", null);
-
+        document.getElementById('loadingSpinner');
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        dataGrid.option("dataSource", DevExpress.data.AspNet.createStore({
+        const store = DevExpress.data.AspNet.createStore({
             key: "Gscode",
             loadUrl: "/api/StockInventory/GetInventory"
-        }));
+        });
+        dataGrid.option({
+            dataSource: store,
+            onContentReady: function () {
+                document.getElementById('loadingSpinner').style.display = 'none';
+            }
+        });
     }
 </script>
-
 
 
 

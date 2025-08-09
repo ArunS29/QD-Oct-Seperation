@@ -388,8 +388,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					var result = dbContext.Qry60702rfqchildren  
                         .Where(x => x.Rfqno == RFQno)
 						.ToList();
-
-					foreach (var gridDetails in result)
+                    var currencyRate = await dbContext.Tbl60701rfqmasters
+                            .Where(x => x.Rfqno == RFQno)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                    foreach (var gridDetails in result)
 					{
 						dynamic item = new ExpandoObject();
 						var dict = (IDictionary<string, object>)item;
@@ -420,6 +423,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 						dict["GsDescription"] = gsDescription;
                         dict["GSCode"] = gridDetails.Gscode;
+                        dict["UnitPrice"] = gridDetails.UnitPrice / currencyRate;
+                        dict["LineTotalBeforeTax"] = gridDetails.LineTotalBeforeTax / currencyRate;
+                        dict["LineTotalAfterDisc"] = gridDetails.LineTotalAfterDisc / currencyRate;
+                        dict["ItemDiscount"] = gridDetails.ItemDiscount / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -472,6 +479,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingMaster.Rfqsignatory = VM.Rfqsignatory.HasValue ? (byte?)VM.Rfqsignatory.Value : null;
                     existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
                     existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
                 }
                 else
                 {
@@ -494,7 +504,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         SalesPersonCode = VM.SalesPersonCode,
                         Rfqsignatory = Convert.ToByte(VM.Rfqsignatory),
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId)
+                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1,
+
                     };
 
                     await dbContext.Tbl60701rfqmasters.AddAsync(newMaster);
@@ -525,6 +539,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 foreach (var child in VM.RFQDetailses)
                 {
                     child.Rfqno = VM.Rfqno;
+                    child.UnitPrice = child.UnitPrice * VM.CurrencyRate;
+                    child.ItemDiscount = child.ItemDiscount * VM.CurrencyRate;
 
                     if (child.RfqchildSlNo == 0)
                     {
@@ -545,7 +561,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update RFQ",
-                      actionDetail: $":Saved RFQ {VM.Rfqno}",
+                      actionDetail: $"Saved RFQ {VM.Rfqno}",
                        documentNo: $"{VM.Rfqno}"
                 );
 

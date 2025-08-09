@@ -86,7 +86,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Or Update Signatory",
-                      actionDetail: $":Saved Signatory {model.TypeOfRequestId}",
+                      actionDetail: $"Saved Signatory {model.TypeOfRequestId}",
                        documentNo: $"{model.TypeOfRequestId}"
                     );
 

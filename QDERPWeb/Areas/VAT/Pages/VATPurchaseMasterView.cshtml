@@ -327,15 +327,15 @@
 		</div>
 
 		<div class="tab-content active">
-			<div class="count" id="count0">0</div>
+			<div class="count" id="poo0">0</div>
 		</div>
 
 		<div class="tab-content">
-			<div class="count" id="count1">0</div>
+			<div class="count" id="poo1">0</div>
 		</div>
 
 		<div class="tab-content">
-			<div class="count" id="count2">0</div>
+			<div class="count" id="poo2">0</div>
 		</div>
 		<div class="tile-icon">
 			<svg width="33" height="31" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -1144,12 +1144,20 @@
 
 <script>
 
-	const headings = ["Bill Amount", "VAT Value"];
+		const headings = ["Bill Amount", "VAT Value"];
 	let currentIndex = 0;
 
 	// Default values
 	let invoiceAmounts = "0.00";
 	let vatTotalValues = "0.00";
+
+	// Format helper
+	function formatNumber(num) {
+		return Number(num || 0).toLocaleString("en-US", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+	}
 
 	// Update values from your data functions:
 	function updatePurchaseAmountCard(data) {
@@ -1160,7 +1168,7 @@
 				return sum + (isNaN(val) ? 0 : val);
 			}, 0);
 		}
-		invoiceAmounts = total.toFixed(2);
+		invoiceAmounts = formatNumber(total);
 	}
 
 	function updateTotalVATValue(data) {
@@ -1173,7 +1181,7 @@
 				total += vat5 + vat10 + vat15;
 			});
 		}
-		vatTotalValues = total.toFixed(2);
+		vatTotalValues = formatNumber(total);
 	}
 
 	// Switch every 2 seconds
@@ -1185,7 +1193,6 @@
 
 		headingEl.textContent = headings[currentIndex];
 		valueEl.innerHTML = `
-
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 		<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
 		<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
@@ -1193,6 +1200,7 @@
 			${currentIndex === 0 ? invoiceAmounts : vatTotalValues}
 		`;
 	}, 2000);
+
 		
 
 	function onGridContentReady(e) {
@@ -1202,6 +1210,7 @@
 		updatePurchaseAmountCard(data);  // ✅ FIXED: pass component
 		updateApprovedCountFromGrid();        // your existing call
 		updateTotalVATValue(data);            // your existing call
+			injectHeaderSVG();
 	}
 
 	
@@ -1270,9 +1279,9 @@
 		const card = document.getElementById('mainCard');
 		const counts = [0, 0, 0]; // [Verified, Approved, Posted]
 		const countEls = [
-		  document.getElementById("count0"),
-		  document.getElementById("count1"),
-		  document.getElementById("count2"),
+		  document.getElementById("poo0"),
+		  document.getElementById("poo1"),
+		  document.getElementById("poo2"),
 		];
 		const tabs = document.querySelectorAll(".tab-text");
 		const contents = document.querySelectorAll(".tab-content");
@@ -1326,7 +1335,7 @@
 	  // Animate Verified tab (optional)
 	  animateCount(countEls[0], counts[0]);
 	}
-	
+		document.getElementById("poo0").textContent = counts[0]; // Verified count
 
 	function VoucherStatusCellTemplate(cellElement, cellInfo) {
 		const status = cellInfo.value;
@@ -1489,20 +1498,19 @@
 				toDate: toDate
 			},
 			success: function (data) {
-				 console.log("ShowData", data);
-			 $("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-				if (data.data.length === 0 && page > 1) return;
-
+				console.log("VATPurchaseData",data)
+				if (data.length === 0 && page > 1) return;
+				debugger;
 				currentPage = Number(data.currentPage);
 				var grid = $("#dataGrid").dxDataGrid("instance");
-				grid.option("dataSource", data.data);
+				grid.option("dataSource", data);
 
-				updatePurchaseAmountCard(data.data);
-				console.log("SalesRegisterGrid", data.data);
+				//updateInvoiceAmountCard(data);
+				console.log("SalesRegisterGrid", data);
 
-				if (data.data && data.data.length > 0) {
-					VoucherAmountFormatted = data.data[data.data.length - 1].VoucherAmountFormatted;
-					firstrowVoucherAmountFormatted = data.data[0].VoucherAmountFormatted;
+				if (data && data.length > 0) {
+					VoucherAmountFormatted = data[data.length - 1].VoucherAmountFormatted;
+					firstrowVoucherAmountFormatted = data[0].VoucherAmountFormatted;
 				}
 
 				const totalPages = Math.ceil(Number(data.totalCount) / Number(data.pageSize));
@@ -1510,7 +1518,7 @@
 				$("#nextPage").prop("disabled", totalPages === data.currentPage);
 				$("#previousPage").prop("disabled", data.currentPage === 1);
 
-				const animatedCount = data.data.length;
+				const animatedCount = data.length;
 				animateInvoiceCardCount(animatedCount);
 
 				let periodLabel = "Invoices";
@@ -1528,6 +1536,8 @@
 				}
 
 				$("#invoicePeriodLabel").text(periodLabel);
+
+				// ✅ Now Add Five-Year Count Calculation
 				const today = new Date();
 				today.setHours(0, 0, 0, 0);
 
@@ -1535,7 +1545,7 @@
 				fiveYearsAgo.setFullYear(today.getFullYear() - 5);
 				fiveYearsAgo.setHours(0, 0, 0, 0);
 
-				const fiveYearCount = data.data.filter(row => {
+				const fiveYearCount = data.filter(row => {
 					const d = new Date(row.InvoiceDate); // or row.VoucherDate
 					d.setHours(0, 0, 0, 0);
 					return d >= fiveYearsAgo && d <= today;
@@ -1573,49 +1583,50 @@
 		return [day, strmonth, year].join('-');
 	}
 
-		function updatePurchaseAmountCard(component) {
-		const total = component.getTotalSummaryValue("TotalPurchaseAmount");
-		if (total != null) {
-			const formatted = total.toLocaleString(undefined, {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2
-			});
+	// 	function updatePurchaseAmountCard(component) {
+	// 	const total = component.getTotalSummaryValue("TotalPurchaseAmount");
+	// 	if (total != null) {
+	// 		const formatted = total.toLocaleString(undefined, {
+	// 			minimumFractionDigits: 2,
+	// 			maximumFractionDigits: 2
+	// 		});
 
-			const svg = `
-				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
-					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
-					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
-				</svg>`;
+	// 		const svg = `
+	// 			<svg xmlns="http:www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+	// 				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+	// 				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+	// 			</svg>`;
 
-			// Inject SVG + formatted amount
-			document.getElementById('invoiceAmounts').innerHTML = svg + " " + formatted;
-		} else {
-			document.getElementById('invoiceAmounts').innerHTML = "0.00";
-		}
-	}
+	// 		Inject SVG + formatted amount
+	// 		document.getElementById('invoiceAmountses').innerHTML = svg + " " + formatted;
+	// 	} else {
+	// 		document.getElementById('invoiceAmountses').innerHTML = "0.00";
+	// 	}
+	// }
 
-	function onGridContentReady(e) {
-		const component = e.component;
-		const data = component.getDataSource().items();
+	// function onGridContentReady(e) {
+	// 	const component = e.component;
+	// 	const data = component.getDataSource().items();
 
-		updatePurchaseAmountCard(component);  // ✅ FIXED: pass component
-		updateApprovedCountFromGrid();        // your existing call
-		updateTotalVATValue(data);            // your existing call
-		injectHeaderSVG();
-	}
+	// 	updatePurchaseAmountCard(component);  ✅ FIXED: pass component
+	// 	updateApprovedCountFromGrid();        your existing call
+	// 	updateTotalVATValue(data);            your existing call
+	// 	injectHeaderSVG();
+	// }
 
-	function updateTotalVATValue(data) {
-		let totalVAT = 0;
+	// function updateTotalVATValue(data) {
+	// 	let totalVAT = 0;
 
-		if (Array.isArray(data)) {
-			data.forEach(item => {
-				const vat5 = parseFloat(item.DomesticStandardPurTax) || 0;
-				const vat10 = parseFloat(item.TotalDspurchaseTax10Perc) || 0;
-				const vat15 = parseFloat(item.TotalDspurchaseTax15Perc) || 0;
+	// 	if (Array.isArray(data)) {
+	// 		data.forEach(item => {
+	// 			const vat5 = parseFloat(item.DomesticStandardPurTax) || 0;
+	// 			const vat10 = parseFloat(item.TotalDspurchaseTax10Perc) || 0;
+	// 			const vat15 = parseFloat(item.TotalDspurchaseTax15Perc) || 0;
 
-				totalVAT += vat5 + vat10 + vat15;
-			});
-		}
+	// 			totalVAT += vat5 + vat10 + vat15;
+	// 		});
+	// 	}
+	// }
 
 
 	 function cloneEInvoice() {
@@ -1905,7 +1916,7 @@
 		}
 	}
 
-			function injectHeaderSVG() {
+	function injectHeaderSVG() {
 			$.ajax({
 				url: '/api/AccountingLedgers/GetCurrencyIcon',
 				type: 'GET',
@@ -2208,11 +2219,6 @@
 	$(document).ready(function () {
 		injectHeaderSVG();
 	});
-
-
-
-
-
 
 
 </script>

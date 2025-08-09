@@ -2624,3 +2624,665 @@ WHERE (Aicon.tbl201ChartOfAccounts.AccountGroupID = 'A011')
 ALTER TABLE Aicon.tbl20101SalesPersonMaster
 ADD TargetPerMonth money NULL;
 
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = '[Aicon].[sp201_62InsertVATtoVoucher_BHD] ')
+BEGIN
+ALTER PROCEDURE [Aicon].[sp201_62InsertVATtoVoucher_BHD] 
+	(
+	@VoucherNo as varchar(50),
+	@JustAddedVoucherEntryNoSubLedger as int,
+	@JustAddedVoucherEntryNoCostAlloc as int,
+	@IsCashOrBankAccount as bit
+	)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+SET NOCOUNT ON;
+
+-- Insert to Voucher Master
+INSERT INTO  [Aicon].tbl201VoucherMaster(
+VoucherNo, VoucherDate, VoucherRefNo, VoucherNarration, VoucherEnteredBy, VoucherEnteredOn, 
+VoucherType, VoucherEffectiveDate, InvoiceDueDate, InvoiceNoOfDays, InvoiceSubmittedDate, UseSubmittedDate,Currencyid,CurrencyRate,basecurrencyid )
+
+SELECT InvoiceNo, InvoiceDate, PONo, 'Invoiced to ' + ClientName + ' on account of ' + RevenueAccountName + '. (' + Isnull(RemarksInEn, '') + ')', 
+AddedBy, AddedOn, 'Sales', InvoiceEffectiveDate, InvoiceDueDate, NoOfDaysCreditPeriod, InvoiceSubmittedOn, IsUseSubmittedDate,InvoiceCurrencyCode,ExchangeRate,TaxCurrencyCode
+From  [Aicon].qry201_608VATtoSalesMaster 
+Where InvoiceNo = @VoucherNo
+
+------------------------------------------
+
+-- Insert to Voucher Child entry (Debit Fields)
+INSERT INTO  [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT InvoiceNo, ClientCode, TotalWithTax_BHD, 'Dr', AddedBy, AddedOn,
+'Invoiced to ' + ClientName + ' on account of ' + RevenueAccountName + '. (' + Isnull(RemarksInEn, '') + ')', RevenueAccountName
+FROM          [Aicon].qry201_608VATtoSalesChild
+Where InvoiceNo = @VoucherNo
+
+select @JustAddedVoucherEntryNoSubLedger = Scope_Identity()
+
+-- Insert to Voucher Child Entry (Credit Fields)
+
+INSERT INTO  [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT InvoiceNo, RevenueAccount, TotalInvoiceAmount_BHD, 'Cr', AddedBy, AddedOn,
+'Invoiced to ' + ClientName + ' on account of ' + RevenueAccountName + '. (' + Isnull(RemarksInEn, '') + ')', ClientName
+FROM          [Aicon].qry201_608VATtoSalesChild
+Where InvoiceNo = @VoucherNo
+
+select @JustAddedVoucherEntryNoCostAlloc = Scope_Identity()
+
+-- Insert to Voucher Child Entry (VAT Amount)
+
+INSERT INTO  [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT InvoiceNo, 'S00200', TotalTaxAmount_BHD, 'Cr', AddedBy, AddedOn,
+'Invoiced to ' + ClientName + ' on account of ' + RevenueAccountName + '. (' + Isnull(RemarksInEn, '') + ')', ClientName
+FROM          [Aicon].qry201_608VATtoSalesChild
+Where InvoiceNo = @VoucherNo
+
+
+----Insert to SubLedger Master
+--Check If the Account is Cash/Bank Account ... then skip this step
+
+IF (@IsCashOrBankAccount = 0)
+	BEGIN
+	
+		INSERT INTO  [Aicon].tbl201SubLedgerMaster(
+		ReferenceType, VoucherEntryNo, ReferenceNo, AccountNo, 
+		Amount, DrCr, AddedBy, AddedOn, VoucherNo, RetentionAmount)
+
+		SELECT 
+		'New Reference', @JustAddedVoucherEntryNoSubLedger, InvoiceNo, ClientCode,
+		TotalWithTax_BHD, 'Dr', AddedBy, AddedOn, InvoiceNo, RetentionAmount
+		FROM          [Aicon].qry201_608VATtoSalesChild
+		Where InvoiceNo = @VoucherNo
+	END
+
+
+
+------Insert to Cost Allocation Master
+
+INSERT INTO  [Aicon].tbl201CostAllocationMaster(
+VoucherEntryID, CostAllocationUnitID, CostAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+EnteredBy, EnteredOn, VoucherNo)
+
+SELECT @JustAddedVoucherEntryNoCostAlloc, CostCenterCode, 'Cr', TotalInvoiceAmount_bhd, InvoiceEffectiveDate, 'VAT Invoice',
+AddedBy,  AddedOn, InvoiceNo
+FROM          [Aicon].qry201_608VATtoSalesChild
+Where InvoiceNo = @VoucherNo
+
+
+
+-- Insert Property Allocation Master (Credit Amounts)
+
+INSERT INTO  [Aicon].tbl20122PropertyAllocationMaster(
+	VoucherEntryID, PropertyNo, PropertyAllocDrCr, AmountAllocated, EffectiveDate, PropertyAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, PropertyNo, 'Cr', Round(TotalCalcLineAmount,3), InvoiceEffectiveDate, 'VAT Sales Invoice',
+	AddedBy,  Getdate(), InvoiceNo, RevenueAccount
+	FROM          [Aicon].qry201_618VATInvoiceChildTotal_ForPropertyCost
+	Where InvoiceNo = @VoucherNo
+
+
+-- Insert Property Allocation Master (Debit Amounts)
+
+INSERT INTO  [Aicon].tbl20122PropertyAllocationMaster(
+	VoucherEntryID, PropertyNo, PropertyAllocDrCr, AmountAllocated, EffectiveDate, PropertyAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, PropertyNo, 'Dr', TotalCalcLineAmount, InvoiceEffectiveDate, 'VAT Sales Invoice',
+	AddedBy,  Getdate(), InvoiceNo, RevenueAccount
+	FROM          [Aicon].qry201_619VATInvoiceChildTotal_ForPropertyCostDebits
+	Where InvoiceNo = @VoucherNo
+
+
+---- Insert Employee Allocation Master (Credit Amount)
+
+INSERT INTO  [Aicon].tbl20104EmployeeAllocationMaster(
+	VoucherEntryID, EmployeeNo, EmpAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, EmployeeNo, 'Cr', Round(TotalCalcLineAmount,3), InvoiceEffectiveDate, 'VAT Sales Invoice',
+	AddedBy,  Getdate(), InvoiceNo, RevenueAccount
+	FROM         [Aicon].qry201_618VATInvoiceChildTotal_ForEmployeeCost
+	Where InvoiceNo = @VoucherNo
+
+
+-- Insert Employee Allocation Master (Debit Amounts)
+
+INSERT INTO [Aicon].tbl20104EmployeeAllocationMaster(
+	VoucherEntryID, EmployeeNo, EmpAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, EmployeeNo, 'Dr', TotalCalcLineAmount, InvoiceEffectiveDate, 'VAT Sales Invoice',
+	AddedBy,  Getdate(), InvoiceNo, RevenueAccount
+	FROM         [Aicon].qry201_619VATInvoiceChildTotal_ForEmployeeCostDebits
+	Where InvoiceNo = @VoucherNo
+	
+END
+END
+go
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = '[Aicon].[sp201_82InsertVATCreditNotetoVoucher_BHD] ')
+BEGIN
+ALTER PROCEDURE [Aicon].[sp201_82InsertVATCreditNotetoVoucher_BHD] 
+	(
+	@VoucherNo as varchar(50),
+	@JustAddedVoucherEntryNoSubLedger as int,
+	@JustAddedVoucherEntryNoCostAlloc as int
+	)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+SET NOCOUNT ON;
+
+-- Insert to Voucher Master
+INSERT INTO [Aicon].tbl201VoucherMaster(
+VoucherNo, VoucherDate, VoucherRefNo, VoucherNarration, VoucherEnteredBy, VoucherEnteredOn, 
+VoucherType, VoucherEffectiveDate,Currencyid,CurrencyRate,basecurrencyid  )
+
+SELECT CreditNoteNo, CreditNoteDate, InvoiceNo, 'Credit Note Issued to ' + ClientName + ' on account of ' + RevenueAccount + '. (' + Isnull(CreditNoteRemarks, '') + ')', 
+AddedBy, AddedOn, 'Journal', CreditNoteEffectiveDate,InvoiceCurrencyCode,ExchangeRate,TaxCurrencyCode 
+From [Aicon].qry201_808VATCreditNoteToMaster 
+Where CreditNoteNo = @VoucherNo
+
+------------------------------------------
+
+-- Insert to Voucher Child entry (Debit Fields)
+
+INSERT INTO [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT CreditNoteNo, RevenueAccount, TotalCreditNoteAmount_BHD, 'Dr', AddedBy, AddedOn,
+'Credit Note Issued to ' + ClientName + ' on account of ' + RevenueAccountName + '. (' + Isnull(CreditNoteRemarks, '') + ')', ClientName
+FROM         [Aicon].qry201_608VATCreditNoteToCNChild
+Where CreditNoteNo = @VoucherNo
+
+select @JustAddedVoucherEntryNoCostAlloc = Scope_Identity()
+
+-- Insert to Voucher Child Entry (VAT Amount)
+
+INSERT INTO [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT CreditNoteNo, 'S00200', TotalTaxAmount_BHD, 'Dr', AddedBy, AddedOn,
+'Credit Note Issued to ' + ClientName + ' on account of ' + RevenueAccountName + '. (' + Isnull(CreditNoteRemarks, '') + ')', ClientName
+FROM         [Aicon].qry201_608VATCreditNoteToCNChild
+Where CreditNoteNo = @VoucherNo
+
+
+
+-- Insert to Voucher Child Entry (Credit Fields)
+
+INSERT INTO [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT CreditNoteNo, ClientCode, TotalWithTax_BHD, 'Cr', AddedBy, AddedOn,
+'Credit Note Issued to ' + ClientName + ' on account of ' + RevenueAccountName + '. (' + Isnull(CreditNoteRemarks, '') + ')', RevenueAccountName
+FROM         [Aicon].qry201_608VATCreditNoteToCNChild
+Where CreditNoteNo = @VoucherNo
+
+select @JustAddedVoucherEntryNoSubLedger = Scope_Identity()
+
+------Insert to SubLedger Master
+
+INSERT INTO [Aicon].tbl201SubLedgerMaster(
+ReferenceType, VoucherEntryNo, ReferenceNo, AccountNo, 
+Amount, DrCr, AddedBy, AddedOn, VoucherNo)
+
+SELECT 
+'Against Reference', @JustAddedVoucherEntryNoSubLedger, InvoiceNo, ClientCode,
+TotalWithTax_BHD , 'Cr', AddedBy, AddedOn, CreditNoteNo
+FROM         [Aicon].qry201_608VATCreditNoteToCNChild
+Where CreditNoteNo = @VoucherNo
+
+
+--------Insert to Cost Allocation Master
+
+INSERT INTO [Aicon].tbl201CostAllocationMaster(
+VoucherEntryID, CostAllocationUnitID, CostAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+EnteredBy, EnteredOn, VoucherNo)
+
+SELECT @JustAddedVoucherEntryNoCostAlloc, CostCenterCode, 'Dr', TotalCreditNoteAmount_BHD , CreditNoteEffectiveDate, 'VAT Credit Note',
+AddedBy,  AddedOn, CreditNoteNo
+FROM         [Aicon].qry201_608VATCreditNoteToCNChild
+Where CreditNoteNo = @VoucherNo
+
+
+---- Insert Employee Allocation Master (Credit Amount)
+
+INSERT INTO [Aicon].tbl20104EmployeeAllocationMaster(
+	VoucherEntryID, EmployeeNo, EmpAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, EmployeeNo, 'Cr', Round(TotalCalcLineAmount,3), CreditNoteEffectiveDate, 'VAT Credit Note',
+	AddedBy,  Getdate(), CreditNoteNo, RevenueAccount
+	FROM         [Aicon].qry201_818VATCreditNoteChildTotal_ForEmployeeCostCr
+	Where CreditNoteNo = @VoucherNo
+
+--CreditNoteNo, TotalCalcLineAmount, EmployeeNo, CreditNoteDate, AddedBy, CreditNoteEffectiveDate, RevenueAccount
+
+-- Insert Employee Allocation Master (Debit Amounts)
+
+INSERT INTO [Aicon].tbl20104EmployeeAllocationMaster(
+	VoucherEntryID, EmployeeNo, EmpAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, EmployeeNo, 'Dr', Round(TotalCalcLineAmount,3), CreditNoteEffectiveDate, 'VAT Credit Note',
+	AddedBy,  Getdate(), CreditNoteNo, RevenueAccount
+	FROM        [Aicon].qry201_818VATCreditNoteChildTotal_ForEmployeeCostDr
+	Where CreditNoteNo = @VoucherNo
+	
+	
+	-- Insert Property Allocation Master (Credit Amounts)
+
+INSERT INTO [Aicon].tbl20122PropertyAllocationMaster(
+	VoucherEntryID, PropertyNo, PropertyAllocDrCr, AmountAllocated, EffectiveDate, PropertyAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, PropertyNo, 'Cr', Round(TotalCalcLineAmount,3), CreditNoteEffectiveDate, 'VAT Credit Note',
+	AddedBy,  Getdate(), CreditNoteNo, RevenueAccount
+	FROM         [Aicon].qry201_818VATCreditNoteChildTotal_ForPropertyCostCr
+	Where CreditNoteNo = @VoucherNo
+
+-- CreditNoteNo, TotalCalcLineAmount, PropertyNo, CreditNoteDate, AddedBy, CreditNoteEffectiveDate, RevenueAccount
+
+-- Insert Property Allocation Master (Debit Amounts)
+
+INSERT INTO [Aicon].tbl20122PropertyAllocationMaster(
+	VoucherEntryID, PropertyNo, PropertyAllocDrCr, AmountAllocated, EffectiveDate, PropertyAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, PropertyNo, 'Dr', Round(TotalCalcLineAmount,3), CreditNoteEffectiveDate, 'VAT Credit Note',
+	AddedBy,  Getdate(), CreditNoteNo, RevenueAccount
+	FROM         [Aicon].qry201_818VATCreditNoteChildTotal_ForPropertyCostDr
+	Where CreditNoteNo = @VoucherNo
+----
+END
+End
+go
+
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = '[Aicon].[sp201_72InsertVATPurchasetoVoucher_BHD] ')
+BEGIN
+ALTER PROCEDURE [Aicon].[sp201_72InsertVATPurchasetoVoucher_BHD] 
+	(
+	@VoucherNo as varchar(50),
+	@JustAddedVoucherEntryNoSubLedger as int,
+	@JustAddedVoucherEntryNoCostAlloc as int,
+	@IsCashOrBankAccount as bit,
+	@IsExpensesAccount as bit
+	)
+AS
+BEGIN
+	-- SET NOCOUNT ON added to prevent extra result sets from
+	-- interfering with SELECT statements.
+SET NOCOUNT ON;
+
+-- Insert to Voucher Master
+INSERT INTO [Aicon].tbl201VoucherMaster(
+VoucherNo, VoucherDate, VoucherRefNo, VoucherNarration, VoucherEnteredBy, VoucherEnteredOn, 
+VoucherType, VoucherEffectiveDate, InvoiceDueDate, InvoiceSubmittedDate, Currencyid,CurrencyRate,basecurrencyid )
+
+SELECT PurchaseVoucherNo, PurchaseVoucherDate, PurchaseBillNo, 'Bill from ' + SupplierName + ' on account of ' + ExpensesAccountName + '. (' + Isnull(Remarks, '') + ')', 
+AddedBy, AddedOn, 'Purchases', PurchaseEffectiveDate, PurchaseDueDate, SupplierInvRecdOn,InvoiceCurrencyCode,ExchangeRate,TaxCurrencyCode
+From [Aicon].qry201_708VATtoPurchaseMaster 
+Where PurchaseVoucherNo = @VoucherNo
+
+------------------------------------------
+
+
+
+-- Insert to Voucher Child Entry (Debit Fields)
+
+INSERT INTO [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT PurchaseVoucherNo, PurchaseLedgerAccountNo, TotalInvoiceAmount_BHD, 'Dr', AddedBy, AddedOn,
+'Bill from ' + SupplierName + ' on account of ' + ExpensesAccountName + '. (' + Isnull(Remarks, '') + ')', SupplierName
+FROM          [Aicon].qry201_708VATtoPurchaseChild
+Where PurchaseVoucherNo = @VoucherNo
+
+select @JustAddedVoucherEntryNoCostAlloc = Scope_Identity()
+
+-- Insert to Voucher Child Entry (VAT Amount)
+
+INSERT INTO [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT PurchaseVoucherNo, 'S00100', TotalTaxAmount_BHD, 'Dr', AddedBy, AddedOn,
+'Bill from ' + SupplierName + ' on account of ' + ExpensesAccountName + '. (' + Isnull(Remarks, '') + ')', SupplierName
+FROM         [Aicon].qry201_708VATtoPurchaseChild
+Where PurchaseVoucherNo = @VoucherNo
+
+
+
+---Insert Credit Account to Voucher Entry
+
+INSERT INTO [Aicon].tbl201VoucherEntry(
+VoucherNo, AccountHead, VoucherAmount, DrCr, AddedBy, AddedOn, EntryNarration,
+SysRemarks)
+
+SELECT PurchaseVoucherNo, SupplierCode, TotalWithTax_BHD, 'Cr', AddedBy, AddedOn,
+'Bill from ' + SupplierName + ' on account of ' + ExpensesAccountName + '. (' + Isnull(Remarks, '') + ')' , ExpensesAccountName
+FROM         [Aicon].qry201_708VATtoPurchaseChild
+Where PurchaseVoucherNo = @VoucherNo
+
+select @JustAddedVoucherEntryNoSubLedger = Scope_Identity()
+
+
+----Insert to SubLedger Master
+--Check If the Account is Cash/Bank Account ... then skip this step
+
+IF (@IsCashOrBankAccount = 0)
+	BEGIN
+		INSERT INTO [Aicon].tbl201SubLedgerMaster(
+		ReferenceType, VoucherEntryNo, ReferenceNo, AccountNo, 
+		Amount, DrCr, AddedBy, AddedOn, VoucherNo, RetentionAmount)
+
+		SELECT 
+		'New Reference', @JustAddedVoucherEntryNoSubLedger, PurchaseVoucherNo, SupplierCode,
+		TotalWithTax_BHD, 'Cr', AddedBy, AddedOn, PurchaseVoucherNo, RetentionAmount
+		FROM         [Aicon].qry201_708VATtoPurchaseChild
+		Where PurchaseVoucherNo = @VoucherNo
+	END
+
+
+------Insert to Cost Allocation Master
+
+IF (@IsExpensesAccount = 1)
+	BEGIN
+	INSERT INTO [Aicon].tbl201CostAllocationMaster(
+	VoucherEntryID, CostAllocationUnitID, CostAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, CostCenterCode, 'Dr', TotalInvoiceAmount_BHD, PurchaseEffectiveDate, 'VAT Purchase Bill',
+	AddedBy,  AddedOn, PurchaseVoucherNo
+	FROM         [Aicon].qry201_708VATtoPurchaseChild
+	Where PurchaseVoucherNo = @VoucherNo
+	
+	END
+
+
+
+-- Insert Property Allocation Master (Debit Amounts)
+
+INSERT INTO [Aicon].tbl20122PropertyAllocationMaster(
+	VoucherEntryID, PropertyNo, PropertyAllocDrCr, AmountAllocated, EffectiveDate, PropertyAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, PropertyNo, 'Dr', TotalCalcLineAmount, PurchaseEffectiveDate, 'VAT Purchase Bill',
+	AddedBy,  AddedOn, PurchaseVoucherNo, PurchaseLedgerAccountNo
+	FROM         [Aicon].qry201_725VATPurchaseChildTotal_ForPropertyCost
+	Where PurchaseVoucherNo = @VoucherNo
+	
+		
+-- Insert Property Allocation Master (Credit Amounts)
+
+INSERT INTO [Aicon].tbl20122PropertyAllocationMaster(
+	VoucherEntryID, PropertyNo, PropertyAllocDrCr, AmountAllocated, EffectiveDate, PropertyAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, PropertyNo, 'Cr',  - TotalCalcLineAmount AS TotalCalcLineAmount, PurchaseEffectiveDate, 'VAT Purchase Bill',
+	AddedBy,  AddedOn, PurchaseVoucherNo, PurchaseLedgerAccountNo
+	FROM         [Aicon].qry201_725VATPurchaseChildTotal_ForPropertyCostCredits
+	Where PurchaseVoucherNo = @VoucherNo
+	----
+
+
+-- Insert Employee Allocation Master (Debit Amounts)
+
+INSERT INTO [Aicon].tbl20104EmployeeAllocationMaster(
+	VoucherEntryID, EmployeeNo, EmpAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, EmployeeNo, 'Dr', TotalCalcLineAmount, PurchaseEffectiveDate, 'VAT Purchase Bill',
+	AddedBy,  AddedOn, PurchaseVoucherNo, PurchaseLedgerAccountNo
+	FROM         [Aicon].qry201_725VATPurchaseChildTotal_ForEmployeeCost
+	Where PurchaseVoucherNo = @VoucherNo
+	
+
+
+-- Insert Employee Allocation Master (Credit Amounts)
+
+INSERT INTO [Aicon].tbl20104EmployeeAllocationMaster(
+	VoucherEntryID, EmployeeNo, EmpAllocDrCr, AmountAllocated, EffectiveDate, CostAllocRemarks,
+	EnteredBy, EnteredOn, VoucherNo, LedgerAccountNo)
+
+	SELECT @JustAddedVoucherEntryNoCostAlloc, EmployeeNo, 'Cr',  - TotalCalcLineAmount AS TotalCalcLineAmount, PurchaseEffectiveDate, 'VAT Purchase Bill',
+	AddedBy,  AddedOn, PurchaseVoucherNo, PurchaseLedgerAccountNo
+	FROM         [Aicon].qry201_725VATPurchaseChildTotal_ForEmployeeCostCredits
+	Where PurchaseVoucherNo = @VoucherNo
+	
+END
+End
+Go
+
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = '[Aicon].[qry201_808VATCreditNoteToMaster] ')
+BEGIN
+Alter view [Aicon].[qry201_808VATCreditNoteToMaster] as SELECT [Aicon].tbl20170VATCreditNoteMaster.CreditNoteNo, [Aicon].tbl20170VATCreditNoteMaster.CreditNoteDate, [Aicon].tbl20170VATCreditNoteMaster.InvoiceNo, [Aicon].tbl20170VATCreditNoteMaster.ClientCode, [Aicon].tbl20170VATCreditNoteMaster.CreditNoteRemarks, 
+             [Aicon].tbl20170VATCreditNoteMaster.CreditNoteEffectiveDate, [Aicon].tbl201ChartOfAccounts.AccountHead AS ClientName, tbl201ChartOfAccounts_1.AccountHead AS RevenueAccount, [Aicon].tbl201CostAllocationUnits.CostAllocationUnit, [Aicon].tbl20170VATCreditNoteMaster.AddedBy, 
+             [Aicon].tbl20170VATCreditNoteMaster.AddedOn,[Aicon].tbl20170VATCreditNoteMaster.InvoiceCurrencyCode,[Aicon].tbl20170VATCreditNoteMaster.ExchangeRate,[Aicon].tbl20170VATCreditNoteMaster.TaxCurrencyCode
+FROM   [Aicon].tbl201ChartOfAccounts AS tbl201ChartOfAccounts_1 RIGHT OUTER JOIN
+             [Aicon].tbl201ChartOfAccounts RIGHT OUTER JOIN
+             [Aicon].tbl20170VATCreditNoteMaster ON [Aicon].tbl201ChartOfAccounts.AccountID = [Aicon].tbl20170VATCreditNoteMaster.ClientCode ON tbl201ChartOfAccounts_1.AccountID = [Aicon].tbl20170VATCreditNoteMaster.RevenueAccount LEFT OUTER JOIN
+             [Aicon].tbl201CostAllocationUnits ON [Aicon].tbl20170VATCreditNoteMaster.CostCenterCode = [Aicon].tbl201CostAllocationUnits.CostAllocationUnitID
+END
+gO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = '[Aicon].[qry201_608VATtoSalesMaster] ')
+BEGIN
+Alter view [Aicon].[qry201_608VATtoSalesMaster] as SELECT [Aicon].tbl20161VATInvoiceMaster.InvoiceNo, [Aicon].tbl20161VATInvoiceMaster.InvoiceDate, [Aicon].tbl20161VATInvoiceMaster.InvoiceEffectiveDate, [Aicon].tbl20161VATInvoiceMaster.InvoiceDeliveryDate, [Aicon].tbl20161VATInvoiceMaster.InvoicePeriod, 
+             [Aicon].tbl20161VATInvoiceMaster.TypeOfInvoice, [Aicon].tbl20161VATInvoiceMaster.ClientCode, [Aicon].tbl20161VATInvoiceMaster.RevenueAccount, [Aicon].tbl20161VATInvoiceMaster.CostCenterCode, [Aicon].tbl20161VATInvoiceMaster.AddedBy, [Aicon].tbl20161VATInvoiceMaster.AddedOn, 
+             [Aicon].tbl201ChartOfAccounts.AccountHead AS ClientName, tbl201ChartOfAccounts_1.AccountHead AS RevenueAccountName, [Aicon].tbl201CostAllocationUnits.CostAllocationUnit AS CostAllocatedFor, [Aicon].tbl20161VATInvoiceMaster.InvoiceDueDate, 
+             [Aicon].tbl201ChartOfAccounts.NoOfDaysCreditPeriod, [Aicon].tbl20161VATInvoiceMaster.PONo, [Aicon].tbl20161VATInvoiceMaster.RemarksInEn, [Aicon].tbl20161VATInvoiceMaster.InvoiceSubmittedOn, [Aicon].tbl20161VATInvoiceMaster.IsUseSubmittedDate,[Aicon].tbl20161VATInvoiceMaster.InvoiceCurrencyCode,[Aicon].tbl20161VATInvoiceMaster.ExchangeRate,[Aicon].tbl20161VATInvoiceMaster.TaxCurrencyCode
+FROM   [Aicon].tbl20161VATInvoiceMaster LEFT OUTER JOIN
+             [Aicon].tbl201ChartOfAccounts ON [Aicon].tbl20161VATInvoiceMaster.ClientCode = [Aicon].tbl201ChartOfAccounts.AccountID LEFT OUTER JOIN
+             [Aicon].tbl201ChartOfAccounts AS tbl201ChartOfAccounts_1 ON [Aicon].tbl20161VATInvoiceMaster.RevenueAccount = tbl201ChartOfAccounts_1.AccountID LEFT OUTER JOIN
+             [Aicon].tbl201CostAllocationUnits ON [Aicon].tbl20161VATInvoiceMaster.CostCenterCode = [Aicon].tbl201CostAllocationUnits.CostAllocationUnitID
+End
+Go
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = '[Aicon].[qry201_708VATtoPurchaseMaster] ')
+BEGIN
+			 Alter view [Aicon].[qry201_708VATtoPurchaseMaster] as SELECT [Aicon].tbl20166VATPurchaseMaster.PurchaseVoucherNo, DATEADD(dd, DATEDIFF(dd, 0, [Aicon].tbl20166VATPurchaseMaster.PurchaseVoucherDate), 0) AS PurchaseVoucherDate, [Aicon].tbl20166VATPurchaseMaster.PurchaseEffectiveDate, 
+             [Aicon].tbl20166VATPurchaseMaster.PurchaseDeliveryDate, [Aicon].tbl20166VATPurchaseMaster.PurchasePeriod, [Aicon].tbl20166VATPurchaseMaster.TypeOfPurchase, [Aicon].tbl20166VATPurchaseMaster.SupplierCode, [Aicon].tbl20166VATPurchaseMaster.PurchaseLedgerAccountNo, 
+             [Aicon].tbl20166VATPurchaseMaster.CostCenterCode, [Aicon].tbl20166VATPurchaseMaster.AddedBy, [Aicon].tbl20166VATPurchaseMaster.AddedOn, tbl201ChartOfAccounts_1.AccountHead AS SupplierName, [Aicon].tbl201ChartOfAccounts.AccountHead AS ExpensesAccountName, 
+             [Aicon].tbl201CostAllocationUnits.CostAllocationUnit AS CostAllocatedFor, [Aicon].tbl20166VATPurchaseMaster.PurchaseBillNo, [Aicon].tbl20166VATPurchaseMaster.PurchaseDueDate, [Aicon].tbl20166VATPurchaseMaster.SupplierInvRecdOn, [Aicon].tbl20166VATPurchaseMaster.Remarks,
+			 [Aicon].tbl20166VATPurchaseMaster.InvoiceCurrencyCode,[Aicon].tbl20166VATPurchaseMaster.ExchangeRate,[Aicon].tbl20166VATPurchaseMaster.TaxCurrencyCode
+FROM   [Aicon].tbl201CostAllocationUnits RIGHT OUTER JOIN
+             [Aicon].tbl20166VATPurchaseMaster ON [Aicon].tbl201CostAllocationUnits.CostAllocationUnitID = [Aicon].tbl20166VATPurchaseMaster.CostCenterCode LEFT OUTER JOIN
+             [Aicon].tbl201ChartOfAccounts ON [Aicon].tbl20166VATPurchaseMaster.PurchaseLedgerAccountNo = [Aicon].tbl201ChartOfAccounts.AccountID LEFT OUTER JOIN
+             [Aicon].tbl201ChartOfAccounts AS tbl201ChartOfAccounts_1 ON [Aicon].tbl20166VATPurchaseMaster.SupplierCode = tbl201ChartOfAccounts_1.AccountID
+End
+Go
+
+
+
+IF EXISTS (SELECT * FROM sys.objects WHERE type = 'P' AND name = '[Aicon].[qry201_607VATInvoiceRegisterMainView] ')
+BEGIN
+Alter view [Aicon].qry201_607VATInvoiceRegisterMainView as 
+SELECT [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceNo, DATEADD(dd, DATEDIFF(dd, 0, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDate), 0) AS InvoiceDate, DATEADD(dd, DATEDIFF(dd, 0, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceEffectiveDate), 0) AS InvoiceEffectiveDate, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDateAr, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDeliveryDate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDeliveryDateAr, [Aicon].qry201_606VATInvoiceRegisterMain.AccountHead, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.QuotationNo, [Aicon].qry201_606VATInvoiceRegisterMain.DeliveryNoteNos, [Aicon].qry201_606VATInvoiceRegisterMain.ReferenceNo, [Aicon].qry201_606VATInvoiceRegisterMain.SOSReferenceNo, [Aicon].qry201_606VATInvoiceRegisterMain.PONo, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.PODate, [Aicon].qry201_606VATInvoiceRegisterMain.PODateAr, [Aicon].qry201_606VATInvoiceRegisterMain.SalesPerson, [Aicon].qry201_606VATInvoiceRegisterMain.ClientReferenceName, [Aicon].qry201_606VATInvoiceRegisterMain.ClientContactNo, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.ClientEmail, [Aicon].qry201_606VATInvoiceRegisterMain.RemarksInEn, [Aicon].qry201_606VATInvoiceRegisterMain.Discount, [Aicon].qry201_606VATInvoiceRegisterMain.RemarksInAr, [Aicon].qry201_606VATInvoiceRegisterMain.IsSubmitted, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.SubmittedBy, [Aicon].qry201_606VATInvoiceRegisterMain.SubmittedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.SubmittedOn, [Aicon].qry201_606VATInvoiceRegisterMain.IsVerified, [Aicon].qry201_606VATInvoiceRegisterMain.VerifiedBy, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.VerifiedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.VerifiedOn, [Aicon].qry201_606VATInvoiceRegisterMain.IsApproved, [Aicon].qry201_606VATInvoiceRegisterMain.ApprovedBy, [Aicon].qry201_606VATInvoiceRegisterMain.ApprovedByAr, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.ApprovedOn, [Aicon].qry201_606VATInvoiceRegisterMain.AddedBy, [Aicon].qry201_606VATInvoiceRegisterMain.AddedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.AddedOn, [Aicon].qry201_606VATInvoiceRegisterMain.ModifiedBy, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.ModifiedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.ModifiedOn, [Aicon].qry201_606VATInvoiceRegisterMain.TaxCategoryID, [Aicon].qry201_606VATInvoiceRegisterMain.calcLineAmount, [Aicon].qry201_606VATInvoiceRegisterMain.calcTaxAmount, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.DomesticStandartRatedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticZeroRatedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticExemptedRevenue, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.GCCStandardRatedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.GCCZeroRatedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.GCCExpemptedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.ExportsRevenue, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.DomesticStandartRatedTax, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticZeroRatedTax, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticExemptedTax, [Aicon].qry201_606VATInvoiceRegisterMain.GCCStandardRatedTax, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.GCCZeroRatedTax, [Aicon].qry201_606VATInvoiceRegisterMain.GCCExpemptedTax, [Aicon].qry201_606VATInvoiceRegisterMain.ExportsTax, [Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalInvoiceAmount, [Aicon].tbl20169CurrencyExchange.CurrencyImage, [Aicon].tbl20169CurrencyExchange.CurrencySymbole, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.IsPosted, [Aicon].qry201_606VATInvoiceRegisterMain.PostedBy, [Aicon].qry201_606VATInvoiceRegisterMain.PostedOn, 
+             CASE WHEN IsPosted = 1 THEN 'Posted' ELSE (CASE WHEN IsApproved = 1 THEN 'Approved' ELSE (CASE WHEN IsVerified = 1 THEN 'Verified' ELSE 'Not Processed' END) END) END AS InvoiceStatus, [Aicon].qry201_606VATInvoiceRegisterMain.TotalDiscount, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmountBeforeDiscount, [Aicon].qry201_606VATInvoiceRegisterMain.AdvanceAmount, [Aicon].qry201_606VATInvoiceRegisterMain.RetentionAmount, [Aicon].qry201_606VATInvoiceRegisterMain.AccountID, 
+             CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCash ELSE [Aicon].qry201_606VATInvoiceRegisterMain.BillingName END AS BillingName, [Aicon].qry201_606VATInvoiceRegisterMain.BillingAddress, [Aicon].qry201_606VATInvoiceRegisterMain.BillingNameAr, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.BillingAddressAr, [Aicon].qry201_606VATInvoiceRegisterMain.VATRegistrationNo, [Aicon].qry201_606VATInvoiceRegisterMain.CompanyBranch, [Aicon].qry201_606VATInvoiceRegisterMain.CRNo, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationMasterGroup, [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationGroup, [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationUnit, [Aicon].qry201_606VATInvoiceRegisterMain.SalesPersonName, 
+             [Aicon].udf_GetArabicNumbers([Aicon].qry201_606VATInvoiceRegisterMain.VATRegistrationNo) AS VATRegistrationNoAr, [Aicon].qry201_606VATInvoiceRegisterMain.InvoicePeriod, [Aicon].qry201_606VATInvoiceRegisterMain.ClientCode, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.CashOrClientGroupID, [Aicon].qry201_606VATInvoiceRegisterMain.CashOrClientGroupName, [Aicon].qry201_606VATInvoiceRegisterMain.ClientNameInCash, [Aicon].qry201_606VATInvoiceRegisterMain.ClientVATInCash, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.ClientNameInCashAr, CASE WHEN Isnull(BuyerName, '') = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCash ELSE [Aicon].qry201_606VATInvoiceRegisterMain.BillingName END) 
+             ELSE BuyerName END AS ClientNameOrCashClient, CASE WHEN Isnull(BuyerVATNumber, '') = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientVATInCash ELSE [Aicon].qry201_606VATInvoiceRegisterMain.VATRegistrationNo END) 
+             ELSE BuyerVATNumber END AS ClientVATOrCashClientVAT, CASE WHEN Isnull(BuyerNameAr, '') = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCashAr ELSE [Aicon].qry201_606VATInvoiceRegisterMain.BillingNameAr END) 
+             ELSE BuyerNameAr END AS ClientNameArOrCashClientAr, [Aicon].qry201_606VATInvoiceRegisterMain.RevenueAccount AS RevenueLedgerNo, [Aicon].tbl201ChartOfAccounts.AccountHead AS RevenueLedgerName, [Aicon].qry201_606VATInvoiceRegisterMain.TotalQtyInvoiced, 
+             [Aicon].tbl201ChartOfAccounts.AccountHeadArabic AS RevenueLedgerNameAr, [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationUnitID, [Aicon].qry201_606VATInvoiceRegisterMain.TotalRevenueOf15Perc, [Aicon].qry201_606VATInvoiceRegisterMain.TotalTaxOf15Perc, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.BranchCode, [Aicon].qry201_606VATInvoiceRegisterMain.BranchName, [Aicon].qry201_606VATInvoiceRegisterMain.PaymentTerms, [Aicon].qry201_606VATInvoiceRegisterMain.CostCenterCode, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceStartDate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceEndDate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDueDate, [Aicon].qry201_606VATInvoiceRegisterMain.SalesOrderNo, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.TypeOfInvoice, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceUUID, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTypeCode, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTransactionCode, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTypeCodeSubType, [Aicon].qry201_606VATInvoiceRegisterMain.IsThirdParty, [Aicon].qry201_606VATInvoiceRegisterMain.IsNominal, [Aicon].qry201_606VATInvoiceRegisterMain.IsExport, [Aicon].qry201_606VATInvoiceRegisterMain.IsSummary, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.IsSelfBilled, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceCounterValue, ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.InvoiceCurrencyCode, '1') AS InvoiceCurrencyCode, 
+             ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.TaxCurrencyCode, '1') AS TaxCurrencyCode, [Aicon].qry201_606VATInvoiceRegisterMain.SellerGroupVATNumber, [Aicon].qry201_606VATInvoiceRegisterMain.SellerOtherIDType, [Aicon].qry201_606VATInvoiceRegisterMain.SellerOtherSellerID, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.SellerAddressStreet, [Aicon].qry201_606VATInvoiceRegisterMain.SellerAddressStreetAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerAdditionalStreet, [Aicon].qry201_606VATInvoiceRegisterMain.SellerAdditionalStreetAr, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.SellerBuildingNumber, [Aicon].qry201_606VATInvoiceRegisterMain.SellerAdditionalNumber, [Aicon].qry201_606VATInvoiceRegisterMain.SellerCity, [Aicon].qry201_606VATInvoiceRegisterMain.SellerCityAr, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.SellerPostalCode, [Aicon].qry201_606VATInvoiceRegisterMain.SellerProvince, [Aicon].qry201_606VATInvoiceRegisterMain.SellerProvinceAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerNeighborhood, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.SellerNeighborhoodAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerCountryCode, [Aicon].qry201_606VATInvoiceRegisterMain.SellerVATNumber, [Aicon].qry201_606VATInvoiceRegisterMain.SellerName, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.SellerNameAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerGroupVATNumber, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerOtherIDType, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerOtherID, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAddressStreet, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAddressStreetAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAdditionalStreet, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAdditionalStreetAr, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.BuyerBuildingNumber, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAdditionalNumber, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerCity, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerCityAr, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.BuyerPostalCode, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerProvince, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerProvinceAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerNeighborhood, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.BuyerNeighborhoodAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerCountryCode, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerVATNumber, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerName, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.BuyerNameAr, [Aicon].qry201_606VATInvoiceRegisterMain.PaymentMeansTypeCode, [Aicon].qry201_606VATInvoiceRegisterMain.PaymentTerms1, [Aicon].qry201_606VATInvoiceRegisterMain.PaymentTermsAr, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDateWtTime, [Aicon].qry201_606VATInvoiceRegisterMain.IsCogsPosted, [Aicon].qry201_606VATInvoiceRegisterMain.IsCogsPostedBy, [Aicon].qry201_606VATInvoiceRegisterMain.IsCogsPostedOn, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.ProjectMasterCode, ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0) AS OtherDeductionAmount, ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount, 0) 
+             - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.AdvanceAmount, 0) - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.RetentionAmount, 0) - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0) AS NetAmountAfterAllDeductions, 
+             [Aicon].qry90134eInvoice_LatestICVwtDetails.LastICV, ISNULL([Aicon].qry90134eInvoice_LatestICVwtDetails.InvoiceStatus, 'NOT SUBMITTED') AS InvoiceZatcaStatus, [Aicon].qry90134eInvoice_LatestICVwtDetails.SubmittedBy AS eInvoiceSubmittedToZatcaBy, 
+             [Aicon].qry90134eInvoice_LatestICVwtDetails.SubmittedOn AS eInvoiceSubmittedToZatcaOn, [Aicon].qry201_606VATInvoiceRegisterMain.Currency, [Aicon].qry201_606VATInvoiceRegisterMain.CompanyID, [Aicon].qry201_606VATInvoiceRegisterMain.TotalRevenueOf10Perc, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.TotalTaxOf10Perc, [Aicon].qry90134eInvoice_LatestICVwtDetails.InvoiceUUID AS SubmittedInvoiceUUID, [Aicon].qry201_606VATInvoiceRegisterMain.ExchangeRate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTypeName, 
+             [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceSubType, CASE WHEN InvoiceTypeName = 'Prepayment Invoice' AND InvoiceSubType = 'Tax Invoice' THEN 'Prepayment Tax Invoice' ELSE (CASE WHEN InvoiceTypeName = 'Prepayment Invoice' AND 
+             InvoiceSubType = 'Simplified Tax Invoice' THEN 'Prepayment Simplified Tax Invoice' ELSE InvoiceSubType END) END AS InvoiceType, [Aicon].tbl20169CurrencyExchange.CurrencyMasterCode
+FROM   [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
+             [Aicon].tbl20169CurrencyExchange ON [Aicon].qry201_606VATInvoiceRegisterMain.Currency = [Aicon].tbl20169CurrencyExchange.CurrencyExchangeID LEFT OUTER JOIN
+             [Aicon].qry90134eInvoice_LatestICVwtDetails ON [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceNo = [Aicon].qry90134eInvoice_LatestICVwtDetails.eInvoiceNo LEFT OUTER JOIN
+             [Aicon].tbl201ChartOfAccounts ON [Aicon].qry201_606VATInvoiceRegisterMain.RevenueAccount = [Aicon].tbl201ChartOfAccounts.AccountID
+End
+Go
+
+
+
+ALTER TABLE [Aicon].tbl20166VATPurchaseMaster  
+ADD InvoiceCurrencyCode varchar(10),ExchangeRate decimal(19,4),TaxCurrencyCode varchar(10);
+------------------------------
+//IMS New field
+IF COL_LENGTH('Aicon.tbl20101SalesPersonMaster', 'TargetPerMonth') IS NULL
+BEGIN
+    ALTER TABLE Aicon.tbl20101SalesPersonMaster
+        ADD TargetPerMonth MONEY NULL;
+    PRINT 'Added column: TargetPerMonth';
+END
+ELSE
+BEGIN
+    PRINT 'Column already exists: TargetPerMonth';
+
+---------IMS Currency Implement---------
+
+-- tbl606_01PurchaseRequestMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl606_01PurchaseRequestMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl606_01PurchaseRequestMaster ADD CurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl606_01PurchaseRequestMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl606_01PurchaseRequestMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl606_01PurchaseRequestMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl606_01PurchaseRequestMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl601_01QuotationMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl601_01QuotationMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl601_01QuotationMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl601_01QuotationMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl601_01QuotationMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl601_01QuotationMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl601_01QuotationMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl603_01DeliveryNoteMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl603_01DeliveryNoteMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl603_01DeliveryNoteMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl603_01DeliveryNoteMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl603_01DeliveryNoteMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl603_01DeliveryNoteMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl603_01DeliveryNoteMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl607_01RFQMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl607_01RFQMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl607_01RFQMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl607_01RFQMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl607_01RFQMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl607_01RFQMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl607_01RFQMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl604_01PurchaseOrderMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl604_01PurchaseOrderMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl604_01PurchaseOrderMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl604_01PurchaseOrderMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl604_01PurchaseOrderMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl604_01PurchaseOrderMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl604_01PurchaseOrderMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl605_01MaterialReceiptMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl605_01MaterialReceiptMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl605_01MaterialReceiptMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl605_01MaterialReceiptMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl605_01MaterialReceiptMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl605_01MaterialReceiptMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl605_01MaterialReceiptMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+IF EXISTS (
+    SELECT 1 
+    FROM Aicon.tblUserAccessWeb 
+    WHERE Module = 'Inventory'
+)
+BEGIN
+    UPDATE Aicon.tblUserAccessWeb 
+    SET Module = 'IMS' 
+    WHERE Module = 'Inventory';
+END
+GO

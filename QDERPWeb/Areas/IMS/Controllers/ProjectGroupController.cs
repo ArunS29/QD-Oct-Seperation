@@ -78,7 +78,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         await dbContext.SaveChangesAsync();
                         await _userActionLogger.LogAsync(
                          module: "IMS > Save Or Update Project Group",
-                         actionDetail: $":Saved Update Project Group  {model.ProjectGroupId}",
+                         actionDetail: $"Saved Update Project Group  {model.ProjectGroupId}",
                          documentNo: $"{model.ProjectGroupId}"
                         );
 
@@ -99,7 +99,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         await dbContext.SaveChangesAsync();
                         await _userActionLogger.LogAsync(
                          module: "IMS > Save Or Update Project Group",
-                         actionDetail: $":Saved Update Project Group  {model.ProjectGroupId}",
+                         actionDetail: $"Saved Update Project Group  {model.ProjectGroupId}",
                          documentNo: $"{model.ProjectGroupId}"
                         );
 
@@ -252,7 +252,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         await dbContext.SaveChangesAsync();
                         await _userActionLogger.LogAsync(
                          module: "IMS > Save Or Update Project ",
-                         actionDetail: $":Saved Update Project   {model.ProjectGroupId}",
+                         actionDetail: $"Saved Update Project   {model.ProjectGroupId}",
                          documentNo: $"{model.ProjectGroupId}"
                         );
 
@@ -268,7 +268,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         await dbContext.SaveChangesAsync();
                         await _userActionLogger.LogAsync(
                          module: "IMS > Save Or Update Project ",
-                         actionDetail: $":Saved Update Project   {model.ProjectGroupId}",
+                         actionDetail: $"Saved Update Project   {model.ProjectGroupId}",
                          documentNo: $"{model.ProjectGroupId}"
                         );
 

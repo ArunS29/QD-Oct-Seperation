@@ -285,7 +285,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						return NotFound("Company not found.");
 					}
 
-					string RequestAbbrv = company.RequestAbbrv;
+					string RequestAbbrv = company.MaterialReceiptAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
@@ -401,7 +401,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         .Where(x => x.ReceiptNo == ReceiptNo)
 						.ToList();
 
-					foreach (var gridDetails in result)
+                    var currencyRate = await dbContext.Tbl60501materialReceiptMasters
+                            .Where(x => x.ReceiptNo == ReceiptNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                    foreach (var gridDetails in result)
 					{
 						dynamic item = new ExpandoObject();
 						var dict = (IDictionary<string, object>)item;
@@ -432,6 +436,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 						dict["GsDescription"] = gsDescription;
                         dict["GScode"] = gridDetails.Gscode;
+                        dict["UnitPrice"] = gridDetails.UnitPrice / currencyRate;
+                        dict["ItemDiscount"] = gridDetails.ItemDiscount / currencyRate;
+                        dict["PurchaseTaxRate"] = gridDetails.PurchaseTaxRate / currencyRate;
+                        dict["LineTotalBeforeTax"] = gridDetails.LineTotalBeforeTax / currencyRate;
+                        dict["LineTotalAfterDisc"] = gridDetails.LineTotalAfterDisc / currencyRate;
+                        dict["LineTaxAmount"] = gridDetails.LineTaxAmount / currencyRate;
+                        dict["LineTotalWithTax"] = gridDetails.LineTotalWithTax / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -477,6 +488,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingMaster.JobCode = VM.JobCode;
                     existingMaster.ClientCode = VM.ClientCode;
                     existingMaster.Rfqno = VM.Rfqno;
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
                     existingMaster.OurPurchaseOrderNo = VM.OurPurchaseOrderNo;
                     existingMaster.SalesPersonCode = VM.SalesPersonCode;
                     existingMaster.StoreReceivedIn = VM.StoreReceivedIn;
@@ -509,7 +523,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         IssueRemarks = VM.IssueRemarks,
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
                         InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
-                        ModeOfReceiptId = Convert.ToByte(VM.ModeOfReceiptId)
+                        ModeOfReceiptId = Convert.ToByte(VM.ModeOfReceiptId),
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1
+
                     };
 
                     await dbContext.Tbl60501materialReceiptMasters.AddAsync(newMaster);
@@ -540,6 +558,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 foreach (var child in VM.MaterialReceiptDetailses)
                 {
                     child.ReceiptNo = VM.ReceiptNo;
+                    child.UnitPrice = child.UnitPrice * VM.CurrencyRate;
+                    child.ItemDiscount = child.ItemDiscount * VM.CurrencyRate;
 
                     if (child.ReceiptChildSlNo == 0)
                     {
@@ -560,7 +580,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Save Or Update Material Receipt",
-                   actionDetail: $":Saved MaterialReceipt  {VM.ReceiptNo}",
+                   actionDetail: $"Saved MaterialReceipt  {VM.ReceiptNo}",
                    documentNo: $"{VM.ReceiptNo}"
                 );
 

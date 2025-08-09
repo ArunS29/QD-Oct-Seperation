@@ -364,7 +364,7 @@
 		<h5 id="statusHeading3" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Invoice Amount</h5>
 
 		<!-- Value with SVG -->
-		<div id="switchValue" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
+		<div id="switchValue33" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
 			<!-- SVG icon -->
 			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -606,7 +606,7 @@
 
 				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.GccstandardRatedRevenue)
+				subColumns.AddFor(m => m.GccexpemptedRevenue)
 			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
@@ -781,7 +781,7 @@
 				totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
-				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
+				totalItems.Add().Column("GccexpemptedRevenue").SummaryType(SummaryType.Sum)
 			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 
 				totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
@@ -830,7 +830,77 @@
 </div>
 
 <script>
+		const card = document.getElementById('mainCard');
+	const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
+	const countEls = [
+	  document.getElementById("count0"),
+	  document.getElementById("count1"),
+	  document.getElementById("count2"),
+	];
+	const tabs = document.querySelectorAll(".tab-text");
+	const contents = document.querySelectorAll(".tab-content");
 
+	function animateCount(el, target) {
+	  let i = 0;
+	  el.innerText = i;
+	  el.classList.remove('bounce');
+	  const interval = setInterval(() => {
+		if (i >= target) {
+		  el.innerText = target;
+		  el.classList.add('bounce');
+		  clearInterval(interval);
+		} else {
+		  el.innerText = i++;
+		}
+	  }, 30);
+	}
+
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  // Change background class
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  // Animate count
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// ✅ Count Approved Invoices From Grid
+		function updateApprovedCountFromGrid() {
+		const grid = $("#dataGrid").dxDataGrid("instance");
+		const data = grid.getVisibleRows().map(row => row.data);
+
+		// Update dynamic counts based on status
+		counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
+		counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
+		counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
+
+		// Update visible numbers
+		countEls[0].textContent = counts[0];
+		countEls[1].textContent = counts[1];
+		countEls[2].textContent = counts[2];
+
+		// Animate default tab (Verified)
+		animateCount(countEls[0], counts[0]);
+	}
+
+
+		function onGridContentReady(e) {
+		updateApprovedCountFromGrid();
+		debugger;
+		const component = e.component;
+		const data = component.getDataSource().items();
+
+	updateProformaAmountCard(data);  // ✅ Total invoice
+		updateTotalVATValuess(data);             // ✅ Total VAT
+		injectHeaderSVG();
+	}
 
 	const headings = ["Invoice Amount", "VAT Value"];
 	let currentIndex = 0;
@@ -839,30 +909,36 @@
 	let invoiceAmountss = "0.00";
 	let vatTotalValuess = "0.00";
 
-	// Update values from your data functions:
-	function updateProformaAmountCard(data) {
-		let total = 0;
-		if (Array.isArray(data)) {
-			total = data.reduce((sum, item) => {
-				const val = parseFloat(item.CalcLineAmount);
-				return sum + (isNaN(val) ? 0 : val);
-			}, 0);
-		}
-		invoiceAmountss = total.toFixed(2);
+	// Format helper
+	function formatNumber(num) {
+		return Number(num || 0).toLocaleString("en-US", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
 	}
 
-	function updateTotalVATValue(data) {
-		let total = 0;
+	// Update values from your data functions
+	function updateProformaAmountCard(data) {
 		if (Array.isArray(data)) {
-			data.forEach(item => {
-				const vat5 = parseFloat(item.DomesticStandartRatedTax) || 0;
-				const vat10 = parseFloat(item.DomesticZeroRatedTax) || 0;
-				const vat15 = parseFloat(item.DomesticExemptedTax) || 0;
-
-				total += vat5 + vat10 + vat15;
-			});
+			const total = data.reduce((sum, item) => sum + (parseFloat(item.CalcLineAmount) || 0), 0);
+			invoiceAmountss = formatNumber(total);
+		} else {
+			invoiceAmountss = formatNumber(0);
 		}
-		vatTotalValuess = total.toFixed(2);
+	}
+
+	function updateTotalVATValuess(data) {
+		if (Array.isArray(data)) {
+			const total = data.reduce((sum, item) =>
+				sum +
+				(parseFloat(item.DomesticStandartRatedTax) || 0) +
+				(parseFloat(item.DomesticZeroRatedTax) || 0) +
+				(parseFloat(item.DomesticExemptedTax) || 0), 0
+			);
+			vatTotalValuess = formatNumber(total);
+		} else {
+			vatTotalValuess = formatNumber(0);
+		}
 	}
 
 	// Switch every 2 seconds
@@ -870,18 +946,18 @@
 		currentIndex = (currentIndex + 1) % 2;
 
 		const headingEl = document.getElementById("statusHeading3");
-		const valueEl = document.getElementById("switchValue");
+		const valueEl = document.getElementById("switchValue33");
 
 		headingEl.textContent = headings[currentIndex];
 		valueEl.innerHTML = `
-
-	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
-		<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
-		<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
-	</svg>
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>
 			${currentIndex === 0 ? invoiceAmountss : vatTotalValuess}
 		`;
 	}, 2000);
+
 
 	function animateTodayVoucherCount(target) {
 		let i = 0;
@@ -943,15 +1019,15 @@
 	// Automatically switch every 5 seconds
 	setInterval(switchData, 2000); // 5000 ms = 5 seconds
 
-			function onGridContentReady(e) {
-		updateApprovedCountFromGrid();
+	// 		function onGridContentReady(e) {
+	// 	updateApprovedCountFromGrid();
 
-		const component = e.component;
-		const data = component.getDataSource().items();
+	// 	const component = e.component;
+	// 	const data = component.getDataSource().items();
 
-		updateProformaAmountCard(data);     // ✅ Total invoice
-		updateTotalVATValue(data);             // ✅ Total VAT
-	}
+	// 	updateProformaAmountCard(data);     // ✅ Total invoice
+	// 	updateTotalVATValue(data);             // ✅ Total VAT
+	// }
 
 		function onToolbarPreparing(e) {
 		// Remove/hide the column chooser button on initial load
@@ -1127,7 +1203,7 @@
 		// Format dates for server/API
 		const formattedFromDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
 		const formattedToDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-
+		
 		// Update DateBoxes visually if needed
 		frmDateBox.option("value", frmDate);
 		toDateBox.option("value", toDate);
@@ -1143,18 +1219,18 @@
 			success: function (data) {
 				console.log("ShowData", data);
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-				if (data.data.length === 0 && page > 1) return;
+				if (data.length === 0 && page > 1) return;
 
 				currentPage = Number(data.currentPage);
 				var grid = $("#dataGrid").dxDataGrid("instance");
-				grid.option("dataSource", data.data);
+				grid.option("dataSource", data);
 
-				updateInvoiceAmountCardss(data.data);
-				console.log("SalesRegisterGrid", data.data);
+				//updateInvoiceAmountCardss(data);
+				console.log("SalesRegisterGrid", data);
 
-				if (data.data && data.data.length > 0) {
-					VoucherAmountFormatted = data.data[data.data.length - 1].VoucherAmountFormatted;
-					firstrowVoucherAmountFormatted = data.data[0].VoucherAmountFormatted;
+				if (data && data.length > 0) {
+					VoucherAmountFormatted = data[data.length - 1].VoucherAmountFormatted;
+					firstrowVoucherAmountFormatted = data[0].VoucherAmountFormatted;
 				}
 
 				const totalPages = Math.ceil(Number(data.totalCount) / Number(data.pageSize));
@@ -1162,7 +1238,7 @@
 				$("#nextPage").prop("disabled", totalPages === data.currentPage);
 				$("#previousPage").prop("disabled", data.currentPage === 1);
 
-				const animatedCount = data.data.length;
+				const animatedCount = data.length;
 				animateInvoiceCardCount(animatedCount);
 
 				let periodLabel = "Invoices";
@@ -1187,7 +1263,7 @@
 				fiveYearsAgo.setFullYear(today.getFullYear() - 5);
 				fiveYearsAgo.setHours(0, 0, 0, 0);
 
-				const fiveYearCount = data.data.filter(row => {
+				const fiveYearCount = data.filter(row => {
 					const d = new Date(row.InvoiceDate); // or row.VoucherDate
 					d.setHours(0, 0, 0, 0);
 					return d >= fiveYearsAgo && d <= today;
@@ -1388,77 +1464,6 @@
 	});
 
 
-	const card = document.getElementById('mainCard');
-	const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
-	const countEls = [
-	  document.getElementById("count0"),
-	  document.getElementById("count1"),
-	  document.getElementById("count2"),
-	];
-	const tabs = document.querySelectorAll(".tab-text");
-	const contents = document.querySelectorAll(".tab-content");
-
-	function animateCount(el, target) {
-	  let i = 0;
-	  el.innerText = i;
-	  el.classList.remove('bounce');
-	  const interval = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(interval);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
-	}
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// ✅ Count Approved Invoices From Grid
-		function updateApprovedCountFromGrid() {
-		const grid = $("#dataGrid").dxDataGrid("instance");
-		const data = grid.getVisibleRows().map(row => row.data);
-
-		// Update dynamic counts based on status
-		counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
-		counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
-		counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
-
-		// Update visible numbers
-		countEls[0].textContent = counts[0];
-		countEls[1].textContent = counts[1];
-		countEls[2].textContent = counts[2];
-
-		// Animate default tab (Verified)
-		animateCount(countEls[0], counts[0]);
-	}
-
-
-		function onGridContentReady(e) {
-		updateApprovedCountFromGrid();
-
-		const component = e.component;
-		const data = component.getDataSource().items();
-
-		updateProformaAmountCard(component);     // ✅ Total invoice
-		updateTotalVATValuess(data);             // ✅ Total VAT
-		injectHeaderSVG();
-	}
 
 	function UnlockInvoice() {
 
@@ -1595,201 +1600,168 @@
 
 
 
-			function handleGridOptionChanged(e) {
-			if (e.name === "columns" || e.name === "visible") {
-				// Columns changed, so re-inject SVG
-				injectHeaderSVG(); // slight delay to wait for DOM re-render
-			}
+	function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
 		}
+	}
 
 
-				function injectHeaderSVG() {
-			$.ajax({
-				url: '/api/AccountingLedgers/GetCurrencyIcon',
-				type: 'GET',
-				success: function (response) {
+
+	function injectHeaderSVG() {
+	
+
+		$.ajax({
+			url: '/api/AccountingLedgers/GetCurrencyIcon',
+			type: 'GET',
+			success: function (response) {
 					debugger;
-					let svgIcon = response.Icon;
-					if (!svgIcon) return;
+				let svgIcon = response.Icon;
+				if (!svgIcon) return;
 
-					// Set default width/height for SVG if needed
-					if (svgIcon.startsWith("<svg")) {
-						svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
-					} else {
-						// If symbol is text (e.g., "$" or "SAR"), wrap in styled span
-						svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
-					}
-
-					let $grid = $('#dataGrid');
-					let gridInstance = $grid.dxDataGrid("instance");
-					if (!gridInstance) return;
-
-					$grid.find(".dx-header-row td").each(function () {
-						const $cell = $(this);
-
-					const $Currencyheader1 = $(".Currency-header1");
-					const CurrencyheaderText1 = $Currencyheader1.data("original-text") || $Currencyheader1.text().trim();
-					$Currencyheader1.data("original-text", CurrencyheaderText1); // Save original once
-
-					$Currencyheader1.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText1}</span>
-						</div>
-					`);
-
-						const $Currencyheader2 = $(".Currency-header2");
-					const CurrencyheaderText2 = $Currencyheader2.data("original-text") || $Currencyheader2.text().trim();
-					$Currencyheader2.data("original-text", CurrencyheaderText2); // Save original once
-
-					$Currencyheader2.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText2}</span>
-						</div>
-					`);
-
-
-						const $Currencyheader3 = $(".Currency-header3");
-					const CurrencyheaderText3 = $Currencyheader3.data("original-text") || $Currencyheader3.text().trim();
-					$Currencyheader3.data("original-text", CurrencyheaderText3); // Save original once
-
-					$Currencyheader3.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText3}</span>
-						</div>
-					`);
-
-						const $Currencyheader4 = $(".Currency-header4");
-					const CurrencyheaderText4 = $Currencyheader4.data("original-text") || $Currencyheader4.text().trim();
-					$Currencyheader4.data("original-text", CurrencyheaderText4); // Save original once
-
-					$Currencyheader4.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText4}</span>
-						</div>
-					`);
-
-						
-
-						const $Currencyheader5 = $(".Currency-header5");
-					const CurrencyheaderText5 = $Currencyheader5.data("original-text") || $Currencyheader5.text().trim();
-					$Currencyheader5.data("original-text", CurrencyheaderText5); // Save original once
-
-					$Currencyheader5.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText5}</span>
-						</div>
-					`);
-
-
-						const $Currencyheader6 = $(".Currency-header6");
-					const CurrencyheaderText6 = $Currencyheader6.data("original-text") || $Currencyheader6.text().trim();
-					$Currencyheader6.data("original-text", CurrencyheaderText6); // Save original once
-
-					$Currencyheader6.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText6}</span>
-						</div>
-					`);
-
-
-						const $Currencyheader7 = $(".Currency-header7");
-					const CurrencyheaderText7 = $Currencyheader7.data("original-text") || $Currencyheader7.text().trim();
-					$Currencyheader7.data("original-text", CurrencyheaderText7); // Save original once
-
-					$Currencyheader7.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText7}</span>
-						</div>
-					`);
-
-
-
-						const $Currencyheader8 = $(".Currency-header8");
-					const CurrencyheaderText8 = $Currencyheader8.data("original-text") || $Currencyheader8.text().trim();
-					$Currencyheader8.data("original-text", CurrencyheaderText8); // Save original once
-
-					$Currencyheader8.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText8}</span>
-						</div>
-					`);
-
-						const $Currencyheader9 = $(".Currency-header9");
-					const CurrencyheaderText9 = $Currencyheader9.data("original-text") || $Currencyheader9.text().trim();
-					$Currencyheader9.data("original-text", CurrencyheaderText9); // Save original once
-
-					$Currencyheader9.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText9}</span>
-						</div>
-					`);
-
-						const $Currencyheader10 = $(".Currency-header10");
-					const CurrencyheaderText10 = $Currencyheader10.data("original-text") || $Currencyheader10.text().trim();
-					$Currencyheader10.data("original-text", CurrencyheaderText10); // Save original once
-
-					$Currencyheader10.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText10}</span>
-						</div>
-					`);
-
-						const $Currencyheader11 = $(".Currency-header11");
-					const CurrencyheaderText11 = $Currencyheader11.data("original-text") || $Currencyheader11.text().trim();
-					$Currencyheader11.data("original-text", CurrencyheaderText11); // Save original once
-
-					$Currencyheader11.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText11}</span>
-						</div>
-					`);
-
-
-						const $Currencyheader12 = $(".Currency-header12");
-					const CurrencyheaderText12 = $Currencyheader12.data("original-text") || $Currencyheader12.text().trim();
-					$Currencyheader12.data("original-text", CurrencyheaderText12); // Save original once
-
-					$Currencyheader12.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText12}</span>
-						</div>
-					`);
-
-						const $Currencyheader13 = $(".Currency-header13");
-					const CurrencyheaderText13 = $Currencyheader13.data("original-text") || $Currencyheader13.text().trim();
-					$Currencyheader13.data("original-text", CurrencyheaderText13); // Save original once
-
-					$Currencyheader13.html(`
-						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-							${svgIcon}
-							<span style="font-weight: bold;">${CurrencyheaderText13}</span>
-						</div>
-					`);
-
-
-
-					});
-				},
-				error: function (xhr) {
-					console.error("Failed to load currency icon:", xhr.responseText);
+				// Set default width/height for SVG if needed
+				if (svgIcon.startsWith("<svg")) {
+					svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+				} else {
+					svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
 				}
-			});
-		}
-			 $(document).ready(function () {
+
+				let gridElement = $('#dataGrid');
+				let dataGrid = gridElement.dxDataGrid("instance");
+				if (!dataGrid) return;
+
+				gridElement.find(".dx-header-row td").each(function () {
+
+					const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
+					const AmtBeforeTaxText = $AmtBeforeTaxHeader.data("original-text") || $AmtBeforeTaxHeader.text().trim();
+					$AmtBeforeTaxHeader.data("original-text", AmtBeforeTaxText);
+					$AmtBeforeTaxHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${AmtBeforeTaxText}</span>
+						</div>
+					`);
+
+					const $CalcTaxAmtHeader = $(".CalcTaxAmt-header");
+					const CalcTaxAmtText = $CalcTaxAmtHeader.data("original-text") || $CalcTaxAmtHeader.text().trim();
+					$CalcTaxAmtHeader.data("original-text", CalcTaxAmtText);
+					$CalcTaxAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CalcTaxAmtText}</span>
+						</div>
+					`);
+
+					const $ToatlAmtHeader = $(".ToatlAmt-header");
+					const ToatlAmtText = $ToatlAmtHeader.data("original-text") || $ToatlAmtHeader.text().trim();
+					$ToatlAmtHeader.data("original-text", ToatlAmtText);
+					$ToatlAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ToatlAmtText}</span>
+						</div>
+					`);
+
+					const $DomesticRevenue = $(".DomesticRevenue-header");
+					const DomesticRevenueText = $DomesticRevenue.data("original-text") || $DomesticRevenue.text().trim();
+					$DomesticRevenue.data("original-text", DomesticRevenueText);
+					$DomesticRevenue.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenueText}</span>
+						</div>
+					`);
+
+					const $DomesticRevenue1 = $(".DomesticRevenue1-header");
+					const DomesticRevenue1Text = $DomesticRevenue1.data("original-text") || $DomesticRevenue1.text().trim();
+					$DomesticRevenue1.data("original-text", DomesticRevenue1Text);
+					$DomesticRevenue1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenue1Text}</span>
+						</div>
+					`);
+
+					const $DomesticRevenue2 = $(".DomesticRevenue2-header");
+					const DomesticRevenue2Text = $DomesticRevenue2.data("original-text") || $DomesticRevenue2.text().trim();
+					$DomesticRevenue2.data("original-text", DomesticRevenue2Text);
+					$DomesticRevenue2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenue2Text}</span>
+						</div>
+					`);
+
+					const $DomesticZeroTaxPurchases = $(".DomesticZeroTaxPurchases-header");
+					const DomesticZeroTaxPurchasesText = $DomesticZeroTaxPurchases.data("original-text") || $DomesticZeroTaxPurchases.text().trim();
+					$DomesticZeroTaxPurchases.data("original-text", DomesticZeroTaxPurchasesText);
+					$DomesticZeroTaxPurchases.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticZeroTaxPurchasesText}</span>
+						</div>
+					`);
+
+					const $ExemptedRevenue = $(".ExemptedRevenue-header");
+					const ExemptedRevenueText = $ExemptedRevenue.data("original-text") || $ExemptedRevenue.text().trim();
+					$ExemptedRevenue.data("original-text", ExemptedRevenueText);
+					$ExemptedRevenue.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ExemptedRevenueText}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase = $(".ImportsPurchase-header");
+					const ImportsPurchaseText = $ImportsPurchase.data("original-text") || $ImportsPurchase.text().trim();
+					$ImportsPurchase.data("original-text", ImportsPurchaseText);
+					$ImportsPurchase.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchaseText}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase1 = $(".ImportsPurchase1-header");
+					const ImportsPurchase1Text = $ImportsPurchase1.data("original-text") || $ImportsPurchase1.text().trim();
+					$ImportsPurchase1.data("original-text", ImportsPurchase1Text);
+					$ImportsPurchase1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchase1Text}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase2 = $(".ImportsPurchase2-header");
+					const ImportsPurchase2Text = $ImportsPurchase2.data("original-text") || $ImportsPurchase2.text().trim();
+					$ImportsPurchase2.data("original-text", ImportsPurchase2Text);
+					$ImportsPurchase2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchase2Text}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase3 = $(".ImportsPurchase3-header");
+					const ImportsPurchase3Text = $ImportsPurchase3.data("original-text") || $ImportsPurchase3.text().trim();
+					$ImportsPurchase3.data("original-text", ImportsPurchase3Text);
+					$ImportsPurchase3.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchase3Text}</span>
+						</div>
+					`);
+
+				}); // closes .each()
+			} // closes success function
+		}); // closes ajax
+	} // closes injectHeaderSVG function
+
+	$(document).ready(function () {
 		injectHeaderSVG();
 	});
+
 
 
 		

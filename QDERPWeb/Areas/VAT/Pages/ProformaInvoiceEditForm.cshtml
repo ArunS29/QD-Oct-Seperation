@@ -456,6 +456,7 @@
 																				.ValueExpr("AccountId")
 																				.DisplayExpr("AccountHead")
 																				.LabelMode(EditorLabelMode.Floating)
+																				.DropDownOptions(d => d.Width(800))
 																				.ContentTemplate(new TemplateName("ClientNameContentTemplate"))
 																				.Buttons(buttons =>
 																				{
@@ -542,7 +543,7 @@
 																		.DisplayExpr("AccountHeadArabic")
 																		.Width("100%")
 																		.TabIndex(4)
-																		.DropDownOptions(o => o.Width(1000))
+																		.DropDownOptions(o => o.Width(700))
 																		.ContentTemplate(new TemplateName("ClientNameArContentTemplate"))
 																		)
 							</td>
@@ -590,7 +591,7 @@
 																.DisplayExpr("TaxCategory")
 																.Width("100%")
 																.TabIndex(1)
-																.DropDownOptions(o => o.Width(1000))
+																.DropDownOptions(o => o.Width(700))
 																.OnKeyDown("onKeyDown")
 																.ContentTemplate(new TemplateName("TaxCategoryContentTemplate"))
 																)
@@ -615,7 +616,7 @@
 																.DisplayExpr("TaxCategory")
 															.Width("100%")
 															.TabIndex(1)
-															.DropDownOptions(o => o.Width(1000))
+															.DropDownOptions(o => o.Width(800))
 															.OnKeyDown("onKeyDown")
 															.ContentTemplate(new TemplateName("InvoiceTypeArCategoryContentTemplate"))
 															)
@@ -638,6 +639,7 @@
 																.DisplayExpr("InvoiceSubType")
 																.LabelMode(EditorLabelMode.Floating)
 																.Disabled(false)
+																.DropDownOptions(d => d.Width(600))
 																.ContentTemplate(new TemplateName("VATInvoiceSubTypeContentTemplate"))
 																)
 							</td>
@@ -751,7 +753,7 @@
 														//.Width(650)
 														.TabIndex(1)
 														.DropDownOptions(o => o
-														.Width(1000)
+														.Width(700)
 														)
 														//  .OnKeyDown("onKeyDown")
 														//.OnValueChanged("dropDownBoxValueChanged")
@@ -1063,6 +1065,7 @@
 				.ValueExpr("CompanyId")
 				.DisplayExpr("CompanyName")
                 .LabelMode(EditorLabelMode.Floating)
+				.DropDownOptions(d => d.Width(600))
 				.ContentTemplate(new TemplateName("BranchAndDivisionTemplate"))
             )
         </td>
@@ -1083,6 +1086,7 @@
 																.ValueExpr("SalesPersonCode")
 																.DisplayExpr("SalesPersonName")
 																.LabelMode(EditorLabelMode.Floating)
+																.DropDownOptions(d => d.Width(1000))
 																.ContentTemplate(new TemplateName("SalesPersonTemplate"))
 																.Buttons(buttons =>
 																{
@@ -1163,7 +1167,7 @@
 																		.DisplayExpr("SignatoryName")
 																		.OnInput("dropDownBoxOnInput")
 																		.OnOpened("onOpened")
-																		.DropDownOptions(o => o.Width(1000))
+																		.DropDownOptions(o => o.Width(700))
 																		.ContentTemplate(new TemplateName("PreparedByTemplate"))
 																		.Width("100%")
 																		.Buttons(buttons =>
@@ -1203,7 +1207,7 @@
 																		.DisplayExpr("SignatoryName")
 																		.OnInput("dropDownBoxOnInput")
 																		.OnOpened("onOpened")
-																		.DropDownOptions(o => o.Width(1000))
+																		.DropDownOptions(o => o.Width(700))
 																		.ContentTemplate(new TemplateName("CheckedByTemplate"))
 																		.Width("100%")
 																		.Buttons(buttons =>
@@ -1243,7 +1247,7 @@
 																		.DisplayExpr("SignatoryName")
 																		.OnInput("dropDownBoxOnInput")
 																		.OnOpened("onOpened")
-																		.DropDownOptions(o => o.Width(1000))
+																		.DropDownOptions(o => o.Width(700))
 																		.ContentTemplate(new TemplateName("ApprovedByTemplate"))
 																		.Width("100%")
 																		.Buttons(buttons =>
@@ -1605,9 +1609,19 @@
 					.HeaderFilter(p => p.Visible(true))
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-
+					.ColumnChooser(c => c
+					.Enabled(true)
+					.Title(new JS("formatMessage('Show/Hide Column')"))
+					.Mode(GridColumnChooserMode.DragAndDrop)
+					)
+					.Pager(pager => pager
+					.Visible(true)                            // show pager UI (page numbers etc)
+					.ShowPageSizeSelector(true)              // allow user to change page size
+					.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+					.ShowInfo(true)                          // show info like "Page 1 of 10"
+					)
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
+					.Height(440)
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
@@ -1644,9 +1658,19 @@
 					.HeaderFilter(p => p.Visible(true))
 					.HoverStateEnabled(true)
 					.Paging(p => p.PageSize(15))
-
+					.ColumnChooser(c => c
+					.Enabled(true)
+					.Title(new JS("formatMessage('Show/Hide Column')"))
+					.Mode(GridColumnChooserMode.DragAndDrop)
+					)
+					.Pager(pager => pager
+					.Visible(true)                            // show pager UI (page numbers etc)
+					.ShowPageSizeSelector(true)              // allow user to change page size
+					.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+					.ShowInfo(true)                          // show info like "Page 1 of 10"
+					)
 					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-					.Height(200)
+					.Height(500)
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
@@ -1846,6 +1870,17 @@
 													.HoverStateEnabled(true)
 													.Paging(p => p.PageSize(15))
 													.FilterRow(f => f.Visible(true))
+	.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 													.Height(345)
 													.Selection(s => s.Mode(SelectionMode.Single))
@@ -1885,6 +1920,17 @@
 										.ShowBorders(true)
 										.HoverStateEnabled(true)
 										.Paging(p => p.PageSize(15))
+										.ColumnChooser(c => c
+.Enabled(true)
+.Title(new JS("formatMessage('Show/Hide Column')"))
+.Mode(GridColumnChooserMode.DragAndDrop)
+)
+.Pager(pager => pager
+	                    						.Visible(true)                            // show pager UI (page numbers etc)
+	              								.ShowPageSizeSelector(true)              // allow user to change page size
+.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+.ShowInfo(true)                          // show info like "Page 1 of 10"
+   )
 										.FilterRow(f => f.Visible(true))
 										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 										.Height(345)
@@ -1925,7 +1971,18 @@
 											.Paging(p => p.PageSize(15))
 											.FilterRow(f => f.Visible(true))
 											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-											.Height(345)
+												.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
+											.Height(400)
 											.Selection(s => s.Mode(SelectionMode.Single))
 											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 											.Columns(columns =>
@@ -1963,7 +2020,18 @@
 												.Paging(p => p.PageSize(15))
 												.FilterRow(f => f.Visible(true))
 												.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-												.Height(345)
+												.Height(400)
+													.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 												.Selection(s => s.Mode(SelectionMode.Single))
 												.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 												.Columns(columns =>
@@ -2006,7 +2074,7 @@
 													.Paging(p => p.PageSize(15))
 													.FilterRow(f => f.Visible(true))
 													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-													.Height(345)
+													.Height(335)
 													.Selection(s => s.Mode(SelectionMode.Single))
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
@@ -2065,8 +2133,18 @@
 
 														.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-														.Height(345)
-
+														.Height(400)
+															.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 														.Selection(s => s.Mode(SelectionMode.Single))
 
 														.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
@@ -2138,7 +2216,17 @@
 													.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
 													.Height(345)
-
+														.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 													.Selection(s => s.Mode(SelectionMode.Single))
 
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
@@ -2196,7 +2284,17 @@
 																		// .HeaderFilter(p => p.Visible(true))
 
 																		.ShowBorders(true)
-
+																			.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 																		.HoverStateEnabled(true)
 
 																		.Paging(p => p.PageSize(15))
@@ -2273,7 +2371,17 @@
 																			.FilterRow(f => f.Visible(true))
 
 																			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-
+																				.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 																			.Height(345)
 
 																			.Selection(s => s.Mode(SelectionMode.Single))
@@ -2338,6 +2446,17 @@
 																				.HoverStateEnabled(true)
 
 																				.Paging(p => p.PageSize(15))
+																					.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 
 																				.FilterRow(f => f.Visible(true))
 
@@ -2426,7 +2545,17 @@
 																					.OnInitialized("dataGridApprovedByHeadInitialized")
 
 																					// .HeaderFilter(p => p.Visible(true))
-
+																						.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 																					.ShowBorders(true)
 
 																					.HoverStateEnabled(true)
@@ -2549,8 +2678,19 @@
 						.ShowBorders(true)
 						.HoverStateEnabled(true)
 						.Paging(p => p.PageSize(15))
+							.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-						.Height(200)
+						.Height(400)
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
 						{
@@ -2583,8 +2723,19 @@
 						.ShowBorders(true)
 						.HoverStateEnabled(true)
 						.Paging(p => p.PageSize(15))
+							.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 						.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-						.Height(200)
+						.Height(400)
 						.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 						.Columns(columns =>
 						{
@@ -2618,8 +2769,19 @@
 			.HeaderFilter(p => p.Visible(false))
 			.HoverStateEnabled(true)
 			.Paging(p => p.PageSize(15))
+				.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
 			.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-			.Height(200)
+			.Height(500)
 			.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 			.Columns(columns =>
 			{
@@ -7618,14 +7780,14 @@
 				if (response.success) {
 					let newInvoiceNo = response.toInvoiceNo;
 					DevExpress.ui.notify("Invoice created successfully: " + newInvoiceNo,"success",2000);
-					if(VATInvoiceSubType=="Tax Invoice")
+					if(VATInvoiceSubType=="01")
 					{
 					  const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 					  window.location.href = url;
 					}
-					else if(VATInvoiceSubType=="Simplified Tax Invoice")
+					else if(VATInvoiceSubType=="02")
 					{
-						const url = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+						const url = `/${tenantName}/VAT/frmVATInvoiceEditB2C?InvoiceNo=${encodeURIComponent(newInvoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
 						window.location.href = url;
 					}
 		

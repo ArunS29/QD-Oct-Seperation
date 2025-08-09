@@ -6228,8 +6228,7 @@
             // 
             // xrLabel186
             // 
-            this.xrLabel186.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
+            this.xrLabel186.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Right) 
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel186.Font = new DevExpress.Drawing.DXFont("Tahoma", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel186.LocationFloat = new DevExpress.Utils.PointFloat(5.117806F, 225.6037F);
@@ -6239,6 +6238,8 @@
             this.xrLabel186.SizeF = new System.Drawing.SizeF(798.5906F, 23.00012F);
             this.xrLabel186.StylePriority.UseBorders = false;
             this.xrLabel186.StylePriority.UseFont = false;
+            this.xrLabel186.StylePriority.UseTextAlignment = false;
+            this.xrLabel186.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             // 
             // xrLabel184
             // 
@@ -6409,9 +6410,8 @@
             // 
             // xrLabel144
             // 
-            this.xrLabel144.Borders = ((DevExpress.XtraPrinting.BorderSide)((((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
-            | DevExpress.XtraPrinting.BorderSide.Right) 
-            | DevExpress.XtraPrinting.BorderSide.Bottom)));
+            this.xrLabel144.Borders = ((DevExpress.XtraPrinting.BorderSide)(((DevExpress.XtraPrinting.BorderSide.Left | DevExpress.XtraPrinting.BorderSide.Top) 
+            | DevExpress.XtraPrinting.BorderSide.Right)));
             this.xrLabel144.Font = new DevExpress.Drawing.DXFont("Tahoma", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel144.LocationFloat = new DevExpress.Utils.PointFloat(5.117797F, 202.6036F);
             this.xrLabel144.Multiline = true;
@@ -6420,6 +6420,8 @@
             this.xrLabel144.SizeF = new System.Drawing.SizeF(798.5906F, 23.00012F);
             this.xrLabel144.StylePriority.UseBorders = false;
             this.xrLabel144.StylePriority.UseFont = false;
+            this.xrLabel144.StylePriority.UseTextAlignment = false;
+            this.xrLabel144.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
             // 
             // xrLabel138
             // 

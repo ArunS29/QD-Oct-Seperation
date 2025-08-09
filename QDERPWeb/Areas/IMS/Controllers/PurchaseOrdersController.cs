@@ -612,7 +612,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingPo.SalesPersonCode = model.SalesPersonCode;
                     existingPo.Mprno = model.Mprno;
                     existingPo.ProjectSubUnitCode = model.ProjectSubUnitCode;
-
+                    existingPo.CurrencyId = model.CurrencyId ?? 1;
+                    existingPo.CurrencyRate = model.CurrencyRate ?? 1;
+                    existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
                     existingPo.ModifiedBy = userName;
                     existingPo.ModifiedOn = DateTime.Now;
                 }
@@ -620,7 +622,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Save Purchase Order1",
-                  actionDetail: $":Saved Purchase Order1  {model.PocategoryId}",
+                  actionDetail: $"Saved Purchase Order1  {model.PocategoryId}",
                   documentNo: $"{model.PocategoryId}"
                 );
 
@@ -733,7 +735,9 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 existingPo.SalesPersonCode = master.SalesPersonCode;
                 existingPo.PoverifiedSign = master.PoverifiedSign;
                 existingPo.PoapprovedSign = master.PoapprovedSign;
-
+                existingPo.CurrencyId = master.CurrencyId ?? 1;
+                existingPo.CurrencyRate = master.CurrencyRate ?? 1;
+                existingPo.BaseCurrencyId = master.BaseCurrencyId ?? 1;
                 // Submit
                 if (master.IsSubmitted == true && existingPo.IsSubmitted != true)
                 {
@@ -789,6 +793,8 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
             foreach (var child in newChildren)
             {
                 child.Pono = pono;
+                child.ItemDiscount = child.ItemDiscount * master.CurrencyRate;
+                child.UnitPrice = child.UnitPrice * master.CurrencyRate;
                 await dbContext.Tbl60402purchaseOrderChildren.AddAsync(child);
             }
 
@@ -800,7 +806,7 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Save Purchase Order",
-              actionDetail: $":Saved Purchase Order  {model.Master.Pono}",
+              actionDetail: $"Saved Purchase Order  {model.Master.Pono}",
               documentNo: $"{model.Master.Pono}"
             );
             await transaction.CommitAsync();
@@ -834,7 +840,7 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Save Item",
-                  actionDetail: $":Saved Item  {items[0].Pono}",
+                  actionDetail: $"Saved Item  {items[0].Pono}",
                   documentNo: $"{items[0].Pono}"
                 );
 
@@ -884,7 +890,7 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Save Item",
-                      actionDetail: $":Saved Item  {updatedItem.PochildNo}",
+                      actionDetail: $"Saved Item  {updatedItem.PochildNo}",
                       documentNo: $"{updatedItem.PochildNo}"
                     );
 
@@ -987,6 +993,9 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
             isApproved = master.IsApproved,
             approvedBy = master.ApprovedBy,
             approvedOn = master.ApprovedOn,
+            CurrencyRate = master.CurrencyRate,
+            BaseCurrencyId = master.BaseCurrencyId,
+            CurrencyId = master.CurrencyId,
 
             // Children - PascalCase property names
             items = children.Select(x => new
@@ -1004,8 +1013,8 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
     //? (unitDescriptions.ContainsKey(x.UnitRateMethod.Value) ? unitDescriptions[x.UnitRateMethod.Value] : null)
     //: null,
 
-                UnitPrice = x.UnitPrice,
-                ItemDiscount = x.ItemDiscount,
+                UnitPrice = x.UnitPrice / master.CurrencyRate,
+                ItemDiscount = x.ItemDiscount / master.CurrencyRate,
                 PotaxSlab = x.PotaxSlab,
                 PoitemRemarks = x.PoitemRemarks,
                 LineOrderNo = x.LineOrderNo,
@@ -1014,10 +1023,10 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 MritemNo = x.MritemNo,
                 Currency = x.Currency,
                 ExchangeRate = x.ExchangeRate,
-                LineTotalWithTax = x.LineTotalWithTax,
-                LineTaxAmount = x.LineTaxAmount,
-                UnitRateInOc = x.UnitRateInOc,
-                DiscountInOc = x.DiscountInOc
+                LineTotalWithTax = x.LineTotalWithTax / master.CurrencyRate,
+                LineTaxAmount = x.LineTaxAmount / master.CurrencyRate,
+                UnitRateInOc = (x.UnitRateInOc ?? 0) / master.CurrencyRate,
+                DiscountInOc = (x.DiscountInOc ?? 0) / master.CurrencyRate
             })
         });
     }
@@ -1775,7 +1784,7 @@ public async Task<IActionResult> GetOrderStatus(string pono)
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Save Report Attribute View ",
-                  actionDetail: $":Saved Report Attribute {model.ReportNo}",
+                  actionDetail: $"Saved Report Attribute {model.ReportNo}",
                     documentNo: $"{model.ReportNo}"
                 );
                 return Ok(new { message = "Field updated successfully." });
@@ -1884,7 +1893,11 @@ public async Task<IActionResult> GetOrderStatus(string pono)
     }
     public class PurchaseOrderViewModel
 {
-    public Tbl60401purchaseOrderMaster Master { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
+
+        public Tbl60401purchaseOrderMaster Master { get; set; }
     public List<Tbl60402purchaseOrderChild> Children { get; set; }
 }
 

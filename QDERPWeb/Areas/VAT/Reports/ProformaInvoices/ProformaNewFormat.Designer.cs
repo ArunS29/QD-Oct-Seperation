@@ -5433,7 +5433,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel166.BorderWidth = 1F;
             this.xrLabel166.CanGrow = false;
-            this.xrLabel166.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
+            this.xrLabel166.Font = new DevExpress.Drawing.DXFont("Times New Roman", 9F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel166.ForeColor = System.Drawing.Color.Black;
             this.xrLabel166.LocationFloat = new DevExpress.Utils.PointFloat(571.1705F, 184.3328F);
             this.xrLabel166.Name = "xrLabel166";

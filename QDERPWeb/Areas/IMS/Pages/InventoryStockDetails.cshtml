@@ -182,7 +182,7 @@
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-<input id="formId" value="frm201LedgerAccount" type="hidden" />
+<input id="formId" value="frm60001InventoryStockEdit" type="hidden" />
 <div class="containerInventoryStock">
 
         <div class="dx-fieldset horizontal-container">
@@ -195,7 +195,12 @@
                             .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .OnValueChanged("onGscodeChanged")
-                            .Width("90%"))
+                            .Width("100%")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Stock Item Code is required.");
+                            })
+                        )
                     </td>
                 <td>
                     <div style="display:flex;align-items:end;">
@@ -210,9 +215,7 @@
                             )
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("90%")
-                            @*  .ShowClearButton(true)
-.AcceptCustomValue(true) *@
-                            .OpenOnFieldClick(false)//
+                            .OpenOnFieldClick(false)
                             .ValueChangeEvent("input")
                             .HoverStateEnabled(true)
                             .ValueExpr("GsgroupId")
@@ -225,6 +228,10 @@
                             .OnValueChanged("onStockGroupChange") 
                             //.OnValueChanged("dropDownBoxValueChanged")
                             .ContentTemplate(new TemplateName("GetTypeOfGroupContentTemplate"))
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Stock Group is required.");
+                            })
                             .Buttons(buttons =>
                             {
                                 buttons.Add()
@@ -237,7 +244,8 @@
                                 .OnClick("StockGroup"));
                                 buttons.Add()
                                 .Name("dropDown");
-                            }))
+                            })
+                            )
                     </div>
                 </td>
                     @* <td> *@
@@ -275,7 +283,12 @@
                             .ID("ItemName")
                             .Label(new JS("formatMessage('Item Name / Description')"))
                             .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%"))
+                            .Width("100%")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Item name is required.");
+                            })
+                        )
                     </td>
                 </tr>
                 <tr>
@@ -292,9 +305,7 @@
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("ItemStore")
                             .Width("90%")
-                            @*  .ShowClearButton(true)
-.AcceptCustomValue(true) *@
-                            .OpenOnFieldClick(false)//
+                            .OpenOnFieldClick(false)
                             .ValueChangeEvent("input")
                             .HoverStateEnabled(true)
                             .ValueExpr("StoreId")
@@ -318,7 +329,12 @@
                                 .OnClick("AddItemStore"));
                                 buttons.Add()
                                 .Name("dropDown");
-                            }))
+                            })
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Item Store is required.");
+                                })
+                            )
                     </div>
                 </td>
                     @* <td> *@
@@ -862,9 +878,10 @@
                         </tr>
                     <tr class="flex-row" style="margin-top: 6px;">
                         <td>
-                            <label  id="AvgCostPriceLabel"></label>
                             @(Html.DevExtreme().TextBox()
                                 .ID("AvgCostPrice")
+                                .Disabled(true)
+                                .Label(new JS("formatMessage('Avg Cost Price :')"))
                                 .LabelMode(EditorLabelMode.Floating))
                         </td>
                         <td>
@@ -3066,7 +3083,7 @@
         const costPrice = $("#CostPrice").dxNumberBox("instance").option("value");
         // Encode the parameters to ensure URL safety
         const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&modal=true`;
-        openModal(url, "Opening Balance");
+        openModal(url, "Opening Balance Entries");
     }
 
     async function convertToArabic() {
@@ -3295,7 +3312,154 @@
         const display = unit ? unit.UnitType : code;
         cellElement.text(display);
     }
+       function onSaveClicked(e) {
+            var isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
+            var isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
+            var isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
+            var isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
 
+    if (!stockCode) {
+          DevExpress.ui.notify("Please Fill Required Field.", "error", 3000);
+          return;
+      }
+
+            var isUpdate = $("#btnSave").data("is-update");
+        const data = {
+            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
+            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
+            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
+            GsgroupId: $("#StockGroup").dxDropDownBox("instance").option("value"),
+            StoreCode: $("#ItemStore").dxDropDownBox("instance").option("value"),
+            ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
+            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
+            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
+            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
+            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
+            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
+            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
+            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
+            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
+            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
+            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
+            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
+            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
+            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
+            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
+            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
+            ItemColor: $("#ItemColor").dxColorBox("instance").option("value"),
+            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
+            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
+            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
+            CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
+            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
+            ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
+            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
+            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
+             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
+            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
+            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
+            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
+            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
+            ItemImage: imageBase64
+
+        };
+
+        $.ajax({
+            url: '/api/StockInventory/Save',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+
+                if (!isUpdate) {
+                    $("#btnSave").dxButton("instance").option("text", "Update");
+                    $("#btnSave").data("is-update", true);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error saving item.", "error", 3000);
+            }
+        });
+    }
+            function onSaveAndCloseClicked(e) {
+            var isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
+            var isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
+            var isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
+            var isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
+
+    if (!stockCode) {
+        DevExpress.ui.notify("Please Fill Required Field.", "error", 3000);
+        return;
+    }
+
+
+        var isUpdate = $("#btnSave").data("is-update");
+
+        const data = {
+            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
+            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
+            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
+            GsgroupId: $("#StockGroup").dxDropDownBox("instance").option("value"),
+            StoreCode: $("#ItemStore").dxDropDownBox("instance").option("value"),
+            ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
+            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
+            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
+            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
+            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
+            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
+            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
+            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
+            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
+            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
+            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
+            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
+            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
+            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
+            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
+            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
+            ItemColor: $("#ItemColor").dxColorBox("instance").option("value"),
+            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
+            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
+            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
+              CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
+            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
+            ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
+            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
+            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
+             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
+            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
+            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
+            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
+            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
+            ItemImage: imageBase64
+        };
+
+        $.ajax({
+            url: '/api/StockInventory/Save',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+
+                if (!isUpdate) {
+                    $("#btnSave").dxButton("instance").option("text", "Update");
+                    $("#btnSave").data("is-update", true);
+                }
+
+                // Navigate back after success
+                setTimeout(() => {
+                    window.history.back();
+                }, 1000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error saving item.", "error", 3000);
+            }
+        });
+    }
 
       
 </script>
