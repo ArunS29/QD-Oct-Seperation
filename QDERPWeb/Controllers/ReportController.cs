@@ -74,7 +74,7 @@ namespace QD.ERP.Web.Controllers
             }
 
             // Generate report dynamically
-            XtraReport report = GenerateReport(reportName, voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username, _tenantDbContextHelper);
+            XtraReport report = GenerateReport(reportName, voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
 
             // Convert to PDF
             using (MemoryStream stream = new MemoryStream())
@@ -85,14 +85,14 @@ namespace QD.ERP.Web.Controllers
             }
         }
 
-        private XtraReport GenerateReport(string reportName, string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr,string username, TenantDbContextHelper tenantHelper)
+        private XtraReport GenerateReport(string reportName, string voucherNo, string tenantName, string companyName, string companyAddress, Image logoImage, string companyNameAr, string companyAddressAr, string username, TenantDbContextHelper tenantHelper)
         {
             XtraReport report;
 
             switch (reportName)
             {
                 case "cashPayments":
-                    report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,username, tenantHelper);
+                    report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, tenantHelper);
                     break;
                 // Add other report types if needed
 
@@ -106,7 +106,27 @@ namespace QD.ERP.Web.Controllers
             report.CreateDocument();
             return report;
         }
+
+        [HttpDelete("default/delete")]
+        public IActionResult DeleteSavedLayout(string reportName)
+        {
+            if (string.IsNullOrWhiteSpace(reportName))
+                return BadRequest("Invalid report name");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return StatusCode(500, "Tenant not found or DbContext could not be created.");
+
+            var layout = dbContext.Tbl90112ReportAttributes.FirstOrDefault(r => r.ReportName == reportName);
+            if (layout != null)
+            {
+                dbContext.Tbl90112ReportAttributes.Remove(layout);
+                dbContext.SaveChanges();
+            }
+
+            return Ok(new { message = "Saved layout deleted" });
+        }
+
+
+
     }
-
-
 }
