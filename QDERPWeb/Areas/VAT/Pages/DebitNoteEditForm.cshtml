@@ -2786,6 +2786,15 @@
 							dataGrid.cellValue(rowIndex, "Qty", 1);
 							dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+
+							ItemNo = selectedItem.GSCode;
+				           Gsdescrpition = selectedItem.GSDescrpition;
+				           GsdescriptionAr = selectedItem.GsdescriptionAr;
+				           ItemPartNo = selectedItem.ItemPartNo;
+				           CostPrice = selectedItem.CostPrice;
+				           GssellingRate = selectedItem.GSSellingRate;
+				           ReorderQty = selectedItem.ReorderQty;
+				           UnitOfMeasure = selectedItem.UnitDescription;
 						}
 
 						e.component.close();
@@ -2811,13 +2820,10 @@
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				if (!selectedItemData || !selectedItemData.GSCode) {
-					DevExpress.ui.notify("Please select an item first", "warning", 2000);
-					return;
-				}
 
-				const selected = selectedItemData;
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+
+			//	const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
 				openModal(url, "Goods and Services");
 			},
 			width: 60,
