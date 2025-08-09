@@ -212,92 +212,23 @@
 			z-index: 2;
 		}
 
-	.with-sidebar {
-		position: relative;
-		overflow: hidden;
-	}
-
-		.with-sidebar::before {
-			content: '';
-			position: absolute;
-			top: 10px;
-			left: 0;
-			width: 10px;
-			height: 80%;
-			background: rgba(255, 255, 255, 0.4);
-			border-top-right-radius: 12px;
-			border-bottom-right-radius: 12px;
-		}
-
-	.tile-icon {
-		display: flex;
-		align-items: flex-end;
-		justify-content: flex-end;
-		height: 100%;
-		position: absolute;
-		left: 330px;
-		bottom: 10px;
-	}
-
-	.tabs {
-		display: flex;
-		justify-content: space-between;
-		margin-bottom: 12px;
-		gap: 10px;
-	}
-
-	.tab-text {
-		flex: 1;
-		text-align: center;
-		cursor: pointer;
-		font-weight: bold;
-		padding: 2px 0;
-		border-radius: 13px;
-		background: rgba(255, 255, 255, 0.2);
-		transition: background 0.3s ease;
-	}
-
-		.tab-text.active {
-			background: rgba(255, 255, 255, 0.9);
-			color: rgb(0 0 0);
-		}
-
-
-	.tab-content {
-		display: none;
-		text-align: center;
-		animation: fadeSlideIn 0.4s ease;
-	}
-
-		.tab-content.active {
-			display: block;
-		}
-
 </style>
 <div class="title">
 	<input id="formId" value="frm201LedgerView" type="hidden" />
-	<div class="card blue shine compact with-sidebar">
-		<div class="tile-content">
-			<div class="title-text">
-				<h2 class="title-slide">Material Request</h2>
-				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
-			</div>
-			<div class="tile-icon">
-				<!-- Icon as SVG -->
-				<svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
-					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
-				</svg>
 
-			</div>
-		</div>
+	<div class="card blue shine compact">
+		<h2 class="title-slide">Material Request</h2>
+		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+		<h6 class="fade-in">QuickDice ERP Solutions</h6>
+
 	</div>
 
-	<div id="mainCard" class="card .today-bg with-sidebar">
-		<div class="tabs" style="gap:5px;">
+	<div id="mainCard" class="card verified-bg">
+		<div class="tabs">
 			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
 			<div class="tab-text" onclick="switchTab(1)">Approved</div>
 			<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+			<div class="tab-text" onclick="switchTab(3)">Cancelled</div>
 		</div>
 
 		<div class="tab-content active">
@@ -314,44 +245,34 @@
 			<h4>Total</h4>
 			<div class="count" id="counts2">0</div>
 		</div>
-		<div class="tile-icon">
-			<!-- Icon as SVG -->
-			<svg width="33" height="31" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path d="M17.5 0C7.8506 0 0 7.8506 0 17.5C0 27.1494 7.8506 35 17.5 35C27.1494 35 35 27.1494 35 17.5C35 7.8506 27.1494 0 17.5 0ZM26.6075 11.635L15.2998 25.0965C15.1744 25.2459 15.0235 25.3626 14.8473 25.4465C14.6711 25.5303 14.4854 25.5738 14.2902 25.5769H14.2675C14.0767 25.5768 13.8942 25.538 13.72 25.4603C13.5457 25.3826 13.3948 25.2729 13.2672 25.131L8.42104 19.7464C8.16183 19.4715 8.03998 19.1453 8.05547 18.7677C8.07096 18.3902 8.21914 18.0751 8.50001 17.8223C8.78087 17.5696 9.10987 17.4553 9.48689 17.4795C9.86399 17.5038 10.1756 17.6593 10.4217 17.9459L14.2323 22.1796L24.5463 9.90347C24.787 9.62518 25.0907 9.47145 25.4575 9.44219C25.8243 9.41303 26.1485 9.51668 26.4303 9.75333C26.712 9.98999 26.8701 10.2915 26.9047 10.6579C26.9391 11.0241 26.8402 11.3499 26.6075 11.635Z" fill="white" fill-opacity="0.5" />
-			</svg>
+
+		<div class="tab-content">
+			<h4>Total</h4>
+			<div class="count" id="counts3">0</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Quotation</h4>
+	<div class="card purple sparkle" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Quotation</h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h4 style="text-align:left">No of Requested Today</h4>
-				<h1 id="netqoutedamount" style="color: white;text-align:left;">
-					0
+				<h4>Net Quoted Amount</h4>
+				<h1 id="netqoutedamount" style="color: white;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+						<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+					</svg>0.00
 				</h1>
 			</div>
 			<div class="voucher-slide">
-				<h4 style="text-align:left">Total No of Request</h4>
-				<h1 id="totalRequestCount" style="color: white;text-align:left;font-weight:bold;">
-					
-					0
+				<h4>Net Quoted with Tax</h4>
+				<h1 id="qoutedwithtax" style="color: white;">
+					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+						<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+					</svg>0.00
 				</h1>
 			</div>
-
-			<div class="voucher-slide">
-				<h4 style="text-align:left">Request Cancelled</h4>
-				<h1 id="requestcanceledcount" style="color: white;text-align:left;font-weight:bold;">
-					0
-				</h1>
-			</div>
-		</div>
-		<div class="tile-icon">
-			<!-- Icon as SVG -->
-			<svg width="33" height="31" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
-				<path d="M33.5442 0.00147154H29.4536C29.022 0.00765929 28.6103 0.18525 28.3083 0.495563L26.1812 2.63663L24.0541 0.495563C23.752 0.18525 23.3403 0.00765929 22.9087 0.00147154H2.45581C2.13042 -0.0100313 1.80616 0.046002 1.50322 0.166083C1.20027 0.286165 0.925125 0.467724 0.694899 0.699461C0.464674 0.931198 0.284298 1.20815 0.165 1.51309C0.0457017 1.81802 -0.00996585 2.14441 0.00146195 2.47193V25.5295C0.00146195 26.1847 0.260044 26.8131 0.720323 27.2764C1.1806 27.7397 1.80487 28 2.45581 28H22.9087C23.3403 27.9938 23.752 27.8162 24.0541 27.5059L26.1812 25.3648L28.3083 27.5059C28.6103 27.8162 29.022 27.9938 29.4536 28H33.5442C34.1951 28 34.8194 27.7397 35.2797 27.2764C35.74 26.8131 35.9985 26.1847 35.9985 25.5295V2.47193C36.01 2.14441 35.9543 1.81802 35.835 1.51309C35.7157 1.20815 35.5353 0.931198 35.3051 0.699461C35.0749 0.467724 34.7997 0.286165 34.4968 0.166083C34.1938 0.046002 33.8696 -0.0100313 33.5442 0.00147154ZM9.81885 9.05982C10.1425 9.05982 10.4588 9.15641 10.7279 9.33738C10.997 9.51836 11.2067 9.77558 11.3305 10.0765C11.4544 10.3775 11.4868 10.7086 11.4236 11.0281C11.3605 11.3476 11.2047 11.641 10.9758 11.8714C10.747 12.1017 10.4555 12.2586 10.1381 12.3221C9.82066 12.3857 9.49167 12.3531 9.19269 12.2284C8.89371 12.1037 8.63816 11.8926 8.45837 11.6218C8.27858 11.351 8.18262 11.0325 8.18262 10.7068C8.18262 10.27 8.355 9.85107 8.66186 9.54221C8.96871 9.23334 9.38489 9.05982 9.81885 9.05982ZM16.3638 18.9417C16.0402 18.9417 15.7238 18.8451 15.4547 18.6641C15.1857 18.4831 14.9759 18.2259 14.8521 17.9249C14.7282 17.624 14.6958 17.2929 14.759 16.9734C14.8221 16.6539 14.9779 16.3604 15.2068 16.1301C15.4356 15.8998 15.7272 15.7429 16.0446 15.6794C16.362 15.6158 16.6909 15.6484 16.9899 15.7731C17.2889 15.8977 17.5445 16.1088 17.7242 16.3797C17.904 16.6505 18 16.9689 18 17.2947C18 17.7315 17.8276 18.1504 17.5208 18.4593C17.2139 18.7681 16.7977 18.9417 16.3638 18.9417ZM18.3272 11.0362L10.1461 19.271C10.0005 19.4308 9.82348 19.5583 9.62631 19.6456C9.42914 19.7328 9.21611 19.7779 9.00073 19.7779C8.78535 19.7779 8.57232 19.7328 8.37515 19.6456C8.17798 19.5583 8.00098 19.4308 7.85537 19.271C7.69667 19.1245 7.56996 18.9463 7.48328 18.7479C7.3966 18.5494 7.35184 18.335 7.35184 18.1182C7.35184 17.9014 7.3966 17.6869 7.48328 17.4885C7.56996 17.29 7.69667 17.1119 7.85537 16.9653L16.0365 8.73042C16.3516 8.49255 16.7414 8.37707 17.1343 8.40517C17.5271 8.43328 17.8967 8.60308 18.1753 8.88342C18.4538 9.16375 18.6225 9.5358 18.6504 9.93125C18.6783 10.3267 18.5636 10.719 18.3272 11.0362ZM27.8174 21.4121C27.8174 21.8489 27.645 22.2678 27.3381 22.5767C27.0313 22.8856 26.6151 23.0591 26.1812 23.0591C25.7472 23.0591 25.331 22.8856 25.0242 22.5767C24.7173 22.2678 24.5449 21.8489 24.5449 21.4121V19.7651C24.5449 19.3283 24.7173 18.9094 25.0242 18.6006C25.331 18.2917 25.7472 18.1182 26.1812 18.1182C26.6151 18.1182 27.0313 18.2917 27.3381 18.6006C27.645 18.9094 27.8174 19.3283 27.8174 19.7651V21.4121ZM27.8174 14.8242C27.8174 15.261 27.645 15.6799 27.3381 15.9888C27.0313 16.2977 26.6151 16.4712 26.1812 16.4712C25.7472 16.4712 25.331 16.2977 25.0242 15.9888C24.7173 15.6799 24.5449 15.261 24.5449 14.8242V13.1772C24.5449 12.7404 24.7173 12.3215 25.0242 12.0127C25.331 11.7038 25.7472 11.5303 26.1812 11.5303C26.6151 11.5303 27.0313 11.7038 27.3381 12.0127C27.645 12.3215 27.8174 12.7404 27.8174 13.1772V14.8242ZM27.8174 8.23633C27.8174 8.67314 27.645 9.09205 27.3381 9.40092C27.0313 9.70979 26.6151 9.88331 26.1812 9.88331C25.7472 9.88331 25.331 9.70979 25.0242 9.40092C24.7173 9.09205 24.5449 8.67314 24.5449 8.23633V6.58936C24.5449 6.15256 24.7173 5.73364 25.0242 5.42478C25.331 5.11591 25.7472 4.94239 26.1812 4.94239C26.6151 4.94239 27.0313 5.11591 27.3381 5.42478C27.645 5.73364 27.8174 6.15256 27.8174 6.58936V8.23633Z" fill="white" fill-opacity="0.5" />
-			</svg>
-
 		</div>
 	</div>
 </div>
@@ -775,48 +696,55 @@
 			slides[currentSlideIndex].classList.add('active');
 		}, 2000);
 
-			function updateTodayRequestCount() {
-		const grid = $("#dataGrid").dxDataGrid("instance");
-		if (!grid) return;
+			function updateNetQuotedAmount(data) {
+			let totalCredit = 0;
 
-		const today = new Date();
-		const todayDateStr = today.toDateString();
+			if (Array.isArray(data)) {
+				totalCredit = data.reduce((sum, item) => {
+						const value = parseFloat(item.NetQuotedAmount || 0);
+					return sum + (isNaN(value) ? 0 : value);
+				}, 0);
+			}
 
-		const allData = grid.getDataSource().items();
+			const formatted = totalCredit.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			});
 
-		const count = allData.filter(item => {
-			const mprDate = new Date(item.Mprdate);
-			return mprDate.toDateString() === todayDateStr;
-		}).length;
+			const svg = `
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+				</svg>`;
 
-		document.getElementById("netqoutedamount").innerHTML = `
-			<div style="font-weight: bold;">${count}</div>
-		`;
-	}
+			// ✅ Set the content with SVG and value
+				document.getElementById('netqoutedamount').innerHTML = svg + formatted;
+		}
+			function updateNetQuotedWithTax(data) {
+			let totalCredit = 0;
 
-	function updateTotalRequestCount() {
-		const grid = $("#dataGrid").dxDataGrid("instance");
-		if (!grid) return;
+			if (Array.isArray(data)) {
+				totalCredit = data.reduce((sum, item) => {
+							const value = parseFloat(item.NetQuotedWithTax || 0);
+					return sum + (isNaN(value) ? 0 : value);
+				}, 0);
+			}
 
-		const allData = grid.getDataSource().items();
-		const totalCount = allData.length;
+			const formatted = totalCredit.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+			});
 
-		document.getElementById("totalRequestCount").innerHTML = `
-				<div>${totalCount}</div>
-		`;
-	}
+			const svg = `
+				<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+					<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+					<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+				</svg>`;
 
-	function updateRequestCancelledCount(data) {
-		const cancelledCount = data.filter(item => item.IsCancelled === true || item.IsCancelled === "true").length;
-
-		document.getElementById("requestcanceledcount").innerHTML = `
-				<div>${cancelledCount}</div>
-		`;
-	}
-
-
-
-		function onGridReady(e) {
+			// ✅ Set the content with SVG and value
+					document.getElementById('qoutedwithtax').innerHTML = svg + formatted;
+		}
+				function onGridReady(e) {
 		const gridInstance = e.component;
 		const dataSource = gridInstance.getDataSource();
 
@@ -824,34 +752,34 @@
 			const items = gridInstance.option("dataSource");
 
 			if (Array.isArray(items)) {
-				updateTotalRequestCount(); // 👈 Added here
-				updateRequestCancelledCount(items); // 👈 Add this
-			    updateStatusTabCounts(items);
+				updateNetQuotedAmount(items);
+				updateNetQuotedWithTax(items);
 			} else {
 				dataSource.load().done(function (loadedData) {
-				updateTotalRequestCount(); // 👈 Added here
-				updateRequestCancelledCount(loadedData); // 👈 Add this
-				updateStatusTabCounts(loadedData);
+					updateNetQuotedAmount(loadedData);
+					updateNetQuotedWithTax(loadedData);
 				});
 			}
 		}
 	}
 
+
+		
 	const card = document.getElementById('mainCard');
-	
-	
+
 	// Count elements for each tab
 	const countEls = [
-		document.getElementById("counts0"),
-		document.getElementById("counts1"),
-		document.getElementById("counts2"),
+		document.getElementById("count0"),
+		document.getElementById("count1"),
+		document.getElementById("count2"),
+		document.getElementById("count3"),
 	];
 
 	const tabs = document.querySelectorAll(".tab-text");
 	const contents = document.querySelectorAll(".tab-content");
 
 	// Hold dynamic count values here
-	let counts = [0, 0, 0];
+	let counts = [0, 0, 0, 0];
 
 	function animateCount(el, target) {
 		let i = 0;
@@ -875,34 +803,41 @@
 			contents[i].classList.toggle('active', i === index);
 		});
 
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
+		card.className = "card"; // Reset all card styles
+		if (index === 0) card.classList.add("verified-bg");
+		if (index === 1) card.classList.add("approved-bg");
+		if (index === 2) card.classList.add("submitted-bg");
+		if (index === 3) card.classList.add("cancelled-bg");
+
 		animateCount(countEls[index], counts[index]);
 	}
 
 	// 🔄 Update count values dynamically from DevExtreme grid data
-		function updateStatusTabCounts(data) {
-		let verified = 0, approved = 0, submitted = 0;
+	function updateStatusTabCounts(data) {
+		let verified = 0, approved = 0, submitted = 0, cancelled = 0;
 
 		data.forEach(row => {
-			if (row.IsVerified === true || row.IsVerified === "true") verified++;
-			if (row.IsApproved === true || row.IsApproved === "true") approved++;
-			if (row.IsSubmitted === true || row.IsSubmitted === "true") submitted++;
+			if (row.IsVerified) verified++;
+			if (row.IsApproved) approved++;
+			if (row.IsSubmitted) submitted++;
+			if (row.IsCancelled) cancelled++;
 		});
 
-		counts = [verified, approved, submitted];
+		counts = [verified, approved, submitted, cancelled];
 
+		// Optionally animate the active tab again
 		const activeIndex = [...tabs].findIndex(tab => tab.classList.contains('active'));
-		if (activeIndex >= 0) {
-			animateCount(countEls[activeIndex], counts[activeIndex]);
-		}
+		animateCount(countEls[activeIndex], counts[activeIndex]);
 	}
 
 	// ✅ Auto-run Verified count on load
 	window.addEventListener("DOMContentLoaded", () => {
 		switchTab(0); // Default tab
 	});
+
+
+
+	  
 
 		 $(function () {
 			const dateBox = $("#frmdateBox").dxDateBox("instance");
@@ -1127,32 +1062,6 @@
 				}
 			});
 		}
-			// ✅ Define globally after or before onContextMenuPreparing
-	function confirmAndCreateRFQ(mprNo, tenantName) {
-		DevExpress.ui.dialog.confirm("You are about to create a new RFQ. Proceed?", "Confirmation")
-			.done(function (confirmResult) {
-				if (confirmResult) {
-					$.ajax({
-						url: "/api/MaterialRequestEnquiriesDetails/CreateRfqFromMpr",
-						method: "POST",
-						contentType: "application/json",
-						data: JSON.stringify(mprNo),
-						success: function (result) {
-							if (result.success) {
-								DevExpress.ui.notify(result.message, "success", 2000);
-								window.location.href = `/${tenantName}/IMS/AddNewRFQ?Mprno=${encodeURIComponent(mprNo)}&Rfqno=${encodeURIComponent(result.rfqno)}`;
-							} else {
-								DevExpress.ui.notify(result.message || "Failed to create RFQ.", "error", 2000);
-							}
-						},
-						error: function () {
-							DevExpress.ui.notify("Error while creating RFQ.", "error", 2000);
-						}
-					});
-				}
-			});
-	}
-
 	function onContextMenuPreparing(e) {
 		if (e.target === "content" && e.row) {
 			e.items = [
@@ -1338,7 +1247,7 @@
 			});
 		}
 	},
-			{
+		{
 		text: "Create a RFQ",
 		icon: "plus",
 		onItemClick: function () {
@@ -1350,36 +1259,44 @@
 				return;
 			}
 
-			// 🔹 Step 1: Get IsEnableMPRWorkflow
-			$.get("/api/MaterialRequestEnquiriesDetails/GetIsEnableMPRWorkflow")
-				.done(function (isWorkflowEnabled) {
+			// Step 1: Check approval status
+			$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
+				.done(function (isApproved) {
+					if (!isApproved) {
+						DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
+						return;
+					}
 
-					// 🔸 If workflow is enabled, check approval status
-					if (isWorkflowEnabled) {
-						$.get(`/api/MaterialRequestEnquiriesDetails/CheckIfApproved?mprNo=${encodeURIComponent(mprNo)}`)
-							.done(function (isApproved) {
-								if (!isApproved) {
-									DevExpress.ui.notify("Request/Enquiry is not approved.", "error", 3000);
-									return;
-								}
-								confirmAndCreateRFQ(mprNo, tenantName);
-							})
-							.fail(function () {
-								DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
-							});
-					}
-					else {
-						// 🔹 If workflow is disabled, skip approval check
-						confirmAndCreateRFQ(mprNo, tenantName);
-					}
+					// Step 2: Confirm
+					DevExpress.ui.dialog.confirm("You are about to create a new RFQ. Proceed?", "Confirmation")
+						.done(function (confirmResult) {
+							if (confirmResult) {
+								// Step 3: Call API
+								$.ajax({
+									url: "/api/MaterialRequestEnquiriesDetails/CreateRfqFromMpr",
+									method: "POST",
+									contentType: "application/json",
+									data: JSON.stringify(mprNo),
+									success: function (result) {
+										if (result.success) {
+											DevExpress.ui.notify(result.message, "success", 2000);
+											window.location.href = `/${tenantName}/IMS/AddNewRFQ?Mprno=${encodeURIComponent(mprNo)}&Rfqno=${encodeURIComponent(result.rfqno)}`;
+										} else {
+											DevExpress.ui.notify(result.message || "Failed to create RFQ.", "error", 2000);
+										}
+									},
+									error: function () {
+										DevExpress.ui.notify("Error while creating RFQ.", "error", 2000);
+									}
+								});
+							}
+						});
 				})
 				.fail(function () {
-					DevExpress.ui.notify("Failed to get MPR workflow setting.", "error", 3000);
+					DevExpress.ui.notify("Failed to check approval status.", "error", 3000);
 				});
 		}
 	},
-
-	
 		{
 		text: "Create a Quotation",
 		icon: "plus",
@@ -1465,7 +1382,7 @@
 								DevExpress.ui.notify("Purchase Order created: " + res.poNo, "success", 2000);
 
 								// Redirect to AddNewPurchaseOrder page with PO No
-							window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&&mode=edit&Mprno=${encodeURIComponent(mprNo)}`;
+													window.location.href = `/${tenantName}/IMS/AddNewPurchaseOrder?Pono=${encodeURIComponent(res.poNo)}&&mode=edit&Mprno=${encodeURIComponent(mprNo)}`;
 							
 							} else {
 								DevExpress.ui.notify(res.message || "Failed to create PO.", "error", 3000);
@@ -1690,6 +1607,26 @@ $(document).ready(function () {
 		console.log('End permission handling');
 	});
 
+		 function countUpTurnover(targetStr) {
+		  const el = document.getElementById("turnover");
+		  const target = parseFloat(targetStr);
+		  let current = 0.0;
+
+		  const interval = setInterval(() => {
+			current += 0.5;
+			if (current >= target) {
+			  el.textContent = targetStr + " K";
+			  clearInterval(interval);
+			} else {
+			  el.textContent = current.toFixed(1) + " K";
+			}
+		  }, 30);
+		}
+
+		// Animate to 46.2 K
+		countUpTurnover("46.2");
+
+			
 
 			 function onRowPrepared(e) {
 			if (e.rowType === "data" && e.data.IsCancelled) {
@@ -1699,5 +1636,4 @@ $(document).ready(function () {
 				});
 			}
 		}
-			
 </script>
