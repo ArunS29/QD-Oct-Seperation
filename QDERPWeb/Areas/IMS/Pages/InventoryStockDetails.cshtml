@@ -3318,7 +3318,7 @@
             var isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
             var isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
 
-    if (!stockCode) {
+    if (!isStockCodeValid) {
           DevExpress.ui.notify("Please Fill Required Field.", "error", 3000);
           return;
       }
@@ -3389,7 +3389,7 @@
             var isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
             var isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
 
-    if (!stockCode) {
+    if (!isStockCodeValid) {
         DevExpress.ui.notify("Please Fill Required Field.", "error", 3000);
         return;
     }
