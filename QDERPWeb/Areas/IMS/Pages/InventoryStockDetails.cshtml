@@ -878,9 +878,9 @@
                         </tr>
                     <tr class="flex-row" style="margin-top: 6px;">
                         <td>
-                            <label  id="AvgCostPriceLabel"></label>
                             @(Html.DevExtreme().TextBox()
                                 .ID("AvgCostPrice")
+                                .Disabled(true)
                                 .Label(new JS("formatMessage('Avg Cost Price :')"))
                                 .LabelMode(EditorLabelMode.Floating))
                         </td>

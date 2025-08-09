@@ -285,7 +285,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						return NotFound("Company not found.");
 					}
 
-					string RequestAbbrv = company.RequestAbbrv;
+					string RequestAbbrv = company.MaterialReceiptAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
