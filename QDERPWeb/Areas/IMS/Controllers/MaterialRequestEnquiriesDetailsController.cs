@@ -187,7 +187,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 					dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete Purchase Request  ",
-                      actionDetail: $":Deleted Purchase Request {Mprno}",
+                      actionDetail: $"Deleted Purchase Request {Mprno}",
                       documentNo: $"{Mprno}"
                     );
 

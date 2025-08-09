@@ -1435,7 +1435,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Verify Sales Order1",
-                  actionDetail: $":Verified Sales Order1 {salesOrderNo}",
+                  actionDetail: $"Verified Sales Order1 {salesOrderNo}",
                  documentNo: $"{salesOrderNo}"
                 );
 
@@ -1478,7 +1478,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Verify Sales Order",
-                  actionDetail: $":Verified Sales Order {salesOrderNo}",
+                  actionDetail: $"Verified Sales Order {salesOrderNo}",
                  documentNo: $"{salesOrderNo}"
                 );
 
@@ -1557,7 +1557,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Approve Sales Order",
-                  actionDetail: $":Approved Sales Order {salesOrderNo}",
+                  actionDetail: $"Approved Sales Order {salesOrderNo}",
                   documentNo: $"{salesOrderNo}"
                 );
 

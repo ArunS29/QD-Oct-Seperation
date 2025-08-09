@@ -197,7 +197,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl20164GoodsAndServicesMasters.Remove(entity);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete Goods and Service",
-                           actionDetail: $":Deleted Goods and Service {GoodsCode}",
+                           actionDetail: $"Deleted Goods and Service {GoodsCode}",
                            documentNo: $"{GoodsCode}"
                         );
 
