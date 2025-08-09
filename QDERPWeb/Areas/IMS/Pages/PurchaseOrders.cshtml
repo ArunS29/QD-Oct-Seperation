@@ -397,7 +397,7 @@
 	<div class="context-menu-itemInvoice" onclick="createVatPurchaseForPO()">
 		<i class="dx-icon-money"></i>Create VAT Purchase for this PO
 	</div>
-	<div class="context-menu-itemInvoice" onclick="deleteRecord()">
+	<div class="context-menu-itemInvoice" onclick="Revision()">
 
 		<i class="dx-icon-clock"></i>View Revision History
 	</div>
@@ -1406,5 +1406,15 @@ function createVatPurchaseForPO() {
 		console.log('End permission handling');
 	});
 
-		
+	function Revision(){
+
+		if (!selectedRowData || !selectedRowData.Pono) {
+			DevExpress.ui.notify("Please select a Purchase Order.", "warning", 2000);
+			return;
+		}
+				let url = `/${tenantName}/IMS/PORevisionHistory?PONo=${encodeURIComponent(selectedRowData.Pono)}`;
+				let title = `PO Revised History`;
+							openModal(url, title);
+	
+	}	
 </script>

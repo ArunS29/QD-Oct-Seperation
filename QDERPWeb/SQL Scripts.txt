@@ -3297,7 +3297,108 @@ FROM   [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
 
 
 
+ALTER TABLE [Aicon].tbl20166VATPurchaseMaster  
+ADD InvoiceCurrencyCode varchar(10),ExchangeRate decimal(19,4),TaxCurrencyCode varchar(10);
+------------------------------
+//IMS New field
+IF COL_LENGTH('Aicon.tbl20101SalesPersonMaster', 'TargetPerMonth') IS NULL
+BEGIN
+    ALTER TABLE Aicon.tbl20101SalesPersonMaster
+        ADD TargetPerMonth MONEY NULL;
+    PRINT 'Added column: TargetPerMonth';
+END
+ELSE
+BEGIN
+    PRINT 'Column already exists: TargetPerMonth';
 
+---------IMS Currency Implement---------
 
+-- tbl606_01PurchaseRequestMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl606_01PurchaseRequestMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl606_01PurchaseRequestMaster ADD CurrencyId INT NOT NULL DEFAULT 1;
+GO
 
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl606_01PurchaseRequestMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl606_01PurchaseRequestMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
 
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl606_01PurchaseRequestMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl606_01PurchaseRequestMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl601_01QuotationMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl601_01QuotationMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl601_01QuotationMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl601_01QuotationMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl601_01QuotationMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl601_01QuotationMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl601_01QuotationMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl603_01DeliveryNoteMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl603_01DeliveryNoteMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl603_01DeliveryNoteMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl603_01DeliveryNoteMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl603_01DeliveryNoteMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl603_01DeliveryNoteMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl603_01DeliveryNoteMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl607_01RFQMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl607_01RFQMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl607_01RFQMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl607_01RFQMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl607_01RFQMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl607_01RFQMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl607_01RFQMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl604_01PurchaseOrderMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl604_01PurchaseOrderMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl604_01PurchaseOrderMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl604_01PurchaseOrderMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl604_01PurchaseOrderMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl604_01PurchaseOrderMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl604_01PurchaseOrderMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+-- tbl605_01MaterialReceiptMaster
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl605_01MaterialReceiptMaster' AND COLUMN_NAME = 'CurrencyId')
+    ALTER TABLE Aicon.tbl605_01MaterialReceiptMaster ADD CurrencyId INT NOT NULL DEFAULT 1; 
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl605_01MaterialReceiptMaster' AND COLUMN_NAME = 'CurrencyRate')
+    ALTER TABLE Aicon.tbl605_01MaterialReceiptMaster ADD CurrencyRate DECIMAL(18, 2) NOT NULL DEFAULT 1.00;
+GO
+
+IF NOT EXISTS (SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = 'Aicon' AND TABLE_NAME = 'tbl605_01MaterialReceiptMaster' AND COLUMN_NAME = 'BaseCurrencyId')
+    ALTER TABLE Aicon.tbl605_01MaterialReceiptMaster ADD BaseCurrencyId INT NOT NULL DEFAULT 1;
+GO
+
+IF EXISTS (
+    SELECT 1 
+    FROM Aicon.tblUserAccessWeb 
+    WHERE Module = 'Inventory'
+)
+BEGIN
+    UPDATE Aicon.tblUserAccessWeb 
+    SET Module = 'IMS' 
+    WHERE Module = 'Inventory';
+END
+GO

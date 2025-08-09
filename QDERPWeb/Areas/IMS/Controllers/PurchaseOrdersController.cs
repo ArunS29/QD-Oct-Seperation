@@ -735,9 +735,9 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
                 existingPo.SalesPersonCode = master.SalesPersonCode;
                 existingPo.PoverifiedSign = master.PoverifiedSign;
                 existingPo.PoapprovedSign = master.PoapprovedSign;
-                existingPo.CurrencyId = model.CurrencyId ?? 1;
-                existingPo.CurrencyRate = model.CurrencyRate ?? 1;
-                existingPo.BaseCurrencyId = model.BaseCurrencyId ?? 1;
+                existingPo.CurrencyId = master.CurrencyId ?? 1;
+                existingPo.CurrencyRate = master.CurrencyRate ?? 1;
+                existingPo.BaseCurrencyId = master.BaseCurrencyId ?? 1;
                 // Submit
                 if (master.IsSubmitted == true && existingPo.IsSubmitted != true)
                 {
@@ -793,6 +793,8 @@ public async Task<IActionResult> SavePurchaseOrder([FromBody] PurchaseOrderViewM
             foreach (var child in newChildren)
             {
                 child.Pono = pono;
+                child.ItemDiscount = child.ItemDiscount * master.CurrencyRate;
+                child.UnitPrice = child.UnitPrice * master.CurrencyRate;
                 await dbContext.Tbl60402purchaseOrderChildren.AddAsync(child);
             }
 
@@ -1011,8 +1013,8 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
     //? (unitDescriptions.ContainsKey(x.UnitRateMethod.Value) ? unitDescriptions[x.UnitRateMethod.Value] : null)
     //: null,
 
-                UnitPrice = x.UnitPrice,
-                ItemDiscount = x.ItemDiscount,
+                UnitPrice = x.UnitPrice / master.CurrencyRate,
+                ItemDiscount = x.ItemDiscount / master.CurrencyRate,
                 PotaxSlab = x.PotaxSlab,
                 PoitemRemarks = x.PoitemRemarks,
                 LineOrderNo = x.LineOrderNo,
@@ -1021,10 +1023,10 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 MritemNo = x.MritemNo,
                 Currency = x.Currency,
                 ExchangeRate = x.ExchangeRate,
-                LineTotalWithTax = x.LineTotalWithTax,
-                LineTaxAmount = x.LineTaxAmount,
-                UnitRateInOc = x.UnitRateInOc,
-                DiscountInOc = x.DiscountInOc
+                LineTotalWithTax = x.LineTotalWithTax / master.CurrencyRate,
+                LineTaxAmount = x.LineTaxAmount / master.CurrencyRate,
+                UnitRateInOc = (x.UnitRateInOc ?? 0) / master.CurrencyRate,
+                DiscountInOc = (x.DiscountInOc ?? 0) / master.CurrencyRate
             })
         });
     }

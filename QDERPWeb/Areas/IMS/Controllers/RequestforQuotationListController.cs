@@ -388,8 +388,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					var result = dbContext.Qry60702rfqchildren  
                         .Where(x => x.Rfqno == RFQno)
 						.ToList();
-
-					foreach (var gridDetails in result)
+                    var currencyRate = await dbContext.Tbl60701rfqmasters
+                            .Where(x => x.Rfqno == RFQno)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                    foreach (var gridDetails in result)
 					{
 						dynamic item = new ExpandoObject();
 						var dict = (IDictionary<string, object>)item;
@@ -420,6 +423,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 						dict["GsDescription"] = gsDescription;
                         dict["GSCode"] = gridDetails.Gscode;
+                        dict["UnitPrice"] = gridDetails.UnitPrice / currencyRate;
+                        dict["LineTotalBeforeTax"] = gridDetails.LineTotalBeforeTax / currencyRate;
+                        dict["LineTotalAfterDisc"] = gridDetails.LineTotalAfterDisc / currencyRate;
+                        dict["ItemDiscount"] = gridDetails.ItemDiscount / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -532,6 +539,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 foreach (var child in VM.RFQDetailses)
                 {
                     child.Rfqno = VM.Rfqno;
+                    child.UnitPrice = child.UnitPrice * VM.CurrencyRate;
+                    child.ItemDiscount = child.ItemDiscount * VM.CurrencyRate;
 
                     if (child.RfqchildSlNo == 0)
                     {
