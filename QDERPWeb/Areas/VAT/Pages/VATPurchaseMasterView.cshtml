@@ -1032,6 +1032,89 @@
 
 			});
 			});
+			columns.AddFor(m => m.PurchaseEffectiveDate).Caption("Purchase Effective Date").Visible(false);
+			columns.AddFor(m => m.PurchaseDeliveryDate).Caption("Purchase Delivery Date").Visible(false);
+			columns.AddFor(m => m.MaterialReceiptNo).Caption("Material Receipt No").Visible(false);
+			columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
+			columns.AddFor(m => m.PurchaseOrderNo).Caption("Purchase Order No").Visible(false);
+			columns.AddFor(m => m.PurchaseOrderDate).Caption("Purchase Order Date").Visible(false);
+			columns.AddFor(m => m.Remarks).Caption("Remarks").Visible(false);
+			columns.AddFor(m => m.Discount).Caption("Discount").Visible(false);
+			columns.AddFor(m => m.RemarksAr).Caption("Remarks Ar").Visible(false);
+			columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
+			columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+			columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+			columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
+			columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+			columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+			columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+			columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+			columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+			columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+			columns.AddFor(m => m.PurchaseTaxCategoryCode).Caption("Purchase Tax Category Code").Visible(false);
+			columns.AddFor(m => m.PurchaseBillNo).Caption("Supplier Bill No").Visible(false);
+			columns.AddFor(m => m.PurchaseBillDate).Caption("Supplier Bill Date").Visible(false);
+			columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+			columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
+			columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
+			columns.AddFor(m => m.MaterialReceiptDate).Caption("Material Receipt Date").Visible(false);
+			columns.AddFor(m => m.PurchaseLedgerAccountNo).Caption("Purchase Ledger Account No").Visible(false);
+			columns.AddFor(m => m.PurchasePeriod).Caption("Purchase Period").Visible(false);
+			columns.AddFor(m => m.SupplierCode).Caption("Supplier Code").Visible(false);
+			//columns.AddFor(m => m.SupplierVATNo).Caption("Supplier VAT No");
+			columns.AddFor(m => m.TypeOfPurchase).Caption("Type Of Purchase").Visible(false);
+			columns.AddFor(m => m.PurchaseDueDate).Caption("Purchase Due Date");
+			columns.AddFor(m => m.PurchaseLedgerName).Caption("Purchase Ledger Name").Visible(false);
+			columns.AddFor(m => m.SupplierAddressAr).Caption("Supplier Address Ar").Visible(false);
+			columns.AddFor(m => m.SupplierInvRecdBy).Caption("Supplier Inv Recd By").Visible(false);
+			columns.AddFor(m => m.SupplierInvRecdOn).Caption("Supplier Inv Recd On").Visible(false);
+			columns.AddFor(m => m.SupplierNameAr).Caption("Supplier Name Ar").Visible(false);
+			columns.AddFor(m => m.SupplierNameOrCashSupplier).Caption("Supplier Name Or Cash Supplier").Visible(false);
+		//	columns.AddFor(m => m.SupplierNameOrCashSupplierAR).Caption("Supplier Name Or Cash Supplier AR");
+		//	columns.AddFor(m => m.SupplierVATOrCashSupplierVAT).Caption("Supplier VAT Or Cash Supplier VAT");
+			columns.AddFor(m => m.SupplierAdditionalNumber).Caption("Supplier Additional Number").Visible(false);
+			columns.AddFor(m => m.SupplierAdditionalStreet).Caption("Supplier Additional Street").Visible(false);
+			columns.AddFor(m => m.SupplierAdditionalStreetAr).Caption("Supplier Additional Street Ar").Visible(false);
+			columns.AddFor(m => m.SupplierAddress).Caption("Supplier Address").Visible(false);
+			columns.AddFor(m => m.SupplierAddressStreet).Caption("Supplier Address Street").Visible(false);
+			columns.AddFor(m => m.SupplierAddressStreetAr).Caption("Supplier Address Street Ar").Visible(false);
+			columns.AddFor(m => m.SupplierBuildingNumber).Caption("Supplier Building Number").Visible(false);
+			columns.AddFor(m => m.SupplierCity).Caption("Supplier City").Visible(false);
+			columns.AddFor(m => m.SupplierCityAr).Caption("Supplier City Ar").Visible(false);
+			columns.AddFor(m => m.SupplierCountryCode).Caption("Supplier Country Code").Visible(false);
+		//	columns.AddFor(m => m.SupplierGroupVATNumber).Caption("Supplier Group VAT Number");
+			columns.AddFor(m => m.SupplierName).Caption("Supplier Name").Visible(false);
+			columns.AddFor(m => m.SupplierNameAr002).Caption("Supplier Name Ar002").Visible(false);
+			columns.AddFor(m => m.SupplierNameArOnCashPurchase).Caption("Supplier Name Ar On Cash Purchase").Visible(false);
+			columns.AddFor(m => m.SupplierNameOnCashPurchase).Caption("Supplier Name On Cash Purchase").Visible(false);
+			columns.AddFor(m => m.SupplierNeighborhood).Caption("Supplier Neighborhood").Visible(false);
+			columns.AddFor(m => m.SupplierNeighborhoodAr).Caption("Supplier Neighborhood Ar").Visible(false);
+			//columns.AddFor(m => m.SupplierOtherID).Caption("Supplier Other ID");
+			//columns.AddFor(m => m.SupplierOtherIDType).Caption("Supplier Other ID Type");
+			columns.AddFor(m => m.SupplierPostalCode).Caption("Supplier Postal Code").Visible(false);
+			columns.AddFor(m => m.SupplierProvince).Caption("Supplier Province").Visible(false);
+			columns.AddFor(m => m.SupplierProvinceAr).Caption("Supplier Province Ar");
+			//columns.AddFor(m => m.SupplierVATNumber).Caption("Supplier VAT Number");
+			//columns.AddFor(m => m.SupplierVATonCashPurchase).Caption("Supplier VAT on Cash Purchase");
+			columns.AddFor(m => m.TotalQtyInvoiced).Caption("Total Qty Invoiced").Visible(false);
+			columns.AddFor(m => m.PurchaseAccountGroupName).Caption("Purchase Account Group Name").Visible(false);
+			columns.AddFor(m => m.PurchaseAccountMasterName).Caption("Purchase Account Master Name").Visible(false);
+			columns.AddFor(m => m.AccountHeadArabic).Caption("Account Head Arabic").Visible(false);
+			columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
+			columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
+			columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
+			columns.AddFor(m => m.CostCenterCode).Caption("Cost Center Code").Visible(false);
+			columns.AddFor(m => m.CostCenterIncharge).Caption("Cost Center Incharge").Visible(false);
+		//	columns.AddFor(m => m.CompanyID).Caption("Company ID");
+			columns.AddFor(m => m.CompanyName).Caption("Company Branch").Visible(false);
+			columns.AddFor(m => m.BranchCode).Caption("Branch Code").Visible(false);
+			columns.AddFor(m => m.BranchName).Caption("Branch Name").Visible(false);
+			columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
+			columns.AddFor(m => m.AdvanceText).Caption("Advance Text").Visible(false);
+			columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Visible(false);
+			columns.AddFor(m => m.RetentionText).Caption("Retention Text").Visible(false);
+			columns.AddFor(m => m.InventoryEffectiveDate).Caption("Inventory Effective Date").Visible(false);
+		
 		})
 		@* .Editing(editing => editing
 		.Mode(GridEditMode.Row)
@@ -1108,6 +1191,9 @@
 				totalItems.Add().Column("TotalRcmpurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 				totalItems.Add().Column("TotalRcmpurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
 			});
+
+       
+
 		})
 
 		.FilterRow(filterRow => filterRow.Visible(false))
@@ -1517,41 +1603,6 @@
 				$("#pageInfo").text(`Page ${data.currentPage} of ${totalPages} (${data.totalCount} items)`);
 				$("#nextPage").prop("disabled", totalPages === data.currentPage);
 				$("#previousPage").prop("disabled", data.currentPage === 1);
-
-				const animatedCount = data.length;
-				animateInvoiceCardCount(animatedCount);
-
-				let periodLabel = "Invoices";
-				switch (duration) {
-					case 'today': periodLabel = "Today's Invoices"; break;
-					case 'yesterday': periodLabel = "Yesterday's Invoices"; break;
-					case 'week': periodLabel = "This Week's Invoices"; break;
-					case 'tillmonth':
-					case 'fullmonth': periodLabel = "This Month's Invoices"; break;
-					case 'tillyear':
-					case 'fullyear': periodLabel = "This Year's Invoices"; break;
-					case 'lastmonth': periodLabel = "Last Month's Invoices"; break;
-					case 'lastyear': periodLabel = "Last Year's Invoices"; break;
-					default: periodLabel = "Invoices";
-				}
-
-				$("#invoicePeriodLabel").text(periodLabel);
-
-				// ✅ Now Add Five-Year Count Calculation
-				const today = new Date();
-				today.setHours(0, 0, 0, 0);
-
-				const fiveYearsAgo = new Date();
-				fiveYearsAgo.setFullYear(today.getFullYear() - 5);
-				fiveYearsAgo.setHours(0, 0, 0, 0);
-
-				const fiveYearCount = data.filter(row => {
-					const d = new Date(row.InvoiceDate); // or row.VoucherDate
-					d.setHours(0, 0, 0, 0);
-					return d >= fiveYearsAgo && d <= today;
-				}).length;
-
-				animateVoucherCount("fiveYearCount", fiveYearCount);
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);

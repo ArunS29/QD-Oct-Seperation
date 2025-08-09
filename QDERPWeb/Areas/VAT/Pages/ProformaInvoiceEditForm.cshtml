@@ -846,14 +846,14 @@
 				<div class="card-container">
 					<!-- Left Card: Foreign Currency Billing -->
 					
-					<table style="width:100%; font-size:12px; margin:5px;" cellpadding="2">
+					<table style="width:100%; font-size:12px; margin:5px;" cellpadding="5">
 						@* 	<tr>
 								<th>Foreign Currency Billing</th>
 							</tr> *@
 
 						<tr>
 							<!-- Currency Dropdown -->
-							<td style="width: 30%;">
+							<td>
 								@(Html.DevExtreme().DropDownBox()
 																.Label(new JS("formatMessage('Currency')"))
 																.DataSource(d => d.WebApi()
@@ -897,7 +897,7 @@
 									@(Html.DevExtreme().TextBox()
 																		.ID("LessAdvance")
 																		.Value("Less: Advance")
-																		.Width(180))
+																		.Width("100%"))
 
 									<div style="display: flex; align-items: center; gap: 5px; width: 180px;">
 										@(Html.DevExtreme().NumberBox()
@@ -921,16 +921,17 @@
 																		.LabelMode(EditorLabelMode.Floating)
 																		.Value("اقب المسبق")
 																		.RtlEnabled(true)
-																		.Width(200))
+																		.Width("100%"))
 												   								</div>
 												   							</td>
 
 							<!-- Verified By and On -->
-							<td style="width: 35%;">
+							<td>
 								<div style="display: flex; align-items: center; gap: 10px;">
 									<div style="display: flex; align-items: center; gap: 10px; width: 50%;">
 										@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
 																				.ID("VerifiedBy")
+																				.Visible(false)
 																				.Value(null) // Default value
 																				.Disabled(true))
 										
@@ -938,6 +939,7 @@
 																				.ID("VerifiedBytext")
 																				.Label(new JS("formatMessage('Verified By')"))
 																				.LabelMode(EditorLabelMode.Floating)
+																				.Visible(false)
 																				.Disabled(true)
 																				.Width("100%"))
 													   									</div>
@@ -946,6 +948,7 @@
 										@(Html.DevExtreme().TextBox()
 																				.Label(new JS("formatMessage('Verified On')"))
 																				.LabelMode(EditorLabelMode.Floating)
+																				.Visible(false)
 																				.ID("VerifiedOnDate")
 																				.Disabled(true)
 																				.Width("100%"))
@@ -956,7 +959,7 @@
 
 						<tr>
 							<!-- Currency Exchange Rate -->
-							<td style="width: 30%;">
+							<td>
 								@(Html.DevExtreme().NumberBox()
 																.ID("currencyexchangerate")
 																.Label(new JS("formatMessage('Currency Exchange Rate:')"))
@@ -974,7 +977,7 @@
 								@(Html.DevExtreme().TextBox()
 																.ID("LessRetention")
 																.Value("Less: Retention")
-																.Width(180))
+																.Width("100%"))
 											   							
 
 							<!-- Retention Amount -->
@@ -1006,22 +1009,24 @@
 																.LabelMode(EditorLabelMode.Floating)
 																.Value("احتفاظ أقل")
 																.RtlEnabled(true)
-																.Width(200))
+																.Width("100%"))
 											   				</div>	</td>
 											   							
 
 							<!-- Approved By -->
-							<td style="width: 35%;">
+							<td>
 								<div style="display: flex; align-items: center; gap: 10px;">
 									<div style="display: flex; align-items: center; gap: 10px; width: 50%;">
 										@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
 																				.ID("ApprovedBy")
+																				.Visible(false)
 																				.Value(null) // Default value
 																				.Disabled(true))
 									@(Html.DevExtreme().TextBox()
 																		.Label(new JS("formatMessage('Approved By')"))
 																		.LabelMode(EditorLabelMode.Floating)
 																		.ID("ApprovedBytext")
+																				.Visible(false)
 																		.Disabled(true)
 																		.Width("100%"))</div>
 													   									<div style="flex-grow: 1;">
@@ -1029,6 +1034,7 @@
 									@(Html.DevExtreme().TextBox()
 																		.Label(new JS("formatMessage('Approved On')"))
 																		.LabelMode(EditorLabelMode.Floating)
+																		.Visible(false)
 																		.ID("ApprovedOntext")
 																		.Disabled(true)
 																		.Width("100%"))

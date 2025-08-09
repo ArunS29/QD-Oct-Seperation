@@ -3967,11 +3967,13 @@ var dictionary = {
         "02-Credit Note Summary Report": "02-Credit Note Summary Report",
         "03-Purchases Summary Report": "03-Purchases Summary Report",
         "04-DebitNote Summary Report": "04-DebitNote Summary Report",
-
+        "Deductions/Approvals": "Deductions/Approvals",
+        "Other Details/Branch/Division Details":"Other Details/Branch/Division Details",
         
  
     },
     ar: {
+        "Deductions/Approvals":"الخصومات/الموافقات",
         "AccountHeadArabic": "رأس الحساب بالعربية",
         "AccountId":"معرف الحساب",
         "Sub Group Notes:": "ملاحظات المجموعة الفرعية:",
@@ -6997,6 +6999,7 @@ var dictionary = {
         "Type new Job Order Status Master && Add to the Existing List:": ":أدخل حالة أمر العمل الجديدة وأضفها إلى القائمة الحالية"
     },
     zh: {
+        "Deductions/Approvals":"扣除 / 批准",
         "Sub Group Notes:": "子组备注：",
         "Exports": "出口",
         "Add New Debit Note Register": "添加新的借项单登记",
@@ -9813,6 +9816,7 @@ var dictionary = {
 
     },
     hi: {
+        "Deductions/Approvals":"कटौतियाँ/अनुमोदन",
         "Sub Group Notes:": "उप समूह टिप्पणियाँ:",
         "Exports": "निर्यात",
         "Add New Debit Note Register": "नया डेबिट नोट रजिस्टर जोड़ें",
@@ -12781,6 +12785,7 @@ var dictionary = {
         "Tax Summary Report – Debit Notes": "कर सारांश रिपोर्ट - डेबिट नोट्स"
     },
     ur: {
+        "Deductions/Approvals":"کٹوتیاں/ منظوری",
         "Sub Group Notes:": "ذیلی گروپ نوٹس:",
         "Exports": "برآمدات",
         "Add New Debit Note Register": "نیا ڈیبٹ نوٹ رجسٹر شامل کریں",
@@ -15838,6 +15843,7 @@ var dictionary = {
     },
 
     ko: {
+        "Deductions/Approvals":"공제/승인",
         "Sub Group Notes:": "서브 그룹 메모:",
         "Exports": "수출",
         "Add New Debit Note Register": "새 직불 노트 등록 추가",
