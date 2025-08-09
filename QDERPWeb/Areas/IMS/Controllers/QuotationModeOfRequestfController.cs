@@ -114,7 +114,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl30103ModeOfRequestMasters.Remove(record);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete",
-                     actionDetail: $":Deleted {key}",
+                     actionDetail: $"Deleted {key}",
                      documentNo: $"{key}"
                    );
                     return Ok();

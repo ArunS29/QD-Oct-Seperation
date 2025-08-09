@@ -278,7 +278,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl30101ClientMasters.Remove(entity);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete Client Lead Master",
-                          actionDetail: $":Deleted Client Lead Master {ClientCode}",
+                          actionDetail: $"Deleted Client Lead Master {ClientCode}",
                            documentNo: $"{ClientCode}"
                        );
 
@@ -391,7 +391,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             dbContext.Tbl3010102clientContactLists.Remove(contact);
                             dbContext.SaveChanges();
                         _userActionLogger.LogAsync(module: "IMS > Delete Contact",
-                         actionDetail: $":Deleted Contact {clientContactSlNo}",
+                         actionDetail: $"Deleted Contact {clientContactSlNo}",
                           documentNo: $"{clientContactSlNo}"
                       );
                         return Ok(new { success = true, message = "Contact deleted successfully." });
@@ -423,7 +423,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             dbContext.Tbl30104ClientStatuses.Remove(status);
                             dbContext.SaveChanges();
                         _userActionLogger.LogAsync(module: "IMS > Delete Client Lead Master",
-                           actionDetail: $":Deleted Client Lead Master {clientStatusNo}",
+                           actionDetail: $"Deleted Client Lead Master {clientStatusNo}",
                            documentNo: $"{clientStatusNo}"
                         );
                         return Ok(new { success = true, message = "Client status deleted successfully." });

@@ -869,18 +869,27 @@ public async Task<IActionResult> GenerateJobOrders1([FromBody] SalesorderViewMod
 				if (model.SalesOrderChildren == null || !model.SalesOrderChildren.Any())
 					return BadRequest(new { success = false, message = "No line items selected." });
 
-				// 🔹 Step 1: Get tenant name
-				string tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-					return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-				// 🔹 Step 2: Get company details
-				var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
-				if (company == null)
-					return NotFound(new { success = false, message = "Company not found in Tbl901CompanyDetails." });
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
 
-				// 🔹 Step 3: Get digit settings
-				int noOfDigits = dbContext.Tbl901CompanyDetails02s
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+
+                // 🔹 Step 3: Get digit settings
+                int noOfDigits = dbContext.Tbl901CompanyDetails02s
 										  .Where(c => c.CompanyId == company.CompanyId)
 										  .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
 										  .FirstOrDefault();
@@ -1435,7 +1444,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Verify Sales Order1",
-                  actionDetail: $":Verified Sales Order1 {salesOrderNo}",
+                  actionDetail: $"Verified Sales Order1 {salesOrderNo}",
                  documentNo: $"{salesOrderNo}"
                 );
 
@@ -1478,7 +1487,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                  module: "IMS > Verify Sales Order",
-                  actionDetail: $":Verified Sales Order {salesOrderNo}",
+                  actionDetail: $"Verified Sales Order {salesOrderNo}",
                  documentNo: $"{salesOrderNo}"
                 );
 
@@ -1557,7 +1566,7 @@ public async Task<IActionResult> CanDeleteSalesOrder(string salesOrderNo)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Approve Sales Order",
-                  actionDetail: $":Approved Sales Order {salesOrderNo}",
+                  actionDetail: $"Approved Sales Order {salesOrderNo}",
                   documentNo: $"{salesOrderNo}"
                 );
 
@@ -1794,10 +1803,24 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
 
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 var companyDetails02 = dbContext.Tbl901CompanyDetails02s
                     .FirstOrDefault(x => x.CompanyId == company.CompanyId);

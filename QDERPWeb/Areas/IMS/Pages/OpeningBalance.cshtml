@@ -156,6 +156,7 @@
                     .ID("txtStockCode")
                     .Label("Stock Code")
                     .LabelMode(EditorLabelMode.Floating)
+                    .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
             </div>
@@ -234,13 +235,12 @@
     </div>
 
     <!-- BUTTON FOOTER -->
-    <div style="text-align: left;">
-        @(Html.DevExtreme().Button().ID("btnUpdate").Text("Save & Close").Type(ButtonType.Success).Icon("save"))
-        @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
-        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").Type(ButtonType.Danger))
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("back").Type(ButtonType.Normal))
+    <div class="footer-fixed" style="display:flex; gap:10px;">
+    @(Html.DevExtreme().Button().ID("btnUpdate").Text("Save & Close").Type(ButtonType.Success).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save"))
+    @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
+    @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").ElementAttr(new { @class = "dx-button-custom btn-delete" }).Type(ButtonType.Danger))
+    @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").ElementAttr(new { @class = "dx-button-custom btn-back" }).Type(ButtonType.Normal))
     </div>
-</div>
 
  <script>
 
@@ -255,11 +255,10 @@
               }
 
           });
-
       });
 
     $(document).on("click", "#btnBack", function () {
-        window.history.back();
+        window.parent.closeModal();
     });
 
       $(function () {

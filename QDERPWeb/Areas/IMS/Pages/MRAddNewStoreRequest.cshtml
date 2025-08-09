@@ -586,6 +586,7 @@
 														.Label(new JS("formatMessage('Requester Email:')"))
 														.ID("txtReqEmail")
 														.LabelMode(EditorLabelMode.Floating)
+														.ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
 														.Width("100%")
 														)
 
@@ -595,6 +596,7 @@
 														.ID("ContactNo")
 														.Label("Contact No:")
 														.LabelMode(EditorLabelMode.Floating)
+														.InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
 														.Width("100%"))
 
 						</td>

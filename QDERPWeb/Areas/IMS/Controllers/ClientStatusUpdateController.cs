@@ -192,7 +192,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl30104ClientStatuses.Remove(entity);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete Client Status Update",
-                       actionDetail: $":Deleted Client Status Update {ClientStatusNo}",
+                       actionDetail: $"Deleted Client Status Update {ClientStatusNo}",
                        documentNo: $"{ClientStatusNo}"
                     );
 

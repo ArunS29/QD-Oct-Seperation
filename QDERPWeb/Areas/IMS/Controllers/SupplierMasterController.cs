@@ -328,7 +328,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         dbContext.Tbl3019902SupplierContactLists.Remove(contact);
                         dbContext.SaveChanges();
                         _userActionLogger.LogAsync(module: "IMS > Delete Contact",
-                         actionDetail: $":Deleted Contact {SupplierContactSlNo}",
+                         actionDetail: $"Deleted Contact {SupplierContactSlNo}",
                          documentNo: $"{SupplierContactSlNo}"
                         );
                         return Ok(new { success = true, message = "Contact deleted successfully." });

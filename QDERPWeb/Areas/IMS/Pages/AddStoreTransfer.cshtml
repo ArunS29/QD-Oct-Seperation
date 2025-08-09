@@ -1,66 +1,71 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.AddNewDeliverytoClientModel
+@model QD.ERP.Web.Areas.IMS.Pages.AddStoreTransferModel
 @{
 }
+
+
+
 <style>
+
     .titleCard-toggle1 {
         display: none;
     }
     .ledgerResult {
-    overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
-    width: 100%;
+        overflow-x: auto; /* Enable horizontal scrolling for the entire grid */
+        width: 100%;
     }
 
     .dx-tabpanel .dx-tab {
-    color: black !important;
-    font-weight: bold;
-    font-size: 14px;
-    padding: 10px 15px;
+        color: black !important;
+        font-weight: bold;
+        font-size: 14px;
+        padding: 10px 15px;
     }
 
 
-    .dx-tabpanel .dx-tab.dx-selection {
-    background-color: lightblue;
-    color: white !important;
-    }
+        .dx-tabpanel .dx-tab.dx-selection {
+            background-color: lightblue;
+            color: white !important;
+        }
 
     .dx-tabpanel {
     }
 
+
     .mainContainer {
-    overflow-x: hidden;
+        overflow-x: hidden;
     }
 
     .form-container1 {
-    margin: 15px;
-    width: 99%;
-    padding: 5px;
-    border-radius: 1px;
+        margin: 15px;
+        width: 99%;
+        padding: 5px;
+        border-radius: 1px;
     }
 
     .form-container {
-    width: 100%;
-    border-radius: 1px;
+        width: 100%;
+        border-radius: 1px;
     }
 
     .form-row {
-    display: flex;
-    gap: 10px;
-    padding: 10px;
-    margin-bottom: 15px;
-    width: 100%;
+        display: flex;
+        gap: 10px;
+        padding: 10px;
+        margin-bottom: 15px;
+        width: 100%;
     }
 
 
     .form-label {
-    color: black;
-    padding: 5px;
-    font-weight: bold;
-    width: 200px;
-    text-align: Left;
-    display: flex;
-    align-items: center;
-    gap: 10px;
+        color: black;
+        padding: 5px;
+        font-weight: bold;
+        width: 200px;
+        text-align: Left;
+        display: flex;
+        align-items: center;
+        gap: 10px;
     }
 
     .dx-textbox .dx-texteditor-input,
@@ -69,173 +74,179 @@
     }
 
     .dx-button {
-    margin-left: 5px;
+        margin-left: 5px;
     }
 
     .dx-selectbox {
-    width: 100%;
+        width: 100%;
     }
 
     .footer-buttons .row {
-    margin-top: 20px;
+        margin-top: 20px;
     }
 
     .form-control-with-border {
-    border-radius: 4px;
-    padding: 8px;
-    width: 100%;
+        border-radius: 4px;
+        padding: 8px;
+        width: 100%;
     }
 
 
     .horizontal-container {
-    display: flex;
-    gap: 20px;
-    justify-content: start;
-    align-items: center;
-    margin: 15px;
+        display: flex;
+        gap: 20px;
+        justify-content: start;
+        align-items: center;
+        margin: 15px;
     }
 
     .button-group {
-    align-items: center;
-    justify-content: center;
-    padding: 8px;
+        align-items: center;
+        justify-content: center;
+        padding: 8px;
     }
 
     .form-row.border-outline {
-    border: 1px solid gray;
-    padding: 10px;
-    margin-bottom: 15px;
-    border-radius: 8px;
+        border: 1px solid gray;
+        padding: 10px;
+        margin-bottom: 15px;
+        border-radius: 8px;
     }
 
     .select-box {
-    width: 20vh;
+        width: 20vh;
     }
 
     .imagecontainer {
-    background-color: #e0f7fa;
-    border: 1px solid #90caf9;
-    height: 200px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    cursor: pointer;
-    overflow: hidden;
-    position: relative;
+        background-color: #e0f7fa;
+        border: 1px solid #90caf9;
+        height: 200px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        overflow: hidden;
+        position: relative;
     }
 
-    .imagecontainer img {
-    max-height: 100%;
-    max-width: 100%;
-    object-fit: contain;
-    }
+        .imagecontainer img {
+            max-height: 100%;
+            max-width: 100%;
+            object-fit: contain;
+        }
 
-    .imagecontainer span {
-    color: #555;
-    font-style: italic;
-    position: absolute;
-    }
+        .imagecontainer span {
+            color: #555;
+            font-style: italic;
+            position: absolute;
+        }
 
     .layout-container {
-    padding: 1rem;
-    display: flex;
-    flex-direction: column;
-    gap: 1.5rem;
+        padding: 1rem;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
     }
 
     .form-column {
-    flex: 1 1 48%;
-    display: flex;
-    flex-direction: column;
+        flex: 1 1 48%;
+        display: flex;
+        flex-direction: column;
     }
 
     .field-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.3rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 0.3rem;
     }
 
     .field-label {
-    font-size: 0.95rem;
-    font-weight: 500;
-    color: #333;
+        font-size: 0.95rem;
+        font-weight: 500;
+        color: #333;
     }
 
     .field-buttons {
-    display: flex;
-    gap: 0.5rem;
+        display: flex;
+        gap: 0.5rem;
     }
 
     .btn-solid {
-    padding: 4px 10px;
-    font-size: 0.875rem;
-    background-color: #6c757d;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
+        padding: 4px 10px;
+        font-size: 0.875rem;
+        background-color: #6c757d;
+        color: #fff;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
     }
 
     .btn-outline {
-    padding: 4px 10px;
-    font-size: 0.875rem;
-    background-color: transparent;
-    color: #6c757d;
-    border: 1px solid #6c757d;
-    border-radius: 4px;
-    cursor: pointer;
+        padding: 4px 10px;
+        font-size: 0.875rem;
+        background-color: transparent;
+        color: #6c757d;
+        border: 1px solid #6c757d;
+        border-radius: 4px;
+        cursor: pointer;
     }
 
     .flex-row {
-    display: flex;
-    align-items: end;
+        display: flex;
+        align-items: end;
     }
 
     .form-container {
-    gap: 20px;
-    font-family: Arial, sans-serif;
-    width: 100%;
-    box-sizing: border-box;
+        gap: 20px;
+        font-family: Arial, sans-serif;
+        width: 100%;
+        box-sizing: border-box;
     }
 
     .form-card1 {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    padding: 1%;
+        width: 50%;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+        padding: 1%;
     }
 
     .form-row1 {
-    display: flex;
-    gap: 20px;
+        display: flex;
+        gap: 20px;
     }
 
     .form-group1 {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
     }
 
     label {
-    margin-bottom: 5px;
-    font-weight: bold;
+        margin-bottom: 5px;
+        font-weight: bold;
     }
 
     .containers {
-    display: flex;
+        display: flex;
     }
 
     .dx-card {
-    background: var(--background-color);
+        background: var(--background-color);
     }
 
     .important-height {
-    height: 190px !important;
+        height: 190px !important;
     }
 
 </style>
+<meta charset="UTF-8">
+@* <div class="title">
+    <div class="header-container">
+        <div id="addNewDeliverytoClient" class="no-border-title"></div>
+    </div>
+</div> *@
 <input id="formId" value="frm60106DeliveryNoteView" type="hidden" />
 <div class="dx-card-container">
     <div class="dx-card-header minimal-header">
@@ -245,6 +256,7 @@
         <div id="addNewDeliverytoClient" class="titleText no-border-title"></div>
     </div>
 </div>
+
 <div class="form-container1">
     <div class="form-container">
         <!-- Tab Menu -->
@@ -253,9 +265,9 @@
                     .Items(item =>
                     {
                         item.Add()
-                    .Title("Delivery Note Details")
+                .Title(new JS("formatMessage('Delivery Note Details')"))
                     .Icon("folder")
-                    .Text("Delivery Note Details")
+                     .Text(new JS("formatMessage('Delivery Note Details')"))
                     .Template(@<text>
             <div class="dx-card p-3">
                 <div class="row g-2">
@@ -265,9 +277,9 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("deliveryNoteNo")
                         .Value("") // leave it blank initially
-                        .Label("Delivery Note No:")
+                        .Label(new JS("formatMessage('Delivery Note No:')"))
                         .LabelMode(EditorLabelMode.Floating)
-                        .ReadOnly(false)
+                        .ReadOnly(true)
                         .Width("100%")
                         )
 
@@ -277,46 +289,45 @@
                         @(Html.DevExtreme().DateBox()
                         .ID("deliveryNoteDate")
                         .Value(DateTime.Now)
-                        .Label("Delivery Note Date:")
+                        .Label(new JS("formatMessage('Delivery Note Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
                     <div class="col-md-6" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .ID("GetProjectDropDown")
+                        .Label(new JS("formatMessage('Client Name:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
-                        .LoadAction("GetClientDetails")
+                        .LoadAction("GetClientName")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("ClientCode")
+                        .Key("CategoryCode")
                         )
-                        .Label(new JS("formatMessage('Client Name:')"))
                         .LabelMode(EditorLabelMode.Floating)
+                        .ID("GetProjectDropDown")
+                        .OpenOnFieldClick(false)//
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
                         .ValueExpr("ClientCode")
                         .DisplayExpr("ClientName")
-                        .ContentTemplate(new TemplateName("GetClientContentTemplate"))
-                        .ValueChangeEvent("change")
-                        .OnValueChanged("onClientSelected")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
                         .Width("100%")
+                        .OnKeyDown("onKeyDown")
+                        .Disabled(true)
+                        //.OnValueChanged("dropDownBoxValueChanged")
+                        .ContentTemplate(new TemplateName("GetClientContentTemplate"))
                         )
 
-
-                        @(Html.DevExtreme().Button()
-                        .ID("editClient")
-                        .Icon("edit")
-                        .Hint("Add Client")
-                        .Width(18)
-                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                        .OnClick("redirecttoClientLeadmaster")
-                        )
                         @(Html.DevExtreme().Button()
                         .ID("AddClient")
                         .Icon("plus")
                         .Hint("Add Client")
-                        .Width(18)
+                        .Width(35)
                         .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                        .OnClick("redirecttoClientLeadmaster1")
+                        .OnClick("redirecttoClientLeadmaster")
+                        .Disabled(true)
                         )
 
                     </div>
@@ -324,7 +335,7 @@
                     <!-- Row 2 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Sales Person / Store Incharge :")
+                        .Label(new JS("formatMessage('Sales Person / Store Incharge:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
                         .LoadAction("GetSalesPerson")
@@ -358,7 +369,7 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("clientPOnumber")
-                        .Label("Client PO No:")
+                        .Label(new JS("formatMessage('Client PO No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -366,7 +377,7 @@
                     <div class="col-md-2">
                         @(Html.DevExtreme().DateBox()
                         .ID("ClientPODate")
-                        .Label("Client PO Date:")
+                        .Label(new JS("formatMessage('Client PO Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -374,35 +385,26 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
-                        .Label("Client Ref. Name / Attention To:")
+                        .Label(new JS("formatMessage('Client Ref. Name / Attention To:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
-                        .Buttons(buttons =>
-					   {
-						   buttons.Add()
-						   .Name("btnClientContact")
-						   .Location(TextEditorButtonLocation.After)
-						   .Widget(w => w.Button()
-						   .Type(ButtonType.Default)
-						   .Icon("plus")
-						   .ElementAttr(new { @class = "custom-hover-button add-hover" })
-						.OnClick("onClientContactClick"));
-					   }))
+                        .Disabled(true)
+                        )
                     </div>
                     <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientContactNo")
-                        .Label("Client Contact No:")
+                        .Label(new JS("formatMessage('Client Contact No:')"))
                         .LabelMode(EditorLabelMode.Floating)
-                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                         .Width("100%")
+                        .Disabled(true)
                         )
                     </div>
 
                     <!-- Row 3 -->
                     <div class="col-md-2" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Stock Delivery From Store:")
+                        .Label(new JS("formatMessage('Stock Issued From Store:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
                         .LoadAction("GetStores")
@@ -434,9 +436,43 @@
                         .OnClick("AddModeReq")
                         )
                     </div>
+                    @* <div class="col-md-2" style="display:flex; align-items:end;">
+                        @(Html.DevExtreme().DropDownBox()
+                        .Label(new JS("formatMessage('Stock Consumed By Store:')"))
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewClientRequest")
+                        .LoadAction("GetStores")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("StoreId")
+                        )
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ID("ddGetModeOfRequest")
+                        .Width(900)
+                        .OpenOnFieldClick(false)//
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("StoreId")
+                        .DisplayExpr("StoreName")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .Width("100%")
+                        .OnKeyDown("onKeyDown")
+                        //.OnValueChanged("dropDownBoxValueChanged")
+                        .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
+                        )
+                        @(Html.DevExtreme().Button()
+                        .ID("AddModeReq")
+                        .Icon("plus")
+                        .Hint("Add Description")
+                        .Width(40)
+                        .ElementAttr("style", "margin-top:18px;")
+                        .OnClick("AddModeReq")
+                        )
+                    </div> *@
                     <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
-                        .Label("Issued to Projects:")
+                        .Label(new JS("formatMessage('Issued to Projects:')"))
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewClientRequest")
                         .LoadAction("GetTypeOfRequest")
@@ -474,19 +510,20 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientEmail")
                         .Mode(TextBoxMode.Email)
-                        .Label("Client Email:")
+                        .Label(new JS("formatMessage('Client Email:')"))
                         .LabelMode(EditorLabelMode.Floating)
-                        .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%")
+                        .Disabled(true)
                         )
                     </div>
 
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("clientProject")
-                        .Label(" Client Project:")
+                        .Label(new JS("formatMessage('Client Project:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
+                        .Disabled(true)
                         )
                     </div>
                 </div>
@@ -494,12 +531,12 @@
 
         </text>);
 
-                        item.Add().Title("Delivery Details").Icon("detailslayout").Text("Delivery Details").Template(@<text>
+                    item.Add().Title(new JS("formatMessage('Delivery Details')")).Icon("detailslayout").Text(new JS("formatMessage('Delivery Details')")).Template(@<text>
             <div class="dx-card layout-container" style="padding: 10px;">
                 <div class="form-row" style="display: flex; gap: 20px;">
                     <!-- Left Column: Delivery Note Remarks -->
                     <div style="flex: 1;">
-                        <label >Delivery Note Remarks:</label>
+                        <label id="Delivery">Delivery Note Remarks:</label>
                         @(Html.DevExtreme().TextArea()
                         .ID("DeliveryNoteRemarks")
                         .ElementAttr("class", "important-height")
@@ -512,15 +549,15 @@
                     <div style="flex: 1;">
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <div style="flex: 1;">
-                                <label >Salesman:</label>
+                                <label id="Salesman1"></label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("Salesman")
-                                .LabelMode(EditorLabelMode.Hidden)
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
                             <div style="flex: 1;">
-                                <label >Transported / Delivered By:</label>
+                                <label id="Transported"></label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveredBy")
                                 .LabelMode(EditorLabelMode.Hidden)
@@ -531,7 +568,7 @@
 
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <div style="flex: 1;">
-                                <label >Driver's Name:</label>
+                                <label id="Driver"></label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DriverName")
                                 .LabelMode(EditorLabelMode.Hidden)
@@ -539,7 +576,7 @@
                                 )
                             </div>
                             <div style="flex: 1;">
-                                <label >Vehicle No:</label>
+                                <label id="Vehicle"></label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("VehicleNo")
                                 .LabelMode(EditorLabelMode.Hidden)
@@ -549,7 +586,7 @@
                         </div>
 
                         <div style="margin-bottom: 10px;">
-                            <label >Driver's ID:</label>
+                            <label id="DriverID1"></label>
                             @(Html.DevExtreme().TextBox()
                             .ID("DriverID")
                             .LabelMode(EditorLabelMode.Hidden)
@@ -562,14 +599,14 @@
         </text>);
 
 
-                        item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
+                    item.Add().Text(new JS("formatMessage('Signatories')")).Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
             <div class="form-container">
                 <div class="dx-card p-3">
                     <table class=" table-borderless w-100">
                         <tbody>
                             <tr>
                                 <!-- Prepared By SelectBox -->
-                                <td colspan="2">
+                                <td colspan="2" style=" display:flex; align-items:end;">
                                     @(Html.DevExtreme().DropDownBox()
                                     .Label(new JS("formatMessage('Signatory:')"))
                                     .DataSource(d => d.WebApi()
@@ -608,29 +645,29 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text("Show Company Seal"))
+                                    @(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) )
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text("Show Signature"))
+                                    @(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text("Print in Letter Head"))
+                                    @(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
                                 </td>
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text(new JS("formatMessage('Page Break after Terms')")) )
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
+                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text(new JS("formatMessage('Print Client Acknowledgement')")) )
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text(new JS("formatMessage('Print Item Code with Description')")) )
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text(new JS("formatMessage('Print Item Part No with Description')")) )
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
                                 </td>
                             </tr>
                         </tbody>
@@ -639,14 +676,14 @@
             </div>
 
         </text>);
-                        item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
+                    item.Add().Text(new JS("formatMessage('Branch/Divisions')")).Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
             <div class="dx-card p-3">
                 <div class="row g-3">
                     <!-- Row 1: Branch / Delivery Type / Inventory Group -->
                     <div class="col-md-4">
                         @(Html.DevExtreme().SelectBox()
                         .ID("CompanyName")
-                        .Label("Company Branch")
+                        .Label(new JS("formatMessage('Company Branch')"))
                         .DataSource(d => d.Mvc()
                         .Controller("DeliveryNote")
                         .LoadAction("GetCompanyBranch")
@@ -665,20 +702,19 @@
                         @(Html.DevExtreme().SelectBox()
                         .ID("DeliveryType")
                         .DataSource(new[] {
-                        new { Id = 1, Name = "Issued to Client" } // hardcoded item
+                        new { Id = 4, Name = "Store Transfers" } 
                         })
-                        .ValueExpr("Id")             // The value that will be posted (1)
-                        .DisplayExpr("Name")         // What is shown to user ("Issued to Client")
-                        .Value(1)                    // Default selected value
-                        .Label("Delivery Type:")
+                        .ValueExpr("Id")             
+                        .DisplayExpr("Name")         
+                        .Value(4)                   
+                        .Label(new JS("formatMessage('Delivery Type:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
-                        .Disabled(true)              // Make it readonly
+                       .Disabled(true)              
                         )
                         <!-- Make sure value is posted -->
-                        <input type="hidden" name="DeliveryType" value="1" />
+                        <input type="hidden" name="DeliveryType" value="2" />
                     </div>
-
 
                     <div class="col-md-4">
                       @(Html.DevExtreme().SelectBox()
@@ -689,7 +725,7 @@
                         )
                         .DisplayExpr("Name")
                         .ValueExpr("Id")
-                        .Label("Inventory Group Master: *")
+                        .Label(new JS("formatMessage('Inventory Group Master: *')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         ) 
@@ -699,7 +735,7 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("SalesOrderNo")
-                        .Label("Sales Order No:")
+                        .Label(new JS("formatMessage('Sales Order No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
@@ -709,7 +745,7 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("QuotationNo")
-                        .Label("Quotation No:")
+                        .Label(new JS("formatMessage('Quotation No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
@@ -719,7 +755,7 @@
                     <div class="col-md-4">
                         @(Html.DevExtreme().TextBox()
                         .ID("EnquiryRequestNo")
-                        .Label("Enquiry/Request No:")
+                        .Label(new JS("formatMessage('Enquiry/Request No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         .Disabled(true)
@@ -727,7 +763,6 @@
                     </div>
                 </div>
             </div>
-
         </text>);
                     item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
                                                                                                                                                                 <div class="p-3">
@@ -833,6 +868,7 @@
 
                     </text>);
 
+
                     })
                 )
 
@@ -851,19 +887,20 @@
             .AllowAdding(true)
             .AllowUpdating(true)
             .AllowDeleting(true)
+            .UseIcons(true)
             )
             .Columns(columns =>
             {
-                columns.Add().DataField("SNo").Caption("#").Width(50).AllowEditing(false);
-                columns.Add().DataField("ItemCode").Caption("Item Code").Width(120);
-                columns.Add().DataField("StockDescription").Caption("Stock Description").Width(180);
-                columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method").Width(120);
-                columns.Add().DataField("Qty").Caption("Qty").Width(80).DataType(GridColumnDataType.Number);
-                columns.Add().DataField("UnitCostPrice").Caption("Unit Cost Price").Format("currency").Width(120);
-                columns.Add().DataField("EmployeeNo").Caption("Employee Name").Width(160);
-                columns.Add().DataField("PropertyNo").Caption("Property/Equipment").Width(180);
-                columns.Add().DataField("MaxQty").Caption("MaxQty").Width(180).Visible(false);
-                columns.Add().DataField("MinQty").Caption("MinQty").Width(180).Visible(false);
+            columns.Add().DataField("SNo").Caption(new JS("formatMessage('#')")) .Width(50).AllowEditing(false);
+            columns.Add().DataField("ItemCode").Caption(new JS("formatMessage('Item Code')")).Width(120);
+            columns.Add().DataField("StockDescription").Caption(new JS("formatMessage('Stock Description')")).Width(180);
+            columns.Add().DataField("UnitRateMethod").Caption(new JS("formatMessage('Unit Rate Method')")).Width(120);
+            columns.Add().DataField("Qty").Caption(new JS("formatMessage('Qty')")).Width(80).DataType(GridColumnDataType.Number);
+            columns.Add().DataField("UnitCostPrice").Caption(new JS("formatMessage('Unit Cost Price')")).Format("currency").Width(120);
+            columns.Add().DataField("EmployeeNo").Caption(new JS("formatMessage('Employee Name')")).Width(160);
+            columns.Add().DataField("PropertyNo").Caption(new JS("formatMessage('Property/Equipment')")).Width(180);
+            columns.Add().DataField("MaxQty").Caption(new JS("formatMessage('MaxQty')")).Width(180).Visible(false);
+            columns.Add().DataField("MinQty").Caption(new JS("formatMessage('MinQty')")).Width(180).Visible(false);
 
 
             })
@@ -873,7 +910,7 @@
 
             .ColumnChooser(cc => cc
             .Enabled(true)
-            .Title("Show/Hide Column")
+            .Title(new JS("formatMessage('Show/Hide Column')"))
             .Mode(GridColumnChooserMode.DragAndDrop)
             )
             .AllowColumnReordering(true)
@@ -890,14 +927,56 @@
             )
 </div>
 
+
+
 @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
 
-                                                .ID("taxcurrecy-datagrid")
+                                                    .ID("taxcurrecy-datagrid")
+                                                    .DataSource(d => d.WebApi()
+                                                    .Controller("VATModule")
+                                                            .LoadAction("GetTaxCurrency")
+                                                    .LoadMode(DataSourceLoadMode.Raw)
+                                                            ///   .Key("AccountHead") //salary paid entry
+                                                            .Key("CurrencyExchangeId")
+
+                                                    )
+                                                    .WordWrapEnabled(true)
+                                                    .ShowBorders(true)
+                                                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                                                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                                    .OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
+                                                    .OnInitialized("onBaseCurrencyInitialized")
+                                                                                                // .HeaderFilter(p => p.Visible(true))
+                                                    .ShowBorders(true)
+                                                    .HoverStateEnabled(true)
+                                                    .Paging(p => p.PageSize(15))
+                                                    .FilterRow(f => f.Visible(true))
+                                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                                    .Height(345)
+                                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                                    .Columns(columns =>
+                                                    {
+                                                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+                                                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+                                                    })
+
+                                                )
+
+}
+@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+
+                                                    .ID("invoicecurrecy-datagrid")
                                                 .DataSource(d => d.WebApi()
                                                 .Controller("VATModule")
-                                                        .LoadAction("GetTaxCurrency")
+                                                        .LoadAction("GetInvoiceCurrency")
                                                 .LoadMode(DataSourceLoadMode.Raw)
                                                         ///   .Key("AccountHead") //salary paid entry
                                                         .Key("CurrencyExchangeId")
@@ -906,77 +985,38 @@
                                                 .WordWrapEnabled(true)
                                                 .ShowBorders(true)
                                                 .SearchPanel(sp => sp.HighlightSearchText(true))
-                                                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                                .OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
+                                                .Selection(sl => sl.Mode(SelectionMode.Single))
+                                                .OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
                                                 .OnInitialized("onBaseCurrencyInitialized")
-                                                                                            // .HeaderFilter(p => p.Visible(true))
                                                 .ShowBorders(true)
                                                 .HoverStateEnabled(true)
                                                 .Paging(p => p.PageSize(15))
-                                                .FilterRow(f => f.Visible(true))
+                                                .FilterRow(f => f.Visible(false))
                                                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                                 .Height(345)
                                                 .Selection(s => s.Mode(SelectionMode.Single))
                                                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                                 .Columns(columns =>
                                                 {
-                                                    columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center);
+                                                    columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
+                                                    columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
                                                     columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
                                                     columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
 
 
                                                 })
-
                                             )
-
 }
-@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
-{
-    @(Html.DevExtreme().DataGrid()
 
-                                                .ID("invoicecurrecy-datagrid")
-                                            .DataSource(d => d.WebApi()
-                                            .Controller("VATModule")
-                                                    .LoadAction("GetInvoiceCurrency")
-                                            .LoadMode(DataSourceLoadMode.Raw)
-                                                    ///   .Key("AccountHead") //salary paid entry
-                                                    .Key("CurrencyExchangeId")
-
-                                            )
-                                            .WordWrapEnabled(true)
-                                            .ShowBorders(true)
-                                            .SearchPanel(sp => sp.HighlightSearchText(true))
-                                            .Selection(sl => sl.Mode(SelectionMode.Single))
-                                            .OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
-                                            .OnInitialized("onBaseCurrencyInitialized")
-                                            .ShowBorders(true)
-                                            .HoverStateEnabled(true)
-                                            .Paging(p => p.PageSize(15))
-                                            .FilterRow(f => f.Visible(false))
-                                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                            .Height(345)
-                                            .Selection(s => s.Mode(SelectionMode.Single))
-                                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                            .Columns(columns =>
-                                            {
-                                                columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
-                                                columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
-                                                columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
-                                                columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
-
-
-                                            })
-                                        )
-}
 @using (Html.DevExtreme().NamedTemplate("PreparedByTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
                 .ID("preparedby-datagrid")
                 .DataSource(d => d.WebApi()
-                    .Controller("AddNewClientRequest")
-                    .LoadAction("GetSignatory")
-                    .LoadMode(DataSourceLoadMode.Raw)
-                    .Key("SignatoryID")
+                .Controller("AddNewClientRequest")
+                .LoadAction("GetSignatory")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("SignatoryID")
                 )
                 .WordWrapEnabled(true)
                 .ShowBorders(true)
@@ -1024,7 +1064,7 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("ModeOfRequest");
+                                   columns.Add().DataField("StoreName");
 
 
 
@@ -1103,112 +1143,118 @@
 @using (Html.DevExtreme().NamedTemplate("GetClientContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-            .ID("GetClientGrid")
-            .DataSource(d => d.WebApi()
-                .Controller("AddNewClientRequest")
-                .LoadAction("GetClientDetails")
-                .LoadMode(DataSourceLoadMode.Raw)
-                .Key("ClientCode")
-            )
-            .Selection(s => s.Mode(SelectionMode.Single))
-            .HoverStateEnabled(true)
-            .Paging(p => p.PageSize(10))
-            .Height(300) // ✅ Required for virtual scrolling
-            .Scrolling(s => s.Mode(GridScrollingMode.Virtual)).ShowBorders(true)
-            .OnSelectionChanged("dataGridSelectionChanged1")
-            .OnInitialized("dataGridInitialized1")
-            .Columns(columns =>
-            {
-                columns.Add().DataField("ClientName").Caption("Client Name");
-                columns.Add().DataField("ContactPerson").Visible(false);
-                columns.Add().DataField("ContactMobile1").Visible(false);
-                columns.Add().DataField("ContactEmail").Visible(false);
-                columns.Add().DataField("ClientAddress").Visible(false);
-            })
-        )
-}
+                            .ID("GetProject-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AddNewClientRequest")
+                            .LoadAction("GetClientName")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("ClientCode")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged1")
+                            .OnInitialized("dataGridInitialized1")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(false))//
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("ClientName");
 
+
+
+                            })
+                            )
+}
 @using (Html.DevExtreme().NamedTemplate("GetPreparedByContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("GetPreparedby-datagrid")
-                        .DataSource(d => d.WebApi()
-                        .Controller("AddNewClientRequest")
-                        .LoadAction("GetSignatory")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("SignatoryId")
-                        )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                        .OnSelectionChanged("dataGridSelectionChanged10")
-                        .OnInitialized("dataGridInitialized10")
-                        .HeaderFilter(p => p.Visible(true))
-                        .ShowBorders(true)
-                        .HoverStateEnabled(true)
-                        .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(false))//
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(345)
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                            columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+                            .ID("GetPreparedby-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AddNewClientRequest")
+                            .LoadAction("GetSignatory")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("SignatoryId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                            .OnSelectionChanged("dataGridSelectionChanged10")
+                            .OnInitialized("dataGridInitialized10")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(false))//
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
 
-                            columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+                                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
 
-                        })
-                        )
+                            })
+                            )
 }
 @using (Html.DevExtreme().NamedTemplate("GetQuotationStatusContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("GetProject-datagrid")
-                        .DataSource(d => d.WebApi()
-                        .Controller("AddNewQuotationStatus")
-                        .LoadAction("GetQuotationStatus")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("QuoteStatusId")
-                        )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                            .OnSelectionChanged("dataGridSelectionChanged5")
-                        .OnInitialized("dataGridInitialized5")
-                        .HeaderFilter(p => p.Visible(true))
-                        .ShowBorders(true)
-                        .HoverStateEnabled(true)
-                        .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(false))//
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(345)
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
+                            .ID("GetProject-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("AddNewQuotationStatus")
+                            .LoadAction("GetQuotationStatus")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("QuoteStatusId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                                .OnSelectionChanged("dataGridSelectionChanged5")
+                            .OnInitialized("dataGridInitialized5")
+                            .HeaderFilter(p => p.Visible(true))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(false))//
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
                                 columns.Add().DataField("QuoteStatus");
 
 
 
-                        })
-                        )
+                            })
+                            )
 
-                      
+
 }
 <div class="footer-fixed">
     @await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNotesFooter.cshtml")
 </div>
 <script>
-   
+
     $(function () {
     $("#addNewDeliverytoClient").dxTextBox({
     text: formatMessage("Add New Delivery to Client"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass(".dx-textcolor-heading");
+            $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });
@@ -1289,27 +1335,11 @@
         const title = "";
             openModal(url, title);
     }
-    function redirecttoClientLeadmaster1(){
+    function redirecttoClientLeadmaster(){
         const url = `/${tenantName}/IMS/ClientLeadMaster`;
         const title = "";
             openModal(url, title);
     }
-        function redirecttoClientLeadmaster() {
-        // Get the selected client code from the DropDownBox
-        var clientCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
-
-        if (!clientCode) {
-            alert("Please select a client to edit.");
-            return;
-        }
-
-        // Assuming tenantName is defined globally or you can set it here
-        const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
-        const title = "Edit Client";
-
-        openModal(url, title);
-    }
-
     function dataGridSelectionChanged3(e) {
         const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
         const ddbInstance = $("#ddGetTypeOfRequest").dxDropDownBox("instance");
@@ -1457,7 +1487,6 @@
         });
     });
 
-
         var dataGridInstance;
 
         var rowData = []; // Store the grid data
@@ -1574,22 +1603,22 @@
 
                                         columns: [
 
-                                            { dataField: "GSCode", caption: "Code", width: 80 },
+                                                    { dataField: "GSCode", caption: formatMessage('Code'), width: 80 },
 
-                                            { dataField: "GSDescrpition", caption: "Description", width: 200 },
+                                                    { dataField: "GSDescrpition", caption: formatMessage('Description'), width: 200 },
 
-                                            { dataField: "GsdescriptionAr", caption: "Description In Arabic", width: 200 },
+                                                    { dataField: "GsdescriptionAr", caption: formatMessage('Description In Arabic'), width: 200 },
 
-                                            { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                                                    { dataField: "ItemPartNo", caption: formatMessage('Item Part No'), width: 100 },
 
-                                            { dataField: "CostPrice", caption: "Cost Price", width: 100 },
+                                                    { dataField: "CostPrice", caption: formatMessage('Cost Price'), width: 100 },
 
-                                            { dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
+                                                    { dataField: "GSSellingRate", caption: formatMessage('Selling Rate'), width: 100 },
 
-                                            { dataField: "ReorderQty", caption: "Current Qty", width: 100 }, // Your displayed qty column if needed
+                                                    { dataField: "ReorderQty", caption: formatMessage('Current Qty'), width: 100 }, // Your displayed qty column if needed
 
-                                            { dataField: "MaxQty", caption: "Max Qty", width: 100 },
-                                            { dataField: "MinQty", caption: "Min Qty", width: 100 }
+                                                    { dataField: "MaxQty", caption: formatMessage('Max Qty'), width: 100 },
+                                                { dataField: "MinQty", caption: formatMessage('Min Qty'), width: 100 }
 
                                         ],
 
@@ -1621,7 +1650,7 @@
                                                     dataGrid.cellValue(rowIndex, "MinQty", selectedItem.MinQty || 0); // Set Min
 
 
-                                                    
+
 
                                                 ItemNo = selectedItem.GSCode;
                                                 Gsdescrpition = selectedItem.GSDescrpition;
@@ -1647,77 +1676,78 @@
                                 }
 
                             });
-                                $("<div>").dxButton({
-                                    icon: "plus",
-                                    hint: "Add new item",
-                                    onClick: function () {
-                                        let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
-                                        let title = "Goods and Services";
-                                        openModal(url, title); // Opens the form in a modal
-                                        // Or use: window.location.href = url; if navigating directly
-                                    },
-                                    width: 60,
-                                    height: 30
-                                }).appendTo($container);
+    $("<div>").dxButton({
+                                        icon: "plus",
+                                        hint: "Add new item",
+                                        onClick: function () {
+                                            let url = `/${tenantName}/VAT/VATGoodsandServices`; // ✅ No query parameters
+                                            let title = "Goods and Services";
+                                            openModal(url, title); // Opens the form in a modal
+                                            // Or use: window.location.href = url; if navigating directly
+                                        },
+                                        width: 60,
+                                        height: 30
+                                    }).appendTo($container);
 
 
-                                // ✅ Edit icon with navigation
+                                    // ✅ Edit icon with navigation
 
-                                $("<div>").dxButton({
+                                    $("<div>").dxButton({
 
-                                    icon: "edit",
+                                        icon: "edit",
 
-                                    hint: "Edit item",
+                                        hint: "Edit item",
 
-                                    onClick: function () {
+                                        onClick: function () {
 
-                                        //let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
-                                      let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
-                                                let title = "Goods and Services";
-                                                        openModal(url, title);
-                                        //window.location.href = url;
+                                            //let url = `/${tenantName}/VAT/VATGoodsandServices?AccountHeadID=${encodeURIComponent(acchedid)}`; // Example edit page
+                                          let url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}`; // Example add page
+                                                    let title = "Goods and Services";
+                                                            openModal(url, title);
+                                            //window.location.href = url;
 
-                                    },
+                                        },
 
-                                    width: 60,
+                                        width: 60,
 
-                                    height: 30
+                                        height: 30
 
-                                }).appendTo($container);
+                                    }).appendTo($container);
 
-                        });
+                            });
 
                     }
 
     },
-      {
-                  dataField: "Descriptions",
-                  caption: "...",
-                     cssClass: "center-header",
-                  width: 90,
-                  allowEditing: true,
-                          cellTemplate: function (container, options) {
-                                  // const quoteChildId = options.data.ItemNo;
-                          $("<div>").dxButton({
-                              icon: "user", // Built-in DevExtreme icon
-                              hint: "Edit IMS Details Description",
-                              stylingMode: "text",
+         {
+                      dataField: "Descriptions",
+                      caption: "...",
+                         cssClass: "center-header",
+                      width: 90,
+                      allowEditing: true,
+                              cellTemplate: function (container, options) {
+                                      // const quoteChildId = options.data.ItemNo;
+                              $("<div>").dxButton({
+                                  icon: "user", // Built-in DevExtreme icon
+                                  hint: "Edit IMS Details Description",
+                                  stylingMode: "text",
 
-                              width: 60,
-                                  onClick: function () {
-                                const gsCode = options.data.ItemCode;
-                          console.log("GSCode:", gsCode);
+                                  width: 60,
+                                      onClick: function () {
+                                    const gsCode = options.data.ItemCode;
+                              console.log("GSCode:", gsCode);
 
-                          window.currentDescriptionCell = options;
+                              window.currentDescriptionCell = options;
 
-                                let url = `/${tenantName}/IMS/DetailedDescriptionDO?gsCode=${encodeURIComponent(gsCode)}`;
-                          let title = "Details Description";
+                                    let url = `/${tenantName}/IMS/DetailedDescriptionDO?gsCode=${encodeURIComponent(gsCode)}`;
+                              let title = "Details Description";
 
-                          openModal(url, title);
-                      }
-                          }).appendTo(container);
-                      }
-                      },
+                              openModal(url, title);
+                          }
+                              }).appendTo(container);
+                          }
+                          },
+                               
                             {
 
                             dataField: "UnitRateMethod",
@@ -1741,7 +1771,7 @@
     },
     {
         dataField: "Qty",
-        caption: "Qty",
+        caption: formatMessage('Qty'),
         width: 200,
         dataType: "number",
         editCellTemplate: function (cellElement, cellInfo) {
@@ -1809,7 +1839,7 @@
     },
 
 
-    
+
 
                     {
 
@@ -1868,66 +1898,63 @@
         }
 
     },
-             {
-        dataField: "PropertyNo",
-        caption: formatMessage('PropertyOrEquipment'),
-        width: 200,
-        editCellTemplate: function (cellElement, cellInfo) {
-            getPropertyDropdownData().done(function (dropdownData) {
-                let $container = $("<div>").css({
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "5px",
-                    width: "100%"
-                }).appendTo(cellElement);
+                {
+            dataField: "PropertyNo",
+            caption: formatMessage('PropertyOrEquipment'),
+            width: 200,
+            editCellTemplate: function (cellElement, cellInfo) {
+                getPropertyDropdownData().done(function (dropdownData) {
+                    let $container = $("<div>").css({
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        width: "100%"
+                    }).appendTo(cellElement);
 
-                $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-                    dataSource: dropdownData,
-                          valueExpr: "PropertyNo",  // Binds the dropdown value to UnitDesc
-                      displayExpr: "PropertyDescription", // Shows UnitDesc in the dropdown
-                    value: cellInfo.value,   // Set initial value
+                    $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+                        dataSource: dropdownData,
+                              valueExpr: "PropertyNo",  // Binds the dropdown value to UnitDesc
+                          displayExpr: "PropertyDescription", // Shows UnitDesc in the dropdown
+                        value: cellInfo.value,   // Set initial value
 
-                    dropDownOptions: { width: 600 },
+                        dropDownOptions: { width: 600 },
 
-                    contentTemplate: function (e) {
-                        return $("<div>").dxDataGrid({
-                            dataSource: dropdownData,
-                            selection: { mode: "single" },
-                              keyExpr: "PropertyNo",
-                            height: 300,
-                            scrolling: { mode: "virtual" },
-                            columns: [
-                                    { dataField: "PropertyNo", caption: "Property No", width: 150 },
-                                    { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
-                            ],
-                            onSelectionChanged: function (selectedItems) {
-                                let selectedItem = selectedItems.selectedRowsData[0];
+                        contentTemplate: function (e) {
+                            return $("<div>").dxDataGrid({
+                                dataSource: dropdownData,
+                                selection: { mode: "single" },
+                                  keyExpr: "PropertyNo",
+                                height: 300,
+                                scrolling: { mode: "virtual" },
+                                columns: [
+                                        { dataField: "PropertyNo", caption: "Property No", width: 150 },
+                                        { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
+                                ],
+                                onSelectionChanged: function (selectedItems) {
+                                    let selectedItem = selectedItems.selectedRowsData[0];
 
-                                if (selectedItem) {
-                                    // 1️⃣ Set the selected value in PropertyOrEquipment
-                                        cellInfo.setValue(selectedItem.PropertyNo);
+                                    if (selectedItem) {
+                                        // 1️⃣ Set the selected value in PropertyOrEquipment
+                                            cellInfo.setValue(selectedItem.PropertyNo);
 
-                                    // 2️⃣ Get the parent DataGrid instance and row index
-                                    let dataGrid = $("#itemGrid").dxDataGrid("instance");
-                                    let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+                                        // 2️⃣ Get the parent DataGrid instance and row index
+                                        let dataGrid = $("#itemGrid").dxDataGrid("instance");
+                                        let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
-                                    // 3️⃣ Set UnitRateMethod column in the same row
-                                    if (rowIndex !== -1) {
-                                              dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
+                                        // 3️⃣ Set UnitRateMethod column in the same row
+                                        if (rowIndex !== -1) {
+                                                  dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
+                                        }
                                     }
                                 }
-                            }
-                        });
-                    }
+                            });
+                        }
+                    });
                 });
-            });
-        }
-    },
-      { dataField: "AddlDescription", visible: false },
-            { dataField: "DeliveryRemarks", visible: false }
-            // { dataField: "EmployeeNo", visible: false },
-            //  { dataField: "PropertyNo", visible: false }
-         
+            }
+        },
+         { dataField: "AddlDescription", visible: false },
+                { dataField: "DeliveryRemarks", visible: false }
                 ],
 
                 editing: {
@@ -1964,13 +1991,9 @@
                         UnitCostPrice:0.00,
                         EmployeeNo:"",
                         PropertyNo:"",
+                            AddlDescription: null,
+                        DeliveryRemarks: null
 
-                          AddlDescription: null,
-                    DeliveryRemarks: null
-                      // PropertyNo:null,
-                      // EmployeeNo:null
-                  
-                   
                 };
 
                 rowData.push(newRow);
@@ -2011,174 +2034,134 @@
             }));
         });
     }
-       
-        function getPropertyDropdownData() {
-              return $.ajax({
-                      url: "/api/DeliveryNote/GetPropertyOrEquipment", // This should match your actual backend endpoint
-                  method: "GET",
-                  dataType: "json"
-              }).then(function (response) {
-                  console.log("Unit Rate Data", response);
-                  return response.map(item => ({
-                        PropertyNo: item.PropertyNo,
-                        PropertyDescription: item.PropertyDescription
-                   
-                  }));
-              });
-          }
-      let dropDownBoxInstance = null;
+            function getPropertyDropdownData() {
+                  return $.ajax({
+                          url: "/api/DeliveryNote/GetPropertyOrEquipment", // This should match your actual backend endpoint
+                      method: "GET",
+                      dataType: "json"
+                  }).then(function (response) {
+                      console.log("Unit Rate Data", response);
+                      return response.map(item => ({
+                            PropertyNo: item.PropertyNo,
+                            PropertyDescription: item.PropertyDescription
 
-    function dataGridInitialized1(e) {
-        dropDownBoxInstance = $("#GetProjectDropDown").dxDropDownBox("instance");
-    }
-
-    function dataGridSelectionChanged1(e) {
-        const selectedItem = e.selectedRowsData[0];
-        if (selectedItem && dropDownBoxInstance) {
-            dropDownBoxInstance.option("value", selectedItem.ClientCode); // Set DropDownBox value
-            dropDownBoxInstance.close(); // Close dropdown
-        }
-    }
-
-       function onClientSelected(e) {
-        
-        const clientCode = e.value;
-
-        if (!clientCode) return;
-
-        // Get the full item from the data source
-        const dataSource = e.component.getDataSource();
-
-        dataSource.load().done(function (items) {
-            const selected = items.find(x => x.ClientCode === clientCode);
-
-            if (selected) {
-                console.log("Autofill data:", selected);
-
-                $("#ClientRefName").dxTextBox("instance").option("value", selected.ContactPerson || "");
-                $("#ClientContactNo").dxTextBox("instance").option("value", selected.ContactMobile1 || "");
-                $("#ClientEmail").dxTextBox("instance").option("value", selected.ContactEmail || "");
-                $("#clientProject").dxTextBox("instance").option("value", selected.ClientAddress || "");
-            }
-        });
-    }
-
-
-          function receiveModalFieldData(modalData) {
-        console.log("📥 Received from modal:", modalData);
-
-        const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
-
-        if (!dataGridInstance) {
-            console.error("❌ dataGridInstance is not initialized.");
-            return;
-        }
-
-        if (!window.currentDescriptionCell || !window.currentDescriptionCell.key) {
-            console.error("❌ currentDescriptionCell is missing or invalid.");
-            return;
-        }
-
-        const rowKey = window.currentDescriptionCell.key;
-        console.log("🔑 Editing key:", rowKey);
-
-        const rowIndex = dataGridInstance.getRowIndexByKey(rowKey);
-
-        if (rowIndex === -1) {
-            console.warn("⚠️ Row not found in grid for key:", rowKey);
-            return;
-        }
-
-        // ✅ Set the new values from modal
-        dataGridInstance.cellValue(rowIndex, "AddlDescription", modalData.AddlDescription || "");
-            dataGridInstance.cellValue(rowIndex, "DeliveryRemarks", modalData.DeliveryRemarks || "");
-            dataGridInstance.cellValue(rowIndex, "EmployeeNo", modalData.EmployeeNo || "");
-            dataGridInstance.cellValue(rowIndex, "PropertyNo", modalData.PropertyNo || "");
-    }
-
-
-     function onBaseCurrencyInitialized(e) {
-              const ddb = e.component;
-
-              setTimeout(() => {
-                  const ds = ddb.getDataSource();
-
-                  if (ds) {
-                      ds.load().done(function (data) {
-                          if (data && data.length > 0) {
-                              const firstItemId = data[0].CurrencyExchangeId;
-                              ddb.option("value", firstItemId);
-                          }
-                      });
-                  } else {
-                      console.warn("DataSource is not available yet.");
-                  }
-              }, 100);
-          }
-           function CurrencyClick() {
-          let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-          let title = "Currency Master";
-          openModal(url, title);
-      }
-        function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
-          const selectedRow = e.selectedRowsData[0]; // full object
-          const selectedKey = e.selectedRowKeys[0];
-          const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
-
-          if (selectedKey) {
-              ddbInstance.option("value", selectedKey); // CurrencyId
-              if (ddbInstance.option("opened")) {
-                  ddbInstance.close();
+                      }));
+                  });
               }
 
-              // Set CurrencyRate from the selected grid row
-              const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
-              $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
-          }
-      }
+        $(function () {
+                            $("#DriverID1").text(
+                                 formatMessage("Driver's ID:"));
+                });
 
-      function dataGridTaxCurrencyHeadSelectionChanged(e) {
-          debugger;
-          const selectedKey = e.selectedRowKeys[0];
-          const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
+$(function () {
+                        $("#Vehicle").text(
+                             formatMessage("Vehicle No:"));
+            });
 
-          if (selectedKey) {
-              ddbInstance.option("value", selectedKey); // BaseCurrencyId
-              if (ddbInstance.option("opened")) {
-                  ddbInstance.close();
-              }
-          }
-      }
+$(function () {
+                        $("#Driver").text(
+                             formatMessage("Driver's Name:"));
+            });
 
-    function onClientContactClick() {
-        var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
-        var selectedValue = dropDownBox.option('value'); // clientCode
+$(function () {
+                        $("#Transported").text(
+                             formatMessage("Transported / Delivered By:"));
+            });
 
-        if (!selectedValue) {
-            DevExpress.ui.notify('Please select a client.', 'warning', 2000);
-            return;
-        }
+    $(function () {
+                            $("#Salesman1").text(
+                                 formatMessage("Salesman"));
+                });
+                $(function () {
+                                $("#Delivery").text(
+                                     formatMessage("Delivery Note Remarks:"));
+                });
 
-        // Get the full item directly from dataSource using selected value
-        var dataSource = dropDownBox.getDataSource();
 
-        dataSource.load().done(function (data) {
-            var selectedItem = data.find(x => x.ClientCode === selectedValue);
 
-            if (!selectedItem || !selectedItem.ClientName) {
-                DevExpress.ui.notify('Client details not found.', 'error', 2000);
+
+              function receiveModalFieldData(modalData) {
+            console.log("📥 Received from modal:", modalData);
+
+            const dataGridInstance = $("#itemGrid").dxDataGrid("instance"); // ✅ add this line
+
+            if (!dataGridInstance) {
+                console.error("❌ dataGridInstance is not initialized.");
                 return;
             }
 
-            var clientCode = selectedValue;
-            var clientName = selectedItem.ClientName;
+            if (!window.currentDescriptionCell || !window.currentDescriptionCell.key) {
+                console.error("❌ currentDescriptionCell is missing or invalid.");
+                return;
+            }
 
-            var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' +
-                encodeURIComponent(clientCode) + '&clientName=' +
-                encodeURIComponent(clientName);
+            const rowKey = window.currentDescriptionCell.key;
+            console.log("🔑 Editing key:", rowKey);
 
-            openModal(url, 'Client Contact List');
-        });
-    }
+            const rowIndex = dataGridInstance.getRowIndexByKey(rowKey);
 
+            if (rowIndex === -1) {
+                console.warn("⚠️ Row not found in grid for key:", rowKey);
+                return;
+            }
+
+            // ✅ Set the new values from modal
+            dataGridInstance.cellValue(rowIndex, "AddlDescription", modalData.AddlDescription || "");
+                dataGridInstance.cellValue(rowIndex, "DeliveryRemarks", modalData.DeliveryRemarks || "");
+                dataGridInstance.cellValue(rowIndex, "EmployeeNo", modalData.EmployeeNo || "");
+                dataGridInstance.cellValue(rowIndex, "PropertyNo", modalData.PropertyNo || "");
+        }
+               function onBaseCurrencyInitialized(e) {
+                  const ddb = e.component;
+
+                  setTimeout(() => {
+                      const ds = ddb.getDataSource();
+
+                      if (ds) {
+                          ds.load().done(function (data) {
+                              if (data && data.length > 0) {
+                                  const firstItemId = data[0].CurrencyExchangeId;
+                                  ddb.option("value", firstItemId);
+                              }
+                          });
+                      } else {
+                          console.warn("DataSource is not available yet.");
+                      }
+                  }, 100);
+              }
+               function CurrencyClick() {
+              let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+              let title = "Currency Master";
+              openModal(url, title);
+          }
+            function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
+              const selectedRow = e.selectedRowsData[0]; // full object
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey); // CurrencyId
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+
+                  // Set CurrencyRate from the selected grid row
+                  const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
+                  $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
+              }
+          }
+
+          function dataGridTaxCurrencyHeadSelectionChanged(e) {
+              debugger;
+              const selectedKey = e.selectedRowKeys[0];
+              const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
+
+              if (selectedKey) {
+                  ddbInstance.option("value", selectedKey); // BaseCurrencyId
+                  if (ddbInstance.option("opened")) {
+                      ddbInstance.close();
+                  }
+              }
+          }
    </script>
