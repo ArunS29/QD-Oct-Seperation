@@ -847,6 +847,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     // set default value
                     model.CreatedBy = addedBy;
                     model.CreatedOn = DateTime.Now;
+                    model.ModifiedBy = null;
+                    model.ModifiedOn = null;
                     // Add new item in main table
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
 

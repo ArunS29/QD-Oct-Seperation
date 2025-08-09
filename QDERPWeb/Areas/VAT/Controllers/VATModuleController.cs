@@ -1610,13 +1610,13 @@ documentNo: unitType
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 // Validate input
-                if (string.IsNullOrWhiteSpace(unitType) || string.IsNullOrWhiteSpace(unitDesc) || string.IsNullOrWhiteSpace(unitDescAr))
+                if (string.IsNullOrWhiteSpace(unitType) || string.IsNullOrWhiteSpace(unitDesc))
                 {
                     return Json(new { success = false, message = "All fields are required." });
                 }
                 unitType = unitType.Trim();
                 unitDesc = unitDesc.Trim();
-                unitDescAr = unitDescAr.Trim();
+                unitDescAr = unitDescAr?.Trim() ?? string.Empty;
 
                 // Find existing record
                 var existing = dbContext.Tbl40111PropertyUnitCodes.FirstOrDefault(u => u.UnitCode == unitCode);
@@ -1628,9 +1628,9 @@ documentNo: unitType
                 // Check for duplicate values (in other records)
                 bool isDuplicate = dbContext.Tbl40111PropertyUnitCodes.Any(u =>
                     u.UnitCode != unitCode &&
-                    u.UnitType.ToLower() == unitType.ToLower() &&
-                    u.UnitDesc.ToLower() == unitDesc.ToLower() &&
-                    u.UnitDescAr.ToLower() == unitDescAr.ToLower());
+                    u.UnitType.ToLower() == unitType.ToLower());
+                    //u.UnitDesc.ToLower() == unitDesc.ToLower() &&
+                    //u.UnitDescAr.ToLower() == unitDescAr.ToLower());
 
                 if (isDuplicate)
                 {

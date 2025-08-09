@@ -390,6 +390,7 @@
                 success: function (res) {
         DevExpress.ui.notify("Store added successfully!", "success", 2000);
         // Reload grid data after add
+                
         $("#storeGrid").dxDataGrid("instance").refresh();
         // Clear inputs
         $("#StoreId").dxTextBox("instance").option("value", "");
@@ -400,6 +401,9 @@
         $("#StoreId").dxValidator("instance").reset();
         $("#StoreName").dxValidator("instance").reset();
         $("#CostCenter").dxValidator("instance").reset();
+
+        const grid = $("#storeGrid").dxDataGrid("instance");
+            grid.saveEditData();
     },
 
             error: function (xhr) {
