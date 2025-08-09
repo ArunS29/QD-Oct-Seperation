@@ -626,7 +626,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Delete Rfq",
-                  actionDetail: $":Deleted Rfq {Rfqno}",
+                  actionDetail: $"Deleted Rfq {Rfqno}",
                   documentNo: $"{Rfqno}"
                 );
 
@@ -724,7 +724,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             await dbContext.SaveChangesAsync();
             await _userActionLogger.LogAsync(
               module: "IMS > Verify RFQ",
-               actionDetail: $":Verified RFQ {Rfqno}",
+               actionDetail: $"Verified RFQ {Rfqno}",
                documentNo: $"{Rfqno}"
             );
 
@@ -776,7 +776,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
               module: "IMS > Approve RFQ",
-               actionDetail: $":Approved RFQ {Rfqno}",
+               actionDetail: $"Approved RFQ {Rfqno}",
                documentNo: $"{Rfqno}"
             );
 
@@ -827,7 +827,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 // Save Changes
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete RFQ View ",
-                        actionDetail: $":Deleted RFQ View  {Rfqno}",
+                        actionDetail: $"Deleted RFQ View  {Rfqno}",
                         documentNo: $"{Rfqno}"
                        );
 
@@ -1054,7 +1054,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Delete Child By Id",
-                  actionDetail: $":Deleted Child By Id {childId}",
+                  actionDetail: $"Deleted Child By Id {childId}",
                   documentNo: $"{childId}"
                 );
 

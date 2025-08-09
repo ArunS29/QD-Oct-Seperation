@@ -114,7 +114,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                      module: "IMS > Delete Purchase Order Categories",
-                     actionDetail: $":Deleted Purchase Order Categories  {id}",
+                     actionDetail: $"Deleted Purchase Order Categories  {id}",
                      documentNo: $"{id}"
                    );
 

@@ -203,7 +203,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                    module: "IMS > Approve Delivery Note",
-                   actionDetail: $":Approved Approve Delivery Note  {deliveryNoteNo}",
+                   actionDetail: $"Approved Approve Delivery Note  {deliveryNoteNo}",
                    documentNo: $"{deliveryNoteNo}"
                 );
 

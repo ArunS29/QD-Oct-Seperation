@@ -1078,7 +1078,7 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Delete Purchase Order",
-                  actionDetail: $":Deleted Purchase Order {Pono}",
+                  actionDetail: $"Deleted Purchase Order {Pono}",
                   documentNo: $"{Pono}"
                 );
 
@@ -1143,7 +1143,7 @@ public async Task<IActionResult> SubmitPurchaseOrder([FromBody] Tbl60401purchase
         await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                   module: "IMS > Submit Purchase Order",
-                  actionDetail: $":Submited Purchase Order {data.Pono}",
+                  actionDetail: $"Submited Purchase Order {data.Pono}",
                   documentNo: $"{data.Pono}"
                 );
 
@@ -1188,7 +1188,7 @@ var po = await dbContext.Tbl60401purchaseOrderMasters.FirstOrDefaultAsync(x => x
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Delete Purchase Order",
-                   actionDetail: $":Deleted Purchase Order {data.Pono}",
+                   actionDetail: $"Deleted Purchase Order {data.Pono}",
                   documentNo: $"{data.Pono}"
                 );
 
@@ -1232,7 +1232,7 @@ var po = await dbContext.Tbl60401purchaseOrderMasters.FirstOrDefaultAsync(x => x
                 await dbContext.SaveChangesAsync();
                 await _userActionLogger.LogAsync(
                     module: "IMS > Approve Purchase Order",
-                   actionDetail: $":Approved Purchase Order {data.Pono}",
+                   actionDetail: $"Approved Purchase Order {data.Pono}",
                   documentNo: $"{data.Pono}"
                 );
 

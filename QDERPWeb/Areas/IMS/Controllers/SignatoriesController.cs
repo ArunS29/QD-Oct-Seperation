@@ -139,7 +139,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl90104DocumentSignatories.Remove(record);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Delete ",
-                        actionDetail: $":Deleted  {key}",
+                        actionDetail: $"Deleted  {key}",
                         documentNo: $"{key}"
                        );
                     return Ok();
@@ -175,7 +175,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                           module: "IMS > Delete Multiple",
-                          actionDetail: $":Deleted Multiple {signatoryIds}",
+                          actionDetail: $"Deleted Multiple {signatoryIds}",
                           documentNo: $"{signatoryIds}"
                     );
 

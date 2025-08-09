@@ -158,7 +158,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 // ✅ 7. Save changes
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete Material Receipt View",
-                   actionDetail: $":Deleted Material Receipt View {ReceiptNo}",
+                   actionDetail: $"Deleted Material Receipt View {ReceiptNo}",
                     documentNo: $"{ReceiptNo}"
                 );
 

@@ -169,7 +169,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Delete Branch Master",
-                      actionDetail: $":Deleted Branch Master  {branch.SupplierCategoryCode}",
+                      actionDetail: $"Deleted Branch Master  {branch.SupplierCategoryCode}",
                       documentNo: $"{branch.SupplierCategoryCode}"
                     );
 

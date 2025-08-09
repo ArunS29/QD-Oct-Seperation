@@ -127,7 +127,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                       module: "IMS > Delete Quotation Status",
-                      actionDetail: $":Deleted Quotation {id}",
+                      actionDetail: $"Deleted Quotation {id}",
                       documentNo: $"{id}"
                     );
 

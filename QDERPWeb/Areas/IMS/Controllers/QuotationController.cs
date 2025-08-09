@@ -103,7 +103,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete ",
-                    actionDetail: $":Deleted  {model.ReportNo}",
+                    actionDetail: $"Deleted  {model.ReportNo}",
                     documentNo: $"{model.ReportNo}"
                 );
                 return Ok(new { message = "Field updated successfully." });
@@ -426,7 +426,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     dbContext.Tbl60104quotationItemCosts.Remove(record);
                     dbContext.SaveChanges();
                     _userActionLogger.LogAsync(module: "IMS > Deletes ",
-                      actionDetail: $":Deleted  {key}",
+                      actionDetail: $"Deleted  {key}",
                       documentNo: $"{key}"
                     );
                     return Ok();
@@ -538,7 +538,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     await dbContext.SaveChangesAsync();
                     await _userActionLogger.LogAsync(
                        module: "IMS > Delete Cost Item",
-                       actionDetail: $":Deleted CostI tem {id}",
+                       actionDetail: $"Deleted CostI tem {id}",
                        documentNo: $"{id}"
                     );
 
@@ -608,7 +608,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete Quotation View ",
-                  actionDetail: $":Deleted Quotation View  {QuoteNo}",
+                  actionDetail: $"Deleted Quotation View  {QuoteNo}",
                    documentNo: $"{QuoteNo}"
                 );
 
@@ -724,7 +724,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.SaveChanges();
                 _userActionLogger.LogAsync(module: "IMS > Delete Quotation View ",
-                  actionDetail: $":Deleted Quotation View  {originalQuoteNo}",
+                  actionDetail: $"Deleted Quotation View  {originalQuoteNo}",
                   documentNo: $"{originalQuoteNo}"
                 );
 
