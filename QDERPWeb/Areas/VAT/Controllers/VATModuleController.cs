@@ -12,7 +12,9 @@ using QD.ERP.Web.Areas.VAT.Reports.VATCreditNote;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QD.ERP.Web.Services.Logging;
+using QDERPWeb.Models;
 using QRCoder;
+using SkiaSharp;
 using System.Data;
 using System.Data.SqlClient;
 using System.Dynamic;
@@ -24,7 +26,6 @@ using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using static QD.ERP.Web.Service.UserAccessService;
-using QDERPWeb.Models;
 
 
 namespace QD.ERP.Web.Areas.VAT.Controllers
@@ -580,70 +581,130 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
 
         }
 
+
+
+        //[HttpGet]
+        //public async Task<IActionResult> GetGoodsAndServices(int pageNumber = 1,int pageSize = 10)
+        //{
+        //    try
+        //    {
+        //        if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //        {
+        //            var resultWithVAT = new List<ExpandoObject>();
+        //            var result = await dbContext.Tbl20164GoodsAndServicesMasters
+        //            .Select(g => new
+        //            {
+        //                g.Gscode,
+        //                g.Gsdescrpition,
+        //                g.GsgroupId,
+        //                g.GsdescriptionAr,
+        //                g.ItemPartNo,
+        //                g.CostPrice,
+        //                g.GssellingRate,
+        //                g.ReorderQty,
+        //                g.StoreCode,
+        //                g.MaxQty,
+        //                g.MinQty,
+        //                g.GsuoM,
+        //                g.GspackingUnit
+
+
+        //            })
+        //            .ToListAsync();
+
+
+
+        //            foreach (var gridDetails in result)
+        //            {
+        //                dynamic item = new ExpandoObject();
+        //                var dict = (IDictionary<string, object>)item;
+
+        //                // Copy all existing fields from gridDetails into dynamic object
+        //                var properties = gridDetails.GetType().GetProperties();
+        //                foreach (var prop in properties)
+        //                {
+        //                    dict[prop.Name] = prop.GetValue(gridDetails);
+        //                }
+
+        //                var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
+        //           .Where(x => x.UnitCode == gridDetails.GsgroupId)
+        //           .Select(x => x.UnitDesc)
+        //           .FirstOrDefault();
+
+
+        //                // Add new dynamic column
+        //                dict["UnitRateMethod"] = UnitRateMethodDesc;
+
+
+        //                //dict["VAT"] = vatValue;
+        //                //dict["TotalVAT"] = totalValue;
+
+        //                resultWithVAT.Add(item);
+        //            }
+
+        //            return Ok(resultWithVAT);
+        //        }
+        //    }
+        //    catch (Exception ex) { throw ex; }
+        //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+        //}
+
         [HttpGet]
-        public async Task<IActionResult> GetGoodsAndServices()
+        public async Task<IActionResult> GetGoodsAndServices(int pageNumber = 1, int pageSize = 10)
         {
             try
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var resultWithVAT = new List<ExpandoObject>();
-                    var result = await dbContext.Tbl20164GoodsAndServicesMasters
-                    .Select(g => new
+                    var query = from g in dbContext.Tbl20164GoodsAndServicesMasters
+                                join u in dbContext.Tbl40111PropertyUnitCodes
+                                    on g.GsgroupId equals u.UnitCode into gj
+                                from unit in gj.DefaultIfEmpty()
+                                orderby g.Gscode
+                                select new
+                                {
+                                    GSCode = g.Gscode,
+                                    GSDescrpition = g.Gsdescrpition,
+                                    g.GsgroupId,
+                                    GsdescriptionAr = g.GsdescriptionAr,
+                                    g.ItemPartNo,
+                                    g.CostPrice,
+                                    GSSellingRate = g.GssellingRate,
+                                    g.ReorderQty,
+                                    g.StoreCode,
+                                    g.MaxQty,
+                                    g.MinQty,
+                                    g.GsuoM,
+                                    g.GspackingUnit,
+                                    UnitDescription = unit.UnitDesc
+                                };
+
+                    // Get total count for pager
+                    var totalCount = await query.CountAsync();
+
+                    // Apply pagination
+                    var pagedData = await query
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToListAsync();
+
+                    return Ok(new
                     {
-                        g.Gscode,
-                        g.Gsdescrpition,
-                        g.GsgroupId,
-                        g.GsdescriptionAr,
-                        g.ItemPartNo,
-                        g.CostPrice,
-                        g.GssellingRate,
-                        g.ReorderQty,
-                        g.StoreCode,
-                        g.MaxQty,
-                        g.MinQty,
-                        g.GsuoM,
-                        g.GspackingUnit
-
-
-                    })
-                    .ToListAsync();
-
-                    foreach (var gridDetails in result)
-                    {
-                        dynamic item = new ExpandoObject();
-                        var dict = (IDictionary<string, object>)item;
-
-                        // Copy all existing fields from gridDetails into dynamic object
-                        var properties = gridDetails.GetType().GetProperties();
-                        foreach (var prop in properties)
-                        {
-                            dict[prop.Name] = prop.GetValue(gridDetails);
-                        }
-
-                        var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
-                   .Where(x => x.UnitCode == gridDetails.GsgroupId)
-                   .Select(x => x.UnitDesc)
-                   .FirstOrDefault();
-
-
-                        // Add new dynamic column
-                        dict["UnitRateMethod"] = UnitRateMethodDesc;
-                    
-
-                        //dict["VAT"] = vatValue;
-                        //dict["TotalVAT"] = totalValue;
-
-                        resultWithVAT.Add(item);
-                    }
-
-                    return Ok(resultWithVAT);
+                        data = pagedData,
+                        totalCount = totalCount
+                    });
                 }
-            }
-            catch (Exception ex) { throw ex; }
-            return Unauthorized(new { message = "Invalid tenant.", success = false });
 
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", details = ex.Message });
+            }
         }
+
+
         [HttpGet]
         public async Task<IActionResult> GetUnitofMeasure()
         {
@@ -6617,6 +6678,48 @@ documentNo: InvoiceNo
 
             return Unauthorized("Unable to fetch tenant information.");
         }
+
+        [HttpGet]
+        public IActionResult GetDropdownItemByCode(string code)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(code))
+                        return BadRequest("Code is required.");
+
+                    var item = dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(x => x.Gscode == code)
+                        .Select(x => new
+                        {
+                            x.Gscode,
+                            x.Gsdescrpition,
+                            x.GsdescriptionAr,
+                            x.ItemPartNo,
+                            x.CostPrice,
+                            x.GssellingRate,
+                            x.ReorderQty
+                            //,x.Uni
+                           
+                        })
+                        .FirstOrDefault();
+
+                    if (item == null)
+                        return NotFound($"Item with code '{code}' not found.");
+
+                    return Json(item);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex, $"Error fetching item details for code: {code}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return StatusCode(500, "Tenant context could not be established.");
+        }
+
 
 
     }
