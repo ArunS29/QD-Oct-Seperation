@@ -684,15 +684,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             try
             {
-                // Get tenant name
-                var tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name missing from session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // Get company details
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 // Get digit config
                 int digits = dbContext.Tbl901CompanyDetails02s
@@ -829,16 +838,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-                // Step 2: Get tenant name from session
-                string tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // Step 3: Get company info
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
                 var company = dbContext.Tbl901CompanyDetails
-                    .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 string salesOrderAbbrv = company.SalesOrderAbbrv ?? "SO";
                 int yearDigits = company.InvoiceYearDigits ?? 0;

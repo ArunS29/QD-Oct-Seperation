@@ -3401,3 +3401,38 @@ BEGIN
     WHERE Module = 'Inventory';
 END
 GO
+
+------
+//IMS Auto No generation Prefix Query(KOWSALYA)
+
+UPDATE Sudhir.tbl901CompanyDetails
+SET QuotationAbbrv= 'SR-QTN', 
+RequestAbbrv = 'SR-ENQ',
+RFQAbbrv = 'SR-RFQ' ,
+SalesOrderAbbrv = 'SR-SO', 
+PurchaseOrderAbbrv = 'SR-PO',
+MaterialReceiptAbbrv = 'SR-MPR', 
+DeliveryNoteAbbrv = 'SR-DN',
+WHERE CompanyID =2
+
+UPDATE Sudhir.tbl901CompanyDetails02
+SET NoOfDigitsToInventoryQuotation = 5
+WHERE CompanyID = 2;
+
+//AICON
+
+UPDATE Aicon.tbl901CompanyDetails
+SET QuotationAbbrv= 'AICON-QTN', 
+RequestAbbrv = 'AICON-ENQ',
+RFQAbbrv = 'AICON-RFQ' ,
+SalesOrderAbbrv = 'AICON-SO', 
+PurchaseOrderAbbrv = 'AICON-PO',
+MaterialReceiptAbbrv = 'AICON-MPR', 
+DeliveryNoteAbbrv = 'AICON-DN',
+WHERE CompanyID =2
+
+UPDATE Aicon.tbl901CompanyDetails02
+SET NoOfDigitsToInventoryQuotation = 5
+WHERE CompanyID = 2;
+
+ 

@@ -1434,18 +1434,26 @@ public async Task<IActionResult> ReceiveItemFully([FromBody] Tbl60401purchaseOrd
         if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
             return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-        // --- Generate receiptNoteNo using company settings and last number in Tbl60501materialReceiptMasters ---
-        string tenantName = HttpContext.Session.GetString("TenantName");
-        if (string.IsNullOrWhiteSpace(tenantName))
-            return Unauthorized(new { message = "Tenant name not found in session.", success = false });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-        var company = dbContext.Tbl901CompanyDetails
-            .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
 
-        if (company == null)
-            return NotFound("Company not found.");
+                byte companyId = defaultCompanyByte;
 
-        string requestAbbrv = company.RequestAbbrv ?? "MRN";
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+
+                string requestAbbrv = company.RequestAbbrv ?? "MRN";
         int yearInDigit = company.InvoiceYearDigits ?? 0;
         bool isResetByYear = company.IsResetInvoiceInYear ?? false;
         DateTime receiptDate = DateTime.Now;
