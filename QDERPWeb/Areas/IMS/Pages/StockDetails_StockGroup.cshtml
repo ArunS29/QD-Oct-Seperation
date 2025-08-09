@@ -902,7 +902,7 @@
          if (!textBox1Instance || !textBox2Instance) {
 
              console.error("TextBox instances are not properly initialized.");
-
+             
              return;
 
          }
@@ -916,8 +916,8 @@
 
          if (!englishText || englishText.trim() === "") {
 
-             alert("Please enter text to translate.");
-
+             //alert("Please enter text to translate.");
+             DevExpress.ui.notify('Please enter text to translate.', 'warning', 2000);
              return;
 
          }

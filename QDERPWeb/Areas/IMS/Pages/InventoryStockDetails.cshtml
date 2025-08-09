@@ -3072,9 +3072,13 @@
                                 var dateOnly = dt.toISOString().split('T')[0];  // "YYYY-MM-DD"
                             $("#EnteredOn").dxTextArea("instance").option("value", dateOnly);
                             $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
-                                var dt2 = new Date(data.ModifiedOn);
-                                var dateOnly2 = dt2.toISOString().split('T')[0];
-                            $("#ModifiedOn").dxTextArea("instance").option("value", dateOnly2);
+                                    if (data.ModifiedOn) {
+                                        var dt2 = new Date(data.ModifiedOn);
+                                        var dateOnly2 = dt2.toISOString().split('T')[0];
+                                        $("#ModifiedOn").dxTextArea("instance").option("value", dateOnly2);
+                                    } else {
+                                        $("#ModifiedOn").dxTextArea("instance").option("value", ""); // clear if empty
+                                    }
                             $("#AvgCostPrice").dxTextBox("instance").option("value", data.CostPrice); // need to calculate value
                             $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
                                 // Load Item Image (Base64)
