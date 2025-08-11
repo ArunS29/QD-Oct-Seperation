@@ -3375,7 +3375,16 @@ $("<div>").dxButton({
 							},
 
 
-							{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 },
+							{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 ,
+								editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8; // Example: allow max 5 digits
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } },
 
 							{ dataField: "ExpectedUnitRate", caption: formatMessage('Expected Price'), width: 150,format: { type: "fixedPoint", precision: 2 } },
 
@@ -4144,9 +4153,17 @@ $("<div>").dxButton({
 						}
 
 					},
-
-
-					{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 },
+							{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 ,
+								editorOptions: {
+                            onInput: function(e) {
+                            let maxLength = 8;
+                            let value = e.event.target.value;
+                            if (value.length > maxLength) {
+                                e.event.target.value = value.slice(0, maxLength);
+                            }
+                        }
+                    } 
+				},
 
 					{ dataField: "ExpectedUnitRate", caption: formatMessage('Expected Price'), width: 150,format: { type: "fixedPoint", precision: 2 } },
 
@@ -6457,7 +6474,7 @@ $("#btnAddNew").on("click", function (e) {
 		});
 	});
 	function loadChildDataAndBindGrid(mprno) {
-		//debugger;
+		//
     if (!mprno) {
         console.warn("No MPR number provided.");
         return;
@@ -6994,7 +7011,7 @@ $("#btnAddNew").on("click", function (e) {
 
 				  //MoveupDown functionality
 				function moveRowUp() {
-					debugger;
+					
 					var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 					var dataSource = dataGrid.getDataSource();
 					var data = getFlatData(dataSource.items()); // Flatten the grouped data
@@ -8289,7 +8306,7 @@ function onIMSAttachmentButtonClick(e) {
     }
 
     function dataGridTaxCurrencyHeadSelectionChanged(e) {
-        debugger;
+        
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
 

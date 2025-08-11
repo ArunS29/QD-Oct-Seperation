@@ -611,7 +611,7 @@
             case (formatMessage('Ledger to Salary Payable Mapping')):
                 var accountDropDown = $("#accountDropDownBox").dxDropDownBox("instance");
                 var selectedAccountId = accountDropDown.option("value");
-                debugger;
+                
                 if (!selectedAccountId) {
                     Swal.fire({
                         icon: 'warning',
@@ -1001,7 +1001,7 @@
 
        function showSubmenu6(e) {
         e.event.stopPropagation();
-        debugger;
+        
         if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
             showToastModal('warning', 'Warning!', 'No records to print');
             // $("#popupWarningMessage").text("No records to print");

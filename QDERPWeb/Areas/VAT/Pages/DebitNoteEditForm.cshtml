@@ -4956,7 +4956,7 @@
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
 
-				debugger;
+				
 				// Get the updated value from the input field
 				let newValue = args.value;
 				console.log("gridnewvalue",newValue)
@@ -5540,7 +5540,7 @@
 			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 			IsDirectApproval=false;
 			const vno = $("#DebitNoteNo").dxTextBox("instance").option("value");
-			debugger;
+			
 			if (!vno) {
 				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
 				return;
@@ -5671,7 +5671,7 @@
 				// data: JSON.stringify({ voucherNo: vno }),
 				success: async function (response) {
 					if (response && response.Message) {
-						debugger;
+						
 						if(response.IsDirect == true)
 						{
 								const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");

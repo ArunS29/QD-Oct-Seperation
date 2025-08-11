@@ -1586,7 +1586,7 @@
 			success: function (data) {
 				console.log("VATPurchaseData",data)
 				if (data.length === 0 && page > 1) return;
-				debugger;
+				
 				currentPage = Number(data.currentPage);
 				var grid = $("#dataGrid").dxDataGrid("instance");
 				grid.option("dataSource", data);
@@ -1972,7 +1972,7 @@
 				url: '/api/AccountingLedgers/GetCurrencyIcon',
 				type: 'GET',
 				success: function (response) {
-					debugger;
+					
 					let svgIcon = response.Icon;
 					if (!svgIcon) return;
 

@@ -1253,7 +1253,7 @@
             }
 
             function addEmptyRowIfNeeded() {
-                debugger;
+                
                 const dataSource = dataGrid.option("dataSource") || [];
 
                 if (!Array.isArray(dataSource)) {
@@ -1526,7 +1526,7 @@
 
 
         function onRadioGroupValueChanged(e) {
-            debugger;
+            
             let selectedValue = e.value;
             let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";
 

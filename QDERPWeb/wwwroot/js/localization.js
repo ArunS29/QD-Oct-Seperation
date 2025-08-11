@@ -2,6 +2,7 @@
 var dictionary = {
 
     "en": {
+        "Show Records": "Show Records",
         "Revision No":"Revision No",
         "PO Due Date":"PO Due Date",
         "Ordered Qty":"Ordered Qty",
@@ -3969,11 +3970,14 @@ var dictionary = {
         "04-DebitNote Summary Report": "04-DebitNote Summary Report",
         "Deductions/Approvals": "Deductions/Approvals",
         "Other Details/Branch/Division Details":"Other Details/Branch/Division Details",
-        
- 
+        "Select Stock Group": "Select Stock Group"
     },
     ar: {
-        "Deductions/Approvals":"الخصومات/الموافقات",
+         "Deductions/Approvals":"الخصومات/الموافقات",
+        "Medium": "واسطة",
+        "Select Stock Group":"اختر مجموعة الأسهم",
+        "Show All Records": "إظهار جميع السجلات",
+        "Show Records":"عرض السجلات",
         "AccountHeadArabic": "رأس الحساب بالعربية",
         "AccountId":"معرف الحساب",
         "Sub Group Notes:": "ملاحظات المجموعة الفرعية:",

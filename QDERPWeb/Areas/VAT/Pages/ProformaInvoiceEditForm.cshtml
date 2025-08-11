@@ -2937,7 +2937,7 @@
 			var urlParams = new URLSearchParams(window.location.search);
 		    var InvoiceNo = urlParams.get('ProformaInvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
-			debugger;
+			
 				IsCurrent=IsEditflag.toString();
 
 				// console.log("Iseditflag",IsEditflag)
@@ -3043,7 +3043,7 @@
 
 		});
 				function initializeDataGrid(rowData) {
-							debugger;
+							
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			dataSource: rowData,
 		   // keyExpr: "SNo",
@@ -3397,7 +3397,7 @@
 						let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
 						if (selectedItem) {
 							cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-							debugger;
+							
 							let grid = $("#B2BdataGrid").dxDataGrid("instance");
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
@@ -3439,7 +3439,7 @@
 								let selectedItem = selectedItems.selectedRowsData[0];
 								alert("1")
 								if (selectedItem) {
-									debugger;
+									
 									e.component.option("value", selectedItem.TaxSlabCode);
 									cellInfo.setValue(selectedItem.TaxCodeToDisplay);
 
@@ -3495,7 +3495,7 @@
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
 						let rowIndex = e.row.rowIndex;
 						rowIx=rowIndex;
-							debugger;
+							
 						let newValue = args.value;
 						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 
@@ -4023,7 +4023,7 @@
 											let selectedItem = selectedItems.selectedRowsData[0];
 
 											if (selectedItem) {
-												debugger;
+												
 												e.component.option("value", selectedItem.UnitDesc);
 
 												cellInfo.setValue(selectedItem.UnitDesc);
@@ -4229,7 +4229,7 @@
 	});
 
 	//   $(function () {
-	// 	  debugger;
+	// 	  
 	// 	  dataGridInstance = $("#B2BdataGrid").dxDataGrid({
 
 	// 		  dataSource: rowData,
@@ -4975,7 +4975,7 @@
 		 var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
-									debugger;
+									
 									accheadid = selectedRowData[0].AccountId;
 
 								  let  accheadname = selectedRowData[0].AccountHead;
@@ -5097,7 +5097,7 @@
 		                        var selectedRowData = $("#clientname-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
-									debugger;
+									
 									accheadid = selectedRowData[0].AccountId;
 									let accheadAr = selectedRowData[0].AccountHeadArabic;
 								   $("#ddlClientNameAr").dxDropDownBox("instance").option("value", accheadAr);
@@ -6738,7 +6738,7 @@
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
 						  rowIx=rowIndex;
-					debugger;
+					
 				let newValue = args.value;
 
 				// Get existing values or updated ones
@@ -6781,7 +6781,7 @@
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
-				debugger;
+				
 				if(clientnameValidation.isValid)
 				{
 			// Create JSON object for master invoice
@@ -6922,7 +6922,7 @@
 			 });
 			 function onEditClientClick() {
         var clientId = $("#ddclientname").dxDropDownBox("option", "value");
-		debugger;
+		
         if (!clientId) {
 			   DevExpress.ui.notify(
 								"Please select the Client to edit","error",3000
@@ -6942,7 +6942,7 @@
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
-				debugger;
+				
 				if(clientnameValidation.isValid)
 				{
 			// Create JSON object for master invoice
@@ -7113,7 +7113,7 @@
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
-						debugger;
+						
 
 						// Get existing values or updated ones
 						let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -7945,7 +7945,7 @@
 
 			  var RevenueAccountValidator = $("#ddlGoodsGroup2").dxValidator("instance");
 				var RevenueAccountValidation = RevenueAccountValidator.validate();
-				debugger;
+				
 				let VATInvoiceSubType=$("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
 		  if(IsVerified==true && IsApproved==true)
 		  {
@@ -8125,7 +8125,7 @@
 		// 	popup.show();
 		// 	let IsB2CEdit=true;
 		// 	// alert("1")
-		// 	// debugger;
+		// 	// 
 		// 	// Correct URL to your LedgerAccount view
 		// 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
 		// }
@@ -8282,7 +8282,7 @@
 
 		  function applyDiscount() {
 		  const grid = $("#B2BdataGrid").dxDataGrid("instance");
-		  debugger;
+		  
 		  // Get values from UI
 		  const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 		  const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
@@ -8333,7 +8333,7 @@
 			  hideOnOutsideClick: true,
 			  contentTemplate: function (contentElement) {
 				  contentElement.empty();
-							 debugger;
+							 
 				  // Get the latest amount value from somewhere accessible
 				  let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 

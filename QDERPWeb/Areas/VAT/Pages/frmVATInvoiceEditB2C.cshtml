@@ -3969,7 +3969,7 @@
 
 
 				function initializeDataGrid(rowData) {
-							debugger;
+							
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			dataSource: rowData,
 		   // keyExpr: "SNo",
@@ -4374,7 +4374,7 @@
 						let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
 						if (selectedItem) {
 							cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-							debugger;
+							
 							let grid = $("#B2BdataGrid").dxDataGrid("instance");
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
@@ -4495,7 +4495,7 @@
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
 						let rowIndex = e.row.rowIndex;
 						rowIx=rowIndex;
-							debugger;
+							
 						let newValue = args.value;
 
 			let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -4554,7 +4554,7 @@
 	var rowData = []; // Store the grid data
 
 		$(function () {
-			debugger;
+			
 			dataGridInstance = $("#B2BdataGrid").dxDataGrid({
 
 				dataSource: rowData,
@@ -5422,7 +5422,7 @@
 			hideOnOutsideClick: true,
 			contentTemplate: function (contentElement) {
 				contentElement.empty();
-						   debugger;
+						   
 				// Get the latest amount value from somewhere accessible
 				let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 
@@ -5571,7 +5571,7 @@
 			if (revaccheadid == null) {
 				revaccheadid = "L00343";
 			}
-			debugger;
+			
 			  let invoiceTypeText = $("#VATInvoiceType").dxDropDownBox("instance").option("value");
               let invoiceSubTypeText = $("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
               
@@ -5729,7 +5729,7 @@
 			  function ClientCodedataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
-				debugger;
+				
 				if (selectedKey) {
 					ddbInstance.option("value", selectedKey);
 					 ddbInstance.close();
@@ -6173,7 +6173,7 @@
 
 						companyid = selectedRowData[0].CompanyId;
 							IsClientCode=true;
-						debugger;
+						
 									  $("#OurGroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SellerGroupVatnumber)
 									  $("#OurVATNo").dxTextBox("instance").option("value",selectedRowData[0].CompanyVatno)
 									   $("#OurCompanyRegisteredName").dxTextBox("instance").option("value",selectedRowData[0].CompanyName)
@@ -7475,7 +7475,7 @@
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 					let rowIndex = e.row.rowIndex;
 							rowIx=rowIndex;
-						debugger;
+						
 					let newValue = args.value;
 
 							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -8014,7 +8014,7 @@
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
-					debugger;
+					
 
 					// Get existing values or updated ones
 					let qty = grid.cellValue(rowIndex, "Qty") || 0;
@@ -9210,7 +9210,7 @@
 													url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
 													dataType: 'json',
 													success: function (data) {
-														debugger;
+														
 														const newRowData = data.map((item, index) => ({
 															SNo: index + 1,
 															...item
@@ -9316,7 +9316,7 @@
 
 
 	// 			function applyDiscount() {
-	// 			debugger;
+	// 			
 	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
 	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
@@ -9332,7 +9332,7 @@
 
 			function applyDiscount() {
 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
-			debugger;
+			
 			// Get values from UI
 			const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 			const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
@@ -9455,7 +9455,7 @@
 				type: 'GET',
 				data: { accountID: accheadid },
 				success: function (result) {
-					debugger;
+					
 					// 1. Pick the first record regardless of the shape returned
 					const details = Array.isArray(result)
 						? result[0]
@@ -9756,7 +9756,7 @@
 
 		
 			$(async function () {
-				debugger;
+				
 			try {
 				const result = await fetch('/api/VATModule/GetRevenueDefaultEntry');
 				const data = await result.json();
@@ -9896,7 +9896,7 @@
     }
 
         function loadCurrencyGridOnOpen(e) {
-        debugger;
+        
         const dropDown = e.component;
         const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 
