@@ -565,8 +565,8 @@
 						{
 							items.Add().Icon("optionsgear").Text(new JS("formatMessage('Purchase Details')"));
 							items.Add().Icon("accountbox").Text(new JS("formatMessage('Other Details')"));
-							items.Add().Icon("description").Text(new JS("formatMessage('Deductions')"));
-							items.Add().Icon("card").Text(new JS("formatMessage('Approvals')"));
+							items.Add().Icon("description").Text(new JS("formatMessage('Deductions/Approvals')"));
+						//	items.Add().Icon("card").Text(new JS("formatMessage('Approvals')"));
 							items.Add().Icon("group").Text(new JS("formatMessage('Branch/Division Details')"));
 							items.Add().Icon("attach").Text(new JS("formatMessage('Obselete Data')"));
 						})
@@ -1215,7 +1215,7 @@
 
 
 						<h5>Deductions:Advance / Retention</h5>
-						<table width="80%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 
 						<td style="width: 30%;">
@@ -1258,7 +1258,40 @@
 														}))
 							   						</td>
 
-						<td style="width: 30%;">
+						
+						<td>
+							@(Html.DevExtreme().NumberBox()
+														.ID("currencyexchangerate")
+														.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.Min(1)
+														.Step(1)
+														.ShowSpinButtons(true)
+														.Value(1)
+														.Width("100%")
+														)
+						</td>
+								<td>
+									@(Html.DevExtreme().TextBox()
+																			.ID("LessAdvance")
+																			.Value("Less: Advance")
+																			.Width("100%")) <!-- Added Width -->
+								</td>
+								<td>
+									@(Html.DevExtreme().NumberBox()
+																			.ID("currencyexchangerate3")
+																			.Min(1)
+																			.Step(1)
+																			.ShowSpinButtons(true)
+																			.Width("100%")) <!-- Fixed pixel size -->
+
+								</td>
+
+
+							</tr>
+
+							<tr>
+						<td>
 							@(Html.DevExtreme().DropDownBox()
 														.Label(new JS("formatMessage('Tax Currency')"))
 														.DataSource(d => d.WebApi()
@@ -1298,39 +1331,6 @@
 															buttons.Add().Name("dropDown");
 														}))
 							   						</td>
-						<td>
-							@(Html.DevExtreme().NumberBox()
-														.ID("currencyexchangerate")
-														.Label(new JS("formatMessage('Currency Exchange Rate:')"))
-														.LabelMode(EditorLabelMode.Floating)
-														.Min(1)
-														.Step(1)
-														.ShowSpinButtons(true)
-														.Value(1)
-														.Width("100%")
-														)
-						</td>
-								<td>
-									@(Html.DevExtreme().TextBox()
-																			.ID("LessAdvance")
-																			.Value("Less: Advance")
-																			.Width("100%")) <!-- Added Width -->
-								</td>
-								<td>
-									@(Html.DevExtreme().NumberBox()
-																			.ID("currencyexchangerate3")
-																			.Min(1)
-																			.Step(1)
-																			.ShowSpinButtons(true)
-																			.Width("80%")) <!-- Fixed pixel size -->
-
-								</td>
-
-
-							</tr>
-
-							<tr>
-
 								<td>
 									@(Html.DevExtreme().TextBox()
 																			.ID("LessOtherDeductions")
@@ -1344,22 +1344,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("80%"))
+																			.Width("100%"))
 								</td>
-
-							</tr>
-
-
-
-						</table>
-				</div>
-			</div>
-		<div id="tab-content-4" class="tab-content" style="align-items: flex-start;padding: 0 13px;min-height: 100%;">
-			<table width="90%" style="font-size:14px; margin:10px 0;" cellpadding="2">
-
-				<tr>
-
-					<td>
+								<td>
 
 					@(Html.DevExtreme().CheckBox()
 												.ID("PrintOnLetterHead")
@@ -1367,63 +1354,71 @@
 												.ElementAttr("style", "font-weight: bold; color: #0000ff; margin-bottom: 15px;")
 												)
 					</td>
-				</tr>
+							</tr>
 
-				<tr>
-					<td>
-						@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
-													                      .ID("VerifiedBy")
-																			.Value(null) // Default value
-															.Disabled(true))
+					<tr>
+						<td>
+							@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
+														.ID("VerifiedBy")
+														.Visible(false)
+														.Value(null) // Default value
+														.Disabled(true))
 
-						@(Html.DevExtreme().TextBox()
-													.Label(new JS("formatMessage('Verified By')"))
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("VerifiedBytext")
-													.Value(null) // Default value		
-													.Disabled(true)
-													.Width("90%")
-													)
+							@(Html.DevExtreme().TextBox()
+														.Label(new JS("formatMessage('Verified By')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("VerifiedBytext")
+														.Value(null) // Default value
+														.Disabled(true)
+														.Visible(false)
+														.Width("90%")
+														)
 
-						@(Html.DevExtreme().TextBox()
-													.Label(new JS("formatMessage('Verified On')"))
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("VerifiedOnDate")
-													.Value(null) // Default value
-													.Disabled(true)
-													.Width("90%")
-													)
-					</td>
+							@(Html.DevExtreme().TextBox()
+														.Label(new JS("formatMessage('Verified On')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("VerifiedOnDate")
+														.Value(null) // Default value
+														.Disabled(true)
+														.Visible(false)
+														.Width("90%")
+														)
+						</td>
 
-					<td colspan="3">		
+						<td colspan="3">
 							@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
-																			.ID("ApprovedBy")
-																			.Value(null) // Default value
-															.Disabled(true))
-						@(Html.DevExtreme().TextBox()
-													.Label(new JS("formatMessage('Approved By')"))
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("ApprovedBytext")
-													.Value(null) // Default value												
-													.Width("90%")
-													.Disabled(true)
-													@* .Disabled(true) *@
-													)
-						@(Html.DevExtreme().TextBox()
-													.Label(new JS("formatMessage('Approved On')"))
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("ApprovedOntext")
-													.Value(null) // Default value
-													.Disabled(true)
-													.Width("90%")
-													)
-					</td>
-				</tr>
-				
-				</table>
-			</div>
+														.ID("ApprovedBy")
+														.Visible(false)
+														.Value(null) // Default value
+														.Disabled(true))
+							@(Html.DevExtreme().TextBox()
+														.Label(new JS("formatMessage('Approved By')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ApprovedBytext")
+														.Value(null) // Default value
+														.Width("90%")
+														.Visible(false)
+														.Disabled(true)
+																		@* .Disabled(true) *@
+														)
+							@(Html.DevExtreme().TextBox()
+														.Label(new JS("formatMessage('Approved On')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ApprovedOntext")
+														.Value(null) // Default value
+														.Disabled(true)
+														.Visible(false)
+														.Width("90%")
+														)
+						</td>
+					</tr>
 
-		<div id="tab-content-5" class="tab-content" style="align-items: flex-start;padding: 0 13px;min-height: 100%;">
+
+				</table>
+				</div>
+			</div>
+	
+		<div id="tab-content-4" class="tab-content" style="align-items: flex-start;padding: 0 13px;min-height: 100%;">
 				<div style="display: flex; gap: 20px; flex-wrap: wrap;">
 				
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
@@ -1493,7 +1488,7 @@
 				</div>
 			</div>
 
-		<div id="tab-content-6" class="tab-content" dir="rtl" style="align-items: flex-start;padding: 0 11px;min-height: 100%;">
+		<div id="tab-content-5" class="tab-content" dir="rtl" style="align-items: flex-start;padding: 0 11px;min-height: 100%;">
 					<table width="100%" cellpadding="5">
 						<tr style="height: 60px;">
 							
@@ -1519,15 +1514,44 @@
 																			.HoverStateEnabled(true)
 																			.DropDownOptions(o => o.Width(600))
 																			.ContentTemplate(new TemplateName("SupplierArabicTemplate"))
-																			.Width("40%"))
+																			.Width("40%")
+																			.Buttons(buttons => {
+								// Clear Button
+								buttons.Add()
+									.Name("clear");
+
+								// Add Client Button
+								buttons.Add()
+									.Name("AddDebits")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									);
+
+								// Edit Client Button
+								buttons.Add()
+									.Name("EditDebit")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("edit")
+										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+										
+									);
+									  @* buttons.Add()
+									   .Name("dropDown"); *@
+							})
+							)
 								</div>
 							</td>
-							<td style="width:10%; vertical-align: bottom;">
+							@* <td style="width:10%; vertical-align: bottom;">
 								<div style="display:flex; gap:5px;">
 									@(Html.DevExtreme().Button().ID("AddClient1").Icon("plus").Hint("Add Description").Width(60))
 									@(Html.DevExtreme().Button().ID("EditClient1").Icon("edit").Hint("Edit Description").Width(60))
 								</div>
-							</td>
+							</td> *@
 						</tr>
 					</table>
 			</div>
@@ -4286,7 +4310,7 @@
 			hideOnOutsideClick: true,
 			contentTemplate: function (contentElement) {
 				contentElement.empty();
-						   debugger;
+						   
 				// Get the latest amount value from somewhere accessible
 				let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 
@@ -7349,7 +7373,7 @@
 
 
 	  $(function () {
-		  debugger;
+		  
 		const dropDown = $("#SupplierInvoiceNo").dxDropDownBox("instance");
 
 		// Ensure data source is loaded before validating
@@ -7575,7 +7599,7 @@
 		// function disableEditing() {
 		// 	// Disable all input fields and buttons except for specific ones
 		// 	$('input, select, textarea').prop('disabled', true);
-		// 	debugger;
+		// 	
 
 		// 		$('.dx-button','.dx-dropdownbutton').each(function () {
 		// 			const allowedButtons = ['btnMoveDown','btnMoveUp','btnPostToLedgers','btnPostTag','btnPrint2','btnBack'];

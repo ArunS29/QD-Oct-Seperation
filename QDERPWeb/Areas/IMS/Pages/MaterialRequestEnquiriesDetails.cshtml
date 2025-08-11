@@ -273,6 +273,14 @@
 			display: block;
 		}
 
+	.spinner-overlay{
+		width: 1px !important;
+	}
+
+	.loader{
+		display:block !important;
+		top: 70% !important;
+	}
 </style>
 <div class="title">
 	<input id="formId" value="frm60112PurchaseRequestView" type="hidden" />
@@ -361,6 +369,9 @@
 		<div id="MaterialRequest" class="no-border-input"></div>
 	</div>
 </div> *@
+<div id="loadingSpinner" class="spinner-overlay">
+	<div class="loader"></div>
+</div>
 
 
 @await Html.PartialAsync("/Pages/Shared/IMS/MaterialRequestFooter.cshtml")
@@ -411,7 +422,7 @@
 		.Width(180)
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 		.DropDownOptions(options => options.Width(230))
 		.Items(items =>
 		{
@@ -692,16 +703,15 @@
 			.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
 			.OnToolbarPreparing("onToolbarPreparing")
 			.ColumnChooser(cc => cc.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
-			.Height("60vh") // <<< fixed height
+			.Height("60vh") 
 			.ColumnAutoWidth(true)
 			.OnRowPrepared("onRowPrepared")
 			.Width("98%")
 			.WordWrapEnabled(false)
-			//.OnCellClick("function(e) {handleCellClick(e);}")
 			.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 			.AllowColumnReordering(true)
 			.AllowColumnResizing(true)
-		 .Editing(editing => editing
+		    .Editing(editing => editing
 			.Mode(GridEditMode.Row))
 			.ColumnFixing(fixing => fixing.Enabled(true))
 			.HeaderFilter(filter => filter.Visible(false))
@@ -712,14 +722,14 @@
 			.ShowRowLines(true)
 			.OnContextMenuPreparing("onContextMenuPreparing")
 
-			.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
-	.Pager(pager =>
-	{
-		pager.ShowPageSizeSelector(true);
-		pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
-		pager.ShowNavigationButtons(true);
-		pager.Visible(true);
-	})
+			.Paging(p => p.PageSize(10))  
+			.Pager(pager =>
+			{
+				pager.ShowPageSizeSelector(true);
+				pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+				pager.ShowNavigationButtons(true);
+				pager.Visible(true);
+			})
 
 		.Summary(summary =>
 		{
@@ -967,8 +977,10 @@
 			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
 			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
 			ddBtnShowRecords_click('range');
+						document.getElementById('loadingSpinner').style.display = 'block';
 	});
 	function ddBtnShowRecords_click(duration) {
+						document.getElementById('loadingSpinner').style.display = 'block';
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		var toDateBox = $("#todateBox").dxDateBox("instance");
 		var frmDate = new Date(frmDateBox.option("value"));
@@ -1051,9 +1063,11 @@
 				toDate: toDate
 			},
 			success: function (data) {
+					debugger;
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
 				var dataGrid = $("#dataGrid").dxDataGrid("instance");
 				var dataSource = dataGrid.option("dataSource");
+					  document.getElementById('loadingSpinner').style.display = 'none';
 				if (dataSource && dataSource.length > 0) {
 					var lastRow = dataSource[dataSource.length - 1];
 					VoucherAmountFormatted = lastRow.VoucherAmountFormatted;
@@ -1063,6 +1077,7 @@
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
+						  document.getElementById('loadingSpinner').style.display = 'none';;
 			}
 		});
 	}
@@ -1314,7 +1329,7 @@
 					}
 				},
 	{
-		text: "Unlock the Request / Enquiry",  // ✅ Corrected closing quote
+		text: "Unlock the Request / Enquiry",
 		icon: "unlock",
 		onItemClick: function () {
 			const Mprno = e.row.data.Mprno;
@@ -1327,7 +1342,7 @@
 				success: function (response) {
 					DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
 					if (response.success) {
-						ddBtnShowRecords_click('range'); 
+						ddBtnShowRecords_click('range');
 					}
 				},
 				error: function (xhr) {

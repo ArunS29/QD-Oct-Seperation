@@ -866,39 +866,6 @@
                 });
             }
         });
-    function onDeleteButtonClicks(e) {
-        e.event.preventDefault(); // Stop default action
-
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        const key = e.row?.data?.GsgroupId; // Safe check in case data is missing
-
-        if (!key) {
-            DevExpress.ui.notify("Invalid row ID", "error", 2000);
-            return;
-        }
-
-        DevExpress.ui.dialog.confirm("Are you sure you want to delete this row?", "Confirm Delete")
-            .done(function (dialogResult) {
-                if (dialogResult) {
-                    $.ajax({
-                        url: `/api/StockInventory/DeleteStock?key=${encodeURIComponent(key)}`,
-                        type: 'DELETE',
-                        success: function () {
-                            grid.refresh();
-                            DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                            setTimeout(() => {
-                                if (window.parent?.refreshModeOfRequestDropDown) {
-                                    window.parent.refreshModeOfRequestDropDown();
-                                }
-                            }, 300);
-                        },
-                        error: function (xhr) {
-                            const errMsg = xhr.responseText || "Delete failed";
-                            DevExpress.ui.notify(errMsg, "error", 3000);
-                        }
-                    });
-                }
-            });
     }
 
 
@@ -935,7 +902,7 @@
          if (!textBox1Instance || !textBox2Instance) {
 
              console.error("TextBox instances are not properly initialized.");
-
+             
              return;
 
          }
@@ -949,8 +916,8 @@
 
          if (!englishText || englishText.trim() === "") {
 
-             alert("Please enter text to translate.");
-
+             //alert("Please enter text to translate.");
+             DevExpress.ui.notify('Please enter text to translate.', 'warning', 2000);
              return;
 
          }

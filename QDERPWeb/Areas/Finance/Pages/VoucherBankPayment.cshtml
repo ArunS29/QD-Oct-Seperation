@@ -1560,7 +1560,7 @@
 
         const visibleRows = grid.getVisibleRows();
         const match = visibleRows.find(r => r.data.AccountHead === typedText);
-        debugger;
+        
         if (match) {
             const selectedKey = match.data.AccountId;
             grid.selectRows([selectedKey], false); // select the row in the grid
@@ -1723,7 +1723,7 @@
 
 
        function addVoucherEntry() {
-        debugger;
+        
         var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
         var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
         var griddatacount = rowCount;
@@ -3535,7 +3535,7 @@ accountGrid.clearSelection();
             {
                 $(function () {
                     
-                    debugger;
+                    
                     $.ajax({
                         url: "/api/VoucherMaster/GetNewBPVoucherNo",
                         type: 'GET',
@@ -4240,7 +4240,7 @@ function showMainFooter() {
             }
         }
     function loadCurrencyGridOnOpen(e) {
-        debugger;
+        
         const dropDown = e.component;
         const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 
@@ -4331,7 +4331,7 @@ function showMainFooter() {
             }, 300);
         });
         function loadCurrencyGridOnOpen(e) {
-        debugger;
+        
         const dropDown = e.component;
         const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 

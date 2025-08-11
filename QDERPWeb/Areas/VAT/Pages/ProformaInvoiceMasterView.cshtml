@@ -699,33 +699,62 @@
 
 			});
 			});
-				// Add hidden columns for remaining model fields
-			columns.AddFor(m => m.ProformaInvoiceNo).Caption("Invoice No").Visible(false);
-			columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
-			columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
-			columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
-			columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
-			columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By (AR)").Visible(false);
-			columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
-			columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
-			columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
-			columns.AddFor(m => m.VerifiedByAr).Caption("Verified By (AR)").Visible(false);
-			columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
-			columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
-			columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
-			columns.AddFor(m => m.ApprovedByAr).Caption("Approved By (AR)").Visible(false);
-			columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
-			columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
-			columns.AddFor(m => m.AddedByAr).Caption("Added By (AR)").Visible(false);
-			columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
-			columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
-			columns.AddFor(m => m.ModifiedByAr).Caption("Modified By (AR)").Visible(false);
-			columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
-			columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
-			columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-			columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+    columns.AddFor(m => m.InvoiceDateAr).Caption("Invoice Date Ar").Visible(false);
+    columns.AddFor(m => m.InvoiceDeliveryDate).Caption("Invoice Delivery Date").Visible(false);
+    columns.AddFor(m => m.InvoiceDeliveryDateAr).Caption("Invoice Delivery Date Ar").Visible(false);
+    columns.AddFor(m => m.QuotationNo).Caption("Quotation No").Visible(false);
+    columns.AddFor(m => m.DeliveryNoteNos).Caption("Delivery Note Nos").Visible(false);
+    columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
+  //  columns.AddFor(m => m.SOSReferenceNo).Caption("SOS Reference No").Visible(false);
+  //  columns.AddFor(m => m.PONo).Caption("PO No").Visible(false);
+  //  columns.AddFor(m => m.PODate).Caption("PO Date").Visible(false);
+  //  columns.AddFor(m => m.PODateAr).Caption("PO Date Ar").Visible(false);
+    columns.AddFor(m => m.ClientReferenceName).Caption("Client Reference Name").Visible(false);
+    columns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Visible(false);
+    columns.AddFor(m => m.ClientEmail).Caption("Client Email").Visible(false);
+    columns.AddFor(m => m.RemarksInEn).Caption("Remarks In En").Visible(false);
+    columns.AddFor(m => m.Discount).Caption("Discount").Visible(false);
+    columns.AddFor(m => m.RemarksInAr).Caption("Remarks In Ar").Visible(false);
+    columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
+    columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
+    columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
+    columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
+    columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
+    columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+    columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
+    columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+    columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
+    columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+    columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
+    columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+    columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+    columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
+    columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+    columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+    columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
+    columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+   // columns.AddFor(m => m.TaxCategoryID).Caption("Tax Category ID").Visible(false);
+   // columns.AddFor(m => m.AccountID).Caption("Account ID").Visible(false);
+    columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
+    columns.AddFor(m => m.BillingAddress).Caption("Billing Address").Visible(false);
+    columns.AddFor(m => m.BillingAddressAr).Caption("Billing Address Ar").Visible(false);
+    columns.AddFor(m => m.BillingName).Caption("Billing Name").Visible(false);
+    columns.AddFor(m => m.BillingNameAr).Caption("Billing Name Ar").Visible(false);
+    columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
+    columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
+    columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+    columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Visible(false);
+    columns.AddFor(m => m.TotalDiscount).Caption("Total Discount").Visible(false);
+    columns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount).Caption("Total Invoice Amount Before Discount").Visible(false);
+   // columns.AddFor(m => m.VATRegistrationNo).Caption("VAT Registration No").Visible(false);
+    columns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Visible(false);
+    columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
+    columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
+    columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
+ //   columns.AddFor(m => m.CRNo).Caption("CR No").Visible(false);
+    columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
+})
 
-		})
 	   	@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
 		.Height("60vh") // <<< fixed height
 		.ColumnAutoWidth(true)
@@ -830,8 +859,8 @@
 </div>
 
 <script>
-		const card = document.getElementById('mainCard');
-	const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
+			const card = document.getElementById('mainCard');
+	const counts = [0, 0, 0]; // [Verified, Approved, Posted]
 	const countEls = [
 	  document.getElementById("count0"),
 	  document.getElementById("count1"),
@@ -840,6 +869,11 @@
 	const tabs = document.querySelectorAll(".tab-text");
 	const contents = document.querySelectorAll(".tab-content");
 
+	let currentTab = 0;
+	const intervalTime = 3000; // 3 seconds per tab
+	let tabInterval;
+
+	// Animate the count numbers
 	function animateCount(el, target) {
 	  let i = 0;
 	  el.innerText = i;
@@ -855,45 +889,63 @@
 	  }, 30);
 	}
 
+	// Switch tab and update background
 	function switchTab(index) {
 	  tabs.forEach((tab, i) => {
 		tab.classList.toggle('active', i === index);
 		contents[i].classList.toggle('active', i === index);
 	  });
 
-	  // Change background class
 	  card.className = "card";
 	  if (index === 0) card.classList.add("today-bg");
 	  if (index === 1) card.classList.add("week-bg");
 	  if (index === 2) card.classList.add("month-bg");
 
-	  // Animate count
 	  animateCount(countEls[index], counts[index]);
 	}
 
-	// ✅ Count Approved Invoices From Grid
-		function updateApprovedCountFromGrid() {
-		const grid = $("#dataGrid").dxDataGrid("instance");
-		const data = grid.getVisibleRows().map(row => row.data);
-
-		// Update dynamic counts based on status
-		counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
-		counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
-		counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
-
-		// Update visible numbers
-		countEls[0].textContent = counts[0];
-		countEls[1].textContent = counts[1];
-		countEls[2].textContent = counts[2];
-
-		// Animate default tab (Verified)
-		animateCount(countEls[0], counts[0]);
+	// Start auto rotation
+	function startAutoTabs() {
+	  tabInterval = setInterval(() => {
+		currentTab = (currentTab + 1) % tabs.length;
+		switchTab(currentTab);
+	  }, intervalTime);
 	}
+
+	// Stop auto rotation
+	function stopAutoTabs() {
+	  clearInterval(tabInterval);
+	}
+
+	// Hover events to pause/resume
+	card.addEventListener("mouseenter", stopAutoTabs);
+	card.addEventListener("mouseleave", startAutoTabs);
+
+	// ✅ Count Approved Invoices From Grid
+	function updateApprovedCountFromGrid() {
+	  const grid = $("#dataGrid").dxDataGrid("instance");
+	  const data = grid.getVisibleRows().map(row => row.data);
+
+	  counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
+	  counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
+	  counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
+
+	  countEls[0].textContent = counts[0];
+	  countEls[1].textContent = counts[1];
+	  countEls[2].textContent = counts[2];
+
+	  animateCount(countEls[0], counts[0]); // Start with Verified
+	}
+
+	// Initialize
+	switchTab(currentTab);
+	startAutoTabs();
+
 
 
 		function onGridContentReady(e) {
 		updateApprovedCountFromGrid();
-		debugger;
+		
 		const component = e.component;
 		const data = component.getDataSource().items();
 
@@ -1417,7 +1469,7 @@
 			dataType: 'json',
 			success: function (data) {
 				const gridInstance = $("#dataGrid").dxDataGrid("instance");
-				debugger;
+				
 				if (gridInstance) {
 					// If grid already exists, just update its dataSource
 					gridInstance.option("dataSource", data);
@@ -1616,7 +1668,7 @@
 			url: '/api/AccountingLedgers/GetCurrencyIcon',
 			type: 'GET',
 			success: function (response) {
-					debugger;
+					
 				let svgIcon = response.Icon;
 				if (!svgIcon) return;
 

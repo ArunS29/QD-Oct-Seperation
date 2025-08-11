@@ -102,9 +102,13 @@
                         <td colspan="2">
                             
                             @(Html.DevExtreme().TextBox()
-                            .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
+                                .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
                                 .LabelMode(EditorLabelMode.Floating)
-                            .ID("txtGoodsCode7").Width("69%"))
+                                .ID("txtGoodsCode7").Width("69%")
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Fill the UOM field");
+                                }))
                         </td>
                     </tr>
                     <tr>
@@ -112,7 +116,11 @@
                             @(Html.DevExtreme().TextArea()
                                 .Label(new JS("formatMessage('UoM Description:')"))
                                 .LabelMode(EditorLabelMode.Floating)
-                            .ID("txtDescription8").Width("95%").Height(60))
+                                .ID("txtDescription8").Width("95%").Height(60)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Fill the Description Field");
+                                }))
                         </td>
                         <td>
                             <div style="display: flex; gap: 10px; width: 100%; align-items:end;">
@@ -165,24 +173,28 @@
                     .Caption(new JS("formatMessage('ID')"))
                     .Width(134)
                     .VisibleIndex(0)
+                    .AllowEditing(false)
                     .Alignment(HorizontalAlignment.Center);
 
                     columns.Add().DataField("UnitType")
                     .Caption(new JS("formatMessage('Unit Type')"))
                     .Width(378)
                     .VisibleIndex(1)
+                    .AllowEditing(true)
                     .Alignment(HorizontalAlignment.Center);
 
                     columns.Add().DataField("UnitDesc")
                     .Caption(new JS("formatMessage('Description')"))
                     .Width(349)
                     .VisibleIndex(2)
+                    .AllowEditing(true)
                     .Alignment(HorizontalAlignment.Center);
 
                     columns.Add().DataField("UnitDescAr")
                     .Caption(new JS("formatMessage('Description (Arabic)')"))
                     .Width(371)
                     .VisibleIndex(3)
+                    .AllowEditing(true)
                     .Alignment(HorizontalAlignment.Center);
                                                             // Add delete button column
                     columns.Add()
@@ -302,15 +314,16 @@
         }
 
     function addUomToDatabase() {
-        const unitType = $("#txtGoodsCode7").dxTextBox("instance").option("value");
-        const unitDesc = $("#txtDescription8").dxTextArea("instance").option("value");
-        const unitDescAr = $("#txtDescriptionArabic").dxTextArea("instance").option("value");
-
-        if (!unitType || !unitDesc) {
+        
+        const isUnit = $("#txtGoodsCode7").dxValidator("instance").validate().isValid;
+        const isUnitDes = $("#txtDescription8").dxValidator("instance").validate().isValid;
+        if (!isUnit || !isUnitDes) {
             DevExpress.ui.notify("Please enter both Unit Type and Description.", "error", 2000);
             return;
         }
-
+        const unitType = $("#txtGoodsCode7").dxTextBox("instance").option("value");
+        const unitDesc = $("#txtDescription8").dxTextArea("instance").option("value");
+        const unitDescAr = $("#txtDescriptionArabic").dxTextArea("instance").option("value");
         $.ajax({
             url: `/api/VATModule/AddUom`,
             type: 'POST',
@@ -327,7 +340,8 @@
                     $("#txtGoodsCode7").dxTextBox("instance").option("value", "");
                     $("#txtDescription8").dxTextArea("instance").option("value", "");
                     $("#txtDescriptionArabic").dxTextArea("instance").option("value", "");
-
+                    $("#txtGoodsCode7").dxValidator("instance").reset();
+                    $("#txtDescription8").dxValidator("instance").reset();
                     // ✅ Refresh the grid
                     $("#dataGrid").dxDataGrid("instance").refresh();
                 } else {
@@ -351,9 +365,23 @@
         const data = {
             unitCode: e.oldData.UnitCode, // Include when updating
             unitType: e.newData.UnitType ?? e.oldData.UnitType,
-            unitDesc: e.newData.UnitDesc ?? e.oldData.UnitDesc,
-            unitDescAr: e.newData.UnitDescAr ?? e.oldData.UnitDescAr
+            unitDesc: e.newData.UnitDesc ?? e.oldData.UnitDesc ,
+            unitDescAr: (e.newData.UnitDescAr !== undefined)
+            ? e.newData.UnitDescAr  // allow empty string if cleared
+            : e.oldData.UnitDescAr
         };
+
+    if (!data.unitType || !data.unitType.trim()) {
+        DevExpress.ui.notify("Unit Type cannot be empty.", "error", 1500);
+        e.cancel = true; // stop the update
+        return;
+    }
+
+    if (!data.unitDesc || !data.unitDesc.trim()) {
+        DevExpress.ui.notify("Unit Description cannot be empty.", "error", 1500);
+        e.cancel = true; // stop the update
+        return;
+    }
 
         return $.ajax({
             url: '/api/VATModule/UpdateUom',
