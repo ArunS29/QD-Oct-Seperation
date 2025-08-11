@@ -690,45 +690,7 @@
 
 
 						</td>
-						<td>
-
-							@(Html.DevExtreme().TextBox()
-														.ID("InvoiceCounterValue")
-														.Label(new JS("formatMessage('Invoice Period')"))
-														.LabelMode(EditorLabelMode.Floating))
-																 						</td>
-
-						<!-- 18. Reference No -->
-						<td>
-
-							@(Html.DevExtreme().TextBox()
-														.ID("UUID")
-														.Label(new JS("formatMessage('Reference No')"))
-														.LabelMode(EditorLabelMode.Floating))
-																 						</td>
-																 						<td>
-							@(Html.DevExtreme().DropDownBox()
-														.ID("OtherIDType")
-														.Label(new JS("formatMessage('Other ID Type')"))
-														.LabelMode(EditorLabelMode.Floating)
-														.DataSource(d => d.WebApi()
-														.Controller("VATModule")
-														.LoadAction("GetVATInvoiceMaster")
-														.LoadMode(DataSourceLoadMode.Raw)
-														.Key("BuyerIdtypeName"))
-														.ValueExpr("BuyerIdtypeName")
-														.DisplayExpr("BuyerIdtypeName")
-														.ShowClearButton(true)
-														.AcceptCustomValue(true)
-														.DropDownOptions(d => d.Width(700))
-														.ContentTemplate(new TemplateName("ClientNameContent")))
-																											</td>
-						<!-- 10. Supplier Name (ComboBoxEdit) -->
-					
-					</tr>
-
-					<tr>
-						<td>
+							<td>
 							@(Html.DevExtreme().DropDownBox()
 														.ID("ddclientname")
 														.Label(new JS("formatMessage('Supplier Name')"))
@@ -766,42 +728,7 @@
 															.Name("dropDown");
 														})
 														)
-						</td>
-						<!-- 3. Supplier Invoice No -->
-						<td>
-					
-
-							@(Html.DevExtreme().DropDownBox()
-														.ID("SupplierInvoiceNo")
-														.DataSource(ds => ds.WebApi()
-														.Controller("VATModule")
-														.LoadAction("GetSupplierInvoices")
-														.LoadMode(DataSourceLoadMode.Raw)
-														.Key("InvoiceNo"))
-														.DisplayExpr("InvoiceNo")
-														.ValueExpr("InvoiceNo")
-														.Label(new JS("formatMessage('Supplier Invoice No')"))
-														.LabelMode(EditorLabelMode.Floating)
-														.ShowClearButton(true)
-														.AcceptCustomValue(true)
-														.OpenOnFieldClick(false)
-														.DropDownOptions(d => d.Width(500))
-														.OnValueChanged("onSupplierInvoiceValueChanged")
-														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))
-														)
-
-
-						</td>
-
-						<!-- 5. Invoice Date -->
-						<td>
-							
-							@(Html.DevExtreme().DateBox()
-														.ID("SupplyDate")
-														.Type(DateBoxType.Date)
-														.DisplayFormat("dd-MMM-yyyy")
-														.Label(new JS("formatMessage('Invoice Date')"))
-														.LabelMode(EditorLabelMode.Floating))
+						
 						</td>
 																 						<td>
 							@(Html.DevExtreme().TextBox()
@@ -825,6 +752,75 @@
 														)
 
 						</td>
+						
+					</tr>
+
+					<tr>
+						
+<td>
+
+							@(Html.DevExtreme().DropDownBox()
+														.ID("SupplierInvoiceNo")
+														.DataSource(ds => ds.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetSupplierInvoices")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("InvoiceNo"))
+														.DisplayExpr("InvoiceNo")
+														.ValueExpr("InvoiceNo")
+														.Label(new JS("formatMessage('Supplier Invoice No')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.OpenOnFieldClick(false)
+														.DropDownOptions(d => d.Width(500))
+														.OnValueChanged("onSupplierInvoiceValueChanged")
+														.ContentTemplate(new TemplateName("SupplierInvoiceContentTemplate"))
+														)
+
+
+						</td>
+						<td>
+							
+							@(Html.DevExtreme().DateBox()
+														.ID("SupplyDate")
+														.Type(DateBoxType.Date)
+														.DisplayFormat("dd-MMM-yyyy")
+														.Label(new JS("formatMessage('Invoice Date')"))
+														.LabelMode(EditorLabelMode.Floating))
+						
+						</td>
+					<td>
+							@(Html.DevExtreme().TextBox()
+														.ID("ClientNameArabic")
+														.Label(new JS("formatMessage('Supplier Name in Arabic')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
+																						 <td>
+							@(Html.DevExtreme().DropDownBox()
+														.ID("OtherIDType")
+														.Label(new JS("formatMessage('Other ID Type')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.DataSource(d => d.WebApi()
+														.Controller("VATModule")
+														.LoadAction("GetVATInvoiceMaster")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("BuyerIdtypeName"))
+														.ValueExpr("BuyerIdtypeName")
+														.DisplayExpr("BuyerIdtypeName")
+														.ShowClearButton(true)
+														.AcceptCustomValue(true)
+														.DropDownOptions(d => d.Width(700))
+														.ContentTemplate(new TemplateName("ClientNameContent")))
+																											</td>
+						<!-- 3. Supplier Invoice No -->
+						
+						<td>
+							@(Html.DevExtreme().TextBox()
+														.ID("ClientOtherID")
+														.Label(new JS("formatMessage('Supplier Other ID')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
 						<td>
 							@(Html.DevExtreme().DropDownBox()
 														.ID("ClientAddressDetails")
@@ -965,10 +961,52 @@
 														</text>)
 														)
 						</td>
+
+						<!-- 5. Invoice Date -->
+						
 						
 					</tr>
 
 					<tr>
+						<td>
+
+							@(Html.DevExtreme().TextBox()
+														.ID("MaterialReceipt")
+														.Label(new JS("formatMessage('Material Receipts')"))
+														.LabelMode(EditorLabelMode.Floating)
+														.Placeholder(""))
+											 						</td>
+
+						<!-- 8. Supply Date -->
+						<td>
+
+							@(Html.DevExtreme().DateBox()
+														.ID("SupplyDates")
+														.Type(DateBoxType.Date)
+														.DisplayFormat("dd-MMM-yyyy")
+														.Value(DateTime.Now)
+														.Label(new JS("formatMessage('Supply Date')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
+						<td>
+
+							@(Html.DevExtreme().TextBox()
+														.ID("InvoiceCounterValue")
+														.Label(new JS("formatMessage('Invoice Period')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
+
+						<!-- 18. Reference No -->
+						<td>
+
+							@(Html.DevExtreme().TextBox()
+														.ID("UUID")
+														.Label(new JS("formatMessage('Reference No')"))
+														.LabelMode(EditorLabelMode.Floating))
+																 						</td>
+																 						
+						<!-- 10. Supplier Name (ComboBoxEdit) -->
+					
 						<!-- 4. Order No -->
 						<td>
 							
@@ -991,39 +1029,10 @@
 														.Label(new JS("formatMessage('Order Date')"))
 														.LabelMode(EditorLabelMode.Floating))
 						</td>
-																 						<td>
+																 						
+																 						
 
-							@(Html.DevExtreme().TextBox()
-														.ID("MaterialReceipt")
-														.Label(new JS("formatMessage('Material Receipts')"))
-														.LabelMode(EditorLabelMode.Floating)
-														.Placeholder(""))
-											 						</td>
-
-						<!-- 8. Supply Date -->
-						<td>
-
-							@(Html.DevExtreme().DateBox()
-														.ID("SupplyDates")
-														.Type(DateBoxType.Date)
-														.DisplayFormat("dd-MMM-yyyy")
-														.Value(DateTime.Now)
-														.Label(new JS("formatMessage('Supply Date')"))
-														.LabelMode(EditorLabelMode.Floating))
-																 						</td>
-																 						<td>
-							@(Html.DevExtreme().TextBox()
-														.ID("ClientNameArabic")
-														.Label(new JS("formatMessage('Supplier Name in Arabic')"))
-														.LabelMode(EditorLabelMode.Floating))
-																 						</td>
-
-						<td>
-							@(Html.DevExtreme().TextBox()
-														.ID("ClientOtherID")
-														.Label(new JS("formatMessage('Supplier Other ID')"))
-														.LabelMode(EditorLabelMode.Floating))
-																 						</td>
+					
 
 								<!-- 16. Supplier Address Details (PopContainerEdit) -->
 								

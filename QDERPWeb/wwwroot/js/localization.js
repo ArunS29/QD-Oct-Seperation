@@ -3970,7 +3970,9 @@ var dictionary = {
         "04-DebitNote Summary Report": "04-DebitNote Summary Report",
         "Deductions/Approvals": "Deductions/Approvals",
         "Other Details/Branch/Division Details":"Other Details/Branch/Division Details",
-        "Select Stock Group": "Select Stock Group"
+        "Select Stock Group": "Select Stock Group",
+        "Postal Amount": "Postal Amount",
+        "Total Purchase Amount":"Total Purchase Amount"
     },
     ar: {
          "Deductions/Approvals":"الخصومات/الموافقات",
