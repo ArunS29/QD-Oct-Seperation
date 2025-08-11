@@ -806,7 +806,7 @@ namespace Form.Areas.Finance.Controllers
                 return StatusCode(500, new { message = "An error occurred while checking property allocation.", error = ex.Message });
             }
         }
-        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo)
+        public IActionResult CostAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo,decimal currencyRate)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -814,9 +814,10 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.VoucherAmount = voucherAmount;
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
+            ViewBag.CurrencyRate = currencyRate;
             return PartialView("~/Areas/Finance/Views/_CostAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
-        public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        public IActionResult PropertyAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId, decimal currencyRate)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -825,10 +826,11 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
             ViewBag.AccountID = accountId;
+            ViewBag.CurrencyRate = currencyRate;
             return PartialView("~/Areas/Finance/Views/_PropertyAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
 
-        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        public IActionResult EmployeeAllocation(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId, decimal currencyRate)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -837,9 +839,10 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
             ViewBag.AccountID = accountId;
+            ViewBag.CurrencyRate = currencyRate;
             return PartialView("~/Areas/Finance/Views/_EmployeeAllocation.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
-        public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId)
+        public IActionResult BillsReceivable(string voucherNo, string accountHead, string voucherAmount, string drCr, long voucherEntryNo, string accountId, decimal currencyRate, int CurrencyId)
         {
             // Log or debug the incoming parameters
             ViewBag.VoucherNo = voucherNo;
@@ -848,6 +851,8 @@ namespace Form.Areas.Finance.Controllers
             ViewBag.DrCr = drCr;
             ViewBag.VoucherEntryNo = voucherEntryNo;
             ViewBag.AccountID = accountId;
+            ViewBag.CurrencyRate = currencyRate;
+            ViewBag.CurrencyId = CurrencyId;
 
             return PartialView("~/Areas/Finance/Views/_BillsReceivables.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
@@ -3350,6 +3355,50 @@ namespace Form.Areas.Finance.Controllers
                 }
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+       
+        public IActionResult UpdateSubLedgerCurrency([FromBody] CurrencyUpdateModel model)
+        {
+            if (model == null)
+                return BadRequest("Invalid request data.");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return BadRequest("Unable to determine tenant or database context.");
+
+            var subLedger = dbContext.Tbl201SubLedgerMasters
+                .FirstOrDefault(x => x.VoucherNo == model.VoucherNo);
+
+            if (subLedger == null)
+                return NotFound($"Sub ledger for VoucherNo '{model.VoucherNo}' not found.");
+
+            subLedger.BaseCurrency = model.BaseCurrency;
+            subLedger.Currency = model.Currency;
+            subLedger.CurrencyRate = model.CurrencyRate;
+
+            dbContext.SaveChanges();
+
+            return Ok(new { message = "Currency details updated successfully." });
+        }
+        [HttpGet]
+        public IActionResult GetAccountIdByAccountHead(string accountHead)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrWhiteSpace(accountHead))
+            {
+                return BadRequest(new { success = false, message = "AccountHead is required." });
+            }
+
+            var accountId = dbContext.Tbl201ChartOfAccounts
+                .Where(a => a.AccountHead == accountHead)
+                .Select(a => a.AccountId)
+                .FirstOrDefault();
+
+            return Json(accountId);
         }
 
     }

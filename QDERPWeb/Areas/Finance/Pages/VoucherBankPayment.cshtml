@@ -436,19 +436,30 @@
 
             </text>);
 
-                            columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).CustomizeText(
-                        "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
+                                    columns.AddFor(m => m.DrAmount)
+                                    .Caption(new JS("formatMessage('Debit')"))
+                                    .Alignment(HorizontalAlignment.Right)
+                                    .AllowEditing(false)
+                                    .CustomizeText(@"
+                                function(e) {
+                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
+                                var value = e.value / rate;
+                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                }
+                                ");
 
-                        ).AllowEditing(false);
+                                    columns.AddFor(m => m.CrAmount)
+                                    .Caption(new JS("formatMessage('Credit')"))
+                                    .Alignment(HorizontalAlignment.Right)
+                                    .AllowEditing(false)
+                                    .CustomizeText(@"
+                                function(e) {
+                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
+                                var value = e.value / rate;
+                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                }
+                                ");
 
-
-                            columns.AddFor(m => m.CrAmount)
-                        .Caption(new JS("formatMessage('Credit')"))
-                        .AllowEditing(false)
-                        .Alignment(HorizontalAlignment.Right)
-
-                    @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
-                    .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
 
                             columns.AddFor(m => m.EntryNarration)
@@ -517,11 +528,23 @@
 
                             totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
 
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                                    .CustomizeText(@"
+                                function(e) {
+                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
+                                var value = e.value / rate;
+                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                }
+                                ");
 
                             totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
 
-                        .CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
+                                    .CustomizeText(@"
+                                function(e) {
+                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
+                                var value = e.value / rate;
+                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+                                }
+                                ");
 
                         });
 
@@ -1393,14 +1416,10 @@
                             if (response.success) {
 
 
-                                 DevExpress.ui.notify(
-                        "Payment Voucher Details updated Successfully.",
-                        "Update Sucessful"
-                    );
-
+                                   DevExpress.ui.notify("Payment Voucher Details updated Successfully.", "success", 2000);
                                 if(IsObeselete==true)
                                 {
-                                      DevExpress.ui.notify(
+                                      DevExpress.ui.alert(
                        "Selected Ledger Account is set as Obselete.(Not in use Currently).Please review again.",
                        "LEDGER IS OBSELETE(NOT IN USE)"
                        );
@@ -1500,14 +1519,9 @@
                         dataType: "json",
                         success: function (response) {
                             if (response.success) {
-                        DevExpress.ui.notify(
-                            "Payment Voucher Details Updated Sucessfully.",
-                            "Data Saved Successfully"
-                        ).done(function () {
-                            history.back(); // Go back to the previous page
-                        });
-
-                            } else {
+                             history.back();
+                             DevExpress.ui.notify("Payment Voucher Details updated Successfully.", "success", 2000);
+                                } else {
                                 alert("Update failed: " + response.message);
                             }
                         },
@@ -1762,7 +1776,10 @@
 
     function continueVoucherEntryWithVoucherNo(voucherNo) {
        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        var amount = $("#txtVoucherAmount").dxNumberBox("instance").option("value");
+           var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value") || 0;
+            var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+            var amount = voucherAmount * currencyRate;
+             var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
         var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
         var sbDrCr = $("#sbDrCr").dxSelectBox("instance").option("value");
         var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
@@ -1926,7 +1943,9 @@ accountGrid.clearSelection();
                                             AccountHead: encodeURIComponent(accheadname),
                                             VoucherAmount: encodeURIComponent(amount),
                                             DrCr: encodeURIComponent(sbDrCr),
-                                            AccountID: encodeURIComponent(accheadid)
+                                            AccountID: encodeURIComponent(accheadid),
+                                             CurrencyRate: encodeURIComponent(currencyRate),
+                                             CurrencyId: encodeURIComponent(CurrencyId),
                                         };
                                         successCallback(params);
                                     }
@@ -2967,26 +2986,16 @@ accountGrid.clearSelection();
             type: "GET",
             dataType: "html",
             success: function (data) {
-                // Get the popup's unique identifier, for example, use the voucher number
-                const popupId = `EmployeeAllocationPopup-${params.VoucherEntryNo}`;
                 
-                // Check if the popup is already opened
-                if (!openedPopups[popupId]) {
                     // Create and store the popup instance
                     let popupInstance = $("#EmployeeAllocationPopup").dxPopup("instance");
                     popupInstance.option("contentTemplate", function () {
                         return $("<div>").html(data);
                     });
 
-                    // Store the popup instance in the openedPopups map
-                    openedPopups[popupId] = popupInstance;
-                    // popupInstance.popupId = popupId;
-                    console.log(openedPopups);
+                    
                     popupInstance.show();
-                } else {
-                    // If the popup is already opened, just show it
-                    openedPopups[popupId].show();
-                }
+                
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Cost Allocation view:", error);
@@ -3004,26 +3013,16 @@ accountGrid.clearSelection();
             type: "GET",
             dataType: "html",
             success: function (data) {
-                // Get the popup's unique identifier, for example, use the voucher number
-                const popupId = `BillsReceivablePopup-${params.VoucherEntryNo}`;
                 
-                // Check if the popup is already opened
-                if (!openedPopups[popupId]) {
                     // Create and store the popup instance
                     let popupInstance = $("#BillsReceivablePopup").dxPopup("instance");
                     popupInstance.option("contentTemplate", function () {
                         return $("<div>").html(data);
                     });
 
-                    // Store the popup instance in the openedPopups map
-                    openedPopups[popupId] = popupInstance;
-                    // popupInstance.popupId = popupId;
-                    console.log(openedPopups);
+                   
                     popupInstance.show();
-                } else {
-                    // If the popup is already opened, just show it
-                    openedPopups[popupId].show();
-                }
+               
             },
             error: function (xhr, status, error) {
                 console.error("Error loading Cost Allocation view:", error);
@@ -3180,7 +3179,7 @@ accountGrid.clearSelection();
         window.editCostAllocation = function () {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
-
+             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -3207,7 +3206,8 @@ accountGrid.clearSelection();
                 VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
                 DrCr: drCr,
                 AccountHead: accountHead,
-                VoucherAmount: amount
+                VoucherAmount: amount,
+                CurrencyRate: currencyRate,
             };
             
             if (params) {
@@ -3220,7 +3220,7 @@ accountGrid.clearSelection();
         window.editPropertyAllocation = function () {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
-
+             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -3249,7 +3249,8 @@ accountGrid.clearSelection();
                 DrCr: drCr,
                 AccountHead: accountHead,
                 VoucherAmount: amount,
-                AccountID: accountid
+                AccountID: accountid,
+                CurrencyRate: currencyRate,
             };
             
             if (params) {
@@ -3262,7 +3263,7 @@ accountGrid.clearSelection();
         window.editEmployeeAllocation = function () {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
-
+             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -3291,7 +3292,8 @@ accountGrid.clearSelection();
                 DrCr: drCr,
                 AccountHead: accountHead,
                 VoucherAmount: amount,
-                AccountID: accountid
+                AccountID: accountid,
+                 CurrencyRate: currencyRate,
             };
             
             if (openedPopups[popupId]) {
@@ -3303,7 +3305,8 @@ accountGrid.clearSelection();
         window.editBillsReceivable = function () {
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
-
+            var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+             var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -3325,20 +3328,25 @@ accountGrid.clearSelection();
             // Selecting VoucherEntryNo based on DrCr value
             let voucherEntryNo = drCr === "Cr" ? rowData.VoucherEntryNo : rowData.VoucherEntryNo;
 
-            let popupId = `BillsReceivablePopup-${voucherEntryNo}`;
-            let params = {
-                VoucherNo: voucherNo, // Keep VoucherEntryNo as VoucherNo
-                VoucherEntryNo: voucherEntryNo, // Pass Dr/Cr-specific row's VoucherEntryNo
-                DrCr: drCr,
-                AccountHead: accountHead,
-                VoucherAmount: amount
-            };
-            
-            if (openedPopups[popupId]) {
-                openedPopups[popupId].show();
-            } else {
-                openBillsReceivablePopup(params);
-            }
+                // Fetch AccountID from server based on AccountHead
+            $.get(`/api/VoucherEntryReceipts/GetAccountIdByAccountHead`, { accountHead: accountHead })
+                .done(function (accountId) {
+                    let params = {
+                        VoucherNo: voucherNo,
+                        VoucherEntryNo: voucherEntryNo,
+                        DrCr: drCr,
+                        AccountHead: accountHead,
+                        VoucherAmount: amount,
+                        AccountID: accountId,
+                        CurrencyRate: currencyRate,
+                        CurrencyId: CurrencyId
+                    };
+
+                    openBillsReceivablePopup(params);
+                })
+                .fail(function () {
+                    console.error("Failed to fetch AccountID for AccountHead:", accountHead);
+                });
 
         };
         window.editSalaryPayable = function () {
