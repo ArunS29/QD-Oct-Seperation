@@ -1326,6 +1326,7 @@
 																			.ID("VerifiedBy")
 																			.Value(null) // Default value
 																			.Disabled(true)
+													              			.Visible(false)
 																			)
 
 									@(Html.DevExtreme().TextBox()
@@ -1334,6 +1335,7 @@
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
+																.Visible(false)
 																			.Width("90%")
 																			)
 
@@ -1343,6 +1345,7 @@
 																			.ID("VerifiedOnDate")
 																			.Value(null) // Default value
 																			.Disabled(true)
+														            		.Visible(false)
 																			.Width("90%")
 																			)
 								</td>
@@ -1353,6 +1356,7 @@
 																			.ID("ApprovedBy")
 																			.Value(null) // Default value
 																			.Disabled(true)
+														             		.Visible(false)
 																			) 
 								 	@(Html.DevExtreme().TextBox() 
 																			 .Label(new JS("formatMessage('Approved By')"))
@@ -1360,6 +1364,7 @@
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
+																            .Visible(false)
 																			.Width("97%")
 																			.Disabled(true)
 																			)
@@ -1367,6 +1372,7 @@
 																			.Label(new JS("formatMessage('Approved On')"))
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ApprovedOntext")
+															            	.Visible(false)
 																			.Value(null) // Default value
 																			.Disabled(true)
 																			.Width("97%")
@@ -1379,7 +1385,7 @@
 			</div>
 
 
-			<div id="tab-content-4" class="tab-content" style="padding:1em;">
+			<div id="tab-content-4" class="tab-content" style="margin:10px;">
 			
 					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 						<tr>

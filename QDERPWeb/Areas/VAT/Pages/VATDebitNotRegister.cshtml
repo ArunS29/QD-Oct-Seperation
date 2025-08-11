@@ -948,7 +948,7 @@
 						   		</div>
 						   	</text>);
 
-				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
+			subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
 			.Caption("RCM @15% VAT")
 			.Alignment(HorizontalAlignment.Center)
 			.EncodeHtml(false)
@@ -968,6 +968,58 @@
 
 			});
 			});
+		
+    columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
+    columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
+    columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+    columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+    columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
+    columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+    columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+    columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+    columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+    columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+    columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+    columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
+    columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
+   // columns.AddFor(m => m.AccountGroupID).Caption("Account Group ID").Visible(false);
+   // columns.AddFor(m => m.CompanyID).Caption("Company ID").Visible(false);
+    columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
+    columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
+    columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
+    columns.AddFor(m => m.CostCenterCode).Caption("Cost Center Code").Visible(false);
+    columns.AddFor(m => m.DebitEndDate).Caption("Debit End Date").Visible(false);
+    columns.AddFor(m => m.DebitNoteEffectiveDate).Caption("Debit Note Effective Date").Visible(false);
+    columns.AddFor(m => m.DebitNoteRemarks).Caption("Debit Note Remarks").Visible(false);
+    columns.AddFor(m => m.DebitNoteRemarksAr).Caption("Debit Note Remarks Ar").Visible(false);
+    columns.AddFor(m => m.DebitStartDate).Caption("Debit Start Date").Visible(false);
+    columns.AddFor(m => m.ExpensesAccountHead).Caption("Expenses Account Head").Visible(false);
+    columns.AddFor(m => m.InvoicePeriod).Caption("Invoice Period").Visible(false);
+    columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
+    columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
+    columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
+    columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
+    columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+    columns.AddFor(m => m.PurchaseVoucherNo).Caption("Purchase Voucher No").Visible(false);
+    columns.AddFor(m => m.RevenueAccount).Caption("Revenue Account").Visible(false);
+    columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
+    columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
+    columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
+    columns.AddFor(m => m.SupplierAddress).Caption("Supplier Address").Visible(false);
+    columns.AddFor(m => m.SupplierAddressAr).Caption("Supplier Address Ar").Visible(false);
+    columns.AddFor(m => m.SupplierBillDate).Caption("Supplier Bill Date").Visible(false);
+    columns.AddFor(m => m.SupplierBillNo).Caption("Supplier Bill No").Visible(false);
+    columns.AddFor(m => m.SupplierCode).Caption("Supplier Code").Visible(false);
+ //   columns.AddFor(m => m.SupplierVATNo).Caption("Supplier VATNo").Visible(false);
+    columns.AddFor(m => m.SupplierNameAr).Caption("Supplier Name Ar").Visible(false);
+    columns.AddFor(m => m.SupplierName).Caption("Supplier Name").Visible(false);
+   // columns.AddFor(m => m.SupplierVATNumber).Caption("Supplier VAT Number").Visible(false);
+  //  columns.AddFor(m => m.VATLedgerAccount).Caption("VAT Ledger Account").Visible(false);
+    columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
+    columns.AddFor(m => m.BranchCode).Caption("Branch Code").Visible(false);
+    columns.AddFor(m => m.BranchName).Caption("Branch Name").Visible(false);
+    columns.AddFor(m => m.StoreCode).Caption("Store Code").Visible(false);
+
 		})
 		.Editing(editing => editing
 		.Mode(GridEditMode.Row)
@@ -1126,10 +1178,10 @@
 		  injectHeaderSVG();
 
 				// Update counts in the card
-				document.getElementById('creditToday').textContent = todayCount;
+				document.getElementById('creditTodays').textContent = todayCount;
 				//document.getElementById('creditTotal').textContent = totalCount;
 					  updateDebitNoteTotal(dataSource);
-						x
+						
 				// Start sliding animation once (if not already started)
 				if (!window._voucherSliderStarted) {
 					startVoucherSlide();

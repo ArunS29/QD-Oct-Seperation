@@ -186,7 +186,7 @@ body {
 
 /* Button Styling */
 .dx-button {
-/*    background-color: #909ead00 !important;*/
+    background-color: #909ead00 !important;
     /*    border: 1px solid #d6e4f0 !important;*/
     border-radius: 4px !important;
     /*padding: 6px 12px !important;*/ /* Reduced button padding */
@@ -994,4 +994,13 @@ dx-item-content dx-list-item-content:hover{
 }
 .dx-datagrid .dx-header-row {
     background: var(--background-color);
+}
+.dx-button-mode-contained.dx-button-default.dx-state-focused {
+    background-color: none;
+}
+.dx-button-mode-contained.dx-button-default {
+    background-color: none;
+}
+.dx-button-mode-contained.dx-state-focused {
+    background-color: none;
 }
