@@ -3584,5 +3584,19 @@
         });
     }
 
+
+    $(document).ready(function () {
+        debugger;
+            var urlParams = new URLSearchParams(window.location.search);
+            var Gsdescrpition = urlParams.get('Gsdescrpition');
+            var GsdescriptionAr = urlParams.get('GsdescriptionAr');
+            var UnitOfMeasure = urlParams.get('UnitOfMeasure');
+           
+              $("#DetailedDescription").dxTextArea("instance").option("value", Gsdescrpition);
+              $("#ArabicDescription").dxTextArea("instance").option("value", GsdescriptionAr);
+              $("#UnitOfMeasure").dxSelectBox("instance").option("value", UnitOfMeasure);
+              
+        });
+
       
 </script>

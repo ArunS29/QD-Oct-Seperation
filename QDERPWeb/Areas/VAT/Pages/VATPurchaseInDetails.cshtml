@@ -161,9 +161,9 @@
 </div>
 
 <div class="Head">
-	<div class="limited-footer">
-		@await Html.PartialAsync("VATModuleFooter")
-	</div>
+
+	@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceWithDetailsFooter.cshtml")
+
 </div>
 
 
@@ -522,6 +522,10 @@
 			console.log(rowData);
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
+	});
+
+	$(document).ready(function () {
+		ddBtnShowRecords_click("fullmonth");
 	});
 
 	function ddBtnShowRecords_click(duration) {
