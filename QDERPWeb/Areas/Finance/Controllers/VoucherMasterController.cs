@@ -3288,7 +3288,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 UnitRate = child.UnitRate, // Ensure null safety
                                 DetailedDescription = child.DetailedDescription, // Null safety
                                 QuantityDebited = child.QuantityDebited, // Null safety
-                                TaxSlabCode = child.TaxSlabCode ?? (byte)8,
+                                TaxSlabCode = child.TaxSlabCode ?? (byte)2,
                                 UnitsToDebited = 1,
                                 Discount = child.Discount,
                                 UnitRateInOc = child.UnitRate,

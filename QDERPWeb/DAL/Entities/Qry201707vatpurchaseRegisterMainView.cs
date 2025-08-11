@@ -232,4 +232,5 @@ public partial class Qry201707vatpurchaseRegisterMainView
     public decimal? TotalRcmpurchaseTax10Perc { get; set; }
 
     public decimal? Discount { get; set; }
+
 }

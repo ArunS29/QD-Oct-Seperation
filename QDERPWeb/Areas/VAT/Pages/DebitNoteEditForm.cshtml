@@ -436,7 +436,7 @@
                 .HoverStateEnabled(true)
                 //.Value("Tax Invoice")
                 .ValueExpr("AccountId")
-                .DisplayExpr("SupplierName")
+                .DisplayExpr("AccountHead")
                 .LabelMode(EditorLabelMode.Floating)
 				.DropDownOptions(o => o.Width(800))
 			    .ContentTemplate(new TemplateName("SupplierNameTemplate"))
@@ -2297,7 +2297,7 @@
 							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
+							//dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
 						}
 
@@ -2765,7 +2765,7 @@
 							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
+							//dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
 
 							ItemNo = selectedItem.GSCode;
@@ -5218,6 +5218,7 @@
 					"Debit Note Details updated Successfully.","success",2000
 				);
 				history.back();
+				
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
