@@ -6,7 +6,20 @@
 
 
 <style>
-	
+		.dx-datagrid .dx-data-row td[aria-colindex="3"] {
+    text-align: center !important;
+}
+    .header-wrap {
+        white-space: normal !important; /* Enable word wrap */
+        text-align: center !important; /* Center align text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
 	.titleCard-toggle1 {
 		display: none;
 	}
@@ -3257,7 +3270,7 @@
                       let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
 						let title = "Details Description";
 
-						openModal(url, title);
+						openModal(url, title,"60%","70%");
 					}
 						}).appendTo(container);
 					}
@@ -3887,7 +3900,7 @@
 						let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
 					let title = "Details Description";
 
-					openModal(url, title);
+					openModal(url, title,"60%","70%");
 				}
 					}).appendTo(container);
 				}

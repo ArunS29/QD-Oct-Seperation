@@ -325,7 +325,20 @@
 	.content-container-top {
 		width: 100%;
 	}
-
+	.dx-datagrid .dx-data-row td[aria-colindex="3"] {
+    text-align: center !important;
+}
+    .header-wrap {
+        white-space: normal !important; /* Enable word wrap */
+        text-align: center !important; /* Center align text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -1449,6 +1462,7 @@
 
 							columns.Add().DataField("Qty")
 							.Caption(new JS("formatMessage('Qty')"))
+
 							.Width(200);
 
 							columns.Add().DataField("UnitPrice")
@@ -3226,7 +3240,7 @@ $("<div>").dxButton({
 											let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
 							let title = "Details Description";
 
-							openModal(url, title);
+							openModal(url, title,"60%","70%");
 						}
 							}).appendTo(container);
 						}
@@ -4020,7 +4034,7 @@ $("<div>").dxButton({
 							let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
 						let title = "Details Description";
 
-						openModal(url, title);
+						openModal(url, title,"60%","70%");
 					}
 						}).appendTo(container);
 					}
