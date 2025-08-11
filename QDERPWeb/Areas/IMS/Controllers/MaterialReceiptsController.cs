@@ -14,6 +14,7 @@ using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -222,6 +223,191 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
             }
         }
+        // Simple check: has receipt already a VAT purchase bill
+        [HttpGet]
+        public async Task<IActionResult> CheckIfPurchaseBillExists(string receiptNo)
+        {
+            if (string.IsNullOrWhiteSpace(receiptNo))
+                return BadRequest("receiptNo is required.");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return BadRequest("Invalid tenant or DB context.");
+
+            bool exists = await dbContext.Tbl60501materialReceiptMasters
+                .AnyAsync(x => x.ReceiptNo == receiptNo && x.VatpurchaseBillNo != null);
+
+            return Ok(exists);
+        }
+
+        // Return ledger/account id for a supplier (if needed by frontend)
+        [HttpGet]
+        public async Task<IActionResult> GetLedgerNo(string supplierCode)
+        {
+            if (string.IsNullOrWhiteSpace(supplierCode))
+                return BadRequest("supplierCode is required.");
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                return BadRequest("Invalid tenant or DB context.");
+
+            var ledgerNo = await dbContext.Qry65114supplierListWithLedgerNos
+                .Where(x => x.SupplierCode == supplierCode)
+                .Select(x => x.AccountId)
+                .FirstOrDefaultAsync();
+
+            return Ok(ledgerNo ?? "");
+        }
+
+        // Main action - accepts a model object from frontend
+        [HttpPost]
+        public async Task<IActionResult> CreateVatPurchaseFromReceipt([FromBody] ReceiptRequest request)
+        {
+            try
+            {
+                if (request == null || string.IsNullOrWhiteSpace(request.ReceiptNo))
+                    return BadRequest(new { success = false, message = "Receipt No is required." });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                string receiptNo = request.ReceiptNo.Trim();
+
+                // 0. Pre-check: if already exists, stop early
+                var already = await dbContext.Tbl60501materialReceiptMasters
+                    .AnyAsync(x => x.ReceiptNo == receiptNo && x.VatpurchaseBillNo != null);
+
+                if (already)
+                    return Conflict(new { success = false, message = "Purchase Bill already exists for this Receipt." });
+
+                // 1. Get supplier code from receipt
+                var supplierCode = await dbContext.Tbl60501materialReceiptMasters
+                    .Where(r => r.ReceiptNo == receiptNo)
+                    .Select(r => r.SupplierCode)
+                    .FirstOrDefaultAsync();
+
+                if (string.IsNullOrWhiteSpace(supplierCode))
+                    return NotFound(new { success = false, message = "Supplier not found for this receipt." });
+
+                // 2. Get ledger/account id for supplier
+                var ledgerNo = await dbContext.Qry65114supplierListWithLedgerNos
+                    .Where(x => x.SupplierCode == supplierCode)
+                    .Select(x => x.AccountId)
+                    .FirstOrDefaultAsync();
+
+                if (string.IsNullOrWhiteSpace(ledgerNo))
+                    return NotFound(new { success = false, message = "Ledger No not found for this supplier." });
+
+                // 3. Generate new PurchaseVoucherNo (PUR-yy-000001)
+                string purchaseVoucherNo = await GetNewPurchaseVoucherNoInternal(dbContext);
+
+                // 4. Calculate due date from chart of accounts (NoOfDaysCreditPeriod)
+                var noOfDaysDue = await dbContext.Qry20107ChartOfAccounts
+                    .Where(a => a.AccountId == ledgerNo)
+                    .Select(a => a.NoOfDaysCreditPeriod ?? 0)
+                    .FirstOrDefaultAsync();
+
+                var dueDate = DateTime.Today.AddDays(noOfDaysDue);
+
+                // 5. Re-check again inside DB transactionish flow to avoid double creation (lightweight)
+                // Here we will check receipt.VatpurchaseBillNo again and throw if already set
+                var receipt = await dbContext.Tbl60501materialReceiptMasters
+                    .FirstOrDefaultAsync(x => x.ReceiptNo == receiptNo);
+
+                if (receipt == null)
+                    return NotFound(new { success = false, message = "Receipt not found." });
+
+                if (!string.IsNullOrWhiteSpace(receipt.VatpurchaseBillNo))
+                    return Conflict(new { success = false, message = "Purchase Bill already exists for this Receipt." });
+
+                string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // 6. Execute stored procedure - ensure parameter order/names match your SP
+                // Using ExecuteSqlRaw with positional args to avoid SQL injection
+                await dbContext.Database.ExecuteSqlRawAsync(
+                    "EXEC sp600_16InsertToBillFromReceiptNote @PurchaseVoucherNo = {0}, @SupplierAccountNo = {1}, @ReceiptNoteNo = {2}, @AddedBy = {3}, @DefaultPurchaseLedgerNo = {4}, @BillDueDate = {5}",
+                    purchaseVoucherNo,
+                    ledgerNo,
+                    receiptNo,
+                    addedBy,
+                    request.DefaultPurchaseLedgerNo ?? "", // optional; you can fetch a default from settings
+                    dueDate
+                );
+
+                // 7. After SP: ensure receipt.VatpurchaseBillNo is set (SP likely does this).
+                // If SP didn't set it, set it here.
+                // Reload the receipt to get current value
+                var updatedReceipt = await dbContext.Tbl60501materialReceiptMasters
+                    .FirstOrDefaultAsync(x => x.ReceiptNo == receiptNo);
+
+                if (updatedReceipt != null && string.IsNullOrWhiteSpace(updatedReceipt.VatpurchaseBillNo))
+                {
+                    updatedReceipt.VatpurchaseBillNo = purchaseVoucherNo;
+                    await dbContext.SaveChangesAsync();
+                }
+
+                // 8. Log action (optional)
+                try
+                {
+                    await _userActionLogger.LogAsync(
+                        module: "IMS > Create VAT Purchase From Receipt",
+                        actionDetail: $":Created VAT Purchase {purchaseVoucherNo} from Receipt {receiptNo}",
+                        documentNo: purchaseVoucherNo
+                    );
+                }
+                catch
+                {
+                    // ignore logging errors
+                }
+
+                // 9. Return success
+                return Ok(new
+                {
+                    success = true,
+                    message = "New VAT Purchase Bill created successfully.",
+                    purchaseVoucherNo = purchaseVoucherNo,
+                    receiptNo = receiptNo
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = "Server error: " + ex.Message });
+            }
+        }
+
+        // Helper: Generate new Purchase Voucher No in PUR-YY-000001 format (uses Tbl20166VatpurchaseMasters)
+        private async Task<string> GetNewPurchaseVoucherNoInternal(ERPMasterWtDataContext dbContext)
+        {
+            string invoiceAbbr = "PUR";
+            string yearDigits = DateTime.Now.ToString("yy");
+            string prefix = $"{invoiceAbbr}-{yearDigits}-";
+
+            var lastNo = await dbContext.Tbl20166VatpurchaseMasters
+                .Where(i => i.PurchaseVoucherNo.StartsWith(prefix))
+                .OrderByDescending(i => i.PurchaseVoucherNo)
+                .Select(i => i.PurchaseVoucherNo)
+                .FirstOrDefaultAsync();
+
+            int nextNum = 1;
+            if (!string.IsNullOrEmpty(lastNo))
+            {
+                var match = Regex.Match(lastNo, @"(\d{6})$");
+                if (match.Success && int.TryParse(match.Groups[1].Value, out int last))
+                {
+                    nextNum = last + 1;
+                }
+            }
+
+            return $"{prefix}{nextNum:D6}";
+        }
+
+        // Request model
+        public class ReceiptRequest
+        {
+            public string ReceiptNo { get; set; }
+            public string DefaultPurchaseLedgerNo { get; set; } // optional - if you want to pass from frontend
+        }
 
     }
+
+
 }
+
