@@ -1148,6 +1148,48 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveUnitConversion([FromBody] Tbl60003unitConversionMaster record)
+        {
+            if (record == null || string.IsNullOrWhiteSpace(record.Gscode))
+                return BadRequest("Invalid data.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (record.UnitConversionId == 0) // ✅ Insert
+                {
+                    dbContext.Tbl60003unitConversionMasters.Add(record);
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { message = "Record added successfully", data = record });
+                }
+                else // ✅ Update
+                {
+                    var existing = await dbContext.Tbl60003unitConversionMasters
+                        .FirstOrDefaultAsync(x => x.UnitConversionId == record.UnitConversionId);
+
+                    if (existing == null)
+                        return NotFound("Record not found.");
+
+                    existing.UnitCodeOfConversion = record.UnitCodeOfConversion;
+                    existing.UnitConverted = record.UnitConverted;
+                    existing.UnitConversionRemarks = record.UnitConversionRemarks;
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { message = "Record updated successfully", data = existing });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error saving UnitConversion: {ex}");
+                return StatusCode(500, "An error occurred while saving.");
+            }
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> GetUnitConversionGridData(string gscode)
         {
@@ -1554,6 +1596,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> UpdateOpeningBalanceItem([FromBody] Tbl60502materialReceiptChild update)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (update == null || string.IsNullOrEmpty(update.Gscode))
+                    return BadRequest("Invalid update data.");
+
+                var entity = await dbContext.Tbl60502materialReceiptChildren
+                    .FirstOrDefaultAsync(x => x.Gscode == update.Gscode && x.ReceiptChildSlNo == update.ReceiptChildSlNo);
+                
+                if (entity == null)
+                    return NotFound("Record not found.");
+
+                // Update only the fields you want (ExpiryDate, BatchNo)
+                entity.ExpiryDate = update.ExpiryDate;
+                entity.BatchNo = update.BatchNo;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Update successful" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in UpdateOpeningBalanceItem: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
 
 
 
@@ -1573,7 +1647,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     .Where(x => x.Gscode == gscode)
                     .Select(x => new
                     {
-                        StockCode = x.Gscode,
+                        ReceiptChildSlNo = x.ReceiptChildSlNo,
+                        Gscode = x.Gscode,
                         Unit = x.UnitRateMethod, 
                         UnitPrice = x.UnitPrice,
                         Quantity = x.QtyReceived,
