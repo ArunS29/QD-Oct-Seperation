@@ -4528,6 +4528,7 @@ documentNo: InvoiceNo
                             g.TaxCategoryAr
 
                         })
+                        .Distinct()
                         .ToListAsync();
 
                     return Ok(result);
