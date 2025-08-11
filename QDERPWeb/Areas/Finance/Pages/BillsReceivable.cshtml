@@ -211,7 +211,7 @@
                     // Grid Band: Amount
                     columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
             {
-                // Receivable Amount column
+                @* // Receivable Amount column
                     band.AddFor(m => m.ReceivableAmount)
                 .Caption(new JS("formatMessage('Trans Invoice Amount')"))
                 .Alignment(HorizontalAlignment.Right)
@@ -233,9 +233,9 @@
                                            <%- data.Received != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>) .Visible(false)
-                .Width(140); // Fixed width, change to auto for dynamic sizing
+                .Width(140); // Fixed width, change to auto for dynamic sizing *@
 
-                        band.AddFor(m => m.ConvertedReceivableAmount)
+                        band.AddFor(m => m.ReceivableAmount)
                     .Caption(new JS("formatMessage('Invoice Amount')"))
                     .Alignment(HorizontalAlignment.Right)
                     @* .CustomizeText(@"
@@ -257,7 +257,7 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedReceivableAmount;
+                                       var val = data.ReceivableAmount;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
                                        let formatted = positive.toLocaleString(undefined, {
@@ -272,7 +272,7 @@
                                    </text>)
                     .Width(160); // Fixed width, change to auto for dynamic sizing
 
-                // Paid Amount column
+               @*  // Paid Amount column
                     band.AddFor(m => m.Received)
                 .Caption(new JS("formatMessage('Trans Received')"))
                 .Alignment(HorizontalAlignment.Right)
@@ -295,10 +295,10 @@
                                            <%- data.Received != null ? data.Received.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>) .Visible(false)
-                .Width(140); // Fixed width, change to auto for dynamic sizing
+                .Width(140); // Fixed width, change to auto for dynamic sizing *@
 
 
-                        band.AddFor(m => m.ConvertedReceived)
+                        band.AddFor(m => m.Received)
                     .Caption(new JS("formatMessage('Received')"))
                     .Alignment(HorizontalAlignment.Right)
                    @*  .CustomizeText(@"
@@ -321,7 +321,7 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedReceived;
+                                       var val = data.Received;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
                                        let formatted = positive.toLocaleString(undefined, {
@@ -336,7 +336,7 @@
                                    </text>)
                     .Width(140); // Fixed width, change to auto for dynamic sizing
 
-                // Balance Amount column
+                @* // Balance Amount column
                     band.AddFor(m => m.Balance)
                 .Caption(new JS("formatMessage('Trans Balance')"))
                 .Alignment(HorizontalAlignment.Right)
@@ -358,9 +358,9 @@
                                            <%- data.Received != null ? data.Balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>) .Visible(false)
-                .Width(160); // Fixed width, change to auto for dynamic sizing
+                .Width(160); // Fixed width, change to auto for dynamic sizing *@
 
-                        band.AddFor(m => m.ConvertedBalance)
+                        band.AddFor(m => m.Balance)
                     .Caption(new JS("formatMessage('Balance')"))
                     .Alignment(HorizontalAlignment.Right)
                  @*    .CustomizeText(@"
@@ -382,7 +382,7 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedBalance;
+                                       var val = data.Balance;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
                                        let formatted = positive.toLocaleString(undefined, {

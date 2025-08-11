@@ -91,4 +91,8 @@ public partial class Qry201SubLedgerReceivablesMaster
     public decimal? ConvertedReceivableAmount { get; set; }
     public decimal? ConvertedReceived { get; set; }
     public decimal? ConvertedBalance { get; set; }
+
+    public int basecurrencyid { get; set; }
+    public int Currencyid { get; set; }
+    public decimal CurrencyRate { get; set; }
 }

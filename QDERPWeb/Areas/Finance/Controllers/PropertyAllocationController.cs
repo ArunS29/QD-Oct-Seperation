@@ -203,6 +203,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     VoucherEntryId = dto.VoucherEntryId,
                     VoucherNo = dto.VoucherNo,
                     LedgerAccountNo = dto.LedgerAccountNo,
+                    CurrencyRate = dto.CurrencyRate
                 };
 
                 dbContext.Tbl20122PropertyAllocationMasters.Add(entity);
@@ -273,7 +274,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             var allocations = dbContext.Tbl20122PropertyAllocationMasters
-                .Where(x => x.VoucherNo == request.VoucherNo)
+                .Where(x => x.VoucherNo == request.VoucherNo && x.VoucherEntryId == request.VoucherEntryId)
                 .ToList();
 
             if (!allocations.Any())

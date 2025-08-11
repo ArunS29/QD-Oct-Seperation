@@ -30,4 +30,7 @@ public partial class Tbl201SubLedgerMaster
     public decimal? RetentionAmount { get; set; }
 
     public DateTime? RetentionDueDate { get; set; }
+    public int BaseCurrency { get; set; }
+    public int Currency { get; set; }
+    public decimal CurrencyRate { get; set; }
 }

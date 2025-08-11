@@ -36,4 +36,5 @@ public partial class Tbl201CostAllocationMaster
     public bool? IsApproved { get; set; }
 
     public string VoucherNo { get; set; }
+    public decimal? CurrencyRate { get; set; }
 }
