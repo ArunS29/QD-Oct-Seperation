@@ -103,4 +103,8 @@ public partial class Qry201SubLedgerPayablesMaster
     public string CurrencyName { get; set; }
     public string TransactionCurrencySymbol { get; set; }
 
+    public int basecurrencyid { get; set; }
+    public int Currencyid { get; set; }
+    public decimal CurrencyRate { get; set; }
+
 }

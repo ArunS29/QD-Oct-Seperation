@@ -4528,6 +4528,7 @@ documentNo: InvoiceNo
                             g.TaxCategoryAr
 
                         })
+                        .Distinct()
                         .ToListAsync();
 
                     return Ok(result);
@@ -5106,7 +5107,7 @@ documentNo: DebitNoteNo
 
 
         [HttpPost]
-        public async Task<IActionResult> DeleteInvoiceAllLineItem(string InvoiceNo)
+        public async Task<IActionResult> DeleteInvoiceAllLineItem([FromBody] string InvoiceNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -5117,14 +5118,21 @@ documentNo: DebitNoteNo
                         return BadRequest(new { Message = "Invoice number is required." });
                     }
 
-                    // Check if invoice exists (optional)
-                    var invoiceExists = await dbContext.Tbl20162VatinvoiceChildren
-                                            .AnyAsync(v => v.InvoiceNo == InvoiceNo);
+                    // Get all matching records
+                    var invoiceChildren = await dbContext.Tbl20162VatinvoiceChildren
+                                                .Where(v => v.InvoiceNo == InvoiceNo)
+                                                .ToListAsync();
 
-                    if (!invoiceExists)
+                    if (!invoiceChildren.Any())
                     {
                         return NotFound(new { Message = "Invoice not found." });
                     }
+
+                    // Remove records
+                    dbContext.Tbl20162VatinvoiceChildren.RemoveRange(invoiceChildren);
+
+                    // Save changes
+                    await dbContext.SaveChangesAsync();
 
                     return Ok(new { Message = "Invoice child records deleted successfully." });
                 }
@@ -5136,6 +5144,7 @@ documentNo: DebitNoteNo
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpPost]
         public async Task<IActionResult> DeleteInvoiceChild([FromBody] int InvoiceChildSlNo)
         {
@@ -5317,7 +5326,12 @@ documentNo: invoiceNo
             {
                 try
                 {
-                    // Fetch the invoice master details using the given InvoiceNo
+                    if (string.IsNullOrWhiteSpace(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Invoice number is required." });
+                    }
+
+                    // Find the invoice master record
                     var invoice = await dbContext.Tbl20172VatdebitNoteMasters
                                                  .FirstOrDefaultAsync(i => i.DebitNoteNo == InvoiceNo);
 
@@ -5326,57 +5340,28 @@ documentNo: invoiceNo
                         return NotFound(new { Message = "Invoice not found." });
                     }
 
-                    string invoiceAbbr = "PUR"; // Fixed abbreviation
-                    DateTime invoiceDate = DateTime.Now;
-                    string yearDigits = invoiceDate.ToString("yy");
+                    // Optionally delete related line items
+                    var lineItems = dbContext.Tbl20173VatdebitNoteChildren
+                                             .Where(d => d.DebitNoteNo == InvoiceNo);
+                    dbContext.Tbl20173VatdebitNoteChildren.RemoveRange(lineItems);
 
-                    // Format: PUR-YY-
-                    string invoicePrefix = $"{invoiceAbbr}-{yearDigits}-";
+                    // Remove main record
+                    dbContext.Tbl20172VatdebitNoteMasters.Remove(invoice);
 
-                    // Get last voucher number matching current year
-                    var lastInvoiceNumber = await dbContext.Tbl20172VatdebitNoteMasters
-                        .Where(i => i.DebitNoteNo.StartsWith(invoicePrefix))
-                        .OrderByDescending(i => i.DebitNoteNo)
-                        .Select(i => i.DebitNoteNo)
-                        .FirstOrDefaultAsync();
+                    // Save changes
+                    await dbContext.SaveChangesAsync();
 
-
-                    int newNumber = 1;
-                    if (!string.IsNullOrEmpty(lastInvoiceNumber))
-                    {
-                        // Extract numeric part after last hyphen
-                        var match = Regex.Match(lastInvoiceNumber, @"(\d{6})$");
-                        if (match.Success)
-                        {
-                            newNumber = int.Parse(match.Groups[1].Value) + 1;
-                        }
-                    }
-
-                    // Build new voucher number: PUR-YY-000001
-                    string newPurchaseVoucherNo = $"{invoiceAbbr}-{yearDigits}-{newNumber:D6}";
-
-                    // Extract values from the fetched invoice
-                    string ToInvoiceNo = newPurchaseVoucherNo; // You can generate or assign this as needed
-                    DateTime InvoiceDate = invoice.DebitNoteDate ?? DateTime.Now;
-                    string AddedBy = invoice.AddedBy ?? "System"; // Fallback if null
-                    DateTime AddedOn = invoice.AddedOn ?? DateTime.Now;
-
-
-                    // Execute the stored procedure
-                    var result = dbContext.Database.ExecuteSqlRaw(
-                        "EXEC sp201_73InsertDuplicatePurchaseBill @p0,@p1,@p2,@p3,@p4",
-                        InvoiceNo, ToInvoiceNo, InvoiceDate, AddedBy, AddedOn);
-
-                    dbContext.SaveChanges();
+                    // Log deletion
                     await _userActionLogger.LogAsync(
-module: "VAT> Delete Debit Note Einvoice",
-actionDetail: $"Debit EInvoice No: {InvoiceNo}",
-documentNo: InvoiceNo
-);
+                        module: "VAT > Delete Debit Note E-Invoice",
+                        actionDetail: $"Deleted Debit EInvoice No: {InvoiceNo}",
+                        documentNo: InvoiceNo
+                    );
+
                     return Ok(new
                     {
-                        Message = "Purchase Invoice cloned successfully.",
-                        VoucherVerifiedBy = User.Identity?.Name ?? "System"
+                        Message = "Debit Note E-Invoice deleted successfully.",
+                        DeletedBy = User.Identity?.Name ?? "System"
                     });
                 }
                 catch (Exception ex)
@@ -5937,9 +5922,10 @@ documentNo: InvoiceNo
                         dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
-                        gridDetails.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
-                        gridDetails.CurrencySymbole = company.CurrencySymbol;
 
+                        item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
+                        item.CurrencySymbole = company.CurrencySymbol;
+         
                         //dict["VAT"] = vatValue;
                         //dict["TotalVAT"] = totalValue;
 
@@ -6731,6 +6717,55 @@ documentNo: InvoiceNo
             }
 
             return StatusCode(500, "Tenant context could not be established.");
+        }
+
+
+        [HttpGet]
+        public async Task<IActionResult> GetClientNameAddressDetails(string AccountHeadID)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                   
+
+                    var result = await dbContext.Tbl201ChartOfAccounts
+                        .Where(g => g.AccountId == AccountHeadID)
+                        .Select(g => new
+                        {
+                            g.ClientAddressStreet,
+                            g.ClientAddressStreetAr,
+                            g.ClientAdditionalStreet,
+                            g.ClientAdditionalStreetAr,
+                            g.ClientBuildingNumber,
+                            g.ClientCity,
+                            g.ClientCityAr,
+                            g.ClientAdditionalNumber,
+                            g.ClientProvince,
+                            g.ClientProvinceAr,
+                            g.ClientPostalCode,
+                            g.ClientNeighborhood,
+                            g.ClientNeighborhoodAr,
+                            g.ClientGroupVatnumber,
+                            g.VatregistrationNo,
+                            g.ClientOtherId,
+                            g.ClientOtherIdtype,
+                            g.AccountHeadArabic
+                         
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                // Logging the error is better than rethrowing directly
+                _logger.LogError(ex, "Error occurred in GetCompanyBranch");
+                return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving company branch.", success = false });
+            }
         }
 
 

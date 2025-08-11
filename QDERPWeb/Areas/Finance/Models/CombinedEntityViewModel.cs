@@ -1104,6 +1104,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string CostAllocRemarks { get; set; }
         public long VoucherEntryId { get; set; }
         public string VoucherNo { get; set; }
+        public decimal CurrencyRate { get; set; }
     }
     public class PropertyAllocationDto
     {
@@ -1117,6 +1118,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string VoucherNo { get; set; }
 
         public string LedgerAccountNo { get; set; }
+        public decimal CurrencyRate { get; set; }
     }
     public class EmployeeAllocationDto
     {
@@ -1130,6 +1132,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string VoucherNo { get; set; }
 
         public string LedgerAccountNo { get; set; }
+        public decimal? CurrencyRate { get; set; }
     }
     public class UpdateCostAllocationFieldsDto
     {
@@ -1158,6 +1161,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
     public class VoucherDeleteRequest
     {
         public string VoucherNo { get; set; }
+        public long VoucherEntryId { get; set; }
     }
     public class SubLedgerDto
     {
@@ -1213,7 +1217,13 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string FormId { get; set; }
         public string LayoutJson { get; set; }
     }
-
+    public class CurrencyUpdateModel
+    {
+        public string VoucherNo { get; set; }
+        public int BaseCurrency { get; set; }
+        public int Currency { get; set; }
+        public decimal CurrencyRate { get; set; }
+    }
 
 }
 

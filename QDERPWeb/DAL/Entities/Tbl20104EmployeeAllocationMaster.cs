@@ -40,4 +40,5 @@ public partial class Tbl20104EmployeeAllocationMaster
     public string LedgerAccountNo { get; set; }
 
     public int? LoanId { get; set; }
+    public decimal? CurrencyRate { get; set; }
 }

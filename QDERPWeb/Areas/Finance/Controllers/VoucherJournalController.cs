@@ -581,7 +581,10 @@ namespace QDWEB.Areas.Finance.Controllers
                     i.VoucherVerifiedBy,
                     i.VoucherApprovedBy,
                     i.VoucherVerifiedOn,
-                    i.VoucherApprovedOn
+                    i.VoucherApprovedOn,
+                    i.currencyid,
+                    i.currencyrate,
+                    i.basecurrencyid
                 });
 
                 return Json(await DataSourceLoader.LoadAsync(qryListOfAccountlists, loadOptions));

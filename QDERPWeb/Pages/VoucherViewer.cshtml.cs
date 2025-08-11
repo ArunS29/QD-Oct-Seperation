@@ -138,25 +138,25 @@ namespace QD.ERP.Web.Pages
                 return BadRequest("Report name is required.");
 
             if (
-      reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
-      reportName == "PrintsimplifiedTaxInvoices" ||
-      reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
-      reportName == "Foreigncurrency1" ||
-      reportName == "PrintRegularInvoiceFormat02" ||
-      reportName == "ForeignCurrencyProforma" ||
-      reportName == "ForeignEnglishProforma" ||
-      reportName == "ProformaInvoiceEnglish" ||
-      reportName == "ProformaPreviewInvoice" ||
-      reportName == "ProformaNewFormat" ||
-      reportName == "BillsPurchases" ||
-      reportName == "PrintRegularTaxInvoiceWtDocumentLevelDiscount" ||
-      reportName == "Withoutsignatories" ||
-      reportName == "withsignatories" ||
-      reportName == "RegularTaxInvoiceFormat06" ||
-      reportName == "PrintRegularTaxInvoiceWithSignatories_Format05_" ||
-      reportName == "taxinvoicewithSignatoriesWithSymbols" ||
-      reportName == "WithoutDiscountInvoice" ||
-      reportName == "Wtdiscountpreviewinvoice")
+                  reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
+                  reportName == "PrintsimplifiedTaxInvoices" ||
+                  reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
+                  reportName == "Foreigncurrency1" ||
+                  reportName == "PrintRegularInvoiceFormat02" ||
+                  reportName == "ForeignCurrencyProforma" ||
+                  reportName == "ForeignEnglishProforma" ||
+                  reportName == "ProformaInvoiceEnglish" ||
+                  reportName == "ProformaPreviewInvoice" ||
+                  reportName == "ProformaNewFormat" ||
+                  reportName == "BillsPurchases" ||
+                  reportName == "PrintRegularTaxInvoiceWtDocumentLevelDiscount" ||
+                  reportName == "Withoutsignatories" ||
+                  reportName == "withsignatories" ||
+                  reportName == "RegularTaxInvoiceFormat06" ||
+                  reportName == "PrintRegularTaxInvoiceWithSignatories_Format05_" ||
+                  reportName == "taxinvoicewithSignatoriesWithSymbols" ||
+                  reportName == "WithoutDiscountInvoice" ||
+                  reportName == "Wtdiscountpreviewinvoice")
 
 
 
