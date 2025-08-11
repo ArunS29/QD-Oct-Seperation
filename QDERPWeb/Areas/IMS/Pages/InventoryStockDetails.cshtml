@@ -214,6 +214,7 @@
                             .Key("GsgroupId")
                             )
                             .LabelMode(EditorLabelMode.Floating)
+                            .Option("dataGridId", "StockGroupGrid-datagrid")
                             .Width("90%")
                             .OpenOnFieldClick(false)
                             .ValueChangeEvent("input")
@@ -304,6 +305,7 @@
                             )
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("ItemStore")
+                            .Option("dataGridId", "GetItemStore-datagrid")
                             .Width("90%")
                             .OpenOnFieldClick(false)
                             .ValueChangeEvent("input")
@@ -377,6 +379,7 @@
                             )
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("ItemClassification")
+                            .Option("dataGridId", "GetItemClassification-datagrid")
                             .Width("90%")
                             @*  .ShowClearButton(true)
 .AcceptCustomValue(true) *@
@@ -650,32 +653,76 @@
 
                             <td>
                                 <div style="display:flex; align-items:end;">
-                                @(Html.DevExtreme().SelectBox()
-                                    .ID("UnitOfMeasure")
-                                    .DisplayExpr("UnitType")
-                                    .SearchEnabled(true)
-                                    .ValueExpr("UnitCode")
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("StockInventory")
-                                    .LoadAction("GetUnitCodes")
-                                    )
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Unit of Measure : *')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("260")
-                                    .Buttons(buttons =>
-                                    {
-                                        buttons.Add()
-                                        .Name("btnAddAccount")
-                                        .Location(TextEditorButtonLocation.After)
-                                        .Widget(w => w.Button()
-                                        .Type(ButtonType.Default)
-                                        .Icon("plus")
-                                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                        .DataSource(d => d.WebApi()
+                                            .Controller("StockInventory")
+                                            .LoadAction("GetUnitCodes")
+                                            .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("UnitCode")
+                                        )
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .ID("UnitOfMeasure")
+                                        .Option("dataGridId", "GetUOM-datagrid")
+                                        .Width("90%")
+                                        .OpenOnFieldClick(false)
+                                        .ValueChangeEvent("input")
+                                        .HoverStateEnabled(true)
+                                        .ValueExpr("UnitCode")
+                                        .DisplayExpr("UnitType")
+                                        .OnInput("dropDownBoxOnInput")
+                                        .OnOpened("onOpened")
+                                        .TabIndex(1)
+                                        .Width("100%")
+                                        .OnKeyDown("onKeyDown")
+                                        //.OnValueChanged("dropDownBoxValueChanged")
+                                        .ContentTemplate(new TemplateName("GetTypeOfUOMContentTemplate"))
+                                        .Buttons(buttons =>
+                                        {
+                                            buttons.Add()
+                                            .Name("btnAddAccount")
+                                            .Location(TextEditorButtonLocation.After)
+                                            .Widget(w => w.Button()
+                                            .Type(ButtonType.Default)
+                                            .Icon("plus")
+                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                         .OnClick("UnitOfMeasure"));
-                                        buttons.Add()
-                                        .Name("dropDown");
-                                    }))
+                                            buttons.Add()
+                                            .Name("dropDown");
+                                        })
+                                        .ValidationRules(rules =>
+                                        {
+                                            rules.AddRequired().Message("Unit Of Measurement is required.");
+                                        })
+                                        )
                                 </div>
+                                @* <div style="display:flex; align-items:end;"> *@
+                                @* @(Html.DevExtreme().SelectBox() *@
+                                @*     .ID("UnitOfMeasure1") *@
+                                @*     .DisplayExpr("UnitType") *@
+                                @*     .SearchEnabled(true) *@
+                                @*     .ValueExpr("UnitCode") *@
+                                @*     .DataSource(d => d.WebApi() *@
+                                @*     .Controller("StockInventory") *@
+                                @*     .LoadAction("GetUnitCodes") *@
+                                @*     ) *@
+                                @*     .Label(new JS("formatMessage('Unit of Measure : *')")) *@
+                                @*     .LabelMode(EditorLabelMode.Floating) *@
+                                @*     .Width("260") *@
+                                @*     .Buttons(buttons => *@
+                                @*     { *@
+                                @*         buttons.Add() *@
+                                @*         .Name("btnAddAccount") *@
+                                @*         .Location(TextEditorButtonLocation.After) *@
+                                @*         .Widget(w => w.Button() *@
+                                @*         .Type(ButtonType.Default) *@
+                                @*         .Icon("plus") *@
+                                @*         .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                                @*         .OnClick("UnitOfMeasure")); *@
+                                @*         buttons.Add() *@
+                                @*         .Name("dropDown"); *@
+                                @*     })) *@
+                                @* </div> *@
                             </td>
 
                             <td>
@@ -882,7 +929,8 @@
                                 .ID("AvgCostPrice")
                                 .Disabled(true)
                                 .Label(new JS("formatMessage('Avg Cost Price :')"))
-                                .LabelMode(EditorLabelMode.Floating))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ReadOnly(true))
                         </td>
                         <td>
                             <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
@@ -969,7 +1017,9 @@
                     });
                     function UnitOfMeasure() {
                         const url = `/${tenantName}/IMS/UnitOfMeasure`;
-                    const title = "Unit Of Measure";
+                        var dropDownBox = $("#UnitOfMeasure").dxDropDownBox("instance");
+                        dropDownBox.close();
+                        const title = "Unit Of Measure";
                         openModal(url, title,"70%","70%");
                     }
                          
@@ -2816,6 +2866,42 @@
         })
         )
 }
+
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfUOMContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetUOM-datagrid")
+                    .DataSource(d => d.WebApi()
+                        .Controller("StockInventory")
+                        .LoadAction("GetUnitCodes")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("UnitCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged4")
+                    .OnInitialized("dataGridInitialized4")
+                    .HeaderFilter(p => p.Visible(true))
+                    .FilterRow(f => f.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                            columns.Add().DataField("UnitType");
+
+
+
+                    })
+                    )
+}
 <script>
 
             function onTabSelectionChanged(e) {
@@ -2963,7 +3049,7 @@
                             $("#ItemClassification").dxDropDownBox("instance").option("value", data.ItemClassificationId);
                             $("#DetailedDescription").dxTextArea("instance").option("value", data.GsdetailedDesc);
                             $("#ArabicDescription").dxTextArea("instance").option("value", data.GsdetailedDescAr);
-                            $("#UnitOfMeasure").dxSelectBox("instance").option("value", data.GsuoM);
+                            $("#UnitOfMeasure").dxDropDownBox("instance").option("value", data.GsuoM);
                             $("#PackingUnit").dxNumberBox("instance").option("value", data.GspackingUnit);
                             $("#ItemSize").dxSelectBox("instance").option("value", data.ItemSize);
                             $("#ItemThickness").dxSelectBox("instance").option("value", data.ItemThickness);
@@ -2986,9 +3072,14 @@
                                 var dateOnly = dt.toISOString().split('T')[0];  // "YYYY-MM-DD"
                             $("#EnteredOn").dxTextArea("instance").option("value", dateOnly);
                             $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
-                                var dt2 = new Date(data.ModifiedOn);
-                                var dateOnly2 = dt2.toISOString().split('T')[0];
-                            $("#ModifiedOn").dxTextArea("instance").option("value", dateOnly2);
+                                    if (data.ModifiedOn) {
+                                        var dt2 = new Date(data.ModifiedOn);
+                                        var dateOnly2 = dt2.toISOString().split('T')[0];
+                                        $("#ModifiedOn").dxTextArea("instance").option("value", dateOnly2);
+                                    } else {
+                                        $("#ModifiedOn").dxTextArea("instance").option("value", ""); // clear if empty
+                                    }
+                            $("#AvgCostPrice").dxTextBox("instance").option("value", data.CostPrice); // need to calculate value
                             $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
                                 // Load Item Image (Base64)
                             if (data.ItemImage) {
@@ -3222,7 +3313,7 @@
         openModal(url, title);
     }
 
-        function dropDownBoxOnInput(e) {
+    function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
 
@@ -3254,6 +3345,13 @@
     }
 
     function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
         setTimeout(() => {
             e.component.focus();
         });
@@ -3304,6 +3402,21 @@
     function dataGridInitialized2(e) {
         dataGrid = e.component;
     }
+    //UOM
+    function dataGridSelectionChanged4(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#UnitOfMeasure").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized4(e) {
+        dataGrid = e.component;
+    }
     //Unit of Convertion - unittype data
     function unitCodeCellTemplate(cellElement, cellInfo) {
         const rawCode = cellInfo.data.UnitCodeOfConversion;
@@ -3319,15 +3432,18 @@
         cellElement.text(display);
     }
        function onSaveClicked(e) {
-            var isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
-            var isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
-            var isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
-            var isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
+            const isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
+            const isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
+            const isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
+            const isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
+            const isUOM = $("#UnitOfMeasure").dxValidator("instance").validate().isValid;
 
-    if (!isStockCodeValid) {
-          DevExpress.ui.notify("Please Fill Required Field.", "error", 3000);
-          return;
-      }
+
+            if (!isStoreValid || !isStockGroupValid || !isItemNameValid || !isStockCodeValid || !isUOM) {
+                DevExpress.ui.notify("Please, Fill Required Fields", "error", 3000);
+                return;
+            }
+
 
             var isUpdate = $("#btnSave").data("is-update");
         const data = {
@@ -3339,7 +3455,7 @@
             ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
             GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
             GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
-            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
+            GsuoM: $("#UnitOfMeasure").dxDropDownBox("instance").option("value"),
             GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
             ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
             ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
@@ -3389,17 +3505,18 @@
             }
         });
     }
-            function onSaveAndCloseClicked(e) {
-            var isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
-            var isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
-            var isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
-            var isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
+        function onSaveAndCloseClicked(e) {
+            const isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
+            const isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
+            const isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
+            const isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
+            const isUOM = $("#UnitOfMeasure").dxValidator("instance").validate().isValid;
 
-    if (!isStockCodeValid) {
-        DevExpress.ui.notify("Please Fill Required Field.", "error", 3000);
-        return;
-    }
 
+            if (!isStoreValid || !isStockGroupValid || !isItemNameValid || !isStockCodeValid || !isUOM) {
+                DevExpress.ui.notify("Please, Fill Required Fields", "error", 3000);
+                return;
+            }
 
         var isUpdate = $("#btnSave").data("is-update");
 
@@ -3412,7 +3529,7 @@
             ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
             GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
             GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
-            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
+            GsuoM: $("#UnitOfMeasure").dxDropDownBox("instance").option("value"),
             GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
             ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
             ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
@@ -3435,7 +3552,7 @@
             // ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
             // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
             IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
-             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
+            MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
             MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
             ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
             ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
