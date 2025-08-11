@@ -1107,13 +1107,13 @@
 		
 
 		function onGridContentReady(e) {
-			debugger;
+			
 			const totalCount = e.component.totalCount();
 			//animateInvoiceCount(totalCount);
 				  injectHeaderSVG();
 		}
 	function onGridContentReady(e) {
-		debugger;
+		
 			const dataSource = e.component.option("dataSource");
 				const totalCount = e.component.totalCount();
 			if (dataSource && dataSource.length > 0) {
@@ -1690,7 +1690,7 @@
 					url: '/api/AccountingLedgers/GetCurrencyIcon',
 					type: 'GET',
 					success: function (response) {
-						debugger;
+						
 						let svgIcon = response.Icon;
 						if (!svgIcon) return;
 

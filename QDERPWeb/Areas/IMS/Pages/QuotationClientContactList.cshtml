@@ -273,7 +273,7 @@
 		$("#txtClientName").dxTextBox("instance").option("value", cleanclientName);
 	});
 		function loadContactListGrid(cleanClientCode) {
-			debugger;
+			
 		$.ajax({
 			url: `/api/ClientLeadMaster/GetContactList?clientCode=${encodeURIComponent(cleanClientCode )}`,
 			type: 'GET',

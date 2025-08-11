@@ -28,7 +28,7 @@
             .Items(items =>
             {
                 items.Add()
-                .Text("Short (1 Line)")
+                .Text(new JS("formatMessage('Short (1 Line)')"))
                 .Template(@<text>
                                <svg width="20" height="20" viewBox="0 0 20 20">
                                    <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
@@ -37,7 +37,7 @@
                 .OnClick("function() { ChangeRowHeight('30'); }");
 
                 items.Add()
-                .Text("Medium (2 Lines)")
+                .Text(new JS("formatMessage('Medium (2 Lines)')"))
                 .Template(@<text>
                                <svg width="20" height="20" viewBox="0 0 20 20">
                                    <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
@@ -47,7 +47,7 @@
                 .OnClick("function() { ChangeRowHeight('60'); }");
 
                 items.Add()
-                .Text("Tall (4 Lines)")
+                .Text(new JS("formatMessage('Tall (4 Lines)')"))
                 .Template(@<text>
                                <svg width="20" height="20" viewBox="0 0 20 20">
                                    <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
@@ -59,7 +59,7 @@
                 .OnClick("function() { ChangeRowHeight('90'); }");
 
                 items.Add()
-                .Text("Extra Tall (8 Lines)")
+                .Text(new JS("formatMessage('Extra Tall (8 Lines)')"))
                 .Template(@<text>
             <svg width="20" height="20" viewBox="0 0 20 20">
                 @for (var i = 1; i <= 8; i++)

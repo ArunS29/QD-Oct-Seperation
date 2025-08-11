@@ -1518,7 +1518,7 @@
             hint: "Edit item",
             stylingMode: "text",
             onClick: function () {
-                debugger;
+                
                 const gsCode = cellInfo.data?.Gscode || cellInfo.value;
                 if (!gsCode) {
                     DevExpress.ui.notify("No item code found for this row.", "warning", 2000);
@@ -2718,7 +2718,7 @@ $(document).ready(function () {
             IsCurrent=IsEditflag.toString();
     });
     function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
-        debugger;
+        
         const selectedRow = e.selectedRowsData[0]; // full object
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
@@ -2736,7 +2736,7 @@ $(document).ready(function () {
     }
 
     function dataGridTaxCurrencyHeadSelectionChanged(e) {
-        debugger;
+        
         const selectedKey = e.selectedRowKeys[0];
         const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
 
@@ -2894,7 +2894,7 @@ $(document).ready(function () {
 
             //MoveupDown functionality
         function moveRowUp() {
-            debugger;
+            
                 var dataGrid = $("#itemGrid").dxDataGrid("instance");
             var dataSource = dataGrid.getDataSource();
             var data = getFlatData(dataSource.items()); // Flatten the grouped data
