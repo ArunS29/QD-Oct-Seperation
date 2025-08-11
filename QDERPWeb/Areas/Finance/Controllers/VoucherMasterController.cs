@@ -2147,14 +2147,33 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var records = await dbContext.Tbl201VoucherEntries
                                                 .Where(v => v.VoucherNo == VoucherNo)
                                                 .ToListAsync();
-
+                    var master = await dbContext.Tbl201VoucherMasters
+                                                .Where(v => v.VoucherNo == VoucherNo)
+                                                .ToListAsync();
+                    var cost = await dbContext.Tbl201CostAllocationMasters
+                                                .Where(v => v.VoucherNo == VoucherNo)
+                                                .ToListAsync();
+                    var property = await dbContext.Tbl20122PropertyAllocationMasters
+                                                .Where(v => v.VoucherNo == VoucherNo)
+                                                .ToListAsync();
+                    var employee = await dbContext.Tbl20104EmployeeAllocationMasters
+                                                .Where(v => v.VoucherNo == VoucherNo)
+                                                .ToListAsync();
+                    var subledger = await dbContext.Tbl201SubLedgerMasters
+                            .Where(v => v.VoucherNo == VoucherNo)
+                            .ToListAsync();
                     if (records == null || !records.Any())
                     {
                         return NotFound(new { message = "No records found for the provided VoucherNo!" });
                     }
 
                     // Remove all matching records
+                    dbContext.Tbl201VoucherMasters.RemoveRange(master);
                     dbContext.Tbl201VoucherEntries.RemoveRange(records);
+                    dbContext.Tbl201CostAllocationMasters.RemoveRange(cost);
+                    dbContext.Tbl20122PropertyAllocationMasters.RemoveRange(property);
+                    dbContext.Tbl20104EmployeeAllocationMasters.RemoveRange(employee);
+                    dbContext.Tbl201SubLedgerMasters.RemoveRange(subledger);
                     await dbContext.SaveChangesAsync();
                     // ✅ Log the deletion action
                     await _userActionLogger.LogAsync(
