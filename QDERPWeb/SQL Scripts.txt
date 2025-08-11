@@ -3754,3 +3754,99 @@ FROM         Aicon.qry607_04RFQViewMaster LEFT OUTER JOIN
 GO
 
 
+
+
+-------------------------------------------------------
+-- tbl201SubLedgerMaster
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Aicon.tbl201SubLedgerMaster') 
+      AND name = 'CurrencyRate'
+)
+ALTER TABLE Aicon.tbl201SubLedgerMaster
+ADD CurrencyRate DECIMAL(18, 4) NULL 
+    CONSTRAINT DF_tbl201SubLedgerMaster_CurrencyRate DEFAULT 1.00;
+
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Aicon.tbl201SubLedgerMaster') 
+      AND name = 'BaseCurrency'
+)
+ALTER TABLE Aicon.tbl201SubLedgerMaster
+ADD BaseCurrency INT NOT NULL 
+    CONSTRAINT DF_tbl201SubLedgerMaster_BaseCurrency DEFAULT 1;
+
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Aicon.tbl201SubLedgerMaster') 
+      AND name = 'Currency'
+)
+ALTER TABLE Aicon.tbl201SubLedgerMaster
+ADD Currency INT NOT NULL 
+    CONSTRAINT DF_tbl201SubLedgerMaster_Currency DEFAULT 1;
+
+UPDATE Aicon.tbl201SubLedgerMaster
+SET CurrencyRate  = ISNULL(CurrencyRate, 1.00),
+    BaseCurrency  = ISNULL(BaseCurrency, 1),
+    Currency      = ISNULL(Currency, 1)
+WHERE CurrencyRate IS NULL
+   OR BaseCurrency IS NULL
+   OR Currency IS NULL;
+
+-------------------------------------------------------
+-- tbl201CostAllocationMaster
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Aicon.tbl201CostAllocationMaster') 
+      AND name = 'CurrencyRate'
+)
+ALTER TABLE Aicon.tbl201CostAllocationMaster
+ADD CurrencyRate DECIMAL(18, 4) NULL;
+
+UPDATE Aicon.tbl201CostAllocationMaster
+SET CurrencyRate = 1.00
+WHERE CurrencyRate IS NULL;
+
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.default_constraints dc
+    JOIN sys.columns c 
+      ON dc.parent_object_id = c.object_id 
+     AND dc.parent_column_id = c.column_id
+    WHERE dc.parent_object_id = OBJECT_ID('Aicon.tbl201CostAllocationMaster') 
+      AND c.name = 'CurrencyRate'
+)
+ALTER TABLE Aicon.tbl201CostAllocationMaster
+ADD CONSTRAINT DF_tbl201CostAllocationMaster_CurrencyRate DEFAULT 1.00 FOR CurrencyRate;
+
+-------------------------------------------------------
+-- tbl20122PropertyAllocationMaster
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Aicon.tbl20122PropertyAllocationMaster') 
+      AND name = 'CurrencyRate'
+)
+ALTER TABLE Aicon.tbl20122PropertyAllocationMaster
+ADD CurrencyRate DECIMAL(18, 4) NULL 
+    CONSTRAINT DF_tbl20122PropertyAllocationMaster_CurrencyRate DEFAULT 1.00;
+
+UPDATE Aicon.tbl20122PropertyAllocationMaster
+SET CurrencyRate = 1.00
+WHERE CurrencyRate IS NULL;
+
+-------------------------------------------------------
+-- tbl20104EmployeeAllocationMaster
+IF NOT EXISTS (
+    SELECT 1 
+    FROM sys.columns 
+    WHERE object_id = OBJECT_ID('Aicon.tbl20104EmployeeAllocationMaster') 
+      AND name = 'CurrencyRate'
+)
+ALTER TABLE Aicon.tbl20104EmployeeAllocationMaster
+ADD CurrencyRate DECIMAL(18, 4) NULL 
+    CONSTRAINT DF_tbl20104EmployeeAllocationMaster_Currency
