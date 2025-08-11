@@ -3805,7 +3805,7 @@
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,transcode=null,UnitCode=null;
+					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,transcode=null,UnitCode=null,currentAmount=null;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -4540,6 +4540,8 @@
 
 
 							//applyDiscount(amount.toFixed(2));
+
+							currentAmount=amount.toFixed(2);
 							}
 
 				};
@@ -5429,9 +5431,17 @@
 			hideOnOutsideClick: true,
 			contentTemplate: function (contentElement) {
 				contentElement.empty();
-						   
-				// Get the latest amount value from somewhere accessible
-				let amount = window.currentAmount || 0; // Use a global variable or a shared scope
+						   debugger;
+				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+
+		// Get required values from grid for the specific row
+		const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
+		const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
+
+
+		// Calculate the raw amount
+		let amount = qty * unitPrice;
+
 
 				$.ajax({
 					url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
@@ -7526,7 +7536,7 @@
 					grid.cellValue(rowIndex, "VAT%", vatRateStr);
 
 				  // Store value for use in popover
-				   window.currentAmount = amount.toFixed(2);
+				   currentAmount = amount.toFixed(2);
 				   }
 
 				};
@@ -9244,65 +9254,67 @@
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 				}
 			}
-			else if (action === "deleteAll") {
-				if (selectedRowKey !== null) {
-					const rowIndex = grid.getRowIndexByKey(selectedRowKey);
-					if (rowIndex >= 0) {
-						const rowData = grid.getDataSource().items()[rowIndex];
-						const { InvoiceNo } = rowData;
+				else if (action === "deleteAll") {
+    if (selectedRowKey !== null) {
+        const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+        if (rowIndex >= 0) {
+            debugger;
+            const rowData = grid.getDataSource().items()[rowIndex];
+            const InvoiceNo = rowData.InvoiceNo; // ✅ Only the string
 
-						if (!InvoiceNo) {
-							const dataSource = grid.option("dataSource");
-							dataSource.length = 0;
-							grid.option("dataSource", dataSource);
-							grid.refresh();
-						} else {
-							DevExpress.ui.dialog.confirm(
-								"You are about to delete all the invoice line items.\nAre you sure you want to delete this invoice detail?",
-								"Delete Invoice"
-							).done(function (confirmResult) {
-								if (confirmResult) {
-									$.ajax({
-										url: "/api/VATModule/DeleteInvoiceAllLineItem",
-										type: "POST",
-										contentType: "application/json",
-										data: JSON.stringify(InvoiceNo),
-										success: function (response) {
-											if (response.success) {
-												grid.refresh();
-											
-													DevExpress.ui.notify("VAT Invoice Line Item Deleted Successfully.", "success", 3000);
-												$.ajax({
-													type: "GET",
-													url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
-													dataType: 'json',
-													success: function (data) {
-														const newRowData = data.map((item, index) => ({
-															SNo: index + 1,
-															...item
-														}));
-														initializeDataGrid(newRowData);
-													},
-													error: function () {
-														DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
-													}
-												});
-											} else {
-												DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
-											}
-										},
-										error: function (xhr) {
-											DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
-										}
-									});
-								}
-							});
-						}
-					}
-				} else {
-					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
-				}
-			}
+            if (!InvoiceNo) {
+                const dataSource = grid.option("dataSource");
+                dataSource.length = 0;
+                grid.option("dataSource", dataSource);
+                grid.refresh();
+            } else {
+                DevExpress.ui.dialog.confirm(
+                    "You are about to delete all the invoice line items.\nAre you sure you want to delete this invoice detail?",
+                    "Delete Invoice"
+                ).done(function (confirmResult) {
+                    if (confirmResult) {
+                        $.ajax({
+                            url: "/api/VATModule/DeleteInvoiceAllLineItem",
+                            type: "POST",
+                            contentType: "application/json",
+                            data: JSON.stringify(InvoiceNo), // ✅ Sending raw string
+                            success: function (response) {
+                                if (response) {
+                                    grid.refresh();
+                                    DevExpress.ui.notify("VAT Invoice Line Items Deleted Successfully.", "successs",3000);
+
+                                    $.ajax({
+                                        type: "GET",
+                                        url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+                                        dataType: 'json',
+                                        success: function (data) {
+                                            const newRowData = data.map((item, index) => ({
+                                                SNo: index + 1,
+                                                ...item
+                                            }));
+                                            initializeDataGrid(newRowData);
+											   DevExpress.ui.notify("VAT Invoice Line Items Deleted Successfully.","successs",3000);
+                                        },
+                                        error: function () {
+                                            DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+                                        }
+                                    });
+                                } else {
+                                    DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+                                }
+                            },
+                            error: function (xhr) {
+                                DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+                            }
+                        });
+                    }
+                });
+            }
+        }
+    } else {
+        DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+    }
+}
 
 			$("#contextMenu").hide();
 		});

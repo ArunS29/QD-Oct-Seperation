@@ -260,4 +260,7 @@ public partial class Qry201807vatcreditNoteRegisterMainView
     public decimal? TotalRevenueOf10Perc { get; set; }
 
     public decimal? TotalTaxOf10Perc { get; set; }
+
+    //public string CurrencyImage { get; set; }
+    //public string CurrencySymbole { get; set; }
 }

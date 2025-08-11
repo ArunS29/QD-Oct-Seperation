@@ -41,6 +41,6 @@ public partial class Qry201901vatdebitNoteChild
 
     public decimal? Discount { get; set; }
 
-    public string CurrencyImage { get; set; }
-    public string CurrencySymbole { get; set; }
+    //public string CurrencyImage { get; set; }
+    //public string CurrencySymbole { get; set; }
 }

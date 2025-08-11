@@ -7283,7 +7283,7 @@
 
 		const oldDateString = $("#OldVoucherDate").val();
 		const oldDate = new Date(oldDateString);
-
+		debugger;
 		// Step 1: Check cutoff date
 		if (newDate < cutoffDate) {
 			DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
