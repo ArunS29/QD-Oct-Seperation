@@ -1254,7 +1254,7 @@
             }
 
             function addEmptyRowIfNeeded() {
-                debugger;
+                
                 const dataSource = dataGrid.option("dataSource") || [];
 
                 if (!Array.isArray(dataSource)) {
@@ -1409,7 +1409,7 @@
                     data: { claimRefNo: claimRefNo },
                     success: function (data) {
                         const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
-                        debugger;
+                        
                         if (entry) {
                             Accountname = entry.PaymentAccountname || null;
                             claimproject = entry.Claimedproject || null;
@@ -1512,7 +1512,7 @@
                     type: 'GET',
                     data: { claimRefNo: claimRefNo },
                     success: function (data) {
-                        debugger;
+                        
                            // If `data` is a raw array (not wrapped in { success: true, data: [...] })
                             if (Array.isArray(data)) {
                                 if (data.length === 0) {
@@ -1571,7 +1571,7 @@
 
 
         function onRadioGroupValueChanged(e) {
-            debugger;
+            
             let selectedValue = e.value;
             let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";
 
@@ -2465,7 +2465,7 @@
     });
     }
     function savedetailsonload(){
-        debugger;
+        
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
         var rowCount = dataGrid.getVisibleRows().length;
 

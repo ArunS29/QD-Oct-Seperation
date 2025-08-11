@@ -107,7 +107,7 @@
      $("#totalAmount").dxNumberBox("instance").option("value",@ViewBag.Amount);
 
     function setDiscount(percent) {
-        debugger;
+        
         const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
         const discountValue = total * (percent / 100);
         $("#discount").dxNumberBox("instance").option("value", discountValue.toFixed(2));

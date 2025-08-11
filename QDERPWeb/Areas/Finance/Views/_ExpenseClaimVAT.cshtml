@@ -841,7 +841,7 @@
     }
     $(function () {
         $("#calculateVAT").dxButton("instance").option("onClick", function () {
-            debugger;
+            
             // Step 1: Get billAmount and roundoff values
             let billAmount = $("#billAmount").dxNumberBox("instance").option("value");
             const roundoff = $("#roundoff").dxNumberBox("instance").option("value");
@@ -958,7 +958,7 @@
                 
 
                 if (entry) {
-                    debugger;
+                    
                      taxCode = entry.VatapplicableRate || null;
                      suppliername = entry.SupplierName || null;
                      employeename = entry.EmployeeNo || null;

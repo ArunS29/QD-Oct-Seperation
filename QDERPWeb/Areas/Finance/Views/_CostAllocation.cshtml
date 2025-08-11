@@ -1033,7 +1033,7 @@
     $(document).ready(function () {
         const dataGrid = $("#costdataGrid").dxDataGrid("instance");
            dataGrid.option("onRowUpdating", function (e) {
-                debugger;
+                
                         const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
                         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
                         const drCr = '@drCr';
@@ -1163,7 +1163,7 @@
                     }
            });
            dataGrid.option("onRowRemoving", function (e) {
-               debugger;
+               
                 const rowData = e.data;
                 const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
                 const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
@@ -1380,7 +1380,7 @@
 
 
     //     function onCostAmountChanged(e) {
-    //     debugger;
+    //     
 
     //     const grid = $("#costdataGrid").dxDataGrid("instance");
     //     let dataSource = grid.option("dataSource");
@@ -1427,7 +1427,7 @@
     // }
 
     // function onCostAllocationRowUpdating(e) {
-    //     debugger;
+    //     
     //         const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
     //         const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
     //         const drCr = '@drCr';

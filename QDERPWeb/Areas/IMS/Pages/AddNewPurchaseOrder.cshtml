@@ -2081,7 +2081,7 @@
             e.editorOptions.onValueChanged = function (args) {
                 let grid = $("#itemGrid").dxDataGrid("instance");
                 let rowIndex = e.row.rowIndex;
-                    debugger;
+                    
                 let newValue = args.value;
 
                 // Get existing values or updated ones
@@ -2347,7 +2347,7 @@
     }
 });
 //          function savePurchaseOrder() {
-//              debugger;
+//              
 //             const data = {
 //                    Pono: $("#PurchaseOrderNo").dxTextBox("instance").option("value"),
 //                 Podate: $("#PoDate").dxDateBox("instance").option("value"),
@@ -3049,7 +3049,7 @@ setDxFieldValue("approvedBy2", data.approvedBy);
       }
 
       function dataGridTaxCurrencyHeadSelectionChanged(e) {
-          debugger;
+          
           const selectedKey = e.selectedRowKeys[0];
           const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
 

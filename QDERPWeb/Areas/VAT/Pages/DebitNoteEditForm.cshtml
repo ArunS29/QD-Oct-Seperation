@@ -391,7 +391,7 @@
 									{
 										items.Add().Icon("optionsgear").Text(new JS("formatMessage('Debit Note Details')"));
 										items.Add().Icon("accountbox").Text(new JS("formatMessage('Other Details')"));
-										items.Add().Icon("card").Text(new JS("formatMessage('Approvals')"));
+								//		items.Add().Icon("card").Text(new JS("formatMessage('Approvals')"));
 										items.Add().Icon("group").Text(new JS("formatMessage('Branch/Division Details')"));
 										
 									})
@@ -683,7 +683,7 @@
 				<!-- Card 1: Dates & Dropdowns -->
 				
 					
-						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+						<table width="100%" cellpadding="5">
 							<tr>
 								<td>
 									@(Html.DevExtreme().DateBox()
@@ -772,7 +772,7 @@
 
 						</td>
 
-						<td style="display: flex; align-items: end; gap: 10px;">
+						<td style="display: flex; align-items: end; gap:3px;">
 							@(
 														Html.DevExtreme().Button()
 														.ID("InvoiceNotesconvertToArabic")
@@ -797,23 +797,12 @@
 
 
 					</tr>
-
-					</table>
-				</div>
-			
-
-
-			<div id="tab-content-3" class="tab-content">
-				
-				
-				
-						<table width="100%" style="font-size:14px; margin:10px;" cellpadding="5">
-					
-							<tr>
+					<tr>
 								<td>
 									@(Html.DevExtreme().CheckBox()
 																			.Text(new JS("formatMessage('Verified By')"))
 																			.ID("VerifiedBy")
+																			.Visible(false)
 																			.Value(null) // Default value
 																			)
 
@@ -823,6 +812,7 @@
 																			.ID("VerifiedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
+																			.Visible(false)
 																			.Width("100%")
 																			)
 
@@ -832,6 +822,7 @@
 																			.ID("VerifiedOnDate")
 																			.Value(null) // Default value
 																			.Disabled(true)
+																			.Visible(false)
 																			.Width("100%")
 																			)
 								</td>
@@ -840,6 +831,7 @@
 
 									@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Approved By')"))
 																			.ID("ApprovedBy")
+																			.Visible(false)
 																			.Value(null) // Default value
 																			)
 									@(Html.DevExtreme().TextBox()
@@ -848,6 +840,7 @@
 																			.ID("ApprovedBytext")
 																			.Value(null) // Default value
 																			.Disabled(true)
+																			.Visible(false)
 																			.Width("100%")
 																			@* .Disabled(true) *@
 																			)
@@ -855,21 +848,20 @@
 																			.Label(new JS("formatMessage('Approved On')"))
 																			.LabelMode(EditorLabelMode.Floating)
 																			.ID("ApprovedOntext")
+																			.Visible(false)
 																			.Value(null) // Default value
 																			.Disabled(true)
 																			.Width("100%")
 																			)
 								</td>
 							</tr>
+
 					</table>
-					
-				
-			</div>
-
-
-			<div id="tab-content-4" class="tab-content">
+				</div>
+			
+			<div id="tab-content-3" class="tab-content">
 				<div>
-					<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
+					<table width="80%" style="font-size:12px; margin:0 10px;" cellpadding="10">
 						<tr>
 							<td >
 								
@@ -915,22 +907,11 @@
 																						)
 
 							</td>
-						
-
-							
 							</tr>
 					</table>
 				</div>
-
-			
 			</div>
-
-			
 		</div>
-
-
-
-
 
 		<div class="dx-field ledgerResult">
 			@(
@@ -2786,6 +2767,15 @@
 							dataGrid.cellValue(rowIndex, "Qty", 1);
 							dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+
+							ItemNo = selectedItem.GSCode;
+				           Gsdescrpition = selectedItem.GSDescrpition;
+				           GsdescriptionAr = selectedItem.GsdescriptionAr;
+				           ItemPartNo = selectedItem.ItemPartNo;
+				           CostPrice = selectedItem.CostPrice;
+				           GssellingRate = selectedItem.GSSellingRate;
+				           ReorderQty = selectedItem.ReorderQty;
+				           UnitOfMeasure = selectedItem.UnitDescription;
 						}
 
 						e.component.close();
@@ -2811,13 +2801,10 @@
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				if (!selectedItemData || !selectedItemData.GSCode) {
-					DevExpress.ui.notify("Please select an item first", "warning", 2000);
-					return;
-				}
 
-				const selected = selectedItemData;
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+
+			//	const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
 				openModal(url, "Goods and Services");
 			},
 			width: 60,
@@ -4975,7 +4962,7 @@
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
 
-				debugger;
+				
 				// Get the updated value from the input field
 				let newValue = args.value;
 				console.log("gridnewvalue",newValue)
@@ -5559,7 +5546,7 @@
 			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 			IsDirectApproval=false;
 			const vno = $("#DebitNoteNo").dxTextBox("instance").option("value");
-			debugger;
+			
 			if (!vno) {
 				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
 				return;
@@ -5690,7 +5677,7 @@
 				// data: JSON.stringify({ voucherNo: vno }),
 				success: async function (response) {
 					if (response && response.Message) {
-						debugger;
+						
 						if(response.IsDirect == true)
 						{
 								const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");

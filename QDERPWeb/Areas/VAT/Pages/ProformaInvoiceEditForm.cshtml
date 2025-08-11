@@ -846,14 +846,14 @@
 				<div class="card-container">
 					<!-- Left Card: Foreign Currency Billing -->
 					
-					<table style="width:100%; font-size:12px; margin:5px;" cellpadding="2">
+					<table style="width:100%; font-size:12px; margin:5px;" cellpadding="5">
 						@* 	<tr>
 								<th>Foreign Currency Billing</th>
 							</tr> *@
 
 						<tr>
 							<!-- Currency Dropdown -->
-							<td style="width: 30%;">
+							<td>
 								@(Html.DevExtreme().DropDownBox()
 																.Label(new JS("formatMessage('Currency')"))
 																.DataSource(d => d.WebApi()
@@ -897,7 +897,7 @@
 									@(Html.DevExtreme().TextBox()
 																		.ID("LessAdvance")
 																		.Value("Less: Advance")
-																		.Width(180))
+																		.Width("100%"))
 
 									<div style="display: flex; align-items: center; gap: 5px; width: 180px;">
 										@(Html.DevExtreme().NumberBox()
@@ -921,16 +921,17 @@
 																		.LabelMode(EditorLabelMode.Floating)
 																		.Value("اقب المسبق")
 																		.RtlEnabled(true)
-																		.Width(200))
+																		.Width("100%"))
 												   								</div>
 												   							</td>
 
 							<!-- Verified By and On -->
-							<td style="width: 35%;">
+							<td>
 								<div style="display: flex; align-items: center; gap: 10px;">
 									<div style="display: flex; align-items: center; gap: 10px; width: 50%;">
 										@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
 																				.ID("VerifiedBy")
+																				.Visible(false)
 																				.Value(null) // Default value
 																				.Disabled(true))
 										
@@ -938,6 +939,7 @@
 																				.ID("VerifiedBytext")
 																				.Label(new JS("formatMessage('Verified By')"))
 																				.LabelMode(EditorLabelMode.Floating)
+																				.Visible(false)
 																				.Disabled(true)
 																				.Width("100%"))
 													   									</div>
@@ -946,6 +948,7 @@
 										@(Html.DevExtreme().TextBox()
 																				.Label(new JS("formatMessage('Verified On')"))
 																				.LabelMode(EditorLabelMode.Floating)
+																				.Visible(false)
 																				.ID("VerifiedOnDate")
 																				.Disabled(true)
 																				.Width("100%"))
@@ -956,7 +959,7 @@
 
 						<tr>
 							<!-- Currency Exchange Rate -->
-							<td style="width: 30%;">
+							<td>
 								@(Html.DevExtreme().NumberBox()
 																.ID("currencyexchangerate")
 																.Label(new JS("formatMessage('Currency Exchange Rate:')"))
@@ -974,7 +977,7 @@
 								@(Html.DevExtreme().TextBox()
 																.ID("LessRetention")
 																.Value("Less: Retention")
-																.Width(180))
+																.Width("100%"))
 											   							
 
 							<!-- Retention Amount -->
@@ -1006,22 +1009,24 @@
 																.LabelMode(EditorLabelMode.Floating)
 																.Value("احتفاظ أقل")
 																.RtlEnabled(true)
-																.Width(200))
+																.Width("100%"))
 											   				</div>	</td>
 											   							
 
 							<!-- Approved By -->
-							<td style="width: 35%;">
+							<td>
 								<div style="display: flex; align-items: center; gap: 10px;">
 									<div style="display: flex; align-items: center; gap: 10px; width: 50%;">
 										@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
 																				.ID("ApprovedBy")
+																				.Visible(false)
 																				.Value(null) // Default value
 																				.Disabled(true))
 									@(Html.DevExtreme().TextBox()
 																		.Label(new JS("formatMessage('Approved By')"))
 																		.LabelMode(EditorLabelMode.Floating)
 																		.ID("ApprovedBytext")
+																				.Visible(false)
 																		.Disabled(true)
 																		.Width("100%"))</div>
 													   									<div style="flex-grow: 1;">
@@ -1029,6 +1034,7 @@
 									@(Html.DevExtreme().TextBox()
 																		.Label(new JS("formatMessage('Approved On')"))
 																		.LabelMode(EditorLabelMode.Floating)
+																		.Visible(false)
 																		.ID("ApprovedOntext")
 																		.Disabled(true)
 																		.Width("100%"))
@@ -2931,7 +2937,7 @@
 			var urlParams = new URLSearchParams(window.location.search);
 		    var InvoiceNo = urlParams.get('ProformaInvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
-			debugger;
+			
 				IsCurrent=IsEditflag.toString();
 
 				// console.log("Iseditflag",IsEditflag)
@@ -3037,7 +3043,7 @@
 
 		});
 				function initializeDataGrid(rowData) {
-							debugger;
+							
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			dataSource: rowData,
 		   // keyExpr: "SNo",
@@ -3391,7 +3397,7 @@
 						let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
 						if (selectedItem) {
 							cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-							debugger;
+							
 							let grid = $("#B2BdataGrid").dxDataGrid("instance");
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
@@ -3433,7 +3439,7 @@
 								let selectedItem = selectedItems.selectedRowsData[0];
 								alert("1")
 								if (selectedItem) {
-									debugger;
+									
 									e.component.option("value", selectedItem.TaxSlabCode);
 									cellInfo.setValue(selectedItem.TaxCodeToDisplay);
 
@@ -3489,7 +3495,7 @@
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
 						let rowIndex = e.row.rowIndex;
 						rowIx=rowIndex;
-							debugger;
+							
 						let newValue = args.value;
 						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 
@@ -3695,6 +3701,15 @@
 							dataGrid.cellValue(rowIndex, "Qty", 1);
 							dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+
+							ItemNo = selectedItem.GSCode;
+	                        Gsdescrpition = selectedItem.GSDescrpition;
+	                        GsdescriptionAr = selectedItem.GsdescriptionAr;
+	                        ItemPartNo = selectedItem.ItemPartNo;
+	                        CostPrice = selectedItem.CostPrice;
+	                        GssellingRate = selectedItem.GSSellingRate;
+	                        ReorderQty = selectedItem.ReorderQty;
+	                        UnitOfMeasure = selectedItem.UnitDescription;
 						}
 
 						e.component.close();
@@ -3720,13 +3735,10 @@
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				if (!selectedItemData || !selectedItemData.GSCode) {
-					DevExpress.ui.notify("Please select an item first", "warning", 2000);
-					return;
-				}
+			
+	            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 
-				const selected = selectedItemData;
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+				//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
 				openModal(url, "Goods and Services");
 			},
 			width: 60,
@@ -4017,7 +4029,7 @@
 											let selectedItem = selectedItems.selectedRowsData[0];
 
 											if (selectedItem) {
-												debugger;
+												
 												e.component.option("value", selectedItem.UnitDesc);
 
 												cellInfo.setValue(selectedItem.UnitDesc);
@@ -4223,7 +4235,7 @@
 	});
 
 	//   $(function () {
-	// 	  debugger;
+	// 	  
 	// 	  dataGridInstance = $("#B2BdataGrid").dxDataGrid({
 
 	// 		  dataSource: rowData,
@@ -4969,7 +4981,7 @@
 		 var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
-									debugger;
+									
 									accheadid = selectedRowData[0].AccountId;
 
 								  let  accheadname = selectedRowData[0].AccountHead;
@@ -5091,7 +5103,7 @@
 		                        var selectedRowData = $("#clientname-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
 								if (selectedRowData.length > 0) {
-									debugger;
+									
 									accheadid = selectedRowData[0].AccountId;
 									let accheadAr = selectedRowData[0].AccountHeadArabic;
 								   $("#ddlClientNameAr").dxDropDownBox("instance").option("value", accheadAr);
@@ -6732,7 +6744,7 @@
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
 						  rowIx=rowIndex;
-					debugger;
+					
 				let newValue = args.value;
 
 				// Get existing values or updated ones
@@ -6775,7 +6787,7 @@
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
-				debugger;
+				
 				if(clientnameValidation.isValid)
 				{
 			// Create JSON object for master invoice
@@ -6916,7 +6928,7 @@
 			 });
 			 function onEditClientClick() {
         var clientId = $("#ddclientname").dxDropDownBox("option", "value");
-		debugger;
+		
         if (!clientId) {
 			   DevExpress.ui.notify(
 								"Please select the Client to edit","error",3000
@@ -6936,7 +6948,7 @@
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
-				debugger;
+				
 				if(clientnameValidation.isValid)
 				{
 			// Create JSON object for master invoice
@@ -7107,7 +7119,7 @@
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
-						debugger;
+						
 
 						// Get existing values or updated ones
 						let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -7939,7 +7951,7 @@
 
 			  var RevenueAccountValidator = $("#ddlGoodsGroup2").dxValidator("instance");
 				var RevenueAccountValidation = RevenueAccountValidator.validate();
-				debugger;
+				
 				let VATInvoiceSubType=$("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
 		  if(IsVerified==true && IsApproved==true)
 		  {
@@ -8119,7 +8131,7 @@
 		// 	popup.show();
 		// 	let IsB2CEdit=true;
 		// 	// alert("1")
-		// 	// debugger;
+		// 	// 
 		// 	// Correct URL to your LedgerAccount view
 		// 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
 		// }
@@ -8276,7 +8288,7 @@
 
 		  function applyDiscount() {
 		  const grid = $("#B2BdataGrid").dxDataGrid("instance");
-		  debugger;
+		  
 		  // Get values from UI
 		  const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 		  const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
@@ -8327,7 +8339,7 @@
 			  hideOnOutsideClick: true,
 			  contentTemplate: function (contentElement) {
 				  contentElement.empty();
-							 debugger;
+							 
 				  // Get the latest amount value from somewhere accessible
 				  let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 

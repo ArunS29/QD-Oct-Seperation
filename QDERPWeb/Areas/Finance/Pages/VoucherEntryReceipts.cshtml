@@ -1118,7 +1118,7 @@ buttons.Add()
 
         
 function addVoucherEntry() {
-    debugger;
+    
     var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
     var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
     var griddatacount = rowCount;
@@ -3346,7 +3346,7 @@ function showMainFooter() {
         function onVoucherDrCrValueChanged(e) {
     // Retrieve the new selected value from the event argument.
     var selectedValue = e.value;
-    debugger;
+    
 
     // Log the selected value for debugging purposes.
     console.log("Transaction type selected: " + selectedValue);
@@ -3516,7 +3516,7 @@ function onBaseCurrencyInit(e) {
 
        
         function loadCurrencyGridOnOpen(e) {
-            debugger;
+            
             const dropDown = e.component;
             const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 
@@ -3607,7 +3607,7 @@ function onBaseCurrencyInit(e) {
         }, 300);
     });
     function loadCurrencyGridOnOpen(e) {
-    debugger;
+    
     const dropDown = e.component;
     const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 

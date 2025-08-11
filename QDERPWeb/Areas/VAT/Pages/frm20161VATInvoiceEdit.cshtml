@@ -1428,7 +1428,8 @@
 								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
 										                      .ID("VerifiedBy")
 																.Value(null) // Default value
-												.Disabled(true))
+												.Disabled(true)
+								.Visible(false))
 								@(Html.DevExtreme().TextBox()
 																.Label(new JS("formatMessage('Verified By')"))
 																.LabelMode(EditorLabelMode.Floating)
@@ -1436,6 +1437,7 @@
 																.Value(null) // Default value
 																.Disabled(true)
 																.Width("100%")
+																.Visible(false)
 																)
 
 
@@ -1537,6 +1539,7 @@
 														.ID("VerifiedOnDate")
 														.Value(null) // Default value
 														.Disabled(true)
+														.Visible(false)
 														.Width("100%")
 														)
 							</td>
@@ -1615,6 +1618,7 @@
 
 								@(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('')"))
 										                      .ID("ApprovedBy")
+															  .Visible(false)
 																.Value(null) // Default value
 												.Disabled(true))
 								@(Html.DevExtreme().TextBox()
@@ -1623,6 +1627,7 @@
 																.ID("ApprovedBytext")
 																.Value(null) // Default value
 																.Disabled(true)
+																.Visible(false)
 																.Width("100%")
 											   								@* .Disabled(true) *@
 																)
@@ -1635,6 +1640,7 @@
 																.ID("ApprovedOntext")
 																.Value(null) // Default value
 																.Disabled(true)
+																.Visible(false)
 																.Width("100%")
 																)
 							</td>
@@ -3765,7 +3771,7 @@
 			var urlParams = new URLSearchParams(window.location.search);
 			var InvoiceNo = urlParams.get('InvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
-			debugger;
+			
 				IsCurrent=IsEditflag.toString();
 
 				// console.log("Iseditflag",IsEditflag)
@@ -3918,7 +3924,7 @@
 
 
 		function initializeDataGrid(rowData) {
-						debugger;
+						
     let grid = $("#B2BdataGrid").dxDataGrid({
         dataSource: rowData,
        // keyExpr: "SNo",
@@ -4167,6 +4173,7 @@
                     if (!selectedItem) return;
 
                     selectedItemData = selectedItem;
+					console.log("VATDataDescription",selectedItemData)
                     cellInfo.setValue(selectedItem.GSDescrpition);
 
                     const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -4209,8 +4216,7 @@
                 return;
             }
 
-            const selected = selectedItemData;
-            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
             openModal(url, "Goods and Services");
         },
         width: 60,
@@ -4221,7 +4227,8 @@
         icon: "paste",
         hint: "Stock Inventory Edit",
         onClick: function () {
-            openModal(`/${tenantName}/IMS/InventoryStockDetails`, "");
+            const url = `/${tenantName}/IMS/InventoryStockDetails?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+		    openModal(url, "Inventory Stock");
         },
         width: 60,
         height: 30
@@ -4467,7 +4474,7 @@
                     let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
                     if (selectedItem) {
                         cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-                        debugger;
+                        
                         let grid = $("#B2BdataGrid").dxDataGrid("instance");
                         let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                         if (rowIndex !== -1) {
@@ -4570,7 +4577,7 @@
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 					let rowIndex = e.row.rowIndex;
 					rowIx=rowIndex;
-						debugger;
+						
 					let newValue = args.value;
 					let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
 
@@ -4777,6 +4784,15 @@ editCellTemplate: function (cellElement, cellInfo) {
                         dataGrid.cellValue(rowIndex, "Qty", 1);
                         dataGrid.cellValue(rowIndex, "VAT%", "15%");
                         dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+
+						ItemNo = selectedItem.GSCode;
+				        Gsdescrpition = selectedItem.GSDescrpition;
+				        GsdescriptionAr = selectedItem.GsdescriptionAr;
+				        ItemPartNo = selectedItem.ItemPartNo;
+				        CostPrice = selectedItem.CostPrice;
+				        GssellingRate = selectedItem.GSSellingRate;
+				        ReorderQty = selectedItem.ReorderQty;
+				        UnitOfMeasure = selectedItem.UnitDescription;
                     }
 
                     e.component.close();
@@ -4802,13 +4818,9 @@ editCellTemplate: function (cellElement, cellInfo) {
         icon: "edit",
         hint: "Edit item",
         onClick: function () {
-            if (!selectedItemData || !selectedItemData.GSCode) {
-                DevExpress.ui.notify("Please select an item first", "warning", 2000);
-                return;
-            }
 
-            const selected = selectedItemData;
-            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+
+	        const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
             openModal(url, "Goods and Services");
         },
         width: 60,
@@ -4819,7 +4831,9 @@ editCellTemplate: function (cellElement, cellInfo) {
         icon: "paste",
         hint: "Stock Inventory Edit",
         onClick: function () {
-            openModal(`/${tenantName}/IMS/InventoryStockDetails`, "");
+		    const url = `/${tenantName}/IMS/InventoryStockDetails?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+		    openModal(url, "Inventory Stock");
+            // openModal(`/${tenantName}/IMS/InventoryStockDetails`, "");
         },
         width: 60,
         height: 30
@@ -5022,7 +5036,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 											let selectedItem = selectedItems.selectedRowsData[0];
 
 											if (selectedItem) {
-												debugger;
+												
 												e.component.option("value", selectedItem.UnitDesc);
 
 												cellInfo.setValue(selectedItem.UnitDesc);
@@ -5446,7 +5460,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 			hideOnOutsideClick: true,
 			contentTemplate: function (contentElement) {
 				contentElement.empty();
-						   debugger;
+						   
 				// Get the latest amount value from somewhere accessible
 				let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 
@@ -5598,7 +5612,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 			if (revaccheadid == null) {
 				revaccheadid = "L00343";
 			}
-			debugger;
+			
 			
 			var InvoiceMaster = {
 
@@ -5739,7 +5753,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 			  function ClientCodedataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
-				debugger;
+				
 				if (selectedKey) {
 					ddbInstance.option("value", selectedKey);
 					 ddbInstance.close();
@@ -5981,7 +5995,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 				var selectedRowData = $("#invoicecurrecy-datagrid").dxDataGrid("instance").getSelectedRowsData();
 				// Get ReferenceNo from selected row
 				if (selectedRowData.length > 0) {
-					debugger;
+					
 								InvoiceCurrencyExchangeId = selectedRowData[0].CurrencyExchangeId.toString();
 								console.log("Type:", typeof InvoiceCurrencyExchangeId);
 								ExchangeRate=selectedRowData[0].ExchangeRate;
@@ -6143,7 +6157,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 						companyid = selectedRowData[0].CompanyId;
 							IsClientCode=true;
-						debugger;
+						
 									  $("#OurGroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SellerGroupVatnumber)
 									  $("#OurVATNo").dxTextBox("instance").option("value",selectedRowData[0].CompanyVatno)
 									   $("#OurCompanyRegisteredName").dxTextBox("instance").option("value",selectedRowData[0].CompanyName)
@@ -7371,7 +7385,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
 						rowIx=rowIndex;
-					debugger;
+					
 				let newValue = args.value;
 
 						let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -7434,7 +7448,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 					let rowIndex = e.row.rowIndex;
 							rowIx=rowIndex;
-						debugger;
+						
 					let newValue = args.value;
 
 							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -7491,7 +7505,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
-			debugger;
+			
 			RevenueAccount = $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value");
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
@@ -7954,7 +7968,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
-					debugger;
+					
 
 					// Get existing values or updated ones
 					let qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -8188,7 +8202,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 		function proceedWithVerification() {
 			// Set VerifiedBy checkbox to true
 			$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-			debugger;
+			
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
 			IsDirectVerify=false;
@@ -8418,7 +8432,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 				// data: JSON.stringify({ voucherNo: vno }),
 				success: async function (response) {
 					if (response && response.Message) {
-						debugger;
+						
 					    if(response.IsDirect == true)
 						{
 
@@ -8857,7 +8871,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 		function onVatTransactionSelectionChanged(e) {
 	const selectedIds = e.component.option("selectedItemKeys");
 	const transactionCode = setInvoiceTransactionCode(selectedIds);
-	debugger;
+	
 	const ddbInstance = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
 	transcode = transactionCode;
 	let dataSource = ddbInstance.option("dataSource");
@@ -8953,22 +8967,34 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 
 				
-	function onEditClientClick() {
-    const clientId = $("#ddclientcode").dxDropDownBox("option", "value");
+		function onEditClientClick() {
+			const clientId = $("#ddclientcode").dxDropDownBox("option", "value");
 
-    if (!clientId) {
-        DevExpress.ui.dialog.alert("Please select the client to edit.", "Select Client").done(function () {
-            // Wait for user to dismiss the dialog
-            // Do nothing here, just prevent continuing
-        });
-        return; // stop execution
-    }
-	
-			var popup = $("#ledgerAccountPopup").dxPopup("instance");
+			if (!clientId) {
+				DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Supplier");
+				return;
+			}
+
+			showLedgerAccountEditPopup(clientId);
+		}
+
+		function showLedgerAccountEditPopup(accheadid) {
+			console.log("Opening Edit Supplier popup for ID:", accheadid);
+
+			const tenantName = window.location.pathname.split('/')[1];
+			const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsPurchaseEdit=true`;
+
+			const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
 			popup.show();
 
-			// Correct URL to your LedgerAccount view
-			$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+			setTimeout(() => {
+				const iframe = document.getElementById("ledgerEditAccountFrame");
+				if (!iframe) {
+					console.error("Edit iframe not found!");
+					return;
+				}
+				iframe.src = url;
+			}, 300);
 		}
 //     const tenantName = window.location.pathname.split('/')[1];
 //     const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(clientId)}&IsPurchaseEdit=true`;
@@ -9101,7 +9127,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 													url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
 													dataType: 'json',
 													success: function (data) {
-														debugger;
+														
 														const newRowData = data.map((item, index) => ({
 															SNo: index + 1,
 															...item
@@ -9209,7 +9235,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 
 	// 			function applyDiscount() {
-	// 			//debugger;
+	// 			//
 	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
 	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
@@ -9226,7 +9252,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 		function applyDiscount() {
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
-		debugger;
+		
 		// Get values from UI
 		const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 		const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
@@ -9369,7 +9395,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
             if (data.ClientCode) {
     $.get("/api/ClientLeadMaster/GetClientByCode", { clientCode: data.ClientCode })
         .done(function (client) {
-            $("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
+          //  $("#ddclientcode").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
             $("#ddclientname").dxDropDownBox("instance").option("value", client.ClientAccountLedgerNo || "");
         })
         .fail(function () {
@@ -9444,7 +9470,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 			type: 'GET',
 			data: { accountID: accheadid },
 			success: function (result) {
-				debugger;
+				
 				// 1. Pick the first record regardless of the shape returned
 				const details = Array.isArray(result)
 					? result[0]
@@ -9597,7 +9623,7 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 		async function convertToArabicbtn() {
 			const textBox1Instance = $("#DetailedDescription").dxTextBox("instance");
 			const textBox2Instance = $("#DetailedDescriptionArabic").dxTextBox("instance");
-			debugger;
+			
 			if (!textBox1Instance || !textBox2Instance) {
 				console.error("TextBox instances are not properly initialized.");
 				return;
@@ -9880,21 +9906,21 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
      
 
 
-	$(async function () {
-			try {
-					const result = await fetch('/api/VATModule/GetPettyCashAccount');
-				const data = await result.json();
+	// $(async function () {
+	// 		try {
+	// 				const result = await fetch('/api/VATModule/GetPettyCashAccount');
+	// 			const data = await result.json();
 
-				if (data && data.AccountID) {
-					const dropDownBox = $("#ddclientcode").dxDropDownBox("instance");
-					if (dropDownBox) {
-						dropDownBox.option("value", data.AccountID);
-					}
-				}
-			} catch (err) {
-				console.error("Failed to load default client code:", err);
-			}
-		});
+	// 			if (data && data.AccountID) {
+	// 				const dropDownBox = $("#ddclientcode").dxDropDownBox("instance");
+	// 				if (dropDownBox) {
+	// 					dropDownBox.option("value", data.AccountID);
+	// 				}
+	// 			}
+	// 		} catch (err) {
+	// 			console.error("Failed to load default client code:", err);
+	// 		}
+	// 	});
 
 		// Attachment
 	function onVatAttachmentButtonClick(e) {
@@ -9948,7 +9974,7 @@ function validateClientVATNo(e) {
 }
 
 async function fetchDefaultCompanyCurrencyType() {
-	debugger;
+	
     try {
         const response = await $.ajax({
             url: '/api/VATModule/GetDefalutCompanyDetails', // Replace with actual controller route if needed

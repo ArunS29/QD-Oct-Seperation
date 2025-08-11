@@ -882,7 +882,7 @@ function generateNextClientCode(categoryCode) {
 }
 
  function getClientCodeParams() {
-            debugger;
+            
     const clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
     console.log("Sending clientCode:", clientCode);
     return { clientCode: clientCode };
@@ -1170,7 +1170,7 @@ ContactRemarks:clientRemarks,
 //         }
 //     }
     function onClientsGridContextMenu2(e) {
-        debugger;
+        
     if (e.target === "content" && e.row) {
         let ClientContactSlNo = e.row.data.ClientContactSlNo;
         const clientCode = e.row.data.ClientCode;

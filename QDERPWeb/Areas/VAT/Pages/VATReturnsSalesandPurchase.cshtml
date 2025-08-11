@@ -791,7 +791,7 @@
                                                                         .ID("RevenueTotal")
                                                                         .Disabled(true)
                                                                         .Format("#,##0.00")
-                                                                .OnValueChanged("calculateRevenueTotal")
+                                                               // .OnValueChanged("calculateRevenueTotal")
 
                                                                         .ShowSpinButtons(false)
                                                                         .ElementAttr("class", "dx-numberbox-iconed text-right-number")
@@ -962,14 +962,26 @@
 
 
 <script>
-     function calculateRevenueTotal() {
-        const dss15Revenue = parseFloat($("#Dss15Revenue").dxNumberBox("instance").option("value")) || 0;
-        const dexRevenue = parseFloat($("#DexRevenue").dxNumberBox("instance").option("value")) || 0;
-        setTimeout(calculateRevenueTotal, 300);
+    //  function calculateRevenueTotal() {
+    //     const dss15Revenue = parseFloat($("#Dss15Revenue").dxNumberBox("instance").option("value")) || 0;
+    //     const dexRevenue = parseFloat($("#DexRevenue").dxNumberBox("instance").option("value")) || 0;
+    //     setTimeout(calculateRevenueTotal, 300);
 
-        const total = dss15Revenue + dexRevenue;
+    //     const total = dss15Revenue + dexRevenue;
 
-        $("#RevenueTotal").dxNumberBox("instance").option("value", total.toFixed(2));
+    //     $("#RevenueTotal").dxNumberBox("instance").option("value", total.toFixed(2));
+    // }
+
+           function calculateRevenueTotal() {
+        var total =
+            (Number($("#DssRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#Dss15Revenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#GccRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#ExpRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#DexRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#DzrRevenue").dxNumberBox("instance").option("value")) || 0);
+
+        $("#RevenueTotal").dxNumberBox("instance").option("value", total);
     }
 
     // Call this on page load
@@ -1117,14 +1129,16 @@
               $("#ExpRevenue").dxNumberBox("instance").option("value", data[0].EXP_Revenue);
               $("#ExpCreditNote").dxNumberBox("instance").option("value", data[0].EXP_CreditNote);
               $("#DexCreditNote").dxNumberBox("instance").option("value", data[0].DEX_CreditNote);
-              $("#RevenueTotal").dxNumberBox("instance").option("value", data[0].RevenueTotal);
+               $("#RevenueTotal").dxNumberBox("instance").option("value", data[0].RevenueTotal);
+
               $("#CreditNoteTotal").dxNumberBox("instance").option("value", data[0].CreditNoteTotal);
               $("#DSSTotalSalesTax").dxNumberBox("instance").option("value", data[0].DSS_Total_SalesTax_BH);
               $("#DssPurchases").dxNumberBox("instance").option("value", data[0].DSS_Purchases);
               $("#DssDebitNote").dxNumberBox("instance").option("value", data[0].DSS_CreditNote);
               $("#DssPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_Pur_TaxAfterAdj);
               $("#DssPurchases15Perc").dxNumberBox("instance").option("value", data[0].DSS_Purchases15Perc);
-              $("#Dss15PerDebitNote").dxNumberBox("instance").option("value", data[0].DSS_DebitNote);
+              $("#Dss15Revenue").dxNumberBox("instance").option("value", data[0].DSS_15_Revenue);
+              $("#Dss15PerDebitNote").dxNumberBox("instance").option("value", data[0].DSS_15Per_DebitNote);
               $("#Dss15PerPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_15Per_Pur_TaxAfterAdj);
               $("#IPCPurchases").dxNumberBox("instance").option("value", data[0].IPC_Purchases);
               $("#IPCDebitNote").dxNumberBox("instance").option("value", data[0].IPC_DebitNote);
@@ -1149,8 +1163,12 @@
               $("#Dss15SalesTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_15_Sales_TaxAfterAdj);
                   $("#DSSTotalSalesTax").dxNumberBox("instance").option("value",
         (data[0].DSS_Sales_TaxAfterAdj || 0) + (data[0].DSS_15_Sales_TaxAfterAdj || 0)
+      
     );
+      $("#PurchaseTotal").dxNumberBox("instance").option("value", data[0].PurchaseTotal);
+          $("#DebitNoteTotal").dxNumberBox("instance").option("value", data[0].DebitNoteTotal);
 
+ 
 
             },
             error: function () {
@@ -1275,7 +1293,7 @@
         });
     });
      $(document).ready(function () {
-         debugger;
+         
                                 console.log('Start permission handling');
                                 // Form ID
                                                 var formId = "frm20166VATReturnsForm";

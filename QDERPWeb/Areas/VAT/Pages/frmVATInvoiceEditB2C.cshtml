@@ -636,7 +636,7 @@
 																.OpenOnFieldClick(true)
 																.ValueChangeEvent("input")
 																.HoverStateEnabled(true)
-																.ValueExpr("AccountHead")
+																.ValueExpr("AccountId")
 																.DisplayExpr("AccountId")
 																.OnInput("dropDownBoxOnInput")
 																.OnClosed("onDropDownBoxClosed")
@@ -804,6 +804,7 @@
 																.ValueExpr("BuyerIdtypeName")
 																.DisplayExpr("BuyerIdtypeName")
 																.Width("100%")
+																.Height(500)
 																.TabIndex(1)
 																.DropDownOptions(o => o.Width(700))
 																.OnKeyDown("onKeyDown")
@@ -1445,6 +1446,7 @@
                                   @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
 													                      .ID("VerifiedBy")
 																			.Value(null) // Default value
+																			.Visible(false)
 															.Disabled(true))
 								@(Html.DevExtreme().TextBox()
 																.Label(new JS("formatMessage('Verified By')"))
@@ -1452,6 +1454,7 @@
 																.ID("VerifiedBytext")
 																.Value(null) // Default value
 																.Disabled(true)
+																.Visible(false)
 																.Width("100%")
 																)
 
@@ -1552,6 +1555,7 @@
 																.ID("VerifiedOnDate")
 																.Value(null) // Default value
 																.Disabled(true)
+																.Visible(false)
 																.Width("100%")
 																)
 							</td>
@@ -1629,6 +1633,7 @@
                                 @(Html.DevExtreme().CheckBox().Text(new JS("formatMessage('Verified By')"))
 													                      .ID("ApprovedBy")
 																			.Value(null) // Default value
+																			.Visible(false)
 															.Disabled(true))
 
 								@(Html.DevExtreme().TextBox()
@@ -1637,6 +1642,7 @@
 																.ID("ApprovedBytext")
 																.Value(null) // Default value
 																.Disabled(true)
+																.Visible(false)
 																.Width("100%")
 											   								@* .Disabled(true) *@
 																)
@@ -1649,6 +1655,7 @@
 																.ID("ApprovedOntext")
 																.Value(null) // Default value
 																.Disabled(true)
+																.Visible(false)
 																.Width("100%")
 																)
 							</td>
@@ -1743,7 +1750,7 @@
 																.DisplayExpr("SellerIdtypeName")
 																.OnInput("dropDownBoxOnInput")
 																.OnOpened("onOpened")
-													  								//.Width(650)
+													  			.Height(500)					//.Width(650)
 																.TabIndex(1)
 																.DropDownOptions(o => o
 																.Width(600)
@@ -2542,7 +2549,7 @@
 											.Controller("VATModule")
 											.LoadAction("GetClientCode")
 											.LoadMode(DataSourceLoadMode.Raw)
-											.Key("AccountHead")
+											.Key("AccountId")
 											)
 											.WordWrapEnabled(true)
 											.ShowBorders(true)
@@ -3265,7 +3272,7 @@
 
 																		.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
 
-																		.Height(350)
+																		.Height(1000)
 																		.ColumnChooser(c => c
 																		.Enabled(true)
 																		.Title(new JS("formatMessage('Show/Hide Column')"))
@@ -3338,6 +3345,7 @@
 																	
 																	)
 }
+
 
 @using (Html.DevExtreme().NamedTemplate("CheckedByTemplate"))
 
@@ -3962,7 +3970,7 @@
 
 
 				function initializeDataGrid(rowData) {
-							debugger;
+							
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			dataSource: rowData,
 		   // keyExpr: "SNo",
@@ -4367,7 +4375,7 @@
 						let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
 						if (selectedItem) {
 							cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-							debugger;
+							
 							let grid = $("#B2BdataGrid").dxDataGrid("instance");
 							let rowIndex = grid.getRowIndexByKey(cellInfo.key);
 							if (rowIndex !== -1) {
@@ -4488,7 +4496,7 @@
 						let grid = $("#B2BdataGrid").dxDataGrid("instance");
 						let rowIndex = e.row.rowIndex;
 						rowIx=rowIndex;
-							debugger;
+							
 						let newValue = args.value;
 
 			let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -4547,7 +4555,7 @@
 	var rowData = []; // Store the grid data
 
 		$(function () {
-			debugger;
+			
 			dataGridInstance = $("#B2BdataGrid").dxDataGrid({
 
 				dataSource: rowData,
@@ -4696,6 +4704,15 @@
 						dataGrid.cellValue(rowIndex, "Qty", 1);
 						dataGrid.cellValue(rowIndex, "VAT%", "15%");
 						dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+
+						ItemNo = selectedItem.GSCode;
+				        Gsdescrpition = selectedItem.GSDescrpition;
+				        GsdescriptionAr = selectedItem.GsdescriptionAr;
+				        ItemPartNo = selectedItem.ItemPartNo;
+				        CostPrice = selectedItem.CostPrice;
+				        GssellingRate = selectedItem.GSSellingRate;
+				        ReorderQty = selectedItem.ReorderQty;
+				        UnitOfMeasure = selectedItem.UnitDescription;
 					}
 
 					e.component.close();
@@ -4721,13 +4738,10 @@
 		icon: "edit",
 		hint: "Edit item",
 		onClick: function () {
-			if (!selectedItemData || !selectedItemData.GSCode) {
-				DevExpress.ui.notify("Please select an item first", "warning", 2000);
-				return;
-			}
-
 			const selected = selectedItemData;
-			const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+
+			//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
 			openModal(url, "Goods and Services");
 		},
 		width: 60,
@@ -5415,7 +5429,7 @@
 			hideOnOutsideClick: true,
 			contentTemplate: function (contentElement) {
 				contentElement.empty();
-						   debugger;
+						   
 				// Get the latest amount value from somewhere accessible
 				let amount = window.currentAmount || 0; // Use a global variable or a shared scope
 
@@ -5564,7 +5578,7 @@
 			if (revaccheadid == null) {
 				revaccheadid = "L00343";
 			}
-			debugger;
+			
 			  let invoiceTypeText = $("#VATInvoiceType").dxDropDownBox("instance").option("value");
               let invoiceSubTypeText = $("#VATInvoiceSubType").dxDropDownBox("instance").option("value");
               
@@ -5722,7 +5736,7 @@
 			  function ClientCodedataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 				const ddbInstance = $("#ddclientcode").dxDropDownBox("instance");
-				debugger;
+				
 				if (selectedKey) {
 					ddbInstance.option("value", selectedKey);
 					 ddbInstance.close();
@@ -6166,7 +6180,7 @@
 
 						companyid = selectedRowData[0].CompanyId;
 							IsClientCode=true;
-						debugger;
+						
 									  $("#OurGroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SellerGroupVatnumber)
 									  $("#OurVATNo").dxTextBox("instance").option("value",selectedRowData[0].CompanyVatno)
 									   $("#OurCompanyRegisteredName").dxTextBox("instance").option("value",selectedRowData[0].CompanyName)
@@ -7468,7 +7482,7 @@
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 					let rowIndex = e.row.rowIndex;
 							rowIx=rowIndex;
-						debugger;
+						
 					let newValue = args.value;
 
 							let qty = e.dataField === "QuantityInvoiced" ? newValue : grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
@@ -8007,7 +8021,7 @@
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
-					debugger;
+					
 
 					// Get existing values or updated ones
 					let qty = grid.cellValue(rowIndex, "Qty") || 0;
@@ -9203,7 +9217,7 @@
 													url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
 													dataType: 'json',
 													success: function (data) {
-														debugger;
+														
 														const newRowData = data.map((item, index) => ({
 															SNo: index + 1,
 															...item
@@ -9309,7 +9323,7 @@
 
 
 	// 			function applyDiscount() {
-	// 			debugger;
+	// 			
 	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
 
 	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
@@ -9325,7 +9339,7 @@
 
 			function applyDiscount() {
 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
-			debugger;
+			
 			// Get values from UI
 			const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
 			const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
@@ -9448,7 +9462,7 @@
 				type: 'GET',
 				data: { accountID: accheadid },
 				success: function (result) {
-					debugger;
+					
 					// 1. Pick the first record regardless of the shape returned
 					const details = Array.isArray(result)
 						? result[0]
@@ -9749,7 +9763,7 @@
 
 		
 			$(async function () {
-				debugger;
+				
 			try {
 				const result = await fetch('/api/VATModule/GetRevenueDefaultEntry');
 				const data = await result.json();
@@ -9889,7 +9903,7 @@
     }
 
         function loadCurrencyGridOnOpen(e) {
-        debugger;
+        
         const dropDown = e.component;
         const baseCurrencyId = $("#ddlBaseCurrency").dxDropDownBox("instance").option("value");
 

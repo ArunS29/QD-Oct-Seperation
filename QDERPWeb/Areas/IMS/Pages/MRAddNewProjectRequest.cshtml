@@ -3435,7 +3435,17 @@
 							},
 
 
-							{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 },
+													{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 ,
+							editorOptions: {
+            onInput: function(e) {
+            let maxLength = 8;
+            let value = e.event.target.value;
+            if (value.length > maxLength) {
+                e.event.target.value = value.slice(0, maxLength);
+            }
+        }
+    } 
+},
 
 							{ dataField: "ExpectedUnitRate", caption: formatMessage('Expected Price'), width: 150 },
 
@@ -4041,7 +4051,17 @@
 					},
 
 
-					{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 },
+											{ dataField: "QtyRequested", caption: formatMessage('Qty'), width: 150 ,
+							editorOptions: {
+            onInput: function(e) {
+            let maxLength = 8;
+            let value = e.event.target.value;
+            if (value.length > maxLength) {
+                e.event.target.value = value.slice(0, maxLength);
+            }
+        }
+    } 
+},
 
 					{ dataField: "ExpectedUnitRate", caption: formatMessage('Expected Price'), width: 150 },
 
@@ -7623,7 +7643,7 @@ function onIMSAttachmentButtonClick() {
 		}
 
 		function dataGridTaxCurrencyHeadSelectionChanged(e) {
-			debugger;
+			
 			const selectedKey = e.selectedRowKeys[0];
 			const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
 

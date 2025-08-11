@@ -310,7 +310,7 @@
                 data: { depreciationdocno: voucherNoFromUrl },
                 success: function (data) {
                      // optional check
-                     debugger;
+                     
                     if (data) {
                         $("#Docno").dxTextBox("instance").option("value", data[0].DepreciationDocNo);
                         $("#StartDate").dxDateBox("instance").option("value", data[0].DeprStartDate);
@@ -374,7 +374,7 @@
         }));
     });
      function generateDepreciationAndReload() {
-         debugger;
+         
         const startDateBox = $("#StartDate").dxDateBox("instance");
         const endDateBox = $("#EndDate").dxDateBox("instance");
         const docNoBox = $("#Docno").dxTextBox("instance");
