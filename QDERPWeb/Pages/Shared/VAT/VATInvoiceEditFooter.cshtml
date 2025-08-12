@@ -585,8 +585,8 @@
         }
 
         function navigateInventoryListtoUpload() {
-            // Replace with the actual tenant name dynamically
-            var url = `/${tenantName}/VAT/InventoryListtoUpload`;
+            var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+            var url = `/${tenantName}/VAT/InvoiceUpload?invoiceNo=${invoiceNo}`;
             window.location.href = url; // Navigate to the page
         }
 

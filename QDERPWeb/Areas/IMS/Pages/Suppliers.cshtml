@@ -11,6 +11,11 @@
 }
 <link rel="stylesheet" href="~/css/animationCard.css" />
 <style>
+    .dx-icon-image {
+        cursor: pointer;
+        font-size: 30px !important;
+        color: rgb(0, 123, 255) !important;
+    }
     .header-box {
         background-color: #3c8dbc;
         color: white;
@@ -221,32 +226,15 @@
         columns.Add().DataField("ContactRemarks").Caption(new JS("formatMessage('Contact Remarks')")).Visible(false);
         //columns.Add().DataField("BusinessCard1").Caption(new JS("formatMessage('Business Card 1')")).Visible(false);
         //columns.Add().DataField("BusinessCard2").Caption(new JS("formatMessage('Business Card 2')")).Visible(false);
-            // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1").Visible(false)
+            .Alignment(HorizontalAlignment.Center)
             .Caption(new JS("formatMessage('Business Card 1')"))
-            .CellTemplate(new JS(@"
-    function(cellElement, cellInfo) {
-    if (cellInfo.value) {
-    $('<img>')
-    .attr('src', cellInfo.value)
-    .css({ width: '100px', height: 'auto' })
-    .appendTo(cellElement);
-    }
-    }
-    "));
+            .CellTemplate(new JS("function(cellElement, cellInfo) { addImageTooltip(cellElement, cellInfo.value); }"));
 
             columns.Add().DataField("DecodedBusinessCard2").Visible(false)
+            .Alignment(HorizontalAlignment.Center)
             .Caption(new JS("formatMessage('Business Card 2')"))
-            .CellTemplate(new JS(@"
-    function(cellElement, cellInfo) {
-    if (cellInfo.value) {
-    $('<img>')
-    .attr('src', cellInfo.value)
-    .css({ width: '100px', height: 'auto' })
-    .appendTo(cellElement);
-    }
-    }
-    "));
+            .CellTemplate(new JS("function(cellElement, cellInfo) { addImageTooltip(cellElement, cellInfo.value); }"));
         columns.Add().DataField("IsDiscontinued").Caption(new JS("formatMessage('Is Discontinued')")).Visible(false);
         columns.Add().DataField("ReasonDiscontinued").Caption(new JS("formatMessage('Reason Discontinued')")).Visible(false);
         columns.Add().DataField("CreatedBy").Caption(new JS("formatMessage('Created By')")).Visible(false);
@@ -474,6 +462,32 @@
 
     // Auto-start animation for "Today"
     animateCount(countEls[0], counts[0]);
+
+    function addImageTooltip(cellElement, imageUrl) {
+        if (!imageUrl) return;
+
+        var iconId = 'tooltip-icon-' + Math.random().toString(36).substr(2, 9);
+
+        // Create icon
+        $('<i>')
+            .attr('id', iconId)
+            .addClass('dx-icon dx-icon-image')
+            .css({ cursor: 'pointer', fontSize: '30px', color: '#007bff' })
+            .appendTo(cellElement);
+
+        // Create tooltip
+        $('<div>')
+            .append($('<img>').attr('src', imageUrl).css({ width: '200px', height: 'auto' }))
+            .dxTooltip({
+                target: '#' + iconId,
+                showEvent: 'click',
+                hideEvent: 'mouseleave',
+                position: 'bottom',
+                closeOnOutsideClick: true
+            })
+            .appendTo(cellElement);
+    }
+
 </script>
 
 

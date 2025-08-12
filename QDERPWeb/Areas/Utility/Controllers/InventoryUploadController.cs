@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Newtonsoft.Json;
+using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
 using System.ComponentModel.DataAnnotations;
 using System.Text.Json.Serialization;
 
@@ -63,6 +65,16 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
             public int GSGroupID { get; set; }
         }
 
+        public class MprNoRequest
+        {
+            public string RequestNo { get; set; }
+            public byte TypeOfMpr { get; set; }
+            public DateTime? Mprdate { get; set; }
+            public string ClientCode { get; set; }
+            public string RequestedBy { get; set; }
+            public string RequesterContactEmail { get; set; }
+            public string RequesterContact { get; set; }
+        }
         public class UploadItemDto
         {
             public string GSCode { get; set; }
@@ -113,7 +125,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 return Unauthorized("Invalid tenant.");
             }
 
-            if (string.IsNullOrEmpty(request.GSGroupCode))
+            if (request.GSGroupID == 0)
             {
                 return BadRequest(new { success = false, message = "GSGroupCode is required." });
             }
@@ -123,7 +135,11 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 _logger.LogWarning("UploadStock request contains an empty Items array.");
                 return BadRequest(new { success = false, message = "At least one item is required." });
             }
-
+            
+            var code = dbContext.Tbl20165GoodsAndServicesGroups
+                    .Where(x => x.GsgroupId == request.GSGroupID)
+                    .Select(x => x.GsgroupCode)
+                    .FirstOrDefault();
             foreach (var item in request.Items)
             {
                 if (string.IsNullOrEmpty(item.GSDescription))
@@ -209,7 +225,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                         "EXEC sp600_21InventoryUploading_Safe @p0, @p1, @p2, @p3, @p4, @p5, @p6",
                         new object[]
                         {
-                            request.GSGroupCode,
+                            code,
                             0,
                             0,
                             "System",
@@ -234,176 +250,69 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
             return Ok(new { success = true });
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> UpdateToPurchaseRqstChild([FromBody] RequestChildBulk request)
+        public async Task<IActionResult> SaveMprno([FromBody] PurchaseRequestViewModel request)
         {
+            // Validate tenant context
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
                 return Unauthorized(new { success = false, message = "Invalid tenant context." });
-
-            if (string.IsNullOrEmpty(request.RequestNo) || request.Items == null || !request.Items.Any())
-                return BadRequest(new { success = false, message = "RequestNo and items are required." });
-
-           
-
-            var insertedItems = new List<object>();
-            //int index = 0;
-
-            foreach (var RC in request.Items)
-            {
-
-
-                //index++;
-
-                //string gsCodeToUse = string.IsNullOrWhiteSpace(RC.GSCode)
-                //? $"GS-{request.RequestNo}-{index:D3}"
-                //: RC.GSCode.Trim();
-
-                var newChild = new Tbl60602purchaseRequestChild
-                {
-                    Mprno = request.RequestNo,
-                    Gscode = RC.GSCode,
-                    QtyRequested = RC.QtyRequested,
-                    UnitRateMethod = RC.UnitRateMethod,
-                    ItemRemarks = RC.ItemRemarks,
-                    LineOrderNo = RC.LineOrderNo,
-                    AddlDescription = RC.AddlDescription,
-                    PlanNo = RC.PlanNo,
-                    DeliveryPeriod = RC.DeliveryPeriod,
-                    ItemReqPurpose = RC.ItemReqPurpose,
-                    ItemReqPriority = RC.ItemReqPriority,
-                    ItemReqExpectedDate = RC.ItemReqExpectedDate,
-                    ExpectedUnitRate = RC.ExpectedUnitRate,
-                    QuoteGroupItemSlNo = RC.QuoteGroupItemSlNo
-                };
-
-                //await dbContext.Tbl60602purchaseRequestChildren.AddAsync(newChild);
             }
 
-
-
-
-            try
+            // Validate MPR number
+            if (string.IsNullOrEmpty(request.Mprno))
             {
-                var result = await dbContext.SaveChangesAsync();
-                _logger.LogInformation($"SaveChangesAsync result: {result}");
-
-                if (result == 0)
-                {
-                    return BadRequest(new { success = false, message = "No records were saved to the database." });
-                }
-                else
-                {
-                    var existingMaster = await dbContext.Tbl60601purchaseRequestMasters
-                               .AsNoTracking()
-                               .FirstOrDefaultAsync(x => x.Mprno == request.RequestNo);
-
-                    if (existingMaster == null)
-                    {
-                        dbContext.Tbl60601purchaseRequestMasters.Add(new Tbl60601purchaseRequestMaster
-                        {
-                            Mprno = request.RequestNo
-                        });
-
-                        var masterSaveResult = await dbContext.SaveChangesAsync();
-                        _logger.LogInformation($"Master SaveChangesAsync result: {masterSaveResult}");
-                    }
-
-
-                    return Ok(new { success = true, message = "Child records inserted successfully." });
-                }
-                    
+                return BadRequest(new { success = false, message = "MPR No. is required." });
             }
-            catch (DbUpdateException dbEx)
+
+            // Retrieve MPR master record
+            var master = await dbContext.Tbl60601purchaseRequestMasters.FirstOrDefaultAsync(x => x.Mprno == request.Mprno);
+            if (master == null)
             {
-                _logger.LogError(dbEx, "Database update failed.");
-                return StatusCode(500, new
+                dbContext.Tbl60601purchaseRequestMasters.Add(new Tbl60601purchaseRequestMaster
                 {
-                    success = false,
-                    message = "Database update failed.",
-                    details = dbEx.InnerException?.Message ?? dbEx.Message
+                    Mprno = request.Mprno,
+                    Mprdate = request.Mprdate,
+                    ClientCode = request.ClientCode,
+                    RequestedBy = request.RequestedBy,
+                    RequesterContactEmail = request.RequesterContactEmail,
+                    RequesterContact = request.RequesterContact,
+                    ModeOfRequest = Convert.ToByte(request.ModeOfRequest),
+                    TypeOfRequest = Convert.ToByte(request.TypeOfRequest),
+                    SalesPersonCode = request.SalesPersonCode,
+                    ClientRefNo = request.ClientRefNo,
+                    PurposeOfRequest = request.PurposeOfRequest,
+                    Priority = request.Priority,
+                    CostCenterText = request.CostCenterText,
+                    ExpectedDate = request.ExpectedDate,
+                    ExpectedVatrate = Convert.ToByte(request.ExpectedVatrate),
+                    Remarks = request.Remarks,
+                    CompanyBranch = Convert.ToByte(request.CompanyBranch),
+                    PurchaseRequestStatusId = Convert.ToByte(request.PurchaseRequestStatusId),
+                    InventoryMasterGroupId = Convert.ToByte(request.InventoryMasterGroupId),
+                    ProjectMasterCode = request.ProjectMasterCode,
+                    BidClosingDate = request.BidClosingDate,
+                    BidReminderOn = request.BidReminderOn,
+                    ClientProject = request.ClientProject,
+                    RequestSignatory = request.RequestSignatory,
+                    MprverifiedSign = request.MprverifiedSign,
+                    MprapprovedSign = request.MprapprovedSign,
+                    ProjectSubUnitCode = Convert.ToByte(request.ProjectSubUnitCode),
+                    StoreCode = request.StoreCode,
+                    TypeOfMpr = Convert.ToByte(request.TypeOfMpr),
+                    CurrencyId = request.CurrencyId ?? 1,
+                    CurrencyRate = request.CurrencyRate ?? 1,
+                    BaseCurrencyId = request.BaseCurrencyId ?? 1,
                 });
             }
-            catch (Exception ex)
+            
+            await dbContext.SaveChangesAsync();
+            
+            return Ok(new
             {
-                _logger.LogError(ex, "Unhandled exception.");
-                return StatusCode(500, new
-                {
-                    success = false,
-                    message = "Unexpected error occurred.",
-                    details = ex.Message
-                });
-            }
-
-
-
-
-
-        }
-
-
-
-
-        public class RequestChildBulk
-        {
-            public string RequestNo { get; set; }
-            public List<RequestChild> Items { get; set; }
-        }
-
-
-
-
-        public class RequestChild
-        {
-            public string MPRNo { get; set; }
-            public string GSCode { get; set; }
-            public decimal QtyRequested { get; set; }
-            public byte? UnitRateMethod { get; set; }
-            public string ItemRemarks { get; set; }
-            public int? LineOrderNo { get; set; }
-            public string AddlDescription { get; set; }
-            public string PlanNo { get; set; }
-            public string DeliveryPeriod { get; set; }
-            public string ItemReqPurpose { get; set; }
-            public string ItemReqPriority { get; set; }
-            public DateTime? ItemReqExpectedDate { get; set; }
-            public decimal? ExpectedUnitRate { get; set; }
-            public long? QuoteGroupItemSlNo { get; set; }
-        }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        [HttpGet]
-        public IActionResult GetGSGroupCode(int gsgroupId)
-        {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-            {
-                var code = dbContext.Tbl20165GoodsAndServicesGroups
-                    .Where(x => x.GsgroupId == gsgroupId)
-                    .Select(x => x.GsgroupCode)
-                    .FirstOrDefault();
-
-                if (string.IsNullOrEmpty(code))
-                    return NotFound("GSGroupCode not found for the given GSGroupID.");
-
-                return Ok(code);
-            }
-
-            return Unauthorized("Tenant context not resolved.");
+                success = true,
+                message = "MPR saved successfully.",
+            });
         }
     }
 }
