@@ -110,14 +110,14 @@
     }
 </style>
 
-@* <div class="title">
+<div class="title">
     <div class="header-container">
         <div id="ClientCategory" class="no-border-title"></div>
     </div>
-</div> *@
+</div> 
 @* <div class="sathish-container-top"> *@
 <div class="content-container-top">
-    <div style="display:flex; align-items :end; padding:0px;">
+    <div style="display:flex; align-items :end; padding:0px;gap:18px;">
             @(Html.DevExtreme().TextBox()
                         .ID("txtClientCategory")
                         .Label(new JS("formatMessage('Type a New Client & Add to the Existing List:')"))

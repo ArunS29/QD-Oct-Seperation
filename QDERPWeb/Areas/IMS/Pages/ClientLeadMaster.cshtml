@@ -5,8 +5,6 @@
     ViewData["Title"] = "Asset View";
 }
 
-
-
 <style>
 
     /* Ensure tab text is styled properly */
@@ -134,13 +132,23 @@
             position: absolute;
         }
 
+    #ClientTabs .dx-tabpanel-tabs {
+        display: flex !important;
+    }
+
+    #ClientTabs .dx-tab {
+        flex-grow: 1;
+        max-width: none;
+    }
+
+
 </style>
-<meta charset="UTF-8">
-@* <div class="title">
+@*<meta charset="UTF-8">*@
+ <div class="title">
     <div class="header-container">
         <div id="ClientMaster" class="no-border-input"></div>
     </div>
-</div> *@
+</div> 
 <div class="form-container1">
     <div style="display:flex; align-items:end; gap:10px;  padding: 2px 13px;">
         @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").Width(310).ReadOnly(true).Label(new JS("formatMessage('Client Code')"))
@@ -192,7 +200,7 @@
                     </div>
     
 
-    <div class="form-container">
+    <div class="form-container" style="margin:0px 10px">
 
         <!-- Tab Menu -->
         @(
@@ -245,7 +253,7 @@
                 <div class="form-row">
                         <div class="col-md-12">
                         @(Html.DevExtreme().TextArea().ID("ClientAddress").Label(new JS("formatMessage('Client Address')"))
-                        .LabelMode(EditorLabelMode.Floating).ElementAttr(new { style = "height: 70px !important;" }))
+                        .LabelMode(EditorLabelMode.Floating).ElementAttr(new { style = "height: 70px !important;width: 1090px;" }))
                         </div>
                 </div>
                 <div class="form-row">
@@ -341,7 +349,7 @@
                   
                     <div class="col-md-12">
                         @(Html.DevExtreme().TextArea().ID("Remarks").Label(new JS("formatMessage('Remarks')"))
-                        .LabelMode(EditorLabelMode.Floating).Height(60))
+                        .LabelMode(EditorLabelMode.Floating).Height(60).Width(1090))
                     </div>
                 </div>
             </div>
@@ -477,20 +485,14 @@
             )
 
     </div>
-    <div class="footer-fixed" style="display:flex;height:45px;">
-        <div class="col-md-2">
-            @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("onSaveClientMasterClick"))
+    <div class="footer-fixed" style="display:flex;gap:8px;height:45px;padding:1px 10px;">
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("onSaveClientMasterClick"))
 
-        </div>
-        <div class="col-md-2">
-            @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).OnClick("function() { saveAndClose(); }"))
-        </div>
-        <div class="col-md-2">
-            @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
-        </div>
-        <div class="col-md-2">
-            @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("GoBack"))
-        </div>
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).OnClick("function() { saveAndClose(); }"))
+
+        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
+
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("GoBack"))
     </div>
 </div>
 @using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
@@ -1237,7 +1239,7 @@ ContactRemarks:clientRemarks,
 
  function redirectToClientCategory() {
         let url = `/${tenantName}/IMS/ClientCategory1`;
-            let title = "Client Category";
+            let title = " ";
         openModal(url, title ,"","80%");
         refreshClientCategorySelectBox()
     }
