@@ -173,7 +173,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4 col-12">
+                <div class="col-md-2 col-12">
                     <div class="form-group">
                         @(Html.DevExtreme().NumberBox()
                             .Label(new JS("formatMessage('AmountinSAR')"))
@@ -185,68 +185,129 @@
                             .Min(0)
                             .Max(99999999) 
                             .Format("###,###,###,##0.00")
-                            .InputAttr(new { type = "number", step = "1.00", maxLength = 16, autocomplete = "off" })
+                             .InputAttr(new
+                                                {
+                                                    type = "number",
+                                                    step = "0.01",
+                                                    style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                                    maxLength = 16,
+                                                    autocomplete = "off"
+                                                })
+                            .Step(1)
+                        )
+                    </div>
+                </div>
+                <div class="col-md-2 col-12">
+                    <div class="form-group">
+                        @(Html.DevExtreme().NumberBox()
+                            .Label("CVR Amount")
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("OriginalAmount")
+                            .Width("100%")
+                            .Value(0)
+                            .ShowSpinButtons(true)
+                            .Min(0)
+                            .Max(99999999) 
+                            .Disabled(true)
+                            .Format("###,###,###,##0.00")
+                             .InputAttr(new
+                                                {
+                                                    type = "number",
+                                                    step = "0.01",
+                                                    style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                                    maxLength = 16,
+                                                    autocomplete = "off"
+                                                })
                             .Step(1)
                         )
                     </div>
                 </div>
             </div>
 
-            <!-- Currency Row -->
-            <div class="row" style="margin-top:16px;">
-                <div class="col-md-4 col-12">
-                    <div class="form-group">
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("txtbasecurrency")
-                            .Label("Base Currency")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .DataSource(d => d.WebApi()
-                                .Controller("Utility")
-                                .LoadAction("GetCurrencyList")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("CurrencyID"))
-                            .Value("SAR")
-                            .ValueExpr("CurrencyID")
-                            .DisplayExpr("CurrencyName")
-                            .Placeholder("Select Base Currency")
-                            .Width("100%")
+        <!-- Currency Row -->
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                     @(Html.DevExtreme().DropDownBox()
+                        .ID("ddlcheckBaseCurrency")
+                        .DataSource(d => d.WebApi()
+                            .Controller("Utility")
+                            .LoadAction("GetCurrencyList")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("CurrencyExchangeId")
                         )
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-12">
-                    <div class="form-group">
-                        @(Html.DevExtreme().SelectBox()
-                            .ID("txttxcurrency")
-                            .Label("Convertion Currency")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .DataSource(d => d.WebApi()
-                                .Controller("Utility")
-                                .LoadAction("GetCurrencyList")
-                                .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("CurrencyID"))
-                            .Value("SAR")
-                            .ValueExpr("CurrencyID")
-                            .DisplayExpr("CurrencyName")
-                            .Placeholder("Select To Currency")
-                            .Width("100%")
-                        )
-                    </div>
-                </div>
-
-                <div class="col-md-4 col-12">
-                    <div class="form-group">
-                        @(Html.DevExtreme().TextBox()
-                            .Label("Convertion Rate")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .ID("txtchequeCurrencyRate")
-                            .Value("")
-                            .Placeholder("Enter convertion Rate")
-                            .Width("100%")
-                        )
-                    </div>
+                        .ValueExpr("CurrencyExchangeId")
+                        .DisplayExpr("CurrencyName")
+                        // now use your renamed variable
+                        .Value(null)
+                        .Label(new JS("formatMessage('Base Currency')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+                        .ShowClearButton(true)
+                        .AcceptCustomValue(false)
+                        .DropDownOptions(o => o.Width(300))
+                        .ReadOnly(true)
+        
+                        .ElementAttr(new { @class = "custom-disabled-selectbox" })
+                    )
+                    
                 </div>
             </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                     @(Html.DevExtreme().DropDownBox()
+                                                .Label(new JS("formatMessage('Convertion Currency')"))
+                                                .DataSource(d => d.WebApi()
+                                                .Controller("Utility")
+                                                .LoadAction("GetCurrencyList")
+                                                .LoadMode(DataSourceLoadMode.Raw)
+                                                .Key("CurrencyExchangeId")
+                                                )
+                                                .ValidationRules(rules => rules.AddRequired().Message("Please select a currency."))
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .ID("ddchequeCurrency")
+                                                .ShowClearButton(false)
+                                                .AcceptCustomValue(false)
+                                                .OpenOnFieldClick(true)
+                                                .TabIndex(6)
+                                                .Value(null)
+                                                .ValueExpr("CurrencyExchangeId")
+                                                .DisplayExpr("CurrencyName")
+                                                .OnInput("dropDownBoxOnInput")
+                                                .OnOpened("loadCurrencyGridOnOpen")
+                                                .DropDownOptions(o => o.Width(700))
+                                                .ElementAttr(new { @class = "light-theme-input" })
+                                                .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
+                                                .ReadOnly(true)
+                                                //.OnInitialized("onBaseCurrencyInit")
+                                                )
+                </div>
+            </div>
+
+            <div class="col-md-4">
+                <div class="form-group">
+                    @(Html.DevExtreme().NumberBox()
+                                                .Label("CVR")
+                                                .LabelMode(EditorLabelMode.Floating)
+                                                .ID("txtchequeCurrencyRate")
+                                                .Value(1)
+                                                .Min(0)
+                                                .Max(99999)
+                                                .TabIndex(7)
+                                                .Format("#,##0.00")
+                                                .InputAttr(new
+                                                {
+                                                    style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
+                                                    type = "number",
+                                                    step = "0.01"
+                                                })
+                                                .ElementAttr(new { @class = "white-box" })
+                                                .ReadOnly(true)
+                                                )
+                </div>
+            </div>
+        </div>
 
             <!-- Button Row -->
             <div class="footer-fixed">
@@ -332,19 +393,15 @@
 
     // Function to save cheque details
     function saveChequeDetails(chequeNo, voucherNo) {
-           var baseCurrency = $("#txtbasecurrency").dxSelectBox("instance");
-    if (!baseCurrency) {
-        DevExpress.ui.notify("Base Currency dropdown is not initialized.", "error", 2000);
-        return;
-    }
+         
      var data = {
         "ChequeNo": chequeNo,
         "VoucherNo": voucherNo,
         "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
         "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
-        "currencyid": $("#txttxcurrency").dxSelectBox("instance").option("value"),
-        "Currencyrate": $("#txtchequeCurrencyRate").dxTextBox("instance").option("value"),
-        "basecurrencyid": baseCurrency.option("value")
+        "ChequeAmount": $("#AmountinSAR").dxNumberBox("instance").option("value"),
+        "AmountInEnglish": $("#AmountinWords").dxTextBox("instance").option("value"),
+         "ChequeFavourOf": $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value"),
     };
 
         
@@ -509,19 +566,15 @@
 
 
     function saveCloseChequeDetails(chequeNo, voucherNo) {
-           var baseCurrency = $("#txtbasecurrency").dxSelectBox("instance");
-    if (!baseCurrency) {
-        DevExpress.ui.notify("Base Currency dropdown is not initialized.", "error", 2000);
-        return;
-    }
+          
          var data = {
         "ChequeNo": chequeNo,
         "VoucherNo": voucherNo,
         "ChequeDate": $("#ChequeDate").dxDateBox("instance").option("value"),
         "PlaceOfIssue": $("#PlaceofIssue").dxTextBox("instance").option("value"),
-        "currencyid": $("#txttxcurrency").dxSelectBox("instance").option("value"),
-        "Currencyrate": $("#txtchequeCurrencyRate").dxTextBox("instance").option("value"),
-        "basecurrencyid": baseCurrency.option("value")
+        "ChequeAmount": $("#AmountinSAR").dxNumberBox("instance").option("value"),
+        "AmountInEnglish": $("#AmountinWords").dxTextBox("instance").option("value"),
+         "ChequeFavourOf": $("#ChequeIssuedinfavourof").dxTextBox("instance").option("value"),
     };
 
         $.ajax({

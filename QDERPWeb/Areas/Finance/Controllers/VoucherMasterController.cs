@@ -1434,23 +1434,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 try
                 {
+                    var userName = HttpContext.Session.GetString("UserName");
+                    var now = DateTime.Now;
+
                     var existingVoucher = await dbContext.Tbl20113ChequeMasters
-                                                        .FirstOrDefaultAsync(v => v.ChequeNo == CM.ChequeNo);
+                                                         .FirstOrDefaultAsync(v => v.ChequeNo == CM.ChequeNo);
 
                     if (existingVoucher != null)
                     {
-
                         // Update existing record
                         dbContext.Entry(existingVoucher).CurrentValues.SetValues(CM);
+
+                        existingVoucher.ModifiedBy = userName;
+                        existingVoucher.ModifiedOn = now;
+
                         await dbContext.SaveChangesAsync();
-                        return Ok(new { success = true, message = "Cheque Information Updated sucessfully!" });
+                        return Ok(new { success = true, message = "Cheque Information Updated successfully!" });
                     }
                     else
                     {
                         // Insert new record
+                        CM.AddedBy = userName;
+                        CM.AddedOn = now;
+
                         dbContext.Tbl20113ChequeMasters.Add(CM);
                         await dbContext.SaveChangesAsync();
-                        return Ok(new { success = true, message = "Cheque Information Saved sucessfully!" });
+                        return Ok(new { success = true, message = "Cheque Information Saved successfully!" });
                     }
                 }
                 catch (Exception ex)
@@ -1460,6 +1469,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         [HttpGet]
@@ -2147,33 +2157,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var records = await dbContext.Tbl201VoucherEntries
                                                 .Where(v => v.VoucherNo == VoucherNo)
                                                 .ToListAsync();
-                    var master = await dbContext.Tbl201VoucherMasters
-                                                .Where(v => v.VoucherNo == VoucherNo)
-                                                .ToListAsync();
-                    var cost = await dbContext.Tbl201CostAllocationMasters
-                                                .Where(v => v.VoucherNo == VoucherNo)
-                                                .ToListAsync();
-                    var property = await dbContext.Tbl20122PropertyAllocationMasters
-                                                .Where(v => v.VoucherNo == VoucherNo)
-                                                .ToListAsync();
-                    var employee = await dbContext.Tbl20104EmployeeAllocationMasters
-                                                .Where(v => v.VoucherNo == VoucherNo)
-                                                .ToListAsync();
-                    var subledger = await dbContext.Tbl201SubLedgerMasters
-                            .Where(v => v.VoucherNo == VoucherNo)
-                            .ToListAsync();
+
                     if (records == null || !records.Any())
                     {
                         return NotFound(new { message = "No records found for the provided VoucherNo!" });
                     }
 
                     // Remove all matching records
-                    dbContext.Tbl201VoucherMasters.RemoveRange(master);
                     dbContext.Tbl201VoucherEntries.RemoveRange(records);
-                    dbContext.Tbl201CostAllocationMasters.RemoveRange(cost);
-                    dbContext.Tbl20122PropertyAllocationMasters.RemoveRange(property);
-                    dbContext.Tbl20104EmployeeAllocationMasters.RemoveRange(employee);
-                    dbContext.Tbl201SubLedgerMasters.RemoveRange(subledger);
                     await dbContext.SaveChangesAsync();
                     // ✅ Log the deletion action
                     await _userActionLogger.LogAsync(
@@ -3307,7 +3298,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 UnitRate = child.UnitRate, // Ensure null safety
                                 DetailedDescription = child.DetailedDescription, // Null safety
                                 QuantityDebited = child.QuantityDebited, // Null safety
-                                TaxSlabCode = child.TaxSlabCode ?? (byte)2,
+                                TaxSlabCode = child.TaxSlabCode ?? (byte)8,
                                 UnitsToDebited = 1,
                                 Discount = child.Discount,
                                 UnitRateInOc = child.UnitRate,
@@ -3638,6 +3629,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetChequeDetailsByVoucherNo(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var cheque = await dbContext.Tbl20113ChequeMasters
+                    .FirstOrDefaultAsync(c => c.VoucherNo == voucherNo);
+
+                if (cheque != null)
+                    return Ok(cheque);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
 
     }
 
