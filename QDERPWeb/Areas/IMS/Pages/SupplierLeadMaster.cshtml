@@ -285,22 +285,26 @@
                     <div class="form-row">
                         <div class="col-md-6">
                             @(Html.DevExtreme().TextBox().ID("MobileNumber1").Label(new JS("formatMessage('Mobile Number (1)')"))
-                                                    .LabelMode(EditorLabelMode.Floating))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
                                                                                      </div>
                                                                                      <div class="col-md-6">
                             @(Html.DevExtreme().TextBox().ID("PhoneNumber1").Label(new JS("formatMessage('Phone No (1)')"))
-                                                    .LabelMode(EditorLabelMode.Floating))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
                                                                                      </div>
                                                                                  </div>
 
                     <div class="form-row">
                         <div class="col-md-6">
                             @(Html.DevExtreme().TextBox().ID("MobileNumber2").Label(new JS("formatMessage('Mobile Number (2)')"))
-                                                    .LabelMode(EditorLabelMode.Floating))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
                                                                                      </div>
                                                                                      <div class="col-md-6">
                             @(Html.DevExtreme().TextBox().ID("PhoneNumber2").Label(new JS("formatMessage('Phone No (2)')"))
-                                                    .LabelMode(EditorLabelMode.Floating))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" }))
                                                                                      </div>
 
                     </div>
@@ -311,7 +315,8 @@
                                                                                      </div>
                                                                                      <div class="col-md-6">
                             @(Html.DevExtreme().TextBox().ID("Email").Label(new JS("formatMessage('Email')"))
-                                                    .LabelMode(EditorLabelMode.Floating))
+                                                    .LabelMode(EditorLabelMode.Floating)
+                                                    .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')"))))
                                                                                      </div>
                                                                                  </div>
 
@@ -849,7 +854,7 @@
                                 }
                             }
                             //$('#modalIframe').modal('hide');
-                            setTimeout(() => window.location.reload(), 2000);
+                       
                         } else {
                             DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                         }
@@ -1001,7 +1006,7 @@
                             onItemClick: function () {
                                 let tenantName = window.tenantName || "defaultTenant";
                                 let url = `/${tenantName}/IMS/SupplierContactList?supplierCode=${encodeURIComponent(SupplierCode)}&supplierName=${encodeURIComponent(supplierName)}`;
-                                let title = `Edit Client - ${SupplierContactSlNo}`;
+                                let title = `Contact List`;
                                 openModal(url, title);
                             }
                         },
@@ -1010,7 +1015,7 @@
                         onItemClick: function () {
                             let tenantName = window.tenantName || "defaultTenant";
                              let url = `/${tenantName}/IMS/SupplierContactList?SupplierContactSlNo=${SupplierContactSlNo}&supplierName=${encodedSupplierName}`
-                            let title = `Edit Client - ${SupplierContactSlNo}`;
+                            let title = `Contact List`;
                             openModal(url, title);
                         }
                     },
@@ -1054,7 +1059,7 @@
             // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
             var url = `/${tenantName}/IMS/SupplierContactList?supplierCode=${encodeURIComponent(supplierCode)}&supplierName=${encodeURIComponent(supplierName)}`;
 
-            var title = `Contact List  ${supplierName}`;
+            var title = `Contact List`;
 
             openModal(url, title);
         }
@@ -1192,4 +1197,18 @@
                 }
             });
         });
+
+         $(function () {
+            const dateBox = $("#ClientVisitedOn").dxDateBox("instance");
+
+        // When focus/typing starts, change to dd-MM-yyyy
+            $("#ClientVisitedOn").on("focusin", function () {
+            dateBox.option("displayFormat", "dd-MM-yyyy");
+        });
+
+        // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#ClientVisitedOn").on("focusout", function () {
+            dateBox.option("displayFormat", "dd-MMM-yyyy");
+        });
+    });
 </script>

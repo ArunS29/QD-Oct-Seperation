@@ -1,11 +1,7 @@
 ﻿@page
-@model QD.ERP.Web.Areas.ERM.Pages.PropertyCategoryModel
-@{
-}
+@model QD.ERP.Web.Areas.ERM.Pages.PropertyTypeModel
 
 <style type="text/css">
-
-
 	.overlay {
 		display: none;
 		position: fixed;
@@ -27,10 +23,7 @@
 	}
 
 	/* Ensure text in grid headers is always centered */
-	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
-		white-space: normal !important;
-		text-align: center !important;
-	}
+
 
 	/* Ensure column headers text aligns to center */
 	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
@@ -66,6 +59,10 @@
 		font-size: 30px;
 		cursor: pointer;
 	}
+
+
+
+
 	/* Toolbar Styling */
 	.custom-toolbar {
 		display: flex;
@@ -111,17 +108,6 @@
 			box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
 			border-color: #508ae1 !important;
 		}
-
-	#dataGrid .dx-header-row .dx-datagrid-text-content {
-		font-weight: bold;
-		color: black;
-	}
-
-
-	.dx-datagrid-header-panel {
-		background-color: #909ead00;
-		/* display:none; */
-	}
 
 	.no-border-input {
 		border: none !important;
@@ -172,22 +158,33 @@
 		display: none;
 	}
 </style>
-<div style="padding: 5px;">
+
+@* <div class="title">
+	<div class="header-container">
+		<div id="ItemClassification" class="no-border-input"></div>
+	</div>
+</div> *@
+<!-- Filter/Info Section -->
+
+
+<div class="dx-fieldset">
 	<div class="store-master-container">
+		<!-- Store Name Input -->
 		<div>
 			<div>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
-										.ID("PropertyCategoryInput")
+										.ID("propertytype")
+										.Label(new JS("formatMessage('Type a New Property & Add to the Existing List')"))
+										.LabelMode(EditorLabelMode.Floating)
 										.Width("70%")
-										.Label(new JS("formatMassage('Type new Property Category & Add to the Existing List:')"))
-										.Placeholder("Type new Property Catergory")
 										)
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-												.ID("addPropertCategoryBtn")
+												.ID("Addproperty")
 												.Text(new JS("formatMessage('Add')"))
 												.Type(ButtonType.Success)
+												.ElementAttr(new { @class = "custom-ui-button" })
 												.Icon("plus")
 												.Width("100%")
 												)
@@ -210,13 +207,13 @@
 				.ShowRowLines(true)
 				.RowAlternationEnabled(true)
 				.DataSource(d => d.WebApi()
-				.Controller("PropertyCategory")
-				.LoadAction("GetAllProperty")
-				.UpdateAction("UpdatePropertCategory")
+				.Controller("ERStockInventory")
+				.LoadAction("GetAllPropertyTypes")
+				.UpdateAction("UpdatePropertyType")
 				.UpdateMethod("PUT")
-				.DeleteAction("DeletePropertyCategory")
+				.DeleteAction("DeletePropertyType")
 				.DeleteMethod("DELETE")
-				.Key("PropertyCategoryId")
+				.Key("PropertyTypeId")
 				)
 				.Editing(editing => editing
 				.Mode(GridEditMode.Row)
@@ -226,13 +223,14 @@
 				)
 				.Columns(columns =>
 				{
-					columns.Add().DataField("PropertyCategoryId")
-					.Caption("Category Code")
+					columns.Add().DataField("PropertyTypeId")
+					.Caption("ID")
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(false);
-					columns.Add().DataField("PropertyCategoryName")
-					.Caption("Property Category")
+
+					columns.Add().DataField("PropertyType")
+					.Caption("Property Type")
 					.Width(300)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(true);
@@ -245,8 +243,7 @@
 						buttons.Add().Name("edit");
 						buttons.Add().Name("save");
 						buttons.Add().Name("cancel");
-						buttons.Add()
-					.Name("customDelete")
+						buttons.Add().Name("customDelete")
 					.Icon("trash")
 					.Hint("Delete")
 					.OnClick("onCustomDeleteClick");
@@ -258,6 +255,9 @@
 				.GroupPanel(g => g.Visible(false))
 				.ShowColumnHeaders(true)
 				)
+
+
+
 	</div>
 	<br />
 	<!-- Buttons -->
@@ -268,78 +268,78 @@
 						.Text(new JS("formatMessage('Back')"))
 						.Icon("arrowleft")
 						.OnClick("Goback")
+						.ElementAttr(new { @class = "dx-button-custom btn-back" })
 						.Width(120)
 						.Type(ButtonType.Default))
 		</div>
 	</div>
 </div>
 <script>
-		function Goback() {
+	function Goback() {
 		window.parent.closeModal();
 	}
+
 	$(function () {
-		$("#TypenewStockClassification").text(
-			 formatMessage("Type new Property Category & Add to the Existing List:"));
-	});
-		$(function () {
-			$("#addPropertCategoryBtn").dxButton({
-				onClick: function () {
-					var newPropertycategory = $("#PropertyCategoryInput").dxTextBox("instance").option("value");
+		// Add Property Type button click
+		$("#Addproperty").dxButton({
+			onClick: function () {
+				var newProperty = $("#propertytype").dxTextBox("instance").option("value");
 
-					if (!newPropertycategory || newPropertycategory.trim() === "") {
-						DevExpress.ui.notify("Please enter a Stock Classification.", "error", 2000);
-						return;
-					}
-
-					$.ajax({
-					url: '/api/PropertyCategory/AddPropertyCategory',
-						type: 'POST',
-						contentType: 'application/json',
-						data: JSON.stringify({ PropertyCategoryName: newPropertycategory }),
-						success: function (res) {
-							DevExpress.ui.notify("Stock Classification added successfully!", "success", 2000);
-							// Clear input box
-							$("#PropertyCategoryInput").dxTextBox("instance").option("value", "");
-							// Optionally reload any grid or list showing the data
-							 $("#storeGrid").dxDataGrid("instance").refresh();
-						},
-						error: function (err) {
-							DevExpress.ui.notify("Failed to add Stock Classification.", "error", 3000);
-						}
-					});
+				if (!newProperty || newProperty.trim() === "") {
+					DevExpress.ui.notify("Please enter a Property Type.", "error", 2000);
+					return;
 				}
-			});
+
+				$.ajax({
+					url: '/api/ERStockInventory/AddPropertyType',
+					type: 'POST',
+					contentType: 'application/json',
+					data: JSON.stringify({ PropertyType: newProperty }),
+					success: function () {
+						DevExpress.ui.notify("Property Type added successfully!", "success", 2000);
+						// Clear input box
+						$("#propertytype").dxTextBox("instance").option("value", "");
+						// Refresh the grid
+						$("#storeGrid").dxDataGrid("instance").refresh();
+					},
+					error: function () {
+						DevExpress.ui.notify("Failed to add Property Type.", "error", 3000);
+					}
+				});
+			}
 		});
-	$(function () {
+
+		// Show success on update
 		var grid = $("#storeGrid").dxDataGrid("instance");
 		if (grid) {
-			grid.option("onRowUpdated", function (e) {
-				DevExpress.ui.notify("Store updated successfully.", "success", 2000);
+			grid.option("onRowUpdated", function () {
+				DevExpress.ui.notify("Property Type updated successfully.", "success", 2000);
 			});
 		}
 	});
-		function onCustomDeleteClick(e) {
-		if (!e || !e.row || !e.row.data || !e.row.data.PropertyCategoryId) {
+
+	// Custom delete handler
+	function onCustomDeleteClick(e) {
+		if (!e || !e.row || !e.row.data || !e.row.data.PropertyTypeId) {
 			DevExpress.ui.notify("Invalid record selected.", "error", 2000);
 			return;
 		}
 
-		DevExpress.ui.dialog.confirm("Are you sure you want to delete this Stock Classification?", "Confirm Deletion")
+		DevExpress.ui.dialog.confirm("Are you sure you want to delete this Property Type?", "Confirm Deletion")
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/PropertyCategory/DeletePropertyCategory?key=' + e.row.data.PropertyCategoryId,
+						url: '/api/ERStockInventory/DeletePropertyType?key=' + e.row.data.PropertyTypeId,
 						type: 'DELETE',
 						success: function () {
-							DevExpress.ui.notify("Stock Classification deleted successfully!", "success", 2000);
+							DevExpress.ui.notify("Property Type deleted successfully!", "success", 2000);
 							$("#storeGrid").dxDataGrid("instance").refresh();
 						},
 						error: function () {
-							DevExpress.ui.notify("Failed to delete Stock Classification.", "error", 2000);
+							DevExpress.ui.notify("Failed to delete Property Type.", "error", 2000);
 						}
 					});
 				}
-	   });
+			});
 	}
 </script>
-

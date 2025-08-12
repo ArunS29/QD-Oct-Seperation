@@ -114,7 +114,7 @@
     <div class="form-group-row">
         @(Html.DevExtreme().TextBox()
             .ID("statusId")
-            .Disabled(true)
+            .Value("-1")
             .Label(new JS("formatMessage('Status ID')"))
              .ReadOnly(true)
             .LabelMode(EditorLabelMode.Floating)
@@ -183,7 +183,7 @@
     </div>
 
     <!-- Status with inline plus button -->
-    <div class="form-group-row status-with-button">
+    <div class="form-group-row status-with-button" style="display:flex;">
 
         @(Html.DevExtreme().DropDownBox()
             .DataSource(d => d.WebApi()
@@ -198,7 +198,7 @@
             .Width(900)
             @*  .ShowClearButton(true)
         .AcceptCustomValue(true) *@
-            .OpenOnFieldClick(false)//
+            .OpenOnFieldClick(false)
             .ValueChangeEvent("input")
             .HoverStateEnabled(true)
             .ValueExpr("StatusCode")
@@ -223,20 +223,19 @@
                 buttons.Add()
                 .Name("dropDown");
             }))
+
+            @(Html.DevExtreme().DateBox()
+                        .Label(new JS("formatMessage('Followup On')"))
+                        .ID("followUpOn")
+                        .InputAttr("aria-label", "Date")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Type(DateBoxType.Date)
+                        .DisplayFormat("dd-MMM-yyyy")
+                        )
         </div>  
     </div>
 
-<div class="  form-group-row " style="width:49.5%; margin-left: 20px;">
 
-        @(Html.DevExtreme().DateBox()
-            .Label(new JS("formatMessage('Followup On')"))
-            .ID("followUpOn")
-            .InputAttr("aria-label", "Date")
-            .LabelMode(EditorLabelMode.Floating)
-            .Type(DateBoxType.Date)
-            .DisplayFormat("dd-MMM-yyyy")
-              )
-    </div>
     <div class="footer-fixed">
         @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save").OnClick("saveOrUpdateClientStatus"))
         @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).ElementAttr(new { @class = "dx-button-custom btn-save-close" }).Icon("save").OnClick("onSaveAndClose"))
@@ -271,7 +270,7 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode");
+                columns.Add().Caption(new JS("formatMessage('Status Code')")).DataField("StatusCode").Alignment(HorizontalAlignment.Center).Width(80);
                 columns.Add().DataField("Status");
 
 
