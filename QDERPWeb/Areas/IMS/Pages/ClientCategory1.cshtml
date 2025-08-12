@@ -492,6 +492,9 @@
                         // Clear the text inputs after success
                         $("#txtClientCategory").dxTextBox("instance").option("value", "");
                         $("#txtCategoryCode").dxTextBox("instance").option("value", "");
+                              
+                $("#txtClientCategory").dxValidator("instance").reset();
+                $("#txtCategoryCode").dxValidator("instance").reset();
 
                         // Optionally, you can reload the data grid to reflect the newly added branch
                         $("#gridContainer").dxDataGrid("instance").refresh();
