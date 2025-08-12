@@ -1716,7 +1716,7 @@
 							success: function (response) {
 								if (response) {
 
-										DevExpress.ui.dialog.alert("Debit Invoice has been successfully added to the database.", "Cloned Successfully");
+										DevExpress.ui.notify("Debit Invoice has been successfully deleted to the database.","success",3000);
 									// Optionally refresh the grid or perform additional actions
 									$("#dataGrid").dxDataGrid("instance").refresh();
 								} else {

@@ -5071,10 +5071,12 @@ documentNo: DebitNoteNo
                             dict[prop.Name] = prop.GetValue(gridDetails);
                         }
 
+                       
+
                         // Get the TaxRateInWord from the TaxSlab table
-                        var taxRateInWord = dbContext.Tbl20163VatTaxSlabs
-                            .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
-                            .Select(x => x.TaxRateInWord)
+                        var taxRateInWord = dbContext.Tbl20168VatpurchaseTaxSlabs
+                            .Where(x => x.PurchaseTaxSlabCode == gridDetails.TaxSlabCode)
+                            .Select(x => x.PurchaseTaxSlab)
                             .FirstOrDefault();
 
                         var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes

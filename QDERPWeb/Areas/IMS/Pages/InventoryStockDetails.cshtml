@@ -1192,7 +1192,7 @@
                                     .ID("MinQty")
                                     .Label(new JS("formatMessage('Minimum Quantity')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1201,7 +1201,7 @@
                                     .ID("MaxQty")
                                     .Label(new JS("formatMessage('Maximum Quantity')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1210,7 +1210,7 @@
                                     .ID("ReorderLevel")
                                     .Label(new JS("formatMessage('Reorder Level')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1219,7 +1219,7 @@
                                     .ID("ReorderQty")
                                     .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1228,7 +1228,7 @@
                                     .ID("ReorderLeadTime")
                                     .Label(new JS("formatMessage('Reorder Lead Time')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
 
@@ -1266,12 +1266,7 @@
                         </td>
                     </tr>
                 </table>
-                @* <div class="dx-field ledgerResult" style="margin-bottom: 100px"> *@
-                @* <!-- Page Title --> *@
-                @* <h2 style="margin-left: 13px; font-weight: bold;">Stock Control</h2> *@
-
                 <!-- Spacer (optional) -->
-                <div style="height: 20px;"></div>
                     <table style="width:100%; margin-top: 15px;">
                    
                         <tr>
@@ -1334,23 +1329,19 @@
                                 .ShowColumnLines(true)
                                 .ShowRowLines(true)
                                 .RowAlternationEnabled(true)
+                                .AllowColumnReordering(false)
                                 .ShowColumnHeaders(true)
                                 .ColumnAutoWidth(true)
                                 .AllowColumnReordering(true)
                                 .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
-
                                 .AllowColumnResizing(true)
                                 .ColumnFixing(fixing => fixing.Enabled(true))
                                 .GroupPanel(panel => panel.Visible(false))
                                 .ShowBorders(true)
                                 )
-
-
-
                             </td>
                         </tr>
                     </table>
-
                 </div>
 
                 <script>
@@ -2035,11 +2026,11 @@
                                                        </a>
                                                    </text>);
 
-                             columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                        columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                         columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
                         columns.Add().DataField("QtyReceived").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
-                                    columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
+                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
                         columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
@@ -2138,8 +2129,14 @@
                         editing.AllowUpdating(true);
                         editing.UseIcons(true);
                     })
+                .OnRowUpdated("onUnitConversionRowUpdated")
                     .Columns(columns =>
                     {
+
+                        columns.Add()
+                        .DataField("GSCode")
+                        .Visible(false);
+
                         columns.Add()
                         .DataField("UnitCodeOfConversion")
                         .Width(300)
@@ -2217,7 +2214,25 @@
                             });
                         });
                     });
-                   
+
+            function onUnitConversionRowUpdated(e) {
+                const stockNoBox = $("#StockNoItemCode").dxTextBox("instance");
+                selectedGsCode = stockNoBox.option("value"); // set from your stock group selection
+                e.data.GSCode = selectedGsCode;
+
+                $.ajax({
+                    url: "/api/StockInventory/SaveUnitConversion",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(e.data),
+                    success: function () {
+                        DevExpress.ui.notify("Saved successfully", "success", 2000);
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Error saving data", "error", 2000);
+                    }
+                });
+            }
 
                     // ✅ Dropdown Editor Template
                     function unitCodeDropDownEditor(cellElement, cellInfo) {
@@ -3178,8 +3193,10 @@
         const description = descriptionInstance.option("value") || '';
         const openingBalance = $("#OpeningBalance").dxNumberBox("instance").option("value");
         const costPrice = $("#CostPrice").dxNumberBox("instance").option("value");
+        const unitOfMeasureInstance = $("#UnitOfMeasure").dxDropDownBox("instance");
+        const unitCode = unitOfMeasureInstance.option("value");
         // Encode the parameters to ensure URL safety
-        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&modal=true`;
+        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&UnitCode=${encodeURIComponent(unitCode)}&modal=true`;
         openModal(url, "Opening Balance Entries");
     }
 

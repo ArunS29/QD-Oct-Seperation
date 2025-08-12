@@ -745,9 +745,9 @@
 																.ID("btnLink")
 																.Text(new JS("formatMessage('Link')"))
 																.Icon("link")// Display text
-																.StylingMode(ButtonStylingMode.Text)   // Makes it look like a hyperlink
+																.StylingMode(ButtonStylingMode.Text)  
 																.Type(ButtonType.Normal)
-														 								// .OnClick("onLinkClick")
+														 	    .OnClick("onClientLinkClick")
 																)
 																</div>
 							</td>
@@ -10055,6 +10055,78 @@ return $container;
 
 			openModal(url, title);
 		}
+
+		
+function onClientLinkClick(e) {
+    var dropDownBox = $("#ddclientname").dxDropDownBox("instance");
+    var accountId = dropDownBox.option("value");
+	debugger;
+    if (!accountId) {
+        DevExpress.ui.notify("Please select a Client Name first", "warning", 2000);
+        return;
+    }
+
+    console.log("Selected AccountId:", accountId);
+
+    // Call the API
+    $.ajax({
+		
+        url: '/api/VATModule/GetClientNameAddressDetails', // change controller name
+        type: 'GET',
+        data: { AccountHeadID: accountId },
+        success: function (response) {
+            if (response && response.length > 0) {
+                var account = response[0];
+
+				$("#GroupVATNo").dxTextBox("instance").option("value", account.ClientGroupVatnumber);
+	            $("#ClientVATNo").dxTextBox("instance").option("value", account.VatregistrationNo);
+                $("#ClientNameArabic").dxTextBox("instance").option("value", account.AccountHeadArabic);
+	            $("#ClientOtherID").dxTextBox("instance").option("value", account.ClientOtherId);
+	            dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.ClientOtherIdtype]});
+				
+				
+                $("#StreetName").dxTextBox("instance").option("value", account.clientAddressStreet);
+                $("#StreetNameArabic").dxTextBox("instance").option("value", account.clientAddressStreetAr);
+                $("#AdditionalAddress").dxTextBox("instance").option("value", account.clientAdditionalStreet);
+                $("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.clientAdditionalStreetAr);
+                $("#BuildingNumber").dxTextBox("instance").option("value", account.clientBuildingNumber);
+                $("#ClientCity").dxTextBox("instance").option("value", account.clientCity);
+                $("#ClientCityArabic").dxTextBox("instance").option("value", account.clientCityAr);
+                $("#AdditionalNumber").dxTextBox("instance").option("value", account.clientAdditionalNumber);
+                $("#Province").dxTextBox("instance").option("value", account.clientProvince);
+                $("#ProvinceArabic").dxTextBox("instance").option("value", account.clientProvinceAr);
+                $("#PostalCode").dxTextBox("instance").option("value", account.clientPostalCode);
+                $("#District").dxTextBox("instance").option("value", account.clientNeighborhood);
+                $("#DistrictArabic").dxTextBox("instance").option("value", account.clientNeighborhoodAr);
+                // Country Code dropdown
+                $("#CountryCodeNumeric").dxDropDownBox("instance").option("value", account.buyerCountryCode);
+            } else {
+                DevExpress.ui.notify("No address details found for this client.", "error", 2000);
+            }
+        },
+        error: function (xhr) {
+            console.error("Error fetching client details:", xhr);
+            DevExpress.ui.notify("Error retrieving client details.", "error", 2000);
+        }
+    });
+}
+
+
+$("#btnPrint1").on("click", function (e) {
+			var dropdown = $("#btnPrint1").dxDropDownButton("instance");
+			var items = dropdown.option("items");
+
+			// Set disabled flag on specific items
+			items.forEach(function (item) {
+					if (item.text === "Print Simplified TAX Invoice" ) {
+				   DevExpress.ui.notify("This Invoice is not SIMPLIFIED TAX INVOICE", "error", 2000);
+					item.disabled = true;
+				}
+			});
+
+			dropdown.option("items", items);
+		});
+
 
 				
 </script>
