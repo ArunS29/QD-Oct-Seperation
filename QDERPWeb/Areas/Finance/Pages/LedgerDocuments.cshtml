@@ -17,7 +17,7 @@
         background-color: #f9f9f9;
         transition: background-color 0.3s ease;
         margin-bottom: 15px;
-        max-height: 320px;
+        max-height: 300px;
     }
 
     .drag-over {
@@ -418,7 +418,7 @@
 
                 <!-- Right Column: Preview -->
                 <div id="preview"
-                     style="flex: 1; min-width: 300px; min-height: 390px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
+                     style="flex: 1; min-width: 300px; min-height: 350px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto; margin-top:5px;">
                     <!-- File previews will appear here -->
                 </div>
             </div>
@@ -823,6 +823,7 @@
 
 
     let selectedFiles = [];
+    let fileDialogOpen = false;
 
     
     function setupDragDrop() {
@@ -835,7 +836,12 @@
             return;
         }
 
-        dropZone.addEventListener("click", () => uploader.click());
+        dropZone.addEventListener("click", () => {
+            if (fileDialogOpen) return;  // block if already open
+
+            fileDialogOpen = true;
+            uploader.click();
+        });
 
         dropZone.addEventListener("dragover", (e) => {
             e.preventDefault();
@@ -872,11 +878,14 @@
             }
         });
 
-        uploader.addEventListener("change", (e) => {
+        uploader.addEventListener("change", async (e) => {
             const files = Array.from(e.target.files);
-            handleFiles(files);
-            uploader.value = "";
+            if (files.length > 0) {
+                await handleFiles(files);
+            }
+            setTimeout(() => { fileDialogOpen = false; }, 100);
         });
+        
     }
     let isHandlingFiles = false;
 
@@ -887,16 +896,31 @@
         try {
             const preview = document.getElementById("preview");
             const validFiles = files.filter(file => {
-                const maxSizeMB = 2;
-                const disallowedTypes = ["video/", "application/zip", "application/x-zip-compressed"];
-                const isTooBig = file.size > maxSizeMB * 1024 * 1024;
-                const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
-                if (isTooBig || isDisallowed) {
-                    DevExpress.ui.notify(`Skipped: ${file.name} (too big or unsupported)`, "warning", 2500);
-                    return false;
-                }
-                return true;
-            });
+            const maxSizeMB = 2;        // Default for non-audio
+            const maxAudioSizeMB = 5;   // Limit for audio
+
+            const isAudio = file.type.startsWith("audio/");
+            const allowedSize = isAudio ? maxAudioSizeMB : maxSizeMB;
+
+            const disallowedTypes = [
+                "video/",
+                "application/zip",
+                "application/x-zip-compressed"
+            ];
+
+            const isTooBig = file.size > allowedSize * 1024 * 1024;
+            const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
+
+            if (isTooBig || isDisallowed) {
+                DevExpress.ui.notify(
+                    `Skipped: ${file.name} (too big or unsupported)`,
+                    "warning",
+                    2500
+                );
+                return false;
+            }
+            return true;
+        });
 
             if (validFiles.length === 0) return;
 
@@ -981,7 +1005,7 @@
             return instance ? instance.option("value") : fallback;
         };
 
-        formData.append("DocumentType", getValue("#DocumentType", "1"));
+        formData.append("DocumentType", getValue("#DocumentType", ""));
         formData.append("LedgerNo", getValue("#LedgerNo", referenceNo));
         formData.append("DocumentRefNo", getValue("#ReferenceNo", referenceNo));
         formData.append("DocumentRemarks", getValue("#DocumentRemarks", ""));
@@ -1040,7 +1064,7 @@
         const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext);
         const isPdf = ["pdf"].includes(ext);
         const isOffice = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext);
-
+        const isAudio = ["mp3"].includes(ext);
         let previewContent = "";
         let previewAvailable = true;
 
@@ -1080,6 +1104,13 @@
                     frameborder="0"
                     onerror="this.onerror=null; this.src=''; preview.innerHTML='<div>Unable to preview document.</div>'; previewAvailable=false;">
                 </iframe>`;
+        } else if (isAudio) { 
+        previewContent = `
+            <audio controls style="width:100%;">
+                <source src="${url}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        `;
         } else {
             previewAvailable = false;
             previewContent = `<div>No preview available for .${ext} files</div>`;

@@ -307,6 +307,14 @@
     .dx-button {
         height: 35px !important;
     }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 
 
@@ -362,9 +370,9 @@
         .ID("btnAttach")
         .Text(new JS("formatMessage('Attach')"))
         .Width(180)
-        .Icon("link")
+        .Icon("attach")
         .OnClick("onAttachmentButtonClick")
-        .ElementAttr(new { @class = "dx-button-custom btn-attach" }))
+        .ElementAttr(new { @class = "dx-button-custom btn-attach"}))
     @(Html.DevExtreme().DropDownButton()
         .ID("btnPrintnew")
         .Text(new JS("formatMessage('Preview')"))
@@ -1042,7 +1050,5 @@
                 }
             });
         }
-    
-
 
 </script>
