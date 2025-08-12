@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.InventoryListToUploadModel
+@model QD.ERP.Web.Areas.IMS.Pages.ProformaUploadModel
 @{
 }
 <link rel="stylesheet" href="~/css/Site.css" />
@@ -120,11 +120,21 @@
 										rules.AddRequired()
 										.Message(new JS("formatMessage('Client Name should be entered')"));
 									})
+									.Buttons(buttons =>
+									{
+										buttons.Add()
+										.Name("btnAddAccount")
+										.Location(TextEditorButtonLocation.After)
+										.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("plus")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										.OnClick("StockGroup")
+										);
+										buttons.Add()
+										.Name("dropDown");
+									})
 									)
-
-					@(Html.DevExtreme().Button()
-						.Icon("plus")
-						.Width(45))
 			</td>
 			<td>
 					@(Html.DevExtreme().TextBox()
@@ -138,9 +148,10 @@
 
 				@(Html.DevExtreme().TextBox()
 								.Label("Proforma Invoice No.")
+								.ID("txtProformaNo")
 								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
-								.Disabled(true)
+								
 								)
 
 			</td>
@@ -148,6 +159,7 @@
 
 				@(Html.DevExtreme().TextBox()
 								.Label("Invoice No.")
+								.ID("txtInvoiceNo")
 								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
 								.Disabled(true)
@@ -160,6 +172,7 @@
 								.ID("txtRequestNo")
 								.LabelMode(EditorLabelMode.Floating)
 								.Width("100%")
+								.Disabled(true)
 								)
 
 							</td>
@@ -239,7 +252,8 @@
 			.Items(i => {
 				i.Add().Text("Upload item to Material Requests")
 					.Icon("upload")
-					.OnClick("uploadItemsToMaterialRequests")
+					@* .OnClick("uploadItemsToMaterialRequests") *@
+					.Disabled(true)
 					.Option("color", "#00ACC1");
 				i.Add().Text("Upload Invoice")
 					.Icon("doc")
@@ -248,8 +262,7 @@
 					.Option("color", "#FBBC05");
 				i.Add().Text("Upload Items to Performa Invoice")
 				  .Icon("tags")
-				  @* .OnClick("uploadToPerformaInvoice") *@
-				  .Disabled(true)
+				  .OnClick("uploadToPerformaInvoice")
 				  .Option("color", "#4285F4");
 				i.Add().Text("Upload Items to VAT Purchase Voucher")
 				  .Icon("money")
@@ -317,7 +330,7 @@ function preparePayload(items) {
     }));
 }
 
-function uploadItemsToMaterialRequests() {
+function uploadToPerformaInvoice() {
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
     const items = dataSource?.items() ?? [];
@@ -326,7 +339,7 @@ function uploadItemsToMaterialRequests() {
 
     const requestBody = {
         GSGroupCode: "",
-        RequestNo: $("#txtRequestNo").dxTextBox("instance").option("value"),
+        RequestNo: $("#txtProformaNo").dxTextBox("instance").option("value"),
         Items: preparedItems,
         GSGroupID: selectedGSGroupId
     };
@@ -350,16 +363,13 @@ function uploadItemsToMaterialRequests() {
 }
 
 
-			$(document).ready(function () {
-			// Get requestNo from query string
+		$(document).ready(function () {
 			const params = new URLSearchParams(window.location.search);
-			const requestNo = params.get("requestNo");
+			const invoiceNo = params.get("ProformaInvoiceNo");
 
-			if (requestNo) {
-				// Set the value in the DevExtreme TextBox
-				$("#txtRequestNo").dxTextBox("instance").option("value", requestNo);
-				// Optionally, make it read-only
-				$("#txtRequestNo").dxTextBox("instance").option("readOnly", true);
+			if (invoiceNo) {
+				$("#txtProformaNo").dxTextBox("instance").option("value", invoiceNo);
+				$("#txtProformaNo").dxTextBox("instance").option("readOnly", true);
 			}
 		});
 		function dataGridSelectionChanged1(e) {
@@ -456,43 +466,20 @@ function uploadItemsToMaterialRequests() {
         reader.readAsArrayBuffer(file);
     });
 	function onUploadButtonClick() {
-    const requestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
-    if (!requestNo) {
-        DevExpress.ui.notify("Request No is required.", "error", 2000);
+    const invoiceNo = $('#txtProformaNo').dxTextBox("instance").option("value");
+    if (!invoiceNo) {
+        DevExpress.ui.notify("Proforma No is required.", "error", 2000);
         return;
     }
-    window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(requestNo)}`;
+    window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(invoiceNo)}`;
 }
-
-	function validateGridData() {
-    const grid = $("#Datagrid").dxDataGrid("instance");
-    const dataSource = grid?.getDataSource();
-    const items = dataSource?.items() ?? [];
-
-    const stockGroupCode = $("#StockGroup").dxDropDownBox("instance").option("value");
-    const lastNoInStockGroup = 1000; // Replace with the actual value from the server
-    const lastNoInUnit = 10; // Replace with the actual value from the server
-
-    return items.map((item, index) => {
-        // Generate GSCode if missing
-        if (!item.GSCode) {
-            item.GSCode = `${stockGroupCode}-${String(lastNoInStockGroup + index + 1).padStart(5, "0")}`;
-        }
-
-        // Generate UnitCode if missing
-        if (!item.UnitCode) {
-            item.UnitCode = `UNIT-${lastNoInUnit + index + 1}`;
-        }
-
-        // Ensure ItemSize is a string
-        if (item.ItemSize && typeof item.ItemSize !== "string") {
-            item.ItemSize = String(item.ItemSize);
-        }
-
-        return item; // Include all rows without validation
-    });
-}
-
+	function StockGroup(){
+        const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
+        var dropDownBox = $("#StockGroup").dxDropDownBox("instance");
+        dropDownBox.close();
+        const title = "Stock Group";
+        openModal(url, title,"","70%");
+    }
 </script>
 <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
