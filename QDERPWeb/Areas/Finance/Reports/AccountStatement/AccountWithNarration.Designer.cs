@@ -99,6 +99,7 @@
             this.CrAmountCal = new DevExpress.XtraReports.UI.CalculatedField();
             this.DrTotal = new DevExpress.XtraReports.UI.CalculatedField();
             this.CrTotal = new DevExpress.XtraReports.UI.CalculatedField();
+            this.calculatedField1 = new DevExpress.XtraReports.UI.CalculatedField();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -279,6 +280,7 @@
             this.xrLabel22.StylePriority.UsePadding = false;
             this.xrLabel22.StylePriority.UseTextAlignment = false;
             this.xrLabel22.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel22.TextFormatString = "{0:N2}";
             // 
             // xrLine2
             // 
@@ -644,7 +646,7 @@
             this.xrLabel11.StylePriority.UseTextAlignment = false;
             this.xrLabel11.Text = "Cr";
             this.xrLabel11.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrLabel11.TextFormatString = "{0:N2}";
+            this.xrLabel11.TextFormatString = "{0:#,0.00;#,0.00}";
             // 
             // xrLabel39
             // 
@@ -1041,6 +1043,11 @@
             this.CrTotal.Expression = "Sum(Iif([VoucherAmountFormatted] < 0, [VoucherAmountFormatted], 0))\n";
             this.CrTotal.Name = "CrTotal";
             // 
+            // calculatedField1
+            // 
+            this.calculatedField1.DataMember = "StProAccountLedger";
+            this.calculatedField1.Name = "calculatedField1";
+            // 
             // AccountWithNarration
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -1056,7 +1063,8 @@
             this.DrAmountCal,
             this.CrAmountCal,
             this.DrTotal,
-            this.CrTotal});
+            this.CrTotal,
+            this.calculatedField1});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
             this.sqlDataSource1,
             this.sqlDataSource2});
@@ -1138,5 +1146,6 @@
         private DevExpress.XtraReports.UI.CalculatedField CrAmountCal;
         private DevExpress.XtraReports.UI.CalculatedField DrTotal;
         private DevExpress.XtraReports.UI.CalculatedField CrTotal;
+        private DevExpress.XtraReports.UI.CalculatedField calculatedField1;
     }
 }
