@@ -160,21 +160,12 @@
     .mainContainer {
         width: 100%;
     }
-
-</style>
-<div class="title">
-    <div class="header-container">
-        <div id="propertmaster" class="no-border-title"></div>
-    </div>
-</div>
-@using DevExtreme.AspNet.Mvc
-
-<style>
     .property-form {
         border-radius: 5px;
-        padding: 15px;
+        padding: 5px;
         display: flex;
         justify-content: space-between;
+        height: 240px;
     }
 
     .form-columns {
@@ -208,8 +199,8 @@
     }
 
         .form-image img {
-            width: 310px;
-            height: auto;
+            width: 280px;
+            height: 240px;
         }
 </style>
 
@@ -217,18 +208,27 @@
     <div class="form-columns">
 
         <!-- Row 1: Property Type -->
-        <div class="form-group" style="grid-column: span 2; display:flex; align-items:end;flex-direction: row;">
+        <div class="form-group" style="grid-column: span 2; display:flex;flex-direction: row;">
             @(Html.DevExtreme().SelectBox()
-                        .ID("PropertyType")
-                        .Label(new JS("formatMessage('Property Type:*')"))
-                        .LabelMode(EditorLabelMode.Floating)
-                        .ShowClearButton(true)
-                        .Width("100%"))
-            @(Html.DevExtreme().Button()
-                        .ID("AddType")
+                    .ID("PropertyType")
+                    .Label(new JS("formatMessage('Property Type:*')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ShowClearButton(true)
+                    .Width("100%")
+                    .Buttons(buttons =>
+                    {
+                        buttons.Add()
+                        .Name("btnpropertytype")
+                        .Location(TextEditorButtonLocation.After)
+                        .Widget(w => w.Button()
+                        .Type(ButtonType.Default)
                         .Icon("plus")
-                        .OnClick("Protype")
-                        )
+                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                        .OnClick("Protype"));
+                        buttons.Add()
+                        .Name("dropDown");
+                    })
+            )
         </div>
 
         <!-- Row 2: Property No and Description -->
@@ -249,18 +249,28 @@
         </div>
 
         <!-- Row 3: Category and Specification -->
-        <div class="form-group" style=" display:flex; align-items:end;flex-direction: row;">
+        <div class="form-group" style=" display:flex; flex-direction: row;">
             @(Html.DevExtreme().SelectBox()
                         .ID("PropertyCategory")
                         .Label(new JS("formatMessage('Property Category:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Category A", "Category B" })
-                        .Width("100%"))
-            @(Html.DevExtreme().Button()
-                        .ID("AddCategory")
-                        .Icon("plus")
-
-                        )
+                        .Width("100%")
+                        .Buttons(buttons =>
+                        {
+                            buttons.Add()
+                            .Name("btnAddAccount")
+                            .Location(TextEditorButtonLocation.After)
+                            .Widget(w => w.Button()
+                            .Type(ButtonType.Default)
+                            .Icon("plus")
+                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                            .OnClick("Propertycategory")); 
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
+            )
+          
         </div>
 
         <div class="form-group">
@@ -281,12 +291,20 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("PropertyGroup")
                         .DataSource(new[] { "Group 1", "Group 2" })
-                        .Width("100%"))
-            @(Html.DevExtreme().Button()
-                        .ID("AddGroup")
-                        .Icon("plus")
-                        .OnClick("Progroup")
-                        )
+                        .Width("100%")
+                        .Buttons(buttons =>
+                        {
+                            buttons.Add()
+                            .Name("btnPropertygrp")
+                            .Location(TextEditorButtonLocation.After)
+                            .Widget(w => w.Button()
+                            .Type(ButtonType.Default)
+                            .Icon("plus")
+                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                            .OnClick("Progroup"));
+                            buttons.Add()
+                            .Name("dropDown");
+                        }) )
         </div>
 
     </div>
@@ -1125,14 +1143,14 @@
       
 
         function Protype(){
-                  const url = `/${tenantName}/ERM/PropertyCategory`;
-                const title = "";
+                  const url = `/${tenantName}/ERM/PropertyType`;
+                const title = "Property Type";
                     openModal(url, title);
             }
 
         function Progroup(){
-                  const url = `/${tenantName}/IMS/PropertyGroup`;
-                const title = "";
+                  const url = `/${tenantName}/ERM/PropertyGroup`;
+                const title = "Property Group";
                     openModal(url, title);
             }
               function StockGroup(){
@@ -1268,5 +1286,10 @@
            textBox2Instance.option("value", arabicTranslation);
 
       }
-
+         
+               function Propertycategory(){
+            const url = `/${tenantName}/ERM/PropertyCategory`;
+          const title = "Property Category";
+                openModal(url, title);
+        }
 </script>
