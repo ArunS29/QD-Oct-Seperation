@@ -245,7 +245,10 @@
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
                 $("#Status").dxTextBox("instance").option("value", "");
-                $("#StatusCode").dxTextBox("instance").option("value", "");
+                // $("#StatusCode").dxTextBox("instance").option("value", "");
+                      
+                $("#Status").dxValidator("instance").reset();
+      
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 3000);

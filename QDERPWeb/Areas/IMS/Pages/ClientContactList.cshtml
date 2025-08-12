@@ -117,12 +117,11 @@
         <div class="form-field">
             @(Html.DevExtreme().TextBox()
                 .ID("clientHidden")
-                .Disabled(true)
-                .Width("100%")
+                  .Width("100%")
                 .Value("-1")
                 .ReadOnly(true)
                 .Label(" ")
-                        .Label(new JS("formatMessage('')"))
+               .Label(new JS("formatMessage('')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("class", "white-bg"))
         </div>
