@@ -308,74 +308,65 @@
     </div> *@
     <div class="dx-field ledgerResult">
         @(Html.DevExtreme().DataGrid()
-            .ID("SignatoryGrid")
-            .KeyExpr("SignatoryID")
-            .RemoteOperations(false)
-            .DataSource(d => d.WebApi()
-            .Controller("Signatories")
-            .LoadAction("GetAllSignData")
-            .LoadMode(DataSourceLoadMode.Raw)
-            )
-            .Editing(editing => editing
-            .Mode(GridEditMode.Batch)
-            .AllowUpdating(true)
+                .ID("SignatoryGrid")
+                .KeyExpr("SignatoryID")
+                .RemoteOperations(false)
+                .DataSource(d => d.WebApi()
+                .Controller("Signatories")
+                .LoadAction("GetAllSignData")
+                .LoadMode(DataSourceLoadMode.Raw)
+                )
+                .Editing(editing => editing
+                .Mode(GridEditMode.Batch)
+                .AllowUpdating(true)
+                )
+                .Toolbar(toolbar =>
+                {
+                    toolbar.Items(items => { }); // hide default toolbar
+                })
+                .OnRowUpdating("onSignatoryUpdating")
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
+                    columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
+                    columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
+                    columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
+                    columns.Add().DataField("SignatoryEmail").Caption("Email").Width(250);
+                    columns.Add().DataField("DecodedBusinessCard1")
+                    .Caption(new JS("formatMessage('Signature Image')"))
+                    .CellTemplate(new JS(@"
+                function(cellElement, cellInfo) {
+                if (cellInfo.value) {
+                $('<img>')
+                .attr('src', cellInfo.value)
+                .css({ width: '100px', height: 'auto' })
+                .appendTo(cellElement);
+                }
+                }
+                ")).Width(150);
+                })
+                .Height(500)
+                .ColumnAutoWidth(true)
+                .AllowColumnReordering(true)
+                .AllowColumnResizing(true)
+                .ColumnFixing(f => f.Enabled(true))
+                .Paging(p => p.Enabled(true))
+                .Scrolling(s => s
+                .Mode(GridScrollingMode.Virtual)
+                .RowRenderingMode(GridRowRenderingMode.Virtual)
+                .PreloadEnabled(true)
+                .ScrollByContent(true)
+                )
+                .SearchPanel(sp => sp
+                .Visible(true)
+                .HighlightSearchText(true)
+                .Placeholder("Search...")
+                )
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .Width("100%")
+                )
 
-            )
-            .Toolbar(toolbar =>
-            {
-                toolbar.Items(items => { }); // hide default toolbar
-            })
-            .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
-            .Columns(columns =>
-            {
-                columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
-                columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
-                columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
-                columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
-                columns.Add().DataField("SignatoryEmail").Caption("Email").Width(250);
-                // Image columns with cell template
-                columns.Add().DataField("DecodedBusinessCard1")
-                .Caption(new JS("formatMessage('Signature Image')"))
-                .CellTemplate(new JS(@"
-        function(cellElement, cellInfo) {
-        if (cellInfo.value) {
-        $('<img>')
-        .attr('src', cellInfo.value)
-        .css({ width: '100px', height: 'auto' })
-        .appendTo(cellElement);
-        }
-        }
-        ")).Width(150);
-                @* columns.Add().Caption("Signature Image").AllowEditing(false)
-            .CellTemplate(@<text>
-        function(cellElement, cellInfo) {
-        if (cellInfo.data?.SignatureImageBase64) {
-        $("<img>")
-        .attr("src", "data:image/png;base64," + cellInfo.data.SignatureImageBase64)
-        .css({ height: "40px", borderRadius: "4px" })
-        .appendTo(cellElement);
-        } else {
-        cellElement.text("No image");
-        }
-        }
-    </text>); *@
-            })
-            .Height(500)
-            .ColumnAutoWidth(true)
-            .AllowColumnReordering(true)
-            .AllowColumnResizing(true)
-            .ColumnFixing(f => f.Enabled(true))
-            .Paging(p => p.Enabled(true))
-            .Scrolling(s => s
-            .Mode(GridScrollingMode.Virtual)
-            .RowRenderingMode(GridRowRenderingMode.Virtual)
-            .PreloadEnabled(true)
-            .ScrollByContent(true)
-            )
-            .ShowBorders(true)
-            .ShowRowLines(true)
-            .Width("100%")
-            )
 
 
     </div>

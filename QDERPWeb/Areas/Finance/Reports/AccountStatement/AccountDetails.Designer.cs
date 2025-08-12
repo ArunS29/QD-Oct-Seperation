@@ -104,6 +104,9 @@
             this.CrAmountCal = new DevExpress.XtraReports.UI.CalculatedField();
             this.DrTotal = new DevExpress.XtraReports.UI.CalculatedField();
             this.CrTotal = new DevExpress.XtraReports.UI.CalculatedField();
+            this.xrSubreport1 = new DevExpress.XtraReports.UI.XRSubreport();
+            this.xrSubreport2 = new DevExpress.XtraReports.UI.XRSubreport();
+            this.xrSubreport3 = new DevExpress.XtraReports.UI.XRSubreport();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -241,6 +244,9 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrSubreport3,
+            this.xrSubreport2,
+            this.xrSubreport1,
             this.xrLabel15,
             this.xrLabel12,
             this.xrLabel13,
@@ -256,7 +262,7 @@
             this.xrLabel24,
             this.xrLabel25,
             this.xrLabel26});
-            this.Detail.HeightF = 126.1666F;
+            this.Detail.HeightF = 126.1667F;
             this.Detail.Name = "Detail";
             // 
             // xrLabel15
@@ -665,7 +671,7 @@
             this.xrLabel9.StylePriority.UseTextAlignment = false;
             this.xrLabel9.Text = "Cr";
             this.xrLabel9.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
-            this.xrLabel9.TextFormatString = "{0:N2}";
+            this.xrLabel9.TextFormatString = "{0:#,0.00;#,0.00}";
             // 
             // ReportFooter
             // 
@@ -688,7 +694,7 @@
             this.xrLabel14.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel14.BorderWidth = 0.5F;
             this.xrLabel14.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[DrTotal]-[CrTotal]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[DrTotal]+[CrTotal]")});
             this.xrLabel14.Font = new DevExpress.Drawing.DXFont("Arial", 10F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel14.LocationFloat = new DevExpress.Utils.PointFloat(702.2008F, 43.1665F);
             this.xrLabel14.Name = "xrLabel14";
@@ -1123,6 +1129,24 @@
             this.CrTotal.Expression = "Sum(Iif([VoucherAmountFormatted] < 0, [VoucherAmountFormatted], 0))\n";
             this.CrTotal.Name = "CrTotal";
             // 
+            // xrSubreport1
+            // 
+            this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(110.9043F, 58.66669F);
+            this.xrSubreport1.Name = "xrSubreport1";
+            this.xrSubreport1.SizeF = new System.Drawing.SizeF(330.7623F, 13.66669F);
+            // 
+            // xrSubreport2
+            // 
+            this.xrSubreport2.LocationFloat = new DevExpress.Utils.PointFloat(110.9043F, 79.16672F);
+            this.xrSubreport2.Name = "xrSubreport2";
+            this.xrSubreport2.SizeF = new System.Drawing.SizeF(330.7623F, 17.1666F);
+            // 
+            // xrSubreport3
+            // 
+            this.xrSubreport3.LocationFloat = new DevExpress.Utils.PointFloat(110.9043F, 100F);
+            this.xrSubreport3.Name = "xrSubreport3";
+            this.xrSubreport3.SizeF = new System.Drawing.SizeF(330.7623F, 18.99996F);
+            // 
             // AccountDetails
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -1225,5 +1249,8 @@
         private DevExpress.XtraReports.UI.CalculatedField CrAmountCal;
         private DevExpress.XtraReports.UI.CalculatedField DrTotal;
         private DevExpress.XtraReports.UI.CalculatedField CrTotal;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport3;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport2;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport1;
     }
 }

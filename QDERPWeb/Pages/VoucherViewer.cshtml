@@ -305,5 +305,33 @@
         overflow: hidden;
         padding: 0px;
     }
+    /* Floating Close Button */
+
+    .send-email-btn {
+        position: fixed;
+        top: 14px; /* Positioning from the top */
+
+        left: 4px; /* Adjusting position from the right (so it doesn't overlap with Open Designer button) */
+
+        background-color: transparent;
+        border: 1px solid #dc3545; /* Border to make it rectangular */
+
+        padding: 5px 15px; /* Adjusting padding */
+
+        font-size: 14px;
+        color: #dc3545; /* Button color */
+
+        border-radius: 15px; /* Curved edges */
+
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+
+        cursor: pointer;
+        z-index: 9999; /* Ensure it's on top of other elements */
+
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        height: 35px;
+    }
 
 </style>

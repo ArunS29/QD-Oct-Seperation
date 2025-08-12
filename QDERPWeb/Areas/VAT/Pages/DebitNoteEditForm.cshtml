@@ -425,61 +425,104 @@
                     .LoadAction("GetSupplierName")
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("AccountId"))
-					  .ValidationRules(rules =>
-                                    {
-                                        rules.AddRequired()
-                                            .Message(new JS("formatMessage('Client Code should be entered')"));
-                                    })
+					.ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                            .Message(new JS("formatMessage('Client Code should be entered')"));
+                    })
                 .AcceptCustomValue(true)
                 .OpenOnFieldClick(false)
                 .ValueChangeEvent("input")
                 .HoverStateEnabled(true)
                 //.Value("Tax Invoice")
                 .ValueExpr("AccountId")
-                .DisplayExpr("SupplierName")
+                .DisplayExpr("AccountHead")
                 .LabelMode(EditorLabelMode.Floating)
 				.DropDownOptions(o => o.Width(800))
 			    .ContentTemplate(new TemplateName("SupplierNameTemplate"))
 				.Buttons(buttons => {
-								// Clear Button
-								buttons.Add()
-									.Name("clear");
-
-								// Add Client Button
-								buttons.Add()
+								buttons.Add().Name("clear");
+									buttons.Add()
 									.Name("AddDebits")
 									.Location(TextEditorButtonLocation.After)
 									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("plus")
-										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									.Type(ButtonType.Default)
+									.Icon("plus")
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									@* .OnClick(@<text>
+										function() {
+											var url = `/${tenantName}/Finance/LedgerAccount`;
+											openModal(url, '');
+										}
+									</text>) *@
+									.OnClick("showLedgerAccountPopup") // 🔸 ADD FUNCTION
+
+
 									);
 
-								// Edit Client Button
-								buttons.Add()
-									.Name("EditDebit")
-									.Location(TextEditorButtonLocation.After)
-									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("edit")
-										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
-										.OnClick(@<text>
-											function() {
-												var dropDownBox = $('#VATSupplierName').dxDropDownBox('instance');
-												var selectedValue = dropDownBox.option('value');
-												if (!selectedValue) {
-													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
-													return;
-												}
-												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
-												openModal(url, 'Client Master');
-											}
-										</text>)
-									);
+										 buttons.Add()
+											.Name("EditDebit")
+											.Location(TextEditorButtonLocation.After)
+											.Widget(w => w.Button()
+												.Type(ButtonType.Default)
+												.Icon("edit")
+												.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+												@* .OnClick(@<text>
+													function() {
+														var dropDownBox = $('#VATSupplierName').dxDropDownBox('instance'); // ✅ correct ID
+														var selectedValue = dropDownBox.option('value'); // ✅ AccountId because ValueExpr = "AccountId"
+
+														if (!selectedValue) {
+															DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+															return;
+														}
+
+														var tenantName = window.location.pathname.split('/')[1];
+													    const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsDebitEdit=true`;
+														//var url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(selectedValue)}`; // ✅ using selectedValue directly
+
+														openModal(url, '');
+													}
+												</text>) *@
+												 .OnClick("onEditClientClick") // 🔸 EDIT FUNCTION
+											);
 									  buttons.Add()
 									   .Name("dropDown");
-							})
+									   })
             )
+
+			               @(Html.DevExtreme().Popup()
+														.ID("ledgerAccountPopup")
+														.Width("80%")
+														.Height("85%")
+														.Title("Add Ledger Account")
+														.ShowTitle(true)
+														.CloseOnOutsideClick(true)
+														.Visible(false)
+														.ResizeEnabled(true)
+														.ContentTemplate(@<text>
+											  								<div id="popupContent" style="width:100%; height:100%;">
+											  									<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+											  								</div>
+											  							</text>)
+														)
+
+
+							@(Html.DevExtreme().Popup()
+														.ID("ledgerEditAccountPopup")
+														.Width("80%")
+														.Height("85%")
+														.Title(new JS("formatMessage('Edit Ledger Account')"))
+														.ShowTitle(true)
+														.CloseOnOutsideClick(true)
+														.Visible(false)
+														.ResizeEnabled(true)
+														.ContentTemplate(@<text>
+											  								<div id="popupContent" style="width:100%; height:100%;">
+											  									<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+											  								</div>
+											  							</text>)
+														)
     </div>
 
                        
@@ -517,7 +560,7 @@
                                 .ValueExpr("PurchaseVoucherNo")
                                 .DisplayExpr("PurchaseVoucherNo")
                                 .LabelMode(EditorLabelMode.Floating)
-								.DropDownOptions(o => o.Width(1000))
+								.DropDownOptions(o => o.Width(900))
 			                    .ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
                             )
 
@@ -568,52 +611,60 @@
                                     .OpenOnFieldClick(false)
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("AccountHead")
-                                    .DisplayExpr("AccountId")
+									.ValueExpr("AccountId")
+									.DisplayExpr("AccountHeadArabic")
                                     .Width(500)
                                     .TabIndex(4)
                                     .DropDownOptions(o => o.Width(1000))
                                     .ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
 									.Buttons(buttons => {
-								// Clear Button
-								buttons.Add()
-									.Name("clear");
-
-								// Add Client Button
-								buttons.Add()
-									.Name("AddDebits")
+									buttons.Add().Name("clear");
+									buttons.Add()
+									.Name("AddDebits1")
 									.Location(TextEditorButtonLocation.After)
 									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("plus")
-										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									.Type(ButtonType.Default)
+									.Icon("plus")
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+								@* 	.OnClick(@<text>
+										function() {
+											var url = `/${tenantName}/Finance/LedgerAccount`;
+											openModal(url, '');
+										}
+									</text>) *@
+									.OnClick("showLedgerAccountPopup") // 🔸 ADD FUNCTION
 									);
 
-								// Edit Client Button
-								buttons.Add()
-									.Name("EditDebit")
-									.Location(TextEditorButtonLocation.After)
-									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("edit")
-										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
-										.OnClick(@<text>
-											function() {
-												var dropDownBox = $('#ddlSupplierNameArabic').dxDropDownBox('instance');
-												var selectedValue = dropDownBox.option('value');
-												if (!selectedValue) {
-													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
-													return;
-												}
-												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
-												openModal(url, 'Client Master');
-											}
-										</text>)
-									);
+										 buttons.Add()
+											.Name("EditDebit1")
+											.Location(TextEditorButtonLocation.After)
+											.Widget(w => w.Button()
+												.Type(ButtonType.Default)
+												.Icon("edit")
+												.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+												@* .OnClick(@<text>
+													function() {
+														var dropDownBox = $('#VATSupplierName').dxDropDownBox('instance'); // ✅ correct ID
+														var selectedValue = dropDownBox.option('value'); // ✅ AccountId because ValueExpr = "AccountId"
+
+														if (!selectedValue) {
+															DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+															return;
+														}
+
+														var tenantName = window.location.pathname.split('/')[1];
+													    const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsDebitEdit=true`;
+														//var url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(selectedValue)}`; // ✅ using selectedValue directly
+
+														openModal(url, '');
+													}
+												</text>) *@
+												 .OnClick("onEditClientClick") // 🔸 EDIT FUNCTION
+											);
 									  buttons.Add()
 									   .Name("dropDown");
 							})
-                                )
+            )
                             </div>
                         </div>
 
@@ -1341,49 +1392,50 @@
 {
 	@(Html.DevExtreme().DataGrid()
 
-										.ID("ddlSupplierNameArabic-datagrid")
-										.DataSource(d => d.WebApi()
-										.Controller("VATModule")
-											.LoadAction("GetSupplierCode")
-										.LoadMode(DataSourceLoadMode.Raw)
-											///   .Key("AccountHead") //salary paid entry
-											.Key("AccountId")
+												.ID("ddlSupplierNameArabic-datagrid")
+											.DataSource(d => d.WebApi()
+											.Controller("VATModule")
+													.LoadAction("GetSupplierName")
+											.LoadMode(DataSourceLoadMode.Raw)
+													///   .Key("AccountHead") //salary paid entry
+													.Key("AccountId")
+
+											)
+											.WordWrapEnabled(true)
+											.ShowBorders(true)
+											.SearchPanel(sp => sp.HighlightSearchText(true))
+											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+											.OnSelectionChanged("dataGridSupplierNameSelectionChanged")
+											.OnInitialized("dataGridSupplierNameInitialized")
+											// .HeaderFilter(p => p.Visible(true))
+											.ShowBorders(true)
+											.HoverStateEnabled(true)
+											.Paging(p => p.PageSize(15))
+												.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
+											.FilterRow(f => f.Visible(true))
+											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+											.Height(345)
+											.Selection(s => s.Mode(SelectionMode.Single))
+											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+											.Columns(columns =>
+											{
+											columns.Add().DataField("AccountHeadArabic").Caption("رأس الحساب بالعربية").Alignment(HorizontalAlignment.Right);
+											columns.Add().DataField("AccountId").Caption("معرف الحساب").Alignment(HorizontalAlignment.Right);
+
+
+											})
 
 										)
-										.ColumnChooser(c => c
-														.Enabled(true)
-														.Title(new JS("formatMessage('Show/Hide Column')"))
-														.Mode(GridColumnChooserMode.DragAndDrop))
-														.Pager(pager => pager
-														.Visible(true)                            // show pager UI (page numbers etc)
-														.ShowPageSizeSelector(true)              // allow user to change page size
-														.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
-														.ShowInfo(true))   
-										.WordWrapEnabled(true)
-										.ShowBorders(true)
-										.SearchPanel(sp => sp.HighlightSearchText(true))
-										.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-										.OnSelectionChanged("dataGridCostCenterAccountHeadSelectionChanged")
-										.OnInitialized("dataGridCostCenterAccountHeadInitialized")
-										// .HeaderFilter(p => p.Visible(true))
-										.ShowBorders(true)
-										.HoverStateEnabled(true)
-										.Paging(p => p.PageSize(15))
-
-										.FilterRow(f => f.Visible(true))
-										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-										.Height(345)
-										.Selection(s => s.Mode(SelectionMode.Single))
-										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-										.Columns(columns =>
-										{
-											columns.Add().DataField("AccountHeadArabic").Caption("رأس الحساب بالعربية").Alignment(HorizontalAlignment.Right);
-											columns.Add().DataField("AccountID").Caption("معرف الحساب").Alignment(HorizontalAlignment.Right);
-
-
-										})
-
-									)
 
 }
 @using (Html.DevExtreme().NamedTemplate("SupplierNameTemplate"))
@@ -1481,7 +1533,13 @@
 											.Columns(columns =>
 											{
 													columns.Add().DataField("PurchaseVoucherNo").Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("SupplierCode").Caption(new JS("formatMessage('Supplier account/Cash account')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("PurchaseVoucherDate").Caption(new JS("formatMessage('Purchase Voucher Date')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("PurchaseBillNo").Caption(new JS("formatMessage('Purchase Bill No')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("TotalPurchaseAmount").Caption(new JS("formatMessage('Total Purchase Amount')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("PostalAmount").Caption(new JS("formatMessage('Postal Amount')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("Paid").Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("Balance").Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Center);
+													@* columns.Add().DataField("SupplierCode").Caption(new JS("formatMessage('Supplier account/Cash account')")).Alignment(HorizontalAlignment.Center); *@
 													//columns.Add().DataField("RecordStatus").Caption(new JS("formatMessage('Record Status')")).Alignment(HorizontalAlignment.Center);
 
 											})
@@ -1865,6 +1923,25 @@
 
 <!-- Modal Structure -->
 <script>
+
+
+	$(document).ready(function () {
+    // Sync when Supplier Name changes
+    $("#VATSupplierName").dxDropDownBox("instance").on("valueChanged", function(e) {
+        var arabicDropDown = $("#ddlSupplierNameArabic").dxDropDownBox("instance");
+        if (arabicDropDown && arabicDropDown.option("value") !== e.value) {
+            arabicDropDown.option("value", e.value);
+        }
+    });
+
+    // Sync when Supplier Arabic Name changes
+    $("#ddlSupplierNameArabic").dxDropDownBox("instance").on("valueChanged", function(e) {
+        var nameDropDown = $("#VATSupplierName").dxDropDownBox("instance");
+        if (nameDropDown && nameDropDown.option("value") !== e.value) {
+            nameDropDown.option("value", e.value);
+        }
+    });
+});
 
 	let accid=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsAmend="false",supplierid=null,IsDirectApproval=true,IsDirectVerify=true,UnitCode=null;
@@ -2297,7 +2374,7 @@
 							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
+							//dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
 						}
 
@@ -2765,17 +2842,8 @@
 							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
+							//dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
-
-							ItemNo = selectedItem.GSCode;
-				           Gsdescrpition = selectedItem.GSDescrpition;
-				           GsdescriptionAr = selectedItem.GsdescriptionAr;
-				           ItemPartNo = selectedItem.ItemPartNo;
-				           CostPrice = selectedItem.CostPrice;
-				           GssellingRate = selectedItem.GSSellingRate;
-				           ReorderQty = selectedItem.ReorderQty;
-				           UnitOfMeasure = selectedItem.UnitDescription;
 						}
 
 						e.component.close();
@@ -2801,10 +2869,13 @@
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
+				if (!selectedItemData || !selectedItemData.GSCode) {
+					DevExpress.ui.notify("Please select an item first", "warning", 2000);
+					return;
+				}
 
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-
-			//	const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+				const selected = selectedItemData;
+				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
 				openModal(url, "Goods and Services");
 			},
 			width: 60,
@@ -5218,6 +5289,7 @@
 					"Debit Note Details updated Successfully.","success",2000
 				);
 				history.back();
+				
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6155,6 +6227,55 @@
 			delay: [100, 100],
 		});
 	}
+				function showLedgerAccountPopup() {
+	console.log("Opening Add Supplier popup");
 
+	const tenantName = window.location.pathname.split('/')[1];
+	const url = `/${tenantName}/Finance/LedgerAccount?IsDebitAdd=true`;
+
+	const popup = $("#ledgerAccountPopup").dxPopup("instance");
+	popup.show();
+
+	setTimeout(() => {
+		const iframe = document.getElementById("ledgerAccountFrame");
+		if (!iframe) {
+			console.error("Add iframe not found!");
+			return;
+		}
+		iframe.src = url;
+	}, 300);
+}
+
+
+						function onEditClientClick() {
+	var clientId = $("#VATSupplierName").dxDropDownBox("option", "value");
+
+	if (!clientId) {
+		DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Client to edit");
+		return;
+	}
+
+	showLedgerAccountEditPopup(clientId); // your existing edit logic
+}
+
+
+function showLedgerAccountEditPopup(accheadid) {
+	console.log("Opening Edit Supplier popup for ID:", accheadid);
+
+	const tenantName = window.location.pathname.split('/')[1];
+	const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsDebitEdit=true`;
+
+	const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+	popup.show();
+
+	setTimeout(() => {
+		const iframe = document.getElementById("ledgerEditAccountFrame");
+		if (!iframe) {
+			console.error("Edit iframe not found!");
+			return;
+		}
+		iframe.src = url;
+	}, 300);
+}
 
 </script>
