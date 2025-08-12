@@ -99,6 +99,7 @@ var dictionary = {
         "GS Description (Arabic)": "GS Description (Arabic)",
         "Total After Discount": "Total After Discount",
         "Total Discount":"Total Discount",
+        "Inventory List To Upload":"Inventory List To Upload",
 
         "Batch No": "Batch No",
         "Client Name": "Client Name",
