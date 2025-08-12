@@ -5226,8 +5226,7 @@ return $container;
                           }
                       }
                    }},
-			
-						{
+			{
     dataField: "DiscountDetails",
     caption: "...",
     cssClass: "center-header",
@@ -5245,6 +5244,7 @@ return $container;
         }).appendTo(container);
     }
 },
+						
 
 				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150, cssClass: "center-header",format: { type: "fixedPoint", precision: 2 },allowEditing: false },
 
@@ -5577,28 +5577,49 @@ return $container;
 	// 	});
 	// });
 
-	function showCalcPopover(rowIndex) {
+	function showCalcPopover(rowIndex, targetElement) {
     const grid = $("#B2BdataGrid").dxDataGrid("instance");
 
     const qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
     const unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
     const amount = qty * unitPrice;
 
-    $("#CalcardPopover").dxPopover("instance").option({
-        contentTemplate: function (contentElement) {
-            $.ajax({
-                url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
-                type: 'GET',
-                success: function (data) {
-                    contentElement.html(data);
-                },
-                error: function () {
-                    contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-                }
-            });
-        }
-    }).dxPopover("instance").show();
+    let popover = $("#CalcardPopover").dxPopover("instance");
+
+    // Initialize popover once
+    if (!popover) {
+        $("#CalcardPopover").dxPopover({
+            width: 550,
+            position: "bottom",
+            showEvent: "", // Manual show
+            hideEvent: "", // Manual hide
+            hideOnOutsideClick: true,
+            shading: false // Optional: no overlay shading
+        });
+
+        popover = $("#CalcardPopover").dxPopover("instance");
+    }
+
+    // Update popover content dynamically
+    popover.option("contentTemplate", function (contentElement) {
+        contentElement.empty().append("<div>Loading...</div>");
+        $.ajax({
+            url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
+            type: 'GET',
+            success: function (data) {
+                contentElement.html(data);
+            },
+            error: function () {
+                contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+            }
+        });
+    });
+
+    // Show popover near the clicked button or cell
+    popover.option("target", targetElement);
+    popover.show();
 }
+
 
 				$(function () {
 		if ($("#ExcemptioncodePopover").length && !$("#ExcemptioncodePopover").hasClass("dx-popover")) {
