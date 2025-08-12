@@ -543,119 +543,112 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
             }
         }
-
-
-
-        [HttpGet("GetAll")]
-        public IActionResult GetAll()
+        [HttpGet("GetAllPropertyTypes")]
+        public IActionResult GetAllPropertyTypes()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var stockClassifications = dbContext.Tbl30111StockClassificationMasters
+                    var propertyTypes = dbContext.Tbl40110PropertyTypes
                         .Select(s => new
                         {
-                            s.StockClassId,
-                            s.StockClassification
+                            s.PropertyTypeId,
+                            s.PropertyType
                         })
                         .ToList();
 
-                    return Ok(stockClassifications);
+                    return Ok(propertyTypes);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error loading stock classifications: {ex.Message}");
-                    return StatusCode(500, new { message = "Failed to load stock classifications.", error = ex.Message });
+                    _logger.LogError($"Error loading Property Types: {ex.Message}");
+                    return StatusCode(500, new { message = "Failed to load Property Types.", error = ex.Message });
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
-        public class StockClassificationInputModel
-        {
-            public string StockClassification { get; set; }
-        }
+
+
+
         [HttpPost]
-        public IActionResult AddStockClassification([FromBody] StockClassificationInputModel model)
+        public IActionResult AddPropertyType([FromBody] PropertyTypeInputModel model)
         {
             try
             {
-                if (string.IsNullOrWhiteSpace(model.StockClassification))
-                    return BadRequest(new { message = "Stock Classification is required." });
+                if (string.IsNullOrWhiteSpace(model.PropertyType))
+                    return BadRequest(new { message = "Property Type is required." });
 
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { message = "Invalid tenant." });
 
-                // Get the max existing ID (assuming StockClassificationId is a byte, short, or int)
-                short maxId = (short)dbContext.Tbl30111StockClassificationMasters
-                         .Select(x => x.StockClassId)
-                         .AsEnumerable()
-                         .DefaultIfEmpty((short)0)
-                         .Max();
+                short maxId = (short)dbContext.Tbl40110PropertyTypes
+                    .Select(x => x.PropertyTypeId)
+                    .AsEnumerable()
+                    .DefaultIfEmpty((short)0)
+                    .Max();
 
-                // Check if maxId has reached its limit
                 if (maxId == short.MaxValue)
-                    return BadRequest(new { message = "Maximum stock classification ID limit reached." });
+                    return BadRequest(new { message = "Maximum property type ID limit reached." });
 
-                var newStockClass = new Tbl30111StockClassificationMaster
+                var newPropertyType = new Tbl40110PropertyType
                 {
-                    StockClassId = (short)(maxId + 1),  // Assign the new ID
-                    StockClassification = model.StockClassification
+                    PropertyTypeId = (short)(maxId + 1),  
+                    PropertyType = model.PropertyType
                 };
 
-                dbContext.Tbl30111StockClassificationMasters.Add(newStockClass);
+                dbContext.Tbl40110PropertyTypes.Add(newPropertyType);
                 dbContext.SaveChanges();
 
-                return Ok(new { message = "Stock Classification saved successfully." });
+                return Ok(new { message = "Property Type saved successfully." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "AddStockClassification failed");
+                _logger.LogError(ex, "AddPropertyType failed");
                 return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
             }
         }
 
-      
-
-
-        public class StockClassificationUpdateDto
+        public class PropertyTypeInputModel
         {
-            public int Key { get; set; }
-            public string Values { get; set; }  // JSON string of updated fields
+            public string PropertyType { get; set; }
         }
 
-        [HttpPut("UpdateStockClassification")]
-        public IActionResult UpdateStockClassification([FromForm] StockClassificationUpdateDto updateDto)
+        public class PropertyTypeUpdateDto
+        {
+            public int Key { get; set; }
+            public string Values { get; set; } 
+        }
+        [HttpPut("UpdatePropertyType")]
+        public IActionResult UpdatePropertyType([FromForm] PropertyTypeUpdateDto updateDto)
         {
             try
             {
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                     return Unauthorized(new { message = "Invalid tenant." });
 
-                var existing = dbContext.Tbl30111StockClassificationMasters.FirstOrDefault(x => x.StockClassId == updateDto.Key);
+                var existing = dbContext.Tbl40110PropertyTypes.FirstOrDefault(x => x.PropertyTypeId == updateDto.Key);
                 if (existing == null)
                     return NotFound(new { message = "Record not found." });
 
-                // Deserialize the JSON string of values into dictionary
                 var values = JsonConvert.DeserializeObject<Dictionary<string, object>>(updateDto.Values);
 
-                // Serialize back to JSON and populate existing entity only on provided fields
                 var jsonValues = JsonConvert.SerializeObject(values);
                 JsonConvert.PopulateObject(jsonValues, existing);
 
                 dbContext.SaveChanges();
 
-                return Ok(new { message = "Stock Classification updated successfully." });
+                return Ok(new { message = "Property Type updated successfully." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "UpdateStockClassification failed");
+                _logger.LogError(ex, "UpdatePropertyType failed");
                 return StatusCode(500, new { message = "An error occurred while updating.", detailed = ex.Message });
             }
         }
-         [HttpDelete]
-        public IActionResult DeleteStockClassification(string key)
+        [HttpDelete]
+        public IActionResult DeletePropertyType(string key)
         {
             try
             {
@@ -663,13 +656,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     return Unauthorized(new { message = "Invalid tenant." });
 
                 if (!short.TryParse(key, out short id))
-                    return BadRequest(new { message = "Invalid Stock Classification ID." });
+                    return BadRequest(new { message = "Invalid Property Type ID." });
 
-                var stockClass = dbContext.Tbl30111StockClassificationMasters.FirstOrDefault(x => x.StockClassId == id);
-                if (stockClass == null)
-                    return NotFound(new { message = "Stock Classification not found." });
+                var propertyType = dbContext.Tbl40110PropertyTypes.FirstOrDefault(x => x.PropertyTypeId == id);
+                if (propertyType == null)
+                    return NotFound(new { message = "Property Type not found." });
 
-                dbContext.Tbl30111StockClassificationMasters.Remove(stockClass);
+                dbContext.Tbl40110PropertyTypes.Remove(propertyType);
                 dbContext.SaveChanges();
 
                 return Ok(new { message = "Deleted successfully." });
