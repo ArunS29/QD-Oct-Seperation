@@ -976,14 +976,85 @@
 			});
 		}
 	},
-					{
-							text: "Create a VAT Purchase Voucher",
-						icon: "add",
-						onItemClick: function () {
-							const url = `/${tenantName}/IMS/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-							window.location.href = url;
-						}
-					}
+	{
+    text: "Create VAT Purchase",
+    icon: "cart",
+    onItemClick: function () {
+		debugger;
+        const receiptNo = e.row?.data?.ReceiptNo;
+        const supplierCode = e.row?.data?.SupplierCode;
+        const tenantName = window.tenantName || "defaultTenant";
+
+        if (!receiptNo) {
+            DevExpress.ui.notify("Receipt No not available.", "error", 2000);
+            return;
+        }
+
+        // 1. Check if Purchase Bill already exists
+			$.get(`/api/MaterialReceipts/CheckIfPurchaseBillExists?receiptNo=${encodeURIComponent(receiptNo)}`)
+            .done(function (exists) {
+                if (exists) {
+                    DevExpress.ui.notify("Purchase Bill already created for this Receipt.", "error", 3000);
+                    return;
+                }
+
+                // 2. Optional: check supplier ledger mapping from backend (not required if backend does it)
+					$.get(`/api/MaterialReceipts/GetLedgerNo?supplierCode=${encodeURIComponent(supplierCode)}`)
+                    .done(function (ledgerNo) {
+                        if (!ledgerNo) {
+                            DevExpress.ui.notify(
+                                "This Supplier is not linked to an Accounting Ledger. Please link before creating VAT Purchase Bill.",
+                                "error",
+                                4000
+                            );
+                            return;
+                        }
+
+                        // 3. Ask confirmation
+                        DevExpress.ui.dialog.confirm(
+                            "You are about to create a new VAT Purchase Bill.\nDo you want to continue?",
+                            "Confirm"
+                        ).done(function (confirmed) {
+                            if (!confirmed) return;
+
+                            // 4. Call API - send as object with ReceiptNo (backend expects ReceiptRequest)
+                            var payload = { receiptNo: receiptNo };
+									 var IsEdit = true;
+
+                            $.ajax({
+									url: "/api/MaterialReceipts/CreateVatPurchaseFromReceipt",
+                                method: "POST",
+                                contentType: "application/json",
+                                data: JSON.stringify(payload),
+                                success: function (result) {
+                                    if (result && result.success) {
+                                        DevExpress.ui.notify(result.message, "success", 2000);
+                                        // Redirect to edit page (adjust route as needed)
+															window.location.href = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(result.purchaseVoucherNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
+                                    } else {
+                                        DevExpress.ui.notify(result.message || "Failed to create VAT Purchase Bill.", "error", 3000);
+                                    }
+                                },
+                                error: function (xhr) {
+                                    var msg = "Server error while creating VAT Purchase Bill.";
+                                    if (xhr && xhr.responseJSON && xhr.responseJSON.message) msg = xhr.responseJSON.message;
+                                    DevExpress.ui.notify(msg, "error", 3000);
+                                }
+                            });
+                        });
+                    })
+                    .fail(function () {
+                        DevExpress.ui.notify("Error checking supplier ledger mapping.", "error", 3000);
+                    });
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Error checking Purchase Bill existence.", "error", 3000);
+            });
+    }
+}
+
+
+
 				];
 			}
 		}

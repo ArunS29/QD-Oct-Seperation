@@ -590,19 +590,19 @@
     });
 
     // Footer Recipits button event
-    function addRecipitsButton_click(e) {
+        function addRecipitsButton_click(e) {
         switch (e.itemData.text) {
             case (formatMessage('Add Cash Receipts')):
-                window.open(`/${tenantName}/Finance/VoucherEntryCashReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
                 break;
             case (formatMessage('Add Bank Receipts')):
-                window.open(`/${tenantName}/Finance/VoucherEntryReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryReceipts`;
                 break;
-            // You can handle other cases here if needed
             default:
                 console.log("Clicked item: ", e.itemData.text);
         }
     }
+
     function addReportsButton_click(e) {
         let pageUrl = '';
         let selectedText = e.itemData.text;
@@ -714,60 +714,53 @@
         $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
     }
   
-    // Handle button clicks
-    function addRecipitsButton_click(e) {
-        let url = "";
-        let title = "Receipts";
+
+       // Footer Recipits button event
+        function addRecipitsButton_click(e) {
         switch (e.itemData.text) {
             case (formatMessage('Add Cash Receipts')):
-                url = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
-                title = formatMessage('Add Cash Receipts');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
                 break;
             case (formatMessage('Add Bank Receipts')):
-                url = `/${tenantName}/Finance/VoucherEntryReceipts`;
-                title = formatMessage('Add Bank Receipts');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryReceipts`;
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
-                return;
         }
-        openModal(url, title);
     }
 
     function addPaymentButton_click(e) {
-        let url = "";
-        let title = "Payments";
+
         switch (e.itemData.text) {
             case (formatMessage('Add Cash Payment')):
-                url = `/${tenantName}/Finance/VoucherCashPayment`;
-                title = formatMessage('Add Cash Payment');
+                window.location.href = `/${tenantName}/Finance/VoucherCashPayment`;
+              
                 break;
             case (formatMessage('Add Bank Payment')):
-                url = `/${tenantName}/Finance/VoucherBankPayment`;
-                title = formatMessage('Add Bank Payment');
+                window.location.href = `/${tenantName}/Finance/VoucherBankPayment`;
+
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
                 return;
         }
-        openModal(url, title);
+
     }
 
     function otherVoucherButton_click(e) {
-        let url = "";
-        let title = "Vouchers";
+
         switch (e.itemData.text) {
             case (formatMessage('Add Purchase Voucher')):
-                url = `/${tenantName}/Finance/Purchasevoucher`;
-                title = formatMessage('Add Purchase Voucher');
+                window.location.href = `/${tenantName}/Finance/Purchasevoucher`;
+               
                 break;
             case (formatMessage('Add Sales Voucher')):
-                url = `/${tenantName}/Finance/Salesvoucher`;
-                title = formatMessage('Add Sales Voucher');
+                window.location.href = `/${tenantName}/Finance/Salesvoucher`;
+
                 break;
             case (formatMessage('Add Journal Voucher')):
-                url = `/${tenantName}/Finance/Voucherjournal`;
-                title = formatMessage('Add Journal Voucher');
+               window.location.href = `/${tenantName}/Finance/Voucherjournal`;
+
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
