@@ -1578,7 +1578,7 @@
 										.Caption(new JS("formatMessage('Voucher Entry No')"))
 										.Visible(false);
 
-											columns.Add().DataField("SNo").Caption("#").Width(200);
+											columns.Add().DataField("SNo").Caption("SNo").Width(200);
 
 											columns.Add().DataField("ItemCode")
 										.Caption(new JS("formatMessage('Item Code')"))
@@ -3280,7 +3280,7 @@
 			keyExpr: "SNo",
 			columns: [
 						{ dataField: "PurchaseChildSlNo", caption: "PurchaseChildSlNo", width: 100, allowEditing: false, visible: false },
-				{ dataField: "PurchaseChildSlNo", caption: "#", width: 100, allowEditing: false },
+				{ dataField: "PurchaseChildSlNo", caption: "SNo", width: 100, allowEditing: false },
 				{ dataField: "ItemCode", caption: formatMessage('Item Code'), width: 200,allowEditing: false },
 				{
 					dataField: "DetailedDescription",
@@ -3714,7 +3714,7 @@
 
 					   dataField: "SNo",
 
-					   caption: "#",
+					   caption: "SNo",
 					
 					   width: 100,
 
@@ -4411,10 +4411,12 @@
 
 								  let  accheadname = selectedRowData[0].AccountHead;
 									  ClientNamedataGridSelectionChanged({ selectedRowKeys: [accheadname] });
-									  $("#GroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].ClientGroupVatnumber)
-									  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].VatregistrationNo)
-									  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].ClientOtherId)
-									  $("#OtherIDType").dxDropDownBox("instance").option("value",selectedRowData[0].ClientOtherIdtype)
+									  $("#ClientNameArabic").dxTextBox("instance").option("value",selectedRowData[0].AccountHeadArabic);
+									  
+									  $("#GroupVATNo").dxTextBox("instance").option("value",selectedRowData[0].SupplierGroupVatnumber);
+									  $("#ClientVATNo").dxTextBox("instance").option("value",selectedRowData[0].SupplierVatno);
+									  $("#ClientOtherID").dxTextBox("instance").option("value",selectedRowData[0].SupplierOtherId);
+									  $("#OtherIDType").dxDropDownBox("instance").option("value",selectedRowData[0].SupplierOtherIdtype);
 
 	$("#StreetName").dxTextBox("instance").option("value", selectedRowData[0].SupplierAddressStreet);
 			$("#StreetNameArabic").dxTextBox("instance").option("value", selectedRowData[0].SupplierAddressStreetAr);
@@ -6927,8 +6929,8 @@
 					}
 					else{
 						DevExpress.ui.dialog.custom({
-								title: "Invoice postal has failed.",
-								message: "The invoice has not been posted. Please specify the Revenue Account.",
+								title: "Select Ledger to post",
+								message: "Please Select the Ledger before Posting",
 								buttons: [{ text: "Ok", onClick: () => false }],
 								showTitle: true
 							}).show();
