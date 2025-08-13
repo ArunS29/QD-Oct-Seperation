@@ -3062,7 +3062,7 @@
 		}
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsDirectApproval=true,IsDirectVerify=true,UnitCode=null;
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsDirectApproval=true,IsDirectVerify=true,UnitCode=null,UnitOfMeasure=null;
 
 
 
@@ -3232,15 +3232,18 @@
 	// $("#ddlinvoicesubmittedon").dxTextBox("instance").option("value") || null,
 	$("#ddlSupplierArabicName").dxDropDownBox("instance").option("value", account.SupplierNameAr) || null;
 
-
+	                                        if(account.IsVerified==true)
+											{
+												btnVerifydisableEditing();
+											}
 											if(account.IsApproved==true)
 											{
 												disableEditing();
 											}
-												else if(account.IsPosted==true)
-	{
-					btnPostToLedgerdisableEditing();
-	}
+										    if(account.IsPosted==true)
+	                                        {
+	                                        	btnPostToLedgerdisableEditing();
+	                                        }
 
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -3398,6 +3401,7 @@
 							CostPrice = selectedItem.CostPrice;
 							GssellingRate = selectedItem.GSSellingRate;
 							ReorderQty = selectedItem.ReorderQty;
+							UnitOfMeasure = selectedItem.UnitDescription;
 						}
 
 						e.component.close();
@@ -3423,14 +3427,9 @@
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				if (!selectedItemData || !selectedItemData.GSCode) {
-					DevExpress.ui.notify("Please select an item first", "warning", 2000);
-					return;
-				}
-
-				const selected = selectedItemData;
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-				openModal(url, "Goods and Services");
+			
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+            openModal(url, "Goods and Services");
 			},
 			width: 60,
 			height: 30
@@ -3854,6 +3853,7 @@
 	                    CostPrice = selectedItem.CostPrice;
 	                    GssellingRate = selectedItem.GSSellingRate;
 	                    ReorderQty = selectedItem.ReorderQty;
+						UnitOfMeasure = selectedItem.UnitDescription;
 					}
 
 					e.component.close();
@@ -3879,16 +3879,10 @@
 		icon: "edit",
 		hint: "Edit item",
 		onClick: function () {
-			if (!selectedItemData || !selectedItemData.GSCode) {
-				DevExpress.ui.notify("Please select an item first", "warning", 2000);
-				return;
-			}
-
-			const selected = selectedItemData;
-			   const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-
-			//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-			openModal(url, "Goods and Services");
+			
+			
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+            openModal(url, "Goods and Services");
 		},
 		width: 60,
 		height: 30
@@ -6209,7 +6203,7 @@
 						grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 	}
 			
-		$("#btnSave").on("click", function (e) {
+		function SaveInvoiceDetails() {
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
@@ -6370,10 +6364,10 @@
 					button.option("disabled", false);
 			}
 
-		 });
+		 }
 
 
-					$("#btnSaveAndClose").on("click", function (e) {
+		function SaveandCloseInvoiceDetails() {
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
@@ -6539,7 +6533,7 @@ button.option("disabled", false);
 						button.option("disabled", false);
 				}
 
-			 });
+			 }
 
 		
 
@@ -6733,6 +6727,7 @@ button.option("disabled", false);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithVerification(); // Proceed if user clicks Yes
 					}
 				});
@@ -6829,6 +6824,7 @@ button.option("disabled", false);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithApproval(); // Proceed if user clicks Yes
 					}
 				});
@@ -6937,6 +6933,7 @@ button.option("disabled", false);
 						showTitle: true
 					}).show().done(function (dialogResult) {
 						if (dialogResult) {
+							SaveInvoiceDetails();
 							proceedWithPost(); // Proceed if user clicks Yes
 						}
 					});
@@ -7248,7 +7245,7 @@ button.option("disabled", false);
 		console.log("Opening Add Supplier popup");
 
 		const tenantName = window.location.pathname.split('/')[1];
-		const url = `/${tenantName}/Finance/LedgerAccount?IsSupplier=true`;
+		const url = `/${tenantName}/Finance/LedgerAccount?&IsPurchaseAdd=true`;
 
 		const popup = $("#ledgerAccountPopup").dxPopup("instance");
 		popup.show();
@@ -7675,6 +7672,8 @@ button.option("disabled", false);
 					dataGrid.option("editing.allowDeleting", false);
 				}
 			}
+
+			
 		 $(function () {
 		const dateBox = $("#SupplyDates").dxDateBox("instance");
 

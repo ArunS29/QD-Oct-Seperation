@@ -3518,14 +3518,18 @@
 							// 				dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
 							// 				dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
 
+											   if(account.IsVerified==true)
+											{
+												btnVerifydisableEditing();
+											}
 											if(account.IsApproved==true)
 											{
 												disableEditing();
 											}
-											else if(account.IsPosted==true)
-{
-				btnPostToLedgerdisableEditing();
-}
+										     if(account.IsPosted==true)
+                                            {
+                                               btnPostToLedgerdisableEditing();
+                                            }
 
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -6718,7 +6722,7 @@ openModal(url, title);
 		}
 	}
 
-	$("#btnSave").on("click", function (e) {
+	function SaveInvoiceDetails() {
 		
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();	
@@ -6885,13 +6889,13 @@ openModal(url, title);
 						button.option("disabled", false);
 		}
 
-	 });
+	 }
 
 
 
 
 
-				$("#btnSaveAndClose").on("click", function (e) {
+		function SaveandCloseInvoiceDetails() {
 			
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
@@ -7058,7 +7062,7 @@ openModal(url, title);
 							button.option("disabled", false);
 			}
 
-		 });
+		 }
 
 
 
@@ -7331,6 +7335,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+							SaveInvoiceDetails();
 						proceedWithVerification(); // Proceed if user clicks Yes
 					}
 				});
@@ -7425,6 +7430,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+							SaveInvoiceDetails();
 						proceedWithApproval(); // Proceed if user clicks Yes
 					}
 				});
@@ -7524,6 +7530,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+							SaveInvoiceDetails();
 						proceedWithPost(); // Proceed if user clicks Yes
 					}
 				});
