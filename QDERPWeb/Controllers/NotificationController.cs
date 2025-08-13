@@ -240,8 +240,8 @@ namespace QD.ERP.Web.Controllers
 
                     var summary = new
                     {
-                        Payments = getCounts(new List<string> { "PaymentBank", "PaymentCash" }),
-                        Receipts = getCounts(new List<string> { "ReceiptBank", "ReceiptCash" }),
+                        Payments = getCounts(new List<string> { "Bank Payment", "Cash Payment" }),
+                        Receipts = getCounts(new List<string> { "Bank Receipts", "Cash Receipts" }),
                         SalesPurchase = getCounts(new List<string> { "Sales", "Purchase" }),
                         Journals = getCounts(new List<string> { "Journal" }),
                         ExpenseClaims = getCounts(new List<string> { "ExpenseClaim" })
