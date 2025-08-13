@@ -52,6 +52,73 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, "Internal server error");
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetBankAccounts()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var balance = await dbContext.SupplierOutstandings
+                    .AsNoTracking()
+                    .Where(x => x.AccountHead == "BANK ACCOUNTS")
+                    .Select(x => (decimal?)x.Balance)
+                    .FirstOrDefaultAsync();
+
+                return Ok(new { success = true, accountHead = "BANK ACCOUNTS", balance = balance ?? 0m });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetBankAccounts");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetRevenueReporting()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var sql = @"
+            SELECT 
+                YEAR(DocumentYear) AS Year,
+                MONTH(DocumentMonth) AS Month,
+                SUM(ISNULL(SalesAmount, 0)) AS TotalSales
+            FROM qry201_675_009RevenueReporting
+            WHERE DocumentType = 'Sales'
+            GROUP BY YEAR(DocumentYear), MONTH(DocumentMonth)
+            ORDER BY YEAR(DocumentYear), MONTH(DocumentMonth)";
+
+                var rawData = await dbContext
+                    .Database
+                    .SqlQueryRaw<RevenueReportDto>(sql)
+                    .ToListAsync();
+
+                var months = rawData.Select(r => new DateTime(r.Year, r.Month, 1).ToString("MMM yyyy")).ToList();
+                var revenue = rawData.Select(r => r.TotalSales).ToList();
+
+                return Ok(new { months, revenue });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetRevenueReporting");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+
+        public class RevenueReportDto
+        {
+            public int Year { get; set; }
+            public int Month { get; set; }
+            public decimal TotalSales { get; set; }
+            public decimal TotalCashSales { get; set; }
+            public decimal TotalCreditSales { get; set; }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetCashBalance()
@@ -66,6 +133,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 var cashbalance = await dbContext.SupplierOutstandings
               .AsNoTracking()
               .Where(x => x.AccountHead == "Cash Balance")
+              .Select(x => x.Balance)
+              .FirstOrDefaultAsync(); // Or .SingleOrDefaultAsync() if exactly one row is expected
+
+                return Ok(new { success = true, balance = cashbalance });
+
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error in GetCashBalance");
+                return StatusCode(500, "Internal server error");
+            }
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCashBalance1()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out _, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+
+            try
+            {
+                var cashbalance = await dbContext.SupplierOutstandings
+              .AsNoTracking()
+              .Where(x => x.AccountHead == "CASH-IN-HAND")
               .Select(x => x.Balance)
               .FirstOrDefaultAsync(); // Or .SingleOrDefaultAsync() if exactly one row is expected
 
@@ -224,15 +317,23 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var data = dbContext.Qry20115BillsPayableOutStandings
-                     .AsNoTracking()
-                     .OrderByDescending(b => b.Balance)
-                     .Take(5)
-                     .AsQueryable()
-                        .Where(b => b.Balance > 0) // Only bills with outstanding balance
-                        .OrderByDescending(b => b.Balance) // Highest balance first
-                        .ThenByDescending(b => b.OverdueDays) // Highest overdue days next
-                        //.Take(5) // Top 5 only
-                        .AsQueryable();
+                            .AsNoTracking()
+                            .Where(b => b.Balance > 0)
+                            .GroupBy(b => new { b.AccountHeadNo, b.AccountHead })
+                            .Select(g => new
+                            {
+                                AccountHeadNo = g.Key.AccountHeadNo,
+                                AccountHead = g.Key.AccountHead,
+                                Balance = g.Sum(x => x.Balance),
+                                OverdueDays = g.Sum(x => x.OverdueDays)
+                            })
+                            .OrderByDescending(g => g.Balance)
+                            .ThenByDescending(g => g.OverdueDays)
+                            .ThenBy(g => string.IsNullOrEmpty(g.AccountHead) ? 1 : 0) // NULL or empty last
+                            .ThenBy(g => g.AccountHead)
+                            .Take(5)
+                            .AsQueryable();
+
 
                     return Json(await DataSourceLoader.LoadAsync(data, loadOptions));
                 }
@@ -508,17 +609,17 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var data = dbContext.Qry20115BillsOutStandings
                         .Where(b => b.Balance > 0) // Only bills with outstanding balance
-                        .GroupBy(b => new { b.Balance, b.OverdueDays, b.AccountHeadNo, b.AccountHead }) // Match grouping with Payables
+                        .GroupBy(b => new { b.AccountHeadNo, b.AccountHead }) // Correct grouping
                         .Select(g => new
                         {
                             AccountHeadNo = g.Key.AccountHeadNo,
                             AccountHead = g.Key.AccountHead,
-                            Balance = g.Key.Balance,
-                            OverdueDays = g.Key.OverdueDays
+                            Balance = g.Sum(x => x.Balance),
+                            OverdueDays = g.Sum(x => x.OverdueDays)
                         })
                         .OrderByDescending(g => g.Balance)
                         .ThenByDescending(g => g.OverdueDays)
-                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead)) // Optional: push nulls last
+                        .ThenBy(g => string.IsNullOrEmpty(g.AccountHead) ? 1 : 0) // Push null/empty last
                         .ThenBy(g => g.AccountHead)
                         .Take(5)
                         .AsQueryable();
