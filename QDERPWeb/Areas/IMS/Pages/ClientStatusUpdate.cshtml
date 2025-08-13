@@ -103,11 +103,11 @@
         display: none;
     }
 </style>
-@* <div class="title">
+ <div class="title">
     <div class="header-container">
         <div id="ClientStatusUpdate" class="no-border-title"></div>
     </div>
-</div> *@
+</div> 
 <div class="form-container">
 
 
@@ -383,15 +383,15 @@
             }
         });
     }
-    // $(function () {
-    //     $("#ClientStatusUpdate").dxTextBox({
-    //         text: formatMessage("Client Status Update"),
-    //         readOnly: true,
-    //         onContentReady: function (e) {
-    //             $(e.element).addClass("dx-textbox-heading");
-    //         }
-    //     });
-    // });
+    $(function () {
+        $("#ClientStatusUpdate").dxTextBox({
+            text: formatMessage("Client Status Update"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textbox-heading");
+            }
+        });
+    });
     function onSaveClient() {
         
         DevExpress.ui.notify("Client Saved", "success", 1000);

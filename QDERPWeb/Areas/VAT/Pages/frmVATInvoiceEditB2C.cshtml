@@ -3925,14 +3925,18 @@
 						$("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood);
 							$("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr);
 
+							                if(account.IsVerified==true)
+											{
+												btnVerifydisableEditing();
+											}
 											if(account.IsApproved==true)
 											{
 												disableEditing();
 											}
-												else if(account.IsPosted==true)
-		{
-						btnPostToLedgerdisableEditing();
-		}
+										    if(account.IsPosted==true)
+		                                    {
+		                                       	btnPostToLedgerdisableEditing();
+		                                    }
 											 var button = $("#btnSave").dxButton("instance");
 											 button.option("text", "Update");
 								// Now call the second AJAX to get grid details
@@ -4078,6 +4082,15 @@
                         dataGrid.cellValue(rowIndex, "Qty", 1);
                         dataGrid.cellValue(rowIndex, "VAT%", "15%");
                         dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+
+						ItemNo = selectedItem.GSCode;
+				        Gsdescrpition = selectedItem.GSDescrpition;
+				        GsdescriptionAr = selectedItem.GsdescriptionAr;
+				        ItemPartNo = selectedItem.ItemPartNo;
+				        CostPrice = selectedItem.CostPrice;
+				        GssellingRate = selectedItem.GSSellingRate;
+				        ReorderQty = selectedItem.ReorderQty;
+				        UnitOfMeasure = selectedItem.UnitDescription;
                     }
 
                     e.component.close();
@@ -4103,14 +4116,10 @@
         icon: "edit",
         hint: "Edit item",
         onClick: function () {
-            if (!selectedItemData || !selectedItemData.GSCode) {
-                DevExpress.ui.notify("Please select an item first", "warning", 2000);
-                return;
-            }
+              const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 
-            const selected = selectedItemData;
-            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-            openModal(url, "Goods and Services");
+			//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
+			openModal(url, "Goods and Services");
         },
         width: 60,
         height: 30
@@ -4389,7 +4398,8 @@ return $container;
 					stylingMode: "text",
 					width: 30,
 					onClick: function (e) {
-						onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+						//onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+						showCalcPopover(options.rowIndex, e.element);
 					}
 				}).appendTo(container);
 			}
@@ -5272,7 +5282,8 @@ return $container;
 					stylingMode: "text",
 					width: 60,
 					onClick: function (e) {
-						onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
+						showCalcPopover(options.rowIndex, e.element);
+						//onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
 					}
 				}).appendTo(container);
 			}
@@ -5514,40 +5525,94 @@ return $container;
 					}
 				});
 			});
-				$(function () {
-		$("#CalcardPopover").dxPopover({
-			width: 550,
-			position: "bottom",
-			showEvent: "", // Manual control
-			hideEvent: "", // Manual control
-			hideOnOutsideClick: true,
-			contentTemplate: function (contentElement) {
-				contentElement.empty();
-						   debugger;
-				const grid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 			$(function () {
+	// 	$("#CalcardPopover").dxPopover({
+	// 		width: 550,
+	// 		position: "bottom",
+	// 		showEvent: "", // Manual control
+	// 		hideEvent: "", // Manual control
+	// 		hideOnOutsideClick: true,
+	// 		contentTemplate: function (contentElement) {
+	// 			contentElement.empty();
+	// 					   debugger;
+	// 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
 
-		// Get required values from grid for the specific row
-		const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
-		const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
-
-
-		// Calculate the raw amount
-		let amount = qty * unitPrice;
+	// 	// Get required values from grid for the specific row
+	// 	const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
+	// 	const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
 
 
-				$.ajax({
-					url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
-					type: 'GET',
-					success: function (data) {
-						contentElement.html(data);
-					},
-					error: function () {
-						contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-					}
-				});
-			}
-		});
-	});
+	// 	// Calculate the raw amount
+	// 	let amount = qty * unitPrice;
+
+
+	// 			$.ajax({
+
+	// 				url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
+	// 				type: 'GET',
+	// 				success: function (data) {
+	// 					contentElement.html(data);
+	// 				},
+	// 				error: function () {
+	// 					contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+	// 				}
+	// 			});
+	// 		}
+	// 	});
+	// });
+
+	$(function () {
+
+            $("#CalcardPopover").dxPopover({
+                width: 550,
+				visible: false,
+                position: "bottom",
+                showEvent: "",
+                hideEvent: "",
+                hideOnOutsideClick: false,
+
+            });
+
+
+        });
+
+
+
+function showCalcPopover(rowIndex, targetElement) {
+		debugger;
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
+    const qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
+    const unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
+    const amount = qty * unitPrice;
+	debugger;
+
+		const popover = $("#CalcardPopover").dxPopover("instance");
+		 popover.option("target", targetElement);
+
+// Dynamically update the popover contentTemplate with row-specific URL
+popover.option("contentTemplate", function (contentElement) {
+    contentElement.empty();
+
+    $.ajax({
+        url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
+        type: 'GET',
+        success: function (data) {
+            contentElement.html(data);
+        },
+        error: function () {
+            contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+        }
+    });
+});
+
+// Show the popover
+if (popover.option("visible")) {
+    popover.hide();
+	 
+} else {
+   popover.show();
+}
+}
 			$(function () {
 			if ($("#ExcemptioncodePopover").length && !$("#ExcemptioncodePopover").hasClass("dx-popover")) {
 				$("#ExcemptioncodePopover").dxPopover({
@@ -7636,11 +7701,12 @@ return $container;
 		}
 
 	
-		$("#btnSave").on("click", function (e) {
+		function SaveInvoiceDetails() {
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
-
+			var button = $("#btnSave").dxButton("instance");
+              button.option("disabled", true);
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
 		  {
@@ -7840,6 +7906,7 @@ return $container;
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+										button.option("disabled", false);
 									}
 								});
 
@@ -7847,32 +7914,36 @@ return $container;
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 
 								DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-					
+					               button.option("disabled", false);
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+                           button.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+button.option("disabled", false);
 				}
 			});
 			}
 			else
 			{
            	DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-
+			   button.option("disabled", false);
 			}
 
-		 });
+		 }
 
 
-						$("#btnSaveAndClose").on("click", function (e) {
+		function SaveandCloseInvoiceDetails() {
 
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
-
+				
+                var button = $("#btnSaveAndClose").dxButton("instance");
+                button.option("disabled", true);
 			  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 			  if(revaccheadid==null)
 			  {
@@ -8054,31 +8125,34 @@ return $container;
 										},
 										error: function (xhr, status, error) {
 											console.error("Error fetching grid data:", error);
+											button.option("disabled", false);
 										}
 									});
 
 									DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-								
+								button.option("disabled", false);
 						history.back();
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+								button.option("disabled", false);
 							}
 						});
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+						button.option("disabled", false);
 					}
 				});
 				}
 				else
 				{
 					DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-
+					button.option("disabled", false);
 					
 				}
 
-			 });
+			 }
 
 
 
@@ -8346,7 +8420,9 @@ return $container;
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithVerification(); // Proceed if user clicks Yes
+						
 					}
 				});
 			}
@@ -8442,7 +8518,9 @@ return $container;
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithApproval(); // Proceed if user clicks Yes
+						
 					}
 				});
 			}
@@ -8552,7 +8630,9 @@ return $container;
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithPost(); // Proceed if user clicks Yes
+						
 					}
 				});
 			}
@@ -9411,37 +9491,24 @@ return $container;
 			$("#contextMenu").hide();
 		});
 	});
-			$("#btnPrint1").on("click", function (e) {
-			var dropdown = $("#btnPrint1").dxDropDownButton("instance");
-			var items = dropdown.option("items");
+		// 	$("#btnPrint1").on("click", function (e) {
+		// 	var dropdown = $("#btnPrint1").dxDropDownButton("instance");
+		// 	var items = dropdown.option("items");
 
-			// Set disabled flag on specific items
-			items.forEach(function (item) {
-					if (item.text === "Print Simplified TAX Invoice" ) {
-					item.disabled = true;
-				}
-			});
+		// 	// Set disabled flag on specific items
+		// 	items.forEach(function (item) {
+		// 			if (item.text === "Print Simplified TAX Invoice" ) {
+		// 			item.disabled = true;
+		// 		}
+		// 	});
 
-			dropdown.option("items", items);
-		});
+		// 	dropdown.option("items", items);
+		// });
 
-
-	// 			function applyDiscount() {
-	// 			
-	// 	let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-	// 	const total = $("#totalAmount").dxNumberBox("instance").option("value") || 0;
-	// 	const discount = $("#discount").dxNumberBox("instance").option("value") || 0;
-	// 	const finalAmount = total - discount;
-
-	// 	// Set value to FinalAmount column (or any appropriate column)
-	// 			grid.cellValue(rowIx, "Discount", discount);
-
-	// 	DevExpress.ui.notify("Final Amount: ₹" + finalAmount.toFixed(2), "success", 2000);
-	// }
 
 
 			function applyDiscount() {
+				debugger;
 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
 			
 			// Get values from UI
@@ -9469,6 +9536,12 @@ return $container;
 				grid.cellValue(rowIx, "Discount", discount);
 				grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
 			grid.cellValue(rowIx, "LineTotal", totalValue);
+
+			// ✅ Close the DevExtreme Popover
+    const popover = $("#CalcardPopover").dxPopover("instance");
+    if (popover) {
+        popover.hide();
+    }
 
 		}
 
