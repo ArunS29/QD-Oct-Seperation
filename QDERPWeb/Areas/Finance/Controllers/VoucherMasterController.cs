@@ -3644,6 +3644,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant" });
         }
+        [HttpPost]
+        public IActionResult DeleteVoucherIfExists(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var voucher = dbContext.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                if (voucher != null)
+                {
+                    dbContext.Tbl201VoucherMasters.Remove(voucher);
+                    dbContext.SaveChanges();
+                    return Json(new { success = true });
+                }
+                return Json(new { success = false });
+            }
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+        [HttpGet]
+        public IActionResult CheckVoucherExists(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                bool exists = dbContext.Tbl201VoucherMasters.Any(v => v.VoucherNo == voucherNo);
+                return Json(exists);
+            }
+            return Unauthorized();
+        }
 
     }
 

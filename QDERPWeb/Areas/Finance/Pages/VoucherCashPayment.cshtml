@@ -4192,6 +4192,17 @@ function fetchUpdatedData(voucherEntryNo) {
     // if (!isConfirmed) {
     //     e.cancel = true; // Prevent deletion if user cancels
     // } else {
+    const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const visibleRows = dataGrid.getVisibleRows();
+        const lastRowData = visibleRows[visibleRows.length - 1]?.data;
+        var rowCount = dataGrid.getVisibleRows().length;
+        var griddatacount = rowCount;
+        // Check if the deleting row is the last visible row
+        if (lastRowData && lastRowData.VoucherEntryNo === e.data.VoucherEntryNo) {
+            e.cancel = true; // Prevent deletion
+            DevExpress.ui.notify("Record deleted successfully", "success", 2000);
+            return;
+        }
         console.log("Deleting row with data:", e.data);
 
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
