@@ -1804,7 +1804,13 @@
 										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
-										searchPanel: {
+											 pager: {
+											 visible: true,
+											 showPageSizeSelector: true,
+											 allowedPageSizes: [10, 15, 30],
+											 showInfo: true
+										},
+												searchPanel: {
 													visible: true,
 													highlightCaseSensitive: true,
 													width: 300,
@@ -2490,6 +2496,12 @@
 										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+											 pager: {
+													 visible: true,
+													 showPageSizeSelector: true,
+													 allowedPageSizes: [10, 15, 30],
+													 showInfo: true
+												},
 										searchPanel: {
 													visible: true,
 													highlightCaseSensitive: true,
