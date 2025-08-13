@@ -3473,7 +3473,7 @@ documentNo: InvoiceNo
                             InvoiceNo, CreditNoteNo, AddedBy, AddedOn, CreditNoteUUID, InvoiceCounterValue
                         );
                     }
-                    else
+                    else if(IsPosted != null)
                     {
                         CreditInvoiceNo = creditNoteMaster.InvoiceNo;
                     }
@@ -3565,7 +3565,7 @@ documentNo: InvoiceNo
                             InvoiceNo, DebitNoteNo, AddedBy, AddedOn
                         );
                     }
-                    else
+                    else if (IsPosted != null)
                     {
                         DebitInvoiceNo = debitNoteMaster.PurchaseVoucherNo;
                     }
@@ -4063,7 +4063,7 @@ documentNo: InvoiceNo
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                    var result = dbContext.Qry20179PurchaseBillsWithBalances
+                    var result = dbContext.Qry20179PurchaseBillsWithBalance02s
      .Where(p => p.SupplierCode == supplierid)
      .Select(p => new
      {
@@ -5071,10 +5071,12 @@ documentNo: DebitNoteNo
                             dict[prop.Name] = prop.GetValue(gridDetails);
                         }
 
+                       
+
                         // Get the TaxRateInWord from the TaxSlab table
-                        var taxRateInWord = dbContext.Tbl20163VatTaxSlabs
-                            .Where(x => x.TaxSlabCode == gridDetails.TaxSlabCode)
-                            .Select(x => x.TaxRateInWord)
+                        var taxRateInWord = dbContext.Tbl20168VatpurchaseTaxSlabs
+                            .Where(x => x.PurchaseTaxSlabCode == gridDetails.TaxSlabCode)
+                            .Select(x => x.PurchaseTaxSlab)
                             .FirstOrDefault();
 
                         var UnitRateMethodDesc = dbContext.Tbl40111PropertyUnitCodes
@@ -6766,6 +6768,35 @@ documentNo: InvoiceNo
                 _logger.LogError(ex, "Error occurred in GetCompanyBranch");
                 return StatusCode(StatusCodes.Status500InternalServerError, new { message = "An error occurred while retrieving company branch.", success = false });
             }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteDebitNoteEditInvoiceChild([FromBody] int InvoiceChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+
+                    // Call the stored procedure with SerialNumber
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_91DeleteDebitNoteChild @p0", InvoiceChildSlNo);
+                    string InvChildSlNo = InvoiceChildSlNo.ToString();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Delete sales invoice child",
+actionDetail: $"Sales invoice child number: {InvChildSlNo}",
+documentNo: InvChildSlNo
+);
+                    return Ok(new { success = true, message = "Line item deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
 

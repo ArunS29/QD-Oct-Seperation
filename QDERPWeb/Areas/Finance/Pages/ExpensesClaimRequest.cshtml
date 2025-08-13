@@ -190,6 +190,15 @@
     .titleCard-toggle1 {
         display: none;
     }
+
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 
 <div class="dx-card-header minimal-header">
@@ -220,6 +229,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .ElementAttr("class", "dynamicFormatDateBox")
                         )
         </div>
         <div class="form-group col-md-2 col-sm-6">
@@ -230,6 +240,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .ElementAttr("class", "dynamicFormatDateBox")
                         )
         </div>
         <div class="form-group col-md-6 col-sm-6">
@@ -1494,9 +1505,13 @@
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
                         }
+
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                    },
+                    complete: function () {
+                        getDocumentCount();
                     }
                 });
             } else {
@@ -1512,7 +1527,7 @@
                     type: 'GET',
                     data: { claimRefNo: claimRefNo },
                     success: function (data) {
-                        
+                            getDocumentCount();
                            // If `data` is a raw array (not wrapped in { success: true, data: [...] })
                             if (Array.isArray(data)) {
                                 if (data.length === 0) {
@@ -1523,6 +1538,7 @@
                                         const gridInstance = $("#dataGrid").dxDataGrid("instance");
                                         gridInstance.option("dataSource", data);
                                         gridInstance.refresh();
+                                        
                                     } else {
                                         DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
                                     }
@@ -1533,7 +1549,7 @@
                             // If `data` is an object (wrapped format: { success: true, data: [...] })
                             if (!data.success) {
                                 DevExpress.ui.notify(data.message || "No child records found.", "warning", 3000);
-
+                                
                                 const dataGrid = $("#dataGrid").dxDataGrid("instance");
                                 const dataSource = dataGrid.option("dataSource") || [];
 
@@ -1555,13 +1571,15 @@
                                 const gridInstance = $("#dataGrid").dxDataGrid("instance");
                                 gridInstance.option("dataSource", data.data);
                                 gridInstance.refresh();
+                                
                             } else {
                                 DevExpress.ui.notify("Unexpected data format.", "error", 3000);
                             }
-    
+                            
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                        getDocumentCount();
                     }
                 });
             } else {
@@ -1639,6 +1657,7 @@
                         );
                         var button = $("#btnSave").dxButton("instance");
                             button.option("text", "Update");
+                        getDocumentCount();
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -2514,5 +2533,64 @@
             }
         }
         }
+    // Attachment Count
+    //1. Button Modify in btn-attach
+    function updateAttachButtonCount(buttonSelector, count) {
+        var btn = $(buttonSelector);
+        var btnInstance = btn.dxButton("instance");
+        if (!btnInstance) return;
+
+        var originalText = btnInstance.option("text");
+        var color = count > 0 ? "green" : "red";
+
+        btnInstance.option({
+            template: function() {
+                // Icon element
+                var iconElement = $("<span>")
+                .addClass("dx-icon dx-icon-attach")
+                .addClass(count > 0 ? "icon-green" : "icon-red")
+                .css({
+                    "font-size": "15px",
+                    "vertical-align": "middle",
+                    "margin-right": "4px"
+                })[0];
+
+                // Create fragment
+                var fragment = document.createDocumentFragment();
+                fragment.appendChild(iconElement);
+
+                // Append count only if > 0
+                if (count > 0) {
+                    var countSpan = document.createElement("span");
+                    countSpan.style.color = color;
+                    countSpan.style.fontWeight = "bold";
+                    countSpan.style.fontSize = "15px";
+                    countSpan.style.marginRight = "2px";
+                    countSpan.textContent = count;
+                    fragment.appendChild(countSpan);
+                }
+
+                // Append original text
+                fragment.appendChild(document.createTextNode(originalText));
+
+                return fragment;
+            }
+        });
+    }
+    //2. Get Document Count
+    async function getDocumentCount() {
+        const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+        const voucherType = "Expense ClaimRequest";
+        const menuType = "finance";
+
+        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
+        const docs = await res.json();
+        const count = docs.length;
+
+        updateAttachButtonCount("#btnAttach", count);
+
+        // No need to return anything if you don't want to
+    }
 
 </script>

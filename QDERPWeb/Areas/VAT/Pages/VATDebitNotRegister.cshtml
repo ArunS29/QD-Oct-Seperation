@@ -1299,7 +1299,7 @@
 		});
 	});
 	// // Assuming tenantName is already defined globally
-		let DebitNoteNo = null;
+		let DebitNoteNo = null,Status=null;
 		let IsEdit = false;
 
 		// Assuming tenantName is already defined globally
@@ -1435,6 +1435,7 @@
 				var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
 				console.log(rowData);
 				DebitNoteNo = rowData.DebitNoteNo;
+				Status = rowData.VoucherStatus;
 				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 			});
 		});
@@ -1683,7 +1684,8 @@
 							success: function (response) {
 								if (response) {
 
-										DevExpress.ui.dialog.alert("Debit Bill has been unlocked successfully.", "Bill Unlocked");
+										DevExpress.ui.notify("Debit Bill has been unlocked successfully.","success",2000);
+											$("#dataGrid").dxDataGrid("instance").refresh();
 									// Optionally refresh the grid or perform additional actions
 								} else {
 									DevExpress.ui.notify(response.message || "Unlocking failed.", "error", 3000);
@@ -1705,7 +1707,7 @@
 				return;
 			}
 
-					DevExpress.ui.dialog.confirm("You are about to Duplicate this Debit Invoice. Are you Sure want to Continue?", "Confirm Clone")
+					DevExpress.ui.dialog.confirm("You are about to delete this Debit Invoice. Are you sure you want to continue?", "Confirm Delete")
 				.done(function (dialogResult) {
 					if (dialogResult) {
 						$.ajax({
@@ -1716,7 +1718,7 @@
 							success: function (response) {
 								if (response) {
 
-										DevExpress.ui.dialog.alert("Debit Invoice has been successfully added to the database.", "Cloned Successfully");
+										DevExpress.ui.notify("Debit Invoice has been successfully deleted to the database.","success",2000);
 									// Optionally refresh the grid or perform additional actions
 									$("#dataGrid").dxDataGrid("instance").refresh();
 								} else {

@@ -110,14 +110,14 @@
     }
 </style>
 
-@* <div class="title">
+<div class="title">
     <div class="header-container">
         <div id="ClientCategory" class="no-border-title"></div>
     </div>
-</div> *@
+</div> 
 @* <div class="sathish-container-top"> *@
 <div class="content-container-top">
-    <div style="display:flex; align-items :end; padding:0px;">
+    <div style="display:flex; align-items :end; padding:0px;gap:18px;">
             @(Html.DevExtreme().TextBox()
                         .ID("txtClientCategory")
                         .Label(new JS("formatMessage('Type a New Client & Add to the Existing List:')"))
@@ -492,6 +492,9 @@
                         // Clear the text inputs after success
                         $("#txtClientCategory").dxTextBox("instance").option("value", "");
                         $("#txtCategoryCode").dxTextBox("instance").option("value", "");
+                              
+                $("#txtClientCategory").dxValidator("instance").reset();
+                $("#txtCategoryCode").dxValidator("instance").reset();
 
                         // Optionally, you can reload the data grid to reflect the newly added branch
                         $("#gridContainer").dxDataGrid("instance").refresh();

@@ -207,7 +207,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
                 )
 
     </div>
@@ -220,6 +220,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails") // Calls the JavaScript function
                 )
     </div>
     <div class="btn-containers">
@@ -292,7 +293,8 @@
                     items.Add()
                         .Text("Upload Items From Excel")
                         .Icon("chart")
-                        .Option("color", "#FF7043"); // Orange
+                        .Option("color", "#FF7043")
+                        .OnClick("ProformaUpload");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -1730,5 +1732,9 @@
 
         openModal(url, title);
     }
-
+    function ProformaUpload() {
+        var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+        var url = `/${tenantName}/VAT/ProformaUpload?ProformaInvoiceNo=${invoiceNo}`;
+        window.location.href = url; // Navigate to the page
+    }
 </script>

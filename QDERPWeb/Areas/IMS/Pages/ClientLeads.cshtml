@@ -11,6 +11,11 @@
 }
 <link rel="stylesheet" href="~/css/animationCard.css" />
 <style>
+    .dx-icon-image{
+        cursor: pointer;
+        font-size: 30px !important;
+        color: rgb(0, 123, 255) !important;
+    }
     .dx-fieldset {
         margin: 3px 1px ! important;
         padding: 7px ! important;
@@ -217,30 +222,15 @@
             columns.Add().DataField("ClientLedgerName").Caption(new JS("formatMessage('Client Ledger Name')")).Visible(false);
             // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1")
+            .Alignment(HorizontalAlignment.Center)
             .Caption(new JS("formatMessage('Business Card 1')"))
-            .CellTemplate(new JS(@"
-                function(cellElement, cellInfo) {
-                    if (cellInfo.value) {
-                        $('<img>')
-                        .attr('src', cellInfo.value)
-                        .css({ width: '100px', height: 'auto' })
-                        .appendTo(cellElement);
-                    }
-                }
-            "));
+            .CellTemplate(new JS("function(cellElement, cellInfo) { addImageTooltip(cellElement, cellInfo.value); }"));
 
             columns.Add().DataField("DecodedBusinessCard2")
+            .Alignment(HorizontalAlignment.Center)
             .Caption(new JS("formatMessage('Business Card 2')"))
-            .CellTemplate(new JS(@"
-            function(cellElement, cellInfo) {
-                if (cellInfo.value) {
-                    $('<img>')
-                    .attr('src', cellInfo.value)
-                    .css({ width: '100px', height: 'auto' })
-                    .appendTo(cellElement);
-                }
-            }
-            "));
+            .CellTemplate(new JS("function(cellElement, cellInfo) { addImageTooltip(cellElement, cellInfo.value); }"));
+
         })
 
         .Summary(s => s.TotalItems(items =>
@@ -360,7 +350,7 @@
                     let clientCode = e.row.data.ClientCode;
                     let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
                     let url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
-                    let title = `Client Master`;
+                    let title = ` `;
                     openModal(url, title ,"","75%");
                 }
             }];
@@ -450,5 +440,30 @@
 
 		console.log('End permission handling');
 	});
+    
+    function addImageTooltip(cellElement, imageUrl) {
+        if (!imageUrl) return;
+
+        var iconId = 'tooltip-icon-' + Math.random().toString(36).substr(2, 9);
+
+        // Create icon
+        $('<i>')
+            .attr('id', iconId)
+            .addClass('dx-icon dx-icon-image')
+            .css({ cursor: 'pointer', fontSize: '30px', color: '#007bff' })
+            .appendTo(cellElement);
+
+        // Create tooltip
+        $('<div>')
+            .append($('<img>').attr('src', imageUrl).css({ width: '200px', height: 'auto' }))
+            .dxTooltip({
+                target: '#' + iconId,
+                showEvent: 'click',
+                hideEvent: 'mouseleave',
+                position: 'bottom',
+                closeOnOutsideClick: true
+            })
+            .appendTo(cellElement);
+    }
 
 </script>

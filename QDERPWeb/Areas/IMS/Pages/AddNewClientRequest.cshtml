@@ -3070,8 +3070,14 @@
 
 													keyExpr: "GSCode",
 
-													height: 300, // âœ… Add fixed height to enable scrolling
-
+													height: 300,  
+													 paging: { enabled: true, pageSize: 15 },
+													 pager: {
+														visible: true,
+														showPageSizeSelector: true,
+														allowedPageSizes: [10, 15, 30],
+														showInfo: true
+													},
 													scrolling: { mode: "virtual" },
 
 														searchPanel: {
@@ -3883,7 +3889,13 @@ $("<div>").dxButton({
 											keyExpr: "GSCode",
 
 											height: 300, // âœ… Add fixed height to enable scrolling
-
+											 paging: { enabled: true, pageSize: 15 },
+											 pager: {
+															visible: true,
+															showPageSizeSelector: true,
+															allowedPageSizes: [10, 15, 30],
+															showInfo: true
+											},
 											scrolling: { mode: "virtual" },
 
 												searchPanel: {
@@ -8112,7 +8124,63 @@ function onUploadButtonClick() {
         DevExpress.ui.notify("Request No is required.", "error", 2000);
         return;
     }
-    window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+	const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+	const clientnameValidation = clientnameValidator.validate();
+
+	if (!clientnameValidation.isValid) {
+		DevExpress.ui.dialog.alert(
+			"Cannot continue saving with errors, please clear the errors and continue.",
+			"Clear Errors"
+		);
+		return;
+	}
+	const requestBody = {
+		Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+		Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+		ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+		RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+		RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+		RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+		ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+		TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+		SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+		ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+		PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+		Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+		CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+		ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+		ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+		Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+		CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+		PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+		InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+		ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+		BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+		BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+		ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+		RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+		MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+		MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+		TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+		CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+        BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+		PurchaseRequestDetails:[],
+    };
+	$.ajax({
+        url: "/api/InventoryUpload/SaveMprno",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestBody),
+        success: function (result) {
+            DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
+			window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+        },
+        error: function (xhr) {
+            console.error("UploadStock error:", xhr);
+            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+        }
+    });
 }
 
 	
