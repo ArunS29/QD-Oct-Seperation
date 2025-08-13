@@ -366,7 +366,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
                 )
 
     </div>
@@ -379,8 +379,8 @@
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
-
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails") // Calls the JavaScript function
 
                 )
     </div>

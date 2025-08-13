@@ -3307,18 +3307,7 @@ function syncSupVATNumbers(e) {
                  
         }
 
-         if(IsPurchaseEdit=='true')
-        { 
-             disableTabs(["tab-content-3", "tab-content-7"]);
-        var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
-
-    // Set the value
-    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
-
-    // Disable the textbox
-        accountGroupDropDownBox.option("disabled", true);
-                 
-        }
+       
         if(IsB2CEdit=='true')
         {
         var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
@@ -3870,7 +3859,19 @@ function syncSupVATNumbers(e) {
                     }
 
                     
-
+                      if(IsPurchaseEdit=='true' || IsPurchaseAdd=='true')
+                     { 
+                 
+                          disableTabs(["tab-content-3", "tab-content-7"]);
+                     var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+                 
+                 // Set the value
+                 accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+                 
+                 // Disable the textbox
+                     accountGroupDropDownBox.option("disabled", true);
+                              
+                     }
 
 
 

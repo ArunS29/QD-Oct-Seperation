@@ -3070,8 +3070,14 @@
 
 													keyExpr: "GSCode",
 
-													height: 300, // âœ… Add fixed height to enable scrolling
-
+													height: 300,  
+													 paging: { enabled: true, pageSize: 15 },
+													 pager: {
+														visible: true,
+														showPageSizeSelector: true,
+														allowedPageSizes: [10, 15, 30],
+														showInfo: true
+													},
 													scrolling: { mode: "virtual" },
 
 														searchPanel: {
@@ -3883,7 +3889,13 @@ $("<div>").dxButton({
 											keyExpr: "GSCode",
 
 											height: 300, // âœ… Add fixed height to enable scrolling
-
+											 paging: { enabled: true, pageSize: 15 },
+											 pager: {
+															visible: true,
+															showPageSizeSelector: true,
+															allowedPageSizes: [10, 15, 30],
+															showInfo: true
+											},
 											scrolling: { mode: "virtual" },
 
 												searchPanel: {
