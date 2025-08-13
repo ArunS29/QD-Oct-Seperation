@@ -144,11 +144,17 @@
 
 </style>
 @*<meta charset="UTF-8">*@
- <div class="title">
+@*  <div class="title">
     <div class="header-container">
         <div id="ClientMaster" class="no-border-input"></div>
     </div>
-</div> 
+</div>  *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Client Master</h3>
+</div>
 <div class="form-container1">
     <div style="display:flex; align-items:end; gap:10px;  padding: 2px 13px;">
         @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").Width(310).ReadOnly(true).Label(new JS("formatMessage('Client Code')"))
@@ -1248,8 +1254,8 @@ ContactRemarks:clientRemarks,
         var clientName = $('#txtClientName').dxTextBox("instance").option("value");
             var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
         let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}&clientCode=${encodeURIComponent(clientCode)}`;
-            let title = "Client Status Update";
-        openModal(url, title ,"65%","75%");
+            let title = " ";
+        openModal(url, title ,"71%","75%");
 
     }
    
@@ -1261,9 +1267,9 @@ ContactRemarks:clientRemarks,
    // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
             var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
 
-    var title = "Contact List";
+    var title = " ";
 
-        openModal(url,title,"80%");
+        openModal(url,title,"85%","75%");
 }
 
     $(function () {

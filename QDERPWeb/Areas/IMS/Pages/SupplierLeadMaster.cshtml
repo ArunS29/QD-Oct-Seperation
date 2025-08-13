@@ -154,10 +154,16 @@
 </style>
 @* <meta charset="UTF-8"> *@
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="SupplierMaster" class="no-border-title"></div>
     </div>
+</div> *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Supplier Master</h3>
 </div>
 <div class="form-container1">
 
@@ -1083,7 +1089,7 @@
 
             var title = ` ${supplierName}`;
 
-            openModal(url, title);
+              openModal(url, title,"96%","75%");
         }
 
         $(function () {
