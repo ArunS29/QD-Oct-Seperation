@@ -139,6 +139,22 @@
 
 
     <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
         /* Container for sidebar (assumes #sidebar2 exists) */
         .sidebar3div {
             width: 100vw;
@@ -393,7 +409,7 @@
             margin-right: 0px;
             /* background-color: var(--title-background-color); */
             /* height: 100vh; */
-            width: max-content;
+            width: 50px;
             position: fixed;
             z-index: 10;
         }
@@ -1332,6 +1348,40 @@
             padding-left: 10px;
         }
 
+        .notification-sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 420px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            transition: right 0.35s ease;
+            z-index: 9999;
+        }
+
+            .notification-sidebar.open {
+                right: 0;
+            }
+
+        #notificationSidebar.sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 420px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            transition: right 0.35s ease;
+            z-index: 9999;
+        }
+
+            #notificationSidebar.sidebar.open {
+                right: 0;
+            }
+
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1341,6 +1391,10 @@
 
 </head>
 <body>
+    <div id="notificationSidebar" class="notification-sidebar">
+        <div id="notificationSidebarContent"></div>
+    </div>
+
     <!-- Floating Chatbot -->
     <div id="chatbot-container">
         <div id="chatbot-inactive" onclick="toggleChat()">
@@ -2877,12 +2931,12 @@
                     }
                 });
 
-                function handleBellClick() {
-                    window.location.href = `/${tenantName}/Shared/Notification`;
-                }
-                        function handleBellClick() {
-                  window.location.href = `/${tenantName}/Shared/Notification`;
-                }
+                // function handleBellClick() {
+                //     window.location.href = `/${tenantName}/NotificationPanel`;
+                // }
+                //         function handleBellClick() {
+                //   window.location.href = `/${tenantName}/NotificationPanel`;
+                // }
                         function stockInventoryReport() {
                   window.location.href = `/${tenantName}/VAT/VATSalesStockInventoryList`;
                 }
@@ -4516,6 +4570,35 @@
                 }
             });
         }
+                function handleBellClick() {
+            const sidebar = document.getElementById("notificationSidebar");
+            const content = document.getElementById("notificationSidebarContent");
+
+            // If already open, close it
+            if (sidebar.classList.contains("open")) {
+                sidebar.classList.remove("open");
+                return;
+            }
+
+            // Load the Notification Panel HTML
+            fetch(`/${tenantName}/NotificationPanel`)
+                .then(res => res.text())
+                .then(html => {
+                    content.innerHTML = html;
+                    sidebar.classList.add("open");
+                })
+                .catch(err => {
+                    console.error("Error loading Notification Panel:", err);
+                });
+        }
+
+        // Close sidebar when clicking outside
+        document.addEventListener("click", function (e) {
+            const sidebar = document.getElementById("notificationSidebar");
+            if (sidebar.classList.contains("open") && !sidebar.contains(e.target) && !e.target.closest("#bellButton")) {
+                sidebar.classList.remove("open");
+            }
+        });
 
     </script>
 </body>

@@ -217,6 +217,48 @@ namespace QD.ERP.Web.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant or database context." });
         }
+        [HttpGet]
+        public IActionResult GetFinanceNotificationSummary()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var vouchers = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                    // Helper to get counts by voucher type list
+                    Func<List<string>, object> getCounts = (types) =>
+                    {
+                        var filtered = vouchers.Where(v => types.Contains(v.VoucherType));
+                        return new
+                        {
+                            ToBeVerified = filtered.Count(v => !v.IsVerified),
+                            ToBeApproved = filtered.Count(v => v.IsVerified && !v.IsApproved),
+                            ToBeAudited = filtered.Count(v => v.IsApproved && !v.IsAuditVerified)
+                        };
+                    };
+
+                    var summary = new
+                    {
+                        Payments = getCounts(new List<string> { "PaymentBank", "PaymentCash" }),
+                        Receipts = getCounts(new List<string> { "ReceiptBank", "ReceiptCash" }),
+                        SalesPurchase = getCounts(new List<string> { "Sales", "Purchase" }),
+                        Journals = getCounts(new List<string> { "Journal" }),
+                        ExpenseClaims = getCounts(new List<string> { "ExpenseClaim" })
+                    };
+
+                    return Ok(summary);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = "Error while fetching finance notification summary", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
     }
 
 
