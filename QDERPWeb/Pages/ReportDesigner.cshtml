@@ -4,10 +4,10 @@
 
 <link rel="stylesheet" href="~/css/reporting.designer.part.bundle.css" />
 <script src="~/js/reporting.designer.part.bundle.js"></script>
-
+<h3 type="hidden" style="display:none!important;">@Model.ReportName</h3>
 @(Html.DevExpress().ReportDesigner("reportDesigner")
     .Height("63em")
-   
+
     .Bind(Model.Report)
 )
 

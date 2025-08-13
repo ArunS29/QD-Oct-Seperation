@@ -33,7 +33,7 @@ namespace QD.ERP.Web.Pages
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
-        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate,String accountGroup)
+        public IActionResult OnGet(string reportName, string accountId, DateTime? frmDate, DateTime? toDate, String accountGroup)
         {
             if (string.IsNullOrEmpty(reportName))
                 return BadRequest("Invalid report name.");
@@ -59,7 +59,7 @@ namespace QD.ERP.Web.Pages
                 defaultCompanyId = 0; // or return early / throw error
             }
             // Company Info
-            
+
 
             ERPCompany_details = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
@@ -89,55 +89,68 @@ namespace QD.ERP.Web.Pages
                 case "StatementOfAccountReport":
                     Report = new StatementOfAccountReport(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "StatementOfAccountReport";
                     break;
 
                 case "AccountWithNarration":
                     Report = new AccountWithNarration(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "AccountWithNarration";
                     break;
                 case "AccountDetails":
                     Report = new AccountDetails(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "AccountDetails";
                     break;
                 case "AccountOrderByVoucherNo":
                     Report = new AccountOrderByVoucherNo(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "AccountOrderByVoucherNo";
                     break;
                 case "AccountExportFromatReport":
                     Report = new AccountExportFromatReport(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "AccountExportFromatReport";
                     break;
                 case "AccountExportLandscapeReport":
                     Report = new AccountExportLandscapeReport(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "AccountExportLandscapeReport";
                     break;
                 case "AccountStatementFormat2Report":
                     Report = new AccountStatementFormat2Report(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "AccountStatementFormat2Report";
                     break;
                 case "AccountOrderbyVchNoWONarrationReport":
                     Report = new AccountOrderbyVchNoWONarrationReport(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "AccountOrderbyVchNoWONarrationReport";
                     break;
                 case "BillsReceivablelandscapeformat":
                     Report = new BillsReceivablelandscapeformat(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "BillsReceivablelandscapeformat";
                     break;
                 case "BillsReceivableLedgerBalance":
                     Report = new BillsReceivableLedgerBalance(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "BillsReceivableLedgerBalance";
                     break;
                 case "BillsReceivableRentation":
                     Report = new BillsReceivableRentation(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "BillsReceivableRentation";
                     break;
                 case "BillsReceivableAgeingToday":
                     Report = new BillsReceivableAgeingToday(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
+                    Report.DisplayName = "BillsReceivableAgeingToday";
                     break;
                 case "BillsReceivableByAccount":
                     Report = new BillsReceivableByAccount(accountId, frmDate.Value, toDate.Value,
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
+                    Report.DisplayName = "BillsReceivableByAccount";
                     break;
 
                 case "BillsReceivableAll":
@@ -161,7 +174,7 @@ namespace QD.ERP.Web.Pages
                         tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, "", _tenantDbContextHelper);
                     break;
                 case "EndDate":
-                    Report = new EndDate(accountId, frmDate.Value, toDate.Value,tenantName, companyName, companyAddress, logoImage,
+                    Report = new EndDate(accountId, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage,
                     companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
                     break;
                 case "Payablelandscape":
@@ -171,11 +184,11 @@ namespace QD.ERP.Web.Pages
                     break;
                 case "payableRetention":
                     Report = new payableRetention(accountId, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr,username, _tenantDbContextHelper);
+                    companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
                     break;
                 case "Balance":
-                    Report = new Balance(accountId, frmDate.Value, toDate.Value,tenantName, companyName, companyAddress, logoImage,
-                    companyNameAr, companyAddressAr,username, _tenantDbContextHelper);
+                    Report = new Balance(accountId, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage,
+                    companyNameAr, companyAddressAr, username, _tenantDbContextHelper);
                     break;
                 case "BillsPayablePaid":
                     Report = new BillsPayablePaid(accountId, frmDate.Value, toDate.Value,
@@ -206,27 +219,27 @@ namespace QD.ERP.Web.Pages
                 case "TrialBalanceReport":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalanceReport( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
-                break;
+                    Report = new TrialBalanceReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    break;
                 case "TrialBalanceExportFormat":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalance_ExportFormat_( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper );
+                    Report = new TrialBalance_ExportFormat_(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "TrialBalanceDrCr":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new TrialBalanceDrCr( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                    Report = new TrialBalanceDrCr(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                     break;
                 case "IncomeStatements":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new IncomeStatements(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
+                    Report = new IncomeStatements(accountGroup, frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, username);
                     break;
                 case "incomeStatementsBymonth":
                     if (string.IsNullOrEmpty(accountGroup))
                         return BadRequest("Account group is required for subGroup report.");
-                    Report = new incomeStatements_Bymonth_( frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper,username);
+                    Report = new incomeStatements_Bymonth_(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, username);
                     break;
                 case "balnceSheet":
                     if (string.IsNullOrEmpty(accountGroup))
@@ -245,48 +258,48 @@ namespace QD.ERP.Web.Pages
 
 
             }
-        
-           return Page();
+
+            return Page();
 
 
         }
 
 
-           //if (!string.IsNullOrEmpty(accountGroup) && frmDate.HasValue && toDate.HasValue)
-           // {
-           //     switch (reportName)
-           //     {
-           //         case "Group":
-           //             Report = new Group(
-           //                 accountGroup, // Use accountGroup, not accountId
-           //                 frmDate.Value,
-           //                 toDate.Value,
-           //                 tenantName,
-           //                 companyName,
-           //                 companyAddress,
-           //                 logoImage,
-           //                 companyNameAr,
-           //                 companyAddressAr,
-           //                 _tenantDbContextHelper
-           //             );
-           //             break;
-           //         case "subGroup":
-           //             Report = new subGroup(
-           //                 accountGroup, // Use accountGroup, not accountId
-           //                 frmDate.Value,
-           //                 toDate.Value,
-           //                 tenantName,
-           //                 companyName,
-           //                 companyAddress,
-           //                 logoImage,
-           //                 companyNameAr,
-           //                 companyAddressAr,
-           //                 _tenantDbContextHelper
-           //             );
-           //             break;
-           //         default:
-           //             return NotFound("Trial Balance Report not found.");
-                   // }
-                //}
+        //if (!string.IsNullOrEmpty(accountGroup) && frmDate.HasValue && toDate.HasValue)
+        // {
+        //     switch (reportName)
+        //     {
+        //         case "Group":
+        //             Report = new Group(
+        //                 accountGroup, // Use accountGroup, not accountId
+        //                 frmDate.Value,
+        //                 toDate.Value,
+        //                 tenantName,
+        //                 companyName,
+        //                 companyAddress,
+        //                 logoImage,
+        //                 companyNameAr,
+        //                 companyAddressAr,
+        //                 _tenantDbContextHelper
+        //             );
+        //             break;
+        //         case "subGroup":
+        //             Report = new subGroup(
+        //                 accountGroup, // Use accountGroup, not accountId
+        //                 frmDate.Value,
+        //                 toDate.Value,
+        //                 tenantName,
+        //                 companyName,
+        //                 companyAddress,
+        //                 logoImage,
+        //                 companyNameAr,
+        //                 companyAddressAr,
+        //                 _tenantDbContextHelper
+        //             );
+        //             break;
+        //         default:
+        //             return NotFound("Trial Balance Report not found.");
+        // }
+        //}
     }
 }

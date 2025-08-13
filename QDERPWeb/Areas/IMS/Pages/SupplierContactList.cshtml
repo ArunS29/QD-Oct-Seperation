@@ -94,11 +94,11 @@
     }
 
 </style>
-@* <div class="title">
+ <div class="title">
     <div class="header-container">
         <div id="SupplierContactList" class="no-border-title"></div>
     </div>
-</div> *@
+</div> 
 <div class="formContainer" style="padding: 10px;">
 
     <div class="form-row">
@@ -120,7 +120,6 @@
                 .Value("-1")
                 .ReadOnly(true)
                 .Label("")
-                .Disabled(true)
                 .LabelMode(EditorLabelMode.Floating)
                 .ElementAttr("class", "white-bg"))
         </div>
@@ -154,6 +153,7 @@
                 .LabelMode(EditorLabelMode.Floating)
                 .Width("100%")
                 .ElementAttr("class", "white-bg")
+                        .ValidationRules(r => r.AddRequired().Message("Contact Person is required."))
                 )
             @(Html.DevExtreme().Button()
                 .Icon("user") // built-in person icon
@@ -359,13 +359,21 @@
     });
 
     function saveOrUpdateSupplierContact() {
+         const contactPersonInstance = $("#contactPerson").dxTextBox("instance");
+    const validator = $("#contactPerson").dxValidator("instance");
+
+    const validationResult = validator.validate();
+
+    if (!validationResult.isValid) {
+        return; // stop execution if validation fails
+    }
         
         const supplierContactSlNo = $("#txtSupplierHidden").dxTextBox("instance").option("value"); // hidden ID
 
         const data = {
             SupplierCode: $("#txtSupplierCode").dxTextBox("instance").option("value"),
             SupplierName: $("#txtSupplierName").dxTextBox("instance").option("value"),
-            ContactPerson: $("#contactPerson").dxTextBox("instance").option("value"),
+            ContactPerson: contactPersonInstance.option("value"),
             ContactPersonTitle: $("#title").dxTextBox("instance").option("value"),
             ContactMobile1: $("#mobile1").dxTextBox("instance").option("value"),
             ContactPhone1: $("#phone1").dxTextBox("instance").option("value"),

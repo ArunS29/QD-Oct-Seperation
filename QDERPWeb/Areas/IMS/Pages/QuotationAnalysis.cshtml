@@ -250,6 +250,10 @@ onCellPrepared: function (e) {
         });
     }
 
+
+
+
+
      $(function () {
                     $("#SelectRequest").text(
                          formatMessage("Select a Request / Enquiry:"));
@@ -514,6 +518,59 @@ function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
         });
     }
 
+
+$("#btnCreateQuotations").dxButton({
+    text: "Create Quotation",
+    type: "success",
+    onClick: function () {
+        debugger;
+        const tenantName = window.tenantName || "defaultTenant";
+
+        // 1️⃣ Safely get pivot grid data from the raw array you saved
+        if (!currentPivotRawData || currentPivotRawData.length === 0) {
+            DevExpress.ui.notify("No data loaded in PivotGrid.", "error", 3000);
+            return;
+        }
+
+        // 2️⃣ Instead of ds.items(), use the raw array
+        // Filter the ones that are actually 'selected' if you have a flag for that
+        const mprNos = currentPivotRawData
+            .map(row => row.Mprno) // field name must match backend data
+            .filter(Boolean);
+
+        if (!mprNos.length) {
+            DevExpress.ui.notify("No MPR numbers selected.", "error", 3000);
+            return;
+        }
+
+        // 3️⃣ Confirmation dialog
+        DevExpress.ui.dialog.confirm(
+            "You are about to create new Quotation. Are you sure you want to continue?",
+            "Confirm"
+        ).done(function (confirmed) {
+            if (!confirmed) return;
+
+            // 4️⃣ Call backend API
+            $.ajax({
+                url: "/api/QuotationAnalysis/CreateQuotationsFromMprList",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify({ mprNos: mprNos }),
+                success: function (result) {
+                    if (result.success) {
+                        DevExpress.ui.notify(result.message, "success", 2000);
+                       window.location.href = `/${tenantName}/IMS/AddNewQuotation?QuoteNo=${encodeURIComponent(result.quotationNo)}`;
+                    } else {
+                        DevExpress.ui.notify(result.message || "Failed to create Quotation.", "error", 3000);
+                    }
+                },
+                error: function () {
+                    DevExpress.ui.notify("Server error while creating Quotation.", "error", 3000);
+                }
+            });
+        });
+    }
+});
 
 
 </script>

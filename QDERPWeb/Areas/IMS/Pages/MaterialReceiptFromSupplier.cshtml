@@ -1804,7 +1804,13 @@
 										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
-										searchPanel: {
+											 pager: {
+											 visible: true,
+											 showPageSizeSelector: true,
+											 allowedPageSizes: [10, 15, 30],
+											 showInfo: true
+										},
+												searchPanel: {
 													visible: true,
 													highlightCaseSensitive: true,
 													width: 300,
@@ -2490,6 +2496,12 @@
 										height: 300, // ✅ Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+											 pager: {
+													 visible: true,
+													 showPageSizeSelector: true,
+													 allowedPageSizes: [10, 15, 30],
+													 showInfo: true
+												},
 										searchPanel: {
 													visible: true,
 													highlightCaseSensitive: true,
@@ -3006,26 +3018,34 @@
 			});
 	});
 	// Fetch dropdown data (same API can be used if needed)
-	function getDropdownData() {
+			function getDropdownData() {
 		return $.ajax({
-			url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
+			url: "/api/VATModule/GetGoodsAndServices",
 			method: "GET",
 			dataType: "json"
 		}).then(function (response) {
-			console.log("GsData", response)
-			return response.map(item => ({
-				GSCode: item.Gscode,
-				GSDescrpition: item.Gsdescrpition,
+			console.log("GsData", response);
+
+			// Safely get the array from the API response
+			const data = Array.isArray(response.data) ? response.data : [];
+
+			return data.map(item => ({
+				GSCode: item.GSCode,
+				GSDescrpition: item.GSDescrpition,
 				GsdescriptionAr: item.GsdescriptionAr,
 				ItemPartNo: item.ItemPartNo,
 				CostPrice: item.CostPrice,
-				GSSellingRate: item.GssellingRate,
+				GSSellingRate: item.GSSellingRate,
 				ReorderQty: item.ReorderQty,
-				GsuoM:item.GsuoM
-		
+				GsuoM: item.GsuoM
 			}));
+		}).catch(function (error) {
+			console.error("Error fetching dropdown data:", error);
+			return [];
 		});
 	}
+
+
 	function getUnitRateMethods() {
 		return $.ajax({
 			url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -5686,15 +5706,15 @@ $("#btnBack").on("click", function (e) {
 	});
 
 	// Close only on outside click
-	$(document).on("click", function (e) {
-		const $target = $(e.target);
-		const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
+	// $(document).on("click", function (e) {
+	// 	const $target = $(e.target);
+	// 	const isInside = $target.closest(".dx-dropdowneditor-overlay, #InvoiceTransactionsCode").length > 0;
 
-		if (!isInside) {
-			const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
-			dropDown.close();
-		}
-	});
+	// 	if (!isInside) {
+	// 		const dropDown = $("#InvoiceTransactionsCode").dxDropDownBox("instance");
+	// 		dropDown.close();
+	// 	}
+	// });
 	// Function to handle selection change in the DataGrid
 
 

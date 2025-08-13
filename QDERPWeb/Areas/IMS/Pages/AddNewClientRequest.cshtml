@@ -325,7 +325,20 @@
 	.content-container-top {
 		width: 100%;
 	}
-
+	.dx-datagrid .dx-data-row td[aria-colindex="3"] {
+    text-align: center !important;
+}
+    .header-wrap {
+        white-space: normal !important; /* Enable word wrap */
+        text-align: center !important; /* Center align text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -1449,6 +1462,7 @@
 
 							columns.Add().DataField("Qty")
 							.Caption(new JS("formatMessage('Qty')"))
+
 							.Width(200);
 
 							columns.Add().DataField("UnitPrice")
@@ -3056,8 +3070,14 @@
 
 													keyExpr: "GSCode",
 
-													height: 300, // âœ… Add fixed height to enable scrolling
-
+													height: 300,  
+													 paging: { enabled: true, pageSize: 15 },
+													 pager: {
+														visible: true,
+														showPageSizeSelector: true,
+														allowedPageSizes: [10, 15, 30],
+														showInfo: true
+													},
 													scrolling: { mode: "virtual" },
 
 														searchPanel: {
@@ -3226,7 +3246,7 @@ $("<div>").dxButton({
 											let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
 							let title = "Details Description";
 
-							openModal(url, title);
+							openModal(url, title,"60%","70%");
 						}
 							}).appendTo(container);
 						}
@@ -3869,7 +3889,13 @@ $("<div>").dxButton({
 											keyExpr: "GSCode",
 
 											height: 300, // âœ… Add fixed height to enable scrolling
-
+											 paging: { enabled: true, pageSize: 15 },
+											 pager: {
+															visible: true,
+															showPageSizeSelector: true,
+															allowedPageSizes: [10, 15, 30],
+															showInfo: true
+											},
 											scrolling: { mode: "virtual" },
 
 												searchPanel: {
@@ -4020,7 +4046,7 @@ $("<div>").dxButton({
 							let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
 						let title = "Details Description";
 
-						openModal(url, title);
+						openModal(url, title,"60%","70%");
 					}
 						}).appendTo(container);
 					}
@@ -4489,25 +4515,32 @@ $("#btnAddNew").on("click", function (e) {
 
 
 				// Fetch dropdown data (same API can be used if needed)
-			 function getDropdownData() {
-				return $.ajax({
-					url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-					method: "GET",
-					dataType: "json"
-				}).then(function(response) {
-					console.log("GsData",response)
-					return response.map(item => ({
-						GSCode: item.Gscode,
-						GSDescrpition: item.Gsdescrpition,
-						GsdescriptionAr:item.GsdescriptionAr,
-						ItemPartNo: item.ItemPartNo,
-						CostPrice: item.CostPrice,
-						GSSellingRate: item.GssellingRate,
-						ReorderQty:item.ReorderQty,
-						GsuoM:item.GsuoM
-					}));
-				});
-			}
+				function getDropdownData() {
+		return $.ajax({
+			url: "/api/VATModule/GetGoodsAndServices",
+			method: "GET",
+			dataType: "json"
+		}).then(function (response) {
+			console.log("GsData", response);
+
+			// Safely get the array from the API response
+			const data = Array.isArray(response.data) ? response.data : [];
+
+			return data.map(item => ({
+				GSCode: item.GSCode,
+				GSDescrpition: item.GSDescrpition,
+				GsdescriptionAr: item.GsdescriptionAr,
+				ItemPartNo: item.ItemPartNo,
+				CostPrice: item.CostPrice,
+				GSSellingRate: item.GSSellingRate,
+				ReorderQty: item.ReorderQty,
+				GsuoM: item.GsuoM
+			}));
+		}).catch(function (error) {
+			console.error("Error fetching dropdown data:", error);
+			return [];
+		});
+	}
 			function getUnitRateMethods() {
 				return $.ajax({
 					url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
@@ -8091,7 +8124,63 @@ function onUploadButtonClick() {
         DevExpress.ui.notify("Request No is required.", "error", 2000);
         return;
     }
-    window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+	const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+	const clientnameValidation = clientnameValidator.validate();
+
+	if (!clientnameValidation.isValid) {
+		DevExpress.ui.dialog.alert(
+			"Cannot continue saving with errors, please clear the errors and continue.",
+			"Clear Errors"
+		);
+		return;
+	}
+	const requestBody = {
+		Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+		Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+		ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+		RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+		RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+		RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+		ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+		TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+		SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+		ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+		PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+		Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+		CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+		ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+		ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+		Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+		CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+		PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+		InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+		ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+		BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+		BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+		ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+		RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+		MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+		MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+		TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+		CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+        BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+		PurchaseRequestDetails:[],
+    };
+	$.ajax({
+        url: "/api/InventoryUpload/SaveMprno",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestBody),
+        success: function (result) {
+            DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
+			window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+        },
+        error: function (xhr) {
+            console.error("UploadStock error:", xhr);
+            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+        }
+    });
 }
 
 	

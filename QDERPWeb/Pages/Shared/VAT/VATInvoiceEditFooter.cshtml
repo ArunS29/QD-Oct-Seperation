@@ -300,8 +300,8 @@
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
-                .ElementAttr(new { @class = "dx-button-custom btn-save" })
-            // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+            .ElementAttr(new { @class = "dx-button-custom btn-save" })
+            .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
             )
 
     </div>
@@ -318,6 +318,7 @@
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails")
             )
     </div>
     <div class="btn-containers">
@@ -585,8 +586,8 @@
         }
 
         function navigateInventoryListtoUpload() {
-            // Replace with the actual tenant name dynamically
-            var url = `/${tenantName}/VAT/InventoryListtoUpload`;
+            var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+            var url = `/${tenantName}/VAT/InvoiceUpload?invoiceNo=${invoiceNo}`;
             window.location.href = url; // Navigate to the page
         }
 

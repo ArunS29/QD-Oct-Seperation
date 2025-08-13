@@ -99,6 +99,7 @@ var dictionary = {
         "GS Description (Arabic)": "GS Description (Arabic)",
         "Total After Discount": "Total After Discount",
         "Total Discount":"Total Discount",
+        "Inventory List To Upload":"Inventory List To Upload",
 
         "Batch No": "Batch No",
         "Client Name": "Client Name",
@@ -3970,7 +3971,9 @@ var dictionary = {
         "04-DebitNote Summary Report": "04-DebitNote Summary Report",
         "Deductions/Approvals": "Deductions/Approvals",
         "Other Details/Branch/Division Details":"Other Details/Branch/Division Details",
-        "Select Stock Group": "Select Stock Group"
+        "Select Stock Group": "Select Stock Group",
+        "Postal Amount": "Postal Amount",
+        "Total Purchase Amount":"Total Purchase Amount"
     },
     ar: {
          "Deductions/Approvals":"الخصومات/الموافقات",

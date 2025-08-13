@@ -3279,8 +3279,10 @@ function syncSupVATNumbers(e) {
         var accgroupid = urlParams.get('AccountGroupID') || "";
          var IsPurchaseEdit=urlParams.get('IsPurchaseEdit') || "";
          var IsB2CEdit=urlParams.get('IsB2CEdit') || "";
+         var IsDebitEdit=urlParams.get('IsDebitEdit') || "";
+         var IsDebitAdd=urlParams.get('IsDebitAdd') || "";
     
-         
+         debugger;
         acgid = accgroupid;
 
         var accheadar = urlParams.get('AccountHeadAr') || "";
@@ -3292,7 +3294,7 @@ function syncSupVATNumbers(e) {
             accountheadid = urlParams.get('AccountId');  // Use the already declared accountheadid
 
         }
-        if(IsPurchaseEdit=='true')
+        if(IsDebitEdit=='true' || IsDebitAdd=='true')
         { 
              disableTabs(["tab-content-3", "tab-content-7"]);
         var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
@@ -3304,6 +3306,8 @@ function syncSupVATNumbers(e) {
         accountGroupDropDownBox.option("disabled", true);
                  
         }
+
+       
         if(IsB2CEdit=='true')
         {
         var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
@@ -3855,7 +3859,19 @@ function syncSupVATNumbers(e) {
                     }
 
                     
-
+                      if(IsPurchaseEdit=='true' || IsPurchaseAdd=='true')
+                     { 
+                 
+                          disableTabs(["tab-content-3", "tab-content-7"]);
+                     var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+                 
+                 // Set the value
+                 accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+                 
+                 // Disable the textbox
+                     accountGroupDropDownBox.option("disabled", true);
+                              
+                     }
 
 
 
@@ -3880,7 +3896,7 @@ function syncSupVATNumbers(e) {
 
 
         // Check if the parameter IsCharOfAccounts is 'true'
-                if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
+                if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true' && IsDebitEdit !=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
             // Reset validator if it exists
             var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
             if (AccountHeadNameValidator) {

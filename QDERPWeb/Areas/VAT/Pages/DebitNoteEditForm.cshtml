@@ -365,6 +365,44 @@
 		padding: 20px;
 		border-radius: 8px;
 	}
+
+	.context-menu-itemInvoice {
+		display: flex;
+		align-items: center;
+		padding: 10px 15px;
+		font-size: 14px;
+		cursor: pointer;
+		transition: background 0.2s ease-in-out;
+		color: #333;
+	}
+
+		.context-menu-itemInvoice i {
+			margin-right: 10px;
+			font-size: 16px;
+			color: #007bff;
+		}
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
+
+		.context-menu-itemInvoice:not(:last-child) {
+			border-bottom: 1px solid #e0e0e0;
+		}
+
+  .context-menuInvoice {
+		background: white;
+		border: 1px solid #ccc;
+		width: 200px;
+		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+		font-family: Arial, sans-serif;
+	}
+
+
+
+		.context-menu-itemInvoice:hover {
+			background: #f0f0f0;
+		}
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -380,6 +418,15 @@
 			<i class="fas fa-file-invoice-dollar"></i>
 		</div>
 		<div id="DebitNoteEditForm" class="titleText no-border-title"></div>
+	</div>
+</div>
+
+<div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
+	<div class="context-menu-itemInvoice" data-action="add">
+		<i class="dx-icon-plus"></i> Add Line Item
+	</div>
+	<div class="context-menu-itemInvoice" data-action="delete">
+		<i class="dx-icon-close"></i> Delete Line Item
 	</div>
 </div>
 
@@ -425,61 +472,104 @@
                     .LoadAction("GetSupplierName")
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("AccountId"))
-					  .ValidationRules(rules =>
-                                    {
-                                        rules.AddRequired()
-                                            .Message(new JS("formatMessage('Client Code should be entered')"));
-                                    })
+					.ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                            .Message(new JS("formatMessage('Client Code should be entered')"));
+                    })
                 .AcceptCustomValue(true)
                 .OpenOnFieldClick(false)
                 .ValueChangeEvent("input")
                 .HoverStateEnabled(true)
                 //.Value("Tax Invoice")
                 .ValueExpr("AccountId")
-                .DisplayExpr("SupplierName")
+                .DisplayExpr("AccountHead")
                 .LabelMode(EditorLabelMode.Floating)
 				.DropDownOptions(o => o.Width(800))
 			    .ContentTemplate(new TemplateName("SupplierNameTemplate"))
 				.Buttons(buttons => {
-								// Clear Button
-								buttons.Add()
-									.Name("clear");
-
-								// Add Client Button
-								buttons.Add()
+								buttons.Add().Name("clear");
+									buttons.Add()
 									.Name("AddDebits")
 									.Location(TextEditorButtonLocation.After)
 									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("plus")
-										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									.Type(ButtonType.Default)
+									.Icon("plus")
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									@* .OnClick(@<text>
+										function() {
+											var url = `/${tenantName}/Finance/LedgerAccount`;
+											openModal(url, '');
+										}
+									</text>) *@
+									.OnClick("showLedgerAccountPopup") // 🔸 ADD FUNCTION
+
+
 									);
 
-								// Edit Client Button
-								buttons.Add()
-									.Name("EditDebit")
-									.Location(TextEditorButtonLocation.After)
-									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("edit")
-										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
-										.OnClick(@<text>
-											function() {
-												var dropDownBox = $('#VATSupplierName').dxDropDownBox('instance');
-												var selectedValue = dropDownBox.option('value');
-												if (!selectedValue) {
-													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
-													return;
-												}
-												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
-												openModal(url, 'Client Master');
-											}
-										</text>)
-									);
+										 buttons.Add()
+											.Name("EditDebit")
+											.Location(TextEditorButtonLocation.After)
+											.Widget(w => w.Button()
+												.Type(ButtonType.Default)
+												.Icon("edit")
+												.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+												@* .OnClick(@<text>
+													function() {
+														var dropDownBox = $('#VATSupplierName').dxDropDownBox('instance'); // ✅ correct ID
+														var selectedValue = dropDownBox.option('value'); // ✅ AccountId because ValueExpr = "AccountId"
+
+														if (!selectedValue) {
+															DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+															return;
+														}
+
+														var tenantName = window.location.pathname.split('/')[1];
+													    const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsDebitEdit=true`;
+														//var url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(selectedValue)}`; // ✅ using selectedValue directly
+
+														openModal(url, '');
+													}
+												</text>) *@
+												 .OnClick("onEditClientClick") // 🔸 EDIT FUNCTION
+											);
 									  buttons.Add()
 									   .Name("dropDown");
-							})
+									   })
             )
+
+			               @(Html.DevExtreme().Popup()
+														.ID("ledgerAccountPopup")
+														.Width("80%")
+														.Height("85%")
+														.Title("Add Ledger Account")
+														.ShowTitle(true)
+														.CloseOnOutsideClick(true)
+														.Visible(false)
+														.ResizeEnabled(true)
+														.ContentTemplate(@<text>
+											  								<div id="popupContent" style="width:100%; height:100%;">
+											  									<iframe id="ledgerAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+											  								</div>
+											  							</text>)
+														)
+
+
+							@(Html.DevExtreme().Popup()
+														.ID("ledgerEditAccountPopup")
+														.Width("80%")
+														.Height("85%")
+														.Title(new JS("formatMessage('Edit Ledger Account')"))
+														.ShowTitle(true)
+														.CloseOnOutsideClick(true)
+														.Visible(false)
+														.ResizeEnabled(true)
+														.ContentTemplate(@<text>
+											  								<div id="popupContent" style="width:100%; height:100%;">
+											  									<iframe id="ledgerEditAccountFrame" style="width:100%; height:100%; border:none;"></iframe>
+											  								</div>
+											  							</text>)
+														)
     </div>
 
                        
@@ -493,14 +583,14 @@
                                 .LabelMode(EditorLabelMode.Floating)
                             )
                         </div>
-                        <div class="col-6">
+              @*           <div class="col-6">
                             @(Html.DevExtreme().DropDownBox()
                                 .Label(new JS("formatMessage('Purchase Voucher No:')"))
                                 .ID("VATPurchaseVoucherNo")
                                 .DataSource(d => d.WebApi()
                                     .Controller("VATModule")
                                     .LoadAction("GetPurchaseVoucher")
-									.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") })
+									//.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") })
 
 															//.LoadParams(new { supplierid = new JS("supplierid") }) // Fix: ensure `accheadid` is a proper parameter key
 									.LoadMode(DataSourceLoadMode.Raw)
@@ -517,11 +607,43 @@
                                 .ValueExpr("PurchaseVoucherNo")
                                 .DisplayExpr("PurchaseVoucherNo")
                                 .LabelMode(EditorLabelMode.Floating)
-								.DropDownOptions(o => o.Width(1000))
+								.DropDownOptions(o => o.Width(900)
+								.OnShowing("function(e) { $('#purchase-datagrid').dxDataGrid('instance').getDataSource().reload(); }")
+								)
 			                    .ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
                             )
 
-                        </div>
+                        </div> *@
+
+						<div class="col-6">
+    @(Html.DevExtreme().DropDownBox()
+        .Label(new JS("formatMessage('Purchase Voucher No:')"))
+        .ID("VATPurchaseVoucherNo")
+        .DataSource(d => d.WebApi()
+            .Controller("VATModule")
+            .LoadAction("GetPurchaseVoucher")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("PurchaseVoucherNo")
+            .OnBeforeSend("function(method, ajaxOptions) { ajaxOptions.data.supplierid = $('#VATSupplierName').dxDropDownBox('instance').option('value') }")
+        )
+        .ValidationRules(rules =>
+        {
+            rules.AddRequired()
+                .Message(new JS("formatMessage('Supplier Name should be entered')"));
+        })
+        .AcceptCustomValue(true)
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .ValueExpr("PurchaseVoucherNo")
+        .DisplayExpr("PurchaseVoucherNo")
+        .LabelMode(EditorLabelMode.Floating)
+        .DropDownOptions(o => o.Width(900)
+        .OnShowing("function(e) { var grid = $('#purchase-datagrid').dxDataGrid('instance'); if (grid) {grid.getDataSource().reload();} }")
+        )
+        .ContentTemplate(new TemplateName("PurchaseVoucherNoTemplate"))
+    )
+</div>
 
                         <div class="col-6">
                             @(Html.DevExtreme().TextBox()
@@ -568,52 +690,60 @@
                                     .OpenOnFieldClick(false)
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("AccountHead")
-                                    .DisplayExpr("AccountId")
+									.ValueExpr("AccountId")
+									.DisplayExpr("AccountHeadArabic")
                                     .Width(500)
                                     .TabIndex(4)
                                     .DropDownOptions(o => o.Width(1000))
                                     .ContentTemplate(new TemplateName("ClientCodeContentTemplate"))
 									.Buttons(buttons => {
-								// Clear Button
-								buttons.Add()
-									.Name("clear");
-
-								// Add Client Button
-								buttons.Add()
-									.Name("AddDebits")
+									buttons.Add().Name("clear");
+									buttons.Add()
+									.Name("AddDebits1")
 									.Location(TextEditorButtonLocation.After)
 									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("plus")
-										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									.Type(ButtonType.Default)
+									.Icon("plus")
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+								@* 	.OnClick(@<text>
+										function() {
+											var url = `/${tenantName}/Finance/LedgerAccount`;
+											openModal(url, '');
+										}
+									</text>) *@
+									.OnClick("showLedgerAccountPopup") // 🔸 ADD FUNCTION
 									);
 
-								// Edit Client Button
-								buttons.Add()
-									.Name("EditDebit")
-									.Location(TextEditorButtonLocation.After)
-									.Widget(w => w.Button()
-										.Type(ButtonType.Default)
-										.Icon("edit")
-										.ElementAttr(new { @class = "custom-hover-button edit-hover" })
-										.OnClick(@<text>
-											function() {
-												var dropDownBox = $('#ddlSupplierNameArabic').dxDropDownBox('instance');
-												var selectedValue = dropDownBox.option('value');
-												if (!selectedValue) {
-													DevExpress.ui.notify('Please select a client.', 'warning', 2000);
-													return;
-												}
-												var url = '/' + tenantName + '/IMS/ClientLeadMaster?clientCode=' + encodeURIComponent(selectedValue);
-												openModal(url, 'Client Master');
-											}
-										</text>)
-									);
+										 buttons.Add()
+											.Name("EditDebit1")
+											.Location(TextEditorButtonLocation.After)
+											.Widget(w => w.Button()
+												.Type(ButtonType.Default)
+												.Icon("edit")
+												.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+												@* .OnClick(@<text>
+													function() {
+														var dropDownBox = $('#VATSupplierName').dxDropDownBox('instance'); // ✅ correct ID
+														var selectedValue = dropDownBox.option('value'); // ✅ AccountId because ValueExpr = "AccountId"
+
+														if (!selectedValue) {
+															DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+															return;
+														}
+
+														var tenantName = window.location.pathname.split('/')[1];
+													    const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsDebitEdit=true`;
+														//var url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(selectedValue)}`; // ✅ using selectedValue directly
+
+														openModal(url, '');
+													}
+												</text>) *@
+												 .OnClick("onEditClientClick") // 🔸 EDIT FUNCTION
+											);
 									  buttons.Add()
 									   .Name("dropDown");
 							})
-                                )
+            )
                             </div>
                         </div>
 
@@ -1341,49 +1471,50 @@
 {
 	@(Html.DevExtreme().DataGrid()
 
-										.ID("ddlSupplierNameArabic-datagrid")
-										.DataSource(d => d.WebApi()
-										.Controller("VATModule")
-											.LoadAction("GetSupplierCode")
-										.LoadMode(DataSourceLoadMode.Raw)
-											///   .Key("AccountHead") //salary paid entry
-											.Key("AccountId")
+												.ID("ddlSupplierNameArabic-datagrid")
+											.DataSource(d => d.WebApi()
+											.Controller("VATModule")
+													.LoadAction("GetSupplierName")
+											.LoadMode(DataSourceLoadMode.Raw)
+													///   .Key("AccountHead") //salary paid entry
+													.Key("AccountId")
+
+											)
+											.WordWrapEnabled(true)
+											.ShowBorders(true)
+											.SearchPanel(sp => sp.HighlightSearchText(true))
+											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+											.OnSelectionChanged("dataGridSupplierNameSelectionChanged")
+											.OnInitialized("dataGridSupplierNameInitialized")
+											// .HeaderFilter(p => p.Visible(true))
+											.ShowBorders(true)
+											.HoverStateEnabled(true)
+											.Paging(p => p.PageSize(15))
+												.ColumnChooser(c => c
+	.Enabled(true)
+	.Title(new JS("formatMessage('Show/Hide Column')"))
+	.Mode(GridColumnChooserMode.DragAndDrop)
+	)
+	.Pager(pager => pager
+													.Visible(true)                            // show pager UI (page numbers etc)
+													.ShowPageSizeSelector(true)              // allow user to change page size
+	.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+	.ShowInfo(true)                          // show info like "Page 1 of 10"
+	   )
+											.FilterRow(f => f.Visible(true))
+											.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+											.Height(345)
+											.Selection(s => s.Mode(SelectionMode.Single))
+											.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+											.Columns(columns =>
+											{
+											columns.Add().DataField("AccountHeadArabic").Caption("رأس الحساب بالعربية").Alignment(HorizontalAlignment.Right);
+											columns.Add().DataField("AccountId").Caption("معرف الحساب").Alignment(HorizontalAlignment.Right);
+
+
+											})
 
 										)
-										.ColumnChooser(c => c
-														.Enabled(true)
-														.Title(new JS("formatMessage('Show/Hide Column')"))
-														.Mode(GridColumnChooserMode.DragAndDrop))
-														.Pager(pager => pager
-														.Visible(true)                            // show pager UI (page numbers etc)
-														.ShowPageSizeSelector(true)              // allow user to change page size
-														.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
-														.ShowInfo(true))   
-										.WordWrapEnabled(true)
-										.ShowBorders(true)
-										.SearchPanel(sp => sp.HighlightSearchText(true))
-										.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-										.OnSelectionChanged("dataGridCostCenterAccountHeadSelectionChanged")
-										.OnInitialized("dataGridCostCenterAccountHeadInitialized")
-										// .HeaderFilter(p => p.Visible(true))
-										.ShowBorders(true)
-										.HoverStateEnabled(true)
-										.Paging(p => p.PageSize(15))
-
-										.FilterRow(f => f.Visible(true))
-										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-										.Height(345)
-										.Selection(s => s.Mode(SelectionMode.Single))
-										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-										.Columns(columns =>
-										{
-											columns.Add().DataField("AccountHeadArabic").Caption("رأس الحساب بالعربية").Alignment(HorizontalAlignment.Right);
-											columns.Add().DataField("AccountID").Caption("معرف الحساب").Alignment(HorizontalAlignment.Right);
-
-
-										})
-
-									)
 
 }
 @using (Html.DevExtreme().NamedTemplate("SupplierNameTemplate"))
@@ -1445,8 +1576,8 @@
 											.DataSource(d => d.WebApi()
 											.Controller("VATModule")
 													.LoadAction("GetPurchaseVoucher")
-													.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") }) // Exclude Receiving Account
-
+													//.LoadParams(new { supplierid = new JS("$('#VATSupplierName').dxDropDownBox('instance').option('value')") }) // Exclude Receiving Account
+												.OnBeforeSend("function(method, ajaxOptions) { ajaxOptions.data.supplierid = $('#VATSupplierName').dxDropDownBox('instance').option('value') }")
 												.LoadMode(DataSourceLoadMode.Raw)
 													///   .Key("AccountHead") //salary paid entry
 														.Key("PurchaseVoucherNo")
@@ -1481,7 +1612,13 @@
 											.Columns(columns =>
 											{
 													columns.Add().DataField("PurchaseVoucherNo").Caption(new JS("formatMessage('Purchase Voucher No')")).Alignment(HorizontalAlignment.Center);
-													columns.Add().DataField("SupplierCode").Caption(new JS("formatMessage('Supplier account/Cash account')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("PurchaseVoucherDate").Caption(new JS("formatMessage('Purchase Voucher Date')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("PurchaseBillNo").Caption(new JS("formatMessage('Purchase Bill No')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("TotalPurchaseAmount").Caption(new JS("formatMessage('Total Purchase Amount')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("PostalAmount").Caption(new JS("formatMessage('Postal Amount')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("Paid").Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Center);
+													columns.Add().DataField("Balance").Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Center);
+													@* columns.Add().DataField("SupplierCode").Caption(new JS("formatMessage('Supplier account/Cash account')")).Alignment(HorizontalAlignment.Center); *@
 													//columns.Add().DataField("RecordStatus").Caption(new JS("formatMessage('Record Status')")).Alignment(HorizontalAlignment.Center);
 
 											})
@@ -1866,6 +2003,25 @@
 <!-- Modal Structure -->
 <script>
 
+
+	$(document).ready(function () {
+    // Sync when Supplier Name changes
+    $("#VATSupplierName").dxDropDownBox("instance").on("valueChanged", function(e) {
+        var arabicDropDown = $("#ddlSupplierNameArabic").dxDropDownBox("instance");
+        if (arabicDropDown && arabicDropDown.option("value") !== e.value) {
+            arabicDropDown.option("value", e.value);
+        }
+    });
+
+    // Sync when Supplier Arabic Name changes
+    $("#ddlSupplierNameArabic").dxDropDownBox("instance").on("valueChanged", function(e) {
+        var nameDropDown = $("#VATSupplierName").dxDropDownBox("instance");
+        if (nameDropDown && nameDropDown.option("value") !== e.value) {
+            nameDropDown.option("value", e.value);
+        }
+    });
+});
+
 	let accid=null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",IsAmend="false",supplierid=null,IsDirectApproval=true,IsDirectVerify=true,UnitCode=null;
 			  window.supplierid = 0; // must be global
@@ -1975,12 +2131,16 @@
 							dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId] });
 							dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode] });
 
+							                if(account.IsVerified==true)
+											{
+												btnVerifydisableEditing();
+											}
 											if(account.IsApproved==true)
 											{
 												disableEditing();
 
 											}
-											else if(account.IsPosted==true)
+										    if(account.IsPosted==true)
 											{
 												btnPostToLedgerdisableEditing();
 											}
@@ -2168,8 +2328,8 @@
 					columns: [
 						{
 
-								dataField: "InvoiceChildSLNo",
-								caption: "InvoiceChildSLNo",
+								dataField: "DebitNoteChildSlNo",
+								caption: "DebitNoteChildSlNo",
 								width: 100,
 								allowEditing: false, // Prevent manual editing
 								visible: false // Hide the column
@@ -2297,8 +2457,17 @@
 							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
+							//dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+
+                        ItemNo = selectedItem.GSCode;
+				        Gsdescrpition = selectedItem.GSDescrpition;
+				        GsdescriptionAr = selectedItem.GsdescriptionAr;
+				        ItemPartNo = selectedItem.ItemPartNo;
+				        CostPrice = selectedItem.CostPrice;
+				        GssellingRate = selectedItem.GSSellingRate;
+				        ReorderQty = selectedItem.ReorderQty;
+				        UnitOfMeasure = selectedItem.UnitDescription;
 						}
 
 						e.component.close();
@@ -2324,14 +2493,9 @@
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				if (!selectedItemData || !selectedItemData.GSCode) {
-					DevExpress.ui.notify("Please select an item first", "warning", 2000);
-					return;
-				}
-
-				const selected = selectedItemData;
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-				openModal(url, "Goods and Services");
+			
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+            openModal(url, "Goods and Services");
 			},
 			width: 60,
 			height: 30
@@ -2765,17 +2929,17 @@
 							dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 							dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 							dataGrid.cellValue(rowIndex, "Qty", 1);
-							dataGrid.cellValue(rowIndex, "VAT%", "15%");
+							//dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
 
 							ItemNo = selectedItem.GSCode;
-				           Gsdescrpition = selectedItem.GSDescrpition;
-				           GsdescriptionAr = selectedItem.GsdescriptionAr;
-				           ItemPartNo = selectedItem.ItemPartNo;
-				           CostPrice = selectedItem.CostPrice;
-				           GssellingRate = selectedItem.GSSellingRate;
-				           ReorderQty = selectedItem.ReorderQty;
-				           UnitOfMeasure = selectedItem.UnitDescription;
+				        Gsdescrpition = selectedItem.GSDescrpition;
+				        GsdescriptionAr = selectedItem.GsdescriptionAr;
+				        ItemPartNo = selectedItem.ItemPartNo;
+				        CostPrice = selectedItem.CostPrice;
+				        GssellingRate = selectedItem.GSSellingRate;
+				        ReorderQty = selectedItem.ReorderQty;
+				        UnitOfMeasure = selectedItem.UnitDescription;
 						}
 
 						e.component.close();
@@ -2801,11 +2965,9 @@
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-
-			//	const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-				openModal(url, "Goods and Services");
+				
+            const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+            openModal(url, "Goods and Services");
 			},
 			width: 60,
 			height: 30
@@ -5006,10 +5168,15 @@
 
 
 
-	 $("#btnSave").on("click", function (e) {
+function SaveInvoiceDetails() { 
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
+
+		
+			var button = $("#btnSave").dxButton("instance");
+            button.option("disabled", true);
+
 
 		if(clientnameValidation.isValid)
 		{
@@ -5095,6 +5262,7 @@
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+										button.option("disabled", false);
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
@@ -5102,14 +5270,17 @@
 						  DevExpress.ui.notify(
 					"Debit Note Details updated Successfully.","success",2000
 				);
+				button.option("disabled", false);
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+button.option("disabled", false);
 					}
 				});
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+				button.option("disabled", false);
 			}
 		});
 		}
@@ -5118,15 +5289,20 @@
 			  DevExpress.ui.notify(
 					"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 				);
+				button.option("disabled", false);
 		}
 
-	 });
+	 }
 
 
-	  $("#btnSaveAndClose").on("click", function (e) {
+	function SaveandCloseInvoiceDetails() {
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
+
+		
+			var button = $("#btnSaveAndClose").dxButton("instance");
+            button.option("disabled", true);
 
 		if(clientnameValidation.isValid)
 		{
@@ -5212,20 +5388,25 @@
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+										button.option("disabled", false);
 									}
 								});
 						 DevExpress.ui.notify(
 					"Debit Note Details updated Successfully.","success",2000
 				);
+				button.option("disabled", false);
 				history.back();
+				
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+						button.option("disabled", false);
 					}
 				});
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+                   button.option("disabled", false);
 			}
 		});
 		}
@@ -5234,9 +5415,10 @@
 			  DevExpress.ui.notify(
 					"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 				);
+				button.option("disabled", false);
 		}
 
-	 });
+	 }
 
 
 	//  $(document).ready(function () {
@@ -5439,6 +5621,7 @@
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithVerification(); // Proceed if user clicks Yes
 					}
 				});
@@ -5534,6 +5717,7 @@
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithApproval(); // Proceed if user clicks Yes
 					}
 				});
@@ -5569,8 +5753,8 @@
 				success: function (response) {
 					if (response && response.Message) {
 						DevExpress.ui.notify(
-							"VAT InvoiceNo has been Approved.",
-							"Approved"
+							"VAT InvoiceNo has been Approved.","success",2000
+							
 						);
 							disableEditing();
 							$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
@@ -5631,6 +5815,7 @@
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+						SaveInvoiceDetails();
 						proceedWithPost(); // Proceed if user clicks Yes
 					}
 				});
@@ -6155,6 +6340,220 @@
 			delay: [100, 100],
 		});
 	}
+				function showLedgerAccountPopup() {
+	console.log("Opening Add Supplier popup");
+
+	const tenantName = window.location.pathname.split('/')[1];
+	const url = `/${tenantName}/Finance/LedgerAccount?IsDebitAdd=true`;
+
+	const popup = $("#ledgerAccountPopup").dxPopup("instance");
+	popup.show();
+
+	setTimeout(() => {
+		const iframe = document.getElementById("ledgerAccountFrame");
+		if (!iframe) {
+			console.error("Add iframe not found!");
+			return;
+		}
+		iframe.src = url;
+	}, 300);
+}
+
+
+						function onEditClientClick() {
+	var clientId = $("#VATSupplierName").dxDropDownBox("option", "value");
+
+	if (!clientId) {
+		DevExpress.ui.dialog.alert("Please select the Supplier to edit.", "Select Client to edit");
+		return;
+	}
+
+	showLedgerAccountEditPopup(clientId); // your existing edit logic
+}
+
+
+function showLedgerAccountEditPopup(accheadid) {
+	console.log("Opening Edit Supplier popup for ID:", accheadid);
+
+	const tenantName = window.location.pathname.split('/')[1];
+	const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsDebitEdit=true`;
+
+	const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+	popup.show();
+
+	setTimeout(() => {
+		const iframe = document.getElementById("ledgerEditAccountFrame");
+		if (!iframe) {
+			console.error("Edit iframe not found!");
+			return;
+		}
+		iframe.src = url;
+	}, 300);
+}
+
+function onDeleteButtonClick() {
+    const DebitNoteNo = $('#DebitNoteNo').dxTextBox("instance").option("value");
+
+    if (!DebitNoteNo) {
+        DevExpress.ui.notify("Please select a Debit Note to delete.", "warning", 3000);
+        return;
+    }
+
+    // Ask for confirmation before deleting
+    DevExpress.ui.dialog.confirm("Are you sure you want to delete this Debit Note?", "Confirm Delete")
+        .done(function (dialogResult) {
+            if (dialogResult) { // true if Yes
+                $.ajax({
+                    url: '/api/VATModule/DeleteDebitNoteEInvoice',
+                    method: 'POST',
+                    data: { invoiceNo: DebitNoteNo },
+                    success: function (response) {
+                        if (response) {
+                            DevExpress.ui.notify("Debit Invoice has been successfully deleted from the database.", "success", 3000);
+                            grid.refresh();
+							history.back();
+                        } else {
+                            DevExpress.ui.notify(response.message || "Delete failed.", "error", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Server error while deleting the invoice.", "error", 3000);
+                    }
+                });
+            }
+        });
+}
+
+
+$(function () {
+			var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+				width: 600,
+				height: 400,
+				showTitle: true,
+				title: "Details",
+				visible: false,
+				dragEnabled: true,
+				closeOnOutsideClick: true,
+				contentTemplate: function () {
+					return $("<div>").attr("id", "popupFormContent");
+				}
+			}).dxPopup("instance");
+			var contextMenu = $("#contextMenu");
+			$(document).on("click", function () {
+				contextMenu.hide();
+			});
+			$("#B2BdataGrid").customizeGridContextMenu();
+			$("#B2BdataGrid").on("contextmenu", ".dx-data-row", function (e) {
+				e.preventDefault();
+				var rowIndex = $(this).index();
+					var rowData = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+				 invoiceNo = rowData.InvoiceNo;
+				console.log(rowData);
+				contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+			});
+		});
+
+
+
+			
+	$(function () {
+			var selectedRowKey = null;
+		// Hide context menu when clicking outside
+		$(document).on("click", function () {
+			$("#contextMenu").hide();
+		});
+
+		// Handle context menu item clicks
+		$(".context-menu-itemInvoice").on("click", function (e) {
+			e.stopPropagation(); // Prevent menu from hiding immediately
+
+			const action = $(this).data("action");
+			const grid = $("#B2BdataGrid").dxDataGrid("instance");
+			const selectedRowKeys = grid.getSelectedRowKeys();
+			selectedRowKey = selectedRowKeys.length > 0 ? selectedRowKeys[0] : null;
+
+			if (!grid) {
+				DevExpress.ui.notify("Grid instance not found.", "error", 2000);
+				return;
+			}
+
+			if (action === "add") {
+				grid.addRow();
+			}
+			else if (action === "delete") {
+				if (selectedRowKey !== null) {
+					const rowIndex = grid.getRowIndexByKey(selectedRowKey);
+					if (rowIndex >= 0) {
+						const rowData = grid.getDataSource().items()[rowIndex];
+						const { DebitNoteChildSlNo, DebitNoteNo } = rowData;
+
+						if (!DebitNoteChildSlNo) {
+							grid.deleteRow(rowIndex); // Deletes from UI
+						} else {
+							DevExpress.ui.dialog.confirm(
+								"You are about to delete invoice line item.\nAre you sure you want to delete this invoice detail?",
+								"Delete Invoice"
+							).done(function (confirmResult) {
+								if (confirmResult) {
+									$.ajax({
+										url: "/api/VATModule/DeleteDebitNoteEditInvoiceChild",
+										type: "POST",
+										contentType: "application/json",
+										data: JSON.stringify(DebitNoteChildSlNo),
+										success: function (response) {
+											if (response.success) {
+												grid.refresh();
+												DevExpress.ui.dialog.alert("VAT Invoice Line Item Deleted Successfully.", "Data Delete Successful");
+
+												// Fetch updated data and re-bind the grid
+												$.ajax({
+													type: "GET",
+													url: `/api/VATModule/GetGridDebitNoteDetails?DebitNoteNo=${encodeURIComponent(DebitNoteNo)}`,
+													dataType: 'json',
+													success: function (data) {
+														
+														const newRowData = data.map((item, index) => ({
+															SNo: index + 1,
+															...item
+														}));
+														initializeDataGrid(newRowData);
+													},
+													error: function () {
+														DevExpress.ui.notify("Failed to refresh grid data.", "error", 2000);
+													}
+												});
+											} else {
+												DevExpress.ui.notify(response.message || "Deletion failed.", "error", 2000);
+											}
+										},
+										error: function (xhr) {
+											DevExpress.ui.notify("Server error: " + xhr.statusText, "error", 2000);
+										}
+									});
+								}
+							});
+						}
+					}
+				} else {
+					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+				}
+			}
+	
+
+
+			$("#contextMenu").hide();
+		});
+	});
+
+$("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("onOpened", function (e) {
+	debugger;
+    var grid = $("#purchase-datagrid").dxDataGrid("instance");
+    if (grid) {
+        grid.getDataSource().reload();
+    }
+});
+
+
 
 
 </script>

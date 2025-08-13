@@ -6,7 +6,20 @@
 
 
 <style>
-	
+		.dx-datagrid .dx-data-row td[aria-colindex="3"] {
+    text-align: center !important;
+}
+    .header-wrap {
+        white-space: normal !important; /* Enable word wrap */
+        text-align: center !important; /* Center align text */
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+    }
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+        text-align: center !important;
+    }
 	.titleCard-toggle1 {
 		display: none;
 	}
@@ -3114,6 +3127,13 @@
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+										 paging: { enabled: true, pageSize: 15 },
+											 pager: {
+															visible: true,
+															showPageSizeSelector: true,
+															allowedPageSizes: [10, 15, 30],
+															showInfo: true
+											},
 										searchPanel: {
 													visible: true,
 													highlightCaseSensitive: true,
@@ -3257,7 +3277,7 @@
                       let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
 						let title = "Details Description";
 
-						openModal(url, title);
+						openModal(url, title,"60%","70%");
 					}
 						}).appendTo(container);
 					}
@@ -3420,12 +3440,12 @@
 				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150 },
 				{ dataField: "MprchildSlNo", caption: formatMessage('MprchildSlNo'), width: 150 },
 				{ dataField: "AddlDescription", visible: false },
-	// { dataField: "ItemReqPurpose", visible: false },
-	// { dataField: "ItemReqPriority", visible: false },
-	// { dataField: "ItemReqExpectedDate", visible: false },
-	// { dataField: "ItemRemarks", visible: false },
-	// 	{ dataField: "DeliveryPeriod", visible: false },
-	// { dataField: "PlanNo", visible: false },
+	{ dataField: "ItemReqPurpose", visible: false },
+	{ dataField: "ItemReqPriority", visible: false },
+	{ dataField: "ItemReqExpectedDate", visible: false },
+	{ dataField: "ItemRemarks", visible: false },
+		{ dataField: "DeliveryPeriod", visible: false },
+	{ dataField: "PlanNo", visible: false },
 				{
 		type: "buttons",
 		caption: "Delete",
@@ -3745,6 +3765,13 @@
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+										 paging: { enabled: true, pageSize: 15 },
+										 pager: {
+														visible: true,
+														showPageSizeSelector: true,
+														allowedPageSizes: [10, 15, 30],
+														showInfo: true
+										},
 										searchPanel: {
 													visible: true,
 													highlightCaseSensitive: true,
@@ -3884,13 +3911,14 @@
 
 					window.currentDescriptionCell = options;
 
-						let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
+					let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
 					let title = "Details Description";
 
-					openModal(url, title);
+					openModal(url, title,"60%","70%");
 				}
 					}).appendTo(container);
 				}
+
 				},
 
 				{
@@ -4138,7 +4166,7 @@
 	Description:null,
 	UnitRateMethod:null,
 	QtyRequested: 0,
-	ExpectedUnitRate: 0,
+		ExpectedUnitRate: 0,
 	LineTotal: 0,
 
 AddlDescription: null,
@@ -4166,22 +4194,30 @@ AddlDescription: null,
 
 
 	// Fetch dropdown data (same API can be used if needed)
-	function getDropdownData() {
+		function getDropdownData() {
 		return $.ajax({
-			url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
+			url: "/api/VATModule/GetGoodsAndServices",
 			method: "GET",
 			dataType: "json"
 		}).then(function (response) {
-			console.log("GsData", response)
-			return response.map(item => ({
-				GSCode: item.Gscode,
-				GSDescrpition: item.Gsdescrpition,
+			console.log("GsData", response);
+
+			// Safely get the array from the API response
+			const data = Array.isArray(response.data) ? response.data : [];
+
+			return data.map(item => ({
+				GSCode: item.GSCode,
+				GSDescrpition: item.GSDescrpition,
 				GsdescriptionAr: item.GsdescriptionAr,
 				ItemPartNo: item.ItemPartNo,
 				CostPrice: item.CostPrice,
-				GSSellingRate: item.GssellingRate,
-				ReorderQty: item.ReorderQty
+				GSSellingRate: item.GSSellingRate,
+				ReorderQty: item.ReorderQty,
+				GsuoM: item.GsuoM
 			}));
+		}).catch(function (error) {
+			console.error("Error fetching dropdown data:", error);
+			return [];
 		});
 	}
 	function getUnitRateMethods() {
@@ -6071,6 +6107,9 @@ AddlDescription: null,
 			data: JSON.stringify(model),
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
+					 const mprno = response.mprno;
+				
+				 loadChildDataAndBindGrid(mprno);
 				// Refresh parent DataGrid (ensure the correct selector is used)
 				if (window.parent && window.parent.$("#dataGrid").length) {
 					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
@@ -6085,6 +6124,45 @@ AddlDescription: null,
 			}
 		});
 	});
+		function loadChildDataAndBindGrid(mprno) {
+		//
+    if (!mprno) {
+        console.warn("No MPR number provided.");
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+        url: `/api/AddNewClientRequest/GetPurchaseRequestChildren?Mprno=${encodeURIComponent(mprno)}`,
+        dataType: "json",
+        success: function (gridResponse) {
+            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
+                console.warn("No child details found in the response.");
+                return;
+            }
+
+            console.log("Grid Response:", gridResponse);
+
+            const rowData = gridResponse.map((item, index) => ({
+                SNo: index + 1,
+                ...item
+            }));
+
+            // ✅ Bind data to existing B2B grid
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", rowData);
+            } else {
+                console.error("B2B DataGrid instance not found.");
+            }
+        },
+        error: function (xhr, status, error) {
+            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
+            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
+            console.error("Error fetching grid data:", errorMsg);
+        }
+    });
+}
 
 	$("#btnDelete").on("click", function (e) {
 		e.preventDefault();

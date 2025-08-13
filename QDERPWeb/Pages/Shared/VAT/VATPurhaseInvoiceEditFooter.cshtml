@@ -366,7 +366,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
                 )
 
     </div>
@@ -379,8 +379,8 @@
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
-
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails") // Calls the JavaScript function
 
                 )
     </div>
@@ -439,7 +439,8 @@
                 items.Add()
                     .Text("UploadItems Form Excel")
                     .Icon("edit")
-                    .Option("color", "#FBBC05"); // Yellow
+                    .Option("color", "#FBBC05")
+                    .OnClick("PurchaseUpload");
             })
             .ItemTemplate(@<text>
                 <div class="custom-dropdown-item">
@@ -841,7 +842,7 @@
                             dataGrid.state(layout);
                         } catch (error) {
                             console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                            
                         }
                     }
                 },
@@ -1866,5 +1867,9 @@
             DevExpress.ui.dialog.alert("An unexpected error occurred.", "Error");
         }
     }
-
+    function PurchaseUpload() {
+        var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+        var url = `/${tenantName}/VAT/PurchaseUpload?PurchaseInvoiceNo=${invoiceNo}`;
+        window.location.href = url;
+    }
 </script>

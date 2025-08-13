@@ -1621,6 +1621,12 @@
                                             height: 300, 
 
                                             scrolling: { mode: "virtual" },
+                                             pager: {
+                                                     visible: true,
+                                                     showPageSizeSelector: true,
+                                                     allowedPageSizes: [10, 15, 30],
+                                                     showInfo: true
+                                                },
                                             searchPanel: {
 													visible: true,
 													highlightCaseSensitive: true,
@@ -1633,7 +1639,7 @@
 
                                                 { dataField: "GSDescrpition", caption: "Description", width: 300 },
 
-                                                { dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
+                                                { dataField: "ItemPartNo", caption: "Item Part No", width: 150 },
 
                                             ],
 
@@ -2141,26 +2147,66 @@
         });
 
                 // Fetch dropdown data (same API can be used if needed)
-             function getDropdownData() {
-                return $.ajax({
-                    url: "/api/VATModule/GetGoodsAndServices", // Update with your actual API endpoint
-                    method: "GET",
-                    dataType: "json"
-                }).then(function(response) {
-                    console.log("GsData",response)
-                    return response.map(item => ({
-                        PochildNo: item.PochildNo ?? 0,
-                        GSCode: item.Gscode,
-                        GSDescrpition: item.Gsdescrpition,
-                        GsdescriptionAr:item.GsdescriptionAr,
-                        ItemPartNo: item.ItemPartNo,
-                        CostPrice: item.CostPrice,
-                        GSSellingRate: item.GssellingRate,
-                        ReorderQty:item.ReorderQty
-                    }));
-                });
-            }
-                                  
+            //  function getDropdownData() {
+            //     return $.ajax({
+            //         url: "/api/VATModule/GetGoodsAndServices", Update with your actual API endpoint
+            //         method: "GET",
+            //         dataType: "json"
+            //     }).then(function(response) {
+            //         console.log("GsData",response)
+            //         return response.map(item => ({
+            //             PochildNo: item.PochildNo ?? 0,
+            //             GSCode: item.Gscode,
+            //             GSDescrpition: item.Gsdescrpition,
+            //             GsdescriptionAr:item.GsdescriptionAr,
+            //             ItemPartNo: item.ItemPartNo,
+            //             CostPrice: item.CostPrice,
+            //             GSSellingRate: item.GssellingRate,
+            //             ReorderQty:item.ReorderQty
+            //         }));
+            //     });
+            // }
+     	function getDropdownData() {
+
+	return $.ajax({
+
+		url: "/api/VATModule/GetGoodsAndServices",
+
+		method: "GET",
+
+		dataType: "json"
+
+	}).then(function (response) {
+
+		console.log("GsData", response);
+ 
+		// Safely get the array from the API response
+
+		const data = Array.isArray(response.data) ? response.data : [];
+ 
+		return data.map(item => ({
+
+			PochildNo: item.PochildNo ?? 0,
+            GSCode: item.GSCode,
+            GSDescrpition: item.GSDescrpition,
+            GsdescriptionAr:item.GsdescriptionAr,
+            ItemPartNo: item.ItemPartNo,
+            CostPrice: item.CostPrice,
+            GSSellingRate: item.GSSellingRate,
+            ReorderQty:item.ReorderQty
+
+		}));
+
+	}).catch(function (error) {
+
+		console.error("Error fetching dropdown data:", error);
+
+		return [];
+
+	});
+
+}
+                     
      function getTaxSlabData() {
             return $.ajax({
                 url: "/api/VATModule/GetVatTaxSlabs",
