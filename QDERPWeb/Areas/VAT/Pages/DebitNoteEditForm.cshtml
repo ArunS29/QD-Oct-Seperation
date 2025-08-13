@@ -5082,6 +5082,11 @@
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
 
+		
+			var button = $("#btnSave").dxButton("instance");
+            button.option("disabled", true);
+
+
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -5166,6 +5171,7 @@
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+										button.option("disabled", false);
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
@@ -5173,14 +5179,17 @@
 						  DevExpress.ui.notify(
 					"Debit Note Details updated Successfully.","success",2000
 				);
+				button.option("disabled", false);
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+button.option("disabled", false);
 					}
 				});
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+				button.option("disabled", false);
 			}
 		});
 		}
@@ -5189,6 +5198,7 @@
 			  DevExpress.ui.notify(
 					"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 				);
+				button.option("disabled", false);
 		}
 
 	 });
@@ -5198,6 +5208,10 @@
 
 		var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
+
+		
+			var button = $("#btnSaveAndClose").dxButton("instance");
+            button.option("disabled", true);
 
 		if(clientnameValidation.isValid)
 		{
@@ -5283,21 +5297,25 @@
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+										button.option("disabled", false);
 									}
 								});
 						 DevExpress.ui.notify(
 					"Debit Note Details updated Successfully.","success",2000
 				);
+				button.option("disabled", false);
 				history.back();
 				
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+						button.option("disabled", false);
 					}
 				});
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+                   button.option("disabled", false);
 			}
 		});
 		}
@@ -5306,6 +5324,7 @@
 			  DevExpress.ui.notify(
 					"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 				);
+				button.option("disabled", false);
 		}
 
 	 });
@@ -6277,5 +6296,40 @@ function showLedgerAccountEditPopup(accheadid) {
 		iframe.src = url;
 	}, 300);
 }
+
+function onDeleteButtonClick() {
+    const DebitNoteNo = $('#DebitNoteNo').dxTextBox("instance").option("value");
+
+    if (!DebitNoteNo) {
+        DevExpress.ui.notify("Please select a Debit Note to delete.", "warning", 3000);
+        return;
+    }
+
+    // Ask for confirmation before deleting
+    DevExpress.ui.dialog.confirm("Are you sure you want to delete this Debit Note?", "Confirm Delete")
+        .done(function (dialogResult) {
+            if (dialogResult) { // true if Yes
+                $.ajax({
+                    url: '/api/VATModule/DeleteDebitNoteEInvoice',
+                    method: 'POST',
+                    data: { invoiceNo: DebitNoteNo },
+                    success: function (response) {
+                        if (response) {
+                            DevExpress.ui.notify("Debit Invoice has been successfully deleted from the database.", "success", 3000);
+                            grid.refresh();
+							history.back();
+                        } else {
+                            DevExpress.ui.notify(response.message || "Delete failed.", "error", 3000);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Server error while deleting the invoice.", "error", 3000);
+                    }
+                });
+            }
+        });
+}
+
+
 
 </script>
