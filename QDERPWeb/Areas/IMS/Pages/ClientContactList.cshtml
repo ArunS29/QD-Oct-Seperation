@@ -21,8 +21,8 @@
 
     .form-field {
         flex: 1;
-        margin-top: 20px;
-        margin-left: 10px;
+        margin-top: 1px;
+        margin-left: 5px;
     }
 
     .form-header {
@@ -93,15 +93,15 @@
         color: black !important;
     }
 
+
 </style>
 
-@* <div class="title">
+ <div class="title">
     <div class="header-container">
         <div id="ClientContactList" class="no-border-title"></div>
     </div>
-</div> *@
+</div> 
 <div class="formContainer">
-
     <div class="form-row">
         <div class="form-field">
             @(Html.DevExtreme().TextBox()
@@ -114,16 +114,15 @@
                 .ReadOnly(true))
 
         </div>
-        <div class="form-field">
-            @(Html.DevExtreme().TextBox()
-                .ID("clientHidden")
-                  .Width("100%")
-                .Value("-1")
-                .ReadOnly(true)
-                .Label(" ")
-               .Label(new JS("formatMessage('')"))
-                .LabelMode(EditorLabelMode.Floating)
-                .ElementAttr("class", "white-bg"))
+        <div class="form-field" style="margin:7px;">
+                @(Html.DevExtreme().TextBox()
+                                .ID("clientHidden")
+                                .Width("91%")
+                                .Value("-1")
+                                .ReadOnly(true)
+                                .Label("")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ElementAttr(new { @class = "white-bg" }))
         </div>
     </div>
 
