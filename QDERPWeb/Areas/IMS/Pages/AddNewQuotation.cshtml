@@ -2423,12 +2423,19 @@ function checkDateLocking() {
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
-																						searchPanel: {
-visible: true,
-highlightCaseSensitive: true,
-width: 300,
-placeholder: "Search..."
-},
+										 paging: { enabled: true, pageSize: 15 },
+												pager: {
+													visible: true,
+													showPageSizeSelector: true,
+													allowedPageSizes: [10, 15, 30],
+													showInfo: true
+												},
+											searchPanel: {
+											visible: true,
+											highlightCaseSensitive: true,
+											width: 300,
+											placeholder: "Search..."
+											},
 
 										columns: [
 
@@ -3175,12 +3182,18 @@ placeholder: "Search..."
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+											pager: {
+													visible: true,
+													showPageSizeSelector: true,
+													allowedPageSizes: [10, 15, 30],
+													showInfo: true
+												},
 																						searchPanel: {
-visible: true,
-highlightCaseSensitive: true,
-width: 300,
-placeholder: "Search..."
-},
+												visible: true,
+												highlightCaseSensitive: true,
+												width: 300,
+												placeholder: "Search..."
+												},
 
 										columns: [
 

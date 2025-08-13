@@ -3995,7 +3995,7 @@
 	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
 	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
 	grid.cellValue(rowIndex, "QuantityCredited", qty);
-	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+//	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
 
                             
@@ -4038,7 +4038,7 @@
 	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
 	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
 	grid.cellValue(rowIndex, "QuantityCredited", qty);
-	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+	//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
                                 }
 
@@ -6722,6 +6722,10 @@ openModal(url, title);
 		
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();	
+
+			var button = $("#btnSave").dxButton("instance");
+            button.option("disabled", true);
+
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -6852,6 +6856,7 @@ openModal(url, title);
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+											button.option("disabled", false);
 									}
 								});
 									 isVoucherSaved = true; // Mark Updated step as done
@@ -6859,14 +6864,17 @@ openModal(url, title);
 						  DevExpress.ui.notify(
 					"Credit Note Details updated Successfully.","success",2000
 				);
+					button.option("disabled", false);
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+						button.option("disabled", false);
 					}
 				});
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					button.option("disabled", false);
 			}
 		});
 		}
@@ -6874,6 +6882,7 @@ openModal(url, title);
 		{
 			  DevExpress.ui.notify(
 					"Cannot continue saving with errors,please clear the errors and continue.","error",3000);
+						button.option("disabled", false);
 		}
 
 	 });
@@ -6886,6 +6895,10 @@ openModal(url, title);
 			
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
+
+					var button = $("#btnSaveAndClose").dxButton("instance");
+				button.option("disabled", true);
+
 			if(clientnameValidation.isValid)
 			{
 		// Create JSON object for master invoice
@@ -7016,6 +7029,7 @@ openModal(url, title);
 										},
 										error: function (xhr, status, error) {
 											console.error("Error fetching grid data:", error);
+												button.option("disabled", false);
 										}
 									});
 										 isVoucherSaved = true; // Mark Updated step as done
@@ -7023,14 +7037,17 @@ openModal(url, title);
 							  DevExpress.ui.notify(
 						"Credit Note Details updated Successfully.","success",2000
 					);
+						button.option("disabled", false);
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+								button.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					button.option("disabled", false);
 				}
 			});
 			}
@@ -7038,6 +7055,7 @@ openModal(url, title);
 			{
 				  DevExpress.ui.notify(
 						"Cannot continue saving with errors,please clear the errors and continue.","error",3000);
+							button.option("disabled", false);
 			}
 
 		 });

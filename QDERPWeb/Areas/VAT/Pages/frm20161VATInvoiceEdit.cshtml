@@ -1400,6 +1400,7 @@
                                  .Max(99999999) // restricts the number itself
                                  .Step(1)
                                  .ShowSpinButtons(true)
+								  .Format("#,##0.00") 
                                  .Width("90%")
                              )
       							</td>
@@ -1510,6 +1511,7 @@
 																.Step(1)
 																.ShowSpinButtons(true)
 																.Max(99999999)
+                                                                .Format("#,##0.00") 
 																.Width("90%"))
 											  							</td>
 											  							<td>
@@ -1570,6 +1572,7 @@
 																.Max(99999)
 																.Step(1)
 																.ShowSpinButtons(true)
+																 .Format("#,##0.00") 
 																.Value(1)
 																.Width("100%")
 																)
@@ -1590,6 +1593,7 @@
 																			.Max(99999999)
 																			.Step(1)
 																			.ShowSpinButtons(true)
+                                                                            .Format("#,##0.00") 
 																			.Width("90%"))
 								</td>
 								<td>
@@ -4487,23 +4491,24 @@ return $container;
                         }
                     } },
 					{
-		dataField: "DiscountDetails",
-		caption: "...",
-		cssClass: "center-header",
-		width: 100,
-		allowEditing: false,
-		cellTemplate: function (container, options) {  // ✅ fixed here
-			$("<div>").dxButton({
-				icon: "preferences", // or another valid icon
-				hint: "VAT Calculator",
-				stylingMode: "text",
-				width: 30,
-				onClick: function (e) {
-					onCalCardClick(e.element[0]); // ✅ Pass raw DOM element
-				}
-			}).appendTo(container);
-		}
-	},
+    dataField: "DiscountDetails",
+    caption: "...",
+    cssClass: "center-header",
+    width: 100,
+    allowEditing: false,
+    cellTemplate: function (container, options) {
+        $("<div>").dxButton({
+            icon: "fa fa-calculator", // or another valid icon
+            hint: "VAT Calculator",
+            stylingMode: "text",
+            width: 60,
+            onClick: function (e) {
+                // Pass the row index and the button element as target
+                showCalcPopover(options.rowIndex, e.element);
+            }
+        }).appendTo(container);
+    }
+},
 				{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,allowEditing: false },
             {
     dataField: "VATPercentage",
@@ -5238,8 +5243,9 @@ return $container;
             hint: "VAT Calculator",
             stylingMode: "text",
             width: 60,
-            onClick: function () {
-                showCalcPopover(options.rowIndex); // Pass the current row index
+           onClick: function (e) {
+                // Pass the row index and the button element as target
+                showCalcPopover(options.rowIndex, e.element);
             }
         }).appendTo(container);
     }
@@ -5479,18 +5485,18 @@ return $container;
 				}
 			}
 
-				function onCalCardClick(cellElement) {
-					const popover = $("#CalcardPopover").dxPopover("instance");
+			// 	function onCalCardClick(cellElement) {
+			// 		const popover = $("#CalcardPopover").dxPopover("instance");
 
-				// Set the new target element for the popover
-				popover.option("target", cellElement);
+			// 	// Set the new target element for the popover
+			// 	popover.option("target", cellElement);
 
-				if (popover.option("visible")) {
-					popover.hide();
-				} else {
-					popover.show();
-				}
-			}
+			// 	if (popover.option("visible")) {
+			// 		popover.hide();
+			// 	} else {
+			// 		popover.show();
+			// 	}
+			// }
 				function onexemptionCodeClick(cellElement) {
 		const $popover = $("#ExcemptioncodePopover");
 
@@ -5541,6 +5547,21 @@ return $container;
 				});
 			});
 				
+
+$(function () {
+
+            $("#CalcardPopover").dxPopover({
+                width: 550,
+				visible: false,
+                position: "bottom",
+                showEvent: "",
+                hideEvent: "",
+                hideOnOutsideClick: false,
+
+            });
+
+
+        });
 			
 	// 		$(function () {
 	// 	$("#CalcardPopover").dxPopover({
@@ -5578,47 +5599,41 @@ return $container;
 	// });
 
 	function showCalcPopover(rowIndex, targetElement) {
+		debugger;
     const grid = $("#B2BdataGrid").dxDataGrid("instance");
-
     const qty = grid.cellValue(rowIndex, "QuantityInvoiced") || 0;
     const unitPrice = grid.cellValue(rowIndex, "UnitRate") || 0;
     const amount = qty * unitPrice;
+	debugger;
 
-    let popover = $("#CalcardPopover").dxPopover("instance");
+		const popover = $("#CalcardPopover").dxPopover("instance");
+		 popover.option("target", targetElement);
 
-    // Initialize popover once
-    if (!popover) {
-        $("#CalcardPopover").dxPopover({
-            width: 550,
-            position: "bottom",
-            showEvent: "", // Manual show
-            hideEvent: "", // Manual hide
-            hideOnOutsideClick: true,
-            shading: false // Optional: no overlay shading
-        });
+// Dynamically update the popover contentTemplate with row-specific URL
+popover.option("contentTemplate", function (contentElement) {
+    contentElement.empty();
 
-        popover = $("#CalcardPopover").dxPopover("instance");
-    }
-
-    // Update popover content dynamically
-    popover.option("contentTemplate", function (contentElement) {
-        contentElement.empty().append("<div>Loading...</div>");
-        $.ajax({
-            url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
-            type: 'GET',
-            success: function (data) {
-                contentElement.html(data);
-            },
-            error: function () {
-                contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-            }
-        });
+    $.ajax({
+        url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
+        type: 'GET',
+        success: function (data) {
+            contentElement.html(data);
+        },
+        error: function () {
+            contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+        }
     });
+});
 
-    // Show popover near the clicked button or cell
-    popover.option("target", targetElement);
-    popover.show();
+// Show the popover
+if (popover.option("visible")) {
+    popover.hide();
+	 
+} else {
+   popover.show();
 }
+}
+
 
 
 				$(function () {
@@ -7650,6 +7665,9 @@ return $container;
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
+
+			var button = $("#btnSave").dxButton("instance");
+            button.option("disabled", true);
 			
 			RevenueAccount = $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value");
 
@@ -7835,27 +7853,31 @@ return $container;
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+button.option("disabled", false);
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
+								  button.option("disabled", false);
 							 
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+							 button.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+                         button.option("disabled", false);
 				}
 			});
 			}
 			else
 			{
 				  DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-				 
+				  button.option("disabled", false);
 			}
 
 		 });
@@ -7865,6 +7887,9 @@ return $container;
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
+
+			var button = $("#btnSaveAndClose").dxButton("instance");
+             button.option("disabled", true);
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
@@ -8055,9 +8080,11 @@ return $container;
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 							 history.back();
+							  button.option("disabled", false);
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+                           button.option("disabled", false);
 						}
 					});
 				},
@@ -9392,6 +9419,12 @@ return $container;
 			grid.cellValue(rowIx, "Discount", discount);
 			grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
 		grid.cellValue(rowIx, "LineTotal", totalValue);
+
+				// ✅ Close the DevExtreme Popover
+    const popover = $("#CalcardPopover").dxPopover("instance");
+    if (popover) {
+        popover.hide();
+    }
 
 	}
 

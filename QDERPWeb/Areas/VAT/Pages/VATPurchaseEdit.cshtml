@@ -6215,6 +6215,9 @@
 			var clientnameValidation = clientnameValidator.validate();
 
 		  //InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
+		  
+			var button = $("#btnSave").dxButton("instance");
+            button.option("disabled", true);
 
 	
 			if(clientnameValidation.isValid)
@@ -6337,6 +6340,7 @@
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+										button.option("disabled", false);
 									}
 								});
 									 isVoucherSaved = true; // Mark Updated step as done
@@ -6344,6 +6348,7 @@
 							  DevExpress.ui.notify(
 						"Purchase Invoice Details updated Successfully.","success",2000
 					);
+					button.option("disabled", false);
 						}
 						// error: function (xhr) {
 						// 	DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6352,6 +6357,7 @@
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					button.option("disabled", false);
 				}
 			});
 			}
@@ -6361,6 +6367,7 @@
 						"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 						
 					);
+					button.option("disabled", false);
 			}
 
 		 });
@@ -6372,6 +6379,9 @@
 				var clientnameValidation = clientnameValidator.validate();
 
 			  //InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
+			  
+			var button = $("#btnSaveAndClose").dxButton("instance");
+            button.option("disabled", true);
 
 
 				if(clientnameValidation.isValid)
@@ -6494,12 +6504,14 @@
 										},
 										error: function (xhr, status, error) {
 											console.error("Error fetching grid data:", error);
+											button.option("disabled", false);
 										}
 									});
 								  DevExpress.ui.notify(
 							"Purchase Invoice Details updated Successfully.","sucess",2000
 							
 						);
+button.option("disabled", false);
 						//history.back();
 
                           const url = `/${tenantName}/VAT/VATPurchaseMasterView`;
@@ -6514,6 +6526,7 @@
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+						button.option("disabled", false);
 					}
 				});
 				}
@@ -6523,6 +6536,7 @@
 							"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 					
 						);
+						button.option("disabled", false);
 				}
 
 			 });
