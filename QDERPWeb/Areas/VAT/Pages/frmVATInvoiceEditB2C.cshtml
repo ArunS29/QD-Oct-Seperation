@@ -3925,6 +3925,14 @@
 						$("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood);
 							$("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr);
 
+
+							  	        $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+							            $("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+					                    $("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+
+										$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+                                        $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+										$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							                if(account.IsVerified==true)
 											{
 												btnVerifydisableEditing();

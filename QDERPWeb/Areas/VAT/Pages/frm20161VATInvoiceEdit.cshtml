@@ -3889,6 +3889,14 @@
 					                  $("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood);
 						              $("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr);
 
+									  	$("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+							            $("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+					                    $("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+
+										$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+                                        $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+										$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+
 									       if(account.IsVerified==true)
 											{
 												btnVerifydisableEditing();
@@ -8342,6 +8350,12 @@ button.option("disabled", false);
 
 
 		$("#btnVerify").on("click", function (e) {
+			
+			var clientnameValidator = $("#ddclientname").dxValidator("instance");
+			var clientnameValidation = clientnameValidator.validate();
+
+		if(clientnameValidation.isValid)
+			{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 			const IsDirect = false;
 			// Ensure dataGrid exists
@@ -8379,7 +8393,9 @@ button.option("disabled", false);
 					}
 				});
 			}
-		});
+		  }
+	});
+		
 
 
 
@@ -8444,6 +8460,11 @@ button.option("disabled", false);
 
 
 		$("#btnApprove").on("click", function (e) {
+				var clientnameValidator = $("#ddclientname").dxValidator("instance");
+			var clientnameValidation = clientnameValidator.validate();
+
+		if(clientnameValidation.isValid)
+			{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 			// Ensure dataGrid exists
@@ -8478,6 +8499,7 @@ button.option("disabled", false);
 						
 					}
 				});
+			}
 			}
 		});
 
@@ -8537,6 +8559,11 @@ button.option("disabled", false);
 
 
 		$("#btnPostToLedgers").on("click", function (e) {
+				var clientnameValidator = $("#ddclientname").dxValidator("instance");
+			var clientnameValidation = clientnameValidator.validate();
+
+		if(clientnameValidation.isValid)
+			{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 			var PostToLedgerValidator = $("#ddlGoodsGroup2").dxValidator("instance");
@@ -8586,6 +8613,7 @@ button.option("disabled", false);
 						buttons: [{ text: "Ok", onClick: () => false }],
 						showTitle: true
 					}).show();
+			}
 			}
 		});
 
