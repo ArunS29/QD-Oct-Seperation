@@ -1644,6 +1644,36 @@
             color: #6b7280;
             line-height: 1.6;
         }
+
+        .status-item {
+            position: relative;
+        }
+
+            .status-item .new-dot {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                width: 10px;
+                height: 10px;
+                background-color: blue;
+                border-radius: 50%;
+                display: none; /* hidden by default */
+            }
+
+        .text-button {
+            background: none; /* remove background */
+            border: none; /* remove border */
+            color: #007bff; /* text color (blue for link-like) */
+            cursor: pointer; /* pointer on hover */
+            padding: 0; /* remove padding */
+            font-size: 14px; /* optional font size */
+            text-decoration: underline; /* optional underline to look clickable */
+        }
+
+            .text-button:hover {
+                color: #0056b3; /* darker on hover */
+            }
+
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1687,16 +1717,19 @@
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="payments-verified">0</div>
                                 <div class="status-label">To Be Verified</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeApproved')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="payments-approved">0</div>
                                 <div class="status-label">To Be Approved</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeAudited')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="payments-audited">0</div>
                                 <div class="status-label">To Be Audited</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                         </div>
                     </div>
@@ -1709,16 +1742,19 @@
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="receipt-verified">0</div>
                                 <div class="status-label">To Be Verified</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeApproved')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="receipt-approved">0</div>
                                 <div class="status-label">To Be Approved</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeAudited')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="receipt-audited">0</div>
                                 <div class="status-label">To Be Audited</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                         </div>
                     </div>
@@ -1731,16 +1767,19 @@
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="salespurchase-verified">0</div>
                                 <div class="status-label">To Be Verified</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeApproved')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="salespurchase-approved">0</div>
                                 <div class="status-label">To Be Approved</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeAudited')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="salespurchase-audited">0</div>
                                 <div class="status-label">To Be Audited</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                         </div>
                     </div>
@@ -1753,16 +1792,19 @@
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="journals-verified">0</div>
                                 <div class="status-label">To Be Verified</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeApproved')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="journals-approved">0</div>
                                 <div class="status-label">To Be Approved</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeAudited')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="journals-audited">0</div>
                                 <div class="status-label">To Be Audited</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                         </div>
                     </div>
@@ -1775,46 +1817,29 @@
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="expenseclaims-verified">0</div>
                                 <div class="status-label">To Be Verified</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeApproved')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="expenseclaims-approved">0</div>
                                 <div class="status-label">To Be Approved</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                             <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeAudited')">
                                 <div class="status-icon"><i class="fas fa-file"></i></div>
                                 <div class="status-number" id="expenseclaims-audited">0</div>
                                 <div class="status-label">To Be Audited</div>
+                                <span class="new-dot" id="payments-audited-dot"></span>
                             </div>
                         </div>
                     </div>
 
 
+                    <button id="clearAllNotifications" class="text-button">Clear All</button>
                     <!-- Individual Notifications -->
-                    <div class="notification-divider">
-                        <div class="notification-item">
-                            <div class="notification-avatar">
-                                S
-                            </div>
-                            <div class="notification-content-text">
-                                <div class="notification-title">
-                                    Bank Payment Voucher BB-876575 has been Created by Saju and waiting for verification.
-                                </div>
-                                <div class="notification-time">Today at 8:42 AM</div>
-                            </div>
-                        </div>
-
-                        <div class="notification-item">
-                            <div class="notification-avatar">
-                                V
-                            </div>
-                            <div class="notification-content-text">
-                                <div class="notification-title">
-                                    New expense claim from Vasanth EX-786678, ₹1000 is awaiting your approval.
-                                </div>
-                                <div class="notification-time">Today at 8:42 AM</div>
-                            </div>
-                        </div>
+                    <div class="notification-divider" id="notificationList">
+                        
+                        <!-- Notification items will be injected dynamically from JS -->
                     </div>
                 </div>
             </div>
@@ -3364,66 +3389,7 @@
                   window.location.href = `/${tenantName}/VAT/VATSalesReportCOGSPosting`;
                 }
 
-                     let alertsData = [];
 
-                async function fetchUnseenCount() {
-                  try {
-                    const response = await fetch('/api/Notification/GetUserNotifications');
-                    if (!response.ok) throw new Error('Failed to fetch notifications');
-
-                    const json = await response.json();
-                    alertsData = json.data || [];
-
-                    const unseenCount = alertsData.filter(n => n.IsSeen === false).length;
-                    const badge = document.getElementById('notificationBadge');
-                    badge.style.display = unseenCount > 0 ? 'inline-block' : 'none';
-                    badge.textContent = unseenCount;
-
-                  } catch (err) {
-                    console.error('Error fetching notifications:', err);
-                  }
-                }
-
-                function showPopup() {
-                  const popup = document.getElementById('notificationPopup');
-                  const content = document.getElementById('notificationPopupContent');
-
-                  const unread = alertsData.filter(n => !n.IsSeen && n.AlertUserMessage);
-
-                  if (unread.length === 0) {
-                    content.innerHTML = '<div class="notification-item">No new notifications</div>';
-                  } else {
-                    content.innerHTML = unread.map(n => `
-                      <div class="notification-item">
-                        <strong>${n.AlertCode}</strong>
-                        <span>${n.AlertUserMessage}</span>
-                      </div>
-                    `).join('');
-                  }
-
-                  popup.style.display = 'block';
-                }
-
-                function hidePopup() {
-                  document.getElementById('notificationPopup').style.display = 'none';
-                }
-
-                window.addEventListener('DOMContentLoaded', fetchUnseenCount);
-                function handleGearClick() {
-                    const settingsPopup = document.getElementById('settingsPopup');
-                    if (settingsPopup) {
-                        settingsPopup.style.display = 'block';
-                        document.addEventListener('click', handleOutsideClick);
-                    }
-                }
-
-                function closePopup(popupId) {
-                    const popup = document.getElementById(popupId);
-                    if (popup) {
-                        popup.style.display = 'none';
-                        document.removeEventListener('click', handleOutsideClick);
-                    }
-                }
 
                 function handleOutsideClick(event) {
                     const popup = document.getElementById('settingsPopup');
@@ -4991,53 +4957,102 @@
             });
         }
 
-        $(document).ready(function () {
+          $(document).ready(function () {
+
+            let previousIds = new Set(); // track notifications already seen
+
             function updateNotifications() {
                 $.getJSON('/api/Notification/GetFinanceNotificationSummary', function (data) {
-                    // Update module cards
-                    $("#payments-verified").text(data.Payments.ToBeVerified);
-                    $("#payments-approved").text(data.Payments.ToBeApproved);
-                    $("#payments-audited").text(data.Payments.ToBeAudited);
+                    const summary = data.Summary;
+                    const notifications = data.Notifications;
 
-                    $("#receipt-verified").text(data.Receipts.ToBeVerified);
-                    $("#receipt-approved").text(data.Receipts.ToBeApproved);
-                    $("#receipt-audited").text(data.Receipts.ToBeAudited);
+                    // Update status numbers
+                    $("#payments-verified").text(summary.Payments.ToBeVerified);
+                    $("#payments-approved").text(summary.Payments.ToBeApproved);
+                    $("#payments-audited").text(summary.Payments.ToBeAudited);
 
-                    $("#salespurchase-verified").text(data.SalesPurchase.ToBeVerified);
-                    $("#salespurchase-approved").text(data.SalesPurchase.ToBeApproved);
-                    $("#salespurchase-audited").text(data.SalesPurchase.ToBeAudited);
+                    $("#receipt-verified").text(summary.Receipts.ToBeVerified);
+                    $("#receipt-approved").text(summary.Receipts.ToBeApproved);
+                    $("#receipt-audited").text(summary.Receipts.ToBeAudited);
 
-                    $("#journals-verified").text(data.Journals.ToBeVerified);
-                    $("#journals-approved").text(data.Journals.ToBeApproved);
-                    $("#journals-audited").text(data.Journals.ToBeAudited);
+                    $("#salespurchase-verified").text(summary.SalesPurchase.ToBeVerified);
+                    $("#salespurchase-approved").text(summary.SalesPurchase.ToBeApproved);
+                    $("#salespurchase-audited").text(summary.SalesPurchase.ToBeAudited);
 
-                    $("#expenseclaims-verified").text(data.ExpenseClaims.ToBeVerified);
-                    $("#expenseclaims-approved").text(data.ExpenseClaims.ToBeApproved);
-                    $("#expenseclaims-audited").text(data.ExpenseClaims.ToBeAudited);
+                    $("#journals-verified").text(summary.Journals.ToBeVerified);
+                    $("#journals-approved").text(summary.Journals.ToBeApproved);
+                    $("#journals-audited").text(summary.Journals.ToBeAudited);
 
-                    // Finance total
-                    const financeTotal =
-                        data.Payments.ToBeVerified + data.Payments.ToBeApproved + data.Payments.ToBeAudited +
-                        data.Receipts.ToBeVerified + data.Receipts.ToBeApproved + data.Receipts.ToBeAudited +
-                        data.SalesPurchase.ToBeVerified + data.SalesPurchase.ToBeApproved + data.SalesPurchase.ToBeAudited +
-                        data.Journals.ToBeVerified + data.Journals.ToBeApproved + data.Journals.ToBeAudited +
-                        data.ExpenseClaims.ToBeVerified + data.ExpenseClaims.ToBeApproved + data.ExpenseClaims.ToBeAudited;
+                    $("#expenseclaims-verified").text(summary.ExpenseClaims.ToBeVerified);
+                    $("#expenseclaims-approved").text(summary.ExpenseClaims.ToBeApproved);
+                    $("#expenseclaims-audited").text(summary.ExpenseClaims.ToBeAudited);
 
-                                // Update both badges
-        $("#bellBadge").text(financeTotal);
-        $("#sidebarBadge").text(financeTotal);
-                    // Update tab and badge
-                    $("#financeTab").text(`Finance ${financeTotal}`);
-                    
+                    // Render notifications
+                    const $list = $("#notificationList");
+                    $list.empty();
+
+                    let newBadgeCount = 0;
+
+                    notifications.forEach(n => {
+                        const date = new Date(n.CreatedOn);
+                        const userName = n.User || "Unknown";
+
+                        const uniqueId = n.VoucherNumber + date.getTime();
+                        const isNew = !previousIds.has(uniqueId);
+
+                        if (isNew) {
+                            previousIds.add(uniqueId);
+                            newBadgeCount++;
+                        }
+
+                        const $item = $(`
+                            <div class="notification-item" id="notif-${uniqueId}">
+                                <div class="notification-avatar">${userName.charAt(0)}</div>
+                                <div class="notification-content-text">
+                                    <div class="notification-title">
+                                        ${n.VoucherType} Voucher ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+                                    </div>
+                                    <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                </div>
+                            </div>
+                        `);
+
+                        $list.append($item);
+                    });
+
+                    // Update badges
+                    $("#bellBadge").text(newBadgeCount);
+                    $("#sidebarBadge").text(newBadgeCount);
+                    $("#financeTab").text(`Finance ${newBadgeCount}`);
                 });
             }
 
-            // Initial load
-            updateNotifications();
+            // Mark all as seen
+            $("#markAllRead").click(function () {
+                $("#bellBadge, #sidebarBadge").text(0);
+                previousIds.clear(); // treat all as seen
+            });
 
-            // Refresh every 10 seconds
+            $("#clearAllNotifications").click(function () {
+                var $items = $("#notificationList .notification-item");
+
+                if ($items.length === 0) return; // nothing to clear
+
+                $items.slideUp(300, function () {
+                    $(this).remove();
+                });
+
+                $("#bellBadge, #sidebarBadge").text(0);
+                previousIds.clear();
+            });
+
+            // Initial load + refresh
+            updateNotifications();
             setInterval(updateNotifications, 60000);
         });
+
+
+
 
 
              $(document).ready(function () {
@@ -5099,13 +5114,7 @@
             }
         });
 
-         // Close sidebar when clicking outside
-        // document.addEventListener("click", function (e) {
-        //     const sidebar = document.getElementById("notificationSidebar");
-        //     if (sidebar.classList.contains("open") && !sidebar.contains(e.target) && !e.target.closest("#bellButton")) {
-        //         sidebar.classList.remove("open");
-        //     }
-        // });
+
 
     </script>
 </body>
