@@ -342,20 +342,20 @@ function uploadInvoice() {
         GSGroupID: selectedGSGroupId
     };
 
-    console.log("📦 Final Payload to UploadStock:", requestBody);
+    console.log("📦 Final Payload to UploadInvoice:", requestBody);
 
     $.ajax({
-        url: "/api/InventoryUpload/UploadStock",
+        url: "/api/InventoryUpload/UploadInvoice",
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(requestBody),
         success: function (result) {
-            DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
+            DevExpress.ui.notify("Invoice uploaded successfully.", "success", 3000);
 			onUploadButtonClick();
         },
         error: function (xhr) {
-            console.error("UploadStock error:", xhr);
-            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+            console.error("UploadInvoice error:", xhr);
+            DevExpress.ui.notify("Failed to upload Invoice.", "error", 3000);
         }
     });
 }
@@ -469,7 +469,7 @@ function uploadInvoice() {
         DevExpress.ui.notify("Request No is required.", "error", 2000);
         return;
     }
-    window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(invoiceNo)}`;
+    window.location.href = `/${tenantName}/VAT/frm20161VATInvoiceEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}`;
 }
 	function StockGroup(){
         const url = `/${tenantName}/IMS/StockDetails_StockGroup`;

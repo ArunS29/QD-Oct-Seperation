@@ -344,10 +344,10 @@ function uploadToPerformaInvoice() {
         GSGroupID: selectedGSGroupId
     };
 
-    console.log("📦 Final Payload to UploadStock:", requestBody);
+    console.log("📦 Final Payload to UploadPerforma:", requestBody);
 
     $.ajax({
-        url: "/api/InventoryUpload/UploadStock",
+        url: "/api/InventoryUpload/UploadPerforma",
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(requestBody),
@@ -356,8 +356,8 @@ function uploadToPerformaInvoice() {
 			onUploadButtonClick();
         },
         error: function (xhr) {
-            console.error("UploadStock error:", xhr);
-            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+            console.error("UploadPerforma error:", xhr);
+            DevExpress.ui.notify("Failed to Upload Performa.", "error", 3000);
         }
     });
 }
@@ -471,7 +471,7 @@ function uploadToPerformaInvoice() {
         DevExpress.ui.notify("Proforma No is required.", "error", 2000);
         return;
     }
-    window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(invoiceNo)}`;
+    window.location.href = `/${tenantName}/VAT/ProformaInvoiceEditForm?ProformaInvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=true`;
 }
 	function StockGroup(){
         const url = `/${tenantName}/IMS/StockDetails_StockGroup`;

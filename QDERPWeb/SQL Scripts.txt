@@ -3849,7 +3849,7 @@ IF NOT EXISTS (
 )
 ALTER TABLE Aicon.tbl20104EmployeeAllocationMaster
 ADD CurrencyRate DECIMAL(18, 4) NULL 
-    CONSTRAINT DF_tbl20104EmployeeAllocationMaster_Currency
+    CONSTRAINT DF_tbl20104EmployeeAllocationMaster_CurrencyRate DEFAULT 1.00;
 
     ALTER VIEW [Aicon].[qry201RptVoucherWithCost]
 AS
@@ -3859,3 +3859,8 @@ SELECT Aicon.tbl201CostAllocationMaster.CostAllocationID, Aicon.tbl201CostAlloca
 FROM     Aicon.tbl201CostAllocationMaster LEFT OUTER JOIN
                   Aicon.qry201MainVoucherEntriesWithMaster ON Aicon.tbl201CostAllocationMaster.VoucherEntryID = Aicon.qry201MainVoucherEntriesWithMaster.VoucherEntryNo LEFT OUTER JOIN
                   Aicon.tbl201CostAllocationUnits ON Aicon.tbl201CostAllocationMaster.CostAllocationUnitID = Aicon.tbl201CostAllocationUnits.CostAllocationUnitID
+    CONSTRAINT DF_tbl20104EmployeeAllocationMaster_CurrencyRate DEFAULT 1.00;
+
+UPDATE Aicon.tbl20104EmployeeAllocationMaster
+SET CurrencyRate = 1.00
+WHERE CurrencyRate IS NULL;

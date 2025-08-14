@@ -467,6 +467,7 @@
                     });
                 })
                 .OnRowRemoving("onexpenserowremoving")
+                .OnCellPrepared("onExpenseCellPrepared")
                 )
     </div>
     <div class="px-3">
@@ -2532,6 +2533,25 @@
                 );
             }
         }
+    }
+        function onExpenseCellPrepared(e) {
+
+                if (e.rowType === "data") {
+
+                    if (e.column.dataField === "ClaimedAmount") {
+
+                        e.cellElement.css({ "color": "red", "font-weight": "bold" });
+
+                    }
+
+                    if (e.column.dataField === "ApprovedAmount") {
+
+                        e.cellElement.css({ "color": "green", "font-weight": "bold" });
+
+                    }
+
+                }
+
         }
     // Attachment Count
     //1. Button Modify in btn-attach
@@ -2592,5 +2612,6 @@
 
         // No need to return anything if you don't want to
     }
+
 
 </script>
