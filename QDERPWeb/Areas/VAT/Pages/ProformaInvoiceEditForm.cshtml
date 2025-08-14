@@ -3243,7 +3243,14 @@
 							 $("#currencyexchangerate3").dxNumberBox("instance").option("value", account.AdvanceAmount);
 							 $("#currencyexchangerate5").dxNumberBox("instance").option("value", account.RetentionAmount);
 
-
+							 $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+	                         $("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+	                         $("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+	                         
+	                         $("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+	                         $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+	                         $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+	                         
 											if(account.IsVerified==true)
 											{
 												btnVerifydisableEditing();
@@ -7606,6 +7613,11 @@
 
 
 			$("#btnVerify").on("click", function (e) {
+		var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+	if(clientnameValidation.isValid)
+		{
 				const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 				IsDirect = false;
 				// Ensure dataGrid exists
@@ -7641,6 +7653,7 @@
 							proceedWithVerification(); // Proceed if user clicks Yes
 						}
 					});
+				}
 				}
 			});
 
@@ -7705,6 +7718,11 @@
 
 
 			$("#btnApprove").on("click", function (e) {
+		var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+	if(clientnameValidation.isValid)
+		{
 				const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 				// Ensure dataGrid exists
@@ -7738,6 +7756,7 @@
 							proceedWithApproval(); // Proceed if user clicks Yes
 						}
 					});
+				}
 				}
 			});
 
@@ -7801,6 +7820,11 @@
 
 
 			$("#btnPostToLedgers").on("click", function (e) {
+		var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+	if(clientnameValidation.isValid)
+		{
 				const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 				// Ensure dataGrid exists
@@ -7834,6 +7858,7 @@
 							proceedWithPost(); // Proceed if user clicks Yes
 						}
 					});
+				}
 				}
 			});
 
