@@ -263,13 +263,13 @@
 					.Option("color", "#FBBC05");
 				i.Add().Text("Upload Items to Performa Invoice")
 				  .Icon("tags")
-				  .OnClick("uploadToPerformaInvoice")
+				  @* .OnClick("uploadToPerformaInvoice") *@
 				  .Disabled(true)
 				  .Option("color", "#4285F4");
 				i.Add().Text("Upload Items to VAT Purchase Voucher")
 				  .Icon("money")
 				  
-				  @* .OnClick("uploadToVatPurchaseVoucher") *@
+				  .OnClick("uploadToVatPurchaseVoucher")
 				  .Option("color", "#FF7043");
 			})
 			.ItemTemplate(@<text>
@@ -332,7 +332,7 @@ function preparePayload(items) {
     }));
 }
 
-function uploadToPerformaInvoice() {
+function uploadToVatPurchaseVoucher() {
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
     const items = dataSource?.items() ?? [];
@@ -346,20 +346,20 @@ function uploadToPerformaInvoice() {
         GSGroupID: selectedGSGroupId
     };
 
-    console.log("📦 Final Payload to UploadStock:", requestBody);
+    console.log("📦 Final Payload to UploadPurchase:", requestBody);
 
     $.ajax({
-        url: "/api/InventoryUpload/UploadStock",
+        url: "/api/InventoryUpload/UploadPurchase",
         method: "POST",
         contentType: "application/json",
         data: JSON.stringify(requestBody),
         success: function (result) {
-            DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
+            DevExpress.ui.notify("Purchase uploaded successfully.", "success", 3000);
 			onUploadButtonClick();
         },
         error: function (xhr) {
-            console.error("UploadStock error:", xhr);
-            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+            console.error("UploadPurchase error:", xhr);
+            DevExpress.ui.notify("Failed to upload Purchase.", "error", 3000);
         }
     });
 }
@@ -473,7 +473,7 @@ function uploadToPerformaInvoice() {
         DevExpress.ui.notify("Proforma No is required.", "error", 2000);
         return;
     }
-    window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(invoiceNo)}`;
+    window.location.href = `/${tenantName}/VAT/VATPurchaseEdit?InvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=true`;
 }
 	function StockGroup(){
         const url = `/${tenantName}/IMS/StockDetails_StockGroup`;

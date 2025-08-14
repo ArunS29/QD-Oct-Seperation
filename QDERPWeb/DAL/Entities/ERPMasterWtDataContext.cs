@@ -3426,6 +3426,8 @@ public partial class ERPMasterWtDataContext : DbContext
     public DbSet<Qry01SupplierOutstanding> Qry01SupplierOutstanding { get; set; }
     public DbSet<ZeroToWonDto> ZeroToWonDtos { get; set; }
     public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
+    public DbSet<PODiscountDistributionDto> PODiscountDistributionDtos { get; set; }
+   // public DbSet<CreateQuotationRequest> CreateQuotationRequests { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -3452,6 +3454,8 @@ public partial class ERPMasterWtDataContext : DbContext
 		modelBuilder.Entity<QuotationViewModel>().HasNoKey();
         modelBuilder.Entity<MaterialReceiptViewModel>().HasNoKey();
         modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
+        modelBuilder.Entity<PODiscountDistributionDto>().HasNoKey();
+       // modelBuilder.Entity<CreateQuotationRequest>().HasNoKey();
         modelBuilder.Entity<UpdateIsWonDto>().HasNoKey();
         modelBuilder.Entity<TotalDepreciationResult>().HasNoKey();
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");

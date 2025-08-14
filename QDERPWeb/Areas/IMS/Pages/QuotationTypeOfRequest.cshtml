@@ -103,6 +103,12 @@
         <div id="QuotationTypeofRequest" class="no-border-input"></div>
     </div>
 </div> *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Quotation Type of Request</h3>
+</div>
     <div class="form-row" style="padding:10px;">
         <div class="col-md-6">
         @(Html.DevExtreme().TextBox()
@@ -270,52 +276,96 @@
     
     //img
     let businessCard1Base64 = "";
-    function addSignatoryToGrid() {
-       var TypeOfRequestvalidator = $("#txtTypeOfRequest").dxValidator("instance");
+       function addSignatoryToGrid() {
+        var typeValidator = $("#txtTypeOfRequest").dxValidator("instance");
+        var termsValidator = $("#txtTermsCategory").dxValidator("instance");
 
+        var typeValidation = typeValidator ? typeValidator.validate() : { isValid: true };
+        var termsValidation = termsValidator ? termsValidator.validate() : { isValid: true };
 
-    var TypeOfRequestvalidation = TypeOfRequestvalidator.validate();
+        if (typeValidation.isValid && termsValidation.isValid) {
+            const data = {
+                TypeOfRequest: $("#txtTypeOfRequest").dxTextBox("instance").option("value"),
+                TermsCategory: $("#txtTermsCategory").dxTextBox("instance").option("value")
+            };
 
-
-    // If the branch name is valid, proceed with the AJAX request
-    if (TypeOfRequestvalidation.isValid) {
-
-        const data = {
-            TypeOfRequest: $("#txtTypeOfRequest").dxTextBox("instance").option("value"),
-            TermsCategory: $("#txtTermsCategory").dxTextBox("instance").option("value")
-
-
-        };
-
-        $.ajax({
+            $.ajax({
                 url: '/api/QuotationTypeOfRequest/SaveOrUpdateSignatory',
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function () {
-                DevExpress.ui.notify("Quotation Type Of Request saved successfully!", "success", 2000);
-                $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
-                 // ✅ Clear the TextBoxes
-            $("#txtTypeOfRequest").dxTextBox("instance").option("value", "");
-            $("#txtTermsCategory").dxTextBox("instance").option("value", "");
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function () {
+                    DevExpress.ui.notify("Quotation Type Of Request saved successfully!", "success", 2000);
+                    $("#TypeOfRequestGrid").dxDataGrid("instance").refresh();
 
-          setTimeout(() => {
-        if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
-            window.parent.refreshTypeOfRequestDropDown();
-        }
-    }, 300);
+                    // ✅ Reset both fields & validation
+                    resetTypeOfRequestFields();
 
-
-            },
-            error: function () {
-                DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
-            }
-        });
-          } else {
-            // If validation fails, show a notification
+                    // Refresh parent dropdown
+                    setTimeout(() => {
+                        if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+                            window.parent.refreshTypeOfRequestDropDown();
+                        }
+                    }, 300);
+                },
+                error: function () {
+                    DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+                }
+            });
+        } else {
             DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
         }
     }
+
+    // ✅ Reset function (removes value, red border, and floating label)
+    function resetTypeOfRequestFields() {
+        var typeBox = $("#txtTypeOfRequest").dxTextBox("instance");
+        var typeValidator = $("#txtTypeOfRequest").dxValidator("instance");
+        var termsBox = $("#txtTermsCategory").dxTextBox("instance");
+        var termsValidator = $("#txtTermsCategory").dxValidator("instance");
+
+        typeBox.option("value", "");
+        termsBox.option("value", "");
+
+        if (typeValidator) typeValidator.reset();
+        if (termsValidator) termsValidator.reset();
+
+        $("#txtTypeOfRequest").removeClass("dx-invalid");
+        $("#txtTermsCategory").removeClass("dx-invalid");
+
+        $("#txtTypeOfRequest input").blur();
+        $("#txtTermsCategory input").blur();
+    }
+
+    // ✅ Common delete confirmation (DevExtreme style)
+    function onDeleteButtonClick(e) {
+        e.event.preventDefault();
+        var grid = $("#TypeOfRequestGrid").dxDataGrid("instance");
+        var key = e.row.data.TypeOfRequestId;
+
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete this record?", "Confirm Delete")
+            .done(function (dialogResult) {
+                if (dialogResult) {
+                    $.ajax({
+                        url: '/api/QuotationTypeOfRequest/Delete?key=' + key,
+                        type: 'DELETE',
+                        success: function () {
+                            grid.refresh();
+                            DevExpress.ui.notify("Deleted successfully", "success", 2000);
+                            setTimeout(() => {
+                                if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+                                    window.parent.refreshTypeOfRequestDropDown();
+                                }
+                            }, 300);
+                        },
+                        error: function () {
+                            DevExpress.ui.notify("Delete failed", "error", 2000);
+                        }
+                    });
+                }
+            });
+    }
+
 
 
     $("#btnUpdate").on("click", function () {
@@ -353,33 +403,33 @@
         });
     }
 
-    function onDeleteButtonClick(e) {
-        e.event.preventDefault(); // prevent default delete
+    // function onDeleteButtonClick(e) {
+    //     e.event.preventDefault(); prevent default delete
 
-        var grid = $("#TypeOfRequestGrid").dxDataGrid("instance");
-        var key = e.row.data.TypeOfRequestId; // get the ID of the row
+    //     var grid = $("#TypeOfRequestGrid").dxDataGrid("instance");
+    //     var key = e.row.data.TypeOfRequestId; get the ID of the row
 
-        if (confirm("Are you sure you want to delete this row?")) {
-            $.ajax({
-                url: '/api/QuotationTypeOfRequest/Delete?key=' + key,
-                type: 'DELETE',
-                success: function () {
-                    // Refresh the grid after delete
-                    grid.refresh();
-                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                    //Refresh parent dropdown  
-                    setTimeout(() => {
-        if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
-            window.parent.refreshTypeOfRequestDropDown();
-        }
-    }, 300);
-                },
-                error: function () {
-                    DevExpress.ui.notify("Delete failed", "error", 2000);
-                }
-            });
-        }
-    }
+    //     if (confirm("Are you sure you want to delete this row?")) {
+    //         $.ajax({
+    //             url: '/api/QuotationTypeOfRequest/Delete?key=' + key,
+    //             type: 'DELETE',
+    //             success: function () {
+    //                 Refresh the grid after delete
+    //                 grid.refresh();
+    //                 DevExpress.ui.notify("Deleted successfully", "success", 2000);
+    //                 Refresh parent dropdown  
+    //                 setTimeout(() => {
+    //     if (window.parent && typeof window.parent.refreshTypeOfRequestDropDown === "function") {
+    //         window.parent.refreshTypeOfRequestDropDown();
+    //     }
+    // }, 300);
+    //             },
+    //             error: function () {
+    //                 DevExpress.ui.notify("Delete failed", "error", 2000);
+    //             }
+    //         });
+    //     }
+    // }
     
 
 

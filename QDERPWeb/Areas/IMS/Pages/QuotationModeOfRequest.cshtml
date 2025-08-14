@@ -103,6 +103,12 @@
         <div id="QuotationModeofRequest" class="no-border-input"></div>
     </div>
 </div> *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Quotation Mode of Request</h3>
+</div>
 <div class="signatory-form-container">
     <div class="form-row">
         <div class="col-md-6">
@@ -263,53 +269,63 @@
             }
         }
 
-        
-       
-        function addSignatoryToGrid() {
-                  var ModeOfRequestvalidator = $("#txtModeOfRequest").dxValidator("instance");
+               function addSignatoryToGrid() {
+        var ModeOfRequestvalidator = $("#txtModeOfRequest").dxValidator("instance");
+        var ModeOfRequestvalidation = ModeOfRequestvalidator.validate();
 
-
-    var ModeOfRequestvalidation = ModeOfRequestvalidator.validate();
-
-
-    // If the branch name is valid, proceed with the AJAX request
-    if (ModeOfRequestvalidation.isValid) {
-
+        if (ModeOfRequestvalidation.isValid) {
             const data = {
-            ModeOfRequest: $("#txtModeOfRequest").dxTextBox("instance").option("value"),
-          
-
-
+                ModeOfRequest: $("#txtModeOfRequest").dxTextBox("instance").option("value"),
             };
 
             $.ajax({
-            url: '/api/QuotationModeOfRequestf/SaveOrUpdateMode',
+                url: '/api/QuotationModeOfRequestf/SaveOrUpdateMode',
                 method: "POST",
                 contentType: "application/json",
                 data: JSON.stringify(data),
                 success: function () {
-                DevExpress.ui.notify("Quotation Mode Of Request saved successfully!", "success", 2000);
+                    DevExpress.ui.notify("Quotation Mode Of Request saved successfully!", "success", 2000);
                     $("#SignatoryGrid").dxDataGrid("instance").refresh();
-                      $("#txtModeOfRequest").dxTextBox("instance").option("value", "");
-                     
-          //Reload  P.dd
-          setTimeout(() => {
-        if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
-            window.parent.refreshModeOfRequestDropDown();
-        }
-    }, 300);
 
+                    // ✅ Clear and reset field (including validation border)
+                    resetModeOfRequestField();
+
+                    // Reload parent dropdown
+                    setTimeout(() => {
+                        if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
+                            window.parent.refreshModeOfRequestDropDown();
+                        }
+                    }, 300);
                 },
                 error: function () {
                     DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
                 }
             });
-             } else {
-            // If validation fails, show a notification
+        } else {
             DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
         }
+    }
+
+    function resetModeOfRequestField() {
+        var txtInstance = $("#txtModeOfRequest").dxTextBox("instance");
+        var validatorInstance = $("#txtModeOfRequest").dxValidator("instance");
+
+        // Clear value
+        txtInstance.option("value", "");
+
+        // Reset validation
+        if (validatorInstance) {
+            validatorInstance.reset();
         }
 
+        // Remove red border instantly
+        $("#txtModeOfRequest").removeClass("dx-invalid");
+
+        // Force label to move back
+        $("#txtModeOfRequest input").blur();
+    }
+
+          
 
         $("#btnUpdate").on("click", function () {
             const grid = $("#SignatoryGrid").dxDataGrid("instance");

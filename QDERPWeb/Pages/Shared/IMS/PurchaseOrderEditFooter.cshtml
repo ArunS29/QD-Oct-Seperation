@@ -1278,29 +1278,64 @@
           "Preview Purchase Order(Foreign Currency)":"PreviewPurchaseOrderForeignCurrency"
     };
 
-    function handlePurchase(e) {
+    // function handlePurchase(e) {
+    //     const itemText = e.itemData?.text;
+    //     const tenantName = window.tenantName || "";
+    //     const purchaseNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
+
+    //     if (!purchaseNo) {
+    //         alert("purchaseNo number is required.");
+    //         return;
+    //     }
+
+    //     const reportName = PurchaseMap[itemText];
+
+    //     if (!reportName) {
+    //         alert("Invalid report format selected.");
+    //         return;
+    //     }
+
+
+    // const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
+
+
+    //     window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    // }
+        function handlePurchase(e) {
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";
         const purchaseNo = $("#PurchaseOrderNo").dxTextBox("instance").option("value");
 
         if (!purchaseNo) {
-            alert("purchaseNo number is required.");
+            DevExpress.ui.notify("Purchase order number is required.", "error", 3000);
             return;
         }
 
-        const reportName = PurchaseMap[itemText];
+        try {
+            // Special case for "Distribute Discount Amount"
+            if (itemText === "Distribute Discount Amount") {
+                const url = `/${tenantName}/IMS/PODiscountDistribution?purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
+                window.location.href = url;
+                return;
+            }
 
-        if (!reportName) {
-            alert("Invalid report format selected.");
-            return;
+            // Normal report handling
+            const reportName = PurchaseMap[itemText];
+
+            if (!reportName) {
+                DevExpress.ui.notify("Invalid report format selected.", "error", 3000);
+                return;
+            }
+
+            const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+
+        } catch (error) {
+            console.error("Failed to open purchase report:", error);
+            DevExpress.ui.notify("An error occurred while trying to open the report.", "error", 3000);
         }
-
-
-    const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&purchaseOrderNo=${encodeURIComponent(purchaseNo)}`;
-
-
-        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
+
 
     function onIMSAttachmentButtonClick(e) {
         // Get Voucher No safely

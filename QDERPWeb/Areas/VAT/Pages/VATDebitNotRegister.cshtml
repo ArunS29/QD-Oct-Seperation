@@ -700,7 +700,7 @@
 						   		</div>
 						   	</text>);
 
-				subColumns.AddFor(m => m.TotalRcmpurchase10Perc)
+			subColumns.AddFor(m => m.TotalRcmpurchase10Perc)
 			.Caption("RCM 10% Purchase")
 			.Alignment(HorizontalAlignment.Center)
 			.EncodeHtml(false)
@@ -876,7 +876,7 @@
 						   		</div>
 						   	</text>);
 
-				subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
+			subColumns.AddFor(m => m.TotalImportPurchaseTax10Perc)
 			.Caption("Imports @10% VAT")
 			.Alignment(HorizontalAlignment.Center)
 			.EncodeHtml(false)
@@ -894,7 +894,7 @@
 						   		</div>
 						   	</text>);
 
-				subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
+			subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
 			.Caption("Imports @15% VAT")
 			.Alignment(HorizontalAlignment.Center)
 			.EncodeHtml(false)
@@ -930,7 +930,7 @@
 						   		</div>
 						   	</text>);
 
-				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
+			subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
 			.Caption("RCM @10% VAT")
 			.Alignment(HorizontalAlignment.Center)
 			.EncodeHtml(false)
@@ -948,7 +948,7 @@
 						   		</div>
 						   	</text>);
 
-			subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
+			subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("RCM @15% VAT")
 			.Alignment(HorizontalAlignment.Center)
 			.EncodeHtml(false)
@@ -1156,39 +1156,47 @@
 
 			slides1[currentSlideIndex1].classList.add('active');
 		}, 2000);
-		
+			function updateVerifiedCount(data) {
+				const verifiedOnly = data.filter(item => item.DebitNoteStatus === "Verified");
+			document.getElementById("verifiedCount1").textContent = verifiedOnly.length;
+		}
+			function updateApprovedCount(data) {
+				const approvedOnly = data.filter(item => item.DebitNoteStatus === "Approved");
+			document.getElementById("approvedCount1").textContent = approvedOnly.length;
+		}
+
+			function updatePostedCount(data) {
+				const postedOnly = data.filter(item => item.DebitNoteStatus === "Posted");
+			document.getElementById("postedCount1").textContent = postedOnly.length;
+		}
+
 
 		function onGridContentReady(e) {
-			
-			const totalCount = e.component.totalCount();
-			//animateInvoiceCount(totalCount);
-				  injectHeaderSVG();
-		}
-	function onGridContentReady(e) {
-		
-			const dataSource = e.component.option("dataSource");
-				const totalCount = e.component.totalCount();
-			if (dataSource && dataSource.length > 0) {
-				// Example logic: you can use your own property names here
-				const todayCount = dataSource.filter(x => isToday(x.Date)).length;
-				const totalCount = dataSource.length;
-					
+		// Get processed data from the grid (after filters, paging, etc.)
 		const data = e.component.getDataSource().items();
-		updateDebitNoteTotal(data);
-		  injectHeaderSVG();
+		const totalCount = data.length;
 
-				// Update counts in the card
-				//document.getElementById('creditToday').textContent = todayCount;
-				//document.getElementById('creditTotal').textContent = totalCount;
-					  updateDebitNoteTotal(dataSource);
-						
-				// Start sliding animation once (if not already started)
-				if (!window._voucherSliderStarted) {
-					startVoucherSlide();
-					window._voucherSliderStarted = true;
-				}
+		// Update header SVG and counts
+		injectHeaderSVG();
+		updateVerifiedCount(data);
+		updatePostedCount(data);
+		updateApprovedCount(data);
+
+		if (totalCount > 0) {
+			const todayCount = data.filter(x => isToday(x.Date)).length;
+			document.getElementById('creditTodays').textContent = todayCount;
+			document.getElementById('creditTotals').textContent = totalCount;
+
+			updateDebitNoteTotal(data);
+
+			// Start sliding animation once
+			if (!window._voucherSliderStarted) {
+				startVoucherSlide();
+				window._voucherSliderStarted = true;
 			}
 		}
+	}
+
 					function updateDebitNoteTotal(data) {
 		let totalDebit = 0;
 
@@ -1225,14 +1233,20 @@
 				slides[currentSlide].classList.add('active');
 			}, 2000);
 		}
+	function getTodayCount(e) {
+		const dataSource = e.component.option("dataSource");
+		if (!dataSource || !dataSource.length) return 0;
 
-		function isToday(dateStr) {
-			const today = new Date();
-			const d = new Date(dateStr);
-			return d.getDate() === today.getDate() &&
-				   d.getMonth() === today.getMonth() &&
-				   d.getFullYear() === today.getFullYear();
-		}
+		return dataSource.filter(item => isToday(item.Date)).length;
+	}
+
+	function isToday(dateValue) {
+		const today = new Date();
+		const date = new Date(dateValue);
+		return date.getFullYear() === today.getFullYear() &&
+			   date.getMonth() === today.getMonth() &&
+			   date.getDate() === today.getDate();
+	}
 
 
 				function DebitStatusCellTemplate(cellElement, cellInfo) {

@@ -6,8 +6,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="utf-8" />
-    <title>Goods and Services</title>
+    @* <meta charset="utf-8" />
+    <title>Goods and Services</title> *@
     <style>
         .dx-datagrid-column-chooser-button {
             display: none !important;
@@ -29,7 +29,7 @@
             display: flex;
             flex-direction: column;
             gap: 5px;
-            margin-left:10px;
+          margin: 10px;
         }
 
         .field-label {
@@ -95,13 +95,18 @@
    
 </head>
 <body>
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <h3 class="card-title-text">Unit of Measure</h3>
+    </div>
 
-
-    <div class="title">
+    @* <div class="title">
         <div class="header-container">
             <div id="UnitofMeasure" class="no-border-input"></div>
         </div>
-    </div>
+    </div> *@
         <!-- Row 1: Type a New UOM & Add to the Existing List: -->
             <div class="dx-field">
                 <table>
@@ -111,17 +116,17 @@
                             @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Type a New UOM & Add to the Existing List:')"))
                                 .LabelMode(EditorLabelMode.Floating)
-                            .ID("txtGoodsCode7").Width("69%"))
+                            .ID("txtGoodsCode7").Width("100%"))
                         </td>
                    
                         <td>
                             @(Html.DevExtreme().TextArea()
                                 .Label(new JS("formatMessage('UoM Description:')"))
                                 .LabelMode(EditorLabelMode.Floating)
-                            .ID("txtDescription8").Width("95%").Height(60))
+                            .ID("txtDescription8").Width("100%").Height(60))
                         </td>
                 <td>
-                    <div style="display: flex; align-items: center; gap: 10px; width: 100%;">
+                    <div style="display: flex; align-items: flex-end; gap: 10px; width: 100%;">
                         <!-- Language Button -->
                         <div>
                             @(Html.DevExtreme().Button()
@@ -338,7 +343,7 @@
         };
 
         return $.ajax({
-            url: '/api/VATModule/AddUom',
+            url: '/api/VATModule/UpdateUom',
             method: "POST",
             data: data, // No need to stringify if not using JSON
             success: function (response) {

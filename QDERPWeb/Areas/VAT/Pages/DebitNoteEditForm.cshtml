@@ -2131,6 +2131,14 @@
 							dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId] });
 							dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode] });
 
+                            $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+                            $("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+                            $("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+                            
+                            $("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+                            $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+                            $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+
 							                if(account.IsVerified==true)
 											{
 												btnVerifydisableEditing();
@@ -5123,7 +5131,7 @@
 			e.editorOptions.onValueChanged = function (args) {
 				let grid = $("#B2BdataGrid").dxDataGrid("instance");
 				let rowIndex = e.row.rowIndex;
-
+				debugger;
 				
 				// Get the updated value from the input field
 				let newValue = args.value;
@@ -5135,10 +5143,10 @@
 				 let unitPrice = e.dataField === "UnitRate" ? newValue : grid.cellValue(rowIndex, "UnitRate") || 0;
 				 console.log("unitPrice",unitPrice)
 				// let vatRate = (e.dataField === "VAT%" ? newValue : grid.cellValue(rowIndex, "VAT%")) || 0;
-				let vatval=grid.cellValue(rowIndex, "VAT%");
+				let vatval=grid.cellValue(rowIndex, "VATPercentage");
 				 console.log("VATVal",vatval)
 
-				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VAT%") || "0%";
+				let vatRateStr = e.dataField === "VATPercentage" ? newValue : grid.cellValue(rowIndex, "VATPercentage") || "0%";
 				console.log("vatRateStr",vatRateStr)
 
 				let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100; // Convert "15%" → 15 → 0.15
@@ -5590,6 +5598,11 @@ button.option("disabled", false);
 
 
 	$("#btnVerify").on("click", function (e) {
+			var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
+	var clientnameValidation = clientnameValidator.validate();
+
+if(clientnameValidation.isValid)
+	{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 			IsDirect = false;
 			// Ensure dataGrid exists
@@ -5625,6 +5638,7 @@ button.option("disabled", false);
 						proceedWithVerification(); // Proceed if user clicks Yes
 					}
 				});
+			}
 			}
 		});
 
@@ -5688,6 +5702,11 @@ button.option("disabled", false);
 
 
 		$("#btnApprove").on("click", function (e) {
+						var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
+	var clientnameValidation = clientnameValidator.validate();
+
+if(clientnameValidation.isValid)
+	{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 			// Ensure dataGrid exists
@@ -5721,6 +5740,7 @@ button.option("disabled", false);
 						proceedWithApproval(); // Proceed if user clicks Yes
 					}
 				});
+			}
 			}
 		});
 
@@ -5782,6 +5802,11 @@ button.option("disabled", false);
 
 
 		$("#btnPostToLedgers").on("click", function (e) {
+	var clientnameValidator = $("#VATSupplierName").dxValidator("instance");
+	var clientnameValidation = clientnameValidator.validate();
+
+    if(clientnameValidation.isValid)
+	{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 				var PostToLedgerValidator = $("#ddPurchaseAccount").dxValidator("instance");
 				var PostToLedgerValidation = PostToLedgerValidator.validate();
@@ -5828,6 +5853,7 @@ button.option("disabled", false);
 							buttons: [{ text: "Ok", onClick: () => false }],
 							showTitle: true
 						}).show();
+				}
 				}
 		});
 

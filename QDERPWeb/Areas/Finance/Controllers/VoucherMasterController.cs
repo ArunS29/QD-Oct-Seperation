@@ -1434,23 +1434,32 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 try
                 {
+                    var userName = HttpContext.Session.GetString("UserName");
+                    var now = DateTime.Now;
+
                     var existingVoucher = await dbContext.Tbl20113ChequeMasters
-                                                        .FirstOrDefaultAsync(v => v.ChequeNo == CM.ChequeNo);
+                                                         .FirstOrDefaultAsync(v => v.ChequeNo == CM.ChequeNo);
 
                     if (existingVoucher != null)
                     {
-
                         // Update existing record
                         dbContext.Entry(existingVoucher).CurrentValues.SetValues(CM);
+
+                        existingVoucher.ModifiedBy = userName;
+                        existingVoucher.ModifiedOn = now;
+
                         await dbContext.SaveChangesAsync();
-                        return Ok(new { success = true, message = "Cheque Information Updated sucessfully!" });
+                        return Ok(new { success = true, message = "Cheque Information Updated successfully!" });
                     }
                     else
                     {
                         // Insert new record
+                        CM.AddedBy = userName;
+                        CM.AddedOn = now;
+
                         dbContext.Tbl20113ChequeMasters.Add(CM);
                         await dbContext.SaveChangesAsync();
-                        return Ok(new { success = true, message = "Cheque Information Saved sucessfully!" });
+                        return Ok(new { success = true, message = "Cheque Information Saved successfully!" });
                     }
                 }
                 catch (Exception ex)
@@ -1460,6 +1469,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
 
 
         [HttpGet]
@@ -3288,7 +3298,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 UnitRate = child.UnitRate, // Ensure null safety
                                 DetailedDescription = child.DetailedDescription, // Null safety
                                 QuantityDebited = child.QuantityDebited, // Null safety
-                                TaxSlabCode = child.TaxSlabCode ?? (byte)2,
+                                TaxSlabCode = child.TaxSlabCode ?? (byte)8,
                                 UnitsToDebited = 1,
                                 Discount = child.Discount,
                                 UnitRateInOc = child.UnitRate,
@@ -3619,6 +3629,47 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetChequeDetailsByVoucherNo(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var cheque = await dbContext.Tbl20113ChequeMasters
+                    .FirstOrDefaultAsync(c => c.VoucherNo == voucherNo);
+
+                if (cheque != null)
+                    return Ok(cheque);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+        [HttpPost]
+        public IActionResult DeleteVoucherIfExists(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var voucher = dbContext.Tbl201VoucherMasters.FirstOrDefault(v => v.VoucherNo == voucherNo);
+                if (voucher != null)
+                {
+                    dbContext.Tbl201VoucherMasters.Remove(voucher);
+                    dbContext.SaveChanges();
+                    return Json(new { success = true });
+                }
+                return Json(new { success = false });
+            }
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+        [HttpGet]
+        public IActionResult CheckVoucherExists(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                bool exists = dbContext.Tbl201VoucherMasters.Any(v => v.VoucherNo == voucherNo);
+                return Json(exists);
+            }
+            return Unauthorized();
+        }
 
     }
 

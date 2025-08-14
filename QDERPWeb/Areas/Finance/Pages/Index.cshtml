@@ -8,239 +8,235 @@
 <link rel="stylesheet" href="/css/dashboard.css?v=1" />
 
 <div class="dashboard-scroll-container">
-<!-- Modern Dashboard Header -->
-<div class="dashboard-header">
-    <span class="user-name">Hey Saju Joy</span> - <span class="subtext">here’s what’s happening today</span>
-    <label class="live-data-checkbox"><input type="checkbox" id="getLiveData"> Get live data</label>
-</div>
+    <!-- Modern Dashboard Header -->
+    <div class="dashboard-header">
+        <span class="user-name">Hey @Model.UserName</span> - <span class="subtext">here’s what’s happening till this date</span>
+        <label class="live-data-checkbox">
+            <input type="checkbox" id="getLiveData"> Get live data
+        </label>
+    </div>
 
-<!-- Summary Cards Row -->
-<div class="summary-cards-row">
-    <div class="summary-card">
-        <div class="summary-card-header">
-            <span class="summary-label">TOTAL CLIENT OUTSTANDING</span>
-            <span class="summary-trend-pill up" id="clientOutstandingTrend">+ 36% <span class="trend-arrow">&#8593;</span></span>
+    <!-- Summary Cards Row -->
+    <div class="summary-cards-row">
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">TOTAL CLIENT OUTSTANDING</span>
+                <span id="clientOutstandingTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="totalClientOutstandingValue">0</div>
+            <span id="loaderClientOutstanding" style="display:none;">Loading...</span>
         </div>
-        <div class="summary-value" id="totalClientOutstandingValue"></div>
-        <span id="loaderClientOutstanding" style="display:none;">Loading...</span>
-    </div>
-    <div class="summary-card">
-        <div class="summary-card-header">
-            <span class="summary-label">TOTAL SUPPLIER OUTSTANDING</span>
-            <span class="summary-trend-pill down" id="supplierOutstandingTrend">- 14% <span class="trend-arrow">&#8595;</span></span>
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">TOTAL SUPPLIER OUTSTANDING</span>
+                <span id="supplierOutstandingTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="totalSupplierOutstandingValue">0</div>
+            <span id="loaderBillsOutstanding" style="display:none;">Loading...</span>
         </div>
-        <div class="summary-value" id="totalSupplierOutstandingValue"></div>
-        <span id="loaderBillsOutstanding" style="display:none;">Loading...</span>
-    </div>
-    <div class="summary-card">
-        <div class="summary-card-header">
-            <span class="summary-label">TOTAL BANK BALANCE</span>
-            <span class="summary-trend-pill up" id="bankBalanceTrend">+ 36% <span class="trend-arrow">&#8593;</span></span>
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">TOTAL BANK BALANCE</span>
+                <span id="bankBalanceTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="totalBankBalanceValue">0</div>
+            <span id="loaderBankBalance" style="display:none;">Loading...</span>
         </div>
-        <div class="summary-value" id="totalBankBalanceValue"></div>
-        <span id="loaderBankBalance" style="display:none;">Loading...</span>
-    </div>
-    <div class="summary-card">
-        <div class="summary-card-header">
-            <span class="summary-label">TOTAL CASH BALANCE</span>
-            <span class="summary-trend-pill up" id="cashBalanceTrend">+ 36% <span class="trend-arrow">&#8593;</span></span>
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">CASH BALANCE</span>
+                <span id="cashBalanceTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="cashBalanceValue">0</div>
+            <span id="loaderCashBalance" style="display:none;">Loading...</span>
         </div>
-        <div class="summary-value" id="cashBalanceValue"></div>
-        <span id="loaderCashBalance" style="display:none;">Loading...</span>
     </div>
-</div>
 
-<!-- Outstanding Summary Section -->
-<div class="outstanding-summary-section">
-    <div class="outstanding-summary-left">
-        <div class="section-header">
-            <span class="section-title">Top 5 Outstanding Summary</span>
-            <a href="#" class="see-all">See All Transactions &gt;</a>
+    <!-- Outstanding Summary Section -->
+    <div class="outstanding-summary-section">
+        <div class="outstanding-summary-left">
+            <div class="section-header">
+                <span class="section-title">Top 5 Outstanding Summary</span>
+            </div>
+            <div class="tabs">
+                <div class="tab dashboard-tab active" id="tabClientOutstanding">Client Outstanding</div>
+                <div class="tab dashboard-tab" id="tabSupplierOutstanding">Supplier Outstanding</div>
+                <div class="tab dashboard-tab" id="tabCashBalance">Net Amount Summary</div>
+            </div>
+            <div class="tab-content active" id="tab-client">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Account Head</th>
+                            <th>Balance Amount</th>
+                            <th>Over Due Days</th>
+                            <th>Account Group</th>
+                            <th>Account Head No</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topOutstandingTableBody">
+                        <!-- Data will be loaded here by JS -->
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <div class="tabs">
-            <div class="tab dashboard-tab active" id="tabClientOutstanding">Client Outstanding <span class="tab-badge">5</span></div>
-            <div class="tab dashboard-tab" id="tabSupplierOutstanding">Supplier Outstanding</div>
-            <div class="tab dashboard-tab" id="tabBankBalance">Bank Balance</div>
-            <div class="tab dashboard-tab" id="tabCashBalance">Cash Balance</div>
-        </div>
-        <div class="tab-content active" id="tab-client">
-            <table class="summary-table">
-                <thead>
-                    <tr>
-                        <th>Account Head</th>
-                        <th>Balance Amount</th>
-                        <th>Over Due Days</th>
-                        <th>Account Group</th>
-                        <th>Account Head No</th>
-                    </tr>
-                </thead>
-                <tbody id="topOutstandingTableBody">
-                    <!-- Data will be loaded here by JS -->
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div class="outstanding-summary-right">
-        <div class="section-header">
-            <span class="section-title">Outstanding Summary</span>
-            <div class="dropdown">Last 7 Days <span class="dropdown-arrow">▼</span></div>
-        </div>
-        <canvas id="outstandingDonutChart" width="320" height="150"></canvas>
-        <div class="donut-legend">
-            <span class="legend-item cash">Cash Balance</span>
-            <span class="legend-item bank">Bank Balance</span>
-        </div>
-    </div>
-</div>
 
-<!-- Revenue/Expense Section -->
-<div class="revenue-expense-section">
-    <div class="revenue-expense-left">
-        <div class="revenue-expense-header">
-            <span class="section-title">Revenue Expense</span>
-            <div class="revenue-expense-tabs">
-                <button class="revenue-tab active">12 Months</button>
-                <button class="revenue-tab">6 Months</button>
-                <button class="revenue-tab">30 Days</button>
-                <button class="revenue-tab">7 Days</button>
+        <div class="outstanding-summary-right">
+            <div class="section-header">
+                <span class="section-title">Outstanding Summary</span>
             </div>
-            <div class="revenue-expense-dropdown">By Product <span class="dropdown-arrow">▼</span></div>
-        </div>
-        <canvas id="lineChart" ></canvas>
-    </div>
-    <div class="revenue-expense-right">
-        <div class="revenue-expense-header">
-            <span class="section-title">Expenses</span>
-            <div class="revenue-expense-dropdown">Last 7 Days <span class="dropdown-arrow">▼</span></div>
-        </div>
-        <div class="expenses-list">
-            <div class="expense-item">
-                <div class="expense-label">Operating Expenses</div>
-                <div class="expense-value">1,43,382</div>
-                <div class="expense-bar"><div class="expense-bar-inner" style="width: 70%; background: linear-gradient(90deg, #9172F5 60%, #FEC6E0 100%);"></div></div>
-            </div>
-            <div class="expense-item">
-                <div class="expense-label">COGS</div>
-                <div class="expense-value">1,43,382</div>
-                <div class="expense-bar"><div class="expense-bar-inner" style="width: 60%; background: #9172F5;"></div></div>
-            </div>
-            <div class="expense-item">
-                <div class="expense-label">Dept Spent</div>
-                <div class="expense-value">1,43,382</div>
-                <div class="expense-bar"><div class="expense-bar-inner" style="width: 50%; background: linear-gradient(90deg, #9172F5 40%, #FEC6E0 100%);"></div></div>
-            </div>
-            <div class="expense-item">
-                <div class="expense-label">Salary</div>
-                <div class="expense-value">1,43,382</div>
-                <div class="expense-bar"><div class="expense-bar-inner" style="width: 30%; background: #9172F5;"></div></div>
+            <canvas id="outstandingDonutChart" width="320" height="150"></canvas>
+            <div class="donut-legend">
+                <span class="legend-item cash">Cash IN Hand</span>
+                <span class="legend-item bank">Bank Balance</span>
             </div>
         </div>
     </div>
 </div>
 
-
+<!-- Global Loader Overlay -->
+<div id="globalLoader" aria-hidden="true" aria-busy="true">
+    <div class="gl-backdrop"></div>
+    <div class="gl-container">
+        <div class="gl-spinner"></div>
+        <div class="gl-text">Loading…</div>
+    </div>
 </div>
+
 <script>
+/* ===== Global Loader ===== */
+(function () {
+    const loader = document.getElementById('globalLoader');
+    let hideTimer = null, locks = 0;
+
+    function showLoader(forceImmediate = false) {
+        locks++;
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+        loader.classList.add('show');
+        document.body.classList.add('gl-lock');
+        if (forceImmediate) loader.offsetHeight;
+    }
+
+    function hideLoader() {
+        hideTimer = setTimeout(() => {
+            locks = Math.max(0, locks - 1);
+            if (locks === 0) {
+                loader.classList.remove('show');
+                document.body.classList.remove('gl-lock');
+            }
+        }, 150);
+    }
+
+    window.__globalLoader = { show: showLoader, hide: hideLoader };
+})();
+
+/* ===== Animate number changes ===== */
+function animateValue(id, start, end, duration) {
+    const obj = document.querySelector(id);
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.textContent = Math.floor(progress * (end - start) + start).toLocaleString('en-US');
+        if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+}
+
+/* ===== Live Data Refresh ===== */
+document.getElementById("getLiveData").addEventListener("change", function () {
+    if (this.checked) {
+        window.__globalLoader.show(true);
+        fetch("/api/dashboard/RunAllOutstandingProcedures", { method: "POST" })
+        .then(r => {
+            if (!r.ok) throw new Error("API failed");
+            return r.json();
+        })
+        .then(() => { alert("Live data refresh started!"); location.reload(); })
+        .catch(() => { alert("Failed to run live data process."); })
+        .finally(() => window.__globalLoader.hide());
+    }
+});
+
+/* ===== Dashboard Data Load ===== */
 $(document).ready(function () {
-    // 1. Summary Cards AJAX
     const apiEndpoints = [
-        { url: "/api/Dashboard/GetTotalClientOutstanding",   target: "#totalClientOutstandingValue",  loader: "#loaderClientOutstanding",  key: "balance" },
-        { url: "/api/Dashboard/supplieroutstanding",         target: "#totalSupplierOutstandingValue",loader: "#loaderBillsOutstanding",    key: "balance" },
-        { url: "/api/Dashboard/GetBankBalance",              target: "#totalBankBalanceValue",        loader: "#loaderBankBalance",         key: "balance" },
-        { url: "/api/Dashboard/GetCashBalance",              target: "#cashBalanceValue",             loader: "#loaderCashBalance",         key: "balance" }
+        { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
+        { url: "/api/Dashboard/supplieroutstanding",       target: "#totalSupplierOutstandingValue", loader: "#loaderBillsOutstanding",  key: "balance" },
+        { url: "/api/Dashboard/GetBankAccounts",           target: "#totalBankBalanceValue",        loader: "#loaderBankBalance",       key: "balance" },
+        { url: "/api/Dashboard/GetCashBalance",            target: "#cashBalanceValue",             loader: "#loaderCashBalance",       key: "balance" },
+        { url: "/api/Dashboard/GetCashBalance1",           target: null,                            loader: null,                       key: "balance" } // only for chart
     ];
-    function safeSetText(selector, value) { $(selector).text(value); }
-    apiEndpoints.forEach(endpoint => {
-        $(endpoint.loader).show();
-        $.getJSON(endpoint.url)
+
+    let cashVal = 0, bankVal = 0;
+
+    const requests = apiEndpoints.map(ep => {
+        if (ep.loader) $(ep.loader).show();
+        return $.getJSON(ep.url)
             .done(response => {
-                if (response && (response.success === undefined || response.success) && response[endpoint.key] != null) {
-                    safeSetText(endpoint.target, Number(response[endpoint.key]).toLocaleString('en-US'));
-                } else {
-                    safeSetText(endpoint.target, '0');
-                }
+                const raw = (response && (response.success === undefined || response.success) && response[ep.key] != null)
+                    ? Number(response[ep.key]) : 0;
+                if (ep.target) animateValue(ep.target, 0, raw, 900);
+
+                const urlLower = ep.url.toLowerCase();
+                if (urlLower.includes("getcashbalance1")) cashVal = raw;
+                if (urlLower.includes("getbankaccounts")) bankVal = raw;
             })
-            .fail(() => { safeSetText(endpoint.target, '0'); })
-            .always(() => $(endpoint.loader).hide());
+            .fail(() => { if (ep.target) $(ep.target).text('0'); })
+            .always(() => { if (ep.loader) $(ep.loader).hide(); });
     });
 
-    // Table Loader (General)
+    Promise.allSettled(requests).then(() => {
+        const ctx = document.getElementById('outstandingDonutChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cash IN Hand', 'Bank Balance'],
+                datasets: [{ data: [cashVal, bankVal], backgroundColor: ['#A48CFA', '#7BC0FE'], borderWidth: 2 }]
+            },
+            options: { cutout: '70%', plugins: { legend: { display: false } } }
+        });
+    });
+
+    /* ===== Outstanding Table Loader ===== */
     function loadOutstandingTable(apiUrl) {
         const $body = $("#topOutstandingTableBody");
         $body.html('<tr><td colspan="5" style="text-align:center;color:#b9b9b9;">Loading...</td></tr>');
-        $.getJSON(apiUrl, function (data) {
+        $.getJSON(apiUrl, data => {
             if (data && Array.isArray(data.data) && data.data.length > 0) {
-                let rows = "";
-                data.data.forEach(function(row) {
-                    rows += `<tr>
+                $body.html(data.data.map(row => `
+                    <tr>
                         <td>${row.AccountHead || row.accountHead || ''}</td>
-                        <td>${row.Balance != null ? Number(row.Balance).toLocaleString('en-US') : (row.balance != null ? Number(row.balance).toLocaleString('en-US') : '')}</td>
-                        <td>${row.OverdueDays != null ? row.OverdueDays : (row.overdueDays != null ? row.overdueDays : '')}</td>
+                        <td>${(row.Balance ?? row.balance ?? 0).toLocaleString('en-US')}</td>
+                        <td>${row.OverdueDays ?? row.overdueDays ?? ''}</td>
                         <td>${row.AccountGroup || row.accountGroup || ''}</td>
                         <td>${row.AccountHeadNo || row.accountHeadNo || ''}</td>
-                    </tr>`;
-                });
-                $body.html(rows);
+                    </tr>
+                `).join(''));
             } else {
                 $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">No data found</td></tr>');
             }
-        }).fail(function(){
+        }).fail(() => {
             $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">Failed to load data</td></tr>');
         });
     }
 
-    // Load default (Client Outstanding)
+    /* Default tab load */
     loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
 
-    // Tab click handlers
+    /* Tab click handler */
     $(".dashboard-tab").click(function () {
         $(".dashboard-tab").removeClass("active");
         $(this).addClass("active");
+
         if (this.id === "tabClientOutstanding") {
             loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
-        }
-        else if (this.id === "tabSupplierOutstanding") {
+        } else if (this.id === "tabSupplierOutstanding") {
             loadOutstandingTable("/api/Dashboard/GetBillsPayableOutstanding");
-        }
-        // Optionally, handle bank/cash tabs
-    });
-
-    // Donut Chart (static for now, replace with API if available)
-    var ctx = document.getElementById('outstandingDonutChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'doughnut',
-        data: {
-            labels: ['Cash Balance', 'Bank Balance'],
-            datasets: [{
-                data: [11830268.03, 0],
-                backgroundColor: ['#A48CFA', '#7BC0FE'],
-                borderWidth: 2
-            }]
-        },
-        options: {
-            cutout: '70%',
-            plugins: {
-                legend: { display: false }
-            }
+        } else if (this.id === "tabCashBalance") {
+            loadOutstandingTable("/api/Dashboard/GetBankCashSummary");
         }
     });
 });
-
-    function animateValue(id, start, end, duration) {
-        const obj = document.querySelector(id);
-        let startTimestamp = null;
-        const step = (timestamp) => {
-            if (!startTimestamp) startTimestamp = timestamp;
-            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-            obj.textContent = Math.floor(progress * (end - start) + start).toLocaleString('en-US');
-            if (progress < 1) {
-                window.requestAnimationFrame(step);
-            }
-        };
-        window.requestAnimationFrame(step);
-    }
-
-    // Example usage after AJAX load:
-    animateValue("#totalClientOutstandingValue", 0, response.balance, 1500);
-
 </script>

@@ -1346,5 +1346,27 @@
        
     }
 
+        $(function() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const docType = urlParams.get('docType');
+        const status = urlParams.get('status');
+
+        if(docType && status){
+            const statusColumnMap = {
+                ToBeVerified: "IsVerified",
+                ToBeApproved: "IsApproved",
+                ToBeAudited: "IsAuditVerified"
+            };
+
+            const grid = $("#dataGrid").dxDataGrid("instance");
+
+            // Only apply filter, do not touch any other settings
+            grid.option("filterValue", [
+                ["VoucherType", "=", docType],
+                "and",
+                [statusColumnMap[status], "=", false]   // Assuming false = pending, true = done
+            ]);
+        }
+    });
 
 </script>

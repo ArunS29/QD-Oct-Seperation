@@ -1429,10 +1429,10 @@ function addVoucherEntry() {
                             }
                             checkAllocation(`/api/VoucherEntryReceipts/CheckCostAllocation`, openCostAllocationPopup);
                             // Check Property Allocation
-                            checkAllocation(`/api/VoucherEntryCashReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+                            checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
 
                             // Check Employee Allocation
-                            checkAllocation(`/api/VoucherEntryCashReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+                            checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
                             checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
                         }
@@ -1510,10 +1510,10 @@ function addVoucherEntry() {
                          }
                          checkAllocation(`/api/VoucherEntryReceipts/CheckCostAllocation`, openCostAllocationPopup);
                          // Check Property Allocation
-                         checkAllocation(`/api/VoucherEntryCashReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
+                         checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
 
                          // Check Employee Allocation
-                         checkAllocation(`/api/VoucherEntryCashReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
+                         checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
                          checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
                      }
@@ -2549,6 +2549,17 @@ function addVoucherEntry() {
     // if (!isConfirmed) {
     //     e.cancel = true; // Prevent deletion if user cancels
     // } else {
+        const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const visibleRows = dataGrid.getVisibleRows();
+        const lastRowData = visibleRows[visibleRows.length - 1]?.data;
+        var rowCount = dataGrid.getVisibleRows().length;
+        var griddatacount = rowCount;
+        // Check if the deleting row is the last visible row
+        if (lastRowData && lastRowData.VoucherEntryNo === e.data.VoucherEntryNo) {
+            e.cancel = true; // Prevent deletion
+            DevExpress.ui.notify("Record deleted successfully", "success", 2000);
+            return;
+        }
         console.log("Deleting row with data:", e.data);
 
         var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
@@ -2704,7 +2715,7 @@ function addVoucherEntry() {
             .join('&');
 
         $.ajax({
-            url: `/api/VoucherEntryCashReceipts/EmployeeAllocation?${queryString}`,
+            url: `/api/VoucherEntryReceipts/EmployeeAllocation?${queryString}`,
             type: "GET",
             dataType: "html",
             success: function (data) {
