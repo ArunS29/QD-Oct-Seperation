@@ -474,16 +474,19 @@
         <div class="headerBolder">Approved ?</div>
     </text>);
 
-                @* columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120)
-            .DataType(GridColumnDataType.Boolean)
-            .CellTemplate(@<text>
-        @(Html.DevExtreme().CheckBox()
-        .Value(new JS("data.IsVerified"))
-        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
-    </text>)
-        .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Verified</div>
-    </text>); *@
+                    columns.Add().DataField("IsVerified")
+                    .Caption(new JS("formatMessage('Verified')"))
+                    .Width(120)
+                    .DataType(GridColumnDataType.Boolean)
+                    .Visible(false) // Hide this column
+                    .CellTemplate(@<text>
+                @(Html.DevExtreme().CheckBox()
+                            .Value(new JS("data.IsVerified"))
+                            .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
+                                                                                                                   </text>)
+                    .HeaderCellTemplate(@<text>
+                                             <div class="headerBolder">Verified</div>
+                                         </text>);
                 columns.Add().Caption("Verify").Width(120).CellTemplate(@<text>
         <div class="text-center">
             @(Html.DevExtreme().Button()
@@ -1051,6 +1054,24 @@
     }
 
     function loadVoucherApprovals() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const docType = urlParams.get('docType');
+        const status = urlParams.get('status');
+
+        // ✅ If coming from notification → load filtered data & exit early
+        if (docType && status) {
+            $.getJSON(`/api/VoucherApproval/GetVoucherApprovalFiltered?docType=${encodeURIComponent(docType)}&status=${encodeURIComponent(status)}`, function (data) {
+                const grid = $("#dataGrid").dxDataGrid("instance");
+                grid.option("dataSource", data);
+                injectHeaderSVG();
+                grid.refresh();
+                injectHeaderSVG();
+                updateCards(data);
+            });
+            return; // prevent normal flow
+        }
+
+        // ✅ Normal existing logic (untouched)
         const startDateComponent = $("#VoucherDate").dxDateBox("instance");
         const endDateComponent = $("#EffectiveDate").dxDateBox("instance");
 
@@ -1075,7 +1096,7 @@
 
         const useFormattedDate = true;
         const formattedStart = useFormattedDate
-            ? startDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) // Format: yyyy-mm-dd
+            ? startDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })
             : startDate.toISOString();
 
         const formattedEnd = useFormattedDate
@@ -1091,13 +1112,12 @@
                 voucherTypes: voucherType.join(",")
             },
             success: function (data) {
-             
                 const targetGrid = $("#dataGrid").dxDataGrid("instance");
                 targetGrid.option("dataSource", data);
-                 injectHeaderSVG();
+                injectHeaderSVG();
                 targetGrid.refresh();
-                   injectHeaderSVG();
-                   updateCards(data);
+                injectHeaderSVG();
+                updateCards(data);
             },
             error: function (err) {
                 DevExpress.ui.notify("Failed to load data", "error", 2000);
@@ -1105,6 +1125,7 @@
             }
         });
     }
+
 
     function onAuditCheckChanged(value, data) {
         if (!value) return; // Only handle when checked
@@ -1346,27 +1367,6 @@
        
     }
 
-        $(function() {
-        const urlParams = new URLSearchParams(window.location.search);
-        const docType = urlParams.get('docType');
-        const status = urlParams.get('status');
 
-        if(docType && status){
-            const statusColumnMap = {
-                ToBeVerified: "IsVerified",
-                ToBeApproved: "IsApproved",
-                ToBeAudited: "IsAuditVerified"
-            };
-
-            const grid = $("#dataGrid").dxDataGrid("instance");
-
-            // Only apply filter, do not touch any other settings
-            grid.option("filterValue", [
-                ["VoucherType", "=", docType],
-                "and",
-                [statusColumnMap[status], "=", false]   // Assuming false = pending, true = done
-            ]);
-        }
-    });
 
 </script>
