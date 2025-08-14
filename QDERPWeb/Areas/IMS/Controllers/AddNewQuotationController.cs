@@ -439,7 +439,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     documentNo: $"{VM.QuoteNo}"
                 );
 
-                return Ok(new { success = true, message = "Quotation Details saved/updated successfully." });
+                return Ok(new { success = true, message = "Quotation Details saved/updated successfully.",quoteno=VM.QuoteNo });
 			}
 			catch (Exception ex)
 			{

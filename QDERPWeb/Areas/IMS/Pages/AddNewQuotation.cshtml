@@ -2540,13 +2540,14 @@ function checkDateLocking() {
 
 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+													//dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+													dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													ItemNo = selectedItem.GSCode;
 
 												}
@@ -3299,13 +3300,15 @@ placeholder: "Search..."
 
 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+													//dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+														dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null);
+															dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													
 												ItemNo = selectedItem.GSCode;
 												Gsdescrpition = selectedItem.GSDescrpition;
@@ -5811,6 +5814,10 @@ AddlDescription: null,
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
+
+					const quoteno = response.quoteno;
+				
+				 loadChildDataAndBindGrid(quoteno);
 					// Refresh parent DataGrid (ensure the correct selector is used)
 					if (window.parent && window.parent.$("#dataGrid").length) {
 						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
@@ -5828,6 +5835,45 @@ AddlDescription: null,
 			});
 		
 	});
+	function loadChildDataAndBindGrid(quoteno) {
+		//
+    if (!quoteno) {
+        console.warn("No MPR number provided.");
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+		url: `/api/AddNewQuotation/GetQuotationChildren?QuoteNo=${encodeURIComponent(quoteno)}`,
+               dataType: "json",
+        success: function (gridResponse) {
+            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
+                console.warn("No child details found in the response.");
+                return;
+            }
+
+            console.log("Grid Response:", gridResponse);
+
+            const rowData = gridResponse.map((item, index) => ({
+                SNo: index + 1,
+                ...item
+            }));
+
+            // ✅ Bind data to existing B2B grid
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", rowData);
+            } else {
+                console.error("B2B DataGrid instance not found.");
+            }
+        },
+        error: function (xhr, status, error) {
+            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
+            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
+            console.error("Error fetching grid data:", errorMsg);
+        }
+    });
+}
 	$("#btnDelete").on("click", function (e) {
 		e.preventDefault();
 		onDeleteButtonClick();
