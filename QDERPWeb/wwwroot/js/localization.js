@@ -3973,7 +3973,9 @@ var dictionary = {
         "Other Details/Branch/Division Details":"Other Details/Branch/Division Details",
         "Select Stock Group": "Select Stock Group",
         "Postal Amount": "Postal Amount",
-        "Total Purchase Amount":"Total Purchase Amount"
+        "Total Purchase Amount": "Total Purchase Amount",
+        "Item Sub Grouping": "Item Sub Grouping",
+        "Sales Target(Per Month)":"Sales Target(Per Month)"
     },
     ar: {
          "Deductions/Approvals":"الخصومات/الموافقات",

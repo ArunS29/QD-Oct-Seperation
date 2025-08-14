@@ -319,6 +319,7 @@
         .LabelMode(EditorLabelMode.Floating)
         .ID("GetProjectDropDown")
         .OpenOnFieldClick(false)
+		  .Option("GetProjectDropDown", "GetProject-datagrid")  
         .ValueChangeEvent("input")
         .HoverStateEnabled(true)
         .ValueExpr("ClientCode")
@@ -390,6 +391,7 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetSalesPerson")
                         .Width(900)
+						  .Option("ddGetSalesPerson", "GetSalesPerson-datagrid")  
 														@*  .ShowClearButton(true)
 							                           .AcceptCustomValue(true) *@
                         .OpenOnFieldClick(false)
@@ -476,6 +478,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("ModeOfRequestId")
                         )
+						  .Option("ddGetModeOfRequest", "GetProject-datagrid1")  
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetModeOfRequest")
                         .Width(900)
@@ -515,6 +518,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("TypeOfRequestId")
                         )
+						  .Option("ddGetTypeOfRequest", "GetTypeOfRequest-datagrid")  
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetTypeOfRequest")
                         .Width(900)
@@ -897,6 +901,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("QuoteStatusId")
                                     )
+									  .Option("ddGetQuoteStatus", "GetProject-datagrid")  
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddGetQuoteStatus")
                                     .Width(900)
@@ -910,6 +915,9 @@
                                     .TabIndex(1)
                                     .Width("100%")
                                     .OnKeyDown("onKeyDown")
+									.DropDownOptions(o => o
+														.Width(800)
+														)
                                     //.OnValueChanged("dropDownBoxValueChanged")
                                     .ContentTemplate(new TemplateName("GetQuotationStatusContentTemplate"))
 									.Buttons(buttons =>
@@ -954,6 +962,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("SignatoryId")
                                     )
+									  .Option("ddPreparedby", "GetPreparedby-datagrid")  
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddPreparedby")
                                     .Width(900)
@@ -1912,11 +1921,18 @@
 <div id="CalcardPopover"></div>
 <script>
 
-	function onOpened(e) {
-		setTimeout(() => {
-			e.component.focus();
-		});
-	}
+	  function onOpened(e) {
+    const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+    const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+ 
+    if (grid) {
+        grid.getDataSource().reload(); // refresh data
+    }
+ 
+    setTimeout(() => {
+        e.component.focus();
+    });
+}
 
 	function onKeyDown(e) {
 		const ddbInstance = e.component;
@@ -2645,9 +2661,9 @@ $("<div>").dxButton({
 						window.currentDescriptionCell = options;
 
 										let url = `/${tenantName}/IMS/DetailedDescriptionQuotation?QuoteChildId=${encodeURIComponent(QuoteChildId)}&gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Details Description";
+						let title = " ";
 
-						openModal(url, title);
+						openModal(url, title,"65%","60%");
 					}
 						}).appendTo(container);
 					}
@@ -3406,9 +3422,9 @@ placeholder: "Search..."
                 window.currentDescriptionCell = options;
 
                 const url = `/${tenantName}/IMS/DetailedDescriptionQuotation?gsCode=${encodeURIComponent(gsCode)}`;
-                const title = "Details Description";
+                const title = " ";
 
-                openModal(url, title);
+                openModal(url, title,"65%","60%");
             }
         }).appendTo(container);
     }
@@ -4088,12 +4104,8 @@ AddlDescription: null,
 		}
 	}
 
-	function onOpened(e) {
-		setTimeout(() => {
-			e.component.focus();
-		});
-	}
-
+	
+		
 	function ClientNamedataGridSelectionChanged(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 		const ddbInstance = $("#ddclientname").dxDropDownBox("instance");
