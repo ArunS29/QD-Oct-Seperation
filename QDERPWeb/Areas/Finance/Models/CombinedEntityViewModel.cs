@@ -1094,6 +1094,23 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
         public decimal? TotalCostOfItemInclAll { get; set; }
     }
+    public class PODiscountDistributionDto
+    {
+        public string PONo { get; set; }
+        public long POChildNo { get; set; }
+        public string GSCode { get; set; }
+        public decimal? QuotedQuantity { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public decimal? PostingAmount { get; set; }
+        public decimal? PostingPercentage { get; set; }
+        public string PostingCostItemCode { get; set; }
+        public decimal? TotalCostOfItemInclAll { get; set; }
+     public int MethodType { get; set; }
+    }
+    public class CreateQuotationRequest
+    {
+        public List<string> MprNos { get; set; }
+    }
     public class CostAllocationDto
     {
         public byte CostAllocationId { get; set; }

@@ -17,13 +17,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    public class ERStockInventoryController : Controller
+    public class AddNewPropertyController : Controller
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
-        private readonly ILogger<ERStockInventoryController> _logger;
-        private readonly IConfiguration _configuration; // ✅ Add this
+        private readonly ILogger<AddNewPropertyController> _logger;
+        private readonly IConfiguration _configuration;  
 
-        public ERStockInventoryController(ILogger<ERStockInventoryController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
+        public AddNewPropertyController(ILogger<AddNewPropertyController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
@@ -543,6 +543,34 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { message = "An unexpected error occurred.", detailed = ex.Message });
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetByNo(string code)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(code))
+                    return BadRequest(new { message = "Code is required", success = false });
+
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return Unauthorized(new { message = "Invalid tenant", success = false });
+                }
+
+                var item = await dbContext.Tbl40101PropertyMasters
+                    .FirstOrDefaultAsync(x => x.PropertyNo == code);
+
+                if (item == null)
+                    return NotFound(new { message = "Item not found", success = false });
+
+                return Ok(item);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+
+            }
+        }
         [HttpGet("GetAllPropertyTypes")]
         public IActionResult GetAllPropertyTypes()
         {
@@ -956,6 +984,141 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdatePropertyMaster([FromBody] PropertyMasterViewModel VM)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            if (VM == null || string.IsNullOrEmpty(VM.PropertyNo))
+            {
+                return BadRequest(new { success = false, message = "Property No. is required." });
+            }
+
+            try
+            {
+                // Check if property exists
+                var existing = await dbContext.Tbl40101PropertyMasters
+                    .FirstOrDefaultAsync(x => x.PropertyNo == VM.PropertyNo);
+
+                if (existing != null)
+                {
+                    // UPDATE
+                    existing.PropertyCategory = VM.PropertyCategory;
+                    existing.Specifications = VM.Specifications;
+                    existing.Brand = VM.Brand;
+                    existing.PlateNo = VM.PlateNo;
+                    existing.DoorNo = VM.DoorNo;
+                    existing.ChassisNo = VM.ChassisNo;
+                    existing.Color = VM.Color;
+                    existing.Capacity = VM.Capacity;
+                    existing.Model = VM.Model;
+                    existing.Year = VM.Year;
+                    existing.Ownership = VM.Ownership;
+                    existing.PurchaseDate = VM.PurchaseDate;
+                    existing.PurchasedAs = VM.PurchasedAs;
+                    existing.BuyingRatePerHour = VM.BuyingRatePerHour;
+                    existing.BuyingRatePerDay = VM.BuyingRatePerDay;
+                    existing.BuyingRatePerMonth = VM.BuyingRatePerMonth;
+                    existing.SellingRatePerHour = VM.SellingRatePerHour;
+                    existing.SellingRatePerDay = VM.SellingRatePerDay;
+                    existing.SellingRatePerMonth = VM.SellingRatePerMonth;
+                    existing.PropertyCondition = VM.PropertyCondition;
+                    existing.IsFinanced = VM.IsFinanced;
+                    existing.FinancedFrom = VM.FinancedFrom;
+                    existing.ValueOfProperty = VM.ValueOfProperty;
+
+                    if (!string.IsNullOrWhiteSpace(VM.PropertyImageBase64))
+                    {
+                        existing.PropertyImage = Convert.FromBase64String(VM.PropertyImageBase64);
+                    }
+
+                    existing.ModifiedBy = "system";
+                    existing.ModifiedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    // INSERT
+                    var newEntity = new Tbl40101PropertyMaster
+                    {
+                        PropertyNo = VM.PropertyNo,
+                        PropertyCategory = VM.PropertyCategory,
+                        Specifications = VM.Specifications,
+                        Brand = VM.Brand,
+                        PlateNo = VM.PlateNo,
+                        DoorNo = VM.DoorNo,
+                        ChassisNo = VM.ChassisNo,
+                        Color = VM.Color,
+                        Capacity = VM.Capacity,
+                        Model = VM.Model,
+                        Year = VM.Year,
+                        Ownership = VM.Ownership,
+                        PurchaseDate = VM.PurchaseDate,
+                        PurchasedAs = VM.PurchasedAs,
+                        BuyingRatePerHour = VM.BuyingRatePerHour,
+                        BuyingRatePerDay = VM.BuyingRatePerDay,
+                        BuyingRatePerMonth = VM.BuyingRatePerMonth,
+                        SellingRatePerHour = VM.SellingRatePerHour,
+                        SellingRatePerDay = VM.SellingRatePerDay,
+                        SellingRatePerMonth = VM.SellingRatePerMonth,
+                        PropertyCondition = VM.PropertyCondition,
+                        IsFinanced = VM.IsFinanced,
+                        FinancedFrom = VM.FinancedFrom,
+                        ValueOfProperty = VM.ValueOfProperty,
+                        CreatedBy = "system",
+                        CreatedOn = DateTime.UtcNow
+                    };
+
+                    if (!string.IsNullOrWhiteSpace(VM.PropertyImageBase64))
+                    {
+                        newEntity.PropertyImage = Convert.FromBase64String(VM.PropertyImageBase64);
+                    }
+
+                    await dbContext.Tbl40101PropertyMasters.AddAsync(newEntity);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Property saved successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        public class PropertyMasterViewModel
+        {
+            public string PropertyNo { get; set; }
+            public byte? PropertyCategory { get; set; }
+            public string Specifications { get; set; }
+            public string Brand { get; set; }
+            public string PlateNo { get; set; }
+            public string DoorNo { get; set; }
+            public string ChassisNo { get; set; }
+            public string Color { get; set; }
+            public string Capacity { get; set; }
+            public string Model { get; set; }
+            public string Year { get; set; }
+            public byte? Ownership { get; set; }
+            public DateTime? PurchaseDate { get; set; }
+            public byte? PurchasedAs { get; set; }
+            public decimal? BuyingRatePerHour { get; set; }
+            public decimal? BuyingRatePerDay { get; set; }
+            public decimal? BuyingRatePerMonth { get; set; }
+            public decimal? SellingRatePerHour { get; set; }
+            public decimal? SellingRatePerDay { get; set; }
+            public decimal? SellingRatePerMonth { get; set; }
+            public byte? PropertyCondition { get; set; }
+            public bool? IsFinanced { get; set; }
+            public short? FinancedFrom { get; set; }
+            public decimal? ValueOfProperty { get; set; }
+            public string PropertyImageBase64 { get; set; } // For upload
+        }
+
+
         [HttpGet]
         public async Task<IActionResult> GetItemDeliversGridData(string gscode)
         {

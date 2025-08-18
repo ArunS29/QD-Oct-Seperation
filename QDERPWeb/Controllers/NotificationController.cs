@@ -217,6 +217,71 @@ namespace QD.ERP.Web.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant or database context." });
         }
+        [HttpGet]
+        public IActionResult GetFinanceNotificationSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var vouchers = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                // --- Summary counts ---
+                Func<List<string>, object> getCounts = (types) =>
+                {
+                    var filtered = vouchers.Where(v => types.Contains(v.VoucherType));
+                    return new
+                    {
+                        ToBeVerified = filtered.Count(v => !v.IsVerified),
+                        ToBeApproved = filtered.Count(v => v.IsVerified && !v.IsApproved),
+                        ToBeAudited = filtered.Count(v => v.IsApproved && !v.IsAuditVerified)
+                    };
+                };
+
+                var summary = new
+                {
+                    Payments = getCounts(new List<string> { "Bank Payment", "Cash Payment" }),
+                    Receipts = getCounts(new List<string> { "Bank Receipts", "Cash Receipts" }),
+                    SalesPurchase = getCounts(new List<string> { "Sales", "Purchase" }),
+                    Journals = getCounts(new List<string> { "Journal" }),
+                    ExpenseClaims = getCounts(new List<string> { "ExpenseClaim" })
+                };
+
+                // --- Detailed notifications ---
+                var notifications = vouchers.Select(v => new
+                {
+                    VoucherType = v.VoucherType,
+                    VoucherNumber = v.VoucherNo,
+                    Amount = v.DebitAmount ?? v.CreditAmount,
+                    User = !v.IsVerified ? v.VoucherEnteredBy
+                           : v.IsVerified && !v.IsApproved ? v.VoucherVerifiedBy
+                           : v.IsApproved && !v.IsAuditVerified ? v.VoucherApprovedBy
+                           : v.VoucherEnteredBy,
+                    Status = !v.IsVerified ? "waiting for verification"
+                           : v.IsVerified && !v.IsApproved ? "awaiting your approval"
+                           : v.IsApproved && !v.IsAuditVerified ? "awaiting audit"
+                           : "completed",
+                    CreatedOn = v.VoucherEnteredOn ?? DateTime.Now
+                })
+                .OrderByDescending(v => v.CreatedOn)
+                .Take(20) // last 20 notifications
+                .ToList();
+
+                return Ok(new
+                {
+                    Summary = summary,
+                    Notifications = notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error while fetching finance notifications", error = ex.Message });
+            }
+        }
+
+
+
     }
 
 

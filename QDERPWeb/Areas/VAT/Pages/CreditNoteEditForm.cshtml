@@ -3518,6 +3518,13 @@
 							// 				dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
 							// 				dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
 
+	                                        $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+											$("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+											$("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+
+											$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+											$("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+											$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 											   if(account.IsVerified==true)
 											{
 												btnVerifydisableEditing();
@@ -7304,6 +7311,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 
 
 	$("#btnVerify").on("click", function (e) {
+	var clientnameValidator = $("#ddclientname").dxValidator("instance");
+    var clientnameValidation = clientnameValidator.validate();
+
+	if(clientnameValidation.isValid)
+		{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 			IsDirect = false;
 			// Ensure dataGrid exists
@@ -7340,6 +7352,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					}
 				});
 			}
+		  }
 		});
 
 
@@ -7401,6 +7414,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 
 
 		$("#btnApprove").on("click", function (e) {
+					var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+	if(clientnameValidation.isValid)
+		{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 			// Ensure dataGrid exists
@@ -7434,6 +7452,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 						proceedWithApproval(); // Proceed if user clicks Yes
 					}
 				});
+			}
 			}
 		});
 
@@ -7497,6 +7516,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 
 
 		$("#btnPostToLedgers").on("click", function (e) {
+		var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+	   if(clientnameValidation.isValid)
+		{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 				var PostToLedgerValidator = $("#ddlRevenueAccount").dxValidator("instance");
 				var PostToLedgerValidation = PostToLedgerValidator.validate();
@@ -7543,6 +7567,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 							buttons: [{ text: "Ok", onClick: () => false }],
 							showTitle: true
 						}).show();
+				}
 				}
 		});
 
