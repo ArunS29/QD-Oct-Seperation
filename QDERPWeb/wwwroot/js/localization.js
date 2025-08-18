@@ -3978,8 +3978,9 @@ var dictionary = {
         "Total Purchase Amount": "Total Purchase Amount",
         "Type a New Property & Add to the Existing List": "Type a New Property & Add to the Existing List",
         "Print Mobilization Data": "Print Mobilization Data",
-        "Add New Operator": "Add New Operator"
-
+        "Add New Operator": "Add New Operator",
+        "Item Sub Grouping": "Item Sub Grouping",
+        "Sales Target(Per Month)":"Sales Target(Per Month)"
     },
     ar: {
         "Add New Operator":"إضافة مشغل جديد",

@@ -1004,3 +1004,30 @@ dx-item-content dx-list-item-content:hover{
 .dx-button-mode-contained.dx-state-focused {
     background-color: none;
 }
+
+.templateBtn {
+    align-items: center;
+    background: linear-gradient(90deg, #32BB71, #2A9D8F) !important;
+    border-radius: 8px;
+    box-sizing: border-box;
+    color: white;
+    cursor: pointer;
+    display: flex;
+    font-family: Inter,sans-serif;
+    font-size: 16px;
+    height: 28px;
+    justify-content: center;
+    line-height: 24px;
+    max-width: 20%;
+    padding: 0 25px;
+    position: relative;
+    text-align: center;
+    text-decoration: none;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    box-shadow: 5px 5px darkgreen;
+}
+.templateBtn:hover {
+    box-shadow: none;
+}
