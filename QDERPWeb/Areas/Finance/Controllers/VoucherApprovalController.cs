@@ -5,6 +5,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
 using QDERPWeb.Models;
+using System.Linq.Expressions;
 
 
 namespace QDWEB.Areas.Finance.Controllers
@@ -352,6 +353,80 @@ namespace QDWEB.Areas.Finance.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult GetVoucherApprovalFiltered(string docType, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var query = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                // Status column mapping
+                var statusColumnMap = new Dictionary<string, Expression<Func<Qry20136VoucherMasterList, bool>>>()
+        {
+            { "ToBeVerified", v => v.IsVerified == false },
+            { "ToBeApproved", v => v.IsApproved == false },
+            { "ToBeAudited", v => v.IsAuditVerified == false }
+        };
+
+                // Apply voucher type filter
+                if (!string.IsNullOrEmpty(docType))
+                {
+                    if (docType == "BankCashPayment")
+                    {
+                        query = query.Where(v => v.VoucherType == "Bank Payment" || v.VoucherType == "Cash Payment");
+                    }
+                    else if (docType == "BankCashReceipt")
+                    {
+                        query = query.Where(v => v.VoucherType == "Bank Receipt" || v.VoucherType == "Cash Receipt");
+                    }
+                    else
+                    {
+                        query = query.Where(v => v.VoucherType == docType);
+                    }
+                }
+
+                // Apply status filter
+                if (!string.IsNullOrEmpty(status) && statusColumnMap.ContainsKey(status))
+                {
+                    query = query.Where(statusColumnMap[status]);
+                }
+
+                // Get company details
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault();
+
+                // Select and return data
+                var data = query.Select(v => new
+                {
+                    v.VoucherNo,
+                    VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
+                    v.VoucherEffectiveDate,
+                    v.VoucherRefNo,
+                    v.VoucherNarration,
+                    v.VoucherEnteredBy,
+                    v.VoucherEnteredOn,
+                    v.IsVerified,
+                    v.VoucherVerifiedBy,
+                    v.VoucherVerifiedOn,
+                    v.IsApproved,
+                    v.VoucherApprovedBy,
+                    v.VoucherApprovedOn,
+                    v.VoucherType,
+                    v.DebitAmount,
+                    v.CreditAmount,
+                    company.CurrencyImage
+                }).ToList();
+
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetVoucherApprovalFiltered: {ex.Message}");
+                return BadRequest(new { message = "An error occurred while fetching filtered data.", error = ex.Message });
+            }
+        }
 
     }
 }
