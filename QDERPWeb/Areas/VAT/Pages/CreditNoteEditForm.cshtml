@@ -3518,14 +3518,25 @@
 							// 				dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
 							// 				dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
 
+	                                        $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+											$("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+											$("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+
+											$("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+											$("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+											$("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+											   if(account.IsVerified==true)
+											{
+												btnVerifydisableEditing();
+											}
 											if(account.IsApproved==true)
 											{
 												disableEditing();
 											}
-											else if(account.IsPosted==true)
-{
-				btnPostToLedgerdisableEditing();
-}
+										     if(account.IsPosted==true)
+                                            {
+                                               btnPostToLedgerdisableEditing();
+                                            }
 
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -3995,7 +4006,7 @@
 	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
 	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
 	grid.cellValue(rowIndex, "QuantityCredited", qty);
-	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+//	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
 
                             
@@ -4038,7 +4049,7 @@
 	grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
 	grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
 	grid.cellValue(rowIndex, "QuantityCredited", qty);
-	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
+	//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
                                 }
 
@@ -6718,10 +6729,14 @@ openModal(url, title);
 		}
 	}
 
-	$("#btnSave").on("click", function (e) {
+	function SaveInvoiceDetails() {
 		
 		var clientnameValidator = $("#ddclientname").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();	
+
+			var button = $("#btnSave").dxButton("instance");
+            button.option("disabled", true);
+
 		if(clientnameValidation.isValid)
 		{
 	// Create JSON object for master invoice
@@ -6852,6 +6867,7 @@ openModal(url, title);
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+											button.option("disabled", false);
 									}
 								});
 									 isVoucherSaved = true; // Mark Updated step as done
@@ -6859,14 +6875,17 @@ openModal(url, title);
 						  DevExpress.ui.notify(
 					"Credit Note Details updated Successfully.","success",2000
 				);
+					button.option("disabled", false);
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+						button.option("disabled", false);
 					}
 				});
 			},
 			error: function (xhr) {
 				DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					button.option("disabled", false);
 			}
 		});
 		}
@@ -6874,18 +6893,23 @@ openModal(url, title);
 		{
 			  DevExpress.ui.notify(
 					"Cannot continue saving with errors,please clear the errors and continue.","error",3000);
+						button.option("disabled", false);
 		}
 
-	 });
+	 }
 
 
 
 
 
-				$("#btnSaveAndClose").on("click", function (e) {
+		function SaveandCloseInvoiceDetails() {
 			
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
+
+					var button = $("#btnSaveAndClose").dxButton("instance");
+				button.option("disabled", true);
+
 			if(clientnameValidation.isValid)
 			{
 		// Create JSON object for master invoice
@@ -7016,6 +7040,7 @@ openModal(url, title);
 										},
 										error: function (xhr, status, error) {
 											console.error("Error fetching grid data:", error);
+												button.option("disabled", false);
 										}
 									});
 										 isVoucherSaved = true; // Mark Updated step as done
@@ -7023,14 +7048,17 @@ openModal(url, title);
 							  DevExpress.ui.notify(
 						"Credit Note Details updated Successfully.","success",2000
 					);
+						button.option("disabled", false);
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+								button.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					button.option("disabled", false);
 				}
 			});
 			}
@@ -7038,9 +7066,10 @@ openModal(url, title);
 			{
 				  DevExpress.ui.notify(
 						"Cannot continue saving with errors,please clear the errors and continue.","error",3000);
+							button.option("disabled", false);
 			}
 
-		 });
+		 }
 
 
 
@@ -7282,6 +7311,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 
 
 	$("#btnVerify").on("click", function (e) {
+	var clientnameValidator = $("#ddclientname").dxValidator("instance");
+    var clientnameValidation = clientnameValidator.validate();
+
+	if(clientnameValidation.isValid)
+		{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 			IsDirect = false;
 			// Ensure dataGrid exists
@@ -7313,10 +7347,12 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+							SaveInvoiceDetails();
 						proceedWithVerification(); // Proceed if user clicks Yes
 					}
 				});
 			}
+		  }
 		});
 
 
@@ -7378,6 +7414,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 
 
 		$("#btnApprove").on("click", function (e) {
+					var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+	if(clientnameValidation.isValid)
+		{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 			// Ensure dataGrid exists
@@ -7407,9 +7448,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+							SaveInvoiceDetails();
 						proceedWithApproval(); // Proceed if user clicks Yes
 					}
 				});
+			}
 			}
 		});
 
@@ -7473,6 +7516,11 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 
 
 		$("#btnPostToLedgers").on("click", function (e) {
+		var clientnameValidator = $("#ddclientname").dxValidator("instance");
+		var clientnameValidation = clientnameValidator.validate();
+
+	   if(clientnameValidation.isValid)
+		{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 				var PostToLedgerValidator = $("#ddlRevenueAccount").dxValidator("instance");
 				var PostToLedgerValidation = PostToLedgerValidator.validate();
@@ -7506,6 +7554,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 					showTitle: true
 				}).show().done(function (dialogResult) {
 					if (dialogResult) {
+							SaveInvoiceDetails();
 						proceedWithPost(); // Proceed if user clicks Yes
 					}
 				});
@@ -7518,6 +7567,7 @@ grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 							buttons: [{ text: "Ok", onClick: () => false }],
 							showTitle: true
 						}).show();
+				}
 				}
 		});
 

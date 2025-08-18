@@ -208,7 +208,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
                 )
 
     </div>
@@ -222,6 +222,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails")
                 )
     </div>
     <div class="btn-containers">
@@ -280,7 +281,7 @@
                 .ID("btnDelete")
                 .Text(new JS("formatMessage('Delete')"))
                 .Icon("close")
-                               //  .OnClick("onDeleteButtonClick")
+                 .OnClick("onDeleteButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-delete" })
                 )
     </div>

@@ -3142,7 +3142,13 @@
 													keyExpr: "GSCode",
 
 													height: 300, // âœ… Add fixed height to enable scrolling
-
+														 paging: { enabled: true, pageSize: 15 },
+														 pager: {
+																		visible: true,
+																		showPageSizeSelector: true,
+																		allowedPageSizes: [10, 15, 30],
+																		showInfo: true
+														},
 													scrolling: { mode: "virtual" },
 													searchPanel: {
 										visible: true,
@@ -3289,7 +3295,7 @@
 										let url = `/${tenantName}/IMS/DetailsDescriptionMR?MprchildSlNo=${encodeURIComponent(MprchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
 						let title = "Details Description";
 
-						openModal(url, title);
+							openModal(url, title,"60%","70%");
 					}
 						}).appendTo(container);
 					}
@@ -3777,7 +3783,13 @@
 											height: 300, // âœ… Add fixed height to enable scrolling
 
 											scrolling: { mode: "virtual" },
-
+												 paging: { enabled: true, pageSize: 15 },
+														 pager: {
+																		visible: true,
+																		showPageSizeSelector: true,
+																		allowedPageSizes: [10, 15, 30],
+																		showInfo: true
+														},
 											searchPanel: {
 										visible: true,
 										highlightCaseSensitive: true,
@@ -3920,7 +3932,7 @@
 						let url = `/${tenantName}/IMS/DetailsDescriptionMR?gsCode=${encodeURIComponent(gsCode)}`;
 					let title = "Details Description";
 
-					openModal(url, title);
+						openModal(url, title,"60%","70%");
 				}
 					}).appendTo(container);
 				}

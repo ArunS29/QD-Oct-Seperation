@@ -237,7 +237,14 @@
         background: var(--background-color);
     }
 
-	
+	 #SupplierTabs .dx-tabpanel-tabs {
+        display: flex !important;
+    }
+
+    #SupplierTabs .dx-tab {
+        flex-grow: 1;
+        max-width: none;
+    }
 </style>
 <meta charset="UTF-8">
 @* <div class="title">
@@ -251,7 +258,7 @@
         <div class="card-title-icon">
             <i class="fas fa-file-invoice-dollar"></i>
         </div>
-        <div id="AddNewQuotation" class="titleText no-border-title"></div>
+        <div id="AddNewQuotation" class="titleText no-border-title">Add New Quotation</div>
     </div>
 </div>
 <div class="form-container1">
@@ -279,7 +286,7 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-1">
+                    <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("txtRevisionNo")
 						.Label(new JS("formatMessage('Revision #:')"))
@@ -312,6 +319,7 @@
         .LabelMode(EditorLabelMode.Floating)
         .ID("GetProjectDropDown")
         .OpenOnFieldClick(false)
+		  .Option("GetProjectDropDown", "GetProject-datagrid")  
         .ValueChangeEvent("input")
         .HoverStateEnabled(true)
         .ValueExpr("ClientCode")
@@ -383,6 +391,7 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetSalesPerson")
                         .Width(900)
+						  .Option("ddGetSalesPerson", "GetSalesPerson-datagrid")  
 														@*  .ShowClearButton(true)
 							                           .AcceptCustomValue(true) *@
                         .OpenOnFieldClick(false)
@@ -395,6 +404,7 @@
                         .TabIndex(1)
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
+						.DropDownOptions(d => d.Width(700))
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
 						.Buttons(buttons =>
@@ -468,6 +478,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("ModeOfRequestId")
                         )
+						  .Option("ddGetModeOfRequest", "GetProject-datagrid1")  
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetModeOfRequest")
                         .Width(900)
@@ -482,6 +493,7 @@
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
+							.DropDownOptions(d => d.Width(500))
                         .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
 						.Buttons(buttons =>
 							{
@@ -506,6 +518,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("TypeOfRequestId")
                         )
+						  .Option("ddGetTypeOfRequest", "GetTypeOfRequest-datagrid")  
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetTypeOfRequest")
                         .Width(900)
@@ -520,6 +533,7 @@
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
+						.DropDownOptions(d => d.Width(500))
                         .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
 						.Buttons(buttons =>
 							{
@@ -558,6 +572,7 @@
                         .TabIndex(1)
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
+						.DropDownOptions(d => d.Width(800))
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetProjectdataContentTemplate"))
                         )
@@ -829,7 +844,7 @@
 									.LabelMode(EditorLabelMode.Floating)
 									.Width("100%")
 )
-	 </div>
+	     </div>
                             </div>
                         </div>
                     </div>
@@ -886,6 +901,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("QuoteStatusId")
                                     )
+									  .Option("ddGetQuoteStatus", "GetProject-datagrid")  
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddGetQuoteStatus")
                                     .Width(900)
@@ -899,6 +915,9 @@
                                     .TabIndex(1)
                                     .Width("100%")
                                     .OnKeyDown("onKeyDown")
+									.DropDownOptions(o => o
+														.Width(800)
+														)
                                     //.OnValueChanged("dropDownBoxValueChanged")
                                     .ContentTemplate(new TemplateName("GetQuotationStatusContentTemplate"))
 									.Buttons(buttons =>
@@ -919,7 +938,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
+           </div>
+				</div>
 
 
         </text>);
@@ -942,6 +962,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("SignatoryId")
                                     )
+									  .Option("ddPreparedby", "GetPreparedby-datagrid")  
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddPreparedby")
                                     .Width(900)
@@ -1479,11 +1500,22 @@
                                     .OnInitialized("dataGridInitialized2")
                                     .HeaderFilter(p => p.Visible(true))
                                     .ShowBorders(true)
+									.ColumnChooser(c => c
+									.Enabled(true)
+									.Title(new JS("formatMessage('Show/Hide Column')"))
+									.Mode(GridColumnChooserMode.DragAndDrop)
+									)
+									.Pager(pager => pager
+									.Visible(true)                            // show pager UI (page numbers etc)
+									.ShowPageSizeSelector(true)              // allow user to change page size
+									.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+									.ShowInfo(true)                          // show info like "Page 1 of 10"
+									)
                                     .HoverStateEnabled(true)
                                     .Paging(p => p.PageSize(15))
                                     .FilterRow(f => f.Visible(false))//
                                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                    .Height(345)
+                                    .Height(375)
                                     .Selection(s => s.Mode(SelectionMode.Single))
                                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                                     .Columns(columns =>
@@ -1517,7 +1549,18 @@
                         .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(false))//
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(345)
+                        .Height(375)
+						.ColumnChooser(c => c
+						.Enabled(true)
+						.Title(new JS("formatMessage('Show/Hide Column')"))
+						.Mode(GridColumnChooserMode.DragAndDrop)
+						)
+						.Pager(pager => pager
+						.Visible(true)                            // show pager UI (page numbers etc)
+						.ShowPageSizeSelector(true)              // allow user to change page size
+						.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+						.ShowInfo(true)                          // show info like "Page 1 of 10"
+						)
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
@@ -1548,11 +1591,22 @@
                 .OnInitialized("dataGridInitialized4")
                 .HeaderFilter(p => p.Visible(true))
                 .ShowBorders(true)
+				.ColumnChooser(c => c
+					.Enabled(true)
+					.Title(new JS("formatMessage('Show/Hide Column')"))
+					.Mode(GridColumnChooserMode.DragAndDrop)
+					)
+					.Pager(pager => pager
+					.Visible(true)                            // show pager UI (page numbers etc)
+					.ShowPageSizeSelector(true)              // allow user to change page size
+					.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+					.ShowInfo(true)                          // show info like "Page 1 of 10"
+					)
                 .HoverStateEnabled(true)
                 .Paging(p => p.PageSize(15))
                 .FilterRow(f => f.Visible(false))//
                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                .Height(345)
+                .Height(385)
                 .Selection(s => s.Mode(SelectionMode.Single))
                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                 .Columns(columns =>
@@ -1576,6 +1630,17 @@
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
+						.ColumnChooser(c => c
+						.Enabled(true)
+						.Title(new JS("formatMessage('Show/Hide Column')"))
+						.Mode(GridColumnChooserMode.DragAndDrop)
+						)
+						.Pager(pager => pager
+						.Visible(true)                            // show pager UI (page numbers etc)
+						.ShowPageSizeSelector(true)              // allow user to change page size
+						.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+						.ShowInfo(true)                          // show info like "Page 1 of 10"
+						)
                         @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                         .OnSelectionChanged("dataGridSelectionChanged1")
@@ -1586,7 +1651,7 @@
                         .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(345)
+                        .Height(385)
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
@@ -1652,6 +1717,17 @@
                 .HeaderFilter(p => p.Visible(true))
                 .ShowBorders(true)
                 .HoverStateEnabled(true)
+				.ColumnChooser(c => c
+				.Enabled(true)
+				.Title(new JS("formatMessage('Show/Hide Column')"))
+				.Mode(GridColumnChooserMode.DragAndDrop)
+				)
+				.Pager(pager => pager
+				.Visible(true)                            // show pager UI (page numbers etc)
+				.ShowPageSizeSelector(true)              // allow user to change page size
+				.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+				.ShowInfo(true)                          // show info like "Page 1 of 10"
+				)
                 .Paging(p => p.PageSize(15))
                 .FilterRow(f => f.Visible(false))//
                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
@@ -1845,11 +1921,18 @@
 <div id="CalcardPopover"></div>
 <script>
 
-	function onOpened(e) {
-		setTimeout(() => {
-			e.component.focus();
-		});
-	}
+	  function onOpened(e) {
+    const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+    const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+ 
+    if (grid) {
+        grid.getDataSource().reload(); // refresh data
+    }
+ 
+    setTimeout(() => {
+        e.component.focus();
+    });
+}
 
 	function onKeyDown(e) {
 		const ddbInstance = e.component;
@@ -1926,22 +2009,22 @@
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "Quotation Type Of Request";
+		const title = " ";
 		openModal(url, title);
 	}
 	function AddQuoteStatus() {
 		const url = `/${tenantName}/IMS/AddNewQuotationStatus`;
-		const title = "Quotation Status";
+		const title = " ";
 		openModal(url, title);
 	}
 	function redirecttosalespersonmaster() {
 		const url = `/${tenantName}/IMS/SalesPersonMaster`;
-		const title = "Sales Master";
+		const title = " ";
 		openModal(url, title);
 	}
 	function redirecttoClientLeadmaster() {
 		const url = `/${tenantName}/IMS/ClientLeadMaster`;
-		const title = "Client Master";
+		const title = " ";
 		openModal(url, title);
 	}
 	function dataGridSelectionChanged3(e) {
@@ -2423,12 +2506,19 @@ function checkDateLocking() {
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
-																						searchPanel: {
-visible: true,
-highlightCaseSensitive: true,
-width: 300,
-placeholder: "Search..."
-},
+										 paging: { enabled: true, pageSize: 15 },
+												pager: {
+													visible: true,
+													showPageSizeSelector: true,
+													allowedPageSizes: [10, 15, 30],
+													showInfo: true
+												},
+											searchPanel: {
+											visible: true,
+											highlightCaseSensitive: true,
+											width: 300,
+											placeholder: "Search..."
+											},
 
 										columns: [
 
@@ -2466,13 +2556,14 @@ placeholder: "Search..."
 
 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+													//dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+													dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													ItemNo = selectedItem.GSCode;
 
 												}
@@ -2503,7 +2594,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "Goods And Service");
+									openModal(url, " ");
 
 								},
 
@@ -2534,7 +2625,7 @@ $("<div>").dxButton({
         }
 
         const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-        openModal(url, "Goods And Service");
+        openModal(url, " ");
     },
     width: 60,
     height: 30
@@ -2570,9 +2661,9 @@ $("<div>").dxButton({
 						window.currentDescriptionCell = options;
 
 										let url = `/${tenantName}/IMS/DetailedDescriptionQuotation?QuoteChildId=${encodeURIComponent(QuoteChildId)}&gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Details Description";
+						let title = " ";
 
-						openModal(url, title);
+						openModal(url, title,"65%","60%");
 					}
 						}).appendTo(container);
 					}
@@ -2821,12 +2912,13 @@ placeholder: "Search..."
 										height: 300,
 
 										scrolling: { mode: "virtual" },
-																						searchPanel: {
-visible: true,
-highlightCaseSensitive: true,
-width: 300,
-placeholder: "Search..."
-},
+
+										searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 600,
+										placeholder: "Search..."
+										},
 
 										columns: [
 
@@ -3175,12 +3267,18 @@ placeholder: "Search..."
 										height: 300, // âœ… Add fixed height to enable scrolling
 
 										scrolling: { mode: "virtual" },
+											pager: {
+													visible: true,
+													showPageSizeSelector: true,
+													allowedPageSizes: [10, 15, 30],
+													showInfo: true
+												},
 																						searchPanel: {
-visible: true,
-highlightCaseSensitive: true,
-width: 300,
-placeholder: "Search..."
-},
+												visible: true,
+												highlightCaseSensitive: true,
+												width: 300,
+												placeholder: "Search..."
+												},
 
 										columns: [
 
@@ -3218,13 +3316,15 @@ placeholder: "Search..."
 
 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+													//dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+														dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null);
+															dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													
 												ItemNo = selectedItem.GSCode;
 												Gsdescrpition = selectedItem.GSDescrpition;
@@ -3262,7 +3362,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/IMS/GoodsAndService`; // Example add page
 
-									openModal(url, "Goods And Service");
+									openModal(url, " ");
 
 								},
 
@@ -3287,7 +3387,7 @@ placeholder: "Search..."
         }
 
         const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-       openModal(url, "Goods And Service");
+       openModal(url, " ");
     },
 
 								width: 60,
@@ -3322,9 +3422,9 @@ placeholder: "Search..."
                 window.currentDescriptionCell = options;
 
                 const url = `/${tenantName}/IMS/DetailedDescriptionQuotation?gsCode=${encodeURIComponent(gsCode)}`;
-                const title = "Details Description";
+                const title = " ";
 
-                openModal(url, title);
+                openModal(url, title,"65%","60%");
             }
         }).appendTo(container);
     }
@@ -3563,12 +3663,13 @@ placeholder: "Search..."
 										height: 300,
 
 										scrolling: { mode: "virtual" },
-																						searchPanel: {
-visible: true,
-highlightCaseSensitive: true,
-width: 300,
-placeholder: "Search..."
-},
+
+										searchPanel: {
+										visible: true,
+										highlightCaseSensitive: true,
+										width: 600,
+										placeholder: "Search..."
+										},
 
 										columns: [
 
@@ -4003,12 +4104,8 @@ AddlDescription: null,
 		}
 	}
 
-	function onOpened(e) {
-		setTimeout(() => {
-			e.component.focus();
-		});
-	}
-
+	
+		
 	function ClientNamedataGridSelectionChanged(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 		const ddbInstance = $("#ddclientname").dxDropDownBox("instance");
@@ -5729,6 +5826,10 @@ AddlDescription: null,
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
+
+					const quoteno = response.quoteno;
+				
+				 loadChildDataAndBindGrid(quoteno);
 					// Refresh parent DataGrid (ensure the correct selector is used)
 					if (window.parent && window.parent.$("#dataGrid").length) {
 						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
@@ -5746,6 +5847,45 @@ AddlDescription: null,
 			});
 		
 	});
+	function loadChildDataAndBindGrid(quoteno) {
+		//
+    if (!quoteno) {
+        console.warn("No MPR number provided.");
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+		url: `/api/AddNewQuotation/GetQuotationChildren?QuoteNo=${encodeURIComponent(quoteno)}`,
+               dataType: "json",
+        success: function (gridResponse) {
+            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
+                console.warn("No child details found in the response.");
+                return;
+            }
+
+            console.log("Grid Response:", gridResponse);
+
+            const rowData = gridResponse.map((item, index) => ({
+                SNo: index + 1,
+                ...item
+            }));
+
+            // ✅ Bind data to existing B2B grid
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", rowData);
+            } else {
+                console.error("B2B DataGrid instance not found.");
+            }
+        },
+        error: function (xhr, status, error) {
+            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
+            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
+            console.error("Error fetching grid data:", errorMsg);
+        }
+    });
+}
 	$("#btnDelete").on("click", function (e) {
 		e.preventDefault();
 		onDeleteButtonClick();
@@ -6899,7 +7039,7 @@ AddlDescription: null,
 
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = "Signatories";
+		const title = " ";
 		openModal(url, title,"","75%");
 	}
 
@@ -6910,19 +7050,19 @@ AddlDescription: null,
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "Quotation Mode Of Request";
+		const title = " ";
 		openModal(url, title);
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = "Quotation Type Of Request";
+		const title = " ";
 		openModal(url, title);
 	}
 	 function AddNewClient(){
 				const url = `/${tenantName}/IMS/ClientLeadMaster`;
-  const title = "Client Master";
-				  openModal(url, title);
-  }
+  const title = " ";
+  }   openModal(url, title,"96%","75%");
+
 	$(function () {
 		$("#AddNewQuotation").dxTextBox({
 			text: formatMessage("Add New Quotation"),
@@ -7395,7 +7535,7 @@ function onIMSAttachmentButtonClick(e) {
         }
 		 function CurrencyClick() {
         let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-        let title = "Currency Master";
+        let title = " ";
         openModal(url, title);
     }
 	  function dataGridInvoiceCurrencyHeadSelectionChanged(e) {

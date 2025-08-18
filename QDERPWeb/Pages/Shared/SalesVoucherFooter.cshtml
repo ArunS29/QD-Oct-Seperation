@@ -820,7 +820,7 @@
         });
     }
 
-    function onBackButtonClick() {
+        function onBackButtonClick() {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const rowCount = dataGrid.getVisibleRows().length;
 
@@ -830,19 +830,38 @@
                 "No line items"
             ).done(function (dialogResult) {
                 if (dialogResult) {
-                    if (typeof onConfirm === "function") {
-                        onConfirm(); // Ensure onConfirm is defined before calling
+                    const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                    if (!voucherNo) {
+                        DevExpress.ui.notify("Voucher number is missing.", "error", 2000);
+                        return;
                     }
-                    DevExpress.ui.dialog.alert(
-                        "Voucher has been successfully removed from the database.",
-                        "Data Deleted Successfully"
-                    ).done(function () {
-                        history.back(); // Go back to the previous page
+
+                    // Call API to check and delete if exists
+                    $.ajax({
+                        url: `/api/VoucherMaster/DeleteVoucherIfExists?voucherNo=${encodeURIComponent(voucherNo)}`,
+                        type: "POST",
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.dialog.alert(
+                                    "Voucher has been successfully removed from the database.",
+                                    "Data Deleted Successfully"
+                                ).done(function () {
+                                    history.back();
+                                });
+                            } else {
+                                DevExpress.ui.notify("Voucher not found in the database.", "warning", 2000);
+                                history.back();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("Error checking voucher in database.", "error", 2000);
+                        }
                     });
                 }
             });
         } else {
-            history.back(); // Closes or navigates back
+            history.back(); // Go back directly if there are rows
         }
     }
 

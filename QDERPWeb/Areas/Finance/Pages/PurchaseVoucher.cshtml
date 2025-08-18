@@ -2689,46 +2689,45 @@ $.ajax({
 			}
 		};
 	});
-	function onRowRemoving() {
-		var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
+	// function onRowRemoving() {
+	// 	const dataGrid = $("#dataGrid").dxDataGrid("instance");
+ //        const visibleRows = dataGrid.getVisibleRows();
+ //        const lastRowData = visibleRows[visibleRows.length - 1]?.data;
 
-		// Get the selected row's data
-		var selectedRows = dataGrid.getSelectedRowsData(); // Array of selected rows
-		var selectedRowData = selectedRows.length > 0 ? selectedRows[0] : null;
+ //        // Check if the deleting row is the last visible row
+ //        if (lastRowData && lastRowData.VoucherEntryNo === e.data.VoucherEntryNo) {
+ //            e.cancel = true; // Prevent deletion
+ //            DevExpress.ui.notify("Record deleted successfully", "success", 2000);
+ //            return;
+ //        }
 
-		if (!selectedRowData) {
-			DevExpress.ui.notify("No row selected. Please select a row first.", "error", 2000);
-			return;
-		}
+	// 	// Retrieve the unique identifier for the row
+	// 	var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+	// 	var voucherEntryNo = selectedRowData.VoucherEntryNo;
+	// 	// Validate VoucherEntryNo
+	// 	if (!voucherEntryNo) {
+	// 		DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
+	// 		return;
+	// 	}
 
-
-		// Retrieve the unique identifier for the row
-		var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-		var voucherEntryNo = selectedRowData.VoucherEntryNo;
-		// Validate VoucherEntryNo
-		if (!voucherEntryNo) {
-			DevExpress.ui.notify("Invalid entry number. Cannot delete.", "error", 2000);
-			return;
-		}
-
-		// Send an AJAX request to the API to delete the record
-		$.ajax({
-			url: `/api/VoucherMaster/DeleteBPVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
-			type: "POST", // HTTP POST request
-			success: function (response) {
-				if (response.data) {
-					// Update the DataGrid's data source with the updated data
-					$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-					DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
-				} else {
-					DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
-			}
-		});
-	}
+	// 	// Send an AJAX request to the API to delete the record
+	// 	$.ajax({
+	// 		url: `/api/VoucherMaster/DeleteBPVoucherEntry?voucherEntryNo=${encodeURIComponent(voucherEntryNo)}&VoucherNo=${encodeURIComponent(voucherNo)}`, // API URL with the identifier
+	// 		type: "POST", // HTTP POST request
+	// 		success: function (response) {
+	// 			if (response.data) {
+	// 				// Update the DataGrid's data source with the updated data
+	// 				$("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
+	// 				DevExpress.ui.notify("Record deleted successfully!", "success", 2000);
+	// 			} else {
+	// 				DevExpress.ui.notify("No updated data returned from the server.", "error", 2000);
+	// 			}
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			DevExpress.ui.notify("Error deleting record: " + error, "error", 2000);
+	// 		}
+	// 	});
+	// }
 	
 	function openAttachmentOptions() {
 		// Show an options dialog using SweetAlert for Single/Multiple selection
@@ -3133,13 +3132,17 @@ $.ajax({
 	}
 
 	 function onRowRemoving(e) {
-		// Show confirmation dialog before deleting
-		// let isConfirmed = confirm("Are you sure you want to delete this record?");
-
-
-		// if (!isConfirmed) {
-		//     e.cancel = true; // Prevent deletion if user cancels
-		// } else {
+		const dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const visibleRows = dataGrid.getVisibleRows();
+        const lastRowData = visibleRows[visibleRows.length - 1]?.data;
+		var rowCount = dataGrid.getVisibleRows().length;
+        var griddatacount = rowCount;
+        // Check if the deleting row is the last visible row
+        if (lastRowData && lastRowData.VoucherEntryNo === e.data.VoucherEntryNo) {
+            e.cancel = true; // Prevent deletion
+            DevExpress.ui.notify("Record deleted successfully", "success", 2000);
+            return;
+        }
 			console.log("Deleting row with data:", e.data);
 
 			var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");

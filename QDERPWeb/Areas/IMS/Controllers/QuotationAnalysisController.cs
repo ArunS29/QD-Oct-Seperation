@@ -196,6 +196,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             foreach (var mprNo in dto.MprNos.Distinct())
             {
+                // Check if quotation already exists for this MPR
+                bool alreadyExists = dbContext.Tbl60101quotationMasters
+                    .Any(q => q.Mprno == mprNo); // adjust column name if needed
+
+                if (alreadyExists)
+                    continue;
                 // Get existing quote numbers filtered by year if needed
                 var existingQuoteNos = dbContext.Tbl60101quotationMasters
                     .Where(q => q.QuoteNo != null &&
@@ -256,11 +262,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 
 
-        // 🔹 DTO
-        public class CreateQuotationRequest
-        {
-            public List<string> MprNos { get; set; }
-        }
+
+ 
 
 
     }

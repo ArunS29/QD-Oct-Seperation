@@ -139,6 +139,22 @@
 
 
     <style>
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+            ::-webkit-scrollbar-thumb:hover {
+                background: #94a3b8;
+            }
         /* Container for sidebar (assumes #sidebar2 exists) */
         .sidebar3div {
             width: 100vw;
@@ -212,6 +228,10 @@
             color: #999;
         }
 
+        .dx-popup-title.dx-toolbar {
+            background-color: var(--title-background-color) !important;
+            color: white !important;
+        }
             .submenu-item.disabled i {
                 color: #ccc;
             }
@@ -393,7 +413,7 @@
             margin-right: 0px;
             /* background-color: var(--title-background-color); */
             /* height: 100vh; */
-            width: max-content;
+            width: 50px;
             position: fixed;
             z-index: 10;
         }
@@ -1174,7 +1194,7 @@
                 min-width: 20px;
                 text-align: center;
                 user-select: none;
-                display: none; /* hide when 0 */
+                
             }
 
         .notification-tooltip {
@@ -1332,6 +1352,335 @@
             padding-left: 10px;
         }
 
+        .notification-sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 420px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            transition: right 0.35s ease;
+            z-index: 9999;
+        }
+
+            .notification-sidebar.open {
+                right: 0;
+            }
+
+        #notificationSidebar.sidebar {
+            position: fixed;
+            top: 0;
+            right: -420px;
+            width: 420px;
+            height: 100%;
+            background: #fff;
+            box-shadow: -4px 0 10px rgba(0,0,0,0.15);
+            overflow-y: auto;
+            transition: right 0.35s ease;
+            z-index: 9999;
+        }
+
+            #notificationSidebar.sidebar.open {
+                right: 0;
+            }
+
+        .dashboard-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .main-content {
+            flex: 1;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        .footerContainer {
+            display: none !important;
+        }
+
+        .notification-panel {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .notification-header {
+            padding: 16px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .header-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .header-title {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .notification-icon {
+            color: #374151;
+        }
+
+        .title {
+            font-weight: 600;
+            color: #374151;
+            font-size: 14px;
+        }
+
+        .notification-badge {
+            background: #3b82f6;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .mark-read-btn {
+            background: none;
+            border: none;
+            color: #3b82f6;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 4px 8px;
+            border-radius: 4px;
+        }
+
+            .mark-read-btn:hover {
+                background: #f3f4f6;
+            }
+
+        .category-tabs {
+            display: flex;
+            gap: 4px;
+        }
+
+        .category-tab {
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+            .category-tab.active {
+                background: #3b82f6;
+                color: white;
+            }
+
+            .category-tab.inactive {
+                background: transparent;
+                color: #6b7280;
+                border: 1px solid #e5e7eb;
+            }
+
+        .notification-content {
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .status-card {
+            padding: 16px;
+            background: #f8fafc;
+            border-radius: 8px;
+            margin-bottom: 16px;
+        }
+
+        .status-card-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: #6b7280;
+            margin-bottom: 12px;
+        }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 16px;
+        }
+
+        .status-item {
+            text-align: center;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 8px;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .status-icon i {
+                color: #3b82f6;
+                font-size: 14px;
+            }
+
+        .status-number {
+            font-size: 18px;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 4px;
+        }
+
+        .status-label {
+            font-size: 10px;
+            color: #6b7280;
+            line-height: 1.2;
+        }
+
+        .notification-divider {
+            border-top: 1px solid #e5e7eb;
+            margin: 16px 0;
+            padding-top: 16px;
+        }
+
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 8px;
+            transition: background-color 0.2s;
+        }
+
+            .notification-item:hover {
+                background: #f8fafc;
+            }
+
+        .notification-avatar {
+            position: relative;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #3b82f6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .status-dot {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            bottom: -2px;
+            right: -2px;
+            border: 2px solid white;
+        }
+
+            .status-dot.completed {
+                background: #10b981;
+            }
+
+            .status-dot.pending {
+                background: #f59e0b;
+            }
+
+            .status-dot.cancelled {
+                background: #ef4444;
+            }
+
+        .notification-content-text {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 12px;
+            font-weight: 500;
+            color: #374151;
+            line-height: 1.4;
+            margin-bottom: 4px;
+        }
+
+        .notification-time {
+            font-size: 10px;
+            color: #6b7280;
+        }
+
+        .main-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 8px;
+        }
+
+        .main-subtitle {
+            color: #6b7280;
+            margin-bottom: 32px;
+        }
+
+        .overview-card {
+            margin-top: 20px;
+        }
+
+        .overview-title {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 16px;
+            color: #374151;
+        }
+
+        .overview-text {
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        .status-item {
+            position: relative;
+        }
+
+            .status-item .new-dot {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                width: 10px;
+                height: 10px;
+                background-color: blue;
+                border-radius: 50%;
+                display: none; /* hidden by default */
+            }
+
+        .text-button {
+            background: none; /* remove background */
+            border: none; /* remove border */
+            color: #007bff; /* text color (blue for link-like) */
+            cursor: pointer; /* pointer on hover */
+            padding: 0; /* remove padding */
+            font-size: 14px; /* optional font size */
+            text-decoration: underline; /* optional underline to look clickable */
+        }
+
+            .text-button:hover {
+                color: #0056b3; /* darker on hover */
+            }
+
+        .title.collapsed {
+            display: none; /* or height: 0; overflow: hidden; transition: height 0.3s ease; */
+        }
     </style>
     @RenderSection("Styles", required: false)
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
@@ -1341,6 +1690,295 @@
 
 </head>
 <body>
+    <div id="notificationSidebar" class="notification-sidebar">
+        <div id="notificationSidebarContent">
+            <div class="notification-panel">
+
+                <!-- Header -->
+                <div class="notification-header">
+                    <div class="header-top">
+                        <div class="header-title">
+                            <i class="fas fa-bell notification-icon"></i>
+                            <span class="title">Notifications</span>
+                            <span class="notification-badge" id="sidebarBadge">0</span>
+                        </div>
+                        <button class="mark-read-btn">Mark all as read</button>
+                    </div>
+
+                    <!-- Category Tabs -->
+                    <div class="category-tabs">
+                        <span class="category-tab active" id="financeTab" data-tab="financeContent">Finance 0</span>
+                        <span class="category-tab inactive" id="vatTab" data-tab="vatContent">VAT 0</span>
+                        <span class="category-tab inactive" id="inventoryTab" data-tab="inventoryContent">Inventory 0</span>
+                        <span class="category-tab inactive" id="othersTab" data-tab="othersContent">Others 0</span>
+                    </div>
+                </div>
+
+                <!-- Content -->
+                <div class="notification-content">
+
+                    <!-- Finance Tab Content -->
+                    <div class="tab-content" id="financeContent">
+                        <!-- Payments (Bank/Cash) -->
+                        <div class="status-card">
+                            <div class="status-card-title">Payments (Bank/Cash)</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="payments-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="payments-verified-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="payments-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="payments-approved-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('Payments','ToBeAudited')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="payments-audited">0</div>
+                                    <div class="status-label">To Be Audited</div>
+                                    <span class="new-dot" id="payments-audited-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Receipt (Bank/Cash) -->
+                        <div class="status-card">
+                            <div class="status-card-title">Receipt (Bank/Cash)</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="receipt-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="receipt-verified-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="receipt-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="receipt-approved-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('Receipts','ToBeAudited')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="receipt-audited">0</div>
+                                    <div class="status-label">To Be Audited</div>
+                                    <span class="new-dot" id="receipt-audited-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Sales/Purchase -->
+                        <div class="status-card">
+                            <div class="status-card-title">Sales/Purchase</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="salespurchase-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="salespurchase-verified-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="salespurchase-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="salespurchase-approved-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('SalesPurchase','ToBeAudited')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="salespurchase-audited">0</div>
+                                    <div class="status-label">To Be Audited</div>
+                                    <span class="new-dot" id="salespurchase-audited-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Journals -->
+                        <div class="status-card">
+                            <div class="status-card-title">Journals</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="journals-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="journals-verified-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="journals-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="journals-approved-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('Journals','ToBeAudited')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="journals-audited">0</div>
+                                    <div class="status-label">To Be Audited</div>
+                                    <span class="new-dot" id="journals-audited-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Expense Claims -->
+                        <div class="status-card">
+                            <div class="status-card-title">Expense Claims</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="expenseclaims-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="expenseclaims-verified-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="expenseclaims-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="expenseclaims-approved-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="goToVoucherApproval('ExpenseClaims','ToBeAudited')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="expenseclaims-audited">0</div>
+                                    <div class="status-label">To Be Audited</div>
+                                    <span class="new-dot" id="expenseclaims-audited-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Clear All & Individual Notifications -->
+                        <button id="clearAllNotifications" class="text-button">Clear All</button>
+                        <div class="notification-divider" id="notificationList">
+                            <!-- Individual notifications will be dynamically injected -->
+                        </div>
+                    </div>
+
+                    <!-- VAT Tab Content -->
+                    <div class="tab-content" id="vatContent" style="display:none;">
+                        <!-- Sales -->
+                        <div class="status-card">
+                            <div class="status-card-title">Sales</div>
+                            <div class="status-grid">
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatsales-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="vatsales-dot"></span>
+                                </div>
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatsales-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="vatsales-dot"></span>
+                                </div>
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatsales-audited">0</div>
+                                    <div class="status-label">To Be Post</div>
+                                    <span class="new-dot" id="vatsales-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Debit -->
+                        <div class="status-card">
+                            <div class="status-card-title">Debit</div>
+                            <div class="status-grid">
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatdebit-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="vatdebit-dot"></span>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatdebit-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="vatdebit-dot"></span>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatdebit-audited">0</div>
+                                    <div class="status-label">To Be Post</div>
+                                    <span class="new-dot" id="vatdebit-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Credit -->
+                        <div class="status-card">
+                            <div class="status-card-title">Credit</div>
+                            <div class="status-grid">
+                                <div class="status-item">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatcredit-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="vatcredit-dot"></span>
+                                </div>
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatcredit-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="vatcredit-dot"></span>
+                                </div>
+                                <div class="status-item">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatcredit-audited">0</div>
+                                    <div class="status-label">To Be Post</div>
+                                    <span class="new-dot" id="vatcredit-dot"></span>
+                                    @* onclick="goToVoucherApproval('VATCredit','ToBeAudited') *@
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Purchase -->
+                        <div class="status-card">
+                            <div class="status-card-title">Purchase</div>
+                            <div class="status-grid">
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatpurchase-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="vatpurchase-dot"></span>
+                                </div>
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatpurchase-approved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="vatpurchase-dot"></span>
+                                </div>
+                                <div class="status-item" >
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="vatpurchase-audited">0</div>
+                                    <div class="status-label">To Be Audited</div>
+                                    <span class="new-dot" id="vatpurchase-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- Clear All & Individual Notifications -->
+                        <button id="clearAllNotifications" class="text-button">Clear All</button>
+                        <div class="notification-divider" id="notificationVATList">
+                            <!-- Individual notifications will be dynamically injected -->
+                        </div>
+                    </div>
+
+                    <!-- Inventory & Others Tabs (Placeholders) -->
+                    <div class="tab-content" id="inventoryContent" style="display:none;">
+                        <div class="status-card">Inventory content goes here.</div>
+                    </div>
+                    <!-- Others Tab Content -->
+                    <div class="tab-content" id="othersContent" style="display:none;">
+                        <!-- Clear All & Individual Notifications -->
+                        <button id="clearAllOthers" class="text-button">Clear All</button>
+                        <div class="notification-divider" id="othersNotificationList">
+                            <!-- Notifications will be injected dynamically -->
+                        </div>
+                    </div>
+
+                   
+
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Floating Chatbot -->
     <div id="chatbot-container">
         <div id="chatbot-inactive" onclick="toggleChat()">
@@ -1443,18 +2081,12 @@
                 <button id="fullscreenToggle">
                     <i class="fas fa-expand" id="fullscreenIcon"></i>
                 </button>
-                <div class="notification-bell-wrapper"
-                     onmouseenter="showPopup()"
-                     onmouseleave="hidePopup()"
+                <div id="bellButton" class="notification-bell-wrapper"
+
                      onclick="handleBellClick()">
                     <i class="fas fa-bell"></i>
-                    <div class="badge-count" id="notificationBadge">0</div>
+                    <div class="badge-count" id="bellBadge">0</div>
 
-                    <!-- Styled Popup Panel -->
-                    <div class="notification-popup" id="notificationPopup">
-                        <div class="popup-header">Notifications</div>
-                        <div class="popup-body" id="notificationPopupContent">Loading...</div>
-                    </div>
                 </div>
                 <i class="fas fa-palette img" onclick="handleGearClick()"></i> <!-- Gear icon -->
 
@@ -2877,12 +3509,12 @@
                     }
                 });
 
-                function handleBellClick() {
-                    window.location.href = `/${tenantName}/Shared/Notification`;
-                }
-                        function handleBellClick() {
-                  window.location.href = `/${tenantName}/Shared/Notification`;
-                }
+                // function handleBellClick() {
+                //     window.location.href = `/${tenantName}/NotificationPanel`;
+                // }
+                //         function handleBellClick() {
+                //   window.location.href = `/${tenantName}/NotificationPanel`;
+                // }
                         function stockInventoryReport() {
                   window.location.href = `/${tenantName}/VAT/VATSalesStockInventoryList`;
                 }
@@ -2890,66 +3522,7 @@
                   window.location.href = `/${tenantName}/VAT/VATSalesReportCOGSPosting`;
                 }
 
-                     let alertsData = [];
 
-                async function fetchUnseenCount() {
-                  try {
-                    const response = await fetch('/api/Notification/GetUserNotifications');
-                    if (!response.ok) throw new Error('Failed to fetch notifications');
-
-                    const json = await response.json();
-                    alertsData = json.data || [];
-
-                    const unseenCount = alertsData.filter(n => n.IsSeen === false).length;
-                    const badge = document.getElementById('notificationBadge');
-                    badge.style.display = unseenCount > 0 ? 'inline-block' : 'none';
-                    badge.textContent = unseenCount;
-
-                  } catch (err) {
-                    console.error('Error fetching notifications:', err);
-                  }
-                }
-
-                function showPopup() {
-                  const popup = document.getElementById('notificationPopup');
-                  const content = document.getElementById('notificationPopupContent');
-
-                  const unread = alertsData.filter(n => !n.IsSeen && n.AlertUserMessage);
-
-                  if (unread.length === 0) {
-                    content.innerHTML = '<div class="notification-item">No new notifications</div>';
-                  } else {
-                    content.innerHTML = unread.map(n => `
-                      <div class="notification-item">
-                        <strong>${n.AlertCode}</strong>
-                        <span>${n.AlertUserMessage}</span>
-                      </div>
-                    `).join('');
-                  }
-
-                  popup.style.display = 'block';
-                }
-
-                function hidePopup() {
-                  document.getElementById('notificationPopup').style.display = 'none';
-                }
-
-                window.addEventListener('DOMContentLoaded', fetchUnseenCount);
-                function handleGearClick() {
-                    const settingsPopup = document.getElementById('settingsPopup');
-                    if (settingsPopup) {
-                        settingsPopup.style.display = 'block';
-                        document.addEventListener('click', handleOutsideClick);
-                    }
-                }
-
-                function closePopup(popupId) {
-                    const popup = document.getElementById(popupId);
-                    if (popup) {
-                        popup.style.display = 'none';
-                        document.removeEventListener('click', handleOutsideClick);
-                    }
-                }
 
                 function handleOutsideClick(event) {
                     const popup = document.getElementById('settingsPopup');
@@ -4420,21 +4993,24 @@
                 document.head.appendChild(style);
             }
         });
-        function toggleKpiCarousel() {
-            const carousel = document.getElementsByClassName("title")[0]; // Get the first element
+              function toggleKpiCarousel() {
+            const carousel = document.querySelector(".title"); // safer selector
             const icon = document.getElementById("kpiToggleIcon");
 
-            if (!carousel) return; // Safeguard if element not found
+            if (!carousel) {
+                console.warn("No element with class 'title' found.");
+                return;
+            }
+
             carousel.classList.toggle("collapsed");
 
             if (carousel.classList.contains("collapsed")) {
-                icon.classList.remove("fa-chevron-up");
-                icon.classList.add("fa-chevron-down");
+                icon.classList.replace("fa-chevron-up", "fa-chevron-down");
             } else {
-                    icon.classList.remove("fa-chevron-down");
-                    icon.classList.add("fa-chevron-up");
+                icon.classList.replace("fa-chevron-down", "fa-chevron-up");
             }
         }
+
         $(function () {
             $(".dynamicFormatDateBox").each(function () {
                 const $dateBoxDiv = $(this); // this is the outer container (e.g., <div class="dynamicFormatDateBox">)
@@ -4516,6 +5092,452 @@
                 }
             });
         }
+                function handleGearClick() {
+
+            const settingsPopup = document.getElementById('settingsPopup');
+
+            if (settingsPopup) {
+
+                settingsPopup.style.display = 'block';
+
+                document.addEventListener('click', handleOutsideClick);
+
+            }
+
+        }
+                               function handleGearClick() {
+
+                    const settingsPopup = document.getElementById('settingsPopup');
+
+                    if (settingsPopup) {
+
+                        settingsPopup.style.display = 'block';
+
+                        document.addEventListener('click', handleOutsideClick);
+
+                    }
+
+                }
+                function closePopup(popupId) {
+             const popup = document.getElementById(popupId);
+             if (popup) {
+                 popup.style.display = 'none';
+                 document.removeEventListener('click', handleOutsideClick);
+             }
+        }
+
+                $(document).ready(function () {
+            let previousIds = new Set(); // track notifications already seen
+
+            function updateNotifications() {
+                $.getJSON('/api/Notification/GetFinanceNotificationSummary', function (data) {
+                    const summary = data.Summary;
+                    const notifications = data.Notifications;
+
+                    // Update individual status numbers
+                    $("#payments-verified").text(summary.Payments.ToBeVerified);
+                    $("#payments-approved").text(summary.Payments.ToBeApproved);
+                    $("#payments-audited").text(summary.Payments.ToBeAudited);
+                    $("#receipt-verified").text(summary.Receipts.ToBeVerified);
+                    $("#receipt-approved").text(summary.Receipts.ToBeApproved);
+                    $("#receipt-audited").text(summary.Receipts.ToBeAudited);
+                    $("#salespurchase-verified").text(summary.SalesPurchase.ToBeVerified);
+                    $("#salespurchase-approved").text(summary.SalesPurchase.ToBeApproved);
+                    $("#salespurchase-audited").text(summary.SalesPurchase.ToBeAudited);
+                    $("#journals-verified").text(summary.Journals.ToBeVerified);
+                    $("#journals-approved").text(summary.Journals.ToBeApproved);
+                    $("#journals-audited").text(summary.Journals.ToBeAudited);
+                    $("#expenseclaims-verified").text(summary.ExpenseClaims.ToBeVerified);
+                    $("#expenseclaims-approved").text(summary.ExpenseClaims.ToBeApproved);
+                    $("#expenseclaims-audited").text(summary.ExpenseClaims.ToBeAudited);
+
+                    const $list = $("#notificationList");
+
+                    // Add new notifications
+                    notifications.forEach(n => {
+                        const date = new Date(n.CreatedOn);
+                        const userName = n.User || "Unknown";
+                        const uniqueId = n.VoucherNumber + date.getTime();
+
+                        if (!previousIds.has(uniqueId)) previousIds.add(uniqueId);
+
+                        if ($(`#notif-${uniqueId}`).length === 0) {
+                            const $item = $(`
+                                <div class="notification-item" id="notif-${uniqueId}">
+                                    <div class="notification-avatar">${userName.charAt(0)}</div>
+                                    <div class="notification-content-text">
+                                        <div class="notification-title">
+                                            ${n.VoucherType} Voucher ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+                                        </div>
+                                        <div class="notification-time">
+                                            ${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                                        </div>
+                                    </div>
+                                </div>
+                            `);
+                            $list.prepend($item.hide().slideDown(300));
+                        }
+                    });
+
+                    // Calculate total notifications from summary
+                    const totalCount =
+                        summary.Payments.ToBeVerified + summary.Payments.ToBeApproved + summary.Payments.ToBeAudited +
+                        summary.Receipts.ToBeVerified + summary.Receipts.ToBeApproved + summary.Receipts.ToBeAudited +
+                        summary.SalesPurchase.ToBeVerified + summary.SalesPurchase.ToBeApproved + summary.SalesPurchase.ToBeAudited +
+                        summary.Journals.ToBeVerified + summary.Journals.ToBeApproved + summary.Journals.ToBeAudited +
+                        summary.ExpenseClaims.ToBeVerified + summary.ExpenseClaims.ToBeApproved + summary.ExpenseClaims.ToBeAudited;
+
+                    $("#sidebarBadge").text(totalCount);
+                    $("#financeTab").text(`Finance ${totalCount}`);
+                });
+            }
+
+            // Mark all as seen (does not remove)
+            $(".mark-read-btn").click(function () {
+                $("#bellBadge, #sidebarBadge").text(0);
+                previousIds.clear();
+            });
+
+            // Clear all notifications with animation
+            $("#clearAllNotifications").click(function () {
+                const $items = $("#notificationList .notification-item");
+                if ($items.length === 0) return;
+
+                $items.slideUp(300, function () { $(this).remove(); });
+
+                // Reset badges
+                $("#bellBadge, #sidebarBadge").text(0);
+                $("#financeTab").text(`Finance 0`);
+                previousIds.clear();
+            });
+
+            // Initial load + refresh every 60 seconds
+            updateNotifications();
+            setInterval(updateNotifications, 60000);
+        });
+
+
+
+
+
+
+             $(document).ready(function () {
+            const cardMap = [
+                { id: "#payments-verified", module: "Payments", status: "ToBeVerified" },
+                { id: "#payments-approved", module: "Payments", status: "ToBeApproved" },
+                { id: "#payments-audited", module: "Payments", status: "ToBeAudited" },
+
+                { id: "#receipt-verified", module: "Receipts", status: "ToBeVerified" },
+                { id: "#receipt-approved", module: "Receipts", status: "ToBeApproved" },
+                { id: "#receipt-audited", module: "Receipts", status: "ToBeAudited" },
+
+                { id: "#salespurchase-verified", module: "SalesPurchase", status: "ToBeVerified" },
+                { id: "#salespurchase-approved", module: "SalesPurchase", status: "ToBeApproved" },
+                { id: "#salespurchase-audited", module: "SalesPurchase", status: "ToBeAudited" },
+
+                { id: "#journals-verified", module: "Journals", status: "ToBeVerified" },
+                { id: "#journals-approved", module: "Journals", status: "ToBeApproved" },
+                { id: "#journals-audited", module: "Journals", status: "ToBeAudited" },
+
+                { id: "#expenseclaims-verified", module: "ExpenseClaims", status: "ToBeVerified" },
+                { id: "#expenseclaims-approved", module: "ExpenseClaims", status: "ToBeApproved" },
+                { id: "#expenseclaims-audited", module: "ExpenseClaims", status: "ToBeAudited" },
+            ];
+
+            cardMap.forEach(item => {
+                $(item.id).closest(".status-item").css("cursor", "pointer").click(function () {
+                    goToVoucherApproval(item.module, item.status);
+                });
+            });
+        });
+
+        /**
+         * Redirection logic
+         * Payments → BankCash
+         * Receipts → BankCashReceipt
+         */
+        function goToVoucherApproval(module, status) {
+            let docType = module;
+            if (module === "Payments") docType = "BankCashPayment";
+            if (module === "Receipts") docType = "BankCashReceipt";
+
+            window.location.href = `Finance/VoucherApproval?docType=${docType}&status=${status}`;
+        }
+
+              // Open sidebar when bell clicked
+        document.getElementById('bellButton').addEventListener('click', function(e) {
+            const sidebar = document.getElementById('notificationSidebar');
+            if (!sidebar) return;
+
+            sidebar.classList.add('open');
+
+            // Stop the click from propagating to document
+            e.stopPropagation();
+        });
+
+        // Close sidebar when clicking outside
+        document.addEventListener('click', function(e) {
+            const sidebar = document.getElementById('notificationSidebar');
+            if (!sidebar) return;
+
+            // If sidebar is open and click is outside sidebar & bell
+            if (sidebar.classList.contains('open') &&
+                !sidebar.contains(e.target) &&
+                !e.target.closest('#bellButton')) {
+                sidebar.classList.remove('open');
+            }
+        });
+                $(document).ready(function() {
+            $(".category-tab").click(function() {
+                // Remove active from all tabs
+                $(".category-tab").removeClass("active").addClass("inactive");
+                // Add active to clicked tab
+                $(this).removeClass("inactive").addClass("active");
+
+                // Show the associated tab content
+                var tabId = $(this).data("tab");
+                $(".tab-content").hide();
+                $("#" + tabId).show();
+            });
+        });
+        $(document).ready(function () {
+
+            function updateBellBadge(extraCount) {
+                let currentCount = parseInt($("#bellBadge").text()) || 0;
+                $("#bellBadge").text(currentCount + extraCount);
+            }
+
+            function loadOthersNotifications() {
+                $.getJSON('/api/Notification/GetUserNotifications', function (res) {
+                    const notifications = res.data || [];
+                    const list = $("#othersNotificationList");
+                    list.empty();
+
+                    if (notifications.length > 0) {
+                        notifications.forEach(function (notif) {
+                            const item = $(`
+                                <div class="notification-item">
+                                    <div class="notification-avatar">O</div>
+                                    <div class="notification-content-text">
+                                        <div class="notification-title">${notif.AlertUserMessage}</div>
+                                        <div class="notification-time">${new Date(notif.AlertUserOn).toLocaleString()}</div>
+                                    </div>
+                                </div>
+                            `);
+                            list.append(item);
+                        });
+                    } else {
+                        list.append('<div class="notification-empty">No notifications</div>');
+                    }
+
+                    // Count
+                    const totalCount = res.totalCount || notifications.length;
+
+                    // Update Others tab
+                    $("#othersTab").text(`Others ${totalCount}`);
+
+                    // Add this section's count to the bell badge
+                    updateBellBadge(totalCount);
+                });
+            }
+
+            // Initial load
+            loadOthersNotifications();
+
+            // Clear All button click
+            $("#clearAllOthers").on("click", function () {
+                $("#othersNotificationList .notification-item").fadeOut(300, function () {
+                    $(this).remove();
+                });
+                $("#othersTab").text("Others 0");
+
+                // Reduce bell badge count accordingly
+                let currentCount = parseInt($("#bellBadge").text()) || 0;
+                $("#bellBadge").text(Math.max(0, currentCount - ($("#othersNotificationList .notification-item").length)));
+            });
+
+        });
+
+               $(document).ready(function () {
+            const $vatSalesList = $("#notificationVATList");
+            const $vatDebitList = $("#notificationVATList");
+            const $vatCreditList = $("#notificationVATList");
+              const $vatPurchaseList = $("#notificationVATList");
+
+            let vatSalesPrevIds = new Set();
+            let vatDebitPrevIds = new Set();
+            let vatCreditPrevIds = new Set();
+               let vatPurchasePrevIds = new Set();
+            let totalVatCount = 0;
+
+            function updateVatTab() {
+                $("#vatTab").text(`VAT ${totalVatCount}`);
+            }
+
+            // ---------------- VAT Sales ----------------
+            $.getJSON('/api/Notification/GetVatSalesNotificationSummary', function (data) {
+                if (!data.success) return;
+
+                $("#vatsales-verified").text(data.Summary.ToBeVerified);
+                $("#vatsales-approved").text(data.Summary.ToBeApproved);
+                $("#vatsales-audited").text(data.Summary.ToBeAudited);
+
+                $("#vatsales-verified-dot").toggle(data.Summary.ToBeVerified > 0);
+                $("#vatsales-approved-dot").toggle(data.Summary.ToBeApproved > 0);
+                $("#vatsales-audited-dot").toggle(data.Summary.ToBeAudited > 0);
+
+                totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+                updateVatTab();
+
+                data.Notifications.forEach(n => {
+                    const date = new Date(n.CreatedOn);
+                    const userName = n.User || "Unknown";
+                    const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+
+                    if (!vatSalesPrevIds.has(uniqueId)) {
+                        vatSalesPrevIds.add(uniqueId);
+                        const $item = $(`
+                            <div class="notification-item" id="vatsales-notif-${uniqueId}">
+                                <div class="notification-avatar">${userName.charAt(0)}</div>
+                                <div class="notification-content-text">
+                                    <div class="notification-title">
+                                        ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+                                    </div>
+                                    <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                </div>
+                            </div>
+                        `);
+                        $vatSalesList.prepend($item.hide().slideDown(300));
+                    }
+                });
+            });
+
+            // ---------------- VAT Debit ----------------
+            $.getJSON('/api/Notification/GetVatDebitNotificationSummary', function (data) {
+                if (!data.success) return;
+
+                $("#vatdebit-verified").text(data.Summary.ToBeVerified);
+                $("#vatdebit-approved").text(data.Summary.ToBeApproved);
+                $("#vatdebit-audited").text(data.Summary.ToBeAudited);
+
+                $("#vatdebit-verified-dot").toggle(data.Summary.ToBeVerified > 0);
+                $("#vatdebit-approved-dot").toggle(data.Summary.ToBeApproved > 0);
+                $("#vatdebit-audited-dot").toggle(data.Summary.ToBeAudited > 0);
+
+                totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+                updateVatTab();
+
+                data.Notifications.forEach(n => {
+                    const date = new Date(n.CreatedOn);
+                    const userName = n.User || "Unknown";
+                    const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+
+                    if (!vatDebitPrevIds.has(uniqueId)) {
+                        vatDebitPrevIds.add(uniqueId);
+                        const $item = $(`
+                            <div class="notification-item" id="vatdebit-notif-${uniqueId}">
+                                <div class="notification-avatar">${userName.charAt(0)}</div>
+                                <div class="notification-content-text">
+                                    <div class="notification-title">
+                                        ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+                                    </div>
+                                    <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                </div>
+                            </div>
+                        `);
+                        $vatDebitList.prepend($item.hide().slideDown(300));
+                    }
+                });
+            });
+
+            // ---------------- VAT Credit ----------------
+            $.getJSON('/api/Notification/GetVatCreditNotificationSummary', function (data) {
+                if (!data.success) return;
+
+                $("#vatcredit-verified").text(data.Summary.ToBeVerified);
+                $("#vatcredit-approved").text(data.Summary.ToBeApproved);
+                $("#vatcredit-audited").text(data.Summary.ToBeAudited);
+
+                $("#vatcredit-dot").toggle(data.Summary.ToBeVerified > 0 || data.Summary.ToBeApproved > 0 || data.Summary.ToBeAudited > 0);
+
+                totalVatCount += data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+                updateVatTab();
+
+                data.Notifications.forEach(n => {
+                    const date = new Date(n.CreatedOn);
+                    const userName = n.User || "Unknown";
+                    const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+
+                    if (!vatCreditPrevIds.has(uniqueId)) {
+                        vatCreditPrevIds.add(uniqueId);
+                        const $item = $(`
+                            <div class="notification-item" id="vatcredit-notif-${uniqueId}">
+                                <div class="notification-avatar">${userName.charAt(0)}</div>
+                                <div class="notification-content-text">
+                                    <div class="notification-title">
+                                        ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+                                    </div>
+                                    <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                                </div>
+                            </div>
+                        `);
+                        $vatCreditList.prepend($item.hide().slideDown(300));
+                    }
+                });
+            });
+            // Purchase and Expense Report
+                    $.getJSON('/api/Notification/GetVatPurchaseNotificationSummary', function (data) {
+            if (!data.success) return;
+
+            $("#vatpurchase-verified").text(data.Summary.ToBeVerified);
+            $("#vatpurchase-approved").text(data.Summary.ToBeApproved);
+            $("#vatpurchase-audited").text(data.Summary.ToBeAudited);
+
+            $("#vatpurchase-dot").toggle(data.Summary.ToBeVerified > 0 || data.Summary.ToBeApproved > 0 || data.Summary.ToBeAudited > 0);
+
+            // Update VAT Tab total
+            const totalCount = data.Summary.ToBeVerified + data.Summary.ToBeApproved + data.Summary.ToBeAudited;
+            const currentVatCount = parseInt($("#vatTab").text().replace(/\D/g, "")) || 0;
+            $("#vatTab").text(`VAT ${currentVatCount + totalCount}`);
+
+            // Render notifications
+            data.Notifications.forEach(n => {
+                const date = new Date(n.CreatedOn);
+                const userName = n.User || "Unknown";
+                const uniqueId = (n.VoucherNumber || "NA") + date.getTime();
+
+                if (!vatPurchasePrevIds.has(uniqueId)) {
+                    vatPurchasePrevIds.add(uniqueId);
+                    const $item = $(`
+                        <div class="notification-item" id="vatpurchase-notif-${uniqueId}">
+                            <div class="notification-avatar">${userName.charAt(0)}</div>
+                            <div class="notification-content-text">
+                                <div class="notification-title">
+                                    ${n.VoucherType} ${n.VoucherNumber} has been ${n.Status} by ${userName}${n.Amount ? ', ₹' + n.Amount : ''}.
+                                </div>
+                                <div class="notification-time">${date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</div>
+                            </div>
+                        </div>
+                    `);
+                    $vatPurchaseList.prepend($item.hide().slideDown(300));
+                }
+            });
+        });
+
+
+
+            // ---------------- Clear All ----------------
+            $("#clearAllNotifications").on("click", function () {
+                $vatSalesList.empty(); vatSalesPrevIds.clear();
+                $vatDebitList.empty(); vatDebitPrevIds.clear();
+                $vatCreditList.empty(); vatCreditPrevIds.clear();
+                totalVatCount = 0;
+                updateVatTab();
+            });
+        });
+
+
+
 
     </script>
 </body>
