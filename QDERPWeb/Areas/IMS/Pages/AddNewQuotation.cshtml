@@ -2248,6 +2248,7 @@
 				"btnBack",
 				"btnAttach"
 			]);
+			disableAllDropDownsAndSelects();
 			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 if (gridInstance) {
     gridInstance.option({
@@ -2562,7 +2563,7 @@ function checkDateLocking() {
 
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
-													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "8");
 													dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													ItemNo = selectedItem.GSCode;
 
@@ -3320,9 +3321,13 @@ placeholder: "Search..."
 
 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
-													dataGrid.cellValue(rowIndex, "Qty", 1);
-
-													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+													dataGrid.cellValue(rowIndex, "Qty", 1);getTaxSlabData().done(function (taxSlabs) {
+		const defaultSlab = taxSlabs.find(x => x.TaxSlab === "15% Domestic Standard Sales");
+		if (defaultSlab) {
+			dataGrid.cellValue(rowIndex, "QuotedTaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
+		}
+	});
+													//dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "8");
 														dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null);
 															dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													
@@ -5823,9 +5828,10 @@ AddlDescription: null,
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					DevExpress.ui.notify(response.message, "success", 3000);
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
-					DevExpress.ui.notify(response.message, "success", 3000);
+					
 
 					const quoteno = response.quoteno;
 				
@@ -5850,7 +5856,7 @@ AddlDescription: null,
 	function loadChildDataAndBindGrid(quoteno) {
 		//
     if (!quoteno) {
-        console.warn("No MPR number provided.");
+        console.warn("No Quote number provided.");
         return;
     }
 
@@ -6490,6 +6496,7 @@ AddlDescription: null,
                         }
                     });
                 }
+				  disableAllDropDownsAndSelects();
             } else {
                 DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
                 approveBtn.option("disabled", false);
@@ -6547,7 +6554,21 @@ AddlDescription: null,
 		}
 
 
+		function disableAllDropDownsAndSelects() {
+    $(".dx-dropdownbox").each(function () {
+        var dropDown = $(this).dxDropDownBox("instance");
+        if (dropDown) {
+            dropDown.option("disabled", true);
+        }
+    });
 
+    $(".dx-selectbox").each(function () {
+        var selectBox = $(this).dxSelectBox("instance");
+        if (selectBox) {
+            selectBox.option("disabled", true);
+        }
+    });
+}
 
 
 

@@ -1,5 +1,5 @@
 ﻿@page
-@model QD.ERP.Web.Areas.IMS.Pages.MaterialReceiptFromSupplierModel
+@model QD.ERP.Web.Areas.IMS.Pages.MaterialReceiptFromProjectModel
 @{
 }
 
@@ -310,6 +310,7 @@
 						.TabIndex(1)
 						.Width("100%")
 						.OnKeyDown("onKeyDown")
+						.Disabled(true)
 						//.OnValueChanged("dropDownBoxValueChanged")
 						.ContentTemplate(new TemplateName("GetSupplierContentTemplate"))
 						.ValidationRules(rules =>
@@ -324,11 +325,13 @@
                         .Icon("plus")
                         .Hint("Add Supplier")
                         .Width(35)
+						.Disabled(true)
                         .ElementAttr("style", "margin-left: 5px;")
 						.OnClick("AddNewSupplier"))
 							@(Html.DevExtreme().Button()
 													.ID("btnEditSupplier")
 													.Icon("edit")
+													.Disabled(true)
 													.ElementAttr("class", "button-alignment-up button-group")
 													.OnClick(@"function() {
 												var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
@@ -388,7 +391,7 @@
 						.TabIndex(1)
 						.Width("100%")
 						.OnKeyDown("onKeyDown")
-						//.Disabled(true)
+						.Disabled(true)
 						//.OnValueChanged("dropDownBoxValueChanged")
 						.ContentTemplate(new TemplateName("GetClientContentTemplate"))
 						)
@@ -433,6 +436,7 @@
 						.TabIndex(1)
 						.Width("100%")
 						.OnKeyDown("onKeyDown")
+													.Disabled(true)
 						//.OnValueChanged("dropDownBoxValueChanged")
 						.ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
 						)
@@ -623,7 +627,7 @@
 					)
 					.LabelMode(EditorLabelMode.Floating)
 					.ID("ddRecivedType")
-					.Value(1)
+					.Value(3)
 					.Disabled(true)
 					.OpenOnFieldClick(false)
 					.ValueChangeEvent("input")
@@ -1609,11 +1613,9 @@
 			 Approved = response.IsApproved;
 
 		// ✅ Disable buttons if already approved
-
-			// ✅ Disable buttons if already approved
-			if (Approved === true) {
+					if (Approved === true) {
 					hideAllButtonsExcept([
-					"btnPrint",
+						"btnPrint",
 					   "ddButtonLayout",
 						"btnBack",
 						"btnAttach"
@@ -1900,7 +1902,7 @@
 			dataGrid.cellValue(rowIndex, "PotaxSlab", defaultSlab.TaxSlabCode); // ✅ Use ID/code
 		}
 	});
-	
+		dataGrid.cellValue(rowIndex, "VAT%", "15%");
 																	dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null); // ✅ Assign UOM
 
 
@@ -5626,20 +5628,21 @@ $("#btnBack").on("click", function (e) {
                      	"btnBack",
                      	"btnAttach"
 					]);
-						  disableAllDropDownsAndSelects();
-				const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
-					if (gridInstance) {
-						gridInstance.option({
-							editing: {
-								allowUpdating: false,
-								allowAdding: false,
-								allowDeleting: false
-							},
-							selection: {
-								mode: "none"
-							}
-						});
-					}
+					  disableAllDropDownsAndSelects();
+					const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+						if (gridInstance) {
+							gridInstance.option({
+								editing: {
+									allowUpdating: false,
+									allowAdding: false,
+									allowDeleting: false
+								},
+								selection: {
+									mode: "none"
+								}
+							});
+						}
+		
 		  } else {
 			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 			approveBtn.option("disabled", false);
@@ -5689,13 +5692,14 @@ $("#btnBack").on("click", function (e) {
 					}
 				});
 			}
-			function disableAllDropDownsAndSelects() {
+						function disableAllDropDownsAndSelects() {
 		$(".dx-dropdownbox").each(function () {
 			var dropDown = $(this).dxDropDownBox("instance");
 			if (dropDown) {
 				dropDown.option("disabled", true);
 			}
 		});
+
 		$(".dx-selectbox").each(function () {
 			var selectBox = $(this).dxSelectBox("instance");
 			if (selectBox) {
@@ -5703,7 +5707,6 @@ $("#btnBack").on("click", function (e) {
 			}
 		});
 	}
-
 	$("#btnPostToLedgers").on("click", function (e) {
 		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 

@@ -435,7 +435,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						dict["UnitDesc"] = unitDesc;
 
 						dict["GsDescription"] = gsDescription;
-                        dict["GScode"] = gridDetails.Gscode;
+                        dict["GSCode"] = gridDetails.Gscode;
                         dict["UnitPrice"] = gridDetails.UnitPrice / currencyRate;
                         dict["ItemDiscount"] = gridDetails.ItemDiscount / currencyRate;
                         dict["PurchaseTaxRate"] = gridDetails.PurchaseTaxRate / currencyRate;
@@ -584,7 +584,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                    documentNo: $"{VM.ReceiptNo}"
                 );
 
-                return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully." });
+                return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully.", receiptno = VM.ReceiptNo });
             }
             catch (Exception ex)
             {
