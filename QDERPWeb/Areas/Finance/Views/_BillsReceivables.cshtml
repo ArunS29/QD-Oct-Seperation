@@ -308,10 +308,12 @@
                 columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left).AllowEditing(false);
                 columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).AllowEditing(false);
                     columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).AllowEditing(false).CalculateCellValue("function(data) { " +
-                    "if (data.Amount != null && currencyRate != 0) " +
-                    "    return data.Amount / currencyRate; " +
-                    "return null;" +
-                    " }")
+                    "    if (data.Amount != null && currencyRate != 0) { " +
+                    "        var val = data.Amount / currencyRate; " +
+                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                    "    } " +
+                    "    return null; " +
+                    "}")
                     .CustomizeText("function(e) { " +
                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
                     "}");
