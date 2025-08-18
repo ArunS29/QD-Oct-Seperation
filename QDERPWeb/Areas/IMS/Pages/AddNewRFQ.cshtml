@@ -1455,13 +1455,28 @@
 
 			// ✅ Disable buttons if already approved
 			if (Approved === true) {
-					hideAllButtonsExcept([
-					"btnPrint3",
-					"ddButtonLayout",
-					"btnBack",
-				   "btnCreatePo"
-				]);
-			}
+				hideAllButtonsExcept([
+			 "btnPrint3",
+             "ddButtonLayout",
+             "btnBack",
+             "btnCreatePo"
+				
+			]);
+			disableAllDropDownsAndSelects();
+			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+if (gridInstance) {
+    gridInstance.option({
+        editing: {
+            allowUpdating: false,
+            allowAdding: false,
+            allowDeleting: false
+        },
+        selection: {
+            mode: "none"
+        }
+    });
+}
+		}
 					$("#btnSave").dxButton("instance").option("text", "Update");
                 // Populate DevExtreme controls with the response data
                
@@ -2642,7 +2657,7 @@
 			const newRow = {
 				LineOrderNo: nextLineOrderNo,
 				//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
-					GSCode: ItemNo,
+					GSCode: null,
 	Description:null,
 	UnitRateMethod:null,
 	QuotedQuantity:0,
@@ -5207,6 +5222,20 @@ hideAllButtonsExcept([
   "btnBack",
   "btnCreatePo"
 ]);
+  const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+                if (gridInstance) {
+                    gridInstance.option({
+                        editing: {
+                            allowUpdating: false,
+                            allowAdding: false,
+                            allowDeleting: false
+                        },
+                        selection: {
+                            mode: "none"
+                        }
+                    });
+                }
+				  disableAllDropDownsAndSelects();
 
 		  } else {
 			DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
@@ -5257,6 +5286,21 @@ hideAllButtonsExcept([
 					}
 				});
 			}
+			function disableAllDropDownsAndSelects() {
+    $(".dx-dropdownbox").each(function () {
+        var dropDown = $(this).dxDropDownBox("instance");
+        if (dropDown) {
+            dropDown.option("disabled", true);
+        }
+    });
+
+    $(".dx-selectbox").each(function () {
+        var selectBox = $(this).dxSelectBox("instance");
+        if (selectBox) {
+            selectBox.option("disabled", true);
+        }
+    });
+}
 $("#btnCreatePo").on("click", function () {
     const rfqNo = $("#RFQNo").dxTextBox("instance").option("value");
     const tenantName = window.tenantName || "defaultTenant";
@@ -6017,8 +6061,11 @@ $("#btnCreatePo").on("click", function () {
               }
           }
 
-	function onSupplierContactClick() {
+
+	
+ function onSupplierContactClick() { 
 		var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
+
 		var selectedValue = dropDownBox.option('value'); // clientCode
 
 		if (!selectedValue) {
@@ -6030,22 +6077,33 @@ $("#btnCreatePo").on("click", function () {
 		var dataSource = dropDownBox.getDataSource();
 
 		dataSource.load().done(function (data) {
-			var selectedItem = data.find(x => x.ClientCode === selectedValue);
+			var selectedItem = data.find(x => x.SupplierCode === selectedValue);
 
-			if (!selectedItem || !selectedItem.ClientName) {
+			if (!selectedItem || !selectedItem.SupplierName) {
 				DevExpress.ui.notify('Client details not found.', 'error', 2000);
 				return;
 			}
 
-			var clientCode = selectedValue;
-			var clientName = selectedItem.ClientName;
+			var supplierCode = selectedValue;
+			var supplierName = selectedItem.SupplierName;
 
-			var url = '/' + tenantName + '/IMS/QuotationClientContactList?clientCode=' +
-				encodeURIComponent(clientCode) + '&clientName=' +
-				encodeURIComponent(clientName);
+			var url = '/' + tenantName + '/IMS/SupplierContactDetails?SupplierCode=' +
+				encodeURIComponent(supplierCode) + '&SupplierName=' +
+				encodeURIComponent(supplierName);
 
-			openModal(url, 'Client Contact List');
+			openModal(url, 'Supplier Contact List');
 		});
 	}
+		function selectContact(name, email, mobile, phone) {
+			$("#AttentionTo").dxTextBox("instance").option("value", name);
+			$("#SupplierEmail").dxTextBox("instance").option("value", email);
+			$("#SupplierContact").dxTextBox("instance").option(
+				"value",
+				mobile && mobile.trim() !== "" ? mobile : phone
+			);
+			DevExpress.ui.notify("Contact details added", "success", 2000);
 
+			// ✅ Close the modal after selection
+			closeModal();
+		}
 </script>

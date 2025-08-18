@@ -2,6 +2,7 @@
 var dictionary = {
 
     "en": {
+        "Add New Material Receipt-From Project":"Add New Material Receipt-From Project",
         "Show Records": "Show Records",
         "Revision No":"Revision No",
         "PO Due Date":"PO Due Date",
@@ -6063,6 +6064,7 @@ var dictionary = {
         "Invoice Amount": "مبلغ الفاتورة",
         "Received": "المستلم",
         "Balance": "الرصيد",
+        "إضافة إيصال استلام مواد جديد - من المشروع":"إضافة إيصال استلام مواد جديد - من المشروع",
         "Receivables Reports": "تقارير الذمم المدينة",
         "Receivables Summary Reports": "تقارير ملخص الذمم المدينة",
         "Ageing Reports": "تقارير تحليل الأعمار",
