@@ -1001,6 +1001,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetIMSMaterial(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry60604purchaseRequestViewMasters.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "ToBeVerified":
+                        // not verified
+                        query = query.Where(x => x.IsVerified == false);
+                        break;
+
+                    case "ToBeApproved":
+                        // verified but not approved
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved == false);
+                        break;
+
+                    case "ToBeCancelled":
+                        // approved but not posted
+                        query = query.Where(x =>  x.IsCancelled == true);
+                        break;
+                }
+            }
+
+            var count = query.Count();
+            return Json(new { status, count });
+        }
 
 
     }
