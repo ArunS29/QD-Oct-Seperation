@@ -1229,8 +1229,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
             }
 
-            var count = query.Count();
-            return Json(new { status, count });
+            var result = query.ToList(); // get the actual records
+            return Json(result);
         }
     }
 }
