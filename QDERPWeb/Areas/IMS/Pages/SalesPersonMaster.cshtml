@@ -289,43 +289,33 @@
                 load: function () {
                     return $.getJSON('/api/Master/GetSalesPersons'); // Fetch data from the API
                 },
-                update: function (key, values) {
-                    var updatedSalesPerson = {
-                        SalesPersonCode: key, // Use the key for the salesperson to identify it
-                        SalesPersonName: values.SalesPersonName,
-                        UserCode: values.UserCode,
-                        EmailAddress: values.EmailAddress,
-                        SalesPersonContactNo: values.SalesPersonContactNo,
-                        TargetPerMonth:values.TargetPerMonth
-                    };
+                   update: function (key, values) {
+        var updatedSalesPerson = {
+            SalesPersonCode: key,
+            SalesPersonName: values.SalesPersonName,
+            UserCode: values.UserCode,
+            EmailAddress: values.EmailAddress,
+            SalesPersonContactNo: values.SalesPersonContactNo,
+            TargetPerMonth: values.TargetPerMonth
+        };
 
-                    // Send the updated data to the backend via AJAX
-                    return $.ajax({
-                        type: "POST",
-                        url: "/api/AddNewQuotation/UpdateSalesPerson",
-                        data: JSON.stringify(updatedSalesPerson),
-                        contentType: "application/json",
-                        success: function (response) {
-                            Swal.fire({
-                                icon: 'success',
-                                title: formatMessage('Sales Person Updated'),
-                                text: formatMessage('The sales person has been successfully updated.'),
-                                confirmButtonText: 'OK'
-                            });
-                        },
-                        error: function (xhr) {
-                            var errorMessage = xhr.status === 500
-                                ? "Server error: Please try again later."
-                                : "Validation error: " + "Invalid User Code";//xhr.responseText;
-                            Swal.fire({
-                                icon: 'error',
-                                title: formatMessage('Error'),
-                                text: errorMessage,
-                                confirmButtonText: 'OK'
-                            });
-                        }
-                    });
-                },
+        return $.ajax({
+            type: "POST",
+            url: "/api/AddNewQuotation/UpdateSalesPerson",
+            data: JSON.stringify(updatedSalesPerson),
+            contentType: "application/json",
+            success: function () {
+                DevExpress.ui.notify("The sales person has been successfully updated", "success", 2000);
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.status === 500
+                    ? "Please try again later"
+                    : "Validation error: " + xhr.responseText;
+                DevExpress.ui.notify(errorMessage, "error", 3000);
+            }
+        });
+    }
+    ,
                 remove: function (key) {
                     // Confirm before deleting
                     Swal.fire({
@@ -453,7 +443,8 @@
                             icon: "save",  // Icon for the Save button
                             text: formatMessage("Update"),  // Text alongside the icon
                             onClick: function () {
-                                $("#gridContainer").dxDataGrid("instance").saveEditData();  // Save all changes
+                                $("#gridContainer").dxDataGrid("instance").saveEditData(); 
+                                // Save all changes
                             }
                         },
                         location: "after"
@@ -505,23 +496,23 @@
                 var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
                 cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
                 dataGrid.option("toolbar.items", toolbarItems);
-            },
-            onRowUpdated: function (e) {
-                Swal.fire({
-                    icon: 'success',
-                    title: formatMessage('Row Updated'),
-                    text: formatMessage('The row data was successfully updated.'),
-                    confirmButtonText: 'OK'
-                });
-            },
-            onRowRemoved: function (e) {
-                Swal.fire({
-                    icon: 'info',
-                    title: formatMessage('Row Removed'),
-                    text: formatMessage('The row has been removed from the grid.'),
-                    confirmButtonText: 'OK'
-                });
-            },
+             },
+            // onRowUpdated: function (e) {
+            //     Swal.fire({
+            //         icon: 'success',
+            //         title: formatMessage('Row Updated'),
+            //         text: formatMessage('The row data was successfully updated.'),
+            //         confirmButtonText: 'OK'
+            //     });
+            // },
+            // onRowRemoved: function (e) {
+            //     Swal.fire({
+            //         icon: 'info',
+            //         title: formatMessage('Row Removed'),
+            //         text: formatMessage('The row has been removed from the grid.'),
+            //         confirmButtonText: 'OK'
+            //     });
+            // },
             height: "60%",
             width: "100%"
         });
@@ -614,39 +605,18 @@
                     data: JSON.stringify(salesPersonData),
                     contentType: "application/json",
                     success: function (response) {
-                        Swal.fire({
-                            icon: 'success',
-                            title: formatMessage('Sales Person Added Successfully'),
-                            text: formatMessage('The new sales person has been added to the list.'),
-                            confirmButtonText: 'OK'
-                        }).then((result) => {
-                            if (result.isConfirmed) {
-                                location.reload();
-                            }
-                        });
+                        DevExpress.ui.notify("Sales Person Added Successfully", "success", 2000);
+                        
                     },
                     error: function (xhr) {
                         var errorMessage = xhr.status === 500
 
-
-
-                         Swal.fire({
-                                        icon: 'error',
-                            title: formatMessage('Duplicate SalesPerson/ Project Manager Code'),
-                            text: formatMessage('This SalesPerson/ Project Manager Code already exists! Please choose a different name.'),
-                                        confirmButtonText: 'OK'
-
-                                    });
+                         DevExpress.ui.notify("Duplicate SalesPerson/ Project Manager Code", "success", 2000);
                     }
                 });
             } else {
             validateAndNotify()
         }
-
-
-
-
-
 
     }
 
