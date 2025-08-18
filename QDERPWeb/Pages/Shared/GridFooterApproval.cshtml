@@ -261,7 +261,7 @@
         @(Html.DevExtreme().DropDownButton()
             .ID("ddButtonVouchers")
             .Icon("folder")
-            .Text("Vouchers")
+            .Text(new JS("formatMessage('Vouchers')"))
             .Width("100%")
             .DropDownOptions(options => options.Width(230))
             .Items(items =>
