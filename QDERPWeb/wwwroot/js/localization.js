@@ -2,6 +2,8 @@
 var dictionary = {
 
     "en": {
+        "Property Type:*":"Property Type:*",
+        "Type a New Property Category & Add to the Existing List:":"Type a New Property Category & Add to the Existing List:",
         "Show Records": "Show Records",
         "Revision No":"Revision No",
         "PO Due Date":"PO Due Date",
@@ -3973,9 +3975,17 @@ var dictionary = {
         "Other Details/Branch/Division Details":"Other Details/Branch/Division Details",
         "Select Stock Group": "Select Stock Group",
         "Postal Amount": "Postal Amount",
-        "Total Purchase Amount":"Total Purchase Amount"
+        "Total Purchase Amount": "Total Purchase Amount",
+        "Type a New Property & Add to the Existing List": "Type a New Property & Add to the Existing List",
+        "Print Mobilization Data": "Print Mobilization Data",
+        "Add New Operator": "Add New Operator"
+
     },
     ar: {
+        "Add New Operator":"إضافة مشغل جديد",
+        "Print Mobilization Data":"بيانات تعبئة الطباعة",
+        "Type a New Property & Add to the Existing List":"اكتب خاصية جديدة وأضفها إلى القائمة الموجودة",
+        "Property Type:*":"نوع العقار:*",
          "Deductions/Approvals":"الخصومات/الموافقات",
         "Medium": "واسطة",
         "Select Stock Group":"اختر مجموعة الأسهم",
