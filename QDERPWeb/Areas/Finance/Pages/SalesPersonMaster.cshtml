@@ -100,7 +100,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Sales Person Master</h3>
+    <div id="SalesPersonMasters" class="titleText no-border-title"></div>
 </div>
 <div class="container-fluid">
 
@@ -809,6 +809,14 @@
 
             }
         }
-
+         $(function () {
+                 $("#SalesPersonMasters").dxTextBox({
+                    text: formatMessage("Sales Person Master"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textcolor-heading");
+                }
+                });
+            });
 </script>
 

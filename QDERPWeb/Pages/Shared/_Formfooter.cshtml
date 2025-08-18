@@ -353,7 +353,7 @@
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().Button()
                         .ID("btnSave")
-                        .Text("Save")
+                        .Text(new JS("formatMessage('Save')"))
                         .Icon("save")
                         .Width(180)
                         .Hint("Click to save")
@@ -361,7 +361,7 @@
 
             @(Html.DevExtreme().Button()
                         .ID("btnSaveAndClose")
-                        .Text("Save & Close")
+                        .Text(new JS("formatMessage('Save & Close')"))
                         .Icon("save")
                         .Width(180)
                         .Hint("Click to save and close")
@@ -421,7 +421,7 @@
 
             @(Html.DevExtreme().Button()
                         .ID("btnDelete")
-                        .Text("Delete")
+                        .Text(new JS("formatMessage('Delete')"))
                         .Icon("trash")
                         .Width(180)
                         .Hint("Click to delete")
