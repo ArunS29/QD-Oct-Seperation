@@ -1388,6 +1388,7 @@
                         
                         initializeDataGrid(data);
                         savedetailsonload();
+                        getDocumentCount();
                     },
                     error: function () {
                         alert("Error generating voucher number.");
@@ -1499,21 +1500,21 @@
 
                             // ✅ Sync fields
                             syncWorkflowFromFields();
-
+                            getDocumentCount();
                             // ✅ Initialize popovers
                             initWorkflowTippyPopovers();
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                            getDocumentCount();
                         }
 
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
-                    },
-                    complete: function () {
                         getDocumentCount();
-                    }
+                    },
+                    
                 });
             } else {
                 // DevExpress.ui.notify("Journal Reference Number is missing in the URL.", "error", 3000);
@@ -1528,7 +1529,7 @@
                     type: 'GET',
                     data: { claimRefNo: claimRefNo },
                     success: function (data) {
-                            getDocumentCount();
+                            
                            // If `data` is a raw array (not wrapped in { success: true, data: [...] })
                             if (Array.isArray(data)) {
                                 if (data.length === 0) {
@@ -1577,10 +1578,11 @@
                                 DevExpress.ui.notify("Unexpected data format.", "error", 3000);
                             }
                             
+                            
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
-                        getDocumentCount();
+                        
                     }
                 });
             } else {
@@ -1658,7 +1660,7 @@
                         );
                         var button = $("#btnSave").dxButton("instance");
                             button.option("text", "Update");
-                        getDocumentCount();
+                        
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -2017,7 +2019,7 @@
                     SelectedAccountHead:selectedAccountHead,
                     SelectedPaymentType:selectedPaymentType// JS Date object ⟶ ISO is fine
                 }),
-                    success: async function (result) {
+                    success: function (result) {
                     //  Update UI fields with result
                         $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
                         $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
@@ -2025,64 +2027,64 @@
                         disableclaim();
 
                         // Bind Attachments from Expense to Voucher 
-                        var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-                        var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-                        var voucherType ="Expense ClaimRequest";
-                        var menuType = "finance";
+                        // var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+                        // var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+                        // var voucherType ="Expense ClaimRequest";
+                        // var menuType = "finance";
                         // 1. Get Documents
-                        const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
-                        const documents = await getDocRes.json();
-                        if (!documents.length) {
-                            DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-                            return;
-                        }
+                        // const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
+                        // const documents = await getDocRes.json();
+                        // if (!documents.length) {
+                        //     DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+                        //     return;
+                        // }
                         // 2. Generate DocumentNo to each documents
-                        const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-                        const newDocNos = await docNoRes.json();
-                        if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-                            DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-                            return;
-                        }
+                        // const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+                        // const newDocNos = await docNoRes.json();
+                        // if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+                        //     DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+                        //     return;
+                        // }
                         // 3. Reupload each document to AddDocumentsEntry
-                        const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
+                        // const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
 
-                        const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
-                        const isMaster = false;
+                        // const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
+                        // const isMaster = false;
 
-                        for (let i = 0; i < documents.length; i++) {
-                            const doc = documents[i];
-                            const newDocNo = newDocNos[i];
+                        // for (let i = 0; i < documents.length; i++) {
+                        //     const doc = documents[i];
+                        //     const newDocNo = newDocNos[i];
 
-                            try {
-                                const fileResponse = await fetch(doc.FileUrl);
-                                const blob = await fileResponse.blob();
+                        //     try {
+                        //         const fileResponse = await fetch(doc.FileUrl);
+                        //         const blob = await fileResponse.blob();
 
-                                const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-                                const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+                        //         const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+                        //         const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
 
-                                const formData = new FormData();
-                                formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-                                formData.append("DocumentNo", newDocNo);
-                                formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-                                formData.append("DocumentType", doc.DocumentType ?? "1");
-                                formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-                                formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-                                formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-                                formData.append("LedgerNo", generateNo); // new folder id
+                        //         const formData = new FormData();
+                        //         formData.append("file", new File([blob], safeFileName)); no docNo prefix
+                        //         formData.append("DocumentNo", newDocNo);
+                        //         formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+                        //         formData.append("DocumentType", doc.DocumentType ?? "1");
+                        //         formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+                        //         formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+                        //         formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+                        //         formData.append("LedgerNo", generateNo); new folder id
 
 
-                                const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(menuType)}`, {
-                                    method: "POST",
-                                    body: formData
-                                });
+                        //         const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(menuType)}`, {
+                        //             method: "POST",
+                        //             body: formData
+                        //         });
 
-                                const uploadResult = await uploadRes.json();
-                                console.log("Uploaded document:", uploadResult);
-                            } catch (uploadError) {
-                                console.error("Error re-uploading document:", uploadError);
-                            }
-                        }
-                        DevExpress.ui.notify("Voucher saved and claim marked as paid with Attachments.", "success", 2500);
+                        //         const uploadResult = await uploadRes.json();
+                        //         console.log("Uploaded document:", uploadResult);
+                        //     } catch (uploadError) {
+                        //         console.error("Error re-uploading document:", uploadError);
+                        //     }
+                        // }
+                        DevExpress.ui.notify("Voucher saved and claim marked as paid", "success", 2500);
 
 
                     },
@@ -2553,49 +2555,11 @@
                 }
 
         }
-    // Attachment Count
-    //1. Button Modify in btn-attach
-    function updateAttachButtonCount(buttonSelector, count) {
-        var btn = $(buttonSelector);
-        var btnInstance = btn.dxButton("instance");
-        if (!btnInstance) return;
+    
 
-        var originalText = btnInstance.option("text");
-        var color = count > 0 ? "green" : "red";
-
-        btnInstance.option({
-            template: function() {
-                // Icon element
-                var iconElement = $("<span>")
-                .addClass("dx-icon dx-icon-attach")
-                .addClass(count > 0 ? "icon-green" : "icon-red")
-                .css({
-                    "font-size": "15px",
-                    "vertical-align": "middle",
-                    "margin-right": "4px"
-                })[0];
-
-                // Create fragment
-                var fragment = document.createDocumentFragment();
-                fragment.appendChild(iconElement);
-
-                // Append count only if > 0
-                if (count > 0) {
-                    var countSpan = document.createElement("span");
-                    countSpan.style.color = color;
-                    countSpan.style.fontWeight = "bold";
-                    countSpan.style.fontSize = "15px";
-                    countSpan.style.marginRight = "2px";
-                    countSpan.textContent = count;
-                    fragment.appendChild(countSpan);
-                }
-
-                // Append original text
-                fragment.appendChild(document.createTextNode(originalText));
-
-                return fragment;
-            }
-        });
+    //1. Get Document Count from Grid Load in Ledger Documents
+    function setAttachCount(count) {
+        updateAttachButtonCount("#btnAttach", count);
     }
     //2. Get Document Count
     async function getDocumentCount() {

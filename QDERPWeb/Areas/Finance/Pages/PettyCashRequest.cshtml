@@ -1979,70 +1979,70 @@
                     SelectedAccountHead:selectedAccountHead,
                     SelectedPaymentType:selectedPaymentType// JS Date object ⟶ ISO is fine
                 }),
-                    success: async function (result) {
+                    success: function (result) {
                            // ✅ Update UI fields with result
                     $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
                     $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
                     $("#paidOntext").dxTextBox("instance").option("value", result.PaidOn);
                     disableclaim();
-                    var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-                    var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-                    var voucherType ="Petty CashRequest";
-                    var menuType = "finance";
+                    // var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+                    // var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+                    // var voucherType ="Petty CashRequest";
+                    // var menuType = "finance";
                     // 1. Get Documents
-                    const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}`);
-                    const documents = await getDocRes.json();
-                    if (!documents.length) {
-                        DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-                        return;
-                    }
+                    // const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}`);
+                    // const documents = await getDocRes.json();
+                    // if (!documents.length) {
+                    //     DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+                    //     return;
+                    // }
                     // 2. Generate DocumentNo to each documents
-                    const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-                    const newDocNos = await docNoRes.json();
-                    if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-                        DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-                        return;
-                    }
+                    // const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+                    // const newDocNos = await docNoRes.json();
+                    // if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+                    //     DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+                    //     return;
+                    // }
                     // 3. Reupload each document to AddDocumentsEntry
-                    const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
+                    // const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
 
-                    const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
-                    const isMaster = false;
+                    // const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
+                    // const isMaster = false;
 
-                    for (let i = 0; i < documents.length; i++) {
-                        const doc = documents[i];
-                        const newDocNo = newDocNos[i];
+                    // for (let i = 0; i < documents.length; i++) {
+                    //     const doc = documents[i];
+                    //     const newDocNo = newDocNos[i];
 
-                        try {
-                            const fileResponse = await fetch(doc.FileUrl);
-                            const blob = await fileResponse.blob();
+                    //     try {
+                    //         const fileResponse = await fetch(doc.FileUrl);
+                    //         const blob = await fileResponse.blob();
 
-                            const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-                            const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+                    //         const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+                    //         const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
 
-                            const formData = new FormData();
-                            formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-                            formData.append("DocumentNo", newDocNo);
-                            formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-                            formData.append("DocumentType", doc.DocumentType ?? "1");
-                            formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-                            formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-                            formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-                            formData.append("LedgerNo", generateNo); // new folder id
+                    //         const formData = new FormData();
+                    //         formData.append("file", new File([blob], safeFileName)); no docNo prefix
+                    //         formData.append("DocumentNo", newDocNo);
+                    //         formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+                    //         formData.append("DocumentType", doc.DocumentType ?? "1");
+                    //         formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+                    //         formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+                    //         formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+                    //         formData.append("LedgerNo", generateNo); new folder id
 
 
-                            const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(menuType)}`, {
-                                method: "POST",
-                                body: formData
-                            });
+                    //         const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(menuType)}`, {
+                    //             method: "POST",
+                    //             body: formData
+                    //         });
 
-                            const uploadResult = await uploadRes.json();
-                            console.log("Uploaded document:", uploadResult);
-                        } catch (uploadError) {
-                            console.error("Error re-uploading document:", uploadError);
-                        }
-                    }
-                    DevExpress.ui.notify("Voucher saved and claim marked as paid with Attachments.", "success", 2500);
+                    //         const uploadResult = await uploadRes.json();
+                    //         console.log("Uploaded document:", uploadResult);
+                    //     } catch (uploadError) {
+                    //         console.error("Error re-uploading document:", uploadError);
+                    //     }
+                    // }
+                    DevExpress.ui.notify("Voucher saved and claim marked as paid", "success", 2500);
 
                 },
                 error: function (xhr) {
