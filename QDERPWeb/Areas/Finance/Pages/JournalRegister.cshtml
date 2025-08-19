@@ -552,7 +552,7 @@
         .ElementAttr("class", "dynamicFormatDateBox"))
     @(Html.DevExtreme().Button()
         .ID("btnShowallsubmission") 
-        .Text("Show All Submission")
+        .Text(new JS("formatMessage('Show All Submissions')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Contained)
         .Width(200)
