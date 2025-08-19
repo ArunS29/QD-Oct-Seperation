@@ -384,7 +384,7 @@
         <div class="form-row" style="margin: 10px;">
 
             <!-- Two Column Section -->
-            <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; height:400px;">
+            <div style="display: flex; gap: 10px; align-items: flex-start; flex-wrap: wrap; height:350px;">
 
                 <!-- Left Column -->
                 <div style="flex: 1; min-width: 300px;">
@@ -428,7 +428,7 @@
         <div class="dx-field ledgerResult" style="margin-top: 10px;">
             <div id="documentsGrid"></div>
         </div>
-        <div style="margin-top: 10px; padding-bottom: 10px; text-align: right;">
+        <div style="margin-top: 5px; padding-bottom: 10px; text-align: right;">
             @(Html.DevExtreme().Button()
                 .Text("Back")
                 .Icon("fas fa-arrow-left")
@@ -535,7 +535,7 @@
                     dataField: "SerialNo",
                     caption: "S.No",
                     width: 60,
-
+                    allowEditing: false
                 },
                 { dataField: "DocumentNo", caption: "Doc No", allowEditing: false, visible: false },
 
@@ -1072,7 +1072,7 @@
         const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext);
         const isPdf = ["pdf"].includes(ext);
         const isOffice = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext);
-        const isAudio = ["mp3"].includes(ext);
+        const isAudio = ["mp3", "wav", "ogg", "aac", "flac", "wma", "m4a", "aiff", "alac"].includes(ext);
         let previewContent = "";
         let previewAvailable = true;
 

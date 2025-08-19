@@ -59,7 +59,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNewDocumentNos(int count)
         {
-            if (count <= 0 || count > 10)
+            if (count <= 0)
                 return BadRequest(new { message = "Invalid count requested." });
 
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

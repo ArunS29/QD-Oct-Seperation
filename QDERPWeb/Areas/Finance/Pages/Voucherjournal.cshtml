@@ -1770,6 +1770,7 @@ buttons.Add()
             voucherNo = argsledno;
             fetchVoucherDetails(voucherNo);
             fetchVoucherEntries(voucherNo);
+            getDocumentCount();
         } else { // If no argsledno, generate a new voucher number
             $.ajax({
                 url: '@Url.Action("GetNewVoucherNo", "VoucherJournal")',
@@ -1778,6 +1779,7 @@ buttons.Add()
                     const voucherNoField = $("#VoucherNo").dxTextBox("instance");
                     voucherNoField.option("value", data);
                     updateTemporaryNo({ value: data });
+                    getDocumentCount();
                 },
                 error: function () {
                     alert("Error generating voucher number.");
@@ -2099,7 +2101,7 @@ buttons.Add()
                         disableEditing();
                     }
 
-
+                    getDocumentCount();
 
                         //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
@@ -3560,4 +3562,55 @@ function showMainFooter() {
 			});
 		});
 
+       async function onAttachmentButtonClick() {
+
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.dialog.alert(
+                "Not allow to Add Attachments. Please enter some transactions.",
+                "Data Not Found"
+            ).done(function () {
+
+            });
+        } else {
+            // Retrieve the unique identifier for the row
+            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+            var voucherType = voucherTypeBox.option("value");
+            var response = await fetch(`/api/VoucherMaster/GetPostedNoFromJournalregister?voucherNo=${encodeURIComponent(voucherNo)}`);
+            var folderNo2 = await response.text();
+            var menuType = "finance";
+            const isMaster = false;
+            console.log(voucherType)
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderNo2)}&modal=true`;
+            const title = "Transaction Documents";
+            openModal(url, title);
+        }
+    }
+
+    //1. Get Document Count from Grid Load in Ledger Documents
+    function setAttachCount(count) {
+        updateAttachButtonCount("#btnAttach", count);
+    }
+    //2. Get Document Count
+    async function getDocumentCount() {
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+        var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+        var voucherType = voucherTypeBox.option("value");
+        var response = await fetch(`/api/VoucherMaster/GetPostedNoFromJournalregister?voucherNo=${encodeURIComponent(voucherNo)}`);
+        var folderNo2 = await response.text(); // <-- parse as text
+
+        var menuType = "finance";
+
+        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
+        const docs = await res.json();
+        const count = docs.length;
+
+        updateAttachButtonCount("#btnAttach", count);
+
+        // No need to return anything if you don't want to
+    }
 </script>

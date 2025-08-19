@@ -3915,6 +3915,7 @@
 											}
 											 var button = $("#btnSave").dxButton("instance");
 						                     button.option("text", "Update");
+											 getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -5774,6 +5775,7 @@ if (popover.option("visible")) {
 									
 									InvoiceOPenToSave(data)
 									invoiceBox.option("value", data || "");
+									getDocumentCount();
 								} else {
 									console.warn("Invoice TextBox not initialized.");
 								}
@@ -8649,72 +8651,14 @@ button.option("disabled", false);
 				dataType: "json",
 				// Uncomment the following line if the API expects data in the request body:
 				// data: JSON.stringify({ voucherNo: vno }),
-				success: async function (response) {
+				success: function (response) {
 					if (response && response.Message) {
 						
 					    if(response.IsDirect == true)
 						{
 
-							// attachment bind to sales in finance with posting
-
-							const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
-							const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
-							var menuType = "vat";
-							var formType ="Sales Invoice B2B";
-							// 1. Get Documents
-							const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-							const documents = await getDocRes.json();
-							if (!documents.length) {
-											DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-											return;
-							}
-							// 2. Generate DocumentNo to each documents
-							const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-							const newDocNos = await docNoRes.json();
-							if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-											DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-											return;
-							}
-							// 3. Reupload each document to AddDocumentsEntry
-							const generateNo = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-							const PostVoucherType = "sales";
-							const isMaster = false;
-							const PostMenuType = 'finance';
-							for (let i = 0; i < documents.length; i++) {
-								const doc = documents[i];
-								const newDocNo = newDocNos[i];
-
-								try {
-									const fileResponse = await fetch(doc.FileUrl);
-									const blob = await fileResponse.blob();
-
-									const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-									const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-									const formData = new FormData();
-									formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-									formData.append("DocumentNo", newDocNo);
-									formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-									formData.append("DocumentType", doc.DocumentType ?? "1");
-									formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-									formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-									formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-									formData.append("LedgerNo", generateNo); // new folder id
-
-
-										const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-										method: "POST",
-										body: formData
-									});
-
-									const uploadResult = await uploadRes.json();
-									console.log("Uploaded document:", uploadResult);
-								} catch (uploadError) {
-												console.error("Error re-uploading document:", uploadError);
-								}
-							}
-							DevExpress.ui.notify("VAT Invoice has been posted to the Accounting Books With Attachments.", "success", 2000);
+							
+							DevExpress.ui.notify("VAT Invoice has been posted to the Accounting Books.", "success", 2000);
 								
 						}
 							
@@ -10478,7 +10422,26 @@ button.option("disabled", false);
 
 		 }
 
+	//1. Get Document Count from Grid Load in Ledger Documents
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
+		var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+		var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+		var voucherType = voucherTypeBox.option("value");
+		// var folderNo2 = voucherNo;
+		var menuType = "vat";
 
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
+		const docs = await res.json();
+		const count = docs.length;
+
+		updateAttachButtonCount("#btnAttach", count);
+
+		// No need to return anything if you don't want to
+	}
 
 </script>
 

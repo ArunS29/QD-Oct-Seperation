@@ -1372,6 +1372,7 @@
                     success: function (data) {
                         voucherNoField.option("value", data);
                         initializeDataGrid(data);
+                        getDocumentCount();
                     },
                     error: function () {
                         alert("Error generating voucher number.");
@@ -1480,14 +1481,16 @@
 
                             }
 
-
+                            getDocumentCount();
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                            getDocumentCount();
                         }
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                        getDocumentCount();
                     }
                 });
             } else {
@@ -2244,4 +2247,23 @@
             }
             });
         });
+        //1. Get Document Count from Grid Load in Ledger Documents
+    function setAttachCount(count) {
+        updateAttachButtonCount("#btnAttach", count);
+    }
+    //2. Get Document Count
+    async function getDocumentCount() {
+        const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+        const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+        const voucherType = "Supplier PaymentRequest";
+        const menuType = "finance";
+
+        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
+        const docs = await res.json();
+        const count = docs.length;
+
+        updateAttachButtonCount("#btnAttach", count);
+
+        // No need to return anything if you don't want to
+    }
 </script>

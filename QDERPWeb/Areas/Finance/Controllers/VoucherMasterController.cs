@@ -3671,6 +3671,50 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetPostedNoFromJournalregister(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var postedFromNo = await (
+                    from j in dbContext.Tbl20126JournalRegisterMasters
+                    join v in dbContext.Tbl201VoucherMasters
+                        on j.PostedVoucherNo equals v.VoucherNo
+                    where j.PostedVoucherNo == voucherNo
+                          && j.IsPosted == true
+                    select j.JournalRefNo
+                ).FirstOrDefaultAsync();
+
+                if (postedFromNo != null)
+                    return Ok(postedFromNo);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPostedNoFromExpenses(string voucherNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var postedFromNo = await (
+                    from j in dbContext.Tbl20102ExpenseClaimMasters
+                    join v in dbContext.Tbl201VoucherMasters
+                        on j.PaymentVoucherNo equals v.VoucherNo
+                    where j.PaymentVoucherNo == voucherNo
+                          && j.IsPaid == true
+                    select j.ClaimRefNo
+                ).FirstOrDefaultAsync();
+
+                if (postedFromNo != null)
+                    return Ok(postedFromNo);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
     }
 
 }

@@ -306,6 +306,14 @@
     .dx-button {
         height: 35px !important;
     }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 
 
@@ -367,7 +375,7 @@
     @(Html.DevExtreme().Button()
         .ID("btnAttach")
         .Text(new JS("formatMessage('Attach')"))
-        .Icon("link")
+        .Icon("attach")
         .Hint("Click to Attach")
         .OnClick("onAttachmentButtonClick")
         .ElementAttr(new { @class = "dx-button-custom btn-attach" })
