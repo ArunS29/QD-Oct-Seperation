@@ -345,35 +345,27 @@
 
 
 <div class="dx-field ledgerResult">
-    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20136VoucherMasterList>()
-            .ID("dataGrid")
-            .KeyExpr("VoucherNo")
-            .RemoteOperations(false)
-            
-            .Columns(columns =>
-            {
-                
+        @(
+                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20136VoucherMasterList>()
+                    .ID("dataGrid")
+                    .KeyExpr("VoucherNo")
+                    .RemoteOperations(false)
 
-                columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(120)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Voucher No</div>
-    </text>);
+                    .Columns(columns =>
+                    {
+
+
+                        columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(120);
+        
 
                 columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Voucher Date</div>
-    </text>);
+           ;
 
-                columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Voucher Narration</div>
-    </text>);
-                columns.Add().DataField("VoucherEffectiveDate").Caption("Effective On").Width(120)
-            .DataType(GridColumnDataType.Date).Format("MMM-yyyy").Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Effective On</div>
-    </text>);
+                            columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true);
+
+                columns.Add().DataField("VoucherEffectiveDate")  .Caption(new JS("formatMessage('Effective On')")).Width(120)
+            .DataType(GridColumnDataType.Date).Format("MMM-yyyy").Visible(true);
 
                     columns.AddFor(m => m.ConvertedDrAmount)
                     .Caption(new JS("formatMessage('Debit')"))
@@ -440,28 +432,18 @@
     </text>); *@
 
                 columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Entered By</div>
-    </text>);
+           ;
 
                 columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Verified By</div>
-    </text>);
+            ;
 
                 columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved By')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Approved By</div>
-    </text>);
+            ;
 
                 columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(false)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Audit</div>
-    </text>);
+            ;
                 columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('VoucherType')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">VoucherType</div>
-    </text>);
+            ;
                 // Checkbox Columns for Approved, Verified, and Audit
                 columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
@@ -470,9 +452,7 @@
         .Value(new JS("data.IsApproved"))
         .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsApproved', data); }"))
     </text>)
-        .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Approved ?</div>
-    </text>);
+        ;
 
                     columns.Add().DataField("IsVerified")
                     .Caption(new JS("formatMessage('Verified')"))
@@ -484,10 +464,8 @@
                             .Value(new JS("data.IsVerified"))
                             .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
                                                                                                                    </text>)
-                    .HeaderCellTemplate(@<text>
-                                             <div class="headerBolder">Verified</div>
-                                         </text>);
-                columns.Add().Caption("Verify").Width(120).CellTemplate(@<text>
+                    ;
+                columns.Add().Caption(new JS("formatMessage('Verify')")).Width(120).CellTemplate(@<text>
         <div class="text-center">
             @(Html.DevExtreme().Button()
             
@@ -497,9 +475,7 @@
             )
         </div>
     </text>)
-    .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Verify</div>
-    </text>);
+    ;
 
 
 
@@ -511,47 +487,45 @@
         .ReadOnly(new JS("data.IsAuditVerified"))
         .OnValueChanged("function(e) { onAuditCheckChanged(e.value, data); }"))
     </text>)
-        .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Audit</div>
-    </text>);
+        ;
 
                 columns.Add().DataField("VoucherRefNo").Caption("Voucher Ref No").Width(120)
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Voucher Ref No</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherEnteredOn").Caption("Entered On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Entered On</div></text>);
+       ;
 
                 columns.Add().DataField("VoucherVerifiedOn").Caption("Verified On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Verified On</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherApprovedOn").Caption("Approved On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Approved On</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherEffectiveDate").Caption("Effective Date").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Effective Date</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherModifiedBy").Caption("Modified By").Width(120)
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Modified By</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherModifiedOn").Caption("Modified On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Modified On</div></text>);
+           ;
 
                 columns.Add().DataField("AuditVerifiedOn").Caption("Audit Verified On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Audit Verified On</div></text>);
+        ;
 
 
             })

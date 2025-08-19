@@ -3671,6 +3671,48 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized();
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> CheckIfInvoiceHasDiscount(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    bool hasDiscount = await dbContext.Qry201601vatinvoiceChildren
+                        .AnyAsync(x => x.InvoiceNo == invoiceNo && x.Discount > 0);
+
+                    return Ok(new { hasDiscount });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckIfProformaInvoiceHasDiscount(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    bool hasDiscount = await dbContext.Qry201651proformaInvoiceChildren
+                        .AnyAsync(x => x.ProformaInvoiceNo == invoiceNo && x.Discount > 0);
+
+                    return Ok(new { hasDiscount });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 
 }
