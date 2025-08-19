@@ -209,9 +209,11 @@
                                                 )
                                          .LabelMode(EditorLabelMode.Floating)
                                               .ID("GetProjectDropDown")
+											  .Option("dataGridId", "GetSupplier-datagrid")
+
      .Width(900)
-     @*  .ShowClearButton(true)
-                 .AcceptCustomValue(true) *@
+     //.ShowClearButton(true)
+                 .AcceptCustomValue(true) 
      .OpenOnFieldClick(false)//
      .ValueChangeEvent("input")
      .HoverStateEnabled(true)
@@ -342,38 +344,40 @@
                     <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
                         .ID("SupplierQuoteDate")
-													.DisplayFormat("dd-MMM-yyyy")
+						.DisplayFormat("dd-MMM-yyyy")
 						.Label(new JS("formatMessage('Supplier Quote Date:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%"))
                     </div>
                     <div class="col-md-3">
-							@(Html.DevExtreme().DropDownBox()
-													.Label(new JS("formatMessage('Sales Person:')"))
-													.DataSource(d => d.WebApi()
-													.Controller("AddNewClientRequest")
-													.LoadAction("GetSalesPerson")
-													.LoadMode(DataSourceLoadMode.Raw)
-													.Key("TypeOfRequestId")
-													)
-													.LabelMode(EditorLabelMode.Floating)
-													.ID("SalesPerson")
-													.Width(900)
-																@*  .ShowClearButton(true)
-							                           .AcceptCustomValue(true) *@
-													.OpenOnFieldClick(false)//
-													.ValueChangeEvent("input")
-													.HoverStateEnabled(true)
-													.ValueExpr("SalesPersonCode")
-													.DisplayExpr("SalesPersonName")
-													.OnInput("dropDownBoxOnInput")
-													.OnOpened("onOpened")
-													.TabIndex(1)
-													.Width("100%")
-													.OnKeyDown("onKeyDown")
-																			//.OnValueChanged("dropDownBoxValueChanged")
-													//.ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
-													)
+						
+							@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+														.Label(new JS("formatMessage('Sales Person:')"))
+														.DataSource(d => d.WebApi()
+														.Controller("AddNewClientRequest")
+														.LoadAction("GetSalesPerson")
+														.LoadMode(DataSourceLoadMode.Raw)
+														.Key("TypeOfRequestId")
+														)
+														.LabelMode(EditorLabelMode.Floating)
+														.ID("ddGetSalesPerson")
+														.Width(900)
+														// .ShowClearButton(true)
+							                           .AcceptCustomValue(true) 
+														.OpenOnFieldClick(false)//
+														.ValueChangeEvent("input")
+														.HoverStateEnabled(true)
+														.ValueExpr("SalesPersonCode")
+														.DisplayExpr("SalesPersonName")
+														.OnInput("dropDownBoxOnInput")
+														.OnOpened("onOpened")
+														.TabIndex(1)
+														.Width("100%")
+														.OnKeyDown("onKeyDown")
+																				//.OnValueChanged("dropDownBoxValueChanged")
+														.ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+														)
+						
                     </div>
                     <div class="col-md-3">
                        @(Html.DevExtreme().DropDownBox()
@@ -387,8 +391,8 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddProject")
 														.Width(900)
-														@*  .ShowClearButton(true)
-							.AcceptCustomValue(true) *@
+														// .ShowClearButton(true)
+							                             .AcceptCustomValue(true) 
 														.OpenOnFieldClick(false)//
 														.ValueChangeEvent("input")
 														.HoverStateEnabled(true)
@@ -1191,16 +1195,56 @@
 			})
 			)
 }
+@using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
+		{
+			@(Html.DevExtreme().DataGrid()
+					.ID("GetSalesPerson-datagrid")
+					.DataSource(d => d.WebApi()
+					.Controller("AddNewClientRequest")
+					.LoadAction("GetSalesPerson")
+					.LoadMode(DataSourceLoadMode.Raw)
+					.Key("SalesPersonCode")
+					)
+					.WordWrapEnabled(true)
+					.ShowBorders(true)
+							   		@* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+					.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+					.OnSelectionChanged("dataGridSelectionChanged14")
+					.OnInitialized("dataGridInitialized14")
+					.HeaderFilter(p => p.Visible(true))
+					.FilterRow(f => f.Visible(false))
+					.ShowBorders(true)
+					.HoverStateEnabled(true)
+					.Paging(p => p.PageSize(15))
+					//.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+					.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+					.Height(345)
+					.Selection(s => s.Mode(SelectionMode.Single))
+					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+					.Columns(columns =>
+					{
+						columns.Add().DataField("SalesPersonName");
+
+					})
+					)
+				}
 </div>
       
 
 
 <script>
-	  function onOpened(e) {
-        setTimeout(() => {
-            e.component.focus();
-        });
-    }
+  function onOpened(e) {
+      const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+      const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+      if (grid) {
+          grid.getDataSource().reload(); // refresh data
+      }
+
+      setTimeout(() => {
+          e.component.focus();
+      });
+  }
 
     function onKeyDown(e) {
         const ddbInstance = e.component;
@@ -1297,7 +1341,20 @@
 		function dataGridInitialized4(e) {
 			dataGrid = e.component;
 		}
+		function dataGridSelectionChanged14(e) {
+			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+			const ddbInstance = $("#ddGetSalesPerson").dxDropDownBox("instance");
 
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+			}
+		}
+		function dataGridInitialized14(e) {
+			dataGrid = e.component;
+		}
 		function dataGridSelectionChanged5(e) {
 			const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 			const ddbInstance = $("#ddInventoryGroup").dxDropDownBox("instance");
@@ -1318,7 +1375,18 @@
 				e.rowElement.css("background-color", "#ffcccc"); // light red
 			}
 		}
+		  function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
 
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
 
 		function navigateToLedgerAccountForm() {
 		// make sure this is available in the view
@@ -1413,7 +1481,7 @@
 					$("#ddSignatory").dxDropDownBox("instance").option("value", response.Rfqsignatory);
 					$('#ddCompany').dxDropDownBox("instance").option("value", response.CompanyBranch);
 					$("#ddInventoryGroup").dxDropDownBox("instance").option("value", response.InventoryMasterGroupId);
-					$("#SalesPerson").dxDropDownBox("instance").option("value", response.SalesPersonCode);
+					$("#ddGetSalesPerson").dxDropDownBox("instance").option("value", response.SalesPersonCode);
 					$('#currencyexchangerate').dxNumberBox("instance")?.option("value", response.CurrencyRate);
 					$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
 					$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
@@ -1456,7 +1524,7 @@
 			url: "/api/AddNewClientRequest/GetSalesPersonByUser",
 			success: function (data) {
 				if (data && data.SalesPersonCode) {
-							const salesPersonDropDown = $("#SalesPerson").dxDropDownBox("instance");
+							const salesPersonDropDown = $("#ddGetSalesPerson").dxDropDownBox("instance");
 					if (salesPersonDropDown) {
 							salesPersonDropDown.option("value", data.SalesPersonCode);
 					}
@@ -1467,6 +1535,33 @@
 			}
 		});
 	}
+	 $(function () {
+            const dateBox = $("#RFQDate").dxDateBox("instance");
+
+        // When focus/typing starts, change to dd-MM-yyyy
+            $("#RFQDate").on("focusin", function () {
+            dateBox.option("displayFormat", "dd-MM-yyyy");
+        });
+
+        // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#RFQDate").on("focusout", function () {
+            dateBox.option("displayFormat", "dd-MMM-yyyy");
+        });
+    });
+	 $(function () {
+            const dateBox = $("#SupplierQuoteDate").dxDateBox("instance");
+
+        // When focus/typing starts, change to dd-MM-yyyy
+            $("#SupplierQuoteDate").on("focusin", function () {
+            dateBox.option("displayFormat", "dd-MM-yyyy");
+        });
+
+        // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#SupplierQuoteDate").on("focusout", function () {
+            dateBox.option("displayFormat", "dd-MMM-yyyy");
+        });
+    });
+
 	// Move the DataGrid configuration into a function for cleanliness
 		function initializeDataGrid(rowData) {
 
@@ -1649,6 +1744,7 @@
 
 															dataGrid.cellValue(rowIndex, "VAT%", "15%");
 
+
 														}
 
 														e.component.close();
@@ -1689,27 +1785,45 @@
 
 									// âœ… Edit icon with navigation
 
-									$("<div>").dxButton({
+							$("<div>").dxButton({
+    icon: "edit",
+    hint: "Edit item",
+    onClick: function () {
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        
+        // Get the selected row via cellInfo or directly use grid methods
+        const visibleRows = grid.getVisibleRows();
+        
+        // You are inside the cell template, so this might be useful:
+        const rowIndex = cellInfo.rowIndex; // <- works in editCellTemplate context
+        const rowData = grid.cellValue(rowIndex, "GSCode"); // Get just the GScode
+        
+        if (!rowData) {
+            DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+            return;
+        }
 
-										icon: "edit",
+        const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+       openModal(url, "Goods And Service", function () {
+            // ✅ Reload dropdown data after edit modal closes
+            getDropdownData().done(function (newData) {
+                // Update the dataSource of the dropdown inside this cell
+                let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
+                if (dropDownBox) {
+                    dropDownBox.option("dataSource", newData);
+                }
 
-										hint: "Edit item",
+                // Update global dropdownData if used elsewhere
+                dropdownData = newData;
 
-										onClick: function () {
-
-										  // Replace or fetch dynamically
-
-											let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
-
-											openModal(url, "");
-
-										},
-
-										width: 60,
-
-										height: 30
-
-									}).appendTo($container);
+                // Optional: Refresh the current grid row
+                grid.refresh();
+            });
+        });
+    },
+    width: 60,
+    height: 30
+}).appendTo($container);
 
 								});
 
@@ -1870,7 +1984,7 @@
 
 										onClick: function () {
 
-											let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+											let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
 										   openModal(url, "");
 
@@ -1890,6 +2004,7 @@
 
 
 				{ dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
+				{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
 
 				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 
@@ -1897,7 +2012,7 @@
 				{ dataField: "ItemDiscount", caption: formatMessage('Item Discount'), width: 150 },
 
 				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150 },
-				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150 },
+				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150,visible:false },
 				{
 			type: "buttons",
 			caption: "Delete",
@@ -2193,6 +2308,7 @@
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
 													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+                                                       ItemNo = selectedItem.GSCode;
 
 												}
 
@@ -2233,7 +2349,7 @@
 							}).appendTo($container);
 
 							// âœ… Edit icon with navigation
-
+					
 							$("<div>").dxButton({
 
 								icon: "edit",
@@ -2241,14 +2357,14 @@
 								hint: "Edit item",
 
 								onClick: function () {
+        if (!ItemNo) {
+            DevExpress.ui.notify("Please select a row with a GSCode first", "warning", 2000);
+            return;
+        }
 
-									// Replace or fetch dynamically
-
-									let url = `/${tenantName}/IMS/GoodsAndService`; // Example edit page
-
-									openModal(url, "");
-
-								},
+        const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
+        openModal(url, "Goods And Service");
+    },
 
 								width: 60,
 
@@ -2400,7 +2516,7 @@
 
 								onClick: function () {
 
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
+									let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
 
 									openModal(url, "");
 
@@ -2420,6 +2536,7 @@
 
 
 				{ dataField: "QuotedQuantity", caption: formatMessage('Qty'), width: 150 },
+				{ dataField: "CostPrice", caption: formatMessage('Unit Cost Price'), width: 150 },
 
 				{ dataField: "UnitPrice", caption: formatMessage('Unit Price'), width: 150 },
 				
@@ -2427,7 +2544,7 @@
 				{ dataField: "ItemDiscount", caption: formatMessage('Item Discount'), width: 150 },
 
 				{ dataField: "LineTotalAfterDisc", caption: formatMessage('Net Total'), width: 150 },
-				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150 },
+				{ dataField: "RfqchildSlNo", caption: formatMessage('RfqchildSlNo'), width: 150,visible:false},
 
 				{ dataField: "AddlDescription", visible: false },
 		{ dataField: "QuotationRemarks", visible: false },
@@ -4458,7 +4575,7 @@
 		CompanyBranch: $('#ddCompany').dxDropDownBox("instance").option("value") || null,
 	InventoryMasterGroupId: $("#ddInventoryGroup").dxDropDownBox("instance").option("value") || null,
 
-			SalesPersonCode:$("#SalesPerson").dxDropDownBox("instance").option("value") || null,
+			SalesPersonCode:$("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
 				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
 				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
@@ -4483,6 +4600,11 @@
 			data: JSON.stringify(model),
 			success: function (response) {
 				DevExpress.ui.notify(response.message, "success", 3000);
+
+				 const rfqno = response.rfqno;
+				
+				 loadChildDataAndBindGrid(rfqno);
+
 				// Refresh parent DataGrid (ensure the correct selector is used)
 				if (window.parent && window.parent.$("#dataGrid").length) {
 					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
@@ -4499,6 +4621,47 @@
 		});
 		
 	});
+
+	function loadChildDataAndBindGrid(rfqno) {
+		//
+    if (!rfqno) {
+        console.warn("rfqno number not provided.");
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+		url: `/api/RequestforQuotationList/GetRFQChildren?RFQno=${encodeURIComponent(rfqno)}`,
+        dataType: "json",
+        success: function (gridResponse) {
+            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
+                console.warn("No child details found in the response.");
+                return;
+            }
+
+            console.log("Grid Response:", gridResponse);
+
+            const rowData = gridResponse.map((item, index) => ({
+                SNo: index + 1,
+                ...item
+            }));
+
+            // ✅ Bind data to existing B2B grid
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", rowData);
+            } else {
+                console.error("B2B DataGrid instance not found.");
+            }
+        },
+        error: function (xhr, status, error) {
+            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
+            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
+            console.error("Error fetching grid data:", errorMsg);
+        }
+    });
+}
+
 	 $("#btnDelete").on("click", function (e) {
         e.preventDefault();
         onDeleteButtonClick();
@@ -4530,9 +4693,9 @@
 
 
 
-					$("#btnSaveAndClose").on("click", function (e) {
+			$("#btnSaveAndClose").on("click", function (e) {
 
-			const $btn = $(this).dxButton("instance");
+			
 
 				// ✅ Step 1: Validate required field
 				const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
@@ -4546,8 +4709,7 @@
 					return;
 				}
 
-				// ✅ Step 2: Disable the button after validation passes
-				$btn.option("disabled", true);
+			
 			let master = {
 				Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
 				Rfqdate: $("#RFQDate").dxDateBox("instance").option("value") || null,
@@ -4566,6 +4728,7 @@
 				Rfqsignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
 				CompanyBranch: $('#ddCompany').dxDropDownBox("instance").option("value") || null,
 				InventoryMasterGroupId: $("#ddInventoryGroup").dxDropDownBox("instance").option("value") || null,
+				SalesPersonCode:$("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
 				CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
 				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
 				CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
@@ -4620,7 +4783,7 @@
 					},
 					error: function (xhr, status, error) {
 						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+						DevExpress. ui.dialog.alert("Failed to load account details.", "Error");
 					}
 				});
 			});

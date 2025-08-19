@@ -597,7 +597,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
-
+        
 
 
         [HttpPost]
@@ -1006,29 +1006,87 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 if (existing != null)
                 {
                     // UPDATE
+                    existing.PropertyType = VM.PropertyType;
+                    existing.PropertyNo = VM.PropertyNo;
+                    existing.PropertyDescription = VM.PropertyDescription;
                     existing.PropertyCategory = VM.PropertyCategory;
                     existing.Specifications = VM.Specifications;
+                    existing.PropertyGroupId = VM.PropertyGroupId;
+
                     existing.Brand = VM.Brand;
-                    existing.PlateNo = VM.PlateNo;
-                    existing.DoorNo = VM.DoorNo;
                     existing.ChassisNo = VM.ChassisNo;
-                    existing.Color = VM.Color;
-                    existing.Capacity = VM.Capacity;
+                    existing.EngineNo = VM.EngineNo;
                     existing.Model = VM.Model;
+                    existing.Capacity = VM.Capacity;
+                    existing.ModelType = VM.ModelType;
+                    existing.AlternatorNo = VM.AlternatorNo;
+                    existing.DoorNo = VM.DoorNo;
+                    existing.Color = VM.Color;
                     existing.Year = VM.Year;
-                    existing.Ownership = VM.Ownership;
+                    existing.KvaorKw = VM.KvaorKw;
+                    existing.Weight = VM.Weight;
+                    existing.PlatformHeight = VM.PlatformHeight;
+                    existing.OperatingWeight = VM.OperatingWeight;
+                    existing.OperatingCapacity = VM.OperatingCapacity;
+                    existing.LxWxH = VM.LxWxH;
+                    existing.Location = VM.Location;
+                    existing.OwnershipText = VM.OwnershipText;
+                    existing.PropertyCertification = VM.PropertyCertification;
+                    existing.PropertyRemarks = VM.PropertyRemarks;
+                    existing.PropertyPwas = VM.PropertyPwas;
+                    existing.PropertyAttachment = VM.PropertyAttachment;
+
+                    existing.AddlSpec1 = VM.AddlSpec1;
+                    existing.AddlField1 = VM.AddlField1;
+                    existing.AddlSpec2 = VM.AddlSpec2;
+                    existing.AddlField2 = VM.AddlField2;
+                    existing.AddlSpec3 = VM.AddlSpec3;
+                    existing.AddlField3 = VM.AddlField3;
+
+                    existing.PropertyImage = VM.PropertyImage;
+
                     existing.PurchaseDate = VM.PurchaseDate;
-                    existing.PurchasedAs = VM.PurchasedAs;
+                    existing.PurchasedFrom = VM.PurchasedFrom;
+                    existing.PurchasedAs2 = VM.PurchasedAs2;
+                    existing.PropertyCondition2 = VM.PropertyCondition2;
+
+                    existing.IsFinanced = VM.IsFinanced;
+                    existing.FinancedBy2 = VM.FinancedBy2;
+                    existing.InstallmentStartDate = VM.InstallmentStartDate;
+                    existing.InstallmentEndDate = VM.InstallmentEndDate;
+                    existing.NoOfInstallments = VM.NoOfInstallments;
+                    existing.InitialDownPayment = VM.InitialDownPayment;
+                    existing.MonthlyInstallment = VM.MonthlyInstallment;
+                    existing.FinalInstallment = VM.FinalInstallment;
+
+                    existing.HiredOn = VM.HiredOn;
+                    existing.SupplierCode = VM.SupplierCode;
+                    existing.SupplierPono = VM.SupplierPono;
+                    existing.SupplierRefNo = VM.SupplierRefNo;
+                    existing.HiringMode = VM.HiringMode;
                     existing.BuyingRatePerHour = VM.BuyingRatePerHour;
                     existing.BuyingRatePerDay = VM.BuyingRatePerDay;
+                    existing.BuyingRatePerWeek = VM.BuyingRatePerWeek;
                     existing.BuyingRatePerMonth = VM.BuyingRatePerMonth;
+                    existing.AgreementHours = VM.AgreementHours;
+                    existing.BuyingOtratePerHour = VM.BuyingOtratePerHour;
+                    existing.SupplierMobRate = VM.SupplierMobRate;
+                    existing.SupplierDemobRate = VM.SupplierDemobRate;
+
+                    existing.IsOperatorIncluded = VM.IsOperatorIncluded;
+                    existing.OperatorName = VM.OperatorName;
+                    existing.OperatorNationalId = VM.OperatorNationalId;
+                    existing.OperatorContactMobile = VM.OperatorContactMobile;
+                    existing.OperatorContactMobile2 = VM.OperatorContactMobile2;
+                    existing.OperatorRate = VM.OperatorRate;
+
+                    existing.IsReturned = VM.IsReturned;
+                    existing.ReturnedOn = VM.ReturnedOn;
+                    existing.ReturnedRemarks = VM.ReturnedRemarks;
+
                     existing.SellingRatePerHour = VM.SellingRatePerHour;
                     existing.SellingRatePerDay = VM.SellingRatePerDay;
                     existing.SellingRatePerMonth = VM.SellingRatePerMonth;
-                    existing.PropertyCondition = VM.PropertyCondition;
-                    existing.IsFinanced = VM.IsFinanced;
-                    existing.FinancedFrom = VM.FinancedFrom;
-                    existing.ValueOfProperty = VM.ValueOfProperty;
 
                     if (!string.IsNullOrWhiteSpace(VM.PropertyImageBase64))
                     {
@@ -1043,30 +1101,98 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     // INSERT
                     var newEntity = new Tbl40101PropertyMaster
                     {
+                        // ================== Core Info ==================
+                        PropertyType = VM.PropertyType,
                         PropertyNo = VM.PropertyNo,
+                        PropertyDescription = VM.PropertyDescription,
                         PropertyCategory = VM.PropertyCategory,
                         Specifications = VM.Specifications,
+                        PropertyGroupId = VM.PropertyGroupId,
+
+                        // ================== Asset Details ==================
                         Brand = VM.Brand,
-                        PlateNo = VM.PlateNo,
-                        DoorNo = VM.DoorNo,
-                        ChassisNo = VM.ChassisNo,
-                        Color = VM.Color,
-                        Capacity = VM.Capacity,
                         Model = VM.Model,
+                        ModelType = VM.ModelType,
+                        ChassisNo = VM.ChassisNo,
+                        EngineNo = VM.EngineNo,
+                        AlternatorNo = VM.AlternatorNo,
+                        DoorNo = VM.DoorNo,
+                        Color = VM.Color,
                         Year = VM.Year,
-                        Ownership = VM.Ownership,
+                        KvaorKw = VM.KvaorKw,           
+                        Capacity = VM.Capacity,
+                        Weight = VM.Weight,
+                        OperatingCapacity = VM.OperatingCapacity,
+                        OperatingWeight = VM.OperatingWeight,
+                        PlatformHeight = VM.PlatformHeight,
+                        LxWxH = VM.LxWxH,
+                        Location = VM.Location,
+                        OwnershipText = VM.OwnershipText,
+                        PropertyCertification = VM.PropertyCertification,
+                        PropertyRemarks = VM.PropertyRemarks,
+                        PropertyPwas = VM.PropertyPwas,      // fixed spelling
+                        PropertyAttachment = VM.PropertyAttachment,
+
+                        // ================== Additional Specs ==================
+                        AddlSpec1 = VM.AddlSpec1,
+                        AddlField1 = VM.AddlField1,
+                        AddlSpec2 = VM.AddlSpec2,
+                        AddlField2 = VM.AddlField2,
+                        AddlSpec3 = VM.AddlSpec3,
+                        AddlField3 = VM.AddlField3,
+
+                        // ================== Image ==================
+                        PropertyImage = VM.PropertyImage,
+
+                        // ================== Purchase Info ==================
                         PurchaseDate = VM.PurchaseDate,
-                        PurchasedAs = VM.PurchasedAs,
+                        PurchasedFrom = VM.PurchasedFrom,
+                        PurchasedAs2 = VM.PurchasedAs2,   
+                        PropertyCondition2 = VM.PropertyCondition2, 
+                        // ================== Finance Info ==================
+                        IsFinanced = VM.IsFinanced,
+                      //  FinancierName = VM.FinancierName,     
+                        InstallmentStartDate = VM.InstallmentStartDate,
+                        InstallmentEndDate = VM.InstallmentEndDate,
+                        NoOfInstallments = VM.NoOfInstallments,
+                        InitialDownPayment = VM.InitialDownPayment,
+                        MonthlyInstallment = VM.MonthlyInstallment,
+                        FinalInstallment = VM.FinalInstallment,
+
+                        // ================== Hiring Info ==================
+                        HiredOn = VM.HiredOn,
+                        SupplierCode = VM.SupplierCode,
+                        SupplierPono = VM.SupplierPono,
+                        SupplierRefNo = VM.SupplierRefNo,
+                        HiringMode = VM.HiringMode,
                         BuyingRatePerHour = VM.BuyingRatePerHour,
                         BuyingRatePerDay = VM.BuyingRatePerDay,
+                        BuyingRatePerWeek = VM.BuyingRatePerWeek,
                         BuyingRatePerMonth = VM.BuyingRatePerMonth,
+                        AgreementHours = VM.AgreementHours,
+                        BuyingOtratePerHour = VM.BuyingOtratePerHour,  
+                        SupplierMobRate = VM.SupplierMobRate,
+                        SupplierDemobRate = VM.SupplierDemobRate,
+
+                        // ================== Operator Info ==================
+                        IsOperatorIncluded = VM.IsOperatorIncluded,
+                        OperatorName = VM.OperatorName,
+                        OperatorNationalId = VM.OperatorNationalId,
+                        OperatorContactMobile = VM.OperatorContactMobile,
+                        OperatorContactMobile2 = VM.OperatorContactMobile2,
+                        OperatorRate = VM.OperatorRate,
+
+                        // ================== Return Info ==================
+                        IsReturned = VM.IsReturned,
+                        ReturnedOn = VM.ReturnedOn,
+                        ReturnedRemarks = VM.ReturnedRemarks,
+
+                        // ================== Selling Rates ==================
                         SellingRatePerHour = VM.SellingRatePerHour,
                         SellingRatePerDay = VM.SellingRatePerDay,
                         SellingRatePerMonth = VM.SellingRatePerMonth,
-                        PropertyCondition = VM.PropertyCondition,
-                        IsFinanced = VM.IsFinanced,
-                        FinancedFrom = VM.FinancedFrom,
-                        ValueOfProperty = VM.ValueOfProperty,
+
+                        // ================== Audit ==================
                         CreatedBy = "system",
                         CreatedOn = DateTime.UtcNow
                     };
@@ -1091,32 +1217,103 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
         public class PropertyMasterViewModel
         {
+            // Core Info
+            public int? PropertyType { get; set; }
             public string PropertyNo { get; set; }
+            public string PropertyDescription { get; set; }
             public byte? PropertyCategory { get; set; }
             public string Specifications { get; set; }
+            public byte? PropertyGroupId { get; set; }
+
+            // Asset Details
             public string Brand { get; set; }
             public string PlateNo { get; set; }
             public string DoorNo { get; set; }
             public string ChassisNo { get; set; }
+            public string EngineNo { get; set; }
             public string Color { get; set; }
             public string Capacity { get; set; }
             public string Model { get; set; }
+            public string ModelType { get; set; }
+            public string AlternatorNo { get; set; }
             public string Year { get; set; }
-            public byte? Ownership { get; set; }
+            public string KvaorKw { get; set; }
+            public string Weight { get; set; }
+            public string PlatformHeight { get; set; }
+            public string OperatingWeight { get; set; }
+            public string OperatingCapacity { get; set; }
+            public string LxWxH { get; set; }
+            public string Location { get; set; }
+            public string OwnershipText { get; set; }
+            public string PropertyCertification { get; set; }
+            public string PropertyRemarks { get; set; }
+            public string PropertyPwas { get; set; }
+            public string PropertyAttachment { get; set; }
+
+            // Additional Specs
+            public string AddlSpec1 { get; set; }
+            public string AddlField1 { get; set; }
+            public string AddlSpec2 { get; set; }
+            public string AddlField2 { get; set; }
+            public string AddlSpec3 { get; set; }
+            public string AddlField3 { get; set; }
+
+            // Image
+            public string PropertyImageBase64 { get; set; } // for upload
+            public byte[] PropertyImage { get; set; } // for DB save
+
+            // Purchase Info
             public DateTime? PurchaseDate { get; set; }
-            public byte? PurchasedAs { get; set; }
+            public string PurchasedFrom { get; set; }
+            public string PurchasedAs2 { get; set; }
+            public string PropertyCondition2 { get; set; }
+
+            // Finance Info
+            public bool? IsFinanced { get; set; }
+            public short? FinancedFrom { get; set; }
+            public string FinancedBy2 { get; set; }
+            public DateTime? InstallmentStartDate { get; set; }
+            public DateTime? InstallmentEndDate { get; set; }
+            public byte? NoOfInstallments { get; set; }
+            public decimal? InitialDownPayment { get; set; }
+            public decimal? MonthlyInstallment { get; set; }
+            public decimal? FinalInstallment { get; set; }
+            public decimal? ValueOfProperty { get; set; }
+
+            // Hiring Info
+            public DateTime? HiredOn { get; set; }
+            public string SupplierCode { get; set; }
+            public string SupplierPono { get; set; }
+            public string SupplierRefNo { get; set; }
+            public string HiringMode { get; set; }
             public decimal? BuyingRatePerHour { get; set; }
             public decimal? BuyingRatePerDay { get; set; }
+            public decimal? BuyingRatePerWeek { get; set; }
             public decimal? BuyingRatePerMonth { get; set; }
+            public short? AgreementHours { get; set; }
+            public decimal? BuyingOtratePerHour { get; set; }
+            public decimal? SupplierMobRate { get; set; }
+            public decimal? SupplierDemobRate { get; set; }
+
+            // Operator Info
+            public bool? IsOperatorIncluded { get; set; }
+            public string OperatorName { get; set; }
+            public string OperatorNationalId { get; set; }
+            public string OperatorContactMobile { get; set; }
+            public string OperatorContactMobile2 { get; set; }
+            public decimal? OperatorRate { get; set; }
+
+            // Return Info
+            public bool? IsReturned { get; set; }
+            public DateTime? ReturnedOn { get; set; }
+            public string ReturnedRemarks { get; set; }
+
+            // Selling Rates
             public decimal? SellingRatePerHour { get; set; }
             public decimal? SellingRatePerDay { get; set; }
             public decimal? SellingRatePerMonth { get; set; }
-            public byte? PropertyCondition { get; set; }
-            public bool? IsFinanced { get; set; }
-            public short? FinancedFrom { get; set; }
-            public decimal? ValueOfProperty { get; set; }
-            public string PropertyImageBase64 { get; set; } // For upload
         }
+
 
 
         [HttpGet]

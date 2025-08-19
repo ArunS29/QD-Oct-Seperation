@@ -288,7 +288,7 @@
 				}
 
 				$.ajax({
-					url: '/api/ERStockInventory/AddPropertyType',
+					url: '/api/AddNewProperty/AddPropertyType',
 					type: 'POST',
 					contentType: 'application/json',
 					data: JSON.stringify({ PropertyType: newProperty }),
@@ -326,7 +326,7 @@
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/ERStockInventory/DeletePropertyType?key=' + e.row.data.PropertyTypeId,
+						url: '/api/AddNewProperty/DeletePropertyType?key=' + e.row.data.PropertyTypeId,
 						type: 'DELETE',
 						success: function () {
 							DevExpress.ui.notify("Property Type deleted successfully!", "success", 2000);

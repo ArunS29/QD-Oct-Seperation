@@ -319,6 +319,7 @@
         .LabelMode(EditorLabelMode.Floating)
         .ID("GetProjectDropDown")
         .OpenOnFieldClick(false)
+		  .Option("GetProjectDropDown", "GetProject-datagrid")  
         .ValueChangeEvent("input")
         .HoverStateEnabled(true)
         .ValueExpr("ClientCode")
@@ -390,6 +391,7 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetSalesPerson")
                         .Width(900)
+						  .Option("ddGetSalesPerson", "GetSalesPerson-datagrid")  
 														@*  .ShowClearButton(true)
 							                           .AcceptCustomValue(true) *@
                         .OpenOnFieldClick(false)
@@ -476,6 +478,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("ModeOfRequestId")
                         )
+						  .Option("ddGetModeOfRequest", "GetProject-datagrid1")  
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetModeOfRequest")
                         .Width(900)
@@ -515,6 +518,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("TypeOfRequestId")
                         )
+						  .Option("ddGetTypeOfRequest", "GetTypeOfRequest-datagrid")  
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetTypeOfRequest")
                         .Width(900)
@@ -897,6 +901,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("QuoteStatusId")
                                     )
+									  .Option("ddGetQuoteStatus", "GetProject-datagrid")  
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddGetQuoteStatus")
                                     .Width(900)
@@ -910,6 +915,9 @@
                                     .TabIndex(1)
                                     .Width("100%")
                                     .OnKeyDown("onKeyDown")
+									.DropDownOptions(o => o
+														.Width(800)
+														)
                                     //.OnValueChanged("dropDownBoxValueChanged")
                                     .ContentTemplate(new TemplateName("GetQuotationStatusContentTemplate"))
 									.Buttons(buttons =>
@@ -954,6 +962,7 @@
                                     .LoadMode(DataSourceLoadMode.Raw)
                                     .Key("SignatoryId")
                                     )
+									  .Option("ddPreparedby", "GetPreparedby-datagrid")  
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddPreparedby")
                                     .Width(900)
@@ -1912,11 +1921,18 @@
 <div id="CalcardPopover"></div>
 <script>
 
-	function onOpened(e) {
-		setTimeout(() => {
-			e.component.focus();
-		});
-	}
+	  function onOpened(e) {
+    const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+    const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+ 
+    if (grid) {
+        grid.getDataSource().reload(); // refresh data
+    }
+ 
+    setTimeout(() => {
+        e.component.focus();
+    });
+}
 
 	function onKeyDown(e) {
 		const ddbInstance = e.component;
@@ -2540,13 +2556,14 @@ function checkDateLocking() {
 
 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+													//dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+													dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													ItemNo = selectedItem.GSCode;
 
 												}
@@ -2644,9 +2661,9 @@ $("<div>").dxButton({
 						window.currentDescriptionCell = options;
 
 										let url = `/${tenantName}/IMS/DetailedDescriptionQuotation?QuoteChildId=${encodeURIComponent(QuoteChildId)}&gsCode=${encodeURIComponent(gsCode)}`;
-						let title = "Details Description";
+						let title = " ";
 
-						openModal(url, title);
+						openModal(url, title,"65%","60%");
 					}
 						}).appendTo(container);
 					}
@@ -3299,13 +3316,15 @@ placeholder: "Search..."
 
 													dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
 
-													dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+													//dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
 
 													dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
 
 													dataGrid.cellValue(rowIndex, "Qty", 1);
 
-													dataGrid.cellValue(rowIndex, "VAT%", "15%");
+													dataGrid.cellValue(rowIndex, "QuotedTaxSlab", "15%");
+														dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || null);
+															dataGrid.cellValue(rowIndex, "CostPrice", selectedItem.CostPrice || null);
 													
 												ItemNo = selectedItem.GSCode;
 												Gsdescrpition = selectedItem.GSDescrpition;
@@ -3403,9 +3422,9 @@ placeholder: "Search..."
                 window.currentDescriptionCell = options;
 
                 const url = `/${tenantName}/IMS/DetailedDescriptionQuotation?gsCode=${encodeURIComponent(gsCode)}`;
-                const title = "Details Description";
+                const title = " ";
 
-                openModal(url, title);
+                openModal(url, title,"65%","60%");
             }
         }).appendTo(container);
     }
@@ -4085,12 +4104,8 @@ AddlDescription: null,
 		}
 	}
 
-	function onOpened(e) {
-		setTimeout(() => {
-			e.component.focus();
-		});
-	}
-
+	
+		
 	function ClientNamedataGridSelectionChanged(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 		const ddbInstance = $("#ddclientname").dxDropDownBox("instance");
@@ -5811,6 +5826,10 @@ AddlDescription: null,
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
 					DevExpress.ui.notify(response.message, "success", 3000);
+
+					const quoteno = response.quoteno;
+				
+				 loadChildDataAndBindGrid(quoteno);
 					// Refresh parent DataGrid (ensure the correct selector is used)
 					if (window.parent && window.parent.$("#dataGrid").length) {
 						let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
@@ -5828,6 +5847,45 @@ AddlDescription: null,
 			});
 		
 	});
+	function loadChildDataAndBindGrid(quoteno) {
+		//
+    if (!quoteno) {
+        console.warn("No MPR number provided.");
+        return;
+    }
+
+    $.ajax({
+        type: "GET",
+		url: `/api/AddNewQuotation/GetQuotationChildren?QuoteNo=${encodeURIComponent(quoteno)}`,
+               dataType: "json",
+        success: function (gridResponse) {
+            if (!Array.isArray(gridResponse) || gridResponse.length === 0) {
+                console.warn("No child details found in the response.");
+                return;
+            }
+
+            console.log("Grid Response:", gridResponse);
+
+            const rowData = gridResponse.map((item, index) => ({
+                SNo: index + 1,
+                ...item
+            }));
+
+            // ✅ Bind data to existing B2B grid
+            const grid = $("#B2BdataGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", rowData);
+            } else {
+                console.error("B2B DataGrid instance not found.");
+            }
+        },
+        error: function (xhr, status, error) {
+            const errorMsg = xhr.responseJSON?.message || xhr.statusText || error;
+            DevExpress.ui.notify("Failed to load child data: " + errorMsg, "error", 3000);
+            console.error("Error fetching grid data:", errorMsg);
+        }
+    });
+}
 	$("#btnDelete").on("click", function (e) {
 		e.preventDefault();
 		onDeleteButtonClick();

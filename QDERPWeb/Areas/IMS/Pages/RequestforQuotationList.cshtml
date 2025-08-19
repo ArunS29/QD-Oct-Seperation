@@ -707,7 +707,7 @@
 			success: function (response) {
 				if (response.success) {
 					DevExpress.ui.notify(response.message, 'success', 2000);
-					$("#dataGrid").dxDataGrid("instance").refresh();
+					ddBtnShowRecords_click('range');
 				} else {
 					DevExpress.ui.notify(response.message, 'error', 3000);
 				}

@@ -274,7 +274,7 @@
                 .Icon("save")
                 .Type(ButtonType.Success)
                 .StylingMode(ButtonStylingMode.Outlined)
-                .OnClick("onSaveClientMasterClick")
+                .OnClick("onSaveAndClose")
                         .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
                 )
 
@@ -592,12 +592,9 @@
 
      $("#btnSaveAndClose").on("click", function (e) {
         e.preventDefault();
-        onSaveClientMasterClick();
+        onSaveAndClose();
 
-        setTimeout(() => {
-            window.location.history();
-        }, 1000);
-    });
+           });
 
     $("#btnSave").on("click", function (e) {
         e.preventDefault();
@@ -681,6 +678,82 @@
             DevExpress.ui.notify("Please fill all required fields", "error", 3000);
         }
     }
+            function onSaveAndClose(e) {
+                debugger;
+
+            // Collecting form data from client master form
+            var Gscode = $('#txtGoodsCode7').dxTextBox("instance").option("value");
+
+            var GsgroupId = $('#GetProjectDropDown').dxDropDownBox("instance").option("value");
+            var ItemPartNo = $('#txtItemPartNo4').dxTextBox("instance").option("value");
+            var Gsdescrpition = $('#txtDescription8').dxTextArea("instance").option("value");
+
+            var GsdescriptionAr = $('#txtDescriptionArabic').dxTextArea("instance").option("value");
+            var GsuoM = $('#GetLedgerNoDropDown').dxDropDownBox("instance").option("value");
+
+        if (GsuoM === "" || GsuoM === undefined) {
+            GsuoM = null;
+        }
+
+
+            var GspackingUnit = $('#packingUnit').dxNumberBox("instance").option("value");
+            var GssellingRate = $('#sellingRate').dxNumberBox("instance").option("value");
+
+            var CostPrice = $('#txtCostPrice3').dxNumberBox("instance").option("value");
+
+            var GsdetailedDesc = $('#txtDetailedDescription').dxTextArea("instance").option("value");
+            var GsdetailedDescAr = $('#txtDetailedDescriptionArabic').dxTextArea("instance").option("value");
+
+
+            // Validate required fields
+            var clientNameValidator = $("#txtGoodsCode7").dxValidator("instance");
+            var clientCodeValidator = $("#txtDescription8").dxValidator("instance");
+
+            var clientNameValidation = clientNameValidator.validate();
+            var clientCodeValidation = clientCodeValidator.validate();
+
+            if (clientNameValidation.isValid && clientCodeValidation.isValid) {
+                // Construct the data object to send to the API
+                const data = {
+                    Gscode: Gscode,
+                    GsgroupId: GsgroupId,
+                    ItemPartNo: ItemPartNo,
+                    Gsdescrpition: Gsdescrpition,
+                    GsdescriptionAr: GsdescriptionAr,
+                    GsuoM: GsuoM,
+                    GspackingUnit: GspackingUnit,
+                    GssellingRate: GssellingRate,
+                    CostPrice: CostPrice,
+                    GsdetailedDesc: GsdetailedDesc,
+                    GsdetailedDescAr: GsdetailedDescAr
+
+                };
+
+                console.log(data);
+
+                // Send data via AJAX POST request
+                $.ajax({
+                    url: '/api/GoodsandServices/InsertOrUpdate', // Change this URL to your actual API endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data), // Send the data as a JSON string
+                    success: function (response) {
+                        if (response.success) {
+                            DevExpress.ui.notify(response.message, "success", 3000);
+                            window.parent.closeModal();
+                        } else {
+                            DevExpress.ui.notify("Error: " + response.message, "error", 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error: " + error);
+                        DevExpress.ui.notify("An error occurred while saving the data", "error", 3000);
+                    }
+                });
+            } else {
+                DevExpress.ui.notify("Please fill all required fields", "error", 3000);
+            }
+        }
 
     //delete
     $("#btnDelete").on("click", function (e) {

@@ -566,7 +566,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
 
-                return Ok(new { success = true, message = "RFQ Details saved/updated successfully." });
+                return Ok(new { success = true, message = "RFQ Details saved/updated successfully.", rfqno = VM.Rfqno });
             }
             catch (Exception ex)
             {
