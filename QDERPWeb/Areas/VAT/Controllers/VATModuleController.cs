@@ -717,6 +717,37 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetGoodsAndServiceByCode(string code)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var item = await (from g in dbContext.Tbl20164GoodsAndServicesMasters
+                                join u in dbContext.Tbl40111PropertyUnitCodes
+                                    on g.GsgroupId equals u.UnitCode into gj
+                                from unit in gj.DefaultIfEmpty()
+                                where g.Gscode == code
+                                select new
+                                {
+                                    GSCode = g.Gscode,
+                                    GSDescrpition = g.Gsdescrpition,
+                                    GsdescriptionAr = g.GsdescriptionAr,
+                                    g.ItemPartNo,
+                                    g.CostPrice,
+                                    GSSellingRate = g.GssellingRate,
+                                    g.ReorderQty,
+                                    g.GsuoM,
+                                    UnitDescription = unit.UnitDesc
+                                }).FirstOrDefaultAsync();
+
+                if (item == null)
+                    return NotFound();
+
+                return Ok(item);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetUnitofMeasure()
