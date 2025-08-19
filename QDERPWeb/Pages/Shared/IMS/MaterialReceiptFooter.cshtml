@@ -162,7 +162,7 @@
             )
 
     </div>
-    <div class="btn-container">
+   @*  <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnAddNewReceipt")
             .Icon("plus")
@@ -189,6 +189,34 @@
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
             )
+    </div> *@
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnAddMaterialRequest")
+                .Icon("add")
+                .Width("150%")
+                .Text(new JS("formatMessage('Create New')"))
+                .DropDownOptions(options => options.Width(370))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')")).Icon("user").Option("color", "#FF7043");
+                    items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Project')")).Icon("cart").Option("color", "#00ACC1");
+                  
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                .OnItemClick("addNewMaterialReceipt")
+                .ShowArrowIcon(false)
+                )
     </div>
 </div>
 
@@ -219,17 +247,35 @@
         function MaterialReceiptDetails() {
             window.location.href = `/${tenantName}/IMS/MaterialReceiptDetails`;
         }
-        function addNewMaterialReceipt(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
+        // function addNewMaterialReceipt(e) {
+        //     let url = ''; // Declare once
+        //     switch (e.itemData.text) {
+        //         case formatMessage('Add New Material Receipt-From Supplier'):
+        //             url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
+        //             break;
+        //         default:
+        //             console.log("Clicked item: ", e.itemData.text);
+        //             return;
+        //     }
 
-            window.location.href = url;
+        //     window.location.href = url;
+        // }
+
+          function addNewMaterialReceipt(e) {
+        let url = ''; // Declare once
+        switch (e.itemData.text) {
+            case formatMessage('Add New Material Receipt-From Supplier'):
+                url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
+                break;
+            case formatMessage('Add New Material Receipt-From Project'):
+                url = `/${tenantName}/IMS/MaterialReceiptFromProject`;
+                break;
+          
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+                return;
         }
+
+        window.location.href = url;
+    }
 </script>

@@ -231,7 +231,7 @@
                 .ID("ddButtonExpense")
                 .Icon("tags")
                 .Width("100%")
-                .Text("Create New")
+                .Text(new JS("formatMessage('Create New')"))
                 .ElementAttr(new { style = "display: none;" })
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
