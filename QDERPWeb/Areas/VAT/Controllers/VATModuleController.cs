@@ -6799,6 +6799,126 @@ documentNo: InvChildSlNo
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
+        [HttpGet]
+        public IActionResult GetVATSales(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry201607vatinvoiceRegisterMainViews.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "ToBeVerified":
+                        // not verified
+                        query = query.Where(x => x.IsVerified == false);
+                        break;
+
+                    case "ToBeApproved":
+                        // verified but not approved
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved == false);
+                        break;
+
+                    case "ToBePost":
+                        // approved but not posted
+                        query = query.Where(x => x.IsApproved == true && x.IsPosted == false);
+                        break;
+                }
+            }
+
+            var count = query.Count();
+            return Json(new { status, count });
+        }
+        [HttpGet]
+        public IActionResult GetVATDebit(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry201907vatdebitNoteRegisterMainViews.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                        query = query.Where(x => x.IsSubmitted == true && x.IsVerified != true);
+                        break;
+
+                    case "tobeapproved":
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved != true);
+                        break;
+
+                    case "tobepost":
+                        query = query.Where(x => x.IsApproved == true && x.IsPosted != true);
+                        break;
+                }
+            }
+
+            var result = query.ToList();
+            return Json(result);
+        }
+        [HttpGet]
+        public IActionResult GetVATCredit(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry201807vatcreditNoteRegisterMainViews.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                        query = query.Where(x => x.IsSubmitted == true && x.IsVerified != true);
+                        break;
+
+                    case "tobeapproved":
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved != true);
+                        break;
+
+                    case "tobepost":
+                        query = query.Where(x => x.IsApproved == true && x.IsPosted != true);
+                        break;
+                }
+            }
+
+            var result = query.ToList();
+            return Json(result);
+        }
+        [HttpGet]
+        public IActionResult GetVATPurchase(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry201707vatpurchaseRegisterMainViews.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                        query = query.Where(x => x.IsVerified != true);
+                        break;
+
+                    case "tobeapproved":
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved != true);
+                        break;
+
+                    case "tobepost":
+                        query = query.Where(x => x.IsApproved == true && x.IsPosted != true);
+                        break;
+                }
+            }
+
+            var result = query.ToList();
+            return Json(result);
+        }
+
 
 
     }

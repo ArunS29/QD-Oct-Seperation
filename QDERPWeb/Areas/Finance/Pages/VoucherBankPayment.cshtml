@@ -53,7 +53,7 @@
             <div class="card-title-icon">
                 <i class="fas fa-file-invoice-dollar"></i>
             </div>
-            <h3 class="card-title-text">Payment Voucher</h3>
+            <div id="PaymentVouchers" class="titleText no-border-title"></div>
         </div>
 
         <div class="dx-card-body">
@@ -194,7 +194,7 @@
                                         .ID("ledgerAccountPopup")
                                         .Width("93%")
                                         .Height("85%")
-                                        .Title("Add Ledger Account")
+                                        .Title(new JS("formatMessage('Add Ledger Account')"))
                                         .ShowTitle(true)
                                         .Visible(false)
                                         .ResizeEnabled(true)
@@ -210,7 +210,7 @@
                                         .ID("ledgerEditAccountPopup")
                                         .Width("93%")
                                         .Height("85%")
-                                        .Title("Edit Ledger Account")
+                                        .Title(new JS("formatMessage('Edit Ledger Account')"))
                                         .ShowTitle(true)
                                         .Visible(false)
                                         .ResizeEnabled(true)
@@ -4542,5 +4542,14 @@ function showMainFooter() {
         offset: [0, 8],
     });
     }
+           $(function () {
+                 $("#PaymentVouchers").dxTextBox({
+                    text: formatMessage("Payment Voucher"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textcolor-heading");
+                }
+                });
+            });
 
 </script>
