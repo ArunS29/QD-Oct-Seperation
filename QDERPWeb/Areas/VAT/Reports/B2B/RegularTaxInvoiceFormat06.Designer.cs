@@ -2816,7 +2816,7 @@
             // 
             this.GroupFooter1.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
             this.xrTable3});
-            this.GroupFooter1.HeightF = 212.1951F;
+            this.GroupFooter1.HeightF = 26.66666F;
             this.GroupFooter1.Name = "GroupFooter1";
             // 
             // xrTable3
