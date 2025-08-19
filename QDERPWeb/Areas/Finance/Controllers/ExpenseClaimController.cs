@@ -1466,6 +1466,74 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult CheckClaimStatus(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrWhiteSpace(voucherNo))
+                return BadRequest(new { success = false, message = "Voucher number is required." });
+
+            var claim = dbContext.Tbl20102ExpenseClaimMasters
+                .Where(c => c.ClaimRefNo == voucherNo)
+                .Select(c => new
+                {
+                    c.IsSubmittedToFinance,
+                    c.IsApproved,
+                    c.IsPaid
+                })
+                .FirstOrDefault();
+
+            if (claim == null)
+                return NotFound(new { success = false, message = "Claim not found." });
+
+            return Json(claim);
+        }
+        [HttpPost]
+        public IActionResult DeleteClaim(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrWhiteSpace(voucherNo))
+                return Json(new { success = false, message = "Voucher number is required." });
+
+            using var transaction = dbContext.Database.BeginTransaction();
+            try
+            {
+                var master = dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefault(c => c.ClaimRefNo == voucherNo);
+
+                if (master == null)
+                    return Json(new { success = false, message = "Claim not found." });
+
+               
+
+                // Delete children
+                var children = dbContext.Tbl20103ExpenseClaimChildren
+                    .Where(c => c.ClaimRefNo == voucherNo)
+                    .ToList();
+                dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(children);
+
+                // Delete master
+                dbContext.Tbl20102ExpenseClaimMasters.Remove(master);
+
+                dbContext.SaveChanges();
+                transaction.Commit();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
 
     }
 }

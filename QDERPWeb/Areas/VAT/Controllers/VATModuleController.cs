@@ -717,6 +717,37 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
             }
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetGoodsAndServiceByCode(string code)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var item = await (from g in dbContext.Tbl20164GoodsAndServicesMasters
+                                join u in dbContext.Tbl40111PropertyUnitCodes
+                                    on g.GsgroupId equals u.UnitCode into gj
+                                from unit in gj.DefaultIfEmpty()
+                                where g.Gscode == code
+                                select new
+                                {
+                                    GSCode = g.Gscode,
+                                    GSDescrpition = g.Gsdescrpition,
+                                    GsdescriptionAr = g.GsdescriptionAr,
+                                    g.ItemPartNo,
+                                    g.CostPrice,
+                                    GSSellingRate = g.GssellingRate,
+                                    g.ReorderQty,
+                                    g.GsuoM,
+                                    UnitDescription = unit.UnitDesc
+                                }).FirstOrDefaultAsync();
+
+                if (item == null)
+                    return NotFound();
+
+                return Ok(item);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
         [HttpGet]
         public async Task<IActionResult> GetUnitofMeasure()
@@ -1881,6 +1912,7 @@ documentNo: unitType
 
 
         [HttpPost]
+        [RequirePermission("frm20161VATInvoiceEdit_btnVerify")]
         public async Task<ActionResult> VerifyVoucher(string InvoiceNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1909,16 +1941,16 @@ documentNo: unitType
                     voucher.VerifiedBy = UserName;
 
                     dbContext.SaveChanges();
-                    
+
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceNo,
-                             ActionType = "You have one Sales Invoice to approve",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceNo,
+                        ActionType = "You have one Sales Invoice to approve",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     await _userActionLogger.LogAsync(
     module: "VAT> Sales Verify Voucher",
@@ -1942,6 +1974,7 @@ documentNo: unitType
         }
 
         [HttpPost]
+        [RequirePermission("frm20161VATInvoiceEdit_btnApprove")]
         public async Task<ActionResult> ApproveVoucher(string InvoiceNo, bool IsDirectApproval)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1983,15 +2016,15 @@ documentNo: unitType
   actionDetail: $"Approve VoucherNo: {InvoiceNo}",
   documentNo: InvoiceNo
 );
-                     var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = InvoiceNo,
-                 ActionType = "You have one Sales Invoice to post",
-                TenantName = TenantName 
-        };
+                    var notifyRequest = new NotificationRequest
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceNo,
+                        ActionType = "You have one Sales Invoice to post",
+                        TenantName = TenantName
+                    };
 
-        await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
@@ -5514,9 +5547,6 @@ documentNo: invoiceNo
                         dict["UnitRateMethod"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
-                        item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
-                        item.CurrencySymbole = company.CurrencySymbol;
-
                         //dict["VAT"] = vatValue;
                         //dict["TotalVAT"] = totalValue;
 
@@ -5912,21 +5942,13 @@ documentNo: invoiceNo
                    .Select(x => x.UnitDesc)
                    .FirstOrDefault();
 
-                        //var qty = gridDetails.UnitsToBill;
-                        //var unitPrice = gridDetails.UnitRate;
-                        //var vatRate = decimal.TryParse(taxRateInWord.Replace("%", ""), out decimal rate) ? rate / 100 : 0;
-
-                        //var amount = qty * unitPrice;
-                        //var vatValue = amount * vatRate;
-                        //var totalValue = amount + vatValue;
-
                         // Add new dynamic column
                         dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
 
-                        item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
-                        item.CurrencySymbole = company.CurrencySymbol;
+                        //item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
+                        //item.CurrencySymbole = company.CurrencySymbol;
          
                         //dict["VAT"] = vatValue;
                         //dict["TotalVAT"] = totalValue;
@@ -6798,6 +6820,53 @@ documentNo: InvChildSlNo
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public IActionResult GetCurrencyDecimals()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Get DefaultcompanyID from session
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    // Query from dbContext instead of undefined 'context'
+                    var decimals = dbContext.Tbl901CompanyDetails
+                        .Where(c => c.DefaultcompanyID == companyId)
+                        .Select(c => c.DefaultCurrencyDecimals)
+                        .FirstOrDefault();
+
+                    return Ok(decimals);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "Server error occurred.",
+                        error = ex.Message
+                    });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant or DB context." });
+        }
+
+
 
         [HttpGet]
         public IActionResult GetVATSales(string module, string status)

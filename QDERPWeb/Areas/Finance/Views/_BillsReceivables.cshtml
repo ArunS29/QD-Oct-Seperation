@@ -195,30 +195,40 @@
                                 {
                                     columns.Add().DataField("ReferenceNo").Caption("Reference No");
                                     columns.Add().DataField("ReceivableAmount").Caption("Receivable Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
-                                    "if (data.ReceivableAmount != null && currencyRate != 0) " +
-                                    "    return data.ReceivableAmount / currencyRate; " +
-                                    "return null;" +
-                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    "    if (data.ReceivableAmount != null && currencyRate != 0) { " +
+                                    "        var val = data.ReceivableAmount / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                     columns.Add().DataField("Received").Caption("Received").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
-                                    "if (data.Received != null && currencyRate != 0) " +
-                                    "    return data.Received / currencyRate; " +
-                                    "return null;" +
-                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    "    if (data.Received != null && currencyRate != 0) { " +
+                                    "        var val = data.Received / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                     columns.Add().DataField("Balance").Caption("Balance").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
-                                    "if (data.Balance != null && currencyRate != 0) " +
-                                    "    return data.Balance / currencyRate; " +
-                                    "return null;" +
-                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    "    if (data.Balance != null && currencyRate != 0) { " +
+                                    "        var val = data.Balance / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                     columns.Add().DataField("RetentionAmount").Caption("Retention Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
-                                    "if (data.RetentionAmount != null && currencyRate != 0) " +
-                                    "    return data.RetentionAmount / currencyRate; " +
-                                    "return null;" +
-                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    "    if (data.RetentionAmount != null && currencyRate != 0) { " +
+                                    "        var val = data.RetentionAmount / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                     columns.Add().DataField("BalanceDueWithOutRetention").Caption("Balance Due Without Retention").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
-                                    "if (data.BalanceDueWithOutRetention != null && currencyRate != 0) " +
-                                    "    return data.BalanceDueWithOutRetention / currencyRate; " +
-                                    "return null;" +
-                                    " }").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                    "    if (data.BalanceDueWithOutRetention != null && currencyRate != 0) { " +
+                                    "        var val = data.BalanceDueWithOutRetention / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                 })
                                 .OnSelectionChanged("onReferenceGridSelectionChanged")
                                 )
@@ -298,10 +308,12 @@
                 columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left).AllowEditing(false);
                 columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).AllowEditing(false);
                     columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).AllowEditing(false).CalculateCellValue("function(data) { " +
-                    "if (data.Amount != null && currencyRate != 0) " +
-                    "    return data.Amount / currencyRate; " +
-                    "return null;" +
-                    " }")
+                    "    if (data.Amount != null && currencyRate != 0) { " +
+                    "        var val = data.Amount / currencyRate; " +
+                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                    "    } " +
+                    "    return null; " +
+                    "}")
                     .CustomizeText("function(e) { " +
                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
                     "}");
