@@ -3689,7 +3689,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             // 2. Get the latest lock date
             var lockInfo = dbContext.Tbl90117VoucherDateLockings.OrderByDescending(x => x.VoucherDateLocked).FirstOrDefault();
-            if (lockInfo != null && voucherDate >= lockInfo.VoucherDateLocked)
+            if (lockInfo != null && voucherDate <= lockInfo.VoucherDateLocked)
             {
                 return Ok(new { isLocked = true });
             }
