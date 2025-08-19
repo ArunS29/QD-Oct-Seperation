@@ -50,11 +50,11 @@
 	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script> *@
 
 <style type="text/css">
-	.dx-popup-title.dx-toolbar {
+	/* .dx-popup-title.dx-toolbar {
 		background-color: blue !important;
 		color: white !important;
 	}
-
+ */
 
 
 	/* Fixed floating footer */
@@ -373,10 +373,12 @@
 		</text>);
 
 					columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
-					"if (data.VoucherAmount != null && currencyRate != 0) " +
-					"    return data.VoucherAmount / currencyRate; " +
-					"return null;" +
-					" }")
+					"    if (data.VoucherAmount != null && currencyRate != 0) { " +
+					"        var val = data.VoucherAmount / currencyRate; " +
+					"        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+					"    } " +
+					"    return null; " +
+					"}")
 					.CustomizeText("function(e) { " +
 					"return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
 					"}");

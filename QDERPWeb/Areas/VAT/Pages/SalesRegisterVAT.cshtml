@@ -424,12 +424,15 @@
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
 					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
 					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
 					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+																																										   		// ✅ "By Quarter" opens submenu
+					
 				})
 				.ItemTemplate(@<text>
             <div class="custom-dropdown-item" >
@@ -444,6 +447,7 @@
         </text>)
 		)
 
+		<div id="quarterMenu"></div>
 
 
 	@(Html.DevExtreme().CheckBox()
@@ -2092,6 +2096,7 @@
 	}
 
 		function ddBtnShowRecords_click(duration, page) {
+			debugger;
 		var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		var toDateBox = $("#todateBox").dxDateBox("instance");
 		var chkEffective = $("#chkUseEffectiveDate").dxCheckBox("instance");
@@ -2100,6 +2105,22 @@
 		var frmDate, toDate;
 
 		switch (duration) {
+			case 'q1':
+			frmDate = new Date(currentDate.getFullYear(), 0, 1);   // Jan 1
+			toDate  = new Date(currentDate.getFullYear(), 2, 31);  // Mar 31
+			break;
+			case 'q2':
+				frmDate = new Date(currentDate.getFullYear(), 3, 1);   // Apr 1
+				toDate  = new Date(currentDate.getFullYear(), 5, 30);  // Jun 30
+				break;
+			case 'q3':
+				frmDate = new Date(currentDate.getFullYear(), 6, 1);   // Jul 1
+				toDate  = new Date(currentDate.getFullYear(), 8, 30);  // Sep 30
+				break;
+			case 'q4':
+				frmDate = new Date(currentDate.getFullYear(), 9, 1);   // Oct 1
+				toDate  = new Date(currentDate.getFullYear(), 11, 31); // Dec 31
+				break;
 			case 'today':
 				frmDate = toDate = currentDate;
 				break;
@@ -2573,6 +2594,74 @@
 	// 	slides[currentSlideIndex].classList.add('active');
 	// }, 2000);
 		$(document).ready(function () {
+
+		function onByQuarterClick(e) {
+		// Prevent the main dropdown from closing
+		e.event.stopPropagation();
+
+		// Reopen main dropdown in case DevExtreme tried to close it
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.open();
+
+		// Open the submenu near the "By Quarter" element
+		openQuarterMenu(e.element);
+	}
+
+			function openQuarterMenu(targetElement) {
+		if ($("#quarterMenu").data("dxContextMenu")) {
+			$("#quarterMenu").dxContextMenu("instance").dispose();
+		}
+
+		$("#quarterMenu").dxContextMenu({
+			target: targetElement,
+			showEvent: "",
+			width: 230,
+			position: {
+				at: "right center",
+				my: "left center",
+				of: targetElement,
+				offset: "8 0"
+			},
+			items: [
+				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
+				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
+				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
+				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+			],
+			onItemClick: function(e) {
+				const quarter = e.itemData.value;
+				if (quarter) {
+					ddBtnShowRecords_click(quarter, 1);
+					closeMainDropdown();
+				}
+			},
+			itemTemplate: function(itemData) {
+				return $("<div>").addClass("custom-dropdown-item")
+					.append(
+						$("<div>").addClass("side-bar").css({
+							"background-color": itemData.color,
+							"height": "90%"
+						})
+					)
+					.append(
+						$("<div>").addClass("item-content").append(
+							$("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+							$("<div>").append(
+								$("<div>").addClass("item-title").text(itemData.text)
+							)
+						)
+					);
+			}
+		}).dxContextMenu("instance").show();
+	}
+
+
+
+
+	function closeMainDropdown() {
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.close();  // ✅ closes only after submenu item click
+	}
 
 
 			const urlParams = new URLSearchParams(window.location.search);
