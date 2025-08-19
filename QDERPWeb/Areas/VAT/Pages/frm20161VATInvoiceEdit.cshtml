@@ -8179,7 +8179,6 @@ button.option("disabled", false);
 
 		function proceedWithVerification() {
 			// Set VerifiedBy checkbox to true
-			$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 			
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -8214,8 +8213,8 @@ button.option("disabled", false);
 
 						DevExpress.ui.notify(
 							"VAT Invoice has been Verified.","success",2000
-							
 						);
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 							initWorkflowTippyPopovers();
