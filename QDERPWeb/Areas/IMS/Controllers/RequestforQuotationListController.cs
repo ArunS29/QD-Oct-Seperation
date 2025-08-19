@@ -1212,7 +1212,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 switch (status.ToLower())
                 {
-                    case "ToBeVerified":
+                    case "tobeverified":
                         // not verified
                         query = query.Where(x => x.IsQuoted == false);
                         break;
@@ -1222,7 +1222,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     //    query = query.Where(x => x.IsVerified == true && x.IsApproved == false);
                     //    break;
 
-                    case "ToBeApproved":
+                    case "tobeapproved":
                         // approved but not posted
                         query = query.Where(x => x.IsQuoted == true);
                         break;

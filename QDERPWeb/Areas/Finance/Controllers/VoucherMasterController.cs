@@ -3298,8 +3298,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 UnitRate = child.UnitRate, // Ensure null safety
                                 DetailedDescription = child.DetailedDescription, // Null safety
                                 QuantityDebited = child.QuantityDebited, // Null safety
-                                TaxSlabCode = child.TaxSlabCode ?? (byte)8,
-                                UnitsToDebited = 1,
+                                TaxSlabCode = child.TaxSlabCode ?? (byte)2,
+                                // UnitsToDebited = 1,
+                                UnitsToDebited = child.UnitsToDebited,
                                 Discount = child.Discount,
                                 UnitRateInOc = child.UnitRate,
                                 DiscountInOc = child.Discount,
@@ -3324,8 +3325,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.DetailedDescription = child.DetailedDescription;
                                 existingChild.QuantityDebited = child.QuantityDebited;
                                 existingChild.TaxSlabCode = child.TaxSlabCode;
-                                existingChild.UnitsToDebited = 1;
-                                existingChild.UnitRateMethod = 49;
+                                existingChild.UnitsToDebited = child.UnitsToDebited; 
+                                existingChild.UnitRateMethod = child.UnitRateMethod; 
                                 existingChild.Discount = child.Discount;
                                 existingChild.UnitRateInOc = child.UnitRate;
                                 existingChild.DiscountInOc = child.Discount;
@@ -3671,6 +3672,48 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             return Unauthorized();
         }
 
+
+        [HttpGet]
+        public async Task<IActionResult> CheckIfInvoiceHasDiscount(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    bool hasDiscount = await dbContext.Qry201601vatinvoiceChildren
+                        .AnyAsync(x => x.InvoiceNo == invoiceNo && x.Discount > 0);
+
+                    return Ok(new { hasDiscount });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> CheckIfProformaInvoiceHasDiscount(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    bool hasDiscount = await dbContext.Qry201651proformaInvoiceChildren
+                        .AnyAsync(x => x.ProformaInvoiceNo == invoiceNo && x.Discount > 0);
+
+                    return Ok(new { hasDiscount });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 
 }

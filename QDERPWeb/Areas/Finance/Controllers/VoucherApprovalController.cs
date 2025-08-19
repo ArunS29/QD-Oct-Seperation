@@ -414,10 +414,20 @@ namespace QDWEB.Areas.Finance.Controllers
                     v.VoucherApprovedBy,
                     v.VoucherApprovedOn,
                     v.VoucherType,
-                    v.DebitAmount,
-                    v.CreditAmount,
-                    company.CurrencyImage
+
+                    // Add these so DataGrid can bind
+                    ConvertedDrAmount = v.DebitAmount,
+                    ConvertedCrAmount = v.CreditAmount,
+                    DrAmount = v.DebitAmount,
+                    CrAmount = v.CreditAmount,
+                    TransactionCurrencySymbol = company.CurrencyImage,
+
+                    // If you really need audit fields
+                    AuditVerifiedBy = v.AuditVerifiedBy,
+                    IsAuditVerified = v.IsAuditVerified,
+                    AuditVerifiedOn = v.AuditVerifiedOn
                 }).ToList();
+
 
                 return Json(data);
             }
