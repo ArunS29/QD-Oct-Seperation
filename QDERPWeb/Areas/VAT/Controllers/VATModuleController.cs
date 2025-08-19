@@ -5545,9 +5545,6 @@ documentNo: invoiceNo
                         dict["UnitRateMethod"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
-                        item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
-                        item.CurrencySymbole = company.CurrencySymbol;
-
                         //dict["VAT"] = vatValue;
                         //dict["TotalVAT"] = totalValue;
 
@@ -5943,21 +5940,13 @@ documentNo: invoiceNo
                    .Select(x => x.UnitDesc)
                    .FirstOrDefault();
 
-                        //var qty = gridDetails.UnitsToBill;
-                        //var unitPrice = gridDetails.UnitRate;
-                        //var vatRate = decimal.TryParse(taxRateInWord.Replace("%", ""), out decimal rate) ? rate / 100 : 0;
-
-                        //var amount = qty * unitPrice;
-                        //var vatValue = amount * vatRate;
-                        //var totalValue = amount + vatValue;
-
                         // Add new dynamic column
                         dict["UnitRateMethodDesc"] = UnitRateMethodDesc;
                         dict["VATPercentage"] = taxRateInWord;
 
 
-                        item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
-                        item.CurrencySymbole = company.CurrencySymbol;
+                        //item.CurrencyImage = company.CurrencyImage; // If you are overwriting with converted amount
+                        //item.CurrencySymbole = company.CurrencySymbol;
          
                         //dict["VAT"] = vatValue;
                         //dict["TotalVAT"] = totalValue;
@@ -6829,6 +6818,53 @@ documentNo: InvChildSlNo
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public IActionResult GetCurrencyDecimals()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Get DefaultcompanyID from session
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    // Query from dbContext instead of undefined 'context'
+                    var decimals = dbContext.Tbl901CompanyDetails
+                        .Where(c => c.DefaultcompanyID == companyId)
+                        .Select(c => c.DefaultCurrencyDecimals)
+                        .FirstOrDefault();
+
+                    return Ok(decimals);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        success = false,
+                        message = "Server error occurred.",
+                        error = ex.Message
+                    });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant or DB context." });
+        }
+
+
 
         [HttpGet]
         public IActionResult GetVATSales(string module, string status)
