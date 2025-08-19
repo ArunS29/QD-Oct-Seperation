@@ -208,11 +208,28 @@
             )
     </div>
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
+        @* @(Html.DevExtreme().Button()
                 .ID("btnPrint")
                 .Icon("print")
                 .Text(new JS("formatMessage('Print')"))
                 .OnClick("printFun")
+                ) *@
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnPrint")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .ElementAttr(new { @class = "bold-button" })
+                .DropDownOptions(options => options.Width(230))
+                .ShowArrowIcon(false)
+                .Items(items =>
+                {
+
+                    items.Add().Text("Custom Report Designs").Icon("folder");
+
+                    items.Add().Text("Preview  Sales Order").Icon("folder");
+                    items.Add().Text("Preview Sales Order(without Price)").Icon("folder");
+                })
+                .OnItemClick("handleSales")
                 )
     </div>
     <div class="btn-container">
@@ -359,8 +376,31 @@
 </div>
 
 <script>
+          const salesReportMap = {
+        "Preview  Sales Order": "SalesOrderReport", // two spaces!
+        "Preview Sales Order(without Price)": "SalesOrderReportWithoutPrice"
+    };
     
-       
+         function handleSales(e) {
+        const itemText = e.itemData?.text;
+        const tenantName = window.tenantName || "";
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value");
+
+        if (!salesOrderNo) {
+            alert("Sales Order number is required.");
+            return;
+        }
+
+        const reportName = salesReportMap[itemText];
+
+        if (!reportName) {
+            alert("Invalid report format selected.");
+            return;
+        }
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&SalesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    }
 
        function toggleHeaderFilter() {
            var dataGrid = $("#itemGrid").dxDataGrid("instance");

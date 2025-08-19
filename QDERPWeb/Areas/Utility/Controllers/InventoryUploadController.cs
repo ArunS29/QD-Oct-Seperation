@@ -124,19 +124,34 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 _logger.LogWarning("UploadStock request contains an empty Items array.");
                 return BadRequest(new { success = false, message = "At least one item is required." });
             }
-            
-            var code = dbContext.Tbl20165GoodsAndServicesGroups
-                    .Where(x => x.GsgroupId == request.GSGroupID)
-                    .Select(x => x.GsgroupCode)
-                    .FirstOrDefault();
-            var value1 = await dbContext.Tbl40111PropertyUnitCodes
-            .MaxAsync(u => (int?)u.UnitCode) ?? 0;
 
-            var value2 = await dbContext
-                .Tbl20164GoodsAndServicesMasters
-                .Where(g => g.Gscode.StartsWith(code + "-"))
-                .Select(g => (int?)Convert.ToInt32(g.Gscode.Substring(g.Gscode.Length - 5)))
-                .MaxAsync() ?? 0;
+            var code = await dbContext.Tbl20165GoodsAndServicesGroups
+                .Where(x => x.GsgroupId == request.GSGroupID)
+                .Select(x => x.GsgroupCode)
+                .FirstOrDefaultAsync();
+
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest(new { success = false, message = "Invalid GSGroupID." });
+            }
+
+            var lastUnitCode = await dbContext.Tbl40111PropertyUnitCodes
+                .MaxAsync(u => (int?)u.UnitCode) ?? 0;
+
+            var codes = await dbContext.Tbl20164GoodsAndServicesMasters
+             .Where(g => g.Gscode.StartsWith(code + "-"))
+             .Select(g => g.Gscode)
+             .ToListAsync();
+
+            var lastStockGroupNo = codes.Select(g =>
+                {
+                    var parts = g.Split('-');
+                    if (parts.Length > 1 && int.TryParse(parts[^1], out var num))
+                        return (int?)num;
+                    return null;
+                })
+                .Max() ?? 0;
+
             foreach (var item in request.Items)
             {
                 if (string.IsNullOrEmpty(item.GSDescription))
@@ -158,32 +173,14 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 {
                     int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
-                    var existingUnitCodes = await dbContext.Tbl40111PropertyUnitCodes
-                        .Select(u => u.UnitDesc)
-                        .ToListAsync();
-
-                    var newUnitsToInsert = new List<Tbl40111PropertyUnitCode>();
-
                     foreach (var item in request.Items)
                     {
-                        if (!string.IsNullOrWhiteSpace(item.GsuomDesc) &&
-                            !existingUnitCodes.Contains(item.GsuomDesc, StringComparer.OrdinalIgnoreCase) &&
-                            !newUnitsToInsert.Any(u => string.Equals(u.UnitDesc, item.GsuomDesc, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            newUnitsToInsert.Add(new Tbl40111PropertyUnitCode
-                            {
-                                UnitCode = 0, 
-                                UnitDesc = item.GsuomDesc
-                            });
-                        }
-
-                        // Check duplicate inventory upload
                         bool exists = await dbContext.Tbl60005inventoryUploads
                             .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
 
                         if (!exists)
                         {
-                            slNoCounter++; // Ensure increment per record
+                            slNoCounter++;
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
@@ -211,28 +208,21 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                         }
                     }
 
-                    if (newUnitsToInsert.Count > 0)
-                    {
-                        dbContext.Tbl40111PropertyUnitCodes.AddRange(newUnitsToInsert);
-                    }
-
                     await dbContext.SaveChangesAsync();
                     var userName = HttpContext.Session.GetString("UserName") ?? "System";
                     await dbContext.Database.ExecuteSqlRawAsync(
                         "EXEC sp600_21InventoryUploading @p0, @p1, @p2, @p3, @p4, @p5, @p6",
                         new object[]
                         {
-                            code,
-                            value1,
-                            (byte)value2,
-                            userName,
-                            DateTime.Now,
-                            request.RequestNo,
-                            request.GSGroupID
+                    code,
+                    lastStockGroupNo,
+                    lastUnitCode,
+                    userName,
+                    DateTime.Now,
+                    request.RequestNo,
+                    request.GSGroupID
                         }
                     );
-
-
 
                     await transaction.CommitAsync();
                 }
@@ -335,7 +325,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             if (request == null)
             {
-                _logger.LogError("UploadInvoice request is null.");
+                _logger.LogError("UploadStock request is null.");
                 return BadRequest(new { success = false, message = "Request cannot be null." });
             }
 
@@ -355,18 +345,33 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 return BadRequest(new { success = false, message = "At least one item is required." });
             }
 
-            var code = dbContext.Tbl20165GoodsAndServicesGroups
-                    .Where(x => x.GsgroupId == request.GSGroupID)
-                    .Select(x => x.GsgroupCode)
-                    .FirstOrDefault();
-            var value1 = await dbContext.Tbl40111PropertyUnitCodes
-            .MaxAsync(u => (int?)u.UnitCode) ?? 0;
+            var code = await dbContext.Tbl20165GoodsAndServicesGroups
+                .Where(x => x.GsgroupId == request.GSGroupID)
+                .Select(x => x.GsgroupCode)
+                .FirstOrDefaultAsync();
 
-            var value2 = await dbContext
-                .Tbl20164GoodsAndServicesMasters
-                .Where(g => g.Gscode.StartsWith(code + "-"))
-                .Select(g => (int?)Convert.ToInt32(g.Gscode.Substring(g.Gscode.Length - 5)))
-                .MaxAsync() ?? 0;
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest(new { success = false, message = "Invalid GSGroupID." });
+            }
+
+            var lastUnitCode = await dbContext.Tbl40111PropertyUnitCodes
+                .MaxAsync(u => (int?)u.UnitCode) ?? 0;
+
+            var codes = await dbContext.Tbl20164GoodsAndServicesMasters
+             .Where(g => g.Gscode.StartsWith(code + "-"))
+             .Select(g => g.Gscode)
+             .ToListAsync();
+
+            var lastStockGroupNo = codes.Select(g =>
+                {
+                    var parts = g.Split('-');
+                    if (parts.Length > 1 && int.TryParse(parts[^1], out var num))
+                        return (int?)num;
+                    return null;
+                })
+                .Max() ?? 0;
+
             foreach (var item in request.Items)
             {
                 if (string.IsNullOrEmpty(item.GSDescription))
@@ -388,32 +393,14 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 {
                     int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
-                    var existingUnitCodes = await dbContext.Tbl40111PropertyUnitCodes
-                        .Select(u => u.UnitDesc)
-                        .ToListAsync();
-
-                    var newUnitsToInsert = new List<Tbl40111PropertyUnitCode>();
-
                     foreach (var item in request.Items)
                     {
-                        if (!string.IsNullOrWhiteSpace(item.GsuomDesc) &&
-                            !existingUnitCodes.Contains(item.GsuomDesc, StringComparer.OrdinalIgnoreCase) &&
-                            !newUnitsToInsert.Any(u => string.Equals(u.UnitDesc, item.GsuomDesc, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            newUnitsToInsert.Add(new Tbl40111PropertyUnitCode
-                            {
-                                UnitCode = 0,
-                                UnitDesc = item.GsuomDesc
-                            });
-                        }
-
-                        // Check duplicate inventory upload
                         bool exists = await dbContext.Tbl60005inventoryUploads
                             .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
 
                         if (!exists)
                         {
-                            slNoCounter++; // Ensure increment per record
+                            slNoCounter++;
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
@@ -441,35 +428,28 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                         }
                     }
 
-                    if (newUnitsToInsert.Count > 0)
-                    {
-                        dbContext.Tbl40111PropertyUnitCodes.AddRange(newUnitsToInsert);
-                    }
-
                     await dbContext.SaveChangesAsync();
                     var userName = HttpContext.Session.GetString("UserName") ?? "System";
                     await dbContext.Database.ExecuteSqlRawAsync(
                         "EXEC sp600_21InventoryUploadingToInvoice @p0, @p1, @p2, @p3, @p4, @p5, @p6",
                         new object[]
                         {
-                            code,
-                            value1,
-                            (byte)value2,
-                            userName,
-                            DateTime.Now,
-                            request.RequestNo,
-                            request.GSGroupID
+                    code,
+                    lastStockGroupNo,
+                    lastUnitCode,
+                    userName,
+                    DateTime.Now,
+                    request.RequestNo,
+                    request.GSGroupID
                         }
                     );
-
-
 
                     await transaction.CommitAsync();
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    _logger.LogError(ex, "UploadStock transaction failed.");
+                    _logger.LogError(ex, "UploadInvoice transaction failed.");
                     throw;
                 }
             });
@@ -508,18 +488,33 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 return BadRequest(new { success = false, message = "At least one item is required." });
             }
 
-            var code = dbContext.Tbl20165GoodsAndServicesGroups
-                    .Where(x => x.GsgroupId == request.GSGroupID)
-                    .Select(x => x.GsgroupCode)
-                    .FirstOrDefault();
-            var value1 = await dbContext.Tbl40111PropertyUnitCodes
-            .MaxAsync(u => (int?)u.UnitCode) ?? 0;
+            var code = await dbContext.Tbl20165GoodsAndServicesGroups
+                .Where(x => x.GsgroupId == request.GSGroupID)
+                .Select(x => x.GsgroupCode)
+                .FirstOrDefaultAsync();
 
-            var value2 = await dbContext
-                .Tbl20164GoodsAndServicesMasters
-                .Where(g => g.Gscode.StartsWith(code + "-"))
-                .Select(g => (int?)Convert.ToInt32(g.Gscode.Substring(g.Gscode.Length - 5)))
-                .MaxAsync() ?? 0;
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest(new { success = false, message = "Invalid GSGroupID." });
+            }
+
+            var lastUnitCode = await dbContext.Tbl40111PropertyUnitCodes
+                .MaxAsync(u => (int?)u.UnitCode) ?? 0;
+
+            var codes = await dbContext.Tbl20164GoodsAndServicesMasters
+             .Where(g => g.Gscode.StartsWith(code + "-"))
+             .Select(g => g.Gscode)
+             .ToListAsync();
+
+            var lastStockGroupNo = codes.Select(g =>
+                {
+                    var parts = g.Split('-');
+                    if (parts.Length > 1 && int.TryParse(parts[^1], out var num))
+                        return (int?)num;
+                    return null;
+                })
+                .Max() ?? 0;
+
             foreach (var item in request.Items)
             {
                 if (string.IsNullOrEmpty(item.GSDescription))
@@ -541,32 +536,14 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 {
                     int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
-                    var existingUnitCodes = await dbContext.Tbl40111PropertyUnitCodes
-                        .Select(u => u.UnitDesc)
-                        .ToListAsync();
-
-                    var newUnitsToInsert = new List<Tbl40111PropertyUnitCode>();
-
                     foreach (var item in request.Items)
                     {
-                        if (!string.IsNullOrWhiteSpace(item.GsuomDesc) &&
-                            !existingUnitCodes.Contains(item.GsuomDesc, StringComparer.OrdinalIgnoreCase) &&
-                            !newUnitsToInsert.Any(u => string.Equals(u.UnitDesc, item.GsuomDesc, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            newUnitsToInsert.Add(new Tbl40111PropertyUnitCode
-                            {
-                                UnitCode = 0,
-                                UnitDesc = item.GsuomDesc
-                            });
-                        }
-
-                        // Check duplicate inventory upload
                         bool exists = await dbContext.Tbl60005inventoryUploads
                             .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
 
                         if (!exists)
                         {
-                            slNoCounter++; // Ensure increment per record
+                            slNoCounter++;
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
@@ -594,29 +571,21 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                         }
                     }
 
-                    if (newUnitsToInsert.Count > 0)
-                    {
-                        dbContext.Tbl40111PropertyUnitCodes.AddRange(newUnitsToInsert);
-                    }
-
                     await dbContext.SaveChangesAsync();
                     var userName = HttpContext.Session.GetString("UserName") ?? "System";
-                    
                     await dbContext.Database.ExecuteSqlRawAsync(
                         "EXEC sp600_21InventoryUploadingToProformaInvoice @p0, @p1, @p2, @p3, @p4, @p5, @p6",
                         new object[]
                         {
-                            code,
-                            value1,
-                            (byte)value2,
-                            userName,
-                            DateTime.Now,
-                            request.RequestNo,
-                            request.GSGroupID
+                    code,
+                    lastStockGroupNo,
+                    lastUnitCode,
+                    userName,
+                    DateTime.Now,
+                    request.RequestNo,
+                    request.GSGroupID
                         }
                     );
-
-
 
                     await transaction.CommitAsync();
                 }
@@ -642,7 +611,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             if (request == null)
             {
-                _logger.LogError("UploadPerforma request is null.");
+                _logger.LogError("UploadPurchase request is null.");
                 return BadRequest(new { success = false, message = "Request cannot be null." });
             }
 
@@ -658,22 +627,37 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             if (request.Items == null || request.Items.Count == 0)
             {
-                _logger.LogWarning("UploadPerforma request contains an empty Items array.");
+                _logger.LogWarning("UploadPurchase request contains an empty Items array.");
                 return BadRequest(new { success = false, message = "At least one item is required." });
             }
 
-            var code = dbContext.Tbl20165GoodsAndServicesGroups
-                    .Where(x => x.GsgroupId == request.GSGroupID)
-                    .Select(x => x.GsgroupCode)
-                    .FirstOrDefault();
-            var value1 = await dbContext.Tbl40111PropertyUnitCodes
-            .MaxAsync(u => (int?)u.UnitCode) ?? 0;
+            var code = await dbContext.Tbl20165GoodsAndServicesGroups
+                .Where(x => x.GsgroupId == request.GSGroupID)
+                .Select(x => x.GsgroupCode)
+                .FirstOrDefaultAsync();
 
-            var value2 = await dbContext
-                .Tbl20164GoodsAndServicesMasters
-                .Where(g => g.Gscode.StartsWith(code + "-"))
-                .Select(g => (int?)Convert.ToInt32(g.Gscode.Substring(g.Gscode.Length - 5)))
-                .MaxAsync() ?? 0;
+            if (string.IsNullOrEmpty(code))
+            {
+                return BadRequest(new { success = false, message = "Invalid GSGroupID." });
+            }
+
+            var lastUnitCode = await dbContext.Tbl40111PropertyUnitCodes
+                .MaxAsync(u => (int?)u.UnitCode) ?? 0;
+
+            var codes = await dbContext.Tbl20164GoodsAndServicesMasters
+             .Where(g => g.Gscode.StartsWith(code + "-"))
+             .Select(g => g.Gscode)
+             .ToListAsync();
+
+            var lastStockGroupNo = codes.Select(g =>
+                {
+                    var parts = g.Split('-');
+                    if (parts.Length > 1 && int.TryParse(parts[^1], out var num))
+                        return (int?)num;
+                    return null;
+                })
+                .Max() ?? 0;
+
             foreach (var item in request.Items)
             {
                 if (string.IsNullOrEmpty(item.GSDescription))
@@ -695,32 +679,14 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 {
                     int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
-                    var existingUnitCodes = await dbContext.Tbl40111PropertyUnitCodes
-                        .Select(u => u.UnitDesc)
-                        .ToListAsync();
-
-                    var newUnitsToInsert = new List<Tbl40111PropertyUnitCode>();
-
                     foreach (var item in request.Items)
                     {
-                        if (!string.IsNullOrWhiteSpace(item.GsuomDesc) &&
-                            !existingUnitCodes.Contains(item.GsuomDesc, StringComparer.OrdinalIgnoreCase) &&
-                            !newUnitsToInsert.Any(u => string.Equals(u.UnitDesc, item.GsuomDesc, StringComparison.OrdinalIgnoreCase)))
-                        {
-                            newUnitsToInsert.Add(new Tbl40111PropertyUnitCode
-                            {
-                                UnitCode = 0,
-                                UnitDesc = item.GsuomDesc
-                            });
-                        }
-
-                        // Check duplicate inventory upload
                         bool exists = await dbContext.Tbl60005inventoryUploads
                             .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
 
                         if (!exists)
                         {
-                            slNoCounter++; // Ensure increment per record
+                            slNoCounter++;
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
@@ -748,35 +714,28 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                         }
                     }
 
-                    if (newUnitsToInsert.Count > 0)
-                    {
-                        dbContext.Tbl40111PropertyUnitCodes.AddRange(newUnitsToInsert);
-                    }
-
                     await dbContext.SaveChangesAsync();
                     var userName = HttpContext.Session.GetString("UserName") ?? "System";
                     await dbContext.Database.ExecuteSqlRawAsync(
                         "EXEC sp600_21InventoryUploadingToVATPurchaseVoucherNo @p0, @p1, @p2, @p3, @p4, @p5, @p6",
                         new object[]
                         {
-                            code,
-                            value1,
-                            (byte)value2,
-                            userName,
-                            DateTime.Now,
-                            request.RequestNo,
-                            request.GSGroupID
+                    code,
+                    lastStockGroupNo,
+                    lastUnitCode,
+                    userName,
+                    DateTime.Now,
+                    request.RequestNo,
+                    request.GSGroupID
                         }
                     );
-
-
 
                     await transaction.CommitAsync();
                 }
                 catch (Exception ex)
                 {
                     await transaction.RollbackAsync();
-                    _logger.LogError(ex, "UploadPerforma transaction failed.");
+                    _logger.LogError(ex, "UploadPurchase transaction failed.");
                     throw;
                 }
             });

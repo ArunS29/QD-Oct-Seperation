@@ -1808,6 +1808,36 @@
 		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
 		dd.open();
 
+				$(document).ready(function () {
+
+
+				const urlParams = new URLSearchParams(window.location.search);
+				const module = urlParams.get("module");
+				const status = urlParams.get("status");
+
+				if (module && status) {
+					const grid = $("#dataGrid").dxDataGrid("instance");
+
+					if (grid) {
+						grid.beginCustomLoading("Loading...");
+						$.ajax({
+							url: '/api/VATModule/GetVATCredit',
+							type: 'GET',
+							data: { module, status },
+							success: function (data) {
+								grid.option("dataSource", data);
+								grid.endCustomLoading();
+							},
+							error: function () {
+								grid.endCustomLoading();
+							}
+						});
+					}
+				}
+			});
+
+
+
 		// Open the submenu near the "By Quarter" element
 		openQuarterMenu(e.element);
 	}
@@ -1868,7 +1898,6 @@
 		dd.close();  // ✅ closes only after submenu item click
 	}
 
-	
 </script>
 
 

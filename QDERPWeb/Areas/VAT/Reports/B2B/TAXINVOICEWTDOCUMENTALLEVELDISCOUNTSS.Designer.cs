@@ -5614,7 +5614,7 @@
             this.xrLabel105,
             this.xrLabel106,
             this.xrLabel102});
-            this.GroupHeader1.HeightF = 95.45385F;
+            this.GroupHeader1.HeightF = 80.62439F;
             this.GroupHeader1.Name = "GroupHeader1";
             // 
             // xrLabel183

@@ -2281,6 +2281,7 @@
 		injectHeaderSVG();
 	});
 
+
 			function onByQuarterClick(e) {
 		// Prevent the main dropdown from closing
 		e.event.stopPropagation();
@@ -2348,4 +2349,33 @@
 		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
 		dd.close();  // ✅ closes only after submenu item click
 	}
+
+		$(document).ready(function () {
+
+
+				const urlParams = new URLSearchParams(window.location.search);
+				const module = urlParams.get("module");
+				const status = urlParams.get("status");
+
+				if (module && status) {
+					const grid = $("#dataGrid").dxDataGrid("instance");
+
+					if (grid) {
+						grid.beginCustomLoading("Loading...");
+						$.ajax({
+							url: '/api/VATModule/GetVATPurchase',
+							type: 'GET',
+							data: { module, status },
+							success: function (data) {
+								grid.option("dataSource", data);
+								grid.endCustomLoading();
+							},
+							error: function () {
+								grid.endCustomLoading();
+							}
+						});
+					}
+				}
+			});
+
 </script>
