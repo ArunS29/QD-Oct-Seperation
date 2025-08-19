@@ -1912,6 +1912,7 @@ documentNo: unitType
 
 
         [HttpPost]
+        [RequirePermission("frm20161VATInvoiceEdit_btnVerify")]
         public async Task<ActionResult> VerifyVoucher(string InvoiceNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1940,16 +1941,16 @@ documentNo: unitType
                     voucher.VerifiedBy = UserName;
 
                     dbContext.SaveChanges();
-                    
+
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceNo,
-                             ActionType = "You have one Sales Invoice to approve",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceNo,
+                        ActionType = "You have one Sales Invoice to approve",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     await _userActionLogger.LogAsync(
     module: "VAT> Sales Verify Voucher",
@@ -1973,6 +1974,7 @@ documentNo: unitType
         }
 
         [HttpPost]
+        [RequirePermission("frm20161VATInvoiceEdit_btnApprove")]
         public async Task<ActionResult> ApproveVoucher(string InvoiceNo, bool IsDirectApproval)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -2014,15 +2016,15 @@ documentNo: unitType
   actionDetail: $"Approve VoucherNo: {InvoiceNo}",
   documentNo: InvoiceNo
 );
-                     var notifyRequest = new NotificationRequest
-             {
-                 UserId = UserId, // or fetch from session/DB
-                 VoucherName = InvoiceNo,
-                 ActionType = "You have one Sales Invoice to post",
-                TenantName = TenantName 
-        };
+                    var notifyRequest = new NotificationRequest
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceNo,
+                        ActionType = "You have one Sales Invoice to post",
+                        TenantName = TenantName
+                    };
 
-        await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
 
                     return Ok(new
