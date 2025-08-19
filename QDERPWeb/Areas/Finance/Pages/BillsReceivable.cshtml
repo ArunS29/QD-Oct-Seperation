@@ -758,9 +758,48 @@
 
           injectHeaderSVG();
            injectCurrencyToCards();
-            e.component.getDataSource().store().load().then(function (fullData) {
-                refreshKpiCards(fullData);
+           const grid = e.component;
+
+        // Get all summary values
+        let summaryItems = grid.getTotalSummaryValue();
+
+        // If using named columns, fetch like this:
+        let totalReceivable = grid.getTotalSummaryValue("ReceivableAmount");
+        let totalReceived   = grid.getTotalSummaryValue("Received");
+        let totalBalance    = grid.getTotalSummaryValue("Balance");
+
+        // Format numbers
+        function format(val) {
+            if (val === null || val === undefined) return "0.00";
+            return Math.abs(val).toLocaleString(undefined, {
+                minimumFractionDigits: 2,
+                maximumFractionDigits: 2
             });
+        }
+
+        // Update Balance Card
+        $("#cardBalance .value-slider span").each(function(i) {
+            $(this).text(format(totalBalance));
+        });
+        $("#cardBalance .overlay .detail").eq(0).text(" ");
+        $("#cardBalance .overlay .detail").eq(1).text("Total Balance: " + format(totalBalance));
+        $("#cardBalance .overlay .detail").eq(2).text(" ");
+
+        // Update Debit Card (Total Invoiced)
+        $("#cardDebit .value-slider span").each(function(i) {
+            $(this).text(format(totalReceivable));
+        });
+        $("#cardDebit .overlay .detail").eq(0).text(" ");
+        $("#cardDebit .overlay .detail").eq(1).text("Total Invoiced: " + format(totalReceivable));
+        $("#cardDebit .overlay .detail").eq(2).text(" ");
+
+        // Update Credit Card (Total Received)
+        $("#cardCredit .value-slider span").each(function(i) {
+            $(this).text(format(totalReceived));
+        });
+        $("#cardCredit .overlay .detail").eq(0).text(" ");
+        $("#cardCredit .overlay .detail").eq(1).text("Total Received: " + format(totalReceived));
+        $("#cardCredit .overlay .detail").eq(2).text(" ");
 
     }
 
