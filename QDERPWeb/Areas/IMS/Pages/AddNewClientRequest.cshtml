@@ -3121,28 +3121,55 @@ if (gridInstance) {
 			});
 			const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
 
-			$("<div>").dxButton({
-				icon: "plus",
-				hint: "Add new item",
-				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
-				},
-				width: 60,
-				height: 30
-			}).appendTo($actionButtonWrapper);
-
-			$("<div>").dxButton({
-				icon: "edit",
-				hint: "Edit item",
-				onClick: function () {
-					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-					openModal(url, "Goods and Services");
-				},
-				width: 60,
-				height: 30
-			}).appendTo($actionButtonWrapper);
+					$("<div>").dxButton({
+			icon: "plus",
+			hint: "Add new item",
+			onClick: function () {
+				openModal(`/${tenantName}/IMS/GoodsAndService`, "");
+			},
+			width: 60,
+			height: 30
+		}).appendTo($actionButtonWrapper);
+		$("<div>").dxButton({
+			icon: "edit",
+			hint: "Edit item",
+			onClick: function () {
+      const grid = $("#B2BdataGrid").dxDataGrid("instance");
+      // Get the selected row via cellInfo or directly use grid methods
+      const visibleRows = grid.getVisibleRows();
+      // You are inside the cell template, so this might be useful:
+      const rowIndex = cellInfo.rowIndex; // <- works in editCellTemplate context
+      const rowData = grid.cellValue(rowIndex, "GSCode"); // Get just the GScode
+      if (!rowData) {
+          DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+          return;
+      }
+ 
+      const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+     openModal(url, "Goods And Service", function () {
+          // ✅ Reload dropdown data after edit modal closes
+          getDropdownData().done(function (newData) {
+              // Update the dataSource of the dropdown inside this cell
+              let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
+              if (dropDownBox) {
+                  dropDownBox.option("dataSource", newData);
+              }
+ 
+              // Update global dropdownData if used elsewhere
+              dropdownData = newData;
+ 
+              // Optional: Refresh the current grid row
+              grid.refresh();
+          });
+      });
+  },
+			width: 60,
+			height: 30
+		}).appendTo($actionButtonWrapper);
 		}
-	},
+		},
+		
+	
 							{
 					dataField: "Descriptions",
 					caption: "...",
@@ -3848,7 +3875,7 @@ if (gridInstance) {
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+				openModal(`/${tenantName}/IMS/GoodsAndService`, "");
 			},
 			width: 60,
 			height: 30
@@ -3857,7 +3884,7 @@ if (gridInstance) {
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+				const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 				openModal(url, "Goods and Services");
 			},
 			width: 60,
@@ -6391,83 +6418,7 @@ $("#btnAddNew").on("click", function (e) {
 }
 
 
-	// 	$("#btnSave").on("click", function (e) {
-				
-	// 			var clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
-	// 	         var clientnameValidation = clientnameValidator.validate();
-	// 	if (clientnameValidation.isValid) {
-	// 		   let master = {
-	// 			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
-	// 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
-	// 			ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
-	// 			RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
-	// 			RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
-	// 			RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
-	// 			ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
-	// 			TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-	// 			SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
-	// 			ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
-	// 			PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
-	// 			Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
-	// 			CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
-	// 			ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
-	// 			ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
-	// 			Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
-	// 			CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-	// 			PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
-	// 			InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-	// 			ProjectSubUnitCode:$("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
-	// 				BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
-	// 			BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
-	// 			ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
-	// 			RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
-	// 			MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-	// 			MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
-	// 			TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
-	// 		};
-
-	// 		let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
-
-	// 		if (!children || children.length === 0) {
-	// 			DevExpress.ui.notify("No child records to save.", "error", 3000);
-	// 			return;
-	// 		}
-
-	// 		const model = {
-	// 			...master,
-	// 			PurchaseRequestDetails: children
-	// 		};
-
-	// 		$.ajax({
-	// 			type: "POST",
-	// 			url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
-	// 			contentType: "application/json",
-	// 			data: JSON.stringify(model),
-	// 			success: function (response) {
-	// 				DevExpress.ui.notify(response.message, "success", 3000);
-	// 				// Refresh parent DataGrid (ensure the correct selector is used)
-	// 				if (window.parent && window.parent.$("#dataGrid").length) {
-	// 					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
-	// 					if (dataGrid) {
-	// 						dataGrid.refresh();
-	// 					}
-	// 				}
-	//                 const $btn = $(this);
-	// 				 $btn.dxButton("instance").option("disabled", true); // disable the button
-
-	// 			},
-	// 			error: function (xhr) {
-	// 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
-	// 			}
-	// 		});
-	// 	}
-	// 	else {
-	// 		DevExpress.ui.dialog.alert(
-	// 			"Cannot continue saving with errors,please clear the errors and continue.",
-	// 			"Clear Errors"
-	// 		);
-	// 	}
-	// });
+	
 
 		 $("#btnDelete").on("click", function (e) {
 			e.preventDefault();

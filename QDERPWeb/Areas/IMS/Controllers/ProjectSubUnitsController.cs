@@ -52,54 +52,58 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdatede([FromBody] Tbl60604purchaseRequestProjectSubUnit model)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+
+            try
             {
-                try
+                var existing = await dbContext.Tbl60604purchaseRequestProjectSubUnits
+                    .FirstOrDefaultAsync(x => x.ProjectSubUnitCode == model.ProjectSubUnitCode);
+
+                if (existing != null)
                 {
-                    var now = DateTime.Now;
+                    // 🔁 Update
+                    existing.ProjectSubUnitName = model.ProjectSubUnitName;
+                }
+                else
+                {
+                    // 🔍 Check duplicate ProjectSubUnitName (case-insensitive)
+                    bool isDuplicate = await dbContext.Tbl60604purchaseRequestProjectSubUnits
+                        .AnyAsync(x => x.ProjectSubUnitName.ToLower() == model.ProjectSubUnitName.ToLower());
 
-                    var existing = await dbContext.Tbl60604purchaseRequestProjectSubUnits
-                        .FirstOrDefaultAsync(x => x.ProjectSubUnitCode == model.ProjectSubUnitCode
-);
-
-                    if (existing != null)
+                    if (isDuplicate)
                     {
-                        existing.ProjectSubUnitName = model.ProjectSubUnitName;
-
-
-                    }
-                    else
-                    {
-                        // Assign new SignatoryId
-                        var lastId = await dbContext.Tbl60604purchaseRequestProjectSubUnits
-                            .OrderByDescending(x => x.ProjectSubUnitCode)
-                            .Select(x => x.ProjectSubUnitCode)
-                            .FirstOrDefaultAsync();
-
-                        model.ProjectSubUnitCode = (byte)(lastId + 1); // Assuming short type
-
-                        dbContext.Tbl60604purchaseRequestProjectSubUnits.Add(model);
+                        return BadRequest(new { success = false, message = "This Stock classification is already in the database. Please check again." });
                     }
 
-                    await dbContext.SaveChangesAsync();
-                    await _userActionLogger.LogAsync(
-                       module: "IMS > Save Or Update de",
-                       actionDetail: $"Saved Update Project Group  {model.ProjectSubUnitCode}",
-                        documentNo: $"{model.ProjectSubUnitCode}"
-                    );
+                    // Assign new ProjectSubUnitCode
+                    var lastId = await dbContext.Tbl60604purchaseRequestProjectSubUnits
+                        .OrderByDescending(x => x.ProjectSubUnitCode)
+                        .Select(x => x.ProjectSubUnitCode)
+                        .FirstOrDefaultAsync();
 
+                    model.ProjectSubUnitCode = (byte)(lastId + 1);
 
-                    return Ok(new { success = true, message = "Saved successfully", id = model.ProjectSubUnitCode });
+                    dbContext.Tbl60604purchaseRequestProjectSubUnits.Add(model);
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in SaveSignatory: {ex}");
-                    return StatusCode(500, new { success = false, message = ex.Message });
-                }
+
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Save Or Update Project SubUnit",
+                    actionDetail: $"Saved Project SubUnit {model.ProjectSubUnitCode}",
+                    documentNo: $"{model.ProjectSubUnitCode}"
+                );
+
+                return Ok(new { success = true, message = "Saved successfully", id = model.ProjectSubUnitCode });
             }
-
-            return Unauthorized(new { success = false, message = "Invalid tenant" });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in SaveOrUpdatede: {ex}");
+                return StatusCode(500, new { success = false, message = "An error occurred while saving Project Sub Unit." });
+            }
         }
+
         [HttpDelete]
         public IActionResult Delete1(short key)
         {
