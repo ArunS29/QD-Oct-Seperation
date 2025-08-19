@@ -122,7 +122,9 @@ namespace QD.ERP.Web.Areas.VAT.Reports.VATDebitNote
                     cell32.TextFormatString = "{0:n3}";
                 if (FindControl("tableCell34", true) is XRTableCell cell34)
                     cell34.TextFormatString = "{0:n3}";
-                if (FindControl("tableCell35", true) is XRTableCell cell35)
+                if (FindControl("tableCell26", true) is XRTableCell cell26)
+                    cell26.TextFormatString = "{0:n3}";
+                if (FindControl("xrTableCell35", true) is XRTableCell cell35)
                     cell35.TextFormatString = "{0:n3}";
                 if (FindControl("tableCell27", true) is XRTableCell cell27)
                     cell27.TextFormatString = "{0:n3}";

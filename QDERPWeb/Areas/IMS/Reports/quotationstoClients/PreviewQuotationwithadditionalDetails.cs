@@ -1,9 +1,10 @@
-﻿using System;
+﻿using DevExpress.XtraPrinting;
+using DevExpress.XtraReports.UI;
+using System;
+using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
-using System.ComponentModel;
-using DevExpress.XtraReports.UI;
 
 namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
 {
@@ -80,6 +81,25 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
                 sealPictureBox.Image = sealImage;
         }
 
+        //private void LoadReportData(string quotationNo)
+        //{
+        //    DataTable dt = GetReportData(quotationNo);
+
+        //    if (dt.Rows.Count == 0)
+        //    {
+        //        this.DataSource = null;
+        //    }
+        //    else
+        //    {
+        //        this.DataSource = dt;
+        //        this.DataMember = "";
+
+        //        decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(FinalTotal)", ""));
+
+        //        if (FindControl("xrLabel59", true) is XRLabel labelEnglish)
+        //            labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
+        //    }
+        //}
         private void LoadReportData(string quotationNo)
         {
             DataTable dt = GetReportData(quotationNo);
@@ -87,19 +107,48 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
             if (dt.Rows.Count == 0)
             {
                 this.DataSource = null;
+                return;
             }
-            else
+
+            this.DataSource = dt;
+            this.DataMember = "";
+            decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(FinalTotal)", ""));
+
+            if (FindControl("xrLabel59", true) is XRLabel labelEnglish)
+                labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
+
+            // Get currencyId from the first row
+            if (dt.Columns.Contains("currencyId") && dt.Rows[0]["currencyId"] != DBNull.Value)
             {
-                this.DataSource = dt;
-                this.DataMember = "";
+                int currencyId = Convert.ToInt32(dt.Rows[0]["currencyId"]);
+                string svgXml = GetCurrencySvgXml(currencyId);
 
-                decimal totalAmount = Convert.ToDecimal(dt.Compute("SUM(FinalTotal)", ""));
-
-                if (FindControl("xrLabel59", true) is XRLabel labelEnglish)
-                    labelEnglish.Text = $"Amount in Words: {NumberToWordsHelper.ToEnglishWords(totalAmount)}";
+                if (!string.IsNullOrEmpty(svgXml))
+                {
+                    foreach (string pictureBoxName in new[] { "xrPictureBox5", "xrPictureBox6", "xrPictureBox7", "xrPictureBox8", "xrPictureBox9", "xrPictureBox10" })
+                    {
+                        if (FindControl(pictureBoxName, true) is XRPictureBox pictureBox)
+                        {
+                            try
+                            {
+                                using (var stream = new MemoryStream(System.Text.Encoding.UTF8.GetBytes(svgXml)))
+                                {
+                                    var svgDoc = Svg.SvgDocument.Open<Svg.SvgDocument>(stream);
+                                    Bitmap bitmap = svgDoc.Draw();
+                                    pictureBox.Image = bitmap;
+                                    pictureBox.Sizing = ImageSizeMode.ZoomImage;
+                                    pictureBox.SizeF = new SizeF(15f, 15f); // adjust as needed
+                                }
+                            }
+                            catch (Exception ex)
+                            {
+                                Console.WriteLine($"Failed to render SVG for {pictureBoxName}: {ex.Message}");
+                            }
+                        }
+                    }
+                }
             }
         }
-
         private DataTable GetReportData(string quotationNo)
         {
             DataTable dt = new DataTable();
@@ -137,7 +186,39 @@ namespace QD.ERP.Web.Areas.IMS.Report.Inventory_Report
 
             return dt;
         }
+        private string GetCurrencySvgXml(int currencyId)
+        {
+            string svgXml = null;
 
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var _))
+                    throw new Exception("Unable to retrieve tenant context.");
+
+                string connectionString = tenant.ConnectionString;
+
+                using (SqlConnection conn = new SqlConnection(connectionString))
+                {
+                    string query = "SELECT CurrencyImage FROM Tbl20169CurrencyExchange WHERE CurrencyExchangeId = @currencyId";
+
+                    using (SqlCommand cmd = new SqlCommand(query, conn))
+                    {
+                        cmd.Parameters.AddWithValue("@currencyId", currencyId);
+                        conn.Open();
+
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                            svgXml = result.ToString(); // Raw SVG XML as string
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error retrieving currency SVG: {ex.Message}");
+            }
+
+            return svgXml;
+        }
         private void ReportHeader_BeforePrint(object sender, CancelEventArgs e)
         {
             // Optional customization
