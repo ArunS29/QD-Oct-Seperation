@@ -205,7 +205,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Expenses Claims</h3>
+    <div id="ExpensesClaims" class="titleText no-border-title"></div>
 </div>
 
 <div class="content-container">
@@ -2612,6 +2612,14 @@
 
         // No need to return anything if you don't want to
     }
-
+      $(function () {
+                 $("#ExpensesClaims").dxTextBox({
+                    text: formatMessage("Expenses Claims"),
+            readOnly: true,
+            onContentReady: function (e) {
+                $(e.element).addClass("dx-textcolor-heading");
+            }
+            });
+        });
 
 </script>

@@ -1335,6 +1335,32 @@ $(document).ready(function () {
 
 		console.log('End permission handling');
 	});
+				$(document).ready(function () {
 
+
+					const urlParams = new URLSearchParams(window.location.search);
+					const module = urlParams.get("module");
+					const status = urlParams.get("status");
+
+					if (module && status) {
+						const grid = $("#dataGrid").dxDataGrid("instance");
+
+						if (grid) {
+							grid.beginCustomLoading("Loading...");
+							$.ajax({
+									url: '/api/Quotation/GetIMSQuotation',
+								type: 'GET',
+								data: { module, status },
+								success: function (data) {
+									grid.option("dataSource", data);
+									grid.endCustomLoading();
+								},
+								error: function () {
+									grid.endCustomLoading();
+								}
+							});
+						}
+					}
+				});
 			
 </script>

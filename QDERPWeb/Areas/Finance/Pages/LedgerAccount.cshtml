@@ -544,7 +544,7 @@
                            
                             <div class="col-md-4">
                                 @(Html.DevExtreme().TextBox()
-                                                                .Label("Voucher Abbr")
+                                                                .Label(new JS("formatMessage('Voucher Abbreviation')"))
                                                                 .LabelMode(EditorLabelMode.Floating)
                                                                 .ID("txtVoucherNoAbbr")
                                                                 .InputAttr("aria-label", "Text")
@@ -568,7 +568,8 @@
                             
                             <div class="col-md-4">
                                 @(Html.DevExtreme().NumberBox()
-                                                                .Label("No Of Days")
+
+                                                                .Label(new JS("formatMessage('No Of Days')"))
                                                                 .LabelMode(EditorLabelMode.Floating)
                                                                 .ID("txtNoDays")
                                                                 .Value(0)
@@ -640,7 +641,8 @@
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
                             @(Html.DevExtreme().DropDownBox()
-                                                         .Label("Branch")
+
+                                                         .Label(new JS("formatMessage('Branch')"))
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getAccountBranch").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
                                                         .ID("ddlbranch")
@@ -857,7 +859,7 @@
                         <div class="col-md-5">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtBankAccountNameAr")
-                                .Label("Bank Account Name (AR)")
+                                .Label(new JS("formatMessage('Bank Account Name (AR)')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -889,7 +891,7 @@
                         <div class="col-md-5">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtBankNameAr")
-                                 .Label("Bank  Name (AR)")
+                                .Label(new JS("formatMessage('Bank  Name (AR)')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -921,7 +923,7 @@
                         <div class="col-md-5">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtBankBranchAr")
-                                 .Label("Bank Branch (AR)")
+                                .Label(new JS("formatMessage('Bank Branch (AR)')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -956,6 +958,7 @@
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtSwiftCode")
                                 .Label("SWIFT Code")
+                                .Label(new JS("formatMessage('Swift Code:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -2683,7 +2686,7 @@ function syncSupVATNumbers(e) {
    $(function () {
     // Initialize the TextBox with default text
     $("#LedgerActive").dxTextBox({
-        value: "Ledger is Currently Active:",
+        value: formatMessage("Ledger is Currently Active:"),
         readOnly: true
     });
 

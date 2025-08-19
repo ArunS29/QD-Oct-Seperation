@@ -2781,6 +2781,20 @@
 						"btnBack",
 						"btnAttach"
 					]);
+					disableAllDropDownsAndSelects();
+			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+if (gridInstance) {
+    gridInstance.option({
+        editing: {
+            allowUpdating: false,
+            allowAdding: false,
+            allowDeleting: false
+        },
+        selection: {
+            mode: "none"
+        }
+    });
+}
 				}
 
 				$("#btnSave").dxButton("instance").option("text", "Update");
@@ -6592,6 +6606,20 @@ $("#btnBack").on("click", function (e) {
 					"btnBack",
 					"btnAttach"
 				]);
+				 const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+                if (gridInstance) {
+                    gridInstance.option({
+                        editing: {
+                            allowUpdating: false,
+                            allowAdding: false,
+                            allowDeleting: false
+                        },
+                        selection: {
+                            mode: "none"
+                        }
+                    });
+                }
+				  disableAllDropDownsAndSelects();
 				} else {
 					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 				}
@@ -6640,7 +6668,21 @@ $("#btnBack").on("click", function (e) {
 				}
 			});
 		}
+				function disableAllDropDownsAndSelects() {
+    $(".dx-dropdownbox").each(function () {
+        var dropDown = $(this).dxDropDownBox("instance");
+        if (dropDown) {
+            dropDown.option("disabled", true);
+        }
+    });
 
+    $(".dx-selectbox").each(function () {
+        var selectBox = $(this).dxSelectBox("instance");
+        if (selectBox) {
+            selectBox.option("disabled", true);
+        }
+    });
+}
 	$("#btnCancel").on("click", function (e) {
 		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 

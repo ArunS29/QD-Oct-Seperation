@@ -2248,6 +2248,7 @@
 				"btnBack",
 				"btnAttach"
 			]);
+			disableAllDropDownsAndSelects();
 			const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
 if (gridInstance) {
     gridInstance.option({
@@ -5679,9 +5680,10 @@ AddlDescription: null,
 				contentType: "application/json",
 				data: JSON.stringify(model),
 				success: function (response) {
+					DevExpress.ui.notify(response.message, "success", 3000);
 					  isVoucherSaved = true; // Mark Updated step as done
                       updateWorkflowVisual(getWorkflowStatusFromFields());
-					DevExpress.ui.notify(response.message, "success", 3000);
+					
 
 					const quoteno = response.quoteno;
 				
@@ -5706,7 +5708,7 @@ AddlDescription: null,
 	function loadChildDataAndBindGrid(quoteno) {
 		//
     if (!quoteno) {
-        console.warn("No MPR number provided.");
+        console.warn("No Quote number provided.");
         return;
     }
 
@@ -6346,6 +6348,7 @@ AddlDescription: null,
                         }
                     });
                 }
+				  disableAllDropDownsAndSelects();
             } else {
                 DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
                 approveBtn.option("disabled", false);
@@ -6403,7 +6406,21 @@ AddlDescription: null,
 		}
 
 
+		function disableAllDropDownsAndSelects() {
+    $(".dx-dropdownbox").each(function () {
+        var dropDown = $(this).dxDropDownBox("instance");
+        if (dropDown) {
+            dropDown.option("disabled", true);
+        }
+    });
 
+    $(".dx-selectbox").each(function () {
+        var selectBox = $(this).dxSelectBox("instance");
+        if (selectBox) {
+            selectBox.option("disabled", true);
+        }
+    });
+}
 
 
 
