@@ -1427,13 +1427,13 @@
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
-		.StateStoring(stateStoring =>
+		@* .StateStoring(stateStoring =>
 		{
 			stateStoring
 			.Enabled(true)
 			.Type(StateStoringType.LocalStorage)
 			.StorageKey("gridContainerState");
-		})
+		}) *@
 		.OnInitialized("function(e) { loadGridState(); }")
 													   	@* .Paging(p => p.Enabled(true).PageSize(20)) // Enable paging with page size
 		.Pager(p => p
