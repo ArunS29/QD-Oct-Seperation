@@ -1013,17 +1013,34 @@
             )
 
     </div>
-//new subforms
 
 
 <div class="input-row">
 
-    @* Equipment Quoted For (with label) *@
     @(Html.DevExtreme().DropDownBox()
         .ID("EquipmentQuotedFor")
+		.AcceptCustomValue(true)
         .Label("Equipment Quoted for:")
         .LabelMode(EditorLabelMode.Floating)
         .Width(250)
+		 .DataSource(d => d.WebApi()
+        .Controller("AddNewProperty")
+        .LoadAction("GetAllPropertyTypes")
+        .LoadMode(DataSourceLoadMode.Raw)
+            .Key("PropertyType")
+        )
+
+        .Option("dataGridId", "GetItemStore-datagrid")
+        .OpenOnFieldClick(false)
+        .ValueChangeEvent("input")
+        .HoverStateEnabled(true)
+        .ValueExpr("PropertyTypeId")
+        .DisplayExpr("PropertyType")
+        .OnInput("dropDownBoxOnInput")
+        .OnOpened("onOpened")
+        .TabIndex(1)
+        .OnKeyDown("onKeyDown")
+        .ContentTemplate(new TemplateName("GetTypeOfPropertytypeContentTemplate"))
 		 .Buttons(buttons =>
     {
         // Keep the dropdown arrow
@@ -1038,18 +1055,39 @@
                 .Type(ButtonType.Default)
                 .Icon("plus")
                 .Hint("Add Equipment")
-              //  .OnClick("redirecttosalespersonmaster")
+				 .OnClick("Protype")
             );
     })
 )
     
 
     @* Quote Method (with label) *@
-    @(Html.DevExtreme().DropDownBox()
-        .ID("QuoteMethod")
-        .Label("Quote Method:")
-        .LabelMode(EditorLabelMode.Floating)
-        .Width(150)
+   @(Html.DevExtreme().DropDownBox()
+    .ID("QuoteMethod")
+	.AcceptCustomValue(true)
+    .Label("Quote Method:")
+    .LabelMode(EditorLabelMode.Floating)
+    .Width("100%")
+
+    .DataSource(d => d.WebApi()
+        .Controller("StockInventory")
+        .LoadAction("GetUnitCodes")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("UnitCode")
+    )
+
+    .Option("dataGridId", "GetUOM-datagrid")
+    .OpenOnFieldClick(false)
+    .ValueChangeEvent("input")
+    .HoverStateEnabled(true)
+    .ValueExpr("UnitCode")
+    .DisplayExpr("UnitType")
+	.OnInput("dropDownBoxOnInput")
+    .OnOpened("onOpened")
+    .TabIndex(1)
+    .OnKeyDown("onKeyDown")
+    .ContentTemplate(new TemplateName("GetTypeOfQuoteMethodContentTemplate"))
+
 
 .Buttons(buttons =>
     {
@@ -1065,7 +1103,7 @@
                 .Type(ButtonType.Default)
                 .Icon("plus")
                 .Hint("Add Quote")
-              //  .OnClick("redirecttosalespersonmaster")
+                .OnClick("UnitOfMeasure")
             );
     })
     )
@@ -1080,31 +1118,41 @@
         .Width(100)
     )
 
-    @* Quantity (no label) *@
-    @(Html.DevExtreme().NumberBox()
-        .ID("Quantity")
-       .Label("Quantity:")
-        .LabelMode(EditorLabelMode.Floating)
-        .Width(80)
-    )
-
-    @* Unit Rate (no label) *@
-    @(Html.DevExtreme().NumberBox()
-        .ID("UnitRate")
-        .Label("Unit Rate:")
-        .LabelMode(EditorLabelMode.Floating)
-        .Format("#,##0.00")
-        .Width(100)
-    )
+   @(Html.DevExtreme().NumberBox()
+    .ID("Quantity")
+    .Label("Quantity:")
+    .LabelMode(EditorLabelMode.Floating)
+    .Width(120)
+    .ShowSpinButtons(true)     
+    .Value(0)                  
+    .Min(0)                    
+    .Step(1)                   
+)
 
 
+  @(Html.DevExtreme().NumberBox()
+    .ID("UnitRate")
+    .Label("Unit Rate:")
+    .LabelMode(EditorLabelMode.Floating)
+    .Format("#,##0.00")        
+    .Width(120)
+    .ShowSpinButtons(true)     
+    .Value(0)                  
+    .Step(0.10)                
+    .Min(0) )                   
+ 
 
-	 @* Extra Details *@
-    @(Html.DevExtreme().DropDownBox()
-        .ID("Detlz")
-        .LabelMode(EditorLabelMode.Floating)
-        .Width(150)
-    )
+
+
+@(Html.DevExtreme().DropDownBox()
+    .ID("Detlz")
+    .LabelMode(EditorLabelMode.Floating)
+    .Width(150)
+    .OnOpened("EquipmentDetails") 
+)
+
+
+
 
 
 
@@ -1122,9 +1170,6 @@
 	
 
 </div>
-
-
-//new subforms
 
 @(
 			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
@@ -1379,7 +1424,7 @@
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
                         @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                        .Selection(sl => sl.Mode(SelectionMode.Single))  
                         .OnSelectionChanged("dataGridSelectionChanged3")
                         .OnInitialized("dataGridInitialized3")
                         .HeaderFilter(p => p.Visible(true))
@@ -1400,7 +1445,6 @@
                         })
                         )
 }
-            
 @using (Html.DevExtreme().NamedTemplate("GetSalesPersonContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1434,6 +1478,35 @@
 
                 })
                 )
+}
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertytypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetItemStore-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewProperty")
+                    .LoadAction("GetAllPropertyTypes")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PropertyTypeId")
+                    )
+                    .ShowBorders(true)
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) 
+                    .OnSelectionChanged("dataGridSelectionChanged2")
+                    .OnInitialized("dataGridInitialized2")
+                    .HeaderFilter(p => p.Visible(true))
+                    .FilterRow(f => f.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                            columns.Add().DataField("PropertyType");
+                    })
+                    )
 }
 @using (Html.DevExtreme().NamedTemplate("GetClientContentTemplate"))
 {
@@ -1708,6 +1781,47 @@
                         })
                         )
 }
+
+
+
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfQuoteMethodContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetUOM-datagrid")
+                    .DataSource(d => d.WebApi()
+                        .Controller("StockInventory")
+                        .LoadAction("GetUnitCodes")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("UnitCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) 
+                   .OnSelectionChanged("quoteMethodSelectionChanged")   
+                   .OnInitialized("quoteMethodGridInitialized")   
+                    .HeaderFilter(p => p.Visible(true))
+                    .FilterRow(f => f.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .SelectedRowKeys(new JS(@"['']"))  // keep empty initially
+
+					.Columns(columns =>
+                    {
+                     columns.Add().DataField("UnitCode").Visible(false); 
+                     columns.Add().DataField("UnitType");  
+
+
+                    })
+                    )
+}
+
+
+
 <script>
 
 	function onOpened(e) {
@@ -1715,6 +1829,33 @@
 			e.component.focus();
 		});
 	}
+
+
+
+function EquipmentDetails(e) {
+   debugger;
+
+    // Get Quotation No from textbox
+const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
+
+    // Build URL with querystring
+    const url = `/${tenantName}/ERM/EQDetailedDescription?code=${quotationNo}`;
+
+    const title = "Equipment Details";
+    openModal(url, title, "70%", "60%");
+    
+    // Close dropdown immediately
+    $("#Detlz").dxDropDownBox("instance").close();
+}
+
+
+
+
+
+
+
+
+
 
 	function onKeyDown(e) {
 		const ddbInstance = e.component;
@@ -1763,7 +1904,7 @@
 	}
 	function dataGridSelectionChanged2(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-		const ddbInstance = $("#ddGetModeOfRequest").dxDropDownBox("instance");
+		const ddbInstance = $("#EquipmentQuotedFor").dxDropDownBox("instance");
 
 		if (selectedKey) {
 			ddbInstance.option("value", selectedKey);
@@ -1772,6 +1913,31 @@
 			}
 		}
 	}
+
+
+function quoteMethodSelectionChanged(e) {
+		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+		const ddbInstance = $("#QuoteMethod").dxDropDownBox("instance");
+
+		if (selectedKey) {
+			ddbInstance.option("value", selectedKey);
+			if (ddbInstance.option("opened")) {
+				ddbInstance.close();
+			}
+		}
+	}
+
+
+
+    function quoteMethodGridInitialized(e) {
+		dataGrid = e.component;
+	}
+
+
+
+
+
+
 	function AddTypeReq() {
 		const url = `/${tenantName}/ERM/QuotationTypeOfRequest`;
 		const title = "";
@@ -6325,5 +6491,14 @@ $(document).ready(function () {
 
 		console.log('End permission handling');
 	});
-
+	 function UnitOfMeasure() {
+              const url = `/${tenantName}/IMS/UnitOfMeasure`;
+			  const title = "Unit Of Measure";
+			  openModal(url, title,"80%","70%");
+                    }
+		function Protype(){
+        const url = `/${tenantName}/ERM/PropertyType`;
+        const title = "Property Type";
+        openModal(url, title);
+        }
 </script>
