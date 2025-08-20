@@ -353,7 +353,7 @@
 	<div class="context-menu-item has-submenu">
 		<i class="dx-icon-file"></i> VAT Credit Notes (Obsolete)
 		<div class="submenu">
-			<div class="context-menu-item">
+			<div class="context-menu-item" onclick="viewVATCreditNote()">
 				<i class="dx-icon-file"></i> View VAT Credit Note
 			</div>
 		</div>
@@ -857,17 +857,17 @@
 					columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
 					columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
 					columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
-					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+					columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
 					columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
 					columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
-					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+					columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
 					columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
-					columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+					columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
 					columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
-					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+					columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.BillingAddress).Caption("Billing Address").Visible(false);
 				//	columns.AddFor(m => m.BillingAddressAr).Caption("Billing Address Ar").Visible(false);
 					columns.AddFor(m => m.BillingName).Caption("Billing Name").Visible(false);
@@ -877,14 +877,14 @@
 					columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
 					columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
 					columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
-					columns.AddFor(m => m.CreditEndDate).Caption("Credit End Date").Visible(false);
-					columns.AddFor(m => m.CreditNoteEffectiveDate).Caption("Credit Note Effective Date").Visible(false);
+					columns.AddFor(m => m.CreditEndDate).Caption("Credit End Date").Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.CreditNoteEffectiveDate).Caption("Credit Note Effective Date").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.CreditNoteRemarks).Caption("Credit Note Remarks").Visible(false);
-					columns.AddFor(m => m.CreditStartDate).Caption("Credit Start Date").Visible(false);
+					columns.AddFor(m => m.CreditStartDate).Caption("Credit Start Date").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
 					columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
 					columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
-					columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+					columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
 					columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
 					columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
@@ -943,8 +943,8 @@
 			//		columns.AddFor(m => m.SellerVATNumber).Caption("Seller VAT Number").Visible(false);
 					columns.AddFor(m => m.TaxCurrencyCode).Caption("Tax Currency Code").Visible(false);
 					columns.AddFor(m => m.EInvoiceSubmittedToZatcaBy).Caption("eInvoice Submitted To Zatca By").Visible(false);
-					columns.AddFor(m => m.EInvoiceSubmittedToZatcaOn).Caption("eInvoice Submitted To Zatca On").Visible(false);
-					columns.AddFor(m => m.InvoiceSupplyDate).Caption("Invoice Supply Date").Visible(false);
+					columns.AddFor(m => m.EInvoiceSubmittedToZatcaOn).Caption("eInvoice Submitted To Zatca On").Visible(false).Format("dd-MM-yyyy");
+					columns.AddFor(m => m.InvoiceSupplyDate).Caption("Invoice Supply Date").Visible(false).Format("dd-MM-yyyy");
 					columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
 					columns.AddFor(m => m.Currency).Caption("Currency").Visible(false);
 					columns.AddFor(m => m.OtherDeductionAmount).Caption("Other Deduction Amount").Visible(false);
@@ -1792,9 +1792,11 @@
 		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
 		dd.open();
 
+		// Open the submenu near the "By Quarter" element
+		openQuarterMenu(e.element);
+	}
+
 				$(document).ready(function () {
-
-
 				const urlParams = new URLSearchParams(window.location.search);
 				const module = urlParams.get("module");
 				const status = urlParams.get("status");
@@ -1821,7 +1823,6 @@
 			});
 
 
-
 					// Fetch from API on page load
 	$.get("/api/VATModule/GetCurrencyDecimals")
 		.done(function (decimals) {
@@ -1839,11 +1840,6 @@
 			minimumFractionDigits: currencyDecimals,
 			maximumFractionDigits: currencyDecimals
 		});
-	}
-
-
-		// Open the submenu near the "By Quarter" element
-		openQuarterMenu(e.element);
 	}
 
 			function openQuarterMenu(targetElement) {
@@ -1894,14 +1890,17 @@
 		}).dxContextMenu("instance").show();
 	}
 
-
-
-
 	function closeMainDropdown() {
 		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
 		dd.close();  // ✅ closes only after submenu item click
 	}
 
+
+	  function viewVATCreditNote() {
+		DevExpress.ui.notify(
+			"This Invoice is registered as e-Invoice Credit Note, Please review the Invoice Type. Use the e-Invoice Credit Note View Form.","error",3000
+		);
+	}
 </script>
 
 

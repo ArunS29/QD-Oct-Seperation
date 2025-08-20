@@ -3760,7 +3760,7 @@
 
 				  let ItemNo=null,amt=0, accheadid =null,paymentmeanstypecode=null,revaccheadid=null,InvoiceCurrencyExchangeId="1",TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null,UnitCode=null,UnitOfMeasure=null,currentAmount=null;
+					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null,UnitCode=null,UnitOfMeasure=null,currentAmount=null,IsClienCodeEdit="false";
 			   
 			  let dropDownInstance;
 			  let vatListInstance;
@@ -5779,9 +5779,9 @@ if (popover.option("visible")) {
 				if (selectedKey) {
 					ddbInstance.option("value", selectedKey);
 					 ddbInstance.close();
-					 let IsEditClientCode="true";
+					
 				}
-					if(IsCurrent!="true")
+					if(IsCurrent!="true" && IsClienCodeEdit=="true")
 				{
 		                     var selectedRowData = $("#clientcode-datagrid").dxDataGrid("instance").getSelectedRowsData();
 								// Get ReferenceNo from selected row
@@ -5861,6 +5861,8 @@ if (popover.option("visible")) {
 
 			function ClientCodedataGridInitialized(e) {
 				dataGrid1 = e.component;
+				IsClienCodeEdit="true";
+				IsCurrent="false";
 			}
 				function ClientSalesOrderNodataGridInitialized(e) {
 				dataGrid1 = e.component;
