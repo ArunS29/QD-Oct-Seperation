@@ -1198,6 +1198,40 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+
+        [HttpGet]
+        public IActionResult GetIMSRFQ(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry60704rfqviewMasters.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                        // not verified
+                        query = query.Where(x => x.IsQuoted == false);
+                        break;
+
+                    //case "ToBeApproved":
+                    //    // verified but not approved
+                    //    query = query.Where(x => x.IsVerified == true && x.IsApproved == false);
+                    //    break;
+
+                    case "tobeapproved":
+                        // approved but not posted
+                        query = query.Where(x => x.IsQuoted == true);
+                        break;
+                }
+            }
+
+            var result = query.ToList(); // get the actual records
+            return Json(result);
+        }
     }
 }
 

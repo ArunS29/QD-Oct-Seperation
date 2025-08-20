@@ -29,6 +29,14 @@
     .titleCard-toggle1{
         display:none;
     }
+     #dataGrid .dx-command-edit .dx-link-delete,
+ #dataGrid .dx-command-edit .dx-link-delete .dx-icon,
+ #dataGrid .dx-command-edit .dx-link-delete.dx-icon,
+ #dataGrid .dx-command-edit .dx-link-delete .dx-icon-trash,
+ #dataGrid .dx-command-edit .dx-link-delete.dx-icon-trash {
+     color: red !important; /* font-based icons */
+     
+ }
        .footer-fixed{
        bottom:37px!important;
    }
@@ -43,7 +51,7 @@
             <div class="card-title-icon">
                 <i class="fas fa-file-invoice-dollar"></i>
             </div>
-            <h3 class="card-title-text">Bank Receipt</h3>
+             <div id="BankReceipt" class="titleText no-border-title"></div>
         </div>
         <div class="dx-card-body">
             <div class="form-container" style=" align-items: flex-end; position: relative; padding: 0 15px; overflow-x: hidden;padding-top:10px;">
@@ -356,7 +364,7 @@ buttons.Add()
                                                         .ID("ledgerAccountPopup")
                                                         .Width("93%")
                                                         .Height("85%")
-                                                        .Title("Add Ledger Account")
+                                                        .Title(new JS("formatMessage('Add Ledger Account')"))
                                                         .ShowTitle(true)
                                                         .CloseOnOutsideClick(true)
                                                         .Visible(false)
@@ -376,7 +384,7 @@ buttons.Add()
                                                         .ID("ledgerEditAccountPopup")
                                                         .Width("93%")
                                                         .Height("85%")
-                                                        .Title("Edit Ledger Account")
+                                                        .Title(new JS("formatMessage('Edit Ledger Account')"))
                                                         .ShowTitle(true)
                                                         .CloseOnOutsideClick(true)
                                                         .Visible(false)  // Hidden by default
@@ -529,6 +537,20 @@ buttons.Add()
                                 .OnEditorPreparing("onEditorPreparing")
                                 .OnRowUpdating("onRowUpdating")
                                 .OnRowRemoving("onRowRemoving")
+                                .OnRowPrepared(@"
+                function(e) {
+                   
+                    if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
+                    $(e.rowElement).css('background-color', 'var(--header-color) !important');
+                    
+                    }
+                    if (e.rowType === 'data' && e.data.DrCr === 'Dr') {
+                    $(e.rowElement).css('background-color', 'var(--title-background-color) !important');
+                    $(e.rowElement).find('td').css('color', 'white');
+                    
+                    }
+                }
+                ")
                                 .Summary(summary =>
                                 {
                                     summary.TotalItems(totalItems =>
@@ -2864,7 +2886,7 @@ function addVoucherEntry() {
 
                                  // Retrieve the value from the TextBox
                                  var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-
+                                getDocumentCount();
                              },
                              error: function (xhr, status, error) {
                                  console.error("Error loading Voucher No:", error);
@@ -2977,6 +2999,7 @@ function addVoucherEntry() {
                             }
                                     syncWorkflowFromFields();
                                 initWorkflowTippyPopovers();
+                                getDocumentCount();
                         //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
                 },
@@ -3699,5 +3722,14 @@ tippy('#circle-approve', {
     offset: [0, 8],
 });
 }
+   $(function () {
+		 $("#BankReceipt").dxTextBox({
+            text: formatMessage("Bank Receipt"),
+			readOnly: true,
+			onContentReady: function (e) {
+				$(e.element).addClass("dx-textcolor-heading");
+			}
+			});
+		});
 
 </script>

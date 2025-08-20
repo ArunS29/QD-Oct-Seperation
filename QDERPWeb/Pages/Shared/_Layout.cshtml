@@ -1856,44 +1856,50 @@
                         <div class="status-card">
                             <div class="status-card-title">Sales</div>
                             <div class="status-grid">
-                                <div class="status-item" >
+                                <!-- To Be Verified -->
+                                <div class="status-item" onclick="VATSales('Sales','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatsales-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
-                                    <span class="new-dot" id="vatsales-dot"></span>
+                                    <span class="new-dot" id="vatsales-dot-verified"></span>
                                 </div>
-                                <div class="status-item" >
+
+                                <!-- To Be Approved -->
+                                <div class="status-item" onclick="VATSales('Sales','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatsales-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
-                                    <span class="new-dot" id="vatsales-dot"></span>
+                                    <span class="new-dot" id="vatsales-dot-approved"></span>
                                 </div>
-                                <div class="status-item" >
+
+                                <!-- To Be Post -->
+                                <div class="status-item" onclick="VATSales('Sales','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatsales-audited">0</div>
                                     <div class="status-label">To Be Post</div>
-                                    <span class="new-dot" id="vatsales-dot"></span>
+                                    <span class="new-dot" id="vatsales-dot-post"></span>
                                 </div>
                             </div>
+
                         </div>
 
                         <!-- Debit -->
                         <div class="status-card">
                             <div class="status-card-title">Debit</div>
                             <div class="status-grid">
-                                <div class="status-item" >
+                                <div class="status-item" onclick="VATDebit('Debit','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatdebit-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="vatdebit-dot"></span>
                                 </div>
-                                <div class="status-item">
+                                <div class="status-item" onclick="VATDebit('Debit','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatdebit-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="vatdebit-dot"></span>
                                 </div>
-                                <div class="status-item">
+                                <div class="status-item" onclick="VATDebit('Debit','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatdebit-audited">0</div>
                                     <div class="status-label">To Be Post</div>
@@ -1906,19 +1912,19 @@
                         <div class="status-card">
                             <div class="status-card-title">Credit</div>
                             <div class="status-grid">
-                                <div class="status-item">
+                                <div class="status-item" onclick="VATCredit('Credit','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatcredit-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="vatcredit-dot"></span>
                                 </div>
-                                <div class="status-item" >
+                                <div class="status-item" onclick="VATCredit('Credit','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatcredit-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="vatcredit-dot"></span>
                                 </div>
-                                <div class="status-item">
+                                <div class="status-item" onclick="VATCredit('Credit','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatcredit-audited">0</div>
                                     <div class="status-label">To Be Post</div>
@@ -1932,19 +1938,19 @@
                         <div class="status-card">
                             <div class="status-card-title">Purchase</div>
                             <div class="status-grid">
-                                <div class="status-item" >
+                                <div class="status-item" onclick="VATPurchase('Purchase','ToBeVerified')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatpurchase-verified">0</div>
                                     <div class="status-label">To Be Verified</div>
                                     <span class="new-dot" id="vatpurchase-dot"></span>
                                 </div>
-                                <div class="status-item" >
+                                <div class="status-item" onclick="VATPurchase('Purchase','ToBeApproved')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatpurchase-approved">0</div>
                                     <div class="status-label">To Be Approved</div>
                                     <span class="new-dot" id="vatpurchase-dot"></span>
                                 </div>
-                                <div class="status-item" >
+                                <div class="status-item" onclick="VATPurchase('Purchase','ToBePost')">
                                     <div class="status-icon"><i class="fas fa-file"></i></div>
                                     <div class="status-number" id="vatpurchase-audited">0</div>
                                     <div class="status-label">To Be Audited</div>
@@ -1961,7 +1967,135 @@
 
                     <!-- Inventory & Others Tabs (Placeholders) -->
                     <div class="tab-content" id="inventoryContent" style="display:none;">
-                        <div class="status-card">Inventory content goes here.</div>
+                        <!-- Inventory -->
+                        <div class="status-card">
+                            <div class="status-card-title">Material Request</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="InventoryAction1('MaterialRequest','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="materialrequest-tobeverified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="materialrequest-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="InventoryAction1('MaterialRequest','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="materialrequest-tobeapproved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="materialrequest-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="InventoryAction1('MaterialRequest','ToBeCancelled')">
+                                    <div class="status-icon"><i class="fas fa-times-circle"></i></div>
+                                    <div class="status-number" id="materialrequest-tobecancelled">0</div>
+                                    <div class="status-label">To Be Cancelled</div>
+                                    <span class="new-dot" id="materialrequest-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="status-card">
+                            <div class="status-card-title">Quotation to Client</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="InventoryAction2('Quotation','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="quotation-tobeverified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="quotation-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="InventoryAction2('Quotation','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="quotation-tobeapproved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="quotation-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+
+                        <div class="status-card">
+                            <div class="status-card-title">Sales Order</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="InventoryAction3('SalesOrder','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="salesorder-tobeverified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="salesorder-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="InventoryAction3('SalesOrder','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="salesorder-tobeapproved">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="salesorder-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="InventoryAction3('SalesOrder','ToBePosted')">
+                                    <div class="status-icon"><i class="fas fa-check-circle"></i></div>
+                                    <div class="status-number" id="salesorder-tobeposted">0</div>
+                                    <div class="status-label">To Be Posted</div>
+                                    <span class="new-dot" id="salesorder-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* <div class="status-card">
+                            <div class="status-card-title">Delivery Note</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="InventoryAction('DeliveryNote','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="deliverynote-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="deliverynote-dot"></span>
+                                </div>
+                            </div>
+                        </div> *@
+
+                        <div class="status-card">
+                            <div class="status-card-title">RFQ</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="InventoryAction4('RFQ','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="rfq-tobequoted">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="rfq-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="InventoryAction4('RFQ','ToBeApproved')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="rfq-quoted">0</div>
+                                    <div class="status-label">To Be Approved</div>
+                                    <span class="new-dot" id="rfq-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="status-card">
+                            <div class="status-card-title">Purchase Order</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="InventoryAction('PurchaseOrder','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="purchaseorder-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="purchaseorder-dot"></span>
+                                </div>
+                                <div class="status-item" onclick="InventoryAction('PurchaseOrder','ToBePosted')">
+                                    <div class="status-icon"><i class="fas fa-check-circle"></i></div>
+                                    <div class="status-number" id="purchaseorder-posted">0</div>
+                                    <div class="status-label">To Be Posted</div>
+                                    <span class="new-dot" id="purchaseorder-dot"></span>
+                                </div>
+                            </div>
+                        </div>
+
+                        @* <div class="status-card">
+                            <div class="status-card-title">Material Receipt</div>
+                            <div class="status-grid">
+                                <div class="status-item" onclick="InventoryAction('MaterialReceipt','ToBeVerified')">
+                                    <div class="status-icon"><i class="fas fa-file"></i></div>
+                                    <div class="status-number" id="materialreceipt-verified">0</div>
+                                    <div class="status-label">To Be Verified</div>
+                                    <span class="new-dot" id="materialreceipt-dot"></span>
+                                </div>
+                            </div>
+                        </div> *@
+
                     </div>
                     <!-- Others Tab Content -->
                     <div class="tab-content" id="othersContent" style="display:none;">
@@ -5538,7 +5672,156 @@
 
 
 
+            function VATSales(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
+            if (!onVatPage) {
+                window.location.href = `VAT/SalesRegisterVAT?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+          
+        }
+
+            function VATDebit(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+            if (!onVatPage) {
+                window.location.href = `VAT/VATDebitNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+
+        }
+
+         function VATCredit(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+            if (!onVatPage) {
+                window.location.href = `VAT/VATCreditNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+
+        }
+
+            function VATPurchase(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+            if (!onVatPage) {
+                window.location.href = `VAT/VATPurchaseMasterView?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+
+        }
+
+
+                $(document).ready(function () {
+            // Keep track of previous IDs for each module
+            let prevIds = {
+                MaterialRequest: new Set(),
+                Quotation: new Set(),
+                SalesOrder: new Set(),
+                RFQ: new Set(),
+                PurchaseOrder: new Set()
+            };
+
+            let totalInventoryCount = 0;
+
+            function updateInventoryTab() {
+                $("#inventoryTab").text(`Inventory ${totalInventoryCount}`);
+            }
+
+            // Generic function for fetching and updating summaries
+                    function loadInventorySummary(moduleName, apiUrl, idPrefix) {
+            $.getJSON(apiUrl, function (data) {
+                if (!data.success) return;
+
+                // Determine where summary is
+                const summary = data.Summary || data.data;
+                if (!summary) return;
+
+                let moduleCount = 0;
+
+                Object.keys(summary).forEach(key => {
+                    const value = summary[key] || 0;
+
+                    // Make sure your HTML IDs match key names (case-insensitive)
+                    $(`#${idPrefix}-${key.toLowerCase()}`).text(value);
+
+                    // Use class for dot
+                    $(`#${idPrefix}-${key.toLowerCase()}-dot`).toggle(value > 0);
+
+                    moduleCount += value;
+                });
+
+                totalInventoryCount += moduleCount;
+                updateInventoryTab();
+            });
+        }
+
+
+            // Call loaders for each module
+            loadInventorySummary("MaterialRequest", "/api/Notification/GetMaterialRequestSummary", "materialrequest");
+            loadInventorySummary("Quotation", "/api/Notification/GetQuotationSummary", "quotation");
+            loadInventorySummary("SalesOrder", "/api/Notification/GetSalesOrderSummary", "salesorder");
+            loadInventorySummary("RFQ", "/api/Notification/GetRFQSummary", "rfq");
+            loadInventorySummary("PurchaseOrder", "/api/Notification/GetPurchaseOrderSummary", "purchaseorder");
+
+            // ---------------- Clear All ----------------
+            $("#clearAllInventoryNotifications").on("click", function () {
+                Object.keys(prevIds).forEach(module => {
+                    $(`#notification${module}List`).empty();
+                    prevIds[module].clear();
+                });
+                totalInventoryCount = 0;
+                updateInventoryTab();
+            });
+        });
+             function InventoryAction1(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+            if (!onVatPage) {
+                window.location.href = `IMS/MaterialRequestEnquiriesDetails?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+
+        }
+
+            function InventoryAction2(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+            if (!onVatPage) {
+                window.location.href = `IMS/Quotation?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+
+        }
+
+         function InventoryAction3(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+            if (!onVatPage) {
+                window.location.href = `IMS/SalesOrders?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+
+        }
+
+            function InventoryAction4(module, status) {
+            var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
+
+            if (!onVatPage) {
+                window.location.href = `IMS/RequestforQuotationList?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                return;
+            }
+
+
+        }
     </script>
 </body>
 </html>

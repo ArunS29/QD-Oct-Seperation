@@ -118,7 +118,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Ledger Sub Group</h3>
+    <div id="LedgerSubGroups" class="titleText no-border-title"></div>
 </div>
 
 <div class="card-container">
@@ -232,17 +232,6 @@
 
 
 
-
-    $(function () {
-        $("#LedgerSubGroupMaster").dxTextBox({
-            text: formatMessage("Ledger Sub Group Master"),
-            readOnly: true,
-            onContentReady: function (e) {
-                $(e.element).addClass("dx-textbox-heading");
-            }
-
-        });
-    });
 
     $(function () {
         var updatedRows = []; // To store the updated rows
@@ -561,4 +550,13 @@
             });
         }
     }
+     $(function () {
+                 $("#LedgerSubGroups").dxTextBox({
+                    text: formatMessage("Ledger Sub Group Master"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textcolor-heading");
+                }
+                });
+            });
 </script>

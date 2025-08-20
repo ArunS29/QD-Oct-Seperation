@@ -930,5 +930,36 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return BadRequest("Invalid tenant or DB context.");
         }
+        [HttpGet]
+        public IActionResult GetIMSQuotation(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry60104quotationViewMasters.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                      
+                        query = query.Where(x => x.IsSubmitted == true && x.IsVerified != true);
+                        break;
+
+                    case "tobeapproved":
+                        
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved != true);
+                        break;
+
+                   
+                }
+            }
+
+            var result = query.ToList(); // get the actual records
+            return Json(result);
+        }
+
+
     }
 }

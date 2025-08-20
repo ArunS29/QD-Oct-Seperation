@@ -31,6 +31,7 @@
             this.components = new System.ComponentModel.Container();
             DevExpress.XtraPrinting.Shape.ShapeRectangle shapeRectangle1 = new DevExpress.XtraPrinting.Shape.ShapeRectangle();
             DevExpress.XtraPrinting.Shape.ShapeRectangle shapeRectangle2 = new DevExpress.XtraPrinting.Shape.ShapeRectangle();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewPurchaseOrder));
             DevExpress.XtraReports.UI.XRSummary xrSummary1 = new DevExpress.XtraReports.UI.XRSummary();
             DevExpress.DataAccess.Sql.SelectQuery selectQuery1 = new DevExpress.DataAccess.Sql.SelectQuery();
             DevExpress.DataAccess.Sql.Column column1 = new DevExpress.DataAccess.Sql.Column();
@@ -274,7 +275,254 @@
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression119 = new DevExpress.DataAccess.Sql.ColumnExpression();
             DevExpress.DataAccess.Sql.Column column120 = new DevExpress.DataAccess.Sql.Column();
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression120 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PreviewPurchaseOrder));
+            DevExpress.DataAccess.Sql.SelectQuery selectQuery2 = new DevExpress.DataAccess.Sql.SelectQuery();
+            DevExpress.DataAccess.Sql.Column column121 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression121 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Table table2 = new DevExpress.DataAccess.Sql.Table();
+            DevExpress.DataAccess.Sql.Column column122 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression122 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column123 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression123 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column124 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression124 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column125 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression125 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column126 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression126 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column127 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression127 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column128 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression128 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column129 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression129 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column130 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression130 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column131 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression131 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column132 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression132 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column133 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression133 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column134 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression134 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column135 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression135 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column136 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression136 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column137 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression137 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column138 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression138 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column139 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression139 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column140 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression140 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column141 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression141 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column142 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression142 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column143 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression143 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column144 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression144 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column145 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression145 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column146 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression146 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column147 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression147 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column148 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression148 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column149 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression149 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column150 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression150 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column151 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression151 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column152 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression152 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column153 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression153 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column154 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression154 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column155 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression155 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column156 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression156 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column157 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression157 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column158 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression158 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column159 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression159 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column160 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression160 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column161 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression161 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column162 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression162 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column163 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression163 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column164 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression164 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column165 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression165 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column166 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression166 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column167 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression167 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column168 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression168 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column169 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression169 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column170 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression170 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column171 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression171 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column172 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression172 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column173 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression173 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column174 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression174 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column175 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression175 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column176 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression176 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column177 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression177 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column178 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression178 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column179 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression179 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column180 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression180 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column181 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression181 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column182 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression182 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column183 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression183 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column184 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression184 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column185 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression185 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column186 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression186 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column187 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression187 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column188 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression188 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column189 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression189 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column190 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression190 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column191 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression191 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column192 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression192 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column193 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression193 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column194 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression194 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column195 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression195 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column196 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression196 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column197 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression197 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column198 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression198 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column199 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression199 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column200 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression200 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column201 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression201 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column202 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression202 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column203 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression203 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column204 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression204 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column205 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression205 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column206 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression206 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column207 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression207 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column208 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression208 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column209 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression209 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column210 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression210 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column211 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression211 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column212 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression212 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column213 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression213 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column214 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression214 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column215 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression215 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column216 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression216 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column217 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression217 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column218 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression218 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column219 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression219 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column220 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression220 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column221 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression221 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column222 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression222 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column223 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression223 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column224 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression224 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column225 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression225 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column226 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression226 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column227 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression227 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column228 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression228 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column229 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression229 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column230 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression230 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column231 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression231 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column232 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression232 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column233 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression233 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column234 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression234 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column235 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression235 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column236 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression236 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column237 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression237 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column238 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression238 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column239 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression239 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column240 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression240 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column241 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression241 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column242 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression242 = new DevExpress.DataAccess.Sql.ColumnExpression();
+            DevExpress.DataAccess.Sql.Column column243 = new DevExpress.DataAccess.Sql.Column();
+            DevExpress.DataAccess.Sql.ColumnExpression columnExpression243 = new DevExpress.DataAccess.Sql.ColumnExpression();
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
             this.ReportHeader = new DevExpress.XtraReports.UI.ReportHeaderBand();
@@ -391,6 +639,15 @@
             this.xrLabel95 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel84 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel82 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrPictureBox5 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox6 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox7 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox8 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox9 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox10 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox11 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.xrPictureBox12 = new DevExpress.XtraReports.UI.XRPictureBox();
+            this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
@@ -748,6 +1005,9 @@
             // GroupHeader1
             // 
             this.GroupHeader1.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrPictureBox12,
+            this.xrPictureBox11,
+            this.xrPictureBox10,
             this.xrLabel32,
             this.xrLabel31,
             this.xrLabel30,
@@ -782,7 +1042,7 @@
             this.xrLabel32.StylePriority.UseFont = false;
             this.xrLabel32.StylePriority.UseTextAlignment = false;
             this.xrLabel32.Text = "VAT\r\nAmount\r\n";
-            this.xrLabel32.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrLabel32.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel32.WordWrap = false;
             // 
             // xrLabel31
@@ -805,7 +1065,7 @@
             this.xrLabel31.StylePriority.UseFont = false;
             this.xrLabel31.StylePriority.UseTextAlignment = false;
             this.xrLabel31.Text = "Amount\r\nBefore Tax";
-            this.xrLabel31.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrLabel31.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel31.WordWrap = false;
             // 
             // xrLabel30
@@ -863,6 +1123,7 @@
             this.xrLabel28.CanGrow = false;
             this.xrLabel28.Font = new DevExpress.Drawing.DXFont("Cambria", 8F, DevExpress.Drawing.DXFontStyle.Bold);
             this.xrLabel28.LocationFloat = new DevExpress.Utils.PointFloat(441.3195F, 5.29819E-05F);
+            this.xrLabel28.Multiline = true;
             this.xrLabel28.Name = "xrLabel28";
             this.xrLabel28.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel28.SizeF = new System.Drawing.SizeF(67.70831F, 40.93051F);
@@ -871,8 +1132,8 @@
             this.xrLabel28.StylePriority.UseBorders = false;
             this.xrLabel28.StylePriority.UseFont = false;
             this.xrLabel28.StylePriority.UseTextAlignment = false;
-            this.xrLabel28.Text = "Unit Price";
-            this.xrLabel28.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            this.xrLabel28.Text = "Unit\r\n Price";
+            this.xrLabel28.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel28.WordWrap = false;
             // 
             // xrLabel27
@@ -996,7 +1257,7 @@
             this.xrLabel35,
             this.xrLabel34,
             this.xrLabel33});
-            this.Detail.HeightF = 37.13903F;
+            this.Detail.HeightF = 36.21538F;
             this.Detail.Name = "Detail";
             // 
             // xrLabel42
@@ -1007,7 +1268,9 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel42.CanGrow = false;
             this.xrLabel42.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalTaxAmount]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,\n    Iif(IsNull([TotalTaxAmo" +
+                    "unt]), 0, [TotalTaxAmount]),\n    Iif(IsNull([TotalTaxAmount]), 0, [TotalTaxAmoun" +
+                    "t] / [CurrencyRate])\n)\n")});
             this.xrLabel42.LocationFloat = new DevExpress.Utils.PointFloat(695.6597F, 0F);
             this.xrLabel42.Name = "xrLabel42";
             this.xrLabel42.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -1027,7 +1290,7 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel41.CanGrow = false;
             this.xrLabel41.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalAmountAfterDiscInOC]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", resources.GetString("xrLabel41.ExpressionBindings"))});
             this.xrLabel41.LocationFloat = new DevExpress.Utils.PointFloat(620.1389F, 0F);
             this.xrLabel41.Name = "xrLabel41";
             this.xrLabel41.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
@@ -1069,7 +1332,9 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel39.CanGrow = false;
             this.xrLabel39.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[ItemDiscount]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,\n    Iif(IsNull([ItemDiscoun" +
+                    "t]), 0, [ItemDiscount]),\n    Iif(IsNull([ItemDiscount]), 0, [ItemDiscount] / [Cu" +
+                    "rrencyRate])\n)\n")});
             this.xrLabel39.Font = new DevExpress.Drawing.DXFont("Cambria", 9F);
             this.xrLabel39.LocationFloat = new DevExpress.Utils.PointFloat(509.0277F, 0F);
             this.xrLabel39.Name = "xrLabel39";
@@ -1091,7 +1356,9 @@
             | DevExpress.XtraPrinting.BorderSide.Bottom)));
             this.xrLabel38.CanGrow = false;
             this.xrLabel38.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[UnitPrice]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,\n    Iif(IsNull([UnitPrice])" +
+                    ", 0, [UnitPrice]),\n    Iif(IsNull([UnitPrice]), 0, [UnitPrice] / [CurrencyRate])" +
+                    "\n)\n")});
             this.xrLabel38.Font = new DevExpress.Drawing.DXFont("Cambria", 9F);
             this.xrLabel38.LocationFloat = new DevExpress.Utils.PointFloat(441.3194F, 0F);
             this.xrLabel38.Name = "xrLabel38";
@@ -1922,6 +2189,11 @@
             // GroupFooter2
             // 
             this.GroupFooter2.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrPictureBox9,
+            this.xrPictureBox8,
+            this.xrPictureBox7,
+            this.xrPictureBox6,
+            this.xrPictureBox5,
             this.xrLabel44,
             this.xrLabel43,
             this.xrLabel81,
@@ -1951,7 +2223,7 @@
             this.xrLabel44.Multiline = true;
             this.xrLabel44.Name = "xrLabel44";
             this.xrLabel44.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel44.SizeF = new System.Drawing.SizeF(517.6338F, 62.01401F);
+            this.xrLabel44.SizeF = new System.Drawing.SizeF(501.2709F, 62.01402F);
             this.xrLabel44.StylePriority.UseTextAlignment = false;
             this.xrLabel44.TextAlignment = DevExpress.XtraPrinting.TextAlignment.BottomLeft;
             // 
@@ -1972,11 +2244,13 @@
             this.xrLabel81.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel81.CanGrow = false;
             this.xrLabel81.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[GrandTotal]")});
-            this.xrLabel81.LocationFloat = new DevExpress.Utils.PointFloat(685.926F, 134.4448F);
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,\n    Iif(IsNull([GrandTotal]" +
+                    "), 0, [GrandTotal]),\n    Iif(IsNull([GrandTotal]), 0, [GrandTotal] / [CurrencyRa" +
+                    "te])\n)\n")});
+            this.xrLabel81.LocationFloat = new DevExpress.Utils.PointFloat(678.926F, 134.4448F);
             this.xrLabel81.Name = "xrLabel81";
             this.xrLabel81.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel81.SizeF = new System.Drawing.SizeF(86.35992F, 31.54846F);
+            this.xrLabel81.SizeF = new System.Drawing.SizeF(93.35999F, 31.54846F);
             this.xrLabel81.StylePriority.UseBackColor = false;
             this.xrLabel81.StylePriority.UseBorderColor = false;
             this.xrLabel81.StylePriority.UseBorders = false;
@@ -1991,10 +2265,10 @@
             this.xrLabel80.BorderColor = System.Drawing.Color.Silver;
             this.xrLabel80.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel80.CanGrow = false;
-            this.xrLabel80.LocationFloat = new DevExpress.Utils.PointFloat(649.9999F, 134.4448F);
+            this.xrLabel80.LocationFloat = new DevExpress.Utils.PointFloat(633.6665F, 134.4448F);
             this.xrLabel80.Name = "xrLabel80";
             this.xrLabel80.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel80.SizeF = new System.Drawing.SizeF(35.92615F, 31.38194F);
+            this.xrLabel80.SizeF = new System.Drawing.SizeF(45.25952F, 31.38194F);
             this.xrLabel80.StylePriority.UseBackColor = false;
             this.xrLabel80.StylePriority.UseBorderColor = false;
             this.xrLabel80.StylePriority.UseBorders = false;
@@ -2012,12 +2286,12 @@
             this.xrLabel79.LocationFloat = new DevExpress.Utils.PointFloat(27.4357F, 134.4448F);
             this.xrLabel79.Name = "xrLabel79";
             this.xrLabel79.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel79.SizeF = new System.Drawing.SizeF(622.5642F, 31.38193F);
+            this.xrLabel79.SizeF = new System.Drawing.SizeF(606.2309F, 31.38193F);
             this.xrLabel79.StylePriority.UseBackColor = false;
             this.xrLabel79.StylePriority.UseBorderColor = false;
             this.xrLabel79.StylePriority.UseBorders = false;
             this.xrLabel79.StylePriority.UseTextAlignment = false;
-            this.xrLabel79.Text = "Net Amount(SAR) ";
+            this.xrLabel79.Text = "Net Amount";
             this.xrLabel79.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel79.WordWrap = false;
             // 
@@ -2027,12 +2301,14 @@
             this.xrLabel78.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel78.CanGrow = false;
             this.xrLabel78.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalTaxAmount]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,\n    Iif(IsNull([TotalTaxAmo" +
+                    "unt]), 0, [TotalTaxAmount]),\n    Iif(IsNull([TotalTaxAmount]), 0, [TotalTaxAmoun" +
+                    "t] / [CurrencyRate])\n)\n")});
             this.xrLabel78.Font = new DevExpress.Drawing.DXFont("Cambria", 9F);
-            this.xrLabel78.LocationFloat = new DevExpress.Utils.PointFloat(685.9248F, 108.6461F);
+            this.xrLabel78.LocationFloat = new DevExpress.Utils.PointFloat(678.9247F, 108.6461F);
             this.xrLabel78.Name = "xrLabel78";
             this.xrLabel78.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel78.SizeF = new System.Drawing.SizeF(87.33154F, 25.79869F);
+            this.xrLabel78.SizeF = new System.Drawing.SizeF(94.3316F, 25.79869F);
             this.xrLabel78.StylePriority.UseBorderColor = false;
             this.xrLabel78.StylePriority.UseBorders = false;
             this.xrLabel78.StylePriority.UseFont = false;
@@ -2047,11 +2323,11 @@
             this.xrLabel76.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel76.CanGrow = false;
             this.xrLabel76.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalAmountAfterDiscInOC]")});
-            this.xrLabel76.LocationFloat = new DevExpress.Utils.PointFloat(685.9254F, 72.43066F);
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", resources.GetString("xrLabel76.ExpressionBindings"))});
+            this.xrLabel76.LocationFloat = new DevExpress.Utils.PointFloat(678.9254F, 72.43067F);
             this.xrLabel76.Name = "xrLabel76";
             this.xrLabel76.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel76.SizeF = new System.Drawing.SizeF(87.33154F, 36.21539F);
+            this.xrLabel76.SizeF = new System.Drawing.SizeF(94.3316F, 36.21539F);
             this.xrLabel76.StylePriority.UseBorderColor = false;
             this.xrLabel76.StylePriority.UseBorders = false;
             this.xrLabel76.StylePriority.UseTextAlignment = false;
@@ -2065,12 +2341,14 @@
             this.xrLabel75.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel75.CanGrow = false;
             this.xrLabel75.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalDiscountInOC]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,\n    Iif(IsNull([TotalDiscou" +
+                    "ntInOC]), 0, [TotalDiscountInOC]),\n    Iif(IsNull([TotalDiscountInOC]), 0, [Tota" +
+                    "lDiscountInOC] / [CurrencyRate])\n)\n")});
             this.xrLabel75.Font = new DevExpress.Drawing.DXFont("Cambria", 9F);
-            this.xrLabel75.LocationFloat = new DevExpress.Utils.PointFloat(685.9254F, 36.21533F);
+            this.xrLabel75.LocationFloat = new DevExpress.Utils.PointFloat(678.9254F, 36.21531F);
             this.xrLabel75.Name = "xrLabel75";
             this.xrLabel75.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel75.SizeF = new System.Drawing.SizeF(87.33154F, 36.21533F);
+            this.xrLabel75.SizeF = new System.Drawing.SizeF(94.3316F, 36.21532F);
             this.xrLabel75.StylePriority.UseBorderColor = false;
             this.xrLabel75.StylePriority.UseBorders = false;
             this.xrLabel75.StylePriority.UseFont = false;
@@ -2085,11 +2363,13 @@
             this.xrLabel74.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel74.CanGrow = false;
             this.xrLabel74.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[TotalBeforeTax]")});
-            this.xrLabel74.LocationFloat = new DevExpress.Utils.PointFloat(685.9254F, 0F);
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif(    IsNull([CurrencyRate]) Or [CurrencyRate] = 0,\n    Iif(IsNull([TotalBefore" +
+                    "Tax]), 0, [TotalBeforeTax]),\n    Iif(IsNull([TotalBeforeTax]), 0, [TotalBeforeTa" +
+                    "x] / [CurrencyRate])\n)\n")});
+            this.xrLabel74.LocationFloat = new DevExpress.Utils.PointFloat(678.9254F, 0F);
             this.xrLabel74.Name = "xrLabel74";
             this.xrLabel74.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel74.SizeF = new System.Drawing.SizeF(87.33154F, 36.21533F);
+            this.xrLabel74.SizeF = new System.Drawing.SizeF(94.3316F, 36.21533F);
             this.xrLabel74.StylePriority.UseBorderColor = false;
             this.xrLabel74.StylePriority.UseBorders = false;
             this.xrLabel74.StylePriority.UseTextAlignment = false;
@@ -2102,10 +2382,10 @@
             this.xrLabel73.BorderColor = System.Drawing.Color.Silver;
             this.xrLabel73.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel73.CanGrow = false;
-            this.xrLabel73.LocationFloat = new DevExpress.Utils.PointFloat(649.9999F, 108.6461F);
+            this.xrLabel73.LocationFloat = new DevExpress.Utils.PointFloat(633.6665F, 108.6461F);
             this.xrLabel73.Name = "xrLabel73";
             this.xrLabel73.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel73.SizeF = new System.Drawing.SizeF(35.92542F, 25.79869F);
+            this.xrLabel73.SizeF = new System.Drawing.SizeF(45.25879F, 25.79869F);
             this.xrLabel73.StylePriority.UseBorderColor = false;
             this.xrLabel73.StylePriority.UseBorders = false;
             this.xrLabel73.StylePriority.UseTextAlignment = false;
@@ -2118,10 +2398,10 @@
             this.xrLabel71.BorderColor = System.Drawing.Color.Silver;
             this.xrLabel71.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel71.CanGrow = false;
-            this.xrLabel71.LocationFloat = new DevExpress.Utils.PointFloat(649.9999F, 72.43072F);
+            this.xrLabel71.LocationFloat = new DevExpress.Utils.PointFloat(633.6665F, 72.43073F);
             this.xrLabel71.Name = "xrLabel71";
             this.xrLabel71.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel71.SizeF = new System.Drawing.SizeF(35.92543F, 36.21533F);
+            this.xrLabel71.SizeF = new System.Drawing.SizeF(45.25879F, 36.21531F);
             this.xrLabel71.StylePriority.UseBorderColor = false;
             this.xrLabel71.StylePriority.UseBorders = false;
             this.xrLabel71.StylePriority.UseTextAlignment = false;
@@ -2134,10 +2414,10 @@
             this.xrLabel70.BorderColor = System.Drawing.Color.Silver;
             this.xrLabel70.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel70.CanGrow = false;
-            this.xrLabel70.LocationFloat = new DevExpress.Utils.PointFloat(649.9999F, 36.21541F);
+            this.xrLabel70.LocationFloat = new DevExpress.Utils.PointFloat(633.6665F, 36.21541F);
             this.xrLabel70.Name = "xrLabel70";
             this.xrLabel70.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel70.SizeF = new System.Drawing.SizeF(35.92543F, 36.21533F);
+            this.xrLabel70.SizeF = new System.Drawing.SizeF(45.25879F, 36.21533F);
             this.xrLabel70.StylePriority.UseBorderColor = false;
             this.xrLabel70.StylePriority.UseBorders = false;
             this.xrLabel70.StylePriority.UseTextAlignment = false;
@@ -2150,10 +2430,10 @@
             this.xrLabel69.BorderColor = System.Drawing.Color.Silver;
             this.xrLabel69.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel69.CanGrow = false;
-            this.xrLabel69.LocationFloat = new DevExpress.Utils.PointFloat(650F, 0F);
+            this.xrLabel69.LocationFloat = new DevExpress.Utils.PointFloat(633.6666F, 0F);
             this.xrLabel69.Name = "xrLabel69";
             this.xrLabel69.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.xrLabel69.SizeF = new System.Drawing.SizeF(35.92543F, 36.21533F);
+            this.xrLabel69.SizeF = new System.Drawing.SizeF(45.25885F, 36.21533F);
             this.xrLabel69.StylePriority.UseBorderColor = false;
             this.xrLabel69.StylePriority.UseBorders = false;
             this.xrLabel69.StylePriority.UseTextAlignment = false;
@@ -2167,7 +2447,7 @@
             this.xrLabel68.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel68.CanGrow = false;
             this.xrLabel68.Font = new DevExpress.Drawing.DXFont("Cambria", 9F);
-            this.xrLabel68.LocationFloat = new DevExpress.Utils.PointFloat(545.0695F, 107.8125F);
+            this.xrLabel68.LocationFloat = new DevExpress.Utils.PointFloat(528.7361F, 107.8125F);
             this.xrLabel68.Name = "xrLabel68";
             this.xrLabel68.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel68.SizeF = new System.Drawing.SizeF(104.9305F, 26.63228F);
@@ -2184,7 +2464,7 @@
             this.xrLabel66.BorderColor = System.Drawing.Color.Silver;
             this.xrLabel66.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel66.CanGrow = false;
-            this.xrLabel66.LocationFloat = new DevExpress.Utils.PointFloat(545.0695F, 73.59726F);
+            this.xrLabel66.LocationFloat = new DevExpress.Utils.PointFloat(528.7361F, 73.59726F);
             this.xrLabel66.Name = "xrLabel66";
             this.xrLabel66.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel66.SizeF = new System.Drawing.SizeF(104.9305F, 34.21524F);
@@ -2197,9 +2477,9 @@
             // 
             // xrLine3
             // 
-            this.xrLine3.LocationFloat = new DevExpress.Utils.PointFloat(509.0277F, 71.59724F);
+            this.xrLine3.LocationFloat = new DevExpress.Utils.PointFloat(528.7361F, 71.59724F);
             this.xrLine3.Name = "xrLine3";
-            this.xrLine3.SizeF = new System.Drawing.SizeF(264.2292F, 2.000008F);
+            this.xrLine3.SizeF = new System.Drawing.SizeF(244.5208F, 2.000008F);
             // 
             // xrLabel65
             // 
@@ -2207,7 +2487,7 @@
             this.xrLabel65.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel65.CanGrow = false;
             this.xrLabel65.Font = new DevExpress.Drawing.DXFont("Cambria", 9F);
-            this.xrLabel65.LocationFloat = new DevExpress.Utils.PointFloat(545.0695F, 36.21536F);
+            this.xrLabel65.LocationFloat = new DevExpress.Utils.PointFloat(528.7361F, 36.21536F);
             this.xrLabel65.Name = "xrLabel65";
             this.xrLabel65.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel65.SizeF = new System.Drawing.SizeF(104.9305F, 36.21533F);
@@ -2224,7 +2504,7 @@
             this.xrLabel64.BorderColor = System.Drawing.Color.Silver;
             this.xrLabel64.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.xrLabel64.CanGrow = false;
-            this.xrLabel64.LocationFloat = new DevExpress.Utils.PointFloat(545.0695F, 0F);
+            this.xrLabel64.LocationFloat = new DevExpress.Utils.PointFloat(528.7361F, 0F);
             this.xrLabel64.Name = "xrLabel64";
             this.xrLabel64.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrLabel64.SizeF = new System.Drawing.SizeF(104.9305F, 36.21533F);
@@ -2714,6 +2994,566 @@
             this.xrLabel82.StylePriority.UseTextAlignment = false;
             this.xrLabel82.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
             // 
+            // xrPictureBox5
+            // 
+            this.xrPictureBox5.LocationFloat = new DevExpress.Utils.PointFloat(635.6666F, 82.59726F);
+            this.xrPictureBox5.Name = "xrPictureBox5";
+            this.xrPictureBox5.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox5.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // xrPictureBox6
+            // 
+            this.xrPictureBox6.LocationFloat = new DevExpress.Utils.PointFloat(635.6666F, 10F);
+            this.xrPictureBox6.Name = "xrPictureBox6";
+            this.xrPictureBox6.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox6.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // xrPictureBox7
+            // 
+            this.xrPictureBox7.LocationFloat = new DevExpress.Utils.PointFloat(634.6666F, 45.18047F);
+            this.xrPictureBox7.Name = "xrPictureBox7";
+            this.xrPictureBox7.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox7.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // xrPictureBox8
+            // 
+            this.xrPictureBox8.LocationFloat = new DevExpress.Utils.PointFloat(635.6665F, 113.4448F);
+            this.xrPictureBox8.Name = "xrPictureBox8";
+            this.xrPictureBox8.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox8.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // xrPictureBox9
+            // 
+            this.xrPictureBox9.LocationFloat = new DevExpress.Utils.PointFloat(635.6665F, 142.8267F);
+            this.xrPictureBox9.Name = "xrPictureBox9";
+            this.xrPictureBox9.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox9.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // xrPictureBox10
+            // 
+            this.xrPictureBox10.LocationFloat = new DevExpress.Utils.PointFloat(622.139F, 15.93055F);
+            this.xrPictureBox10.Name = "xrPictureBox10";
+            this.xrPictureBox10.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox10.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // xrPictureBox11
+            // 
+            this.xrPictureBox11.LocationFloat = new DevExpress.Utils.PointFloat(707.3057F, 15.93056F);
+            this.xrPictureBox11.Name = "xrPictureBox11";
+            this.xrPictureBox11.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox11.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // xrPictureBox12
+            // 
+            this.xrPictureBox12.LocationFloat = new DevExpress.Utils.PointFloat(453.2085F, 12.93055F);
+            this.xrPictureBox12.Name = "xrPictureBox12";
+            this.xrPictureBox12.SizeF = new System.Drawing.SizeF(18F, 18F);
+            this.xrPictureBox12.Sizing = DevExpress.XtraPrinting.ImageSizeMode.ZoomImage;
+            // 
+            // sqlDataSource2
+            // 
+            this.sqlDataSource2.ConnectionName = "DBConnection";
+            this.sqlDataSource2.Name = "sqlDataSource2";
+            columnExpression121.ColumnName = "PONo";
+            table2.MetaSerializable = "<Meta X=\"30\" Y=\"30\" Width=\"125\" Height=\"2524\" />";
+            table2.Name = "qry604_05PurchaseOrderReport";
+            columnExpression121.Table = table2;
+            column121.Expression = columnExpression121;
+            columnExpression122.ColumnName = "PODate";
+            columnExpression122.Table = table2;
+            column122.Expression = columnExpression122;
+            columnExpression123.ColumnName = "SupplierCode";
+            columnExpression123.Table = table2;
+            column123.Expression = columnExpression123;
+            columnExpression124.ColumnName = "SupplierQuoteNo";
+            columnExpression124.Table = table2;
+            column124.Expression = columnExpression124;
+            columnExpression125.ColumnName = "SupplierQuoteDate";
+            columnExpression125.Table = table2;
+            column125.Expression = columnExpression125;
+            columnExpression126.ColumnName = "SupplierRefNo";
+            columnExpression126.Table = table2;
+            column126.Expression = columnExpression126;
+            columnExpression127.ColumnName = "Attention";
+            columnExpression127.Table = table2;
+            column127.Expression = columnExpression127;
+            columnExpression128.ColumnName = "SupplierContactNo";
+            columnExpression128.Table = table2;
+            column128.Expression = columnExpression128;
+            columnExpression129.ColumnName = "SupplierContactEmail";
+            columnExpression129.Table = table2;
+            column129.Expression = columnExpression129;
+            columnExpression130.ColumnName = "SubjectTitle";
+            columnExpression130.Table = table2;
+            column130.Expression = columnExpression130;
+            columnExpression131.ColumnName = "PreparedBy";
+            columnExpression131.Table = table2;
+            column131.Expression = columnExpression131;
+            columnExpression132.ColumnName = "PreparedOn";
+            columnExpression132.Table = table2;
+            column132.Expression = columnExpression132;
+            columnExpression133.ColumnName = "ApprovedBy";
+            columnExpression133.Table = table2;
+            column133.Expression = columnExpression133;
+            columnExpression134.ColumnName = "ApprovedOn";
+            columnExpression134.Table = table2;
+            column134.Expression = columnExpression134;
+            columnExpression135.ColumnName = "AddedBy";
+            columnExpression135.Table = table2;
+            column135.Expression = columnExpression135;
+            columnExpression136.ColumnName = "AddedOn";
+            columnExpression136.Table = table2;
+            column136.Expression = columnExpression136;
+            columnExpression137.ColumnName = "ModifiedBy";
+            columnExpression137.Table = table2;
+            column137.Expression = columnExpression137;
+            columnExpression138.ColumnName = "ModifiedOn";
+            columnExpression138.Table = table2;
+            column138.Expression = columnExpression138;
+            columnExpression139.ColumnName = "IsApproved";
+            columnExpression139.Table = table2;
+            column139.Expression = columnExpression139;
+            columnExpression140.ColumnName = "Project";
+            columnExpression140.Table = table2;
+            column140.Expression = columnExpression140;
+            columnExpression141.ColumnName = "POIntroduction";
+            columnExpression141.Table = table2;
+            column141.Expression = columnExpression141;
+            columnExpression142.ColumnName = "POSummary";
+            columnExpression142.Table = table2;
+            column142.Expression = columnExpression142;
+            columnExpression143.ColumnName = "RevisionNo";
+            columnExpression143.Table = table2;
+            column143.Expression = columnExpression143;
+            columnExpression144.ColumnName = "CompanyBranch";
+            columnExpression144.Table = table2;
+            column144.Expression = columnExpression144;
+            columnExpression145.ColumnName = "AdditionsText";
+            columnExpression145.Table = table2;
+            column145.Expression = columnExpression145;
+            columnExpression146.ColumnName = "DiscountsText";
+            columnExpression146.Table = table2;
+            column146.Expression = columnExpression146;
+            columnExpression147.ColumnName = "PODueDate";
+            columnExpression147.Table = table2;
+            column147.Expression = columnExpression147;
+            columnExpression148.ColumnName = "POSignatory";
+            columnExpression148.Table = table2;
+            column148.Expression = columnExpression148;
+            columnExpression149.ColumnName = "AdditionsAmount";
+            columnExpression149.Table = table2;
+            column149.Expression = columnExpression149;
+            columnExpression150.ColumnName = "DeductionsAmount";
+            columnExpression150.Table = table2;
+            column150.Expression = columnExpression150;
+            columnExpression151.ColumnName = "TotalBeforeTax";
+            columnExpression151.Table = table2;
+            column151.Expression = columnExpression151;
+            columnExpression152.ColumnName = "TotalDiscount";
+            columnExpression152.Table = table2;
+            column152.Expression = columnExpression152;
+            columnExpression153.ColumnName = "TotalAfterDiscount";
+            columnExpression153.Table = table2;
+            column153.Expression = columnExpression153;
+            columnExpression154.ColumnName = "TotalTaxAmount";
+            columnExpression154.Table = table2;
+            column154.Expression = columnExpression154;
+            columnExpression155.ColumnName = "TotalWithTax";
+            columnExpression155.Table = table2;
+            column155.Expression = columnExpression155;
+            columnExpression156.ColumnName = "GrandTotal";
+            columnExpression156.Table = table2;
+            column156.Expression = columnExpression156;
+            columnExpression157.ColumnName = "CompanyName";
+            columnExpression157.Table = table2;
+            column157.Expression = columnExpression157;
+            columnExpression158.ColumnName = "GSCode";
+            columnExpression158.Table = table2;
+            column158.Expression = columnExpression158;
+            columnExpression159.ColumnName = "GSDescrpition";
+            columnExpression159.Table = table2;
+            column159.Expression = columnExpression159;
+            columnExpression160.ColumnName = "GSDescriptionAr";
+            columnExpression160.Table = table2;
+            column160.Expression = columnExpression160;
+            columnExpression161.ColumnName = "AddlDescription";
+            columnExpression161.Table = table2;
+            column161.Expression = columnExpression161;
+            columnExpression162.ColumnName = "QuotedQuantity";
+            columnExpression162.Table = table2;
+            column162.Expression = columnExpression162;
+            columnExpression163.ColumnName = "UnitRateMethod";
+            columnExpression163.Table = table2;
+            column163.Expression = columnExpression163;
+            columnExpression164.ColumnName = "UnitType";
+            columnExpression164.Table = table2;
+            column164.Expression = columnExpression164;
+            columnExpression165.ColumnName = "UnitDesc";
+            columnExpression165.Table = table2;
+            column165.Expression = columnExpression165;
+            columnExpression166.ColumnName = "UnitPrice";
+            columnExpression166.Table = table2;
+            column166.Expression = columnExpression166;
+            columnExpression167.ColumnName = "ItemDiscount";
+            columnExpression167.Table = table2;
+            column167.Expression = columnExpression167;
+            columnExpression168.ColumnName = "POTaxSlab";
+            columnExpression168.Table = table2;
+            column168.Expression = columnExpression168;
+            columnExpression169.ColumnName = "POItemRemarks";
+            columnExpression169.Table = table2;
+            column169.Expression = columnExpression169;
+            columnExpression170.ColumnName = "LineOrderNo";
+            columnExpression170.Table = table2;
+            column170.Expression = columnExpression170;
+            columnExpression171.ColumnName = "PurchaseTaxSlab";
+            columnExpression171.Table = table2;
+            column171.Expression = columnExpression171;
+            columnExpression172.ColumnName = "PurchaseTaxRate";
+            columnExpression172.Table = table2;
+            column172.Expression = columnExpression172;
+            columnExpression173.ColumnName = "LineTotalBeforeTax";
+            columnExpression173.Table = table2;
+            column173.Expression = columnExpression173;
+            columnExpression174.ColumnName = "LineTotalAfterDisc";
+            columnExpression174.Table = table2;
+            column174.Expression = columnExpression174;
+            columnExpression175.ColumnName = "LineTaxAmount";
+            columnExpression175.Table = table2;
+            column175.Expression = columnExpression175;
+            columnExpression176.ColumnName = "LineTotalWithTax";
+            columnExpression176.Table = table2;
+            column176.Expression = columnExpression176;
+            columnExpression177.ColumnName = "SignatoryName";
+            columnExpression177.Table = table2;
+            column177.Expression = columnExpression177;
+            columnExpression178.ColumnName = "SignatoryPosition";
+            columnExpression178.Table = table2;
+            column178.Expression = columnExpression178;
+            columnExpression179.ColumnName = "SignatoryContact";
+            columnExpression179.Table = table2;
+            column179.Expression = columnExpression179;
+            columnExpression180.ColumnName = "SignatoryEmail";
+            columnExpression180.Table = table2;
+            column180.Expression = columnExpression180;
+            columnExpression181.ColumnName = "SignatureImage";
+            columnExpression181.Table = table2;
+            column181.Expression = columnExpression181;
+            columnExpression182.ColumnName = "SupplierName";
+            columnExpression182.Table = table2;
+            column182.Expression = columnExpression182;
+            columnExpression183.ColumnName = "SupplierNameAr";
+            columnExpression183.Table = table2;
+            column183.Expression = columnExpression183;
+            columnExpression184.ColumnName = "SupplierAddress";
+            columnExpression184.Table = table2;
+            column184.Expression = columnExpression184;
+            columnExpression185.ColumnName = "MPRNo";
+            columnExpression185.Table = table2;
+            column185.Expression = columnExpression185;
+            columnExpression186.ColumnName = "POThanksNote";
+            columnExpression186.Table = table2;
+            column186.Expression = columnExpression186;
+            columnExpression187.ColumnName = "HSCode";
+            columnExpression187.Table = table2;
+            column187.Expression = columnExpression187;
+            columnExpression188.ColumnName = "VerifiedName";
+            columnExpression188.Table = table2;
+            column188.Expression = columnExpression188;
+            columnExpression189.ColumnName = "VerifiedPosition";
+            columnExpression189.Table = table2;
+            column189.Expression = columnExpression189;
+            columnExpression190.ColumnName = "VerifiedContactNo";
+            columnExpression190.Table = table2;
+            column190.Expression = columnExpression190;
+            columnExpression191.ColumnName = "VerifiedEmail";
+            columnExpression191.Table = table2;
+            column191.Expression = columnExpression191;
+            columnExpression192.ColumnName = "VerifiedImage";
+            columnExpression192.Table = table2;
+            column192.Expression = columnExpression192;
+            columnExpression193.ColumnName = "ApprovedName";
+            columnExpression193.Table = table2;
+            column193.Expression = columnExpression193;
+            columnExpression194.ColumnName = "ApprovedPosition";
+            columnExpression194.Table = table2;
+            column194.Expression = columnExpression194;
+            columnExpression195.ColumnName = "ApprovedContact";
+            columnExpression195.Table = table2;
+            column195.Expression = columnExpression195;
+            columnExpression196.ColumnName = "ApprovedEmail";
+            columnExpression196.Table = table2;
+            column196.Expression = columnExpression196;
+            columnExpression197.ColumnName = "ApprovedImage";
+            columnExpression197.Table = table2;
+            column197.Expression = columnExpression197;
+            columnExpression198.ColumnName = "POPaymentTerm";
+            columnExpression198.Table = table2;
+            column198.Expression = columnExpression198;
+            columnExpression199.ColumnName = "PODeliveryTerm";
+            columnExpression199.Table = table2;
+            column199.Expression = columnExpression199;
+            columnExpression200.ColumnName = "PODeliveryPeriod";
+            columnExpression200.Table = table2;
+            column200.Expression = columnExpression200;
+            columnExpression201.ColumnName = "PODocRequired";
+            columnExpression201.Table = table2;
+            column201.Expression = columnExpression201;
+            columnExpression202.ColumnName = "POWarrantyPeriod";
+            columnExpression202.Table = table2;
+            column202.Expression = columnExpression202;
+            columnExpression203.ColumnName = "POShipTo";
+            columnExpression203.Table = table2;
+            column203.Expression = columnExpression203;
+            columnExpression204.ColumnName = "POBillTo";
+            columnExpression204.Table = table2;
+            column204.Expression = columnExpression204;
+            columnExpression205.ColumnName = "PORevisionNo";
+            columnExpression205.Table = table2;
+            column205.Expression = columnExpression205;
+            columnExpression206.ColumnName = "MRItemNo";
+            columnExpression206.Table = table2;
+            column206.Expression = columnExpression206;
+            columnExpression207.ColumnName = "Currency";
+            columnExpression207.Table = table2;
+            column207.Expression = columnExpression207;
+            columnExpression208.ColumnName = "ExchangeRate";
+            columnExpression208.Table = table2;
+            column208.Expression = columnExpression208;
+            columnExpression209.ColumnName = "UnitRateInOC";
+            columnExpression209.Table = table2;
+            column209.Expression = columnExpression209;
+            columnExpression210.ColumnName = "DiscountInOC";
+            columnExpression210.Table = table2;
+            column210.Expression = columnExpression210;
+            columnExpression211.ColumnName = "CurrencyName";
+            columnExpression211.Table = table2;
+            column211.Expression = columnExpression211;
+            columnExpression212.ColumnName = "CurrencyNameAr";
+            columnExpression212.Table = table2;
+            column212.Expression = columnExpression212;
+            columnExpression213.ColumnName = "CurrencyCode";
+            columnExpression213.Table = table2;
+            column213.Expression = columnExpression213;
+            columnExpression214.ColumnName = "CurrencyCodeAr";
+            columnExpression214.Table = table2;
+            column214.Expression = columnExpression214;
+            columnExpression215.ColumnName = "LineTotalB4TaxOC";
+            columnExpression215.Table = table2;
+            column215.Expression = columnExpression215;
+            columnExpression216.ColumnName = "LineTotalAfterDiscOC";
+            columnExpression216.Table = table2;
+            column216.Expression = columnExpression216;
+            columnExpression217.ColumnName = "LineTaxAmountOC";
+            columnExpression217.Table = table2;
+            column217.Expression = columnExpression217;
+            columnExpression218.ColumnName = "LineTotalWithTaxOC";
+            columnExpression218.Table = table2;
+            column218.Expression = columnExpression218;
+            columnExpression219.ColumnName = "Expr1";
+            columnExpression219.Table = table2;
+            column219.Expression = columnExpression219;
+            columnExpression220.ColumnName = "Expr2";
+            columnExpression220.Table = table2;
+            column220.Expression = columnExpression220;
+            columnExpression221.ColumnName = "TotalAmountB4TaxInOC";
+            columnExpression221.Table = table2;
+            column221.Expression = columnExpression221;
+            columnExpression222.ColumnName = "TotalAmountAfterDiscInOC";
+            columnExpression222.Table = table2;
+            column222.Expression = columnExpression222;
+            columnExpression223.ColumnName = "TotalTaxAmountInOC";
+            columnExpression223.Table = table2;
+            column223.Expression = columnExpression223;
+            columnExpression224.ColumnName = "TotalDiscountInOC";
+            columnExpression224.Table = table2;
+            column224.Expression = columnExpression224;
+            columnExpression225.ColumnName = "TotalWithTaxInOC";
+            columnExpression225.Table = table2;
+            column225.Expression = columnExpression225;
+            columnExpression226.ColumnName = "GrandTotalInOC";
+            columnExpression226.Table = table2;
+            column226.Expression = columnExpression226;
+            columnExpression227.ColumnName = "CurrencyCodeFromPOMaster";
+            columnExpression227.Table = table2;
+            column227.Expression = columnExpression227;
+            columnExpression228.ColumnName = "ProjectMasterCode";
+            columnExpression228.Table = table2;
+            column228.Expression = columnExpression228;
+            columnExpression229.ColumnName = "ProjectDescription";
+            columnExpression229.Table = table2;
+            column229.Expression = columnExpression229;
+            columnExpression230.ColumnName = "ProjectLocation";
+            columnExpression230.Table = table2;
+            column230.Expression = columnExpression230;
+            columnExpression231.ColumnName = "POChildNo";
+            columnExpression231.Table = table2;
+            column231.Expression = columnExpression231;
+            columnExpression232.ColumnName = "ItemPartNo";
+            columnExpression232.Table = table2;
+            column232.Expression = columnExpression232;
+            columnExpression233.ColumnName = "DescriptionWithItemPartNo";
+            columnExpression233.Table = table2;
+            column233.Expression = columnExpression233;
+            columnExpression234.ColumnName = "InventoryMasterGroupID";
+            columnExpression234.Table = table2;
+            column234.Expression = columnExpression234;
+            columnExpression235.ColumnName = "InventoryMasterGroup";
+            columnExpression235.Table = table2;
+            column235.Expression = columnExpression235;
+            columnExpression236.ColumnName = "DeliveryPeriod";
+            columnExpression236.Table = table2;
+            column236.Expression = columnExpression236;
+            columnExpression237.ColumnName = "SalesPersonCode";
+            columnExpression237.Table = table2;
+            column237.Expression = columnExpression237;
+            columnExpression238.ColumnName = "SalesPersonName";
+            columnExpression238.Table = table2;
+            column238.Expression = columnExpression238;
+            columnExpression239.ColumnName = "SalesPersonUserID";
+            columnExpression239.Table = table2;
+            column239.Expression = columnExpression239;
+            columnExpression240.ColumnName = "IsObseleteVersion";
+            columnExpression240.Table = table2;
+            column240.Expression = columnExpression240;
+            columnExpression241.ColumnName = "BaseCurrencyId";
+            columnExpression241.Table = table2;
+            column241.Expression = columnExpression241;
+            columnExpression242.ColumnName = "CurrencyId";
+            columnExpression242.Table = table2;
+            column242.Expression = columnExpression242;
+            columnExpression243.ColumnName = "CurrencyRate";
+            columnExpression243.Table = table2;
+            column243.Expression = columnExpression243;
+            selectQuery2.Columns.Add(column121);
+            selectQuery2.Columns.Add(column122);
+            selectQuery2.Columns.Add(column123);
+            selectQuery2.Columns.Add(column124);
+            selectQuery2.Columns.Add(column125);
+            selectQuery2.Columns.Add(column126);
+            selectQuery2.Columns.Add(column127);
+            selectQuery2.Columns.Add(column128);
+            selectQuery2.Columns.Add(column129);
+            selectQuery2.Columns.Add(column130);
+            selectQuery2.Columns.Add(column131);
+            selectQuery2.Columns.Add(column132);
+            selectQuery2.Columns.Add(column133);
+            selectQuery2.Columns.Add(column134);
+            selectQuery2.Columns.Add(column135);
+            selectQuery2.Columns.Add(column136);
+            selectQuery2.Columns.Add(column137);
+            selectQuery2.Columns.Add(column138);
+            selectQuery2.Columns.Add(column139);
+            selectQuery2.Columns.Add(column140);
+            selectQuery2.Columns.Add(column141);
+            selectQuery2.Columns.Add(column142);
+            selectQuery2.Columns.Add(column143);
+            selectQuery2.Columns.Add(column144);
+            selectQuery2.Columns.Add(column145);
+            selectQuery2.Columns.Add(column146);
+            selectQuery2.Columns.Add(column147);
+            selectQuery2.Columns.Add(column148);
+            selectQuery2.Columns.Add(column149);
+            selectQuery2.Columns.Add(column150);
+            selectQuery2.Columns.Add(column151);
+            selectQuery2.Columns.Add(column152);
+            selectQuery2.Columns.Add(column153);
+            selectQuery2.Columns.Add(column154);
+            selectQuery2.Columns.Add(column155);
+            selectQuery2.Columns.Add(column156);
+            selectQuery2.Columns.Add(column157);
+            selectQuery2.Columns.Add(column158);
+            selectQuery2.Columns.Add(column159);
+            selectQuery2.Columns.Add(column160);
+            selectQuery2.Columns.Add(column161);
+            selectQuery2.Columns.Add(column162);
+            selectQuery2.Columns.Add(column163);
+            selectQuery2.Columns.Add(column164);
+            selectQuery2.Columns.Add(column165);
+            selectQuery2.Columns.Add(column166);
+            selectQuery2.Columns.Add(column167);
+            selectQuery2.Columns.Add(column168);
+            selectQuery2.Columns.Add(column169);
+            selectQuery2.Columns.Add(column170);
+            selectQuery2.Columns.Add(column171);
+            selectQuery2.Columns.Add(column172);
+            selectQuery2.Columns.Add(column173);
+            selectQuery2.Columns.Add(column174);
+            selectQuery2.Columns.Add(column175);
+            selectQuery2.Columns.Add(column176);
+            selectQuery2.Columns.Add(column177);
+            selectQuery2.Columns.Add(column178);
+            selectQuery2.Columns.Add(column179);
+            selectQuery2.Columns.Add(column180);
+            selectQuery2.Columns.Add(column181);
+            selectQuery2.Columns.Add(column182);
+            selectQuery2.Columns.Add(column183);
+            selectQuery2.Columns.Add(column184);
+            selectQuery2.Columns.Add(column185);
+            selectQuery2.Columns.Add(column186);
+            selectQuery2.Columns.Add(column187);
+            selectQuery2.Columns.Add(column188);
+            selectQuery2.Columns.Add(column189);
+            selectQuery2.Columns.Add(column190);
+            selectQuery2.Columns.Add(column191);
+            selectQuery2.Columns.Add(column192);
+            selectQuery2.Columns.Add(column193);
+            selectQuery2.Columns.Add(column194);
+            selectQuery2.Columns.Add(column195);
+            selectQuery2.Columns.Add(column196);
+            selectQuery2.Columns.Add(column197);
+            selectQuery2.Columns.Add(column198);
+            selectQuery2.Columns.Add(column199);
+            selectQuery2.Columns.Add(column200);
+            selectQuery2.Columns.Add(column201);
+            selectQuery2.Columns.Add(column202);
+            selectQuery2.Columns.Add(column203);
+            selectQuery2.Columns.Add(column204);
+            selectQuery2.Columns.Add(column205);
+            selectQuery2.Columns.Add(column206);
+            selectQuery2.Columns.Add(column207);
+            selectQuery2.Columns.Add(column208);
+            selectQuery2.Columns.Add(column209);
+            selectQuery2.Columns.Add(column210);
+            selectQuery2.Columns.Add(column211);
+            selectQuery2.Columns.Add(column212);
+            selectQuery2.Columns.Add(column213);
+            selectQuery2.Columns.Add(column214);
+            selectQuery2.Columns.Add(column215);
+            selectQuery2.Columns.Add(column216);
+            selectQuery2.Columns.Add(column217);
+            selectQuery2.Columns.Add(column218);
+            selectQuery2.Columns.Add(column219);
+            selectQuery2.Columns.Add(column220);
+            selectQuery2.Columns.Add(column221);
+            selectQuery2.Columns.Add(column222);
+            selectQuery2.Columns.Add(column223);
+            selectQuery2.Columns.Add(column224);
+            selectQuery2.Columns.Add(column225);
+            selectQuery2.Columns.Add(column226);
+            selectQuery2.Columns.Add(column227);
+            selectQuery2.Columns.Add(column228);
+            selectQuery2.Columns.Add(column229);
+            selectQuery2.Columns.Add(column230);
+            selectQuery2.Columns.Add(column231);
+            selectQuery2.Columns.Add(column232);
+            selectQuery2.Columns.Add(column233);
+            selectQuery2.Columns.Add(column234);
+            selectQuery2.Columns.Add(column235);
+            selectQuery2.Columns.Add(column236);
+            selectQuery2.Columns.Add(column237);
+            selectQuery2.Columns.Add(column238);
+            selectQuery2.Columns.Add(column239);
+            selectQuery2.Columns.Add(column240);
+            selectQuery2.Columns.Add(column241);
+            selectQuery2.Columns.Add(column242);
+            selectQuery2.Columns.Add(column243);
+            selectQuery2.Name = "qry604_05PurchaseOrderReport";
+            selectQuery2.Tables.Add(table2);
+            this.sqlDataSource2.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
+            selectQuery2});
+            this.sqlDataSource2.ResultSchemaSerializable = resources.GetString("sqlDataSource2.ResultSchemaSerializable");
+            // 
             // PreviewPurchaseOrder
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -2726,9 +3566,10 @@
             this.GroupFooter2,
             this.ReportFooter});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
-            this.sqlDataSource1});
+            this.sqlDataSource1,
+            this.sqlDataSource2});
             this.DataMember = "qry604_05PurchaseOrderReport";
-            this.DataSource = this.sqlDataSource1;
+            this.DataSource = this.sqlDataSource2;
             this.Font = new DevExpress.Drawing.DXFont("Cambria", 9F, DevExpress.Drawing.DXFontStyle.Bold);
             this.Margins = new DevExpress.Drawing.DXMargins(20F, 23F, 25F, 25F);
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
@@ -2862,5 +3703,14 @@
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox1;
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox4;
         private DevExpress.XtraReports.UI.XRLabel xrLabel44;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox10;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox9;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox8;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox7;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox6;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox5;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox12;
+        private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox11;
+        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
     }
 }

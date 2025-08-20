@@ -1887,7 +1887,38 @@ public async Task<IActionResult> GetInvoiceStatus(string salesOrderNo)
                 return StatusCode(500, new { message = "An error occurred while loading store data.", details = ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetIMSSales(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
 
+            var query = dbContext.Qry60204salesOrderViewMasters.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                        // not verified
+                        query = query.Where(x => x.IsSubmitted == true && x.IsVerified != true);
+                        break;
+
+                    case "tobeapproved":
+                        // verified but not approved
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved != true);
+                        break;
+
+                    case "tobecancelled":
+                        // approved but not posted
+                        query = query.Where(x => x.IsApproved == true);
+                        break;
+                }
+            }
+
+            var result = query.ToList(); // get the actual records
+            return Json(result);
+        }
 
     }
 
