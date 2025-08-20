@@ -297,15 +297,17 @@
                         }
                     }, 300);
                 },
-                error: function () {
-                    DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+                error: function (xhr) {
+                    // ✅ Show backend message in frontend
+                const msg = xhr.responseJSON?.message || "Failed to save Mode Of Request.";
+                DevExpress.ui.notify(msg, "error", 3000);
                 }
             });
         } else {
             DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
         }
     }
-
+     
     function resetModeOfRequestField() {
         var txtInstance = $("#txtModeOfRequest").dxTextBox("instance");
         var validatorInstance = $("#txtModeOfRequest").dxValidator("instance");

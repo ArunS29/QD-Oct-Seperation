@@ -250,12 +250,14 @@
                         </td>
                         <td>
                                 <div style="flex: 1;">
-                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                    @(Html.DevExtreme().DropDownBox()	
+                                   // .AcceptCustomValue(true)
                                     .ID("ClientNames")
                                     .ValueChangeEvent("input")
 							        .HoverStateEnabled(true)
                                     .OnInput("dropDownBoxOnInput")
-                                    .OnOpened("onOpened")
+                                    .ValueChangeEvent("input")        // fires on typing
+                                     .OnOpened("onOpened")
                                     .ValueExpr("ClientCode")
                                     .DisplayExpr("ClientName")
                                     .DataSource(ds => ds
@@ -268,6 +270,8 @@
                                     .Label("Client Name")
                                     .LabelMode(EditorLabelMode.Floating)
                                     .Width("100%")
+                                      .OnOpened("onOpened")
+                                     .Option("dataGridId", "clientGrid")
                                     .ValidationRules(rules =>
                                     {
                                     rules.AddRequired()
@@ -412,6 +416,8 @@
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
+                                      .OnOpened("onOpened")
+                                     .Option("dataGridId", "projecttype")
                                     .ContentTemplate(new TemplateName("ProjectDropDownTemplate"))
                                     .Buttons(buttons =>
                                     {
@@ -448,6 +454,8 @@
                                     .LabelMode(EditorLabelMode.Floating)
                                     .StylingMode(EditorStylingMode.Outlined)
                                     .Width("100%")
+                                      .OnOpened("onOpened")
+                                       .Option("dataGridId", "typeofsalesorderGrid")
                                     .ContentTemplate(new TemplateName("typeofSalesOrderDropDownTemplate"))
                                      .Buttons(buttons =>
                                         {
@@ -508,6 +516,8 @@
                                 .ShowDropDownButton(true)
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Width("100%")
+                                  .OnOpened("onOpened")
+                                   .Option("dataGridId", "SignatoryGrid")
                                 .DropDownOptions(o => o.Width(340))
                                 .ContentTemplate(new TemplateName("SignatoriesDropDownTemplate"))
                                  .Buttons(buttons =>
@@ -639,6 +649,8 @@
                                 .Label("Sales Person")
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
+                                  .OnOpened("onOpened")
+                                   .Option("dataGridId", "SalesPersonGrid")
                                 .ContentTemplate(new TemplateName("SalesPersonNameDropDownTemplate"))
 
                                  .Buttons(buttons =>
@@ -706,6 +718,7 @@
                             <!-- Order Expiry Date -->
                             @(Html.DevExtreme().DateBox()
                             .ID("OrderExpiryDate")
+                            .DisplayFormat("dd-MMM-yyyy")
                             .StylingMode(EditorStylingMode.Outlined)
                             .Label("Order Expiry Date")
                             .LabelMode(EditorLabelMode.Floating)
@@ -725,6 +738,7 @@
                             <div style="display: flex; justify-content: space-between; margin-top: 1rem;">
                                 @(Html.DevExtreme().DateBox()
                                 .ID("ExpectedDeliveryDate")
+                                .DisplayFormat("dd-MMM-yyyy")
                                 .StylingMode(EditorStylingMode.Outlined)
                                 .Label("Expected Delivery Date")
                                 .LabelMode(EditorLabelMode.Floating)
@@ -1050,6 +1064,7 @@
 											)
 											.WordWrapEnabled(true)
 											.ShowBorders(true)
+                                            .HeaderFilter(p => p.Visible(true))
 											.SearchPanel(sp => sp.HighlightSearchText(true))
 											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 											.OnSelectionChanged("dataGridTaxCurrencyHeadSelectionChanged")
@@ -1088,6 +1103,7 @@
 										)
 										.WordWrapEnabled(true)
 										.ShowBorders(true)
+                                        .HeaderFilter(p => p.Visible(true))
 										.SearchPanel(sp => sp.HighlightSearchText(true))
 										.Selection(sl => sl.Mode(SelectionMode.Single)) 
 										.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
@@ -1124,10 +1140,12 @@
                         )
                         .Height(300)
                         .ShowBorders(true)
+                        .HeaderFilter(p => p.Visible(true))
                         .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Selection(s => s.Mode(SelectionMode.Single))  
-                        .Columns(columns =>
+                        .Selection(s => s.Mode(SelectionMode.Single)) 
+                        .SearchPanel(sp => sp.Visible(false).HighlightSearchText(true)) 
+                         .Columns(columns =>
                         {
                             columns.Add().DataField("ClientCode").Caption("Client Code").Width(80);
                             columns.Add().DataField("ClientName").Caption("Client Name");
@@ -1149,6 +1167,7 @@
                             )
                             .Height(300)
                             .ShowBorders(true)
+                            .HeaderFilter(p => p.Visible(true))
                             .FilterRow(f => f.Visible(false))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Selection(s => s.Mode(SelectionMode.Single))  // Single selection
@@ -1173,6 +1192,7 @@
                         )
                         .Height(300)
                         .ShowBorders(true)
+                        .HeaderFilter(p => p.Visible(true))
                         .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -1199,6 +1219,7 @@
                         .Height(300)
                         .Width(300)
                         .ShowBorders(true)
+                        .HeaderFilter(p => p.Visible(true))
                         .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -1224,6 +1245,7 @@
                         .Height(300)
                         .ShowBorders(true)
                         .FilterRow(f => f.Visible(false))
+                        .HeaderFilter(p => p.Visible(true))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
@@ -1248,6 +1270,7 @@
                         .Height(300)
                         .ShowBorders(true)
                         .FilterRow(f => f.Visible(false))
+                        .HeaderFilter(p => p.Visible(true))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
@@ -1272,6 +1295,7 @@
                          )
                         .Height(300)
                         .ShowBorders(true)
+                        .HeaderFilter(p => p.Visible(true))
                         .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -1297,6 +1321,8 @@
         )
         .Selection(s => s.Mode(SelectionMode.Single))
         .Height(300)
+        .HeaderFilter(p => p.Visible(true))
+.FilterRow(f => f.Visible(true))
         .ShowBorders(true)
         .Columns(columns =>
         {
@@ -1308,7 +1334,72 @@
 
 <script>
 
+    
+		 $(function () {
+			const dateBox = $("#ClientPoDate").dxDateBox("instance");
 
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#ClientPoDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#ClientPoDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+		 $(function () {
+			const dateBox = $("#QuotationDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#QuotationDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#QuotationDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+         $(function () {
+			const dateBox = $("#SalesOrderDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#SalesOrderDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#SalesOrderDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+		 $(function () {
+			const dateBox = $("#OrderExpiryDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#OrderExpiryDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#OrderExpiryDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+         $(function () {
+			const dateBox = $("#ExpectedDeliveryDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#ExpectedDeliveryDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#ExpectedDeliveryDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
 
             // $(document).ready(function () {
 
@@ -2175,6 +2266,159 @@
                 });
             }
         });
+         $("#btnSaveAndClose").on("click", function (e) {
+            e.preventDefault();
+
+            const gridInstance = $("#itemGrid").dxDataGrid("instance");
+
+            // ✅ Save pending cell edits before proceeding
+            if (gridInstance.hasEditData()) {
+                gridInstance.saveEditData().done(() => {
+                    validateAndSave();
+                });
+            } else {
+                validateAndSave();
+            }
+
+            function validateAndSave() {
+                // ✅ Validate required DropDown fields
+                const requiredFields = [
+                    { id: "#ClientNames", label: "Client Name" },
+                    // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
+                    // { id: "#CompanyBranch", label: "Company Branch" },
+                    // Add more if needed
+                ];
+
+                let allValid = true;
+                let missingLabels = [];
+
+                requiredFields.forEach(field => {
+                    const $el = $(field.id);
+                    const inst = $el.dxDropDownBox("instance");
+
+                    if (inst) {
+                        const value = inst.option("value");
+                        if (!value) {
+                            allValid = false;
+                            missingLabels.push(field.label);
+                            $el.addClass("dx-invalid");
+                        } else {
+                            $el.removeClass("dx-invalid");
+                        }
+                    } else {
+                        console.warn("Instance not found:", field.id);
+                    }
+                });
+
+                if (!allValid) {
+                    DevExpress.ui.dialog.alert(
+                        "Please fill the required field(s): " + missingLabels.join(", "),
+                        "Validation Failed"
+                    );
+                    return;
+                }
+
+                // ✅ Helper to extract date in yyyy-MM-dd format
+                   function getDateOnlyValue(dateBoxId) {
+        var val = $(dateBoxId).dxDateBox("instance").option("value");
+        if (!val) return null;
+        // Format as yyyy-MM-dd (local date, no time)
+        return val instanceof Date
+            ? val.getFullYear() + '-' +
+              String(val.getMonth() + 1).padStart(2, '0') + '-' +
+              String(val.getDate()).padStart(2, '0')
+            : val;
+    }
+
+                // ✅ Collect children grid data
+                const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
+                const children = gridInstance.getDataSource().items().map(row => ({
+                    SalesOrderChildId: row.SalesOrderChildId ?? 0,
+                    SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+                    QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+                    QuotedQuantity: row.QuotedQuantity ?? null,
+                    UnitRateMethod: row.UnitRateMethod ?? null,
+                    Gscode: row.Gscode ?? "",
+                    QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
+                    QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
+                    QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
+                    CostPrice: (row.CostPrice * CurrencyRate) ?? null,
+                    AddlDescription:row.AddlDescription ?? null,
+                    QuoteRemarks:row.QuoteRemarks ?? null,
+                    DeliveryPeriod:row.DeliveryPeriod ?? null,
+                    PlanNo:row.PlanNo ?? null,
+                }));
+
+                // ✅ Prepare full model for submission
+                const model = {
+                    SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+                    SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
+                    ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
+                    ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+                    QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+                    QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
+                    OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
+                    ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
+                    Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+                    ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+                    SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
+                    ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
+                    TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
+                    ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
+                        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
+                        ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
+                                    ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
+                    QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
+                    SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+                    AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
+                    DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
+                    QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
+                    QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
+                    CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+                    CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
+                    InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
+                    CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                    BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                    CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+                    // CurrencyId : 1,
+                    // BaseCurrencyId :1,
+                    // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                    SalesOrderChildren: children
+                };
+
+                console.log("Saving model:", model);
+
+                // ✅ AJAX Save Call
+                $.ajax({
+                    url: "/api/SalesOrders/SaveSalesOrder",
+                    type: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(model),
+                    success: function (response) {
+                        DevExpress.ui.notify(response.message, "success", 2000);
+                  
+						
+                        // ✅ Reload grid after save
+                        $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
+                            window.itemGridDataSource = data;
+                            gridInstance.option("dataSource", data);
+                        });
+                        if (window.parent && window.parent.$("#dataGrid").length) {
+				let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+				if (dataGrid) {
+					dataGrid.refresh();
+				}
+}
+				history.back();
+                        
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
+                        console.error("Save error:", xhr.responseText);
+                    }
+                });
+            }
+        });
 
        
          ////
@@ -2274,148 +2518,7 @@
                 history.back();
                     });
 
-                          $("#btnSaveAndClose").on("click", function (e) {
-                      e.preventDefault();
-
-                const gridInstance = $("#itemGrid").dxDataGrid("instance");
-
-                // ✅ Save pending cell edits before proceeding
-                if (gridInstance.hasEditData()) {
-                    gridInstance.saveEditData().done(() => {
-                        validateAndSave();
-                    });
-                } else {
-                    validateAndSave();
-                }
-
-                function validateAndSave() {
-                    // ✅ Validate required DropDown fields
-                    const requiredFields = [
-                        { id: "#ClientNames", label: "Client Name" },
-                        // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-                        // { id: "#CompanyBranch", label: "Company Branch" },
-                        // Add more if needed
-                    ];
-
-                    let allValid = true;
-                    let missingLabels = [];
-
-                    requiredFields.forEach(field => {
-                        const $el = $(field.id);
-                        const inst = $el.dxDropDownBox("instance");
-
-                        if (inst) {
-                            const value = inst.option("value");
-                            if (!value) {
-                                allValid = false;
-                                missingLabels.push(field.label);
-                                $el.addClass("dx-invalid");
-                            } else {
-                                $el.removeClass("dx-invalid");
-                            }
-                        } else {
-                            console.warn("Instance not found:", field.id);
-                        }
-                    });
-
-                    if (!allValid) {
-                        DevExpress.ui.dialog.alert(
-                            "Please fill the required field(s): " + missingLabels.join(", "),
-                            "Validation Failed"
-                        );
-                        return;
-                    }
-
-                    // ✅ Helper to extract date in yyyy-MM-dd format
-                       function getDateOnlyValue(dateBoxId) {
-            var val = $(dateBoxId).dxDateBox("instance").option("value");
-            if (!val) return null;
-            // Format as yyyy-MM-dd (local date, no time)
-            return val instanceof Date
-                ? val.getFullYear() + '-' +
-                  String(val.getMonth() + 1).padStart(2, '0') + '-' +
-                  String(val.getDate()).padStart(2, '0')
-                : val;
-        }
-
-                    // ✅ Collect children grid data
-                    const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
-                    const children = gridInstance.getDataSource().items().map(row => ({
-                        SalesOrderChildId: row.SalesOrderChildId ?? 0,
-                        SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                        QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                        QuotedQuantity: row.QuotedQuantity ?? null,
-                        UnitRateMethod: row.UnitRateMethod ?? null,
-                        Gscode: row.Gscode ?? "",
-                        QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
-                        QuotedDiscount: (row.QuotedDiscount * CurrencyRate)  ?? null,
-                         QuotedTaxSlab: row.QuotedTaxSlab ?? null,
-                        CostPrice: (row.CostPrice * CurrencyRate)  ?? null
-                    }));
-
-                    // ✅ Prepare full model for submission
-                    const model = {
-                        SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                        SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
-                        ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
-                        ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
-                        QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                        QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-                        OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-                        ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
-                        Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-                        ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-                        SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
-                        ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-                        TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
-                        ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-                        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
-                        ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
-                        ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
-                        QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
-                        SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
-                        AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
-                        DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
-                        QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
-                        QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
-                        CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
-                        CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-                        InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                        InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                        CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                        BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-                        CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-                        // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                        // BaseCurrencyId :1,
-                        // CurrencyId : 1,
-                        SalesOrderChildren: children
-                    };
-
-                    console.log("Saving model:", model);
-
-                    // ✅ AJAX Save Call
-                    $.ajax({
-                        url: "/api/SalesOrders/SaveSalesOrder",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(model),
-                        success: function (response) {
-                            DevExpress.ui.notify(response.message, "success", 2000);
-                            // ✅ Reload grid after save
-                            $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
-                                window.itemGridDataSource = data;
-                                gridInstance.option("dataSource", data);
-
-                            });
-                                  history.back();
-                        },
-                        error: function (xhr) {
-                            DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
-                            console.error("Save error:", xhr.responseText);
-                        }
-                    });
-                }
-            });
+     
 
 
                 $("#btnDelete").on("click", function (e) {
@@ -2693,7 +2796,7 @@ $(document).ready(function () {
 		console.log('End permission handling');
 	});
 
-            function dropDownBoxOnInput(e) {
+       function dropDownBoxOnInput(e) {
         const ddbInstance = e.component;
         if (!ddbInstance.option("opened")) ddbInstance.open();
 
@@ -2703,7 +2806,14 @@ $(document).ready(function () {
             dataGrid.option("searchPanel.text", text);
         }
     }
-          function onOpened(e) {
+           function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
         setTimeout(() => {
             e.component.focus();
         });
@@ -2805,7 +2915,7 @@ $(document).ready(function () {
 
 
         	  function AddContactName() {
-                  alert(222);
+                 
 		var dropDownBox = $('#ClientNames').dxDropDownBox('instance');
         var menuType = "inventory";
 		var selectedValue = dropDownBox.option('value'); // clientCode
@@ -2974,6 +3084,15 @@ $(document).ready(function () {
             dataGrid1.refresh();
         }
 
+          function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
 
+
+        const text = ddbInstance.option("text");
+        if (dataGrid) {
+            dataGrid.option("searchPanel.text", text);
+        }
+    }
 
 </script>
