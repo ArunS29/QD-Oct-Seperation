@@ -1813,9 +1813,11 @@
                     continueVoucherEntryWithVoucherNo(voucherNo);
                     isVoucherSaved = true; // Mark Updated step as done
                     updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+                    getDocumentCount();
                 },
                 error: function (xhr, status, error) {
                     DevExpress.ui.notify("Error retrieving voucher number: " + error, "error");
+                    getDocumentCount();
                 }
             });
         }
@@ -4131,6 +4133,7 @@ function fetchUpdatedData(voucherEntryNo) {
                     }
                                                             syncWorkflowFromFields();
                                     initWorkflowTippyPopovers();
+                                    getDocumentCount();
 
                     //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }

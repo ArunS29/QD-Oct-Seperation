@@ -3884,7 +3884,7 @@ if (gridInstance) {
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
+				const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`; // Example add page
 				openModal(url, "Goods and Services");
 			},
 			width: 60,

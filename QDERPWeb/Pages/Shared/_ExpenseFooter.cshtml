@@ -572,6 +572,7 @@
             }
         });
         // showColumnChooser();
+        
         console.log('End permission handling');
     });
 
@@ -1050,5 +1051,53 @@
                 }
             });
         }
+
+    // Attachment Count
+    //1. Button Modify in btn-attach
+    //2. Get Update the count of button for Attachment
+
+    function updateAttachButtonCount(buttonSelector, count) {
+        var btn = $(buttonSelector);
+        var btnInstance = btn.dxButton("instance");
+        if (!btnInstance) return;
+
+        var originalText = btnInstance.option("text");
+        var color = count > 0 ? "green" : "red";
+
+        btnInstance.option({
+            template: function() {
+                // Icon element
+                var iconElement = $("<span>")
+                .addClass("dx-icon dx-icon-attach")
+                .addClass(count > 0 ? "icon-green" : "icon-red")
+                .css({
+                    "font-size": "15px",
+                    "vertical-align": "middle",
+                    "margin-right": "4px"
+                })[0];
+
+                // Create fragment
+                var fragment = document.createDocumentFragment();
+                fragment.appendChild(iconElement);
+
+                // Append count only if > 0
+                if (count > 0) {
+                    var countSpan = document.createElement("span");
+                    countSpan.style.color = color;
+                    countSpan.style.fontWeight = "bold";
+                    countSpan.style.fontSize = "15px";
+                    countSpan.style.marginRight = "2px";
+                    countSpan.textContent = count;
+                    fragment.appendChild(countSpan);
+                }
+
+                // Append original text
+                fragment.appendChild(document.createTextNode(originalText));
+
+                return fragment;
+            }
+        });
+    }
+
 
 </script>
