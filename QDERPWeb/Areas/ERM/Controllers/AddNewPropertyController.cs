@@ -571,6 +571,31 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetByMobilzation(string PropertyNo)
+        {
+            if (string.IsNullOrEmpty(PropertyNo))
+                return Ok(null); 
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant");
+
+            var data = await dbContext.Qry40121PropertyMobilizedLists
+                .Where(x => x.PropertyNo == PropertyNo)
+                .Select(x => new {
+                    x.PropertyIssueNo,
+                    x.PropertyIssuedDate,
+                    x.ClientName,
+                    x.DemobilizedDate,
+                    x.CurrentStatus,
+                    x.GatePassNo,
+                    x.OffHireNoteNo
+                })
+                .ToListAsync();
+
+            return Ok(data);   // already empty list [] if no rows found
+        }
+
         [HttpGet("GetAllPropertyTypes")]
         public IActionResult GetAllPropertyTypes()
         {
