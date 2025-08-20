@@ -1296,7 +1296,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("100%")) <!-- Fixed pixel size -->
+																			.Width("100%")
+																			.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+									) <!-- Fixed pixel size -->
 
 								</td>
 
@@ -1357,7 +1359,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("100%"))
+																			.Width("100%")
+																			.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+									)
 								</td>
 								<td>
 
@@ -3708,7 +3712,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
                         grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
                         grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-                        grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+                      //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
                         grid.cellValue(rowIndex, "Amount", formatAmount(amount));
                         grid.cellValue(rowIndex, "Discount", formatAmount(discount));
                         grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -6182,15 +6186,17 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				let vatValue = discountedAmount * vatRate;
 				let totalValue = discountedAmount + vatValue;
 
-				// Update grid cells
-				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-				grid.cellValue(rowIndex, "Unit Price",unitPrice);
-				grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-				grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
-				grid.cellValue(rowIndex, "Discount",discount);
-				grid.cellValue(rowIndex, "Qty", qty);
-				grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+
+				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
+                grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
+                grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+               // grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+                grid.cellValue(rowIndex, "Amount", formatAmount(amount));
+                grid.cellValue(rowIndex, "Discount", formatAmount(discount));
+                grid.cellValue(rowIndex, "Qty", formatAmount(qty));
+                grid.cellValue(rowIndex, "VAT Description", vatRateStr); // % can remain as string
+
+			
 			};
 		}
 	}
@@ -6220,15 +6226,14 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						let vatValue = discountedAmount * vatRate;
 						let totalValue = discountedAmount + vatValue;
 
-						// Update grid cells
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",unitPrice);
-						grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-						grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
-						grid.cellValue(rowIndex, "Discount",discount);
-						grid.cellValue(rowIndex, "Qty", qty);
-						grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+					   grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
+                        grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
+                        grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+                        grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+                        grid.cellValue(rowIndex, "Amount", formatAmount(amount));
+                        grid.cellValue(rowIndex, "Discount", formatAmount(discount));
+                        grid.cellValue(rowIndex, "Qty", formatAmount(qty));
+                        grid.cellValue(rowIndex, "VAT Description", vatRateStr); // % can remain as string
 						grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 	}
 			
@@ -6773,7 +6778,7 @@ if(clientnameValidation.isValid)
 
 		function proceedWithVerification() {
 			// Set VerifiedBy checkbox to true
-			$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+		
 
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -6808,6 +6813,7 @@ if(clientnameValidation.isValid)
 						DevExpress.ui.notify(
 							"VAT Invoice has been Verified.","success",2000
 						);
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 								initWorkflowTippyPopovers();
@@ -6875,7 +6881,7 @@ if(clientnameValidation.isValid)
 
 		  function proceedWithApproval() {
 			// Set ApprovedBy checkbox to true
-			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
+	
 				IsDirectApproval=false;
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -6907,6 +6913,7 @@ if(clientnameValidation.isValid)
 							"VAT InvoiceNo has been Approved.","success",2000
 							
 						);
+								$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 							disableEditing();
 								  disableContextMenuAfterApproval(); // << Add this line here
 
@@ -8287,7 +8294,7 @@ if(clientnameValidation.isValid)
 $.get("/api/VATModule/GetCurrencyDecimals")
     .done(function (decimals) {
         currencyDecimals = decimals || 2;
-		 applyDynamicFormat(currencyDecimals);
+		
     })
     .fail(function () {
         DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
@@ -8299,15 +8306,7 @@ $.get("/api/VATModule/GetCurrencyDecimals")
     return Number(val).toFixed(currencyDecimals);
 }
 
-function applyDynamicFormat(decimals) {
-    const numberBox = $("#currencyexchangerate3").dxNumberBox("instance");
-    numberBox.option("format", getDecimalFormat(decimals));
 
-	  const numberBox1 = $("#currencyexchangerate4").dxNumberBox("instance");
-    numberBox1.option("format", getDecimalFormat(decimals));
-
-	
-}
 
 
 function getDecimalFormat(decimals) {
