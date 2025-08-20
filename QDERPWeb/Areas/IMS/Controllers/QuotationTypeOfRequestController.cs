@@ -72,6 +72,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
                     else
                     {
+                        bool isDuplicate = await dbContext.Tbl30104TypeOfRequestMasters
+                  .AnyAsync(x => x.TypeOfRequest.ToLower() == model.TypeOfRequest.ToLower());
+
+                        if (isDuplicate)
+                        {
+                            return BadRequest(new
+                            {
+                                success = false,
+                                message = "This TypeOfRequest already exists in the database. Please check again."
+                            });
+                        }
                         // Assign new SignatoryId
                         var lastId = await dbContext.Tbl30104TypeOfRequestMasters
                             .OrderByDescending(x => x.TypeOfRequestId)
@@ -95,7 +106,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError($"Error in SaveSignatory: {ex}");
-                    return StatusCode(500, new { success = false, message = ex.Message });
+                    return StatusCode(500, new { success = false, message = "An error occurred while saving Type of Request." });
                 }
             }
 

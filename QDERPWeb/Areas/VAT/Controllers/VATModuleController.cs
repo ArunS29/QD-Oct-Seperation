@@ -682,6 +682,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                                     g.GsgroupId,
                                     GsdescriptionAr = g.GsdescriptionAr,
                                     g.ItemPartNo,
+                                    g.IsDiscontinued,
                                     g.CostPrice,
                                     GSSellingRate = g.GssellingRate,
                                     g.ReorderQty,

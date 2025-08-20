@@ -2,6 +2,7 @@
 var dictionary = {
 
     "en": {
+        "Cost Center Code: (Finance Modules)":"Cost Center Code:(Finance Modules)",
         "Print Signatures At Bottom":"Print Signatures At Bottom",
         "Add New Material Receipt-From Project":"Add New Material Receipt-From Project",
         "Show Records": "Show Records",
@@ -5843,6 +5844,7 @@ var dictionary = {
         "Client VAT Registration Number:": "رقم تسجيل ضريبة القيمة المضافة للعميل:",
         "Client TIN:": "رقم التعريف الضريبي للعميل:",
         "Billing Contact Person:": "شخص الاتصال بالفواتير:",
+        "Cost Center Code:(Finance Modules)": "رمز مركز التكلفة: (الوحدات المالية)",
         "Billing Contact Number:": "رقم الاتصال بالفواتير:",
         "Billing Fax Number:": "رقم الفاكس للفواتير:",
         "Vendor No:": "رقم المورد:",
