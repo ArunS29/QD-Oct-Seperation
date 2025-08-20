@@ -982,7 +982,10 @@
 																				.Min(1)
 																				.Step(1)
 																				.ShowSpinButtons(true)
-																				.Width("100%"))
+																				.Width("100%")
+																				.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
+										)
 
 										@(Html.DevExtreme().Button()
 																				.ID("convertToArabic1")
@@ -1064,7 +1067,10 @@
 																				.Min(1)
 																				.Step(1)
 																				.ShowSpinButtons(true)
-																				.Width("100%"))
+																				.Width("100%")
+																		    	 .OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
+										)
 
 
 										<!-- Retention Convert to Arabic Button -->
@@ -3824,7 +3830,7 @@
 							grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
 					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
 					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-					   grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					  // grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
 					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
 					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -7104,7 +7110,7 @@
 				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
 					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
 					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-					   grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
 					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
 					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -7498,7 +7504,7 @@
 						grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
 					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
 					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-					   grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
 					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
 					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -7731,7 +7737,7 @@
 
 			function proceedWithVerification() {
 				// Set VerifiedBy checkbox to true
-				$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+				
 
 				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -7766,6 +7772,7 @@
 							DevExpress.ui.notify(
 								"VAT Invoice has been Verified.","success",2000
 							);
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 							  IsVerified=true;
 								$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 								$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -7832,8 +7839,6 @@
 
 
 			  function proceedWithApproval() {
-				// Set ApprovedBy checkbox to true
-				$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
 				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -7864,6 +7869,7 @@
 							DevExpress.ui.notify(
 								"VAT InvoiceNo has been Approved.","success",2000
 							);
+								$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 								disableEditing();
 								IsApproved=true;
 								$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
@@ -8849,7 +8855,7 @@
 	$.get("/api/VATModule/GetCurrencyDecimals")
 		.done(function (decimals) {
 			currencyDecimals = decimals || 2;
-			 applyDynamicFormat(currencyDecimals);
+			
 		})
 		.fail(function () {
 			DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
@@ -8861,14 +8867,7 @@
 		return Number(val).toFixed(currencyDecimals);
 	}
 
-	function applyDynamicFormat(decimals) {
-		const numberBox = $("#currencyexchangerate3").dxNumberBox("instance");
-		numberBox.option("format", getDecimalFormat(decimals));
-
-
-		  const numberBox2 = $("#currencyexchangerate5").dxNumberBox("instance");
-		numberBox2.option("format", getDecimalFormat(decimals));
-	}
+	
 
 
 	function getDecimalFormat(decimals) {
