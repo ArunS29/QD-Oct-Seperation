@@ -438,67 +438,52 @@
 				subColumns.AddFor(m => m.CalcLineAmount)
 			.Caption("Amount Before Tax")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false) // Required to render HTML
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header1" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header1" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.CalcLineAmount != null
+					   			? data.CalcLineAmount.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
 
-				subColumns.AddFor(m => m.CalcTaxAmount)
+			subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption("Total VAT Amount")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false) // Required to apply HTML styles
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header2" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header2" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.CalcTaxAmount != null
+					   			? data.CalcTaxAmount.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
 
-				subColumns.AddFor(m => m.TotalDebitNoteAmount)
+			subColumns.AddFor(m => m.TotalDebitNoteAmount)
 			.Caption("Total Amount")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false) // Needed for custom HTML styling
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#fff9e6; color:#b38f00; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		")			.HeaderCellTemplate(@<text>
-							   			<div class="Currency-header3" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header3" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+		<div class="vat-pill" style="display:inline-block; background-color:#fff9e6; color:#b38f00; font-weight:bold; padding:4px 10px; border-radius:20px;">
+			<%- data.TotalDebitNoteAmount != null
+			? data.TotalDebitNoteAmount.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+			: '' %>
+		</div>
+	</text>);
 
 			});
 
@@ -511,105 +496,80 @@
 				subColumns.AddFor(m => m.DomesticStandardPurchases)
 			.Caption("Domestic 5% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		")			.HeaderCellTemplate(@<text>
-							   			<div class="Currency-header4" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header4" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.DomesticStandardPurchases != null
+					   			? data.DomesticStandardPurchases.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.TotalDspurchase10Perc)
+			subColumns.AddFor(m => m.TotalDspurchase10Perc)
 			.Caption("Domestic 10% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header5" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header5" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalDspurchase10Perc != null
+					   			? data.TotalDspurchase10Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.TotalDspurchase15Perc)
+			subColumns.AddFor(m => m.TotalDspurchase15Perc)
 			.Caption("Domestic 15% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header6" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header6" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalDspurchase15Perc != null
+					   			? data.TotalDspurchase15Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.DomesticZeroTaxPurchases)
+			subColumns.AddFor(m => m.DomesticZeroTaxPurchases)
 			.Caption("Domestic Zero Rated Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header7" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header7" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.DomesticZeroTaxPurchases != null
+					   			? data.DomesticZeroTaxPurchases.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
+			subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
 			.Caption("Domestic Exempted Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-		<div class="Currency-header8" style="font-weight: bold;">
-			<%= column.caption %>
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header8" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+			<%- data.DomesticExemptedTaxPurchases != null
+			? data.DomesticExemptedTaxPurchases.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+			: '' %>
 		</div>
 	</text>);
 
@@ -620,126 +580,96 @@
 				subColumns.AddFor(m => m.ImportsVatpaidAtCustoms)
 			.Caption("Imports @5% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header9" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header9" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.ImportsVatpaidAtCustoms != null
+					   			? data.ImportsVatpaidAtCustoms.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
+			subColumns.AddFor(m => m.TotalImportPurchase10Perc)
 			.Caption("Imports 10% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header10" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header10" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalImportPurchase10Perc != null
+					   			? data.TotalImportPurchase10Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.TotalImportPurchase15Perc)
+			subColumns.AddFor(m => m.TotalImportPurchase15Perc)
 			.Caption("Imports 15% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header11" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header11" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalImportPurchase15Perc != null
+					   			? data.TotalImportPurchase15Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.ImportsVatthruRcm)
+			subColumns.AddFor(m => m.ImportsVatthruRcm)
 			.Caption("RCM @5% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header12" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header12" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.ImportsVatthruRcm != null
+					   			? data.ImportsVatthruRcm.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
 			subColumns.AddFor(m => m.TotalRcmpurchase10Perc)
 			.Caption("RCM 10% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header13" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header13" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalRcmpurchase10Perc != null
+					   			? data.TotalRcmpurchase10Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.TotalRcmpurchase15Perc)
+			subColumns.AddFor(m => m.TotalRcmpurchase15Perc)
 			.Caption("RCM 15% Purchase")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-		<div class="Currency-header14" style="font-weight: bold;">
-			<%= column.caption %>
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header14" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+		<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#c62828; font-weight:bold; padding:4px 10px; border-radius:20px;">
+			<%- data.TotalRcmpurchase15Perc != null
+			? data.TotalRcmpurchase15Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+			: '' %>
 		</div>
 	</text>);
 
@@ -753,105 +683,80 @@
 				subColumns.AddFor(m => m.DomesticStandardPurTax)
 			.Caption("Domestic 5% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header15" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header15" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.DomesticStandardPurTax != null
+					   			? data.DomesticStandardPurTax.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
+			subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
 			.Caption("Domestic 10% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header16" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header16" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalDspurchaseTax10Perc != null
+					   			? data.TotalDspurchaseTax10Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
+			subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
 			.Caption("Domestic 15% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header17" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header17" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalDspurchaseTax15Perc != null
+					   			? data.TotalDspurchaseTax15Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
+			subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
 			.Caption("Domestic Zero Rated VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header18" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header18" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.DomesticZeroTaxPurTax != null
+					   			? data.DomesticZeroTaxPurTax.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
-				subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
+			subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
 			.Caption("Domestic Exempted VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-		maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-		<div class="Currency-header19" style="font-weight: bold;">
-			<%= column.caption %>
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header19" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+			<%- data.DomesticExemptedTaxPurTax != null
+			? data.DomesticExemptedTaxPurTax.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+			: '' %>
 		</div>
 	</text>);
 
@@ -862,108 +767,94 @@
 				subColumns.AddFor(m => m.ImportsVatpaidAtCustomsTax)
 			.Caption("Imports @5% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header20" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header20" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.ImportsVatpaidAtCustomsTax != null
+					   			? data.ImportsVatpaidAtCustomsTax.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
 			subColumns.AddFor(m => m.TotalImportPurchaseTax10Perc)
 			.Caption("Imports @10% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header21" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
-
-			subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header21" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalImportPurchaseTax10Perc != null
+					   			? data.TotalImportPurchaseTax10Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
+				subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
 			.Caption("Imports @15% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header22" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
-
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header22" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalImportPurchaseTax15Perc != null
+					   			? data.TotalImportPurchaseTax15Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 				subColumns.AddFor(m => m.ImportsVatthruRcmtax)
 			.Caption("RCM @5% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header23" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header23" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.ImportsVatthruRcmtax != null
+					   			? data.ImportsVatthruRcmtax.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
 			subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
 			.Caption("RCM @10% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-						   		<div class="Currency-header24" style="font-weight: bold;">
-						   			<%= column.caption %>
-						   		</div>
-						   	</text>);
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header24" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+					   			<%- data.TotalRcmpurchaseTax10Perc != null
+					   			? data.TotalRcmpurchaseTax10Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+					   			: '' %>
+					   		</div>
+					   	</text>);
 
 			subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
 			.Caption("RCM @15% VAT")
 			.Alignment(HorizontalAlignment.Center)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
-		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-		").HeaderCellTemplate(@<text>
-		<div class="Currency-header25" style="font-weight: bold;">
-			<%= column.caption %>
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header25" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>)
+			.CellTemplate(@<text>
+		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
+			<%- data.TotalRcmpurchaseTax15Perc != null
+			? data.TotalRcmpurchaseTax15Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
+			: '' %>
 		</div>
 	</text>);
 

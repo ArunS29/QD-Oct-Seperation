@@ -6988,6 +6988,64 @@ documentNo: InvChildSlNo
             var result = query.ToList();
             return Json(result);
         }
+        [HttpGet]
+        public async Task<IActionResult> GetDetailedDescription(string description)
+        {
+            if (string.IsNullOrEmpty(description))
+                return Json(new { success = false });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var detailedDesc = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(x => x.Gsdescrpition == description)
+                        .Select(x => x.GsdetailedDesc)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(detailedDesc))
+                        return Json(new { success = true, detailedDesc });
+
+                    return Json(new { success = false });
+                }
+                catch (Exception ex)
+                {
+                    // Log exception if needed
+                    return Json(new { success = false, error = ex.Message });
+                }
+            }
+
+            return Json(new { success = false, error = "Tenant context not found" });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDescription(string description)
+        {
+            if (string.IsNullOrEmpty(description))
+                return Json(new { success = false });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var detailedDesc = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(x => x.GsdetailedDesc == description)
+                        .Select(x => x.Gsdescrpition)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(detailedDesc))
+                        return Json(new { success = true, detailedDesc });
+
+                    return Json(new { success = false });
+                }
+                catch (Exception ex)
+                {
+                    // Log exception if needed
+                    return Json(new { success = false, error = ex.Message });
+                }
+            }
+
+            return Json(new { success = false, error = "Tenant context not found" });
+        }
 
 
 
