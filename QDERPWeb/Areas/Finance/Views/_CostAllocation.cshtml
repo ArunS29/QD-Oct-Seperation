@@ -46,10 +46,10 @@
         text-align: center !important;
     }
 
-    .dx-popup-title.dx-toolbar{
+    /* .dx-popup-title.dx-toolbar{
         background-color: deepskyblue !important;
         color:white!important;
-    }
+    } */
 
 
     .horizontal-container {
@@ -408,10 +408,12 @@
                                     .DataType(GridColumnDataType.Number)
                                     .Alignment(HorizontalAlignment.Right)
                                     .CalculateCellValue("function(data) { " +
-                                    "if (data.VoucherAmount != null && currencyRate != 0) " +
-                                    "    return data.VoucherAmount / currencyRate; " +
-                                    "return null;" +
-                                    " }")
+                                    "    if (data.VoucherAmount != null && currencyRate != 0) { " +
+                                    "        var val = data.VoucherAmount / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}")
                                     .CustomizeText("function(e) { " +
                                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
                                     "}");

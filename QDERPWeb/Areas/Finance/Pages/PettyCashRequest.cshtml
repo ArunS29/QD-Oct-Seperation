@@ -2491,23 +2491,74 @@
             }
         }
         }
+    
+         $("#btnDelete").on("click", function (e) {
+           e.preventDefault();
+        const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        if (!voucherNo) {
+            DevExpress.ui.notify("Voucher number is required", "error", 3000);
+            return;
+        }
+
+        $.get("/api/ExpenseClaim/CheckClaimStatus", { voucherNo: voucherNo })
+            .done(function (result) {
+                if (!result) {
+                    DevExpress.ui.notify("Claim not found", "error", 3000);
+                    return;
+                }
+
+                if (result.IsSubmitted) {
+                    DevExpress.ui.notify("Claim is already submitted, You cannot delete the Submitted Claim", "error", 4000);
+                    return;
+                }
+                if (result.IsApproved) {
+                    DevExpress.ui.notify("Claim is already Approved, You cannot delete the Approved Claim", "error", 4000);
+                    return;
+                }
+                if (result.IsPaid) {
+                    DevExpress.ui.notify("Claim is already Paid, You cannot delete the Paid Claim", "error", 4000);
+                    return;
+                }
+
+                // All false -> confirm and delete
+                DevExpress.ui.dialog.confirm("Are you sure you want to delete this claim?", "Confirm Deletion")
+                    .done(function (dialogResult) {
+                        if (dialogResult) {
+                             const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                            $.post("/api/ExpenseClaim/DeleteClaim", { voucherNo: voucherNo })
+                                .done(function (deleteResult) {
+                                    if (deleteResult.success) {
+                                        DevExpress.ui.notify("Claim deleted successfully", "success", 3000);
+                                    } else {
+                                        DevExpress.ui.notify(deleteResult.message, "error", 3000);
+                                    }
+                                })
+                                .fail(function () {
+                                    DevExpress.ui.notify("Error deleting claim", "error", 3000);
+                                });
+                        }
+                    });
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Error checking claim status", "error", 3000);
+            });
+    });
     //1. Get Document Count from Grid Load in Ledger Documents
-    function setAttachCount(count) {
-        updateAttachButtonCount("#btnAttach", count);
-    }
-    //2. Get Document Count
-    async function getDocumentCount() {
-        const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-        const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-        const voucherType = "Petty CashRequest";
-        const menuType = "finance";
+function setAttachCount(count) {
+    updateAttachButtonCount("#btnAttach", count);
+}
+//2. Get Document Count
+async function getDocumentCount() {
+    const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+    const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+    const voucherType = "Petty CashRequest";
+    const menuType = "finance";
 
-        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
-        const docs = await res.json();
-        const count = docs.length;
+    const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
+    const docs = await res.json();
+    const count = docs.length;
 
-        updateAttachButtonCount("#btnAttach", count);
-
-        // No need to return anything if you don't want to
-    }
+    updateAttachButtonCount("#btnAttach", count);
+}
 </script>

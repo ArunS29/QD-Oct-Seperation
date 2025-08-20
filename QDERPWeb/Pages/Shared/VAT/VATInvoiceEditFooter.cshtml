@@ -1506,98 +1506,139 @@
             window.open(reportUrl, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
         }
         // Handles all report printing logic
-        function handleReportPrinting(itemText) {
-            var invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
-            var invoiceNo = invoiceNoBox.option("value");
+          function handleReportPrinting(itemText) {
+        var invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+        var invoiceNo = invoiceNoBox.option("value");
 
-            if (!invoiceNo) {
-                alert("Invoice No is required.");
-                return;
+        if (!invoiceNo) {
+            alert("Invoice No is required.");
+            return;
+        }
+
+        checkInvoiceApprovalStatus(invoiceNo).then(function (isApproved) {
+            var reportName = "";
+            var watermarkText = isApproved ? "" : "Draft Copy";
+
+            switch (itemText) {
+                case "Print Regular TAX Invoice":
+                    // Special condition: check if invoice has discount
+                    checkIfInvoiceHasDiscount(invoiceNo).then(function (hasDiscount) {
+                        if (hasDiscount) {
+                            reportName = "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS";
+                        } else {
+                            reportName = "PrintRegularTaxInvoiceWithOutDiscounts";
+                        }
+                        openReport(reportName, invoiceNo, watermarkText, isApproved);
+                    }).catch(function (err) {
+                        console.error("Error checking discount:", err);
+                        alert("Failed to check invoice discount.");
+                    });
+                    return; // Stop here, because we'll open the report inside .then()
+
+                case "Print Simplified TAX Invoice":
+                       checkIfInvoiceHasDiscount(invoiceNo).then(function (hasDiscount) {
+                            if (hasDiscount) {
+                                reportName = "PrintsimplifiedTaxInvoices";
+                            } else {
+                                reportName = "PrintSimplifiedTaxInvoiceWithOutDiscount";
+                            }
+                            openReport(reportName, invoiceNo, watermarkText, isApproved);
+                        }).catch(function (err) {
+                            console.error("Error checking discount:", err);
+                            alert("Failed to check invoice discount.");
+                        });
+                        return;
+                case "Print Regular Tax Invoice - Format 02":
+                    checkIfInvoiceHasDiscount(invoiceNo).then(function (hasDiscount) {
+                        if (hasDiscount) {
+                            reportName = "PrintRegularInvoiceFormat02WithDiscount";
+                        } else {
+                            reportName = "PrintRegularInvoiceFormat02";
+                        }
+                        openReport(reportName, invoiceNo, watermarkText, isApproved);
+                    }).catch(function (err) {
+                        console.error("Error checking discount:", err);
+                        alert("Failed to check invoice discount.");
+                    });
+                    return;
+                case "Print Tax Invoice - (Foreign Currency)":
+                    reportName = "Foreigncurrency1";
+                    break;
+                case "Print Regular Tax Invoice - Without Signatories (Format 05)":
+                    reportName = "RegulartaxinvoicewithoutSignatoriesFormat05";
+                    break;
+                case "Print Regular Tax Invoice - With Signatories (Format 05)":
+                    reportName = "PrintRegularTaxInvoiceWithSignatories_Format05_";
+                    break;
+                case "Design 02 (W/o Signatories)":
+                    reportName = "Withoutsignatories";
+                    break;
+                case "Design 02 (With Signatories)":
+                    reportName = "withsignatories";
+                    break;
+                case "Print Regular Tax Invoice -  (Format 06)":
+                    reportName = "RegularTaxInvoiceFormat06";
+                    break;
+                case "Print Regular Tax Invoice - wt Document Level Discount":
+                    reportName = "PrintRegularTaxInvoiceWtDocumentLevelDiscount";
+                    break;
+                case "Print Regular Tax Invoice - without Signatories(with symbols)":
+                    reportName = "taxinvoicewithSignatoriesWithSymbols";
+                    break;
+                case "Preview Invoices in (Foreign Currency)":
+                    reportName = "ForeignCurrencyProforma";
+                    break;
+                case "Preview Invoices in Foreign Currency(English)":
+                    reportName = "ForeignEnglishProforma";
+                    break;
+                case "Preview Invoice(English)":
+                    reportName = "ProformaInvoiceEnglish";
+                    break;
+                case "Preview Invoice":
+                    reportName = "ProformaPreviewInvoice";
+                    break;
+                case "Preview Proforma Invoice(NewFormat)":
+                    reportName = "ProformaNewFormat";
+                    break;
+                case "Preview Invoices in -with discount":
+                    reportName = "Wtdiscountpreviewinvoice";
+                    break;
+                case "Preview Invoices in -withOut discount":
+                    reportName = "WithoutDiscountInvoice";
+                    break;
+                case "Preview VAT Purchase Bill":
+                    reportName = "BillsPurchases";
+                    break;
+                default:
+                    alert("Invalid report format selected.");
+                    return;
             }
 
-            checkInvoiceApprovalStatus(invoiceNo).then(function (isApproved) {
-                var reportName = "";
-                var watermarkText = isApproved ? "" : "Draft Copy";
+            // Open report for normal cases
+            openReport(reportName, invoiceNo, watermarkText, isApproved);
 
-                switch (itemText) {
-                    case "Print Regular TAX Invoice":
-                        reportName = "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS";
-                        break;
-                    case "Print Simplified TAX Invoice":
-                        reportName = "PrintsimplifiedTaxInvoices";
-                        break;
-                    case "Print Regular Tax Invoice - Format 02":
-                        reportName = "PrintRegularInvoiceFormat02";
-                        break;
-                    case "Print Tax Invoice - (Foreign Currency)":
-                        reportName = "Foreigncurrency1";
-                        break;
-                    case "Print Regular Tax Invoice - Without Signatories (Format 05)":
-                        reportName = "RegulartaxinvoicewithoutSignatoriesFormat05";
-                        break;
-                    case "Print Regular Tax Invoice - With Signatories (Format 05)":
-                        reportName = "PrintRegularTaxInvoiceWithSignatories_Format05_";
-                        break;
-                    case "Design 02 (W/o Signatories)":
-                        reportName = "Withoutsignatories";
-                        break;
-                    case "Design 02 (With Signatories)":
-                        reportName = "withsignatories";
-                        break;
-                        case "Print Regular Tax Invoice -  (Format 06)":
-                            reportName = "RegularTaxInvoiceFormat06";
-                            break;
-                        case "Print Regular Tax Invoice - wt Document Level Discount":
-                            reportName = "PrintRegularTaxInvoiceWtDocumentLevelDiscount";
-                            break;
+        }).catch(function (error) {
+            console.error("Error checking invoice approval status:", error);
+            alert("Failed to check invoice approval status.");
+        });
+    }
 
-                         case "Print Regular Tax Invoice - without Signatories(with symbols)":
-                            reportName = "taxinvoicewithSignatoriesWithSymbols";
-                            break;
-
-
-
-                   case "Preview Invoices in (Foreign Currency)":
-                            reportName = "ForeignCurrencyProforma";
-                            break;
-                        case "Preview Invoices in Foreign Currency(English)":
-                            reportName = "ForeignEnglishProforma";
-                            break;
-                        case "Preview Invoice(English)":
-                            reportName = "ProformaInvoiceEnglish";
-                            break;
-                        case "Preview Invoice":
-                            reportName = "ProformaPreviewInvoice";
-                            break;
-                             case "Preview Proforma Invoice(NewFormat)":
-                            reportName = "ProformaNewFormat";
-                            break;
-                        case "Preview Invoices in -with discount":
-                            reportName = "Wtdiscountpreviewinvoice";
-                            break;
-                        case "Preview Invoices in -withOut discount":
-                            reportName = "WithoutDiscountInvoice";
-                            break;
-
-                    case "Preview VAT Purchase Bill":
-                            reportName = "BillsPurchases";
-                            break;
-                    default:
-                        alert("Invalid report format selected.");
-                        return;
-                }
-
-                window.open(
-                    `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&invoiceNo=${encodeURIComponent(invoiceNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`,
-                    '_blank',
-                    'width=1200,height=800,scrollbars=yes,resizable=yes'
-                );
-
-            }).catch(function (error) {
-                console.error("Error checking invoice approval status:", error);
-                alert("Failed to check invoice approval status.");
+    // API call to check discount
+    function checkIfInvoiceHasDiscount(invoiceNo) {
+        return $.getJSON(`/api/VoucherMaster/CheckIfInvoiceHasDiscount?invoiceNo=${encodeURIComponent(invoiceNo)}`)
+            .then(function (res) {
+                return res.hasDiscount;
             });
-        }
+    }
+
+    // Helper function to open report
+    function openReport(reportName, invoiceNo, watermarkText, isApproved) {
+        window.open(
+            `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&invoiceNo=${encodeURIComponent(invoiceNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`,
+            '_blank',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+    }
 
         // Fetch approval status from API
         async function checkInvoiceApprovalStatus(invoiceNo) {

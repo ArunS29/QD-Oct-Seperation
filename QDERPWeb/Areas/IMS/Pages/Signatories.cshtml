@@ -125,6 +125,10 @@
     .playIcon {
         display: none;
     }
+
+    
+
+
 </style>
 @* <div class="title">
     <div class="header-container">
@@ -170,6 +174,8 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("SignatoryContact")
                             .Label(new JS("formatMessage('Signatory Contact No.')"))
+                             .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+
                             .LabelMode(EditorLabelMode.Floating)
                             )
                     </div>
@@ -281,6 +287,8 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("SignatoryEmail")
                             .Label(new JS("formatMessage('Signatory Email')"))
+                             .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
+
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
@@ -302,47 +310,74 @@
         
     
 <div class="dx-field ledgerResult">
-    @(Html.DevExtreme().DataGrid()
-            .ID("SignatoryGrid")
-            .KeyExpr("SignatoryID")
-            .RemoteOperations(false)
-            .DataSource(d => d.WebApi()
-        .Controller("Signatories")
-        .LoadAction("GetAllSignData")
-            .LoadMode(DataSourceLoadMode.Raw)
-            )
-        .Editing(editing => editing
-        .Mode(GridEditMode.Batch)
-        .AllowUpdating(true)
-            .AllowDeleting(true)
-        )
-        .Toolbar(toolbar =>
-        {
-            toolbar.Items(items => { }); // hide default toolbar
-        })
+        @(
+                Html.DevExtreme().DataGrid()
+                    .ID("SignatoryGrid")
+                    .KeyExpr("SignatoryID")
+                    .RemoteOperations(false)
+                    .DataSource(d => d.WebApi()
+                .Controller("Signatories")
+                .LoadAction("GetAllSignData")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    )
+                .Editing(editing => editing
+                .Mode(GridEditMode.Batch)
+                .AllowUpdating(true)
+                    .AllowDeleting(true)
+                )
                 .Toolbar(toolbar =>
                 {
-                    toolbar.Items(items =>
-                    {
-                        items.Add()
-                    .Widget(w => w.Button()
-                    .Text("Delete Selected")
-                    .Icon("trash")
-                    .Type(ButtonType.Danger)
-                    .OnClick("deleteSelectedSignatories")
-                    )
-                    .Location(ToolbarItemLocation.Before);
-                    });
+                    toolbar.Items(items => { }); // hide default toolbar
                 })
+                        .Toolbar(toolbar =>
+                        {
+                            toolbar.Items(items =>
+                            {
+                                items.Add()
+                            .Widget(w => w.Button()
+                            .Text("Delete Selected")
+                            .Icon("trash")
+                    .Type(ButtonType.Danger)
+                    .ElementAttr(new { @class = "dx-button-custom btn-delete" })// Apply custom CSS class// semantic danger
+                                .OnClick("deleteSelectedSignatories")
+                            )
+                            .Location(ToolbarItemLocation.Before);
+                            });
+                        })
 
-        .OnRowUpdating("onSignatoryUpdating")                      
-            .Columns(columns =>
-            {
-                columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
-                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Width(200);
-                columns.Add().DataField("SignatoryPosition").Caption(new JS("formatMessage('Position')")).Width(200);
-                columns.Add().DataField("SignatoryContact").Caption(new JS("formatMessage('Contact')")).Width(150);
-                columns.Add().DataField("SignatoryEmail").Caption(new JS("formatMessage('Email')")).Width(250);
+                .OnRowUpdating("onSignatoryUpdating")                      
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
+                        columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Width(200);
+                        columns.Add().DataField("SignatoryPosition").Caption(new JS("formatMessage('Position')")).Width(200);
+                    columns.Add().DataField("SignatoryContact")
+                    .Caption(new JS("formatMessage('Contact')"))
+                    .Width(150)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                    .Message("Contact No. is required");
+
+                        rules.AddCustom()
+                    .ValidationCallback("validateContact")
+                    .Message("Contact number must be 7–15 digits and contain only numbers");
+                    });
+
+
+columns.Add().DataField("SignatoryEmail")
+    .Caption(new JS("formatMessage('Email')"))
+    .Width(250)
+    .ValidationRules(rules =>
+    {
+        rules.AddRequired()
+            .Message("Email is required");
+
+        rules.AddEmail()
+            .Message("Please enter a valid Email Address");
+    });
+;
+
             // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1")
             .Caption(new JS("formatMessage('Signature Image')"))
@@ -412,6 +447,16 @@
     </div>
 </div>
  <script>
+         function validateContact(e) {
+        if (!e.value) return false; // empty is already blocked by required
+
+        const regex = /^[0-9]+$/;   // digits only
+        if (!regex.test(e.value)) return false;
+
+        if (e.value.length < 7 || e.value.length > 15) return false;
+
+        return true;
+    }
 
     $(document).ready(function () {
 
@@ -428,7 +473,7 @@
       });
 
       $(document).on("click", "#btnBack", function () {
-        window.history.back();
+        window.parent.closeModal();
     });
 
       $(function () {
@@ -571,6 +616,9 @@
             });
         }
     }
+
+
+
 
 
     //Imageupload
