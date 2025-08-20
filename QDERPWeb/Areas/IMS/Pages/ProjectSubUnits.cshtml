@@ -293,8 +293,10 @@
                     $("#SignatoryGrid").dxDataGrid("instance").refresh();
                      $("#txtProjectSubUnit").dxTextBox("instance").option("value","");
                 },
-                error: function () {
+                error: function (xhr) {
+                    const msg = xhr.responseJSON?.message || "Failed to save.";
                     DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+           
                 }
             });
               } else {
@@ -329,7 +331,8 @@
                     $("#SignatoryGrid").dxDataGrid("instance").refresh();
                 },
                 error: function () {
-                    DevExpress.ui.notify("Failed to save.", "error", 1500);
+                      const msg = xhr.responseJSON?.message || "Failed to save Project Sub Unit.";
+                DevExpress.ui.notify(msg, "error", 3000);
                 }
             });
         }
