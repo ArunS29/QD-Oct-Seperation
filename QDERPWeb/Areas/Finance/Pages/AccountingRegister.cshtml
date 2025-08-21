@@ -437,15 +437,15 @@
 		<div id="Static" class="titleCard-card vibrant-pink">
 			<div class="value-block">
 
-				<h2>Accounting Register</h2>
-				<h6>Quick Dice ERP Solutions</h6>
+				<h2 id="accountingregister"></h2>
+				<h6 id="QuickDiceERPSolutions4">Quick Dice ERP Solutions</h6>
 
 			</div>
 		</div>
 
 		<!-- BALANCE -->
 		<div id="cardVoucher" class="titleCard-card cool-blue">
-			<div class="header">Total Vouchers</div>
+			<div class="header" id="registertotalvoucher"></div>
 			<div class="value-block">
 				<div class="value-slider">
 					<span><i class="fa-solid fa-book"></i> 0</span>
@@ -466,7 +466,7 @@
 
 		<!-- DEBIT -->
 		<div id="cardDebit" class="titleCard-card deep-purple">
-			<div class="header">Total Debit</div>
+			<div class="header" id="registertotaldebit"></div>
 			<div class="value-block">
 				<div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
 			</div>
@@ -481,7 +481,7 @@
 
 		<!-- CREDIT -->
 		<div id="cardCredit" class="titleCard-card mint-green">
-			<div class="header">Total Credit</div>
+			<div class="header" id="registertotalcredit"></div>
 			<div class="value-block">
 				<div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
 			</div>
@@ -1323,90 +1323,91 @@
 		injectHeaderSVG();
 	});
 	function updateCards(data) {
-			const now = new Date();
+		const now = new Date();
 
-			const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-			const thisWeekStart = new Date(today);
-			thisWeekStart.setDate(today.getDate() - today.getDay());
-			const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
+		const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+		const thisWeekStart = new Date(today);
+		thisWeekStart.setDate(today.getDate() - today.getDay());
+		const thisMonthStart = new Date(today.getFullYear(), today.getMonth(), 1);
 
-			let totalDr = 0, totalCr = 0;
-			let todayDr = 0, weekDr = 0, monthDr = 0;
-			let todayCr = 0, weekCr = 0, monthCr = 0;
+		let totalDr = 0, totalCr = 0;
+		let todayDr = 0, weekDr = 0, monthDr = 0;
+		let todayCr = 0, weekCr = 0, monthCr = 0;
 
-			// For vouchers
-			const uniqueVoucherToday = new Set();
-			const uniqueVoucherWeek = new Set();
-			const uniqueVoucherMonth = new Set();
+		// For vouchers
+		const uniqueVoucherToday = new Set();
+		const uniqueVoucherWeek = new Set();
+		const uniqueVoucherMonth = new Set();
 
-			data.forEach(item => {
-				if (!item.VoucherDate) return;
+		data.forEach(item => {
+			if (!item.VoucherDate) return;
 
-				const voucherDate = new Date(item.VoucherDate);
-				const dateOnly = new Date(voucherDate.getFullYear(), voucherDate.getMonth(), voucherDate.getDate());
+			const voucherDate = new Date(item.VoucherDate);
+			const dateOnly = new Date(voucherDate.getFullYear(), voucherDate.getMonth(), voucherDate.getDate());
 
-				const dr = parseFloat(item.ConvertedDrAmount || 0);
-				const cr = parseFloat(item.ConvertedCrAmount || 0);
+			const dr = parseFloat(item.ConvertedDrAmount || 0);
+			const cr = parseFloat(item.ConvertedCrAmount || 0);
 
-				totalDr += dr;
-				totalCr += cr;
+			totalDr += dr;
+			totalCr += cr;
 
-				// VoucherNo might be null or duplicated, handle uniquely
-				const voucherNo = item.VoucherNo;
+			// VoucherNo might be null or duplicated, handle uniquely
+			const voucherNo = item.VoucherNo;
 
-				if (+dateOnly === +today) {
-					todayDr += dr;
-					todayCr += cr;
-					if (voucherNo) uniqueVoucherToday.add(voucherNo);
-				}
+			if (+dateOnly === +today) {
+				todayDr += dr;
+				todayCr += cr;
+				if (voucherNo) uniqueVoucherToday.add(voucherNo);
+			}
 
-				if (dateOnly >= thisWeekStart && dateOnly <= today) {
-					weekDr += dr;
-					weekCr += cr;
-					if (voucherNo) uniqueVoucherWeek.add(voucherNo);
-				}
+			if (dateOnly >= thisWeekStart && dateOnly <= today) {
+				weekDr += dr;
+				weekCr += cr;
+				if (voucherNo) uniqueVoucherWeek.add(voucherNo);
+			}
 
-				if (dateOnly >= thisMonthStart && dateOnly <= today) {
-					monthDr += dr;
-					monthCr += cr;
-					if (voucherNo) uniqueVoucherMonth.add(voucherNo);
-				}
-			});
+			if (dateOnly >= thisMonthStart && dateOnly <= today) {
+				monthDr += dr;
+				monthCr += cr;
+				if (voucherNo) uniqueVoucherMonth.add(voucherNo);
+			}
+		});
 
-			const format = num => num.toLocaleString(undefined, {
-				minimumFractionDigits: 2,
-				maximumFractionDigits: 2
-			});
+		const format = num => num.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
 
-			// ========== Update Total Debit Card ==========
-			$("#cardDebit .value-slider span").eq(0).html(format(todayDr));
-			$("#cardDebit .value-slider span").eq(1).html(format(weekDr));
-			$("#cardDebit .value-slider span").eq(2).html(format(monthDr));
-			$("#cardDebit .overlay .detail").eq(0).html(`Today: ${format(todayDr)}`);
-			$("#cardDebit .overlay .detail").eq(1).html(`This Week: ${format(weekDr)}`);
-			$("#cardDebit .overlay .detail").eq(2).html(`This Month: ${format(monthDr)}`);
+		// ========== Update Total Debit Card ==========
+		$("#cardDebit .value-slider span").eq(0).html(format(todayDr));
+		$("#cardDebit .value-slider span").eq(1).html(format(weekDr));
+		$("#cardDebit .value-slider span").eq(2).html(format(monthDr));
+		$("#cardDebit .overlay .detail").eq(0).html(`${formatMessage("Today")}: ${format(todayDr)}`);
+		$("#cardDebit .overlay .detail").eq(1).html(`${formatMessage("This Week")}: ${format(weekDr)}`);
+		$("#cardDebit .overlay .detail").eq(2).html(`${formatMessage("This Month")}: ${format(monthDr)}`);
 
-			// ========== Update Total Credit Card ==========
-			$("#cardCredit .value-slider span").eq(0).html(format(todayCr));
-			$("#cardCredit .value-slider span").eq(1).html(format(weekCr));
-			$("#cardCredit .value-slider span").eq(2).html(format(monthCr));
-			$("#cardCredit .overlay .detail").eq(0).html(`Today: ${format(todayCr)}`);
-			$("#cardCredit .overlay .detail").eq(1).html(`This Week: ${format(weekCr)}`);
-			$("#cardCredit .overlay .detail").eq(2).html(`This Month: ${format(monthCr)}`);
+		// ========== Update Total Credit Card ==========
+		$("#cardCredit .value-slider span").eq(0).html(format(todayCr));
+		$("#cardCredit .value-slider span").eq(1).html(format(weekCr));
+		$("#cardCredit .value-slider span").eq(2).html(format(monthCr));
+		$("#cardCredit .overlay .detail").eq(0).html(`${formatMessage("Today")}: ${format(todayCr)}`);
+		$("#cardCredit .overlay .detail").eq(1).html(`${formatMessage("This Week")}: ${format(weekCr)}`);
+		$("#cardCredit .overlay .detail").eq(2).html(`${formatMessage("This Month")}: ${format(monthCr)}`);
 
-			// ========== Update Total VoucherNo Card ==========
-			const totalTodayVouchers = uniqueVoucherToday.size;
-			const totalWeekVouchers = uniqueVoucherWeek.size;
-			const totalMonthVouchers = uniqueVoucherMonth.size;
+		// ========== Update Total VoucherNo Card ==========
+		const totalTodayVouchers = uniqueVoucherToday.size;
+		const totalWeekVouchers = uniqueVoucherWeek.size;
+		const totalMonthVouchers = uniqueVoucherMonth.size;
 
-			$("#cardVoucher .value-slider span").eq(0).html(`<i class="fa-solid fa-book"></i> Today: ${totalTodayVouchers}`);
-			$("#cardVoucher .value-slider span").eq(1).html(`<i class="fa-solid fa-book"></i> This Week: ${totalWeekVouchers}`);
-			$("#cardVoucher .value-slider span").eq(2).html(`<i class="fa-solid fa-book"></i> This Month: ${totalMonthVouchers}`);
+		$("#cardVoucher .value-slider span").eq(0).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Today")}: ${totalTodayVouchers}`);
+		$("#cardVoucher .value-slider span").eq(1).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Week")}: ${totalWeekVouchers}`);
+		$("#cardVoucher .value-slider span").eq(2).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Month")}: ${totalMonthVouchers}`);
 
-			$("#cardVoucher .overlay .detail").eq(0).html(`<i class="fa-solid fa-book"></i> Today: ${totalTodayVouchers}`);
-			$("#cardVoucher .overlay .detail").eq(1).html(`<i class="fa-solid fa-book"></i> This Week: ${totalWeekVouchers}`);
-			$("#cardVoucher .overlay .detail").eq(2).html(`<i class="fa-solid fa-book"></i> This Month: ${totalMonthVouchers}`);
-    }
+		$("#cardVoucher .overlay .detail").eq(0).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Today")}: ${totalTodayVouchers}`);
+		$("#cardVoucher .overlay .detail").eq(1).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Week")}: ${totalWeekVouchers}`);
+		$("#cardVoucher .overlay .detail").eq(2).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Month")}: ${totalMonthVouchers}`);
+	}
+
 
 
 	// Utility: check if two dates are the same (ignoring time)
@@ -1415,6 +1416,20 @@
 			   d1.getMonth() === d2.getMonth() &&
 			   d1.getDate() === d2.getDate();
 	}
-
+	$(function () {
+		$("#accountingregister").text(formatMessage("Accounting Register"));
+	});
+	$(function () {
+		$("#QuickDiceERPSolutions4").text(formatMessage("Quick Dice ERP Solutions"));
+	});
+	$(function () {
+		$("#registertotalvoucher").text(formatMessage("Total Vouchers"));
+	});
+	$(function () {
+		$("#registertotaldebit").text(formatMessage("Total Debit"));
+	});
+	$(function () {
+		$("#registertotalcredit").text(formatMessage("Total Credit"));
+	});
 
 </script>
