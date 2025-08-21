@@ -609,8 +609,7 @@
     <div id="tab-content-2" class="tab-content" style="display:none;">
         <style>
             .form-section {
-                padding: 15px 20px;
-                margin-bottom: 20px;
+                padding: 5px 20px;
             }
 
             .form-table {
@@ -736,8 +735,7 @@
     <div id="tab-content-3" class="tab-content" style="display:none;">
         <style>
             .form-section {
-                padding: 15px 20px;
-                margin-bottom: 20px;
+                padding: 5px 20px;
             }
 
             .form-table {
@@ -1045,7 +1043,6 @@
                 margin-bottom: 10px;
             }
         </style>
-
         <!-- Toolbar -->
         <div class="custom-toolbar">
             @(Html.DevExtreme().Button()
@@ -1058,26 +1055,29 @@
 
         <!-- Document DataGrid -->
         @(Html.DevExtreme().DataGrid()
-                .ID("mombGrid")
-                .ShowBorders(true)
-                .ShowColumnLines(true)
-                .ColumnAutoWidth(true)
-                .RowAlternationEnabled(true)
-                .Height(300)
-                .Selection(s => s
-                .Mode(SelectionMode.Multiple)
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
-                .Columns(columns =>
-                {
-                    columns.Add().Caption(new JS("formatMessage('Delivery Note')")).DataField("DocNo");
-                    columns.Add().Caption(new JS("formatMessage('Delivered On')")).DataField("DocumentType");
-                    columns.Add().Caption(new JS("formatMessage('Client Name')")).DataField("DocumentRefNo");
-                    columns.Add().Caption(new JS("formatMessage('Demobilized Date')")).DataField("DocumentRemarks").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('Current Status')")).DataField("ExpiryOn");
-                    columns.Add().Caption(new JS("formatMessage('Gate Pass No')")).DataField("ExpiryArabic");
-                    columns.Add().Caption(new JS("formatMessage('Off Hire Note No')")).DataField("NotifyOn");
-                })
-                )
+                        .ID("mombGrid")
+                        .ShowBorders(true)
+                        .ShowColumnLines(true)
+                        .ColumnAutoWidth(true)
+                        .OnInitialized("OnmobilzationInitialize")
+                        .RowAlternationEnabled(true)
+                        .Height(300)
+                        .DataSource(d => d.WebApi()
+                        .Controller("AddNewProperty")
+                        .LoadAction("GetByMobilzation")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        )
+                        .Columns(columns =>
+                        {
+                            columns.Add().Caption(new JS("formatMessage('Delivery Note')")).DataField("PropertyIssueNo");
+                            columns.Add().Caption(new JS("formatMessage('Delivered On')")).DataField("PropertyIssuedDate").DataType(GridColumnDataType.Date);
+                            columns.Add().Caption(new JS("formatMessage('Client Name')")).DataField("ClientName");
+                            columns.Add().Caption(new JS("formatMessage('Demobilized Date')")).DataField("DemobilizedDate");
+                            columns.Add().Caption(new JS("formatMessage('Current Status')")).DataField("CurrentStatus");
+                            columns.Add().Caption(new JS("formatMessage('Gate Pass No')")).DataField("GatePassNo");
+                            columns.Add().Caption(new JS("formatMessage('Off Hire Note No')")).DataField("OffHireNoteNo");
+                        })
+                        )   
     </div>
     <div id="tab-content-6" class="tab-content" style="display:none;">
         <!-- Toolbar -->
@@ -1155,7 +1155,6 @@
                         )
         </div>
 
-        <!-- Document DataGrid -->
         @(Html.DevExtreme().DataGrid()
                 .ID("OperatorGrid")
                 .ShowBorders(true)
@@ -1163,19 +1162,23 @@
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height(300)
-                .Selection(s => s
-                .Mode(SelectionMode.Multiple)
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                .OnContextMenuPreparing("onClientsGridContextMenu1")
+                .OnInitialized("onItemReceivedGridInitialized")
+                .DataSource(d => d.WebApi()
+                .Controller("PropertyOperator")
+                .LoadAction("GetByEquipmentNo")
+                .LoadMode(DataSourceLoadMode.Raw)
+                )
                 .Columns(columns =>
                 {
-                    columns.Add().Caption(new JS("formatMessage('Epmloye ID')")).DataField("EmployeeId");
-                    columns.Add().Caption(new JS("formatMessage('Operator Type')")).DataField("OperatorType");
-                    columns.Add().Caption(new JS("formatMessage('Operator Name')")).DataField("OperatorName");
-                    columns.Add().Caption(new JS("formatMessage('Start Date')")).DataField("WorkStartDate").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('End Date')")).DataField("WorkEndDate").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('Hourly Rate')")).DataField("OperatorRegHourlyRate");
-                    columns.Add().Caption(new JS("formatMessage('Overtime Rate')")).DataField("OperatorOthourlyRate");
-                    columns.Add().Caption(new JS("formatMessage('Working Shift')")).DataField("WorkingShift");
+                    columns.Add().Caption("Employee ID").DataField("EmployeeId");
+                    columns.Add().Caption("Operator Type").DataField("PropertyOperatorTypeId");
+                    columns.Add().Caption("Operator Name").DataField("OperatorName");
+                    columns.Add().Caption("Start Date").DataField("WorkStartDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption("End Date").DataField("WorkEndDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption("Hourly Rate").DataField("OperatorRegHourlyRate");
+                    columns.Add().Caption("Overtime Rate").DataField("OperatorOthourlyRate");
+                    columns.Add().Caption("Working Shift").DataField("WorkingShift");
                 })
                 )
     </div> 
@@ -1217,63 +1220,63 @@
 @using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertyCategoryContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                            .ID("GetAllProperty-datagrid")
-                        .DataSource(d => d.WebApi()
-                            .Controller("PropertyCategory")
-                            .LoadAction("GetAllProperty")
-                        .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("PropertyCategoryId")
-                        )
-                        .WordWrapEnabled(true)
-                        .ShowBorders(true)
-                        .Selection(sl => sl.Mode(SelectionMode.Single))
-                        .OnSelectionChanged("dataGridSelectionChanged3")
-                        .OnInitialized("dataGridInitialized2")
-                        .HeaderFilter(p => p.Visible(true))
-                        .FilterRow(f => f.Visible(false))
-                        .ShowBorders(true)
-                        .HoverStateEnabled(true)
-                        .Paging(p => p.PageSize(15))
-                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                        .Height(345)
-                        .Selection(s => s.Mode(SelectionMode.Single))
-                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                        .Columns(columns =>
-                        {
-                                columns.Add().DataField("PropertyCategoryName").Caption("Property Category");
-                        })
-                        )
-}
+                    .ID("GetAllProperty-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("PropertyCategory")
+                    .LoadAction("GetAllProperty")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PropertyCategoryId")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .Selection(sl => sl.Mode(SelectionMode.Single))
+                    .OnSelectionChanged("dataGridSelectionChanged3")
+                    .OnInitialized("dataGridInitialized2")
+                    .HeaderFilter(p => p.Visible(true))
+                    .FilterRow(f => f.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                    columns.Add().DataField("PropertyCategoryName").Caption("Property Category");
+                    })
+                    )
+                    }
 @using (Html.DevExtreme().NamedTemplate("GetSupplierContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                                    .ID("GetSupplier-datagrid")
-                                    .DataSource(d => d.WebApi()
-                                        .Controller("MaterialReceipt")
-                                        .LoadAction("GetSupplierName")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                        .Key("SupplierCode")
-                                    )
-                                    .WordWrapEnabled(true)
-                                    .ShowBorders(true)
-                                    .Selection(sl => sl.Mode(SelectionMode.Single)) 
-                                    .OnSelectionChanged("dataGridSelectionChanged1")
-                                    .OnInitialized("dataGridInitialized1")
-                                    .HeaderFilter(p => p.Visible(true))
-                                    .ShowBorders(true)
-                                    .HoverStateEnabled(true)
-                                    .Paging(p => p.PageSize(15))
-                                    .FilterRow(f => f.Visible(false))//
-                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                                    .Height(345)
-                                    .Selection(s => s.Mode(SelectionMode.Single))
-                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                    .Columns(columns =>
-                                    {
-                                        columns.Add().DataField("SupplierName");
-                                    })
-                                    )
-}
+                    .ID("GetSupplier-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("MaterialReceipt")
+                    .LoadAction("GetSupplierName")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("SupplierCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) 
+                    .OnSelectionChanged("dataGridSelectionChanged1")
+                    .OnInitialized("dataGridInitialized1")
+                    .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .FilterRow(f => f.Visible(false))//
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                    columns.Add().DataField("SupplierName");
+                    })
+                    )
+                    }
 @using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertyGroupContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1307,10 +1310,114 @@
 }
 
 <script>
+        let ItemReceivedGridInstance = null;
+
+    function onItemReceivedGridInitialized(e) {
+        debugger;
+        ItemReceivedGridInstance = e.component;
+        console.log("ItemReceivedGrid initialized", ItemReceivedGridInstance);
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const requestNo = urlParams.get("code");
+
+        if (requestNo) {
+            loadItemReceivedGrid(requestNo);
+        }
+    }
+
+    async function loadItemReceivedGrid(equipmentNo) {
+        debugger;
+        try {
+            console.log("Fetching data for equipmentNo:", equipmentNo);
+
+            const response = await fetch(`/api/PropertyOperator/GetByEquipmentNo?equipmentNo=${encodeURIComponent(equipmentNo)}`, {
+                method: "GET",
+                headers: {
+                    "Accept": "application/json"
+                }
+            });
+
+            console.log("Raw response:", response);
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const result = await response.json();
+            console.log("Parsed JSON result:", result);
+
+            const data = Array.isArray(result) ? result : result.data || result.items || [];
+
+            if (!Array.isArray(data)) {
+                console.error("Expected an array for the grid, got:", data);
+                DevExpress.ui.notify("Invalid data format from server", "error", 3000);
+                return;
+            }
+
+            console.log("Final data bound to grid:", data);
+
+            if (ItemReceivedGridInstance) {
+                ItemReceivedGridInstance.option("dataSource", data);
+            }
+        } catch (error) {
+            console.error("Error fetching ItemReceived data:", error);
+            DevExpress.ui.notify("Failed to load item receipt data", "error", 3000);
+        }
+    }
+
+
+
+
+
+
+        function OnmobilzationInitialize(e) {
+        const grid = e.component;
+        const urlParams = new URLSearchParams(window.location.search);
+        const propertyNo = urlParams.get("code");
+
+        console.log("PropertyNo from query:", propertyNo);
+
+        $.ajax({
+            url: `/api/AddNewProperty/GetByMobilzation`,
+            type: "GET",
+            data: { PropertyNo: propertyNo },
+            success: function (data) {
+                console.log("API Data:", data);
+
+                grid.option("dataSource", data);
+                grid.refresh();
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching mobilization data:", error);
+            }
+        });
+    }
+
+
+    // function OnmobilzationInitialize(e) {
+    //            debugger;
+    //     const grid = e.component;
+    //     const urlParams = new URLSearchParams(window.location.search);
+    //     const propertyNo = urlParams.get("code");
+
+    //     console.log("PropertyNo from query:", propertyNo);
+
+    //     const url = `/api/AddNewProperty/GetByMobilzation?PropertyNo=${encodeURIComponent(propertyNo)}`;
+
+    //     grid.option("dataSource", DevExpress.data.AspNet.createStore({
+    //         key: "PropertyIssueNo",
+    //         loadUrl: url
+    //     }));
+
+    //     grid.refresh();
+    // }
+
+
+
      function onBackButtonClick(e) {
         window.history.back();
     }
-
+      
       function dataGridInitialized2(e) {
         dataGrid = e.component;
     }
@@ -1515,7 +1622,7 @@
         var isUpdate = $("#btnSave").data("is-update");
 
         const data = {
-              PropertyType: $("#PropertyType").dxDropDownBox("instance").option("value"),
+    PropertyType: $("#PropertyType").dxDropDownBox("instance").option("value"),
     PropertyNo: $("#PropertyNo").dxTextBox("instance").option("value"),
     PropertyDescription: $("#PropertyDescription").dxTextBox("instance").option("value"),
     PropertyCategory: $("#PropertyCategory").dxDropDownBox("instance").option("value"),
@@ -1722,9 +1829,6 @@
             $("#btnSave").dxButton("instance").option("text", "Update");
             $("#btnSave").data("is-update", true);
         }
-
-
-
         if (mode === "edit" && code) {
             $.ajax({
                 url: `/api/AddNewProperty/GetByNo?code=${encodeURIComponent(code)}`,
@@ -1732,36 +1836,37 @@
                 success: function (data) {
                     console.log("Property Data:", data);
             // ================== Core Info ==================
+            $("#PropertyType").dxDropDownBox("instance").option("value", data.PropertyType);
             $("#PropertyNo").dxTextBox("instance").option("value", data.PropertyNo);
             $("#PropertyDescription").dxTextBox("instance").option("value", data.PropertyDescription);
             $("#PropertyCategory").dxDropDownBox("instance").option("value", data.PropertyCategory);
             $("#PropertySpecification").dxTextArea("instance").option("value", data.Specifications);
             $("#PropertyGroup").dxDropDownBox("instance").option("value", data.PropertyGroupId);
-            $("#PropertyType").dxDropDownBox("instance").option("value", data.PropertyType); 
+
             // ================== Asset Details ==================
             $("#Brand").dxTextBox("instance").option("value", data.Brand);
-            $("#SerialNo").dxTextBox("instance").option("value", data.ChassisNo);                       
-            $("#PlateNo").dxTextBox("instance").option("value", data.PlateNo);                             
-            $("#EngineNo").dxTextBox("instance").option("value", data.EngineNo);
             $("#Model").dxTextBox("instance").option("value", data.Model);
-            $("#Capacity").dxTextBox("instance").option("value", data.Capacity);
-            $("#Type").dxTextBox("instance").option("value", data.ModelType);                       
+            $("#Type").dxTextBox("instance").option("value", data.ModelType);
+            $("#SerialNo").dxTextBox("instance").option("value", data.ChassisNo);
+            $("#EngineNo").dxTextBox("instance").option("value", data.EngineNo);
             $("#AlternatorNo").dxTextBox("instance").option("value", data.AlternatorNo);
             $("#DoorNo").dxTextBox("instance").option("value", data.DoorNo);
             $("#Color").dxTextBox("instance").option("value", data.Color);
             $("#Year").dxTextBox("instance").option("value", data.Year);
-            $("#KVA_KW").dxTextBox("instance").option("value", data.KvaorKw);                            
+            $("#KVA_KW").dxTextBox("instance").option("value", data.KvaorKw);
+            $("#Capacity").dxTextBox("instance").option("value", data.Capacity);
             $("#Weight").dxTextBox("instance").option("value", data.Weight);
-            $("#PlatformHeight").dxTextBox("instance").option("value", data.PlatformHeight);
-            $("#OperatingWeight").dxTextBox("instance").option("value", data.OperatingWeight);
             $("#OperatingCapacity").dxTextBox("instance").option("value", data.OperatingCapacity);
-            $("#Dimension").dxTextBox("instance").option("value", data.LxWxH);                          
+            $("#OperatingWeight").dxTextBox("instance").option("value", data.OperatingWeight);
+            $("#PlatformHeight").dxTextBox("instance").option("value", data.PlatformHeight);
+            $("#Dimension").dxTextBox("instance").option("value", data.LxWxH);
             $("#Location").dxTextBox("instance").option("value", data.Location);
-            $("#Ownership").dxTextBox("instance").option("value", data.OwnershipText);                     
-            $("#Certification").dxSelectBox("instance").option("value", data.PropertyCertification);       
-            $("#Remarks").dxTextBox("instance").option("value", data.PropertyRemarks);                   
-            $("#PWAS").dxSelectBox("instance").option("value", data.PropertyPwas);                         
-            $("#Attachment").dxSelectBox("instance").option("value", data.PropertyAttachment);        
+            $("#Ownership").dxTextBox("instance").option("value", data.OwnershipText);
+            $("#Certification").dxSelectBox("instance").option("value", data.PropertyCertification);
+            $("#Remarks").dxTextBox("instance").option("value", data.PropertyRemarks);
+            $("#PWAS").dxSelectBox("instance").option("value", data.PropertyPwas);
+            $("#Attachment").dxSelectBox("instance").option("value", data.PropertyAttachment);
+
             // ================== Additional Specs ==================
             $("#Specification1").dxTextBox("instance").option("value", data.AddlSpec1);
             $("#Field1").dxTextBox("instance").option("value", data.AddlField1);
@@ -1769,11 +1874,45 @@
             $("#Field2").dxTextBox("instance").option("value", data.AddlField2);
             $("#Specification3").dxTextBox("instance").option("value", data.AddlSpec3);
             $("#Field3").dxTextBox("instance").option("value", data.AddlField3);
-            // ================== Hiring Info (Dates & Supplier) ==================
+
+            // ================== Purchase Info ==================
+            $("#PurchasedDate").dxDateBox("instance").option("value", data.PurchaseDate);
+            $("#PurchasedFrom").dxTextBox("instance").option("value", data.PurchasedFrom);
+            $("#PurchasedAs").dxTextBox("instance").option("value", data.PurchasedAs2);
+            $("#CurrentCondition").dxSelectBox("instance").option("value", data.PropertyCondition2);
+
+            // ================== Finance Info ==================
+            $("#IsPropertyFinanced").dxCheckBox("instance").option("value", data.IsFinanced);
+            $("#FinancedBy").dxTextBox("instance").option("value", data.FinancierName);
+            $("#StartDate").dxDateBox("instance").option("value", data.InstallmentStartDate);
+            $("#EndDate").dxDateBox("instance").option("value", data.InstallmentEndDate);
+            $("#Installments").dxNumberBox("instance").option("value", data.NoOfInstallments);
+            $("#DownPayment").dxNumberBox("instance").option("value", data.InitialDownPayment);
+            $("#MonthlyInstallment").dxNumberBox("instance").option("value", data.MonthlyInstallment);
+            $("#FinalPayment").dxNumberBox("instance").option("value", data.FinalInstallment);
+
+            // ================== Hiring Info ==================
             $("#HiredOn").dxDateBox("instance").option("value", data.HiredOn);
-            $("#SupplierName").dxDropDownBox("instance").option("value", data.SupplierCode);             
-            $("#OurPONo").dxSelectBox("instance").option("value", data.SupplierPono);                  
+            $("#SupplierName").dxDropDownBox("instance").option("value", data.SupplierCode);
+            $("#OurPONo").dxSelectBox("instance").option("value", data.SupplierPono);
             $("#SupplierRefNo").dxSelectBox("instance").option("value", data.SupplierRefNo);
+            $("#HiredMode").dxSelectBox("instance").option("value", data.HiringMode);
+            $("#RatePerHour").dxNumberBox("instance").option("value", data.BuyingRatePerHour);
+            $("#RatePerDay").dxNumberBox("instance").option("value", data.BuyingRatePerDay);
+            $("#RatePerWeek").dxNumberBox("instance").option("value", data.BuyingRatePerWeek);
+            $("#RatePerMonth").dxNumberBox("instance").option("value", data.BuyingRatePerMonth);
+            $("#AgreementHours").dxNumberBox("instance").option("value", data.AgreementHours);
+            $("#OvertimeRate").dxNumberBox("instance").option("value", data.BuyingOtratePerHour);
+            $("#MobRate").dxNumberBox("instance").option("value", data.SupplierMobRate);
+            $("#DemobRate").dxNumberBox("instance").option("value", data.SupplierDemobRate);
+            $("#IsOperatorIncluded").dxCheckBox("instance").option("value", data.IsOperatorIncluded);
+            $("#OperatorName").dxTextBox("instance").option("value", data.OperatorName);
+            $("#IqamaNo").dxTextBox("instance").option("value", data.OperatorNationalId);
+            $("#MobileNo").dxTextBox("instance").option("value", data.OperatorContactMobile);
+            $("#MobileNo2").dxTextBox("instance").option("value", data.OperatorContactMobile2);
+            $("#HourlyRate").dxNumberBox("instance").option("value", data.OperatorRate);
+            $("#IsReturned").dxCheckBox("instance").option("value", data.IsReturned);
+            $("#ReturnedOn").dxDateBox("instance").option("value", data.ReturnedOn);
                 },
                 error: function (xhr) {
                     DevExpress.ui.notify("Failed to load property data", "error", 3000);
@@ -1908,4 +2047,48 @@
         });
     });
 
+        function onClientsGridContextMenu1(e) {
+            debugger;
+     if (e.target === "content" && e.row) {
+           const equipmentNo = e.row.data.equipmentNo;
+          e.items = [
+             {
+                 text: "Operator Edit",
+                 onItemClick: function () {
+                     const tenantName = window.tenantName || "defaultTenant";
+                         const url = `/${tenantName}/ERM/PropertyOperator?code=${encodeURIComponent(PropertyNo)}&mode=edit`;
+                       const title = `Property Operator`;
+                     openModal(url, title);
+                    }
+            },
+
+                {
+                    text: "Delete",
+                    onItemClick: function () {
+                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this status update?", "Confirm Delete")
+                            .done(function (dialogResult) {
+                                if (dialogResult) {
+                                    $.ajax({
+                                        url: `/api/ClientLeadMaster1/DeleteStatuss?clientStatusNo=${ClientStatusNo}`,
+                                        type: 'DELETE',
+                                        success: function (res) {
+                                            if (res.success) {
+                                                DevExpress.ui.notify(res.message, "success", 2000);
+                                                   // ✅ Reload updated data
+                                           loadClientStatusGrid(clientCode);
+                                            } else {
+                                                DevExpress.ui.notify(res.message, "error", 3000);
+                                            }
+                                        },
+                                        error: function (err) {
+                                            DevExpress.ui.notify("Delete failed: " + err.responseText, "error", 3000);
+                                        }
+                                    });
+                                }
+                          });
+                    }
+                }
+            ];
+        }
+    }
 </script>

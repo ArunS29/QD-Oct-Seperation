@@ -3986,6 +3986,7 @@ var dictionary = {
         "Payment Voucher":"Payment Voucher"
     },
     ar: {
+         "Arabic": "ذمم العملاء",
         "Add New Operator":"إضافة مشغل جديد",
          "Arabic": "ذمم العملاء",
         "Print Mobilization Data":"بيانات تعبئة الطباعة",

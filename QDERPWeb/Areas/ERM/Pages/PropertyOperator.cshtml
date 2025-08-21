@@ -14,10 +14,13 @@
     .footerContainer {
         display: none !important;
     }
+    .dx-button-text{
+        color:black;
+    }
 </style>
-<div class="p-3">
+<div class="p-1">
 
-    <table style="width:100%; border-collapse: separate; border-spacing: 12px;">
+    <table style="width:100%; border-collapse: separate; border-spacing: 10px;">
         <tr>
             <td style="width: 50%;">
                 @(Html.DevExtreme().TextBox()
@@ -142,28 +145,27 @@
             </td>
             <td>
                 @(Html.DevExtreme().DateBox()
-                                .ID("DemobilizedOn")
-                                .Label("Demobilized On:")
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%"))
+                    .ID("DemobilizedOn")
+                    .Label("Demobilized On:")
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Width("100%"))
             </td>
         </tr>
     </table>
-
     <!-- Footer buttons -->
-    <div style="margin-top: 20px; text-align: left;">
+    <div class="footer-fixed" style="display:flex; gap:10px; margin-left: 10px;">
         @(Html.DevExtreme().Button()
                 .ID("btnSave")
                 .Text("Save")
                 .Type(ButtonType.Success)
                 .Icon("save")
                 .Width(120)
-        
+                .OnClick("btnSaveClick")
         )
 
         @(Html.DevExtreme().Button()
                 .ID("btnSaveClose")
-                .Text("Save & Close")
+                .Text("Save & Close")        
                 .Type(ButtonType.Default)
                 .Icon("check")
                 .Width(150)
@@ -186,7 +188,7 @@
                             .Controller("PropertyOperator")
                             .LoadAction("GetAllEmployee")
                             .LoadMode(DataSourceLoadMode.Raw)
-                                .Key("EmployeeId")
+                            .Key("EmployeeId")
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
@@ -250,11 +252,11 @@
         dataGrid = e.component;
     }
       function onOpened(e) {
-        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const gridId = e.component.option("dataGridId"); 
         const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
 
         if (grid) {
-            grid.getDataSource().reload(); // refresh data
+            grid.getDataSource().reload(); 
         }
 
         setTimeout(() => {
@@ -293,4 +295,25 @@
          function dataGridInitialized2(e) {
         dataGrid = e.component;
     }
+
+      
+       function btnSaveClick() 
+
+       { var data = 
+           {
+       EquipmentNo: $("#PropertyNo").dxTextBox("instance").option("value"), 
+       OperatorName: $("#OperatorName").dxTextBox("instance").option("value"),
+       OperatorRegHourlyRate: $("#HourlyRate").dxNumberBox("instance").option("value"), 
+       OperatorOthourlyRate: $("#OvertimeRate").dxNumberBox("instance").option("value"),
+       WorkStartDate: $("#WorkStartDate").dxDateBox("instance").option("value"),
+       WorkEndDate: $("#DemobilizedOn").dxDateBox("instance").option("value"),
+       OperatorRemarks: $("#Remarks").dxTextArea("instance").option("value"), 
+       WorkingShift: $("#Shift").dxSelectBox("instance").option("value") }; 
+       $.ajax({ url: '/api/PropertyOperator/SaveOrUpdate', type: "POST", data: JSON.stringify(data),
+       contentType: "application/json", 
+       success: function (res) { DevExpress.ui.notify(res.message,
+           "success", 3000); },
+       error: function (err) 
+       { DevExpress.ui.notify("Error saving data", "error", 3000); } }); }
+
 </script>
