@@ -344,7 +344,7 @@
   
  
 
-    <div class="btn-containers">
+    @* <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
                 .ID("btnPrint1")
                 .Text(new JS("formatMessage('Print')"))
@@ -413,7 +413,11 @@
             </text>)
             .OnItemClick("addPrintButton_click")
             )
+    </div> *@
+    <div class="btn-containers">
+        <div id="btnPrint1"></div>
     </div>
+
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
             .ID("btnVerify")
@@ -523,6 +527,67 @@
 
 <script type="text/javascript">
 
+   $(async function () {
+        // Fetch DefaultCurrencyDecimals from backend
+        let decimals = null;
+        try {
+            const res = await $.getJSON("/api/VoucherMaster/GetDefaultCurrencyDecimals");
+            decimals = res.DefaultCurrencyDecimals;
+        } catch (e) {
+            console.warn("Could not fetch DefaultCurrencyDecimals, defaulting to null.");
+        }
+
+        // Build items array based on decimals
+        let items = [];
+        if (decimals === 2 || decimals === null) {
+            items.push(
+                { text: "Print Regular TAX Invoice", icon: "print", color: "#FF7043" },
+                { text: "Print Simplified TAX Invoice", icon: "file", color: "#00ACC1" }
+            );
+        } else {
+            items.push(
+                { text: "Print VAT Invoice (English Only)", icon: "print", color: "#FF7043" },
+                { text: "Print VAT Invoice (Foreign Currency)", icon: "file", color: "#00ACC1" }
+            );
+        }
+        // Add your other static items
+        items.push(
+            { text: "Additional Formats", icon: "folder", color: "#AB47BC" },
+            { text: "Edit Sales Voucher", icon: "edit", color: "#FBBC05", onClick: showSalesVoucherEditPopup },
+            { text: "Upload Items from Excel", icon: "upload", color: "#EA4335", onClick: navigateInventoryListtoUpload },
+            { text: "Profit On Sale", icon: "chart", color: "#34A853", onClick: navigateToLoss },
+            { text: "Invoice Cost Posting", icon: "money", color: "#4285F4", onClick: navigateToInvoiceCostPosting },
+            { text: "Advance / Prepayment Adjustments", icon: "wallet", color: "#AB47BC" }
+        );
+
+        // Initialize DropDownButton
+        $("#btnPrint1").dxDropDownButton({
+            text: formatMessage('Print'),
+            icon: "print",
+            width: 132,
+            dropDownOptions: { width: 230 },
+            showArrowIcon: false,
+            items: items,
+            itemTemplate: function (data) {
+                return `<div class="custom-dropdown-item">
+                    <div style="background-color:${data.color || '#808080'}; height:90%" class="side-bar"></div>
+                    <div class="item-content">
+                        <div class="item-icon dx-icon dx-icon-${data.icon}"></div>
+                        <div>
+                            <div class="item-title">${data.text}</div>
+                        </div>
+                    </div>
+                </div>`;
+            },
+            onItemClick: function (e) {
+                if (typeof e.itemData.onClick === "function") {
+                    e.itemData.onClick(e);
+                } else {
+                    addPrintButton_click(e);
+                }
+            }
+        });
+    });
  
      let isPosted=null;
     function moveRow(direction) {
@@ -1557,6 +1622,12 @@
                 case "Print Tax Invoice - (Foreign Currency)":
                     reportName = "Foreigncurrency1";
                     break;
+                 case "Print VAT Invoice (Foreign Currency)":
+                     reportName = "PrintVATInvoiceForeignCurrency";
+                    break;
+                 case "Print VAT Invoice (English Only)":
+                    reportName = "PrintVATInvoiceEnglishOnly";
+                    break;
                 case "Print Regular Tax Invoice - Without Signatories (Format 05)":
                     reportName = "RegulartaxinvoicewithoutSignatoriesFormat05";
                     break;
@@ -1681,6 +1752,8 @@
                 "Preview Invoices in (Foreign Currency)",
                 "Preview Invoices in Foreign Currency(English)",
                 "Preview Invoice(English)",
+                 "Print VAT Invoice (English Only)",
+                 "Print VAT Invoice (Foreign Currency)",
                 "Preview Proforma Invoice(NewFormat)",
                     "Preview Invoice",
                     "Preview Invoices in -with discount",

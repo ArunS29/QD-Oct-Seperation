@@ -1375,8 +1375,18 @@
 
 
                    case "Preview Invoices in (Foreign Currency)":
-                            reportName = "ForeignCurrencyProforma";
-                            break;
+                            CheckIfProformaInvoiceHasDiscount(invoiceNo).then(function (hasDiscount) {
+                                if (hasDiscount) {
+                                    reportName = "ForeignCurrencyProforma";
+                                } else {
+                                    reportName = "ForeignCurrencyProformaWithoutDiscount";
+                                }
+                                openReport(reportName, invoiceNo, watermarkText, isApproved);
+                            }).catch(function (err) {
+                                console.error("Error checking discount:", err);
+                                alert("Failed to check invoice discount.");
+                            });
+                            return;
                         case "Preview Invoices in Foreign Currency(English)":
                             reportName = "ForeignEnglishProforma";
                             break;
