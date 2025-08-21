@@ -2081,7 +2081,7 @@ buttons.Add()
                     if (formattedApprovedDate) {
                         disableEditing();
                     }
-
+                     checkVoucherDateLock(data.VoucherDate);
 
 
                         //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
@@ -3542,5 +3542,22 @@ function showMainFooter() {
 			}
 			});
 		});
-
+         function checkVoucherDateLock(voucherDate) {
+     $.ajax({
+         type: "GET",
+         url: "/api/VoucherMaster/CheckVoucherDateLock",
+         contentType: "application/json",
+         data: { voucherDate: voucherDate },
+         success: function (res) {
+             if (res && res.isLocked === true) {
+                 DevExpress.ui.dialog.alert(
+                     "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                     "Date Locked"
+                 ).done(function () {
+                     history.back();   // ⬅️ Go back after clicking OK
+                 });
+             }
+         }
+     });
+ }
 </script>

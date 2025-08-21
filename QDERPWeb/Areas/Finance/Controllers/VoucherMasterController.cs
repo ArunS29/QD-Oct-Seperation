@@ -3671,6 +3671,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
             return Unauthorized();
         }
+        [HttpGet]
+        public IActionResult CheckVoucherDateLock(DateTime voucherDate)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            // 1. Check if date locking is enabled
+            var companySettings = dbContext.Tbl901CompanyDetails02s.FirstOrDefault();
+            if (companySettings.IsDateLockingEnabled == false)
+           
+            {
+                return Ok(new { isLocked = false });
+            }
+
+            // 2. Get the latest lock date
+            var lockInfo = dbContext.Tbl90117VoucherDateLockings.OrderByDescending(x => x.VoucherDateLocked).FirstOrDefault();
+            if (lockInfo != null && voucherDate <= lockInfo.VoucherDateLocked)
+            {
+                return Ok(new { isLocked = true });
+            }
+
+            return Ok(new { isLocked = false });
+        }
 
 
         [HttpGet]

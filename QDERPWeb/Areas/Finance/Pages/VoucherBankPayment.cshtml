@@ -112,6 +112,7 @@
             .Type(DateBoxType.Date)
             .DisplayFormat("dd-MMM-yyyy")
             .Value(DateTime.Now)
+            .OnValueChanged("onVoucherDateChanged")
             .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
             .TabIndex(2)
             .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
@@ -3731,41 +3732,44 @@ accountGrid.clearSelection();
             });
         }
 
-         function onVoucherDateChanged(e) {
-            console.log("Selected Date:", e.value);
-            var voucherDate = $("#VoucherDate").dxDateBox("instance");
-            var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
+    function onVoucherDateChanged(e) {
+        let voucherDate = $("#VoucherDate").dxDateBox("instance");
+        let effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
-            voucherDate.option("onValueChanged", function (e) {
-                let voucherDateval = e.value; // Get Date from DevExtreme DateBox
+        if (!e.value) return;
 
-                // Check if voucherDateval is valid
-                if (!voucherDateval) return;
-
-                // Set effectiveDate to the same value as voucherDate
-                effectiveDate.option("value", voucherDateval);
-
-                // Convert to 'yyyy-MM-dd' format
-                let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
-
-                // Define the cutoff date (2021-12-31)
-                let cutoffDate = new Date("2021-12-31");
-
-                // Get the current date to set if the voucher date is blocked
-                let currentdate = new Date();
-                let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
-
-                // Check if the formatted voucher date is before the cutoff date
-                if (new Date(formattedDate) < cutoffDate) {
-                    // Show alert for blocked entry
-                    DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
-
-                    // Set both voucherDate and effectiveDate to the current date
-                    voucherDate.option("value", formattedCurrentDate);
-                    effectiveDate.option("value", formattedCurrentDate);
-                }
-            });
+        // Sync the other datebox with the changed one
+        if (e.element.attr("id") === "VoucherDate") {
+            effectiveDate.option("value", e.value);
+        } else {
+            voucherDate.option("value", e.value);
         }
+
+        // Validate against API
+        $.ajax({
+            url: "/api/VoucherMaster/CheckVoucherDateLock",
+            type: "GET",
+            data: { voucherDate: new Date(e.value).toISOString() },
+            success: function (response) {
+                if (response && response.isLocked) {
+                    DevExpress.ui.notify(
+                        "This Voucher Entry date has been blocked. Please review your entry date.",
+                        "error",
+                        3000
+                    );
+
+                    let currentDate = new Date();
+                    voucherDate.option("value", currentDate);
+                    effectiveDate.option("value", currentDate);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error checking date lock.", "error", 3000);
+            }
+        });
+    }
+
+
 
                         function onRowUpdating(e) { 
     const updatedData = e.newData;
@@ -4131,9 +4135,11 @@ function fetchUpdatedData(voucherEntryNo) {
                     if (formattedDate && formattedApprovedDate) {
                         disableEditing();
                     }
+                         // ✅ AFTER ALL FIELD BINDINGS → Now check Date Locking
+                   
                                                             syncWorkflowFromFields();
                                     initWorkflowTippyPopovers();
-                                    getDocumentCount();
+                                     checkVoucherDateLock(data.VoucherDate);                                    getDocumentCount();
 
                     //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
@@ -4143,7 +4149,8 @@ function fetchUpdatedData(voucherEntryNo) {
                 }
             });
         }
-
+            // Separate function to check locking
+    
            function onVoucherDrCrValueChanged(e) {
     // Retrieve the new selected value from the event argument.
     var selectedValue = e.value;
@@ -4566,5 +4573,23 @@ function showMainFooter() {
                 }
                 });
             });
+                function checkVoucherDateLock(voucherDate) {
+            $.ajax({
+                type: "GET",
+                url: "/api/VoucherMaster/CheckVoucherDateLock",
+                contentType: "application/json",
+                data: { voucherDate: voucherDate },
+                success: function (res) {
+                    if (res && res.isLocked === true) {
+                        DevExpress.ui.dialog.alert(
+                            "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                            "Date Locked"
+                        ).done(function () {
+                            history.back();   // ⬅️ Go back after clicking OK
+                        });
+                    }
+                }
+            });
+        }
 
 </script>

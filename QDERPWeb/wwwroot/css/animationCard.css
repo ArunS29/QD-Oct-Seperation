@@ -334,7 +334,7 @@ h3 {
     justify-content: flex-end;
     height: 100%;
     position: absolute;
-    left: 250px;
+    left: 275px !important;
     bottom: 10px;
 }
 

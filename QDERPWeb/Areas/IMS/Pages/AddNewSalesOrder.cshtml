@@ -2908,9 +2908,9 @@ $(document).ready(function () {
 
         const isMaster = false;
         const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(salesOrderNO)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-        const title = "Transaction Documents";
+        
 
-        openModal(url, title);
+        openModal(url, "");
     }
 
 

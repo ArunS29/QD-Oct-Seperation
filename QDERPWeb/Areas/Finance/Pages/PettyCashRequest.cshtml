@@ -1485,7 +1485,7 @@
                                 disableclaim();
 
                             }
-
+                            checkVoucherDateLock(entry.ClaimDate);
 
                             getchilddatas();
                         } else {
@@ -2549,7 +2549,24 @@
                 DevExpress.ui.notify("Error checking claim status", "error", 3000);
             });
     });
-
+        function checkVoucherDateLock(voucherDate) {
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckVoucherDateLock",
+            contentType: "application/json",
+            data: { voucherDate: voucherDate },
+            success: function (res) {
+                if (res && res.isLocked === true) {
+                    DevExpress.ui.dialog.alert(
+                        "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                        "Date Locked"
+                    ).done(function () {
+                        history.back();   // ⬅️ Go back after clicking OK
+                    });
+                }
+            }
+        });
+    }
               $(function () {
                          $("#pettycashrequest").dxTextBox({
                             text: formatMessage("Petty Cash Request"),
