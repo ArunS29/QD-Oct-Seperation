@@ -304,7 +304,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             ExistingAccHeadID = matchingEntries[0].AccountHead;
                             IsMatchingEntry = true;
                         }
-                       
+
                     }
 
                     bool isVoucherExists = dbContext.Tbl201VoucherMasters
@@ -1218,7 +1218,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-              
+
 
                 string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
                 byte defaultCompanyByte = 0; // or any default value you want
@@ -1921,8 +1921,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     {
                         if (record != null)
                         {
-                             rAmt = record.VoucherAmount;
-                            if(record.AccountHead != ExistingAccHeadID)
+                            rAmt = record.VoucherAmount;
+                            if (record.AccountHead != ExistingAccHeadID)
                             {
                                 dbContext.Tbl201VoucherEntries.Remove(record);
                                 IsRemoved = true;
@@ -2051,7 +2051,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         entry.CrAmount = debitamt;
                                     }
                                 }
-                                else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == ExistingAccHeadID && IsRemoved==true)
+                                else if (newCrEntry != null && crCount >= 2 && entry.AccountHead == ExistingAccHeadID && IsRemoved == true)
                                 {
                                     if (entry.DrCr == "Cr")
                                     {
@@ -2132,7 +2132,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     }
 
-                    
+
 
                     return Json(DataSourceLoader.Load(resultList.AsQueryable(), loadOptions));
                 }
@@ -2539,14 +2539,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     await dbContext.SaveChangesAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = VM.VoucherNo,
-                             ActionType = "You have one Payment Voucher to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = VM.VoucherNo,
+                        ActionType = "You have one Payment Voucher to verify",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new { success = true, message = existingVoucher != null ? "Voucher updated successfully!" : "Voucher inserted successfully!" });
                 }
@@ -2790,7 +2790,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var existingInvoice = await dbContext.Tbl20166VatpurchaseMasters
                                                                  .FirstOrDefaultAsync(v => v.PurchaseVoucherNo == InvoiceMaster.PurchaseVoucherNo);
-                    
+
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
 
@@ -2810,14 +2810,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.PurchaseVoucherNo,
-                             ActionType = "You have one Purchase Invoice to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.PurchaseVoucherNo,
+                        ActionType = "You have one Purchase Invoice to verify",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
 
 
@@ -2855,7 +2855,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                         if (child.PurchaseChildSlNo == null || child.PurchaseChildSlNo == 0)
                         {
-                            if(child.TaxSlabCode==null)
+                            if (child.TaxSlabCode == null)
                             {
                                 child.TaxSlabCode = 2;
                             }
@@ -2928,8 +2928,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
-                        var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
-                                                                 .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
+                    var existingInvoice = await dbContext.Tbl20161VatinvoiceMasters
+                                                             .FirstOrDefaultAsync(v => v.InvoiceNo == InvoiceMaster.InvoiceNo);
 
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
@@ -2950,14 +2950,14 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.InvoiceNo,
-                             ActionType = "You have one Sales Invoice to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.InvoiceNo,
+                        ActionType = "You have one Sales Invoice to verify",
+                        TenantName = TenantName
                     };
 
-                await _fcmService.SendNotificationAsync(notifyRequest);
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new { success = true, message = existingInvoice != null ? "Invoice and child records updated successfully!" : "New invoice and child records added successfully!" });
                 }
@@ -3112,11 +3112,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.CreditNoteNo,
-                             ActionType = "You have one Credit Note to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.CreditNoteNo,
+                        ActionType = "You have one Credit Note to verify",
+                        TenantName = TenantName
                     };
 
                     await _fcmService.SendNotificationAsync(notifyRequest);
@@ -3250,11 +3250,11 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     // await transaction.CommitAsync();
 
                     var notifyRequest = new NotificationRequest
-                        {
-                             UserId = UserId, // or fetch from session/DB
-                             VoucherName = InvoiceMaster.DebitNoteNo,
-                             ActionType = "You have one Debit Note to verify",
-                            TenantName = TenantName 
+                    {
+                        UserId = UserId, // or fetch from session/DB
+                        VoucherName = InvoiceMaster.DebitNoteNo,
+                        ActionType = "You have one Debit Note to verify",
+                        TenantName = TenantName
                     };
 
                     await _fcmService.SendNotificationAsync(notifyRequest);
@@ -3325,8 +3325,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.DetailedDescription = child.DetailedDescription;
                                 existingChild.QuantityDebited = child.QuantityDebited;
                                 existingChild.TaxSlabCode = child.TaxSlabCode;
-                                existingChild.UnitsToDebited = child.UnitsToDebited; 
-                                existingChild.UnitRateMethod = child.UnitRateMethod; 
+                                existingChild.UnitsToDebited = child.UnitsToDebited;
+                                existingChild.UnitRateMethod = child.UnitRateMethod;
                                 existingChild.Discount = child.Discount;
                                 existingChild.UnitRateInOc = child.UnitRate;
                                 existingChild.DiscountInOc = child.Discount;
@@ -3754,6 +3754,31 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+public async Task<IActionResult> GetDefaultCurrencyDecimals()
+{
+    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+    {
+        try
+        {
+            // Adjust this logic if you use session or another way to get the default company
+            string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+            int defaultCompanyId = 0;
+            int.TryParse(defaultCompanyString, out defaultCompanyId);
+
+            var company = await dbContext.Tbl901CompanyDetails
+                .Where(c => c.CompanyId == defaultCompanyId)
+                .Select(c => c.DefaultCurrencyDecimals)
+                .FirstOrDefaultAsync();
+
+            return Ok(new { DefaultCurrencyDecimals = company });
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, new { message = ex.Message });
+        }
+    }
+    return Unauthorized(new { message = "Invalid tenant.", success = false });
+}
     }
 
 }
