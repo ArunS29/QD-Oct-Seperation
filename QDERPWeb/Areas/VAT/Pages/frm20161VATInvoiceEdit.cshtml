@@ -5598,6 +5598,7 @@ if (popover.option("visible")) {
 					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
 					if (invoiceBox) {
 						invoiceBox.option("value", invoiceNoFromUrl);
+						getDocumentCount();
 					}
 				} else {
 					// 🔄 Otherwise, get default auto-generated invoice from API
@@ -5610,7 +5611,7 @@ if (popover.option("visible")) {
 									
 									InvoiceOPenToSave(data)
 									invoiceBox.option("value", data || "");
-									getDocumentCount();
+									
 								} else {
 									console.warn("Invoice TextBox not initialized.");
 								}
@@ -5720,7 +5721,7 @@ if (popover.option("visible")) {
 				InvoiceCheckedBy: ChkbySignatoryID || null,
 				InvoiceApprovedBy: ApproedbySignatoryID || null
 			};
-
+				getDocumentCount();
 			let InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource") || [];
 
 			let updatedDataSource = InvoiceChildren.map(item => ({
@@ -9814,8 +9815,8 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
     }
 
 
-		// Attachment
-	function onVatAttachmentButtonClick(e) {
+	// Attachment
+	async function onVatAttachmentButtonClick(e) {
 
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
 		const data = grid.getDataSource().items();
@@ -9831,15 +9832,27 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 		const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
 		const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
 		var menuType = "vat";
-
-
-		var formType ="Sales Invoice B2B";
+		var formType = "Sales Invoice B2B";
+		const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+		const invoiceData = await invoiceRes.json();
+		
+		let folderId2 = "";
+		if (invoiceData) {
+			folderId2 = [
+					invoiceData.SalesOrderNo,
+					invoiceData.QuotationNo,
+					invoiceData.DeliveryNoteNos,
+					invoiceData.ProformaInvoiceNo
+			]
+			.filter(Boolean)   // remove null/empty
+			.join(",");
+		}
 		// Log and build URL
 		console.log("Voucher No:", invoiceNo);
 		console.log("Voucher Type:", formType);
 
 		const isMaster = false;
-		const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderId2)}&modal=true`;
 		const title = "Transaction Documents";
 
 		openModal(url, title);
@@ -10243,23 +10256,38 @@ function formatSummaryValue(value) {
 		// No need to return anything if you don't want to
 	
 	//1. Get Document Count from Grid Load in Ledger Documents
-function setAttachCount(count) {
-	updateAttachButtonCount("#btnAttach", count);
-}
-//2. Get Document Count
-async function getDocumentCount() {
-	var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-	var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
-	var voucherType = voucherTypeBox.option("value");
-	// var folderNo2 = voucherNo;
-	var menuType = "vat";
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
 
-	const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
-	const docs = await res.json();
-	const count = docs.length;
+		const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+		const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+		var formType = "Sales Invoice B2B";
+		var menuType = "vat";
+		const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+		const invoiceData = await invoiceRes.json();
 
-	updateAttachButtonCount("#btnAttach", count);
-}
+		let folderId2 = "";
+		if (invoiceData) {
+			folderId2 = [
+				invoiceData.SalesOrderNo,
+				invoiceData.QuotationNo,
+				invoiceData.DeliveryNoteNos,
+				invoiceData.ProformaInvoiceNo
+			]
+			.filter(Boolean)   // remove null/empty
+			.join(",");
+		}
+
+
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const docs = await res.json();
+		const count = docs.length;
+
+		updateAttachButtonCount("#btnAttach", count);
+	}
 
 </script>
 

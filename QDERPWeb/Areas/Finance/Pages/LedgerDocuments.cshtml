@@ -449,7 +449,7 @@
     var referenceNo = urlParams.get("ReferenceNo");
     var moduleType = urlParams.get("ModuleType");
     var isMaster = urlParams.get("isMaster");
-    var folderNo2 = urlParams.get("FolderNo2");
+    var folderNo2 = urlParams.get("FolderNo2") || "";
     var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
     document.getElementById("documentTitle").textContent = title + " - " + moduleType;
     let currentEditRowIndex = -1;
@@ -459,6 +459,7 @@
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
         const menuType = urlParams.get("menuType");
+        const folderNo2 = urlParams.get("FolderNo2") || "";
         $("#documentsGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "DocumentNo",

@@ -6988,6 +6988,49 @@ documentNo: InvChildSlNo
             return Json(result);
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceNoFromCreditNote(string creditNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var invoiceNo = await (
+                    from c in dbContext.Tbl20170VatcreditNoteMasters
+                    where c.CreditNoteNo == creditNoteNo
+                    select c.InvoiceNo
+                ).FirstOrDefaultAsync();
+
+                if (invoiceNo != null)
+                    return Ok(invoiceNo);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSONoDNoteNoFromInvoice(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var invoiceDetails = await (
+                    from i in dbContext.Tbl20161VatinvoiceMasters
+                    where i.InvoiceNo == invoiceNo
+                    select new
+                    {
+                        i.SalesOrderNo,
+                        i.QuotationNo,
+                        i.DeliveryNoteNos,
+                        i.ProformaInvoiceNo
+                    }
+                ).FirstOrDefaultAsync();
+
+                if (invoiceDetails != null)
+                    return Ok(invoiceDetails);
+
+                return Ok(null); // No data found
+            }   
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
 
 
     }

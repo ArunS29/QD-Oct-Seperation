@@ -3951,6 +3951,7 @@
 		                                    }
 											 var button = $("#btnSave").dxButton("instance");
 											 button.option("text", "Update");
+												getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -5742,6 +5743,7 @@ if (popover.option("visible")) {
 					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
 					if (invoiceBox) {
 						invoiceBox.option("value", invoiceNoFromUrl);
+							getDocumentCount();
 					}
 				} else {
 					// 🔄 Otherwise, get default auto-generated invoice from API
@@ -5879,7 +5881,7 @@ if (popover.option("visible")) {
 				InvoiceCheckedBy: ChkbySignatoryID || null,
 				InvoiceApprovedBy: ApproedbySignatoryID || null
 			};
-
+				getDocumentCount();
 			let InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource") || [];
 
 			let updatedDataSource = InvoiceChildren.map(item => ({
@@ -10093,7 +10095,7 @@ button.option("disabled", false);
     }
 
 		// Attachment
-		function onVatAttachmentButtonClick(e) {
+		async function onVatAttachmentButtonClick(e) {
 
 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
 			const data = grid.getDataSource().items();
@@ -10109,17 +10111,24 @@ button.option("disabled", false);
 			const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
 			const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
 			var menuType = "vat";
-
-
 			var formType ="Sales Invoice B2C";
-			// Log and build URL
-			console.log("Voucher No:", invoiceNo);
-			console.log("Voucher Type:", formType);
+			const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+			const invoiceData = await invoiceRes.json();
 
+			let folderId2 = "";
+			if (invoiceData) {
+				folderId2 = [
+					invoiceData.SalesOrderNo,
+					invoiceData.QuotationNo,
+					invoiceData.DeliveryNoteNos,
+					invoiceData.ProformaInvoiceNo
+				]
+				.filter(Boolean)   // remove null/empty
+				.join(",");
+			}
 			const isMaster = false;
-			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+				const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderId2)}&modal=true`;
 			const title = "Transaction Documents";
-
 			openModal(url, title);
 		}
 
@@ -10237,6 +10246,41 @@ function formatSummaryValue(value) {
         maximumFractionDigits: currencyDecimals 
     });
 }
+
+	// Attachment Count
+	//1. Get Document Count from Grid Load in Ledger Documents
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
+
+		const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+		const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+		var formType = "Sales Invoice B2C";
+		var menuType = "vat";
+		const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+		const invoiceData = await invoiceRes.json();
+
+		let folderId2 = "";
+		if (invoiceData) {
+			folderId2 = [
+					invoiceData.SalesOrderNo,
+					invoiceData.QuotationNo,
+					invoiceData.DeliveryNoteNos,
+					invoiceData.ProformaInvoiceNo
+			]
+			.filter(Boolean)   // remove null/empty
+			.join(",");
+		}
+
+
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const docs = await res.json();
+		const count = docs.length;
+
+		updateAttachButtonCount("#btnAttach", count);
+	}
 
 				
 </script>
