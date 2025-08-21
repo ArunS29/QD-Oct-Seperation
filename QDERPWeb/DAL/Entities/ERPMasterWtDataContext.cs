@@ -3014,7 +3014,7 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public virtual DbSet<Tbl40116PropertyIssuesMaster> Tbl40116PropertyIssuesMasters { get; set; }
 
-    public virtual DbSet<Tbl40117PropertyIssuesChild> Tbl40117PropertyIssuesChildren { get; set; }
+    public virtual DbSet<Tbl40117PropertyIssuesChild> Tbl40117PropertyIssuesChilds { get; set; }
 
     public virtual DbSet<Tbl40118PropertyInvoiceMaster> Tbl40118PropertyInvoiceMasters { get; set; }
 

@@ -19,7 +19,6 @@
     }
 </style>
 <div class="p-1">
-
     <table style="width:100%; border-collapse: separate; border-spacing: 10px;">
         <tr>
             <td style="width: 50%;">
@@ -296,24 +295,74 @@
         dataGrid = e.component;
     }
 
-      
-       function btnSaveClick() 
 
-       { var data = 
-           {
-       EquipmentNo: $("#PropertyNo").dxTextBox("instance").option("value"), 
-       OperatorName: $("#OperatorName").dxTextBox("instance").option("value"),
-       OperatorRegHourlyRate: $("#HourlyRate").dxNumberBox("instance").option("value"), 
-       OperatorOthourlyRate: $("#OvertimeRate").dxNumberBox("instance").option("value"),
-       WorkStartDate: $("#WorkStartDate").dxDateBox("instance").option("value"),
-       WorkEndDate: $("#DemobilizedOn").dxDateBox("instance").option("value"),
-       OperatorRemarks: $("#Remarks").dxTextArea("instance").option("value"), 
-       WorkingShift: $("#Shift").dxSelectBox("instance").option("value") }; 
-       $.ajax({ url: '/api/PropertyOperator/SaveOrUpdate', type: "POST", data: JSON.stringify(data),
-       contentType: "application/json", 
-       success: function (res) { DevExpress.ui.notify(res.message,
-           "success", 3000); },
-       error: function (err) 
-       { DevExpress.ui.notify("Error saving data", "error", 3000); } }); }
+
+
+      function btnSaveClick() {
+     debugger;
+        try {
+            const data = {
+                EquipmentNo: $("#PropertyNo").dxTextBox("instance")?.option("value") || "",
+                OperatorType: $("#OperatorType").dxDropDownBox("instance")?.option("value") || "",
+                OperatorName: $("#OperatorName").dxTextBox("instance")?.option("value") || "",
+                OperatorRegHourlyRate: $("#HourlyRate").dxNumberBox("instance")?.option("value") || 0,
+                EmployeeNo: $("#EmployeeNo").dxDropDownBox("instance")?.option("value") || "",
+                OperatorOthourlyRate: $("#OvertimeRate").dxNumberBox("instance")?.option("value") || 0,
+                WorkStartDate: $("#WorkStartDate").dxDateBox("instance")?.option("value") || null,
+                WorkEndDate: $("#DemobilizedOn").dxDateBox("instance")?.option("value") || null,
+                OperatorRemarks: $("#Remarks").dxTextArea("instance")?.option("value") || "",
+                WorkingShift: $("#Shift").dxSelectBox("instance")?.option("value") || ""
+            };
+
+            $.ajax({
+                url: "/api/PropertyOperator/SaveOrUpdate",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result?.success) {
+                        DevExpress.ui.notify(result.message, "success", 3000);
+                        $("#btnSave").data("is-update", true).text("Update");
+                    } else {
+                        DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", xhr.responseText);
+                    DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
+                }
+            });
+        } catch (err) {
+            console.error("btnSaveClick error:", err);
+            DevExpress.ui.notify("Form controls not initialized properly", "error", 3000);
+        }
+    }
+
+
+
+
+    // function loadForEdit(equipmentNo) {
+    //     fetch(`/api/AddNewProperty/GetByCode?code=${equipmentNo}`)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             if (data) {
+    //                 $("#EquipmentNo").dxTextBox("instance").option("value", data.equipmentNo);
+    //                 $("#OperatorName").dxTextBox("instance").option("value", data.operatorName);
+    //                 $("#OperatorRegHourlyRate").dxNumberBox("instance").option("value", data.operatorRegHourlyRate);
+    //                 $("#OperatorOthourlyRate").dxNumberBox("instance").option("value", data.operatorOthourlyRate);
+    //                 $("#WorkStartDate").dxDateBox("instance").option("value", data.workStartDate);
+    //                 $("#WorkEndDate").dxDateBox("instance").option("value", data.workEndDate);
+    //                 $("#OperatorRemarks").dxTextArea("instance").option("value", data.operatorRemarks);
+    //                 $("#WorkingShift").dxDropDownBox("instance").option("value", data.workingShift);
+
+    //                 isEditMode = true;
+    //                 $("#btnSave").text("Update");
+    //             }
+    //         })
+    //         .catch(err => {
+    //             DevExpress.ui.notify("Failed to load data: " + err.message, "error", 3000);
+    //         });
+    // }
+
 
 </script>
