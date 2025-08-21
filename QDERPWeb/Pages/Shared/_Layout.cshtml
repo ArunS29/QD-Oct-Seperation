@@ -1691,6 +1691,38 @@
 
 </head>
 <body>
+    <dialog id="confirmDialog" aria-labelledby="confirmTitle" aria-modal="true">
+        <form method="dialog" class="confirmDialogmodal" id="confirmForm">
+        <div class="confirmDialogmodal-header">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M12 9v4m0 4h.01M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0Z" stroke="#dc3545" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            <h2 id="confirmTitle">Confirm delete</h2>
+            <button type="button" class="btn btn-ghost" onclick="document.getElementById('confirmDialog').close()">✕</button>
+        </div>
+        <div class="confirmDialogmodal-body">
+            <div id="confirmMessage">Are you sure you want to delete this item?</div>
+
+            <div class="step" id="stepChoice">
+            <div style="display:flex; gap:10px; margin-top:16px;">
+                <button class="btn btn-danger" id="chooseYes">Yes, Replace the data</button>
+                <button class="btn btn-secondary" id="chooseNo">No, keep it</button>
+            </div>
+            </div>
+
+            <div class="step" id="stepType">
+            <div class="badge">To confirm, type: <span class="kbd" id="phraseBadge">Replace by user</span></div>
+            <div class="input">
+                <label for="confirmPhrase">Confirmation phrase</label>
+                <input id="confirmPhrase" name="confirmPhrase" autocomplete="off" placeholder="type it exactly" />
+                <div class="hint">Required to proceed. (case-sensitive)</div>
+                <div class="error" id="phraseError">Phrase does not match.</div>
+            </div>
+            </div>
+        </div>
+        <div class="confirmDialogmodal-footer">
+            <button class="btn btn-danger" id="btnConfirm" value="confirm" disabled>Confirm delete</button>
+        </div>
+        </form>
+    </dialog>
     <div id="notificationSidebar" class="notification-sidebar">
         <div id="notificationSidebarContent">
             <div class="notification-panel">
@@ -3903,7 +3935,7 @@
                                             <i class="fas fa-database"></i>
                                             <div class="text">${formatMessage("Projects Database")}</div>
                                         </a>
-                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/ComingSoon">
+                                        <a class="submenu-item" onclick="hideSidebars()" href="/${tenantName}/IMS/MRAddNewProjectRequest">
                                             <i class="fas fa-file-alt"></i>
                                             <div class="text">${formatMessage("Material Requirements")}</div>
                                         </a>
