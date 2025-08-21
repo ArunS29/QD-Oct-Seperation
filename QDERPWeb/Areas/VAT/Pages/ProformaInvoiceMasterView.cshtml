@@ -470,6 +470,7 @@
 			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
 			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
 			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
 			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -489,7 +490,7 @@
 				   		</div>
 				   	</text>)
 		)
-
+	<div id="quarterMenu"></div>
 	@(Html.DevExtreme().CheckBox()
 		.ID("chkUseEffectiveDate")
 		.Text(new JS("formatMessage('Use Effective Date')"))
@@ -538,7 +539,7 @@
 				subColumns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount)
 			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header1" style="font-weight: bold;">
 							 			<%= column.caption %>
@@ -548,7 +549,7 @@
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption(new JS("formatMessage('Total VAT Amount')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header2" style="font-weight: bold;">
 							 			<%= column.caption %>
@@ -559,7 +560,7 @@
 				subColumns.AddFor(m => m.CalcLineAmount)
 			.Caption(new JS("formatMessage('Invoiced Amount')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 		<div class="Currency-header3" style="font-weight: bold;">
 			<%= column.caption %>
@@ -575,7 +576,7 @@
 				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header4" style="font-weight: bold;">
 							 			<%= column.caption %>
@@ -586,7 +587,7 @@
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 		.HeaderCellTemplate(@<text>
 						 		<div class="Currency-header5" style="font-weight: bold;">
 						 			<%= column.caption %>
@@ -596,7 +597,7 @@
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 		.HeaderCellTemplate(@<text>
 						 		<div class="Currency-header6" style="font-weight: bold;">
 						 			<%= column.caption %>
@@ -609,7 +610,7 @@
 				subColumns.AddFor(m => m.GccexpemptedRevenue)
 			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 		<div class="Currency-header7" style="font-weight: bold;">
 			<%= column.caption %>
@@ -623,7 +624,7 @@
 				subColumns.AddFor(m => m.ExportsRevenue)
 			.Caption(new JS("formatMessage('Exports Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 		<div class="Currency-header8" style="font-weight: bold;">
 			<%= column.caption %>
@@ -640,7 +641,7 @@
 				subColumns.AddFor(m => m.DomesticStandartRatedTax)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header9" style="font-weight: bold;">
 							 			<%= column.caption %>
@@ -651,7 +652,7 @@
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header10" style="font-weight: bold;">
 							 			<%= column.caption %>
@@ -662,7 +663,7 @@
 				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption(new JS("formatMessage('Domestic Exempted Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 		<div class="Currency-header11" style="font-weight: bold;">
 			<%= column.caption %>
@@ -676,7 +677,7 @@
 				subColumns.AddFor(m => m.GccstandardRatedRevenue)
 			.Caption(new JS("formatMessage('GCC Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 		<div class="Currency-header12" style="font-weight: bold;">
 			<%= column.caption %>
@@ -690,7 +691,7 @@
 				subColumns.AddFor(m => m.GccstandardRatedTax)
 			.Caption(new JS("formatMessage('Exports Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }")
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
 			.HeaderCellTemplate(@<text>
 		<div class="Currency-header13" style="font-weight: bold;">
 			<%= column.caption %>
@@ -787,59 +788,59 @@
 			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
 
 				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalCreditNoteAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticStandartRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalRevenueOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalRevenueOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticZeroRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("GccexpemptedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticStandartRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalTaxOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalTaxOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticZeroRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticExemptedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
-
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("GccstandardRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("ExportsTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+
 			});
 		}))
 </div>
@@ -869,7 +870,7 @@
 	const tabs = document.querySelectorAll(".tab-text");
 	const contents = document.querySelectorAll(".tab-content");
 
-	let currentTab = 0;
+	let currentTab = 0,currencyDecimals = 2;
 	const intervalTime = 3000; // 3 seconds per tab
 	let tabInterval;
 
@@ -1203,6 +1204,22 @@
 		const currentDate = new Date();
 
 		switch (duration) {
+				case 'q1':
+			frmDate = new Date(currentDate.getFullYear(), 0, 1);   // Jan 1
+			toDate  = new Date(currentDate.getFullYear(), 2, 31);  // Mar 31
+			break;
+			case 'q2':
+				frmDate = new Date(currentDate.getFullYear(), 3, 1);   // Apr 1
+				toDate  = new Date(currentDate.getFullYear(), 5, 30);  // Jun 30
+				break;
+			case 'q3':
+				frmDate = new Date(currentDate.getFullYear(), 6, 1);   // Jul 1
+				toDate  = new Date(currentDate.getFullYear(), 8, 30);  // Sep 30
+				break;
+			case 'q4':
+				frmDate = new Date(currentDate.getFullYear(), 9, 1);   // Oct 1
+				toDate  = new Date(currentDate.getFullYear(), 11, 31); // Dec 31
+				break;
 			case 'today':
 				frmDate = toDate = currentDate;
 				break;
@@ -1814,6 +1831,92 @@
 		injectHeaderSVG();
 	});
 
+			function onByQuarterClick(e) {
+		// Prevent the main dropdown from closing
+		e.event.stopPropagation();
+
+		// Reopen main dropdown in case DevExtreme tried to close it
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.open();
+
+		// Open the submenu near the "By Quarter" element
+		openQuarterMenu(e.element);
+	}
+
+			function openQuarterMenu(targetElement) {
+		if ($("#quarterMenu").data("dxContextMenu")) {
+			$("#quarterMenu").dxContextMenu("instance").dispose();
+		}
+
+		$("#quarterMenu").dxContextMenu({
+			target: targetElement,
+			showEvent: "",
+			width: 230,
+			position: {
+				at: "right center",
+				my: "left center",
+				of: targetElement,
+				offset: "8 0"
+			},
+			items: [
+				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
+				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
+				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
+				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+			],
+			onItemClick: function(e) {
+				const quarter = e.itemData.value;
+				if (quarter) {
+					ddBtnShowRecords_click(quarter, 1);
+					closeMainDropdown();
+				}
+			},
+			itemTemplate: function(itemData) {
+				return $("<div>").addClass("custom-dropdown-item")
+					.append(
+						$("<div>").addClass("side-bar").css({
+							"background-color": itemData.color,
+							"height": "90%"
+						})
+					)
+					.append(
+						$("<div>").addClass("item-content").append(
+							$("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+							$("<div>").append(
+								$("<div>").addClass("item-title").text(itemData.text)
+							)
+						)
+					);
+			}
+		}).dxContextMenu("instance").show();
+	}
+
+
+
+
+	function closeMainDropdown() {
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.close();  // ✅ closes only after submenu item click
+	}
+
+					// Fetch from API on page load
+	$.get("/api/VATModule/GetCurrencyDecimals")
+		.done(function (decimals) {
+			if (decimals != null) {
+				currencyDecimals = decimals;
+			}
+		})
+		.fail(function () {
+			DevExpress.ui.notify("Failed to load decimals, using 2", "warning", 3000);
+		});
+
+			function formatSummaryValue(value) {
+		if (value == null || isNaN(value)) return 0;
+		return value.toLocaleString(undefined, {
+			minimumFractionDigits: currencyDecimals,
+			maximumFractionDigits: currencyDecimals
+		});
+	}
 
 
 		

@@ -450,6 +450,7 @@
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+		        	items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -469,7 +470,7 @@
             </div>
         </text>)
 		)
-
+	<div id="quarterMenu"></div>
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201707vatpurchaseRegisterMainView>()
@@ -502,8 +503,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -524,8 +525,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -546,8 +547,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#fff9cc; color:#b58900; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -575,8 +576,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -596,8 +597,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -617,8 +618,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -659,8 +660,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -686,8 +687,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -707,8 +708,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -728,8 +729,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -749,8 +750,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -770,8 +771,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -791,8 +792,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -821,8 +822,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -842,8 +843,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -863,8 +864,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -883,8 +884,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -904,8 +905,8 @@
 		function(e) {
 		if (e.value != null) {
 		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: 2,
-		maximumFractionDigits: 2
+		minimumFractionDigits: currencyDecimals,
+		maximumFractionDigits: currencyDecimals
 		});
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
@@ -929,7 +930,7 @@
 			.CustomizeText(@"
 		function(e) {
 		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
 		return '';
@@ -947,7 +948,7 @@
 			.CustomizeText(@"
 		function(e) {
 		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
 		return '';
@@ -965,7 +966,7 @@
 			.CustomizeText(@"
 		function(e) {
 		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
 		return '';
@@ -983,7 +984,7 @@
 			.CustomizeText(@"
 		function(e) {
 		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
 		return '';
@@ -1001,7 +1002,7 @@
 			.CustomizeText(@"
 		function(e) {
 		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
 		return '';
@@ -1019,7 +1020,7 @@
 			.CustomizeText(@"
 		function(e) {
 		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
 		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 		}
 		return '';
@@ -1148,41 +1149,41 @@
 
 				// PURCHASE & TAX AMOUNT
 				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 				totalItems.Add().Column("TotalPurchaseAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				// REVENUE CLASSIFIED - Domestic
-				totalItems.Add().Column("DomesticStandardPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
-				totalItems.Add().Column("TotalDspurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
-				totalItems.Add().Column("TotalDspurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
-				totalItems.Add().Column("DomesticZeroTaxPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
-				totalItems.Add().Column("DomesticExemptedTaxPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
+				totalItems.Add().Column("DomesticStandardPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalDspurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalDspurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals}) : ''; }");
+				totalItems.Add().Column("DomesticZeroTaxPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("DomesticExemptedTaxPurchases").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				// REVENUE CLASSIFIED - Imports
-				totalItems.Add().Column("ImportsVatpaidAtCustoms").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
-				totalItems.Add().Column("TotalImportPurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
-				totalItems.Add().Column("TotalImportPurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }"); 
-				totalItems.Add().Column("ImportsVatthruRcm").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalRcmpurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalRcmpurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("ImportsVatpaidAtCustoms").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalImportPurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalImportPurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("ImportsVatthruRcm").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals}) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchase10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchase15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				// VAT CLASSIFIED - Domestic
-				totalItems.Add().Column("DomesticStandardPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalDspurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalDspurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("DomesticZeroTaxPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("DomesticExemptedTaxPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("DomesticStandardPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalDspurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalDspurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("DomesticZeroTaxPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("DomesticExemptedTaxPurTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				// VAT CLASSIFIED - Imports
-				totalItems.Add().Column("ImportsVatpaidAtCustomsTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalImportPurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalImportPurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("ImportsVatthruRcmtax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalRcmpurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-				totalItems.Add().Column("TotalRcmpurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("ImportsVatpaidAtCustomsTax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalImportPurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalImportPurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("ImportsVatthruRcmtax").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchaseTax10Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+				totalItems.Add().Column("TotalRcmpurchaseTax15Perc").SummaryType(SummaryType.Sum).CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 			});
 
        
@@ -1224,7 +1225,7 @@
 <script>
 
 		const headings = ["Bill Amount", "VAT Value"];
-	let currentIndex = 0;
+	let currentIndex = 0,currencyDecimals = 2;
 
 	// Default values
 	let invoiceAmounts = "0.00";
@@ -1521,6 +1522,22 @@
 		var currentDate = new Date();
 
 		switch (duration) {
+				case 'q1':
+			frmDate = new Date(currentDate.getFullYear(), 0, 1);   // Jan 1
+			toDate  = new Date(currentDate.getFullYear(), 2, 31);  // Mar 31
+			break;
+			case 'q2':
+				frmDate = new Date(currentDate.getFullYear(), 3, 1);   // Apr 1
+				toDate  = new Date(currentDate.getFullYear(), 5, 30);  // Jun 30
+				break;
+			case 'q3':
+				frmDate = new Date(currentDate.getFullYear(), 6, 1);   // Jul 1
+				toDate  = new Date(currentDate.getFullYear(), 8, 30);  // Sep 30
+				break;
+			case 'q4':
+				frmDate = new Date(currentDate.getFullYear(), 9, 1);   // Oct 1
+				toDate  = new Date(currentDate.getFullYear(), 11, 31); // Dec 31
+				break;
 			case 'today':
 				frmDate = toDate = currentDate;
 				break;
@@ -2264,6 +2281,75 @@
 		injectHeaderSVG();
 	});
 
+
+			function onByQuarterClick(e) {
+		// Prevent the main dropdown from closing
+		e.event.stopPropagation();
+
+		// Reopen main dropdown in case DevExtreme tried to close it
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.open();
+
+		// Open the submenu near the "By Quarter" element
+		openQuarterMenu(e.element);
+	}
+
+			function openQuarterMenu(targetElement) {
+		if ($("#quarterMenu").data("dxContextMenu")) {
+			$("#quarterMenu").dxContextMenu("instance").dispose();
+		}
+
+		$("#quarterMenu").dxContextMenu({
+			target: targetElement,
+			showEvent: "",
+			width: 230,
+			position: {
+				at: "right center",
+				my: "left center",
+				of: targetElement,
+				offset: "8 0"
+			},
+			items: [
+				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
+				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
+				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
+				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+			],
+			onItemClick: function(e) {
+				const quarter = e.itemData.value;
+				if (quarter) {
+					ddBtnShowRecords_click(quarter, 1);
+					closeMainDropdown();
+				}
+			},
+			itemTemplate: function(itemData) {
+				return $("<div>").addClass("custom-dropdown-item")
+					.append(
+						$("<div>").addClass("side-bar").css({
+							"background-color": itemData.color,
+							"height": "90%"
+						})
+					)
+					.append(
+						$("<div>").addClass("item-content").append(
+							$("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+							$("<div>").append(
+								$("<div>").addClass("item-title").text(itemData.text)
+							)
+						)
+					);
+			}
+		}).dxContextMenu("instance").show();
+	}
+
+
+
+
+	function closeMainDropdown() {
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.close();  // ✅ closes only after submenu item click
+	}
+
 		$(document).ready(function () {
 
 
@@ -2291,4 +2377,26 @@
 					}
 				}
 			});
+
+
+
+					// Fetch from API on page load
+	$.get("/api/VATModule/GetCurrencyDecimals")
+		.done(function (decimals) {
+			if (decimals != null) {
+				currencyDecimals = decimals;
+			}
+		})
+		.fail(function () {
+			DevExpress.ui.notify("Failed to load decimals, using 2", "warning", 3000);
+		});
+
+			function formatSummaryValue(value) {
+		if (value == null || isNaN(value)) return 0;
+		return value.toLocaleString(undefined, {
+			minimumFractionDigits: currencyDecimals,
+			maximumFractionDigits: currencyDecimals
+		});
+	}
+
 </script>

@@ -546,7 +546,7 @@
 																					.Icon("plus")
 																					.Hint("Add Client")
 																					.ElementAttr(new { @class = "custom-hover-button add-hover" })
-																					.OnClick("showLedgerAccountPopup"));
+																					.OnClick("onAddClientClick"));
 																				 										// Or your create function
 
 																					// ✏️ Edit button inside the input
@@ -982,7 +982,10 @@
 																				.Min(1)
 																				.Step(1)
 																				.ShowSpinButtons(true)
-																				.Width("100%"))
+																				.Width("100%")
+																				.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
+										)
 
 										@(Html.DevExtreme().Button()
 																				.ID("convertToArabic1")
@@ -1064,7 +1067,10 @@
 																				.Min(1)
 																				.Step(1)
 																				.ShowSpinButtons(true)
-																				.Width("100%"))
+																				.Width("100%")
+																		    	 .OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
+										)
 
 
 										<!-- Retention Convert to Arabic Button -->
@@ -1621,6 +1627,35 @@
 						.UseIcons(true)
 						)
 						.OnEditorPreparing("onEditorPreparing")
+						.Summary(summary =>
+
+						{
+							summary.TotalItems(totalItems =>
+
+							{
+
+								totalItems.Add().Column("Discount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
+
+								totalItems.Add().Column("TotalBeforeDiscount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
+
+								totalItems.Add().Column("Amount").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
+
+								totalItems.Add().Column("VAT").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
+								totalItems.Add().Column("Total").SummaryType(SummaryType.Sum)
+
+							.CustomizeText("function(e) { return formatSummaryValue(e.value); }");
+
+							});
+
+						})
 						)
 		</div>
 
@@ -3079,7 +3114,7 @@
 
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null,rowIx=null,IsVerified=false,IsApproved=false;
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null,rowIx=null,IsVerified=false,IsApproved=false,currencyDecimals = 2;
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -3099,6 +3134,7 @@
 
 
 			$(document).ready(function () {
+				debugger;
 			if (IsCurrent !== "true") {
 				$.ajax({
 					url: "/api/VATModule/GetVATProformaInvoiceNo",
@@ -3186,7 +3222,7 @@
 			var urlParams = new URLSearchParams(window.location.search);
 			var InvoiceNo = urlParams.get('ProformaInvoiceNo');
 			var IsEditflag = urlParams.get('IsEditflag');
-
+			debugger;
 				IsCurrent=IsEditflag.toString();
 
 				// console.log("Iseditflag",IsEditflag)
@@ -3622,10 +3658,10 @@
 						});
 					}
 				},
-					{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150 },
-				{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150 },
-					{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,allowEditing: false },
-				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150 },
+				{ dataField: "QuantityInvoiced", caption: formatMessage('Qty'), width: 150,alignment: "right"  },
+				{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150,format: getDecimalFormat(currencyDecimals),alignment: "right" },
+				{ dataField: "CalcLineAmountBeforeDiscount", caption: formatMessage('Total Before Discount'), width: 150,allowEditing: false,format: getDecimalFormat(currencyDecimals),alignment: "right" },
+				{ dataField: "Discount", caption: formatMessage('Discount'), width: 150,format: getDecimalFormat(currencyDecimals),alignment: "right" },
 						{
 			dataField: "DiscountDetails",
 			caption: "...",
@@ -3644,7 +3680,7 @@
 				}).appendTo(container);
 			}
 		},
-					{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,allowEditing: false },
+					{ dataField: "CalcLineAmount", caption: formatMessage('Amount'), width: 150,allowEditing: false,format: getDecimalFormat(currencyDecimals),alignment: "right" },
 				{
 		dataField: "VATPercentage",
 		caption: formatMessage('VAT Description'),
@@ -3679,9 +3715,9 @@
 		let vatAmount = amountAfterDiscount * vatRate;
 		let total = amountAfterDiscount + vatAmount;
 
-		grid.cellValue(rowIndex, "CalcLineAmount", amountAfterDiscount.toFixed(2));
-		grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
-		grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
+		grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
+		grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
+		grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
 		grid.cellValue(rowIndex, "QuantityInvoiced", qty);
 	//	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 		grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
@@ -3723,9 +3759,10 @@
 		let vatAmount = amountAfterDiscount * vatRate;
 		let total = amountAfterDiscount + vatAmount;
 
-		grid.cellValue(rowIndex, "CalcLineAmount", amountAfterDiscount.toFixed(2));
-		grid.cellValue(rowIndex, "CalcTaxAmount", vatAmount.toFixed(2));
-		grid.cellValue(rowIndex, "LineTotal", total.toFixed(2));
+		
+	    grid.cellValue(rowIndex, "CalcLineAmount", formatAmount(amountAfterDiscount));
+	    grid.cellValue(rowIndex, "CalcTaxAmount", formatAmount(vatAmount));
+	    grid.cellValue(rowIndex, "LineTotal", formatAmount(total));
 		grid.cellValue(rowIndex, "QuantityInvoiced", qty);
 	//	grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 		grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
@@ -3741,8 +3778,8 @@
 			});
 		}
 	},
-					{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,allowEditing: false },
-					{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150,allowEditing: false},
+					{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,allowEditing: false,format: getDecimalFormat(currencyDecimals),alignment: "right" },
+					{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150,allowEditing: false,format: getDecimalFormat(currencyDecimals),alignment: "right"},
 				{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 			],
 			editing: {
@@ -3790,17 +3827,16 @@
 							let vatValue = discountedAmount * vatRate;
 							let totalValue = discountedAmount + vatValue;
 
-							// Update grid cells
-							grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-							grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-							grid.cellValue(rowIndex, "Unit Price",unitPrice);
-							grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-							grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
-							grid.cellValue(rowIndex, "Discount",discount);
-							grid.cellValue(rowIndex, "Qty", qty);
-							grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+							grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
+					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
+					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+					  // grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
+					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
+					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
+					   grid.cellValue(rowIndex, "VAT Description", vatRateStr);
 
-								applyDiscount(amount.toFixed(2));
+								applyDiscount(formatAmount(amount));
 
 								//applyDiscount(rowIndex);
 						}
@@ -5106,42 +5142,81 @@
 
 
 
-		$("#btnAddNew").on("click", function (e) {
+	$("#btnAddNew").on("click", function (e) {
 		const grid = $("#B2BdataGrid").dxDataGrid("instance");
 		const store = grid.getDataSource().store();
 		const currentData = grid.getDataSource().items();
 
-		// Calculate next SNo safely based on existing items
 		const nextSNo = currentData.length > 0
 			? Math.max(...currentData.map(row => row.SNo || 0)) + 1
 			: 1;
 
+		// Helper to format number with decimals
+		const formatAmount = (val) => Number(val).toFixed(currencyDecimals);
+
 		const newRow = {
 			SNo: nextSNo,
-			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
-			ItemCode:"",
+			ItemCode: "",
 			DetailedDescription: "",
 			DescriptionDetails: "",
 			QuantityInvoiced: 0,
-			UnitRate: 0.00,
-			CalcLineAmountBeforeDiscount: 0.00,
-			Discount: 0,
+			UnitRate: formatAmount(0),
+			CalcLineAmountBeforeDiscount: formatAmount(0),
+			Discount: formatAmount(0),
 			DiscountDetails: "",
-			CalcLineAmount: 0.00,
+			CalcLineAmount: formatAmount(0),
 			ExcemptionCode: "",
-			CalcTaxAmount: "",
-			LineTotal: 0.00
+			CalcTaxAmount: formatAmount(0),
+			LineTotal: formatAmount(0)
 		};
 
-		// Efficient insert without replacing entire dataSource
 		store.insert(newRow)
 			.then(() => {
-				grid.refresh(); // Ensure the UI updates with the new row
+				grid.refresh();
+				$(".action-buttons-container").show();
 			})
 			.catch(error => {
 				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
 			});
 	});
+
+
+	// 	$("#btnAddNew").on("click", function (e) {
+	// 	const grid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 	const store = grid.getDataSource().store();
+	// 	const currentData = grid.getDataSource().items();
+
+	// 	// Calculate next SNo safely based on existing items
+	// 	const nextSNo = currentData.length > 0
+	// 		? Math.max(...currentData.map(row => row.SNo || 0)) + 1
+	// 		: 1;
+
+	// 	const newRow = {
+	// 		SNo: nextSNo,
+	// 		//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
+	// 		ItemCode:"",
+	// 		DetailedDescription: "",
+	// 		DescriptionDetails: "",
+	// 		QuantityInvoiced: 0,
+	// 		UnitRate: 0.00,
+	// 		CalcLineAmountBeforeDiscount: 0.00,
+	// 		Discount: 0,
+	// 		DiscountDetails: "",
+	// 		CalcLineAmount: 0.00,
+	// 		ExcemptionCode: "",
+	// 		CalcTaxAmount: "",
+	// 		LineTotal: 0.00
+	// 	};
+
+	// 	// Efficient insert without replacing entire dataSource
+	// 	store.insert(newRow)
+	// 		.then(() => {
+	// 			grid.refresh(); // Ensure the UI updates with the new row
+	// 		})
+	// 		.catch(error => {
+	// 			DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+	// 		});
+	// });
 
 
 			// Fetch dropdown data (same API can be used if needed)
@@ -7032,14 +7107,14 @@
 				let totalValue = discountedAmount + vatValue;
 
 				// Update grid cells
-				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-				grid.cellValue(rowIndex, "Unit Price",unitPrice);
-				grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-				grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
-				grid.cellValue(rowIndex, "Discount",discount);
-				grid.cellValue(rowIndex, "Qty", qty);
-				grid.cellValue(rowIndex, "VAT Description", vatRateStr);
+				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
+					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
+					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
+					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
+					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
+					   grid.cellValue(rowIndex, "VAT Description", vatRateStr);
 
 				  // Store value for use in popover
 				 window.currentAmount = amount.toFixed(2);
@@ -7201,22 +7276,22 @@
 
 			 }
 
-			 function onEditClientClick() {
-		var clientId = $("#ddclientname").dxDropDownBox("option", "value");
+	// 		 function onEditClientClick() {
+	// 	var clientId = $("#ddclientname").dxDropDownBox("option", "value");
 
-		if (!clientId) {
-			   DevExpress.ui.notify(
-								"Please select the Client to edit","error",3000
-						  );
-						  return;
-		}
+	// 	if (!clientId) {
+	// 		   DevExpress.ui.notify(
+	// 							"Please select the Client to edit","error",3000
+	// 					  );
+	// 					  return;
+	// 	}
 
-		// Proceed with edit logic (e.g., open modal or navigate)
-		console.log("Client selected: ", clientId);
+	// 	// Proceed with edit logic (e.g., open modal or navigate)
+	// 	console.log("Client selected: ", clientId);
 
-		 showLedgerAccountEditPopup(accheadid);
+	// 	 showLedgerAccountEditPopup(accheadid);
 
-	}
+	// }
 
 
 			 function SaveandCloseInvoiceDetails() {
@@ -7378,6 +7453,7 @@
 			 }
 
 				$(document).ready(function () {
+					debugger;
 			  if (IsCurrent !== "true" && IsAmend !=="true") {
 
 			  $.ajax({
@@ -7425,14 +7501,14 @@
 						let totalValue = discountedAmount + vatValue;
 
 						// Update grid cells
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",unitPrice);
-						grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-						grid.cellValue(rowIndex, "Amount",amount.toFixed(2));
-						grid.cellValue(rowIndex, "Discount",discount);
-						grid.cellValue(rowIndex, "Qty", qty);
-						grid.cellValue(rowIndex, "VAT%", vatRateStr);
+						grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
+					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
+					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
+					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
+					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
+					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
+					   grid.cellValue(rowIndex, "VAT Description", vatRateStr);
 						grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
 	}
 
@@ -7619,7 +7695,7 @@
 	if(clientnameValidation.isValid)
 		{
 				const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-				IsDirect = false;
+				const IsDirect = false;
 				// Ensure dataGrid exists
 				if (!dataGrid) {
 					console.error("DataGrid instance not found.");
@@ -7661,7 +7737,7 @@
 
 			function proceedWithVerification() {
 				// Set VerifiedBy checkbox to true
-				$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+				
 
 				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -7696,6 +7772,7 @@
 							DevExpress.ui.notify(
 								"VAT Invoice has been Verified.","success",2000
 							);
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 							  IsVerified=true;
 								$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 								$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -7762,8 +7839,6 @@
 
 
 			  function proceedWithApproval() {
-				// Set ApprovedBy checkbox to true
-				$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
 				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -7794,6 +7869,7 @@
 							DevExpress.ui.notify(
 								"VAT InvoiceNo has been Approved.","success",2000
 							);
+								$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 								disableEditing();
 								IsApproved=true;
 								$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
@@ -8699,32 +8775,114 @@
 					  });
 				  }
 
-		  function showLedgerAccountPopup() {
-			  var popup = $("#ledgerAccountPopup").dxPopup("instance");
-			  popup.show();
+		 //  function showLedgerAccountPopup() {
+			//   var popup = $("#ledgerAccountPopup").dxPopup("instance");
+			//   popup.show();
 
-			  // Correct URL to your LedgerAccount view
-			  $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
-		  }
+			//   // Correct URL to your LedgerAccount view
+			//   $("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount`);
+		 //  }
 
-					function showLedgerAccountEditPopup(accheadid) {
-		  console.log("Opening Edit Supplier popup for ID:", accheadid);
+			// 		function showLedgerAccountEditPopup(accheadid) {
+		 //  console.log("Opening Edit Supplier popup for ID:", accheadid);
 
-		  const tenantName = window.location.pathname.split('/')[1];
-		  const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
+		 //  const tenantName = window.location.pathname.split('/')[1];
+		 //  const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}`;
 
-		  const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
-		  popup.show();
+		 //  const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+		 //  popup.show();
 
-		  setTimeout(() => {
-			  const iframe = document.getElementById("ledgerEditAccountFrame");
-			  if (!iframe) {
-				  console.error("Edit iframe not found!");
-				  return;
-			  }
-			  iframe.src = url;
-		  }, 300);
-	  }
+		 //  setTimeout(() => {
+			//   const iframe = document.getElementById("ledgerEditAccountFrame");
+			//   if (!iframe) {
+			// 	  console.error("Edit iframe not found!");
+			// 	  return;
+			//   }
+			//   iframe.src = url;
+		 //  }, 300);
+	  // }
+
+
+			function onAddClientClick() {
+		const tenantName = window.location.pathname.split('/')[1];
+		const url = `/${tenantName}/Finance/LedgerAccount?IsClientAdd=true`;
+
+		const popup = $("#ledgerAccountPopup").dxPopup("instance");
+		  popup.option("title", "Add Ledger Account");
+		popup.show();
+
+		setTimeout(() => {
+			document.getElementById("ledgerAccountFrame").src = url;
+		}, 300);
+	}
+
+
+
+			function onEditClientClick() {
+				debugger;
+				const clientId = accheadid;
+
+				if (!clientId) {
+					DevExpress.ui.dialog.alert("Please select the Client to edit.", "Select Supplier");
+					return;
+				}
+
+				showLedgerAccountEditPopup(clientId);
+			}
+
+			function showLedgerAccountEditPopup(accheadid) {
+				console.log("Opening Edit Supplier popup for ID:", accheadid);
+
+				const tenantName = window.location.pathname.split('/')[1];
+				const url = `/${tenantName}/Finance/LedgerAccount?AccountHeadID=${encodeURIComponent(accheadid)}&IsPurchaseEdit=true`;
+
+				const popup = $("#ledgerEditAccountPopup").dxPopup("instance");
+				popup.show();
+
+				setTimeout(() => {
+					const iframe = document.getElementById("ledgerEditAccountFrame");
+					if (!iframe) {
+						console.error("Edit iframe not found!");
+						return;
+					}
+					iframe.src = url;
+				}, 300);
+			}
+
+
+
+			 // Fetch from API when page loads
+	$.get("/api/VATModule/GetCurrencyDecimals")
+		.done(function (decimals) {
+			currencyDecimals = decimals || 2;
+			
+		})
+		.fail(function () {
+			DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
+		});
+
+
+		function formatAmount(val) {
+		if (val == null || isNaN(val)) return 0;
+		return Number(val).toFixed(currencyDecimals);
+	}
+
+	
+
+
+	function getDecimalFormat(decimals) {
+		if (decimals <= 0) return "#,##0";
+		return "#,##0." + "0".repeat(decimals);
+	}
+
+
+	function formatSummaryValue(value) {
+		if (value == null || isNaN(value)) return 0;
+		return value.toLocaleString(undefined, {
+			minimumFractionDigits: currencyDecimals,
+			maximumFractionDigits: currencyDecimals
+		});
+	}
 
 </script>
 

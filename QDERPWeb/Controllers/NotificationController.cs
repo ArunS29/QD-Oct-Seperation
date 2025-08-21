@@ -339,14 +339,14 @@ namespace QD.ERP.Web.Controllers
 
             try
             {
-                var debitNotes = dbContext.Tbl20172VatdebitNoteMasters.AsQueryable();
+                var debitNotes = dbContext.Qry201907vatdebitNoteRegisterMainViews.AsQueryable();
 
                 // Summary counts
                 var summary = new
                 {
                     ToBeVerified = debitNotes.Count(x => x.IsSubmitted == true && (x.IsVerified ?? false) == false),
                     ToBeApproved = debitNotes.Count(x => x.IsVerified == true && (x.IsApproved ?? false) == false),
-                    ToBeAudited = debitNotes.Count(x => x.IsApproved == true /* && (x.IsAuditVerified ?? false) == false */)
+                    ToBeAudited = debitNotes.Count(x => x.IsApproved == true  && (x.IsPosted ?? false) == false )
                 };
 
                 // Latest notifications
@@ -497,8 +497,8 @@ namespace QD.ERP.Web.Controllers
                     // Build summary counts (Stages from your table)
                     var summary = new
                     {
-                        ToBeVerified = await query.CountAsync(x => x.IsSubmitted == true && x.IsVerified != true && x.IsCancelled == false),
-                        ToBeApproved = await query.CountAsync(x => x.IsVerified == true && x.IsApproved != true && x.IsCancelled == false),
+                        ToBeVerified = await query.CountAsync(x => x.IsSubmitted == true && x.IsVerified != true ),
+                        ToBeApproved = await query.CountAsync(x => x.IsVerified == true && x.IsApproved != true ),
                         ToBeCancelled = await query.CountAsync(x => x.IsCancelled == true)
                     };
 
@@ -533,7 +533,7 @@ namespace QD.ERP.Web.Controllers
             return Unauthorized(new { message = "Invalid tenant." });
         }
         [HttpGet]
-        public IActionResult GetQuotationSummary()
+        public async Task<IActionResult> GetQuotationSummary()
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized(new { message = "Invalid tenant.", success = false });
@@ -542,24 +542,14 @@ namespace QD.ERP.Web.Controllers
             {
                 var query = dbContext.Qry60104quotationViewMasters.AsQueryable();
 
-                // Group summary
+                // Group summary counts
                 var summary = new
                 {
-                    Total = query.Count(),
+                    ToBeVerified = await query.CountAsync(x => x.IsSubmitted == true && x.IsVerified != true),
+                    ToBeApproved = await query.CountAsync(x => x.IsVerified == true && x.IsApproved != true),
 
-                    // Status-based counts
-                    Submitted = query.Count(q => q.IsSubmitted == true),
-                    ToBeSubmitted = query.Count(q => q.IsSubmitted != true),
-
-                    Verified = query.Count(q => q.IsVerified == true),
-                    ToBeVerified = query.Count(q => q.IsSubmitted == true && q.IsVerified != true),
-
-                    Approved = query.Count(q => q.IsApproved == true),
-                    ToBeApproved = query.Count(q => q.IsVerified == true && q.IsApproved != true),
-
-                    // Optional: custom status (from QuoteStatus column if you’re using it)
-                    Draft = query.Count(q => q.QuoteStatus == "Draft"),
-                    Rejected = query.Count(q => q.QuoteStatus == "Rejected")
+                    // ✅ Replace "Cancelled" with your actual column/property name
+                    //ToBeCancelled = await query.CountAsync(x => x.IsCancelled == true)
                 };
 
                 return Ok(new { success = true, data = summary });
@@ -569,6 +559,7 @@ namespace QD.ERP.Web.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
+
         [HttpGet]
         public IActionResult GetSalesOrderSummary()
         {

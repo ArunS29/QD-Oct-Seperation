@@ -3284,6 +3284,8 @@ function syncSupVATNumbers(e) {
          var IsB2CEdit=urlParams.get('IsB2CEdit') || "";
          var IsDebitEdit=urlParams.get('IsDebitEdit') || "";
          var IsDebitAdd=urlParams.get('IsDebitAdd') || "";
+         var IsClientAdd=urlParams.get('IsClientAdd') || "";
+         var IsPurchaseAdd=urlParams.get('IsPurchaseAdd') || "";
     
          debugger;
         acgid = accgroupid;
@@ -3297,17 +3299,24 @@ function syncSupVATNumbers(e) {
             accountheadid = urlParams.get('AccountId');  // Use the already declared accountheadid
 
         }
-        if(IsDebitEdit=='true' || IsDebitAdd=='true')
+        if(IsDebitAdd=='true')
         { 
              disableTabs(["tab-content-3", "tab-content-7"]);
         var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
-    // Set the value
-    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+        // Set the value
+        accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
 
-    // Disable the textbox
+         // Disable the textbox
         accountGroupDropDownBox.option("disabled", true);
                  
+        }
+        if(IsDebitEdit=='true' || IsPurchaseEdit=='true')
+        {
+        disableTabs(["tab-content-3", "tab-content-7"]);
+        var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+         // Disable the textbox
+        accountGroupDropDownBox.option("disabled", true);
         }
 
        
@@ -3316,11 +3325,39 @@ function syncSupVATNumbers(e) {
         var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
     // Set the value
-    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+    accountGroupDropDownBox.option("value", "SUNDRY DEBTORS");
 
     // Disable the textbox
         accountGroupDropDownBox.option("disabled", true);
             }
+
+                    if(IsPurchaseAdd=='true')
+                     { 
+                 
+                      disableTabs(["tab-content-3", "tab-content-7"]);
+                     var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+                 
+                 // Set the value
+                 accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+                 
+                 // Disable the textbox
+                     accountGroupDropDownBox.option("disabled", true);
+                              
+                     }
+
+                      if(IsClientAdd=='true')
+                     { 
+                 
+                      disableTabs(["tab-content-3", "tab-content-7"]);
+                     var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+                 
+                 // Set the value
+                 accountGroupDropDownBox.option("value", "SUNDRY DEBTORS");
+                 
+                 // Disable the textbox
+                     accountGroupDropDownBox.option("disabled", true);
+                              
+                     }
 
         // alert(IsCharOfAccounts);
         // Check if IsCharOfAccounts is 'true' (string comparison)
@@ -3862,19 +3899,7 @@ function syncSupVATNumbers(e) {
                     }
 
                     
-                      if(IsPurchaseEdit=='true' || IsPurchaseAdd=='true')
-                     { 
-                 
-                          disableTabs(["tab-content-3", "tab-content-7"]);
-                     var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
-                 
-                 // Set the value
-                 accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
-                 
-                 // Disable the textbox
-                     accountGroupDropDownBox.option("disabled", true);
-                              
-                     }
+                    
 
 
 
@@ -3899,7 +3924,7 @@ function syncSupVATNumbers(e) {
 
 
         // Check if the parameter IsCharOfAccounts is 'true'
-                if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true' && IsDebitEdit !=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
+          if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true' && IsDebitEdit !=='true' && IsClientAdd=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
             // Reset validator if it exists
             var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
             if (AccountHeadNameValidator) {
@@ -5204,12 +5229,21 @@ if (dropDownInstance.option("opened")) {
      });
  }
     function onsaveLedgerAccountClick(e) {
+        var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
+        debugger;
+        if(sAccountGroup=="SUNDRY CREDITORS")
+        {
+            sAccountGroup="A003";
+        }
+        else if(sAccountGroup=="SUNDRY DEBTORS")
+       {
+            sAccountGroup="A011";
+       }
 
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
         var sRefNo = $('#txtReferenceNo').dxTextBox("instance").option("value");
         var sAcccountHead = $('#txtAccountHead').dxTextBox("instance").option("value");
         var sAcccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance").option("value");
-        var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
         acgid = sAccountGroup;
         //Setting Tab Values
         var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
@@ -6409,46 +6443,48 @@ if (dropDownInstance.option("opened")) {
         textBox2Instance.option("value", arabicTranslation);
 
     }
-$(window).on("load", function () {
-    const urlParams = new URLSearchParams(window.location.search);
-    const isClientAdd = urlParams.get('IsClientAdd') === 'true';
-    const isPurchaseEdit = urlParams.get('IsPurchaseEdit') === 'true';
 
-    const checkAndApplyFormState = () => {
-        const group = $("#ddlAccountGroup").dxDropDownBox("instance");
-        const tabsInstance = $(".custom-tabs").dxTabs("instance");
 
-        if (!group || !tabsInstance) {
-            setTimeout(checkAndApplyFormState, 100);
-            return;
-        }
+// $(window).on("load", function () {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const isClientAdd = urlParams.get('IsClientAdd') === 'true';
+//     const isPurchaseEdit = urlParams.get('IsPurchaseEdit') === 'true';
 
-        if (isClientAdd) {
-            group.option({
-                value: "SUNDRY DEBTORS",
-                disabled: true
-            });
+//     const checkAndApplyFormState = () => {
+//         const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+//         const tabsInstance = $(".custom-tabs").dxTabs("instance");
 
-            $("#accountGroupContainer").show();
-            $("#nameFieldContainer").hide();
-            $("#editButton").hide();
-            $("#addButton").show();
+//         if (!group || !tabsInstance) {
+//             setTimeout(checkAndApplyFormState, 100);
+//             return;
+//         }
 
-            // ❌ Disable tab 4 (Supplier Details) ONLY on add
-            $(".custom-tabs").data("disabledTabIndex", 4);
-        } else {
-            group.option("disabled", isPurchaseEdit);
-            $("#accountGroupContainer").toggle(!isPurchaseEdit);
-            $("#nameFieldContainer").toggle(isPurchaseEdit);
-            $("#editButton").toggle(isPurchaseEdit);
-            $("#addButton").hide();
+//         if (isClientAdd) {
+//             group.option({
+//                 value: "SUNDRY DEBTORS",
+//                 disabled: true
+//             });
 
-            // ✅ Enable all tabs again
-            $(".custom-tabs").removeData("disabledTabIndex");
-        }
-    };
-    checkAndApplyFormState();
-});
+//             $("#accountGroupContainer").show();
+//             $("#nameFieldContainer").hide();
+//             $("#editButton").hide();
+//             $("#addButton").show();
+
+//             // ❌ Disable tab 4 (Supplier Details) ONLY on add
+//             $(".custom-tabs").data("disabledTabIndex", 4);
+//         } else {
+//             group.option("disabled", isPurchaseEdit);
+//             $("#accountGroupContainer").toggle(!isPurchaseEdit);
+//             $("#nameFieldContainer").toggle(isPurchaseEdit);
+//             $("#editButton").toggle(isPurchaseEdit);
+//             $("#addButton").hide();
+
+//             // ✅ Enable all tabs again
+//             $(".custom-tabs").removeData("disabledTabIndex");
+//         }
+//     };
+//     checkAndApplyFormState();
+// });
 
 
     // alert("two");

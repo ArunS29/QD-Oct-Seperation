@@ -21,6 +21,14 @@
     .titleCard-toggle1{
         display:none;
     }
+     #dataGrid .dx-command-edit .dx-link-delete,
+ #dataGrid .dx-command-edit .dx-link-delete .dx-icon,
+ #dataGrid .dx-command-edit .dx-link-delete.dx-icon,
+ #dataGrid .dx-command-edit .dx-link-delete .dx-icon-trash,
+ #dataGrid .dx-command-edit .dx-link-delete.dx-icon-trash {
+     color: red !important; /* font-based icons */
+     
+ }
        .footer-fixed{
        bottom:37px!important;
    }
@@ -535,6 +543,20 @@ buttons.Add()
                                 .OnEditorPreparing("onEditorPreparing")
                                 .OnRowUpdating("onRowUpdating")
                                 .OnRowRemoving("onRowRemoving")
+                                .OnRowPrepared(@"
+                function(e) {
+                   
+                    if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
+                    $(e.rowElement).css('background-color', 'var(--header-color) !important');
+                    
+                    }
+                    if (e.rowType === 'data' && e.data.DrCr === 'Dr') {
+                    $(e.rowElement).css('background-color', 'var(--title-background-color) !important');
+                    $(e.rowElement).find('td').css('color', 'white');
+                    
+                    }
+                }
+                ")
                                 .Summary(summary =>
                                 {
                                     summary.TotalItems(totalItems =>
@@ -2939,7 +2961,7 @@ function addVoucherEntry() {
 
                                      // Retrieve the value from the TextBox
                                      var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-
+                                    getDocumentCount();
                                  },
                                  error: function (xhr, status, error) {
                                      console.error("Error loading Voucher No:", error);
@@ -3053,6 +3075,7 @@ function addVoucherEntry() {
                         }
                                                             syncWorkflowFromFields();
                                 initWorkflowTippyPopovers();
+                                getDocumentCount();
                             //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                         }
                     },

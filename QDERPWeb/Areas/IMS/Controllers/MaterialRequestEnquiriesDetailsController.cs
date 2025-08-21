@@ -1013,17 +1013,17 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 switch (status.ToLower())
                 {
-                    case "ToBeVerified":
+                    case "tobeverified":
                         // not verified
-                        query = query.Where(x => x.IsVerified == false);
+                        query = query.Where(x => x.IsSubmitted == true && x.IsVerified != true);
                         break;
 
-                    case "ToBeApproved":
+                    case "tobeapproved":
                         // verified but not approved
-                        query = query.Where(x => x.IsVerified == true && x.IsApproved == false);
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved != true);
                         break;
 
-                    case "ToBeCancelled":
+                    case "tobecancelled":
                         // approved but not posted
                         query = query.Where(x =>  x.IsCancelled == true);
                         break;
