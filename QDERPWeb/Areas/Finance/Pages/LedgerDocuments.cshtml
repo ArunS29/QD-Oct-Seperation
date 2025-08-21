@@ -449,7 +449,7 @@
     var referenceNo = urlParams.get("ReferenceNo");
     var moduleType = urlParams.get("ModuleType");
     var isMaster = urlParams.get("isMaster");
-    
+    var folderNo2 = urlParams.get("FolderNo2");
     var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
     document.getElementById("documentTitle").textContent = title + " - " + moduleType;
     let currentEditRowIndex = -1;
@@ -462,7 +462,7 @@
         $("#documentsGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "DocumentNo",
-                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}&menuType=${encodeURIComponent(menuType)}`,
+                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`,
                 updateUrl: "/api/LedgerDocumentsF/UpdateDocumentEntry",
                 deleteUrl: "/api/LedgerDocumentsF/DeleteDocumentEntry",  // ✅ Use this, not `removeUrl`
                 updateMethod: "PUT",
@@ -479,10 +479,18 @@
                         ajaxOptions.contentType = "application/json";
                         ajaxOptions.data = JSON.stringify({ key: ajaxOptions.data.key });
                     }
-                }
+                },
+                onLoaded: function (result) {
+                    const count = result ? result.length : 0;
 
+                    // Check if parent form has setAttachCount
+                    if (window.parent && typeof window.parent.setAttachCount === "function") {
+                        window.parent.setAttachCount(count);
+                    } else {
+                        console.log("Attach count:", count); // fallback, useful if popup opened standalone
+                    }
+                },
             }),
-
             height: 250,
             width: "100%",
             showBorders: true,

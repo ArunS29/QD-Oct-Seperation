@@ -690,8 +690,13 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                                     g.MinQty,
                                     g.GsuoM,
                                     g.GspackingUnit,
-                                    UnitDescription = unit.UnitDesc
+                                    UnitDescription = unit != null ? unit.UnitDesc : null,
+                                    UnitCode = unit != null ? unit.UnitCode : (int?)null
                                 };
+
+                    var sql = query.ToQueryString();
+                    Console.WriteLine(sql);
+
 
                     // Get total count for pager
                     var totalCount = await query.CountAsync();
@@ -5470,13 +5475,48 @@ documentNo: invoiceNo
             {
                 try
                 {
-
+                    var resultWithVAT = new List<ExpandoObject>();
                     var result = dbContext.Tbl20181ProformaInvoiceMasters
                       .Where(x => x.ProformaInvoiceNo == InvoiceNo)
                       .ToList();
+                    foreach (var headerDetails in result)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Copy all existing fields from gridDetails into dynamic object
+                        var properties = headerDetails.GetType().GetProperties();
+                        foreach (var prop in properties)
+                        {
+                            dict[prop.Name] = prop.GetValue(headerDetails);
+                        }
 
 
-                    return Json(result);
+
+                        var Preparedsignatory = dbContext.Tbl90104DocumentSignatories
+     .Where(x => x.SignatoryId == headerDetails.InvoicePreparedBy) // replace with your variable
+     .FirstOrDefault();
+
+                        var Checkedsignatory = dbContext.Tbl90104DocumentSignatories
+   .Where(x => x.SignatoryId == headerDetails.InvoiceCheckedBy) // replace with your variable
+   .FirstOrDefault();
+
+                        var Approvedsignatory = dbContext.Tbl90104DocumentSignatories
+ .Where(x => x.SignatoryId == headerDetails.InvoiceApprovedBy) // replace with your variable
+ .FirstOrDefault();
+
+
+                        // Add new dynamic column
+                        dict["PreparedBy"] = Preparedsignatory;
+                        dict["CheckedBy"] = Checkedsignatory;
+                        dict["ApprovedBy"] = Approvedsignatory;
+                    
+
+                        resultWithVAT.Add(item);
+                    }
+
+                    return Json(resultWithVAT);
+
                 }
                 catch (Exception ex)
                 {
@@ -6986,6 +7026,89 @@ documentNo: InvChildSlNo
 
             var result = query.ToList();
             return Json(result);
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDetailedDescription(string description)
+        {
+            if (string.IsNullOrEmpty(description))
+                return Json(new { success = false });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var detailedDesc = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(x => x.Gsdescrpition == description)
+                        .Select(x => x.GsdetailedDesc)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(detailedDesc))
+                        return Json(new { success = true, detailedDesc });
+
+                    return Json(new { success = false });
+                }
+                catch (Exception ex)
+                {
+                    // Log exception if needed
+                    return Json(new { success = false, error = ex.Message });
+                }
+            }
+
+            return Json(new { success = false, error = "Tenant context not found" });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDescription(string description)
+        {
+            if (string.IsNullOrEmpty(description))
+                return Json(new { success = false });
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var detailedDesc = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(x => x.GsdetailedDesc == description)
+                        .Select(x => x.Gsdescrpition)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(detailedDesc))
+                        return Json(new { success = true, detailedDesc });
+
+                    return Json(new { success = false });
+                }
+                catch (Exception ex)
+                {
+                    // Log exception if needed
+                    return Json(new { success = false, error = ex.Message });
+                }
+            }
+
+            return Json(new { success = false, error = "Tenant context not found" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetCostCenterAccountDefault()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = await dbContext.Tbl201CostAllocationUnits
+                            .Where(g => g.CostAllocationUnitId == "ADMIN-0001")
+                            .Select(g => new
+                            {
+                                g.CostAllocationUnitId,
+                                g.CostAllocationUnit
+                            })
+                            .FirstOrDefaultAsync();
+
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception ex) { throw ex; }
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+
         }
 
 

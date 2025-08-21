@@ -508,6 +508,7 @@
 																.Label(new JS("formatMessage('Proforma Invoice No')"))
 																.ID("InvoiceNo")
 																.LabelMode(EditorLabelMode.Floating)
+																.Disabled(true)
 																)
 							</td>
 							<td>
@@ -626,7 +627,7 @@
 							</td>
 							<td>
 								@(Html.DevExtreme().DateBox()
-																.Label(new JS("formatMessage('Performa Invoice Date:')"))
+																.Label(new JS("formatMessage('Proforma Invoice Date')"))
 																.ID("InvoiceIssuedDateTime")
 																.Type(DateBoxType.Date) // ✅ Only date, no time
 																.DisplayFormat(new JS("'dd-MMM-yyyy'")) // ✅ Format: 15-Jul-2025
@@ -850,7 +851,7 @@
 														.LabelMode(EditorLabelMode.Floating)
 														.ID("ddlGoodsGroup1")
 														.ShowClearButton(true)
-														.Value("Common Overheads")
+														//.Value("Common Overheads")
 														.AcceptCustomValue(true)
 														.OpenOnFieldClick(false)
 														.ValueChangeEvent("input")
@@ -982,7 +983,10 @@
 																				.Min(1)
 																				.Step(1)
 																				.ShowSpinButtons(true)
-																				.Width("100%"))
+																				.Width("100%")
+																				.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
+										)
 
 										@(Html.DevExtreme().Button()
 																				.ID("convertToArabic1")
@@ -1064,7 +1068,10 @@
 																				.Min(1)
 																				.Step(1)
 																				.ShowSpinButtons(true)
-																				.Width("100%"))
+																				.Width("100%")
+																		    	 .OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
+										)
 
 
 										<!-- Retention Convert to Arabic Button -->
@@ -3108,7 +3115,7 @@
 
 
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null,revaccheadid=null,InvoiceCurrencyExchangeId=null,TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
-			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null,rowIx=null,IsVerified=false,IsApproved=false,currencyDecimals = 2;
+			  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,UnitCode=null,rowIx=null,IsVerified=false,IsApproved=false,currencyDecimals = 2,IsClienCodeEdit="false";
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -3127,88 +3134,6 @@
 		});
 
 
-			$(document).ready(function () {
-				debugger;
-			if (IsCurrent !== "true") {
-				$.ajax({
-					url: "/api/VATModule/GetVATProformaInvoiceNo",
-					type: "GET",
-					success: function (data) {
-						console.log("Success:", data);
-						InvoiceOPenToSave(data);
-						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
-						if (invoiceBox) {
-							InvoiceOPenToSave(data);
-							invoiceBox.option("value", data || "");
-						} else {
-							console.warn("Invoice TextBox not initialized.");
-						}
-					},
-					error: function (xhr, status, error) {
-						console.error("Error loading Payment Accounts:", error);
-						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
-					}
-				});
-			}
-		});
-
-		function InvoiceOPenToSave(data) {
-			var InvoiceMaster = {
-					ProformaInvoiceNo:data,
-					ProformaInvoiceDate: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
-					BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
-					BuyerNameAr: $("#ddlClientNameAr").dxDropDownBox("instance").option("value")|| null,
-					InvoiceEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
-				 //   Pono: $("#PONo").dxTextBox("instance").option("value")|| null,
-					Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
-					TaxCategoryId: $("#ddlCategoryId").dxDropDownBox("instance").option("value")|| null,
-				   ReferenceNo: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
-					DeliveryNoteNos:$("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
-					DeliveryNotes:$("#SESReference").dxTextBox("instance").option("value")|| null,
-					InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
-				   InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
-				   InvoiceStartDate:$("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
-				   InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
-				   RevenueAccount:$("#ddlGoodsGroup2").dxDropDownBox("instance").option("value")|| null,
-				   CostCenterCode:$("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
-				   RemarksInEn:$("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
-				   RemarksInAr:$("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
-				  // Currency:$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
-				   ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
-				   AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
-				   AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
-				   AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
-				   RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
-				   RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
-					   RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
-					   CompanyId:$("#ddlbranch").dxDropDownBox("instance").option("value")|| null,
-					   InvoiceSalesPerson:$("#ddlSalesPerson").dxDropDownBox("instance").option("value")|| null,
-					   InvoiceSubmittedOn:$("#InvoiceSubmittesOn").dxDateBox("instance").option("value")|| null,
-					   InvoiceSubmittedBy:$("#InvoiceSubmittedBy").dxTextBox("instance").option("value")|| null,
-					   InvoicePreparedBy:$("#ddlGoodsGroup9").dxDropDownBox("instance").option("value")|| null,
-					   InvoiceCheckedBy:$("#ddlGoodsGroup10").dxDropDownBox("instance").option("value")|| null,
-					   InvoiceApprovedBy:$("#ddlGoodsGroup11").dxDropDownBox("instance").option("value")|| null,
-
-
-							//TypeOfInvoice: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
-					QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
-					//Pono: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
-					 ClientCode: accheadid|| null
-
-
-				};
-
-					console.log("InvoiceMaster:", InvoiceMaster);
-					$.ajax({
-						type: "POST",
-							url: `/api/VoucherMaster/UpdateProformaInvoiceMasterDetails`,
-						contentType: "application/json",
-						data: JSON.stringify(InvoiceMaster),
-						success: function () {
-						}
-
-					});
-				}
 
 	//View e-Invoice
 
@@ -3236,14 +3161,16 @@
 							 $("#DeliveryNotes").dxTextBox("instance").option("value", account.DeliveryNoteNos);
 							 $("#SESReference").dxTextBox("instance").option("value", account.DeliveryNotes);
 							 $("#LessAdvance").dxTextBox("instance").option("value", account.AdvanceText);
-							 $('#InvoiceNo').dxTextBox("instance").option("value", account.ProformaInvoiceNo);
+							 $('#InvoiceNo').dxTextBox("instance").option("value", InvoiceNo);
 							 $("#LessAdvanceAr").dxTextBox("instance").option("value", account.AdvanceTextAr);
 							 $("#LessRetention").dxTextBox("instance").option("value", account.RetentionText);
 							 $("#LessAdvanceAr2").dxTextBox("instance").option("value", account.RetentionTextAr);
 							 $("#InvoiceSubmittedBy").dxTextBox("instance").option("value", account.InvoiceSubmittedBy);
+							  $("#PONo").dxTextBox("instance").option("value", account.InvoiceSubmittedBy);
+							  $("#QuotationNo").dxTextBox("instance").option("value", account.QuotationNo);
 
 							 // DateBoxes
-							 $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value", account.ProformaIsnvoiceDate);
+							 $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value", account.ProformaInvoiceDate);
 							 $("#SupplyDate").dxDateBox("instance").option("value", account.InvoiceEffectiveDate);
 							 $("#PODate").dxDateBox("instance").option("value", account.Podate);
 							 $("#InvoiceDueDate").dxDateBox("instance").option("value", account.InvoiceDueDate);
@@ -3260,9 +3187,9 @@
 							 $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value", account.RevenueAccount);
 							 $("#ddlbranch").dxDropDownBox("instance").option("value", account.CompanyId);
 							 $("#ddlSalesPerson").dxDropDownBox("instance").option("value", account.InvoiceSalesPerson);
-							 $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value", account.InvoicePreparedBy);
-							 $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value", account.InvoiceCheckedBy);
-							 $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value", account.InvoiceApprovedBy);
+							 // $("#ddlGoodsGroup9").dxDropDownBox("instance").option("value", account.PreparedBy);
+							 // $("#ddlGoodsGroup10").dxDropDownBox("instance").option("value", account.CheckedBy);
+							 // $("#ddlGoodsGroup11").dxDropDownBox("instance").option("value", account.ApprovedBy);
 
 							 // TextAreas
 							 $("#txtInvoiceNotes").dxTextArea("instance").option("value", account.RemarksInEn);
@@ -3333,7 +3260,94 @@
 
 
 		});
-				function initializeDataGrid(rowData) {
+
+		
+			$(document).ready(function () {
+				debugger;
+			if (IsCurrent !== "true") {
+				$.ajax({
+					url: "/api/VATModule/GetVATProformaInvoiceNo",
+					type: "GET",
+					success: function (data) {
+						console.log("Success:", data);
+						InvoiceOPenToSave(data);
+						const invoiceBox = $("#InvoiceNo").dxTextBox("instance");
+						if (invoiceBox) {
+							InvoiceOPenToSave(data);
+							invoiceBox.option("value", data || "");
+						} else {
+							console.warn("Invoice TextBox not initialized.");
+						}
+					},
+					error: function (xhr, status, error) {
+						console.error("Error loading Payment Accounts:", error);
+						DevExpress.ui.dialog.alert("Failed to load account details.", "Error");
+					}
+				});
+			}
+		});
+
+		function InvoiceOPenToSave(data) {
+			var InvoiceMaster = {
+					ProformaInvoiceNo:data,
+					ProformaInvoiceDate: $("#InvoiceIssuedDateTime").dxDateBox("instance").option("value")|| null,
+					BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
+					BuyerNameAr: $("#ddlClientNameAr").dxDropDownBox("instance").option("value")|| null,
+					InvoiceEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
+				    Pono: $("#PONo").dxTextBox("instance").option("value")|| null,
+					Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
+					TaxCategoryId: $("#ddlCategoryId").dxDropDownBox("instance").option("value")|| null,
+				    ReferenceNo: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
+					DeliveryNoteNos:$("#DeliveryNotes").dxTextBox("instance").option("value")|| null,
+					DeliveryNotes:$("#SESReference").dxTextBox("instance").option("value")|| null,
+					InvoiceDueDate:$("#InvoiceDueDate").dxDateBox("instance").option("value")|| null,
+				   InvoiceEffectiveDate:$("#EffectiveDate").dxDateBox("instance").option("value")|| null,
+				   InvoiceStartDate:$("#InvoiceStartDate").dxDateBox("instance").option("value")|| null,
+				   InvoiceEndDate:$("#InvoiceEndDate").dxDateBox("instance").option("value")|| null,
+				   RevenueAccount:$("#ddlGoodsGroup2").dxDropDownBox("instance").option("value")|| null,
+				   CostCenterCode:$("#ddlGoodsGroup1").dxDropDownBox("instance").option("value")|| null,
+				   RemarksInEn:$("#txtInvoiceNotes").dxTextArea("instance").option("value")|| null,
+				   RemarksInAr:$("#txtNotesinArabic").dxTextArea("instance").option("value")|| null,
+				  // Currency:$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null,
+				   ExchangeRate:$("#currencyexchangerate").dxNumberBox("instance").option("value")|| null,
+				   AdvanceText:$("#LessAdvance").dxTextBox("instance").option("value")|| null,
+				   AdvanceAmount:$("#currencyexchangerate3").dxNumberBox("instance").option("value")|| null,
+				   AdvanceTextAr:$("#LessAdvanceAr").dxTextBox("instance").option("value")|| null,
+				   RetentionText:$("#LessRetention").dxTextBox("instance").option("value")|| null,
+				   RetentionAmount:$("#currencyexchangerate5").dxNumberBox("instance").option("value")|| null,
+					   RetentionTextAr:$("#LessAdvanceAr2").dxTextBox("instance").option("value")|| null,
+					   CompanyId:$("#ddlbranch").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceSalesPerson:$("#ddlSalesPerson").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceSubmittedOn:$("#InvoiceSubmittesOn").dxDateBox("instance").option("value")|| null,
+					   InvoiceSubmittedBy:$("#InvoiceSubmittedBy").dxTextBox("instance").option("value")|| null,
+					   InvoicePreparedBy:$("#ddlGoodsGroup9").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceCheckedBy:$("#ddlGoodsGroup10").dxDropDownBox("instance").option("value")|| null,
+					   InvoiceApprovedBy:$("#ddlGoodsGroup11").dxDropDownBox("instance").option("value")|| null,
+
+
+							//TypeOfInvoice: $("#OtherIDType").dxDropDownBox("instance").option("value")|| null,
+					QuotationNo: $("#QuotationNo").dxTextBox("instance").option("value")|| null,
+					//Pono: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
+					 ClientCode: accheadid|| null
+
+
+				};
+
+					console.log("InvoiceMaster:", InvoiceMaster);
+					$.ajax({
+						type: "POST",
+							url: `/api/VoucherMaster/UpdateProformaInvoiceMasterDetails`,
+						contentType: "application/json",
+						data: JSON.stringify(InvoiceMaster),
+						success: function () {
+						}
+
+					});
+				}
+
+
+
+	function initializeDataGrid(rowData) {
 
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			dataSource: rowData,
@@ -3442,6 +3456,7 @@
 							dataGrid.cellValue(rowIndex, "Qty", 1);
 							dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+							UnitCode=selectedItem.UnitCode;
 
 	                        ItemNo = selectedItem.GSCode;
 							Gsdescrpition = selectedItem.GSDescrpition;
@@ -3824,7 +3839,7 @@
 							grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
 					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
 					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-					   grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					  // grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
 					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
 					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -3996,6 +4011,7 @@
 							dataGrid.cellValue(rowIndex, "Qty", 1);
 							dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+							UnitCode=selectedItem.UnitCode;
 
 							ItemNo = selectedItem.GSCode;
 							Gsdescrpition = selectedItem.GSDescrpition;
@@ -5384,10 +5400,13 @@
 
 		function CommondataGridInitialized(e) {
 				dataGrid1 = e.component;
+		        IsClienCodeEdit="true";
+				IsCurrent="false";
 			}
 
 			function ClientCodedataGridInitialized(e) {
 				dataGrid1 = e.component;
+
 			}
 				function ClientSalesOrderNodataGridInitialized(e) {
 				dataGrid1 = e.component;
@@ -7104,7 +7123,7 @@
 				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
 					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
 					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-					   grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
 					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
 					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -7126,6 +7145,9 @@
 			var button = $("#btnSave").dxButton("instance");
 			button.option("disabled", true);
 
+			var SaveAndClosebtn = $("#btnSaveAndClose").dxButton("instance");
+			SaveAndClosebtn.option("disabled", true);
+
 
 				if(clientnameValidation.isValid)
 				{
@@ -7137,7 +7159,7 @@
 					BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 					BuyerNameAr: $("#ddlClientNameAr").dxDropDownBox("instance").option("value")|| null,
 					InvoiceEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
-				 //   Pono: $("#PONo").dxTextBox("instance").option("value")|| null,
+				    Pono: $("#PONo").dxTextBox("instance").option("value")|| null,
 					Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
 					TaxCategoryId: $("#ddlCategoryId").dxDropDownBox("instance").option("value")|| null,
 				   ReferenceNo: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
@@ -7238,12 +7260,14 @@
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
 										button.option("disabled", false);
+										SaveAndClosebtn.option("disabled", false);
 									}
 								});
 
 								  DevExpress.ui.notify(
 							"Proforma Invoice Details updated Successfully.","success",2000);
 							button.option("disabled", false);
+							SaveAndClosebtn.option("disabled", false);
 								   isVoucherSaved = true; // Mark Updated step as done
 								  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 
@@ -7251,12 +7275,14 @@
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 								button.option("disabled", false);
+								SaveAndClosebtn.option("disabled", false);
 							}
 						});
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 						button.option("disabled", false);
+						SaveAndClosebtn.option("disabled", false);
 					}
 				});
 				}
@@ -7266,6 +7292,7 @@
 							"Cannot continue saving with errors,please clear the errors and continue.","error",3000
 						);
 						button.option("disabled", false);
+						SaveAndClosebtn.option("disabled", false);
 				}
 
 			 }
@@ -7293,6 +7320,8 @@
 				var clientnameValidator = $("#ddclientname").dxValidator("instance");
 				var clientnameValidation = clientnameValidator.validate();
 
+		    var Savebtn = $("#btnSave").dxButton("instance");
+			Savebtn.option("disabled", true);
 
 			var button = $("#btnSaveAndClose").dxButton("instance");
 			button.option("disabled", true);
@@ -7307,7 +7336,7 @@
 					BuyerName: $("#ddclientname").dxDropDownBox("instance").option("value")|| null,
 					BuyerNameAr: $("#ddlClientNameAr").dxDropDownBox("instance").option("value")|| null,
 					InvoiceEffectiveDate: $("#SupplyDate").dxDateBox("instance").option("value")|| null,
-				 //   Pono: $("#PONo").dxTextBox("instance").option("value")|| null,
+				    Pono: $("#PONo").dxTextBox("instance").option("value")|| null,
 					Podate: $("#PODate").dxDateBox("instance").option("value")|| null,
 					TaxCategoryId: $("#ddlCategoryId").dxDropDownBox("instance").option("value")|| null,
 				   ReferenceNo: $("#ProjectDeptContractNo").dxTextBox("instance").option("value")|| null,
@@ -7410,13 +7439,15 @@
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
 										button.option("disabled", false);
+										Savebtn.option("disabled", false);
 									}
 								});
 									DevExpress.ui.notify(
-					  "Credit Note Details updated Successfully.","success",2000
+					  "Proforma Invoice Details updated Successfully.","success",2000
 
 				  );
 				  button.option("disabled", false);
+				  Savebtn.option("disabled", false);
 				  history.back();
 
 	// 										  window.location.href = `/${tenantName}/VAT/ProformaInvoiceMasterView`;
@@ -7426,12 +7457,14 @@
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 								button.option("disabled", false);
+								Savebtn.option("disabled", false);
 							}
 						});
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 						button.option("disabled", false);
+						Savebtn.option("disabled", false);
 					}
 				});
 				}
@@ -7442,33 +7475,32 @@
 
 						);
 						button.option("disabled", false);
+						Savebtn.option("disabled", false);
 				}
 
 			 }
 
-				$(document).ready(function () {
-					debugger;
-			  if (IsCurrent !== "true" && IsAmend !=="true") {
+				// $(document).ready(function () {
+				// 	debugger;
+			 //  if (IsCurrent !== "true" && IsAmend !=="true") {
 
-			  $.ajax({
-				url: "/api/VATModule/GetVATInvoiceNo",
-				  type: 'GET',
-				  success: function (data) {
-					  console.log("Success:", data);
+			 //  $.ajax({
+				// url: "/api/VATModule/GetVATInvoiceNo",
+				//   type: 'GET',
+				//   success: function (data) {
+				// 	  console.log("Success:", data);
 
-					$("#InvoiceNo").dxTextBox("instance").option("value", data);
-				  InvoiceOPenToSave(data)
-				  CrNoteNo=data;
-
-
-				  },
-				  error: function (xhr, status, error) {
-					  console.error("Error loading Payment Accounts:", error);
-					  DevExpress.ui.notify("Failed to load account details.", "Error",3000);
-				  }
-			  });
-			  }
-		  });
+				// 	$("#InvoiceNo").dxTextBox("instance").option("value", data);
+				//   InvoiceOPenToSave(data)
+				//   CrNoteNo=data;
+				//   },
+				//   error: function (xhr, status, error) {
+				// 	  console.error("Error loading Payment Accounts:", error);
+				// 	  DevExpress.ui.notify("Failed to load account details.", "Error",3000);
+				//   }
+			 //  });
+			 //  }
+		  // });
 
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
 
@@ -7498,7 +7530,7 @@
 						grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
 					   grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
 					   grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-					   grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
+					 //  grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
 					   grid.cellValue(rowIndex, "Amount", formatAmount(amount));
 					   grid.cellValue(rowIndex, "Discount", formatAmount(discount));
 					   grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -7731,7 +7763,7 @@
 
 			function proceedWithVerification() {
 				// Set VerifiedBy checkbox to true
-				$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+				
 
 				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -7766,6 +7798,7 @@
 							DevExpress.ui.notify(
 								"VAT Invoice has been Verified.","success",2000
 							);
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 							  IsVerified=true;
 								$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 								$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -7832,8 +7865,6 @@
 
 
 			  function proceedWithApproval() {
-				// Set ApprovedBy checkbox to true
-				$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
 				const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -7864,6 +7895,7 @@
 							DevExpress.ui.notify(
 								"VAT InvoiceNo has been Approved.","success",2000
 							);
+								$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 								disableEditing();
 								IsApproved=true;
 								$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
@@ -8078,7 +8110,7 @@
 
 			const englishText = textBox1Instance.option("value");
 
-			alert(englishText)
+	
 
 			// Validate input
 
@@ -8849,7 +8881,7 @@
 	$.get("/api/VATModule/GetCurrencyDecimals")
 		.done(function (decimals) {
 			currencyDecimals = decimals || 2;
-			 applyDynamicFormat(currencyDecimals);
+			
 		})
 		.fail(function () {
 			DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
@@ -8861,14 +8893,7 @@
 		return Number(val).toFixed(currencyDecimals);
 	}
 
-	function applyDynamicFormat(decimals) {
-		const numberBox = $("#currencyexchangerate3").dxNumberBox("instance");
-		numberBox.option("format", getDecimalFormat(decimals));
-
-
-		  const numberBox2 = $("#currencyexchangerate5").dxNumberBox("instance");
-		numberBox2.option("format", getDecimalFormat(decimals));
-	}
+	
 
 
 	function getDecimalFormat(decimals) {
@@ -8884,6 +8909,25 @@
 			maximumFractionDigits: currencyDecimals
 		});
 	}
+
+
+	$(async function () {
+
+			try {
+				const result = await fetch('/api/VATModule/GetCostCenterAccountDefault');
+				const data = await result.json();
+
+				if (data && data.CostAllocationUnitId) {
+					// Set default value to DropDownBox
+					const dropDownBox = $("#ddlGoodsGroup1").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("value", data.CostAllocationUnitId);
+					}
+				}
+			} catch (err) {
+				console.error("Failed to load default client code:", err);
+			}
+		});
 
 </script>
 
