@@ -4060,6 +4060,8 @@
 				        ReorderQty = selectedItem.ReorderQty;
 				        UnitOfMeasure = selectedItem.UnitDescription;
                     }
+							// Commit changes to underlying store
+                   dataGrid.saveEditData();
 
                     e.component.close();
                 }
@@ -4312,6 +4314,8 @@
 													UnitCode=selectedItem.UnitCode;
                                             }
                                             e.component.close();
+													
+                                           grid.saveEditData();
                                         }
                                     }
                                 });
@@ -4447,6 +4451,8 @@
 	grid.cellValue(rowIndex, "QuantityInvoiced", qty);
 	//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
+			// Commit changes to underlying store
+       grid.saveEditData();
 
                         }
                     }
@@ -4495,7 +4501,8 @@
 	grid.cellValue(rowIndex, "QuantityInvoiced", qty);
 	//grid.cellValue(rowIndex, "CalcLineAmountBeforeDiscount", amount.toFixed(2)); // original amount before discount
 	grid.cellValue(rowIndex, "TaxSlabCode", selectedItem.TaxSlabCode);
-
+			
+       grid.saveEditData();
                                 }
 
                                 e.component.close();
@@ -4566,7 +4573,8 @@
                         grid.cellValue(rowIndex, "Discount", formatAmount(discount));
                         grid.cellValue(rowIndex, "Qty", formatAmount(qty));
                         grid.cellValue(rowIndex, "VAT%", vatRateStr); // % can remain as string
-
+								// Commit changes to underlying store
+                        grid.saveEditData();
 							applyDiscount(formatAmount(amount));
 							currentAmount = formatAmount(amount);
 							//applyDiscount(rowIndex);
@@ -4744,6 +4752,8 @@ editCellTemplate: function (cellElement, cellInfo) {
 				        ReorderQty = selectedItem.ReorderQty;
 				        UnitOfMeasure = selectedItem.UnitDescription;
                     }
+
+					   dataGrid.saveEditData();
 
                     e.component.close();
                 }
@@ -5089,6 +5099,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 													UnitCode=selectedItem.UnitCode;
 
 												}
+												   grid.saveEditData();
 
 												e.component.close();
 
@@ -5222,7 +5233,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 										let TaxSlabCode = selectedItem.TaxSlabCode;
 
 										VATPercentage(selectedItem.TaxRate, rowIndex, TaxSlabCode)
-											
+										 dataGrid.saveEditData();	
 
 									}
 								},
@@ -7513,6 +7524,7 @@ if (popover.option("visible")) {
 
 			  // Store value for use in popover
                currentAmount = formatAmount(amount);
+               grid.saveEditData();
 			   }
 
 			};
@@ -7532,6 +7544,12 @@ if (popover.option("visible")) {
 
 			var button = $("#btnSave").dxButton("instance");
             button.option("disabled", true);
+
+			
+			var SaveAndClosebtn = $("#btnSaveAndClose").dxButton("instance");
+			SaveAndClosebtn.option("disabled", true);
+
+
 			
 			RevenueAccount = $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value");
 
@@ -7717,24 +7735,28 @@ if (popover.option("visible")) {
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
-button.option("disabled", false);
+   button.option("disabled", false);
+  SaveAndClosebtn.option("disabled", false);
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 								  button.option("disabled", false);
+								  SaveAndClosebtn.option("disabled", false);
 							 
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 							 button.option("disabled", false);
+							  SaveAndClosebtn.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
                          button.option("disabled", false);
+						  SaveAndClosebtn.option("disabled", false);
 				}
 			});
 			}
@@ -7742,6 +7764,7 @@ button.option("disabled", false);
 			{
 				  DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
 				  button.option("disabled", false);
+				   SaveAndClosebtn.option("disabled", false);
 			}
 
 		 }
@@ -7754,6 +7777,9 @@ button.option("disabled", false);
 
 			var button = $("#btnSaveAndClose").dxButton("instance");
              button.option("disabled", true);
+
+			 	var Savebtn = $("#btnSave").dxButton("instance");
+            Savebtn.option("disabled", true);
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
@@ -7938,6 +7964,8 @@ button.option("disabled", false);
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+										       button.option("disabled", false);
+										       Savebtn.option("disabled", false);
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
@@ -7945,21 +7973,28 @@ button.option("disabled", false);
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 							 history.back();
 							  button.option("disabled", false);
+							      Savebtn.option("disabled", false);
 						},
+
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
                            button.option("disabled", false);
+						       Savebtn.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
+					 button.option("disabled", false);
+						   Savebtn.option("disabled", false);
 				}
 			});
 			}
 			else
 			{
                    DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
+				   		 button.option("disabled", false);
+						   Savebtn.option("disabled", false);
 
 			}
 
@@ -8034,43 +8069,9 @@ button.option("disabled", false);
                     grid.cellValue(rowIndex, "Qty", formatAmount(qty));
                     grid.cellValue(rowIndex, "VAT%", vatRateStr); // % can remain as string
                     grid.cellValue(rowIndex, "TaxSlabCode", TaxSlabCode);
+					 grid.saveEditData();
 				  
 }
-
-
-		function ViewInvoiceVATPercentage(newValue, rowIndex,TaxSlabCode) {
-				let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-				// Get current row values
-				let qty = grid.cellValue(rowIndex, "Qty") || 0;
-
-
-				let unitPrice = grid.cellValue(rowIndex, "UnitPrice") || 0;
-				let vatRateStr = newValue || "0%";
-
-
-				//let vatRate = parseFloat(vatRateStr.replace("%", "")) / 100;
-				let vatRate = parseFloat(vatRateStr);
-
-
-				// Calculate amount and VAT
-				let amount = qty * unitPrice;
-				let vatValue = amount * vatRate;
-				let totalValue = amount + vatValue;
-				//alert(vatValue)
-							// Update values in the grid
-						grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-						grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-						grid.cellValue(rowIndex, "Unit Price",unitPrice);
-						grid.cellValue(rowIndex, "Total Before Discount",unitPrice);
-							grid.cellValue(rowIndex, "Amount",unitPrice);
-						grid.cellValue(rowIndex, "Qty",qty);
-						grid.cellValue(rowIndex, "VAT%",vatRateStr);
-						 grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
-
-			}
-
-			
 
 		$(document).ready(function () {
 			var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -9311,6 +9312,9 @@ button.option("disabled", false);
 			grid.cellValue(rowIx, "Discount", discount);
 			grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
 		grid.cellValue(rowIx, "LineTotal", totalValue);
+
+		// Commit changes to underlying store
+       grid.saveEditData();
 				// ✅ Close the DevExtreme Popover
     const popover = $("#CalcardPopover").dxPopover("instance");
     if (popover) {
