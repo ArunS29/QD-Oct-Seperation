@@ -345,5 +345,10 @@
 
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
+        document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" || event.keyCode === 27) {
+            window.close();
+        }
+    });
 </script>
 

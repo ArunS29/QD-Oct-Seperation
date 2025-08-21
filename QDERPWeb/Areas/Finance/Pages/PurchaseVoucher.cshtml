@@ -359,7 +359,7 @@ buttons.Add()
 </div>
 		<div class="form-group col-md-2 col-sm-6">
 			@(Html.DevExtreme().DropDownBox()
-						.Label("Convertion Currency")
+						 .Label(new JS("formatMessage('Convertion Currency')"))
 						.DataSource(d => d.WebApi()
 						.Controller("Utility") // Adjust if needed
 						.LoadAction("GetCurrencyList")
