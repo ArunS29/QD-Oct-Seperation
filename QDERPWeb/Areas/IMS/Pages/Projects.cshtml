@@ -178,7 +178,7 @@
     <div style="display:flex; align-items:end; gap:450px;">
         @(Html.DevExtreme().DropDownBox()
             .ID("ddCostAllocation")
-            .Label("Signatory User ID:")
+             .Label(new JS("formatMessage('Cost Center Code:(Finance Modules)')"))
             .LabelMode(EditorLabelMode.Floating)
             .ShowClearButton(true)
             .OpenOnFieldClick(true)
@@ -216,7 +216,9 @@
                         },
                         columns: [
                             { dataField: "CostAllocationUnitId", width: 60 },
-                            { dataField: "CostAllocationUnit",  width: 200 }
+                            { dataField: "CostAllocationUnit",  width: 200 },
+                             { dataField: "CostAllocationGroup",  width: 200 },
+                              { dataField: "CostAllocationMasterGroup",  width: 200 }
                         ],
                         onSelectionChanged: function (e) {
                             var selected = e.selectedRowsData[0];

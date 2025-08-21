@@ -308,8 +308,10 @@
                         }
                     }, 300);
                 },
-                error: function () {
-                    DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+                error: function (xhr) {
+                    
+                 const msg = xhr.responseJSON?.message || "Failed to save Type of Request.";
+                   DevExpress.ui.notify(msg, "error", 3000);
                 }
             });
         } else {
