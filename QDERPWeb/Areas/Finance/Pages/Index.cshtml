@@ -8,6 +8,10 @@
 <link rel="stylesheet" href="/css/dashboard.css?v=1" />
 
 <style>
+    body.gl-lock {
+        overflow: hidden; /* prevent scrolling while loader visible */
+    }
+
     .revenue-reporting-section {
         background: #fff;
         border-radius: 16px;
@@ -35,9 +39,66 @@
         background: #343a40;
         color: #fff;
     }
+
+    #globalLoader {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: none; /* hidden by default */
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+
+        #globalLoader.show {
+            display: flex !important; /* visible when "show" class is added */
+        }
+
+    .gl-backdrop {
+        position: absolute;
+        inset: 0;
+        background: rgba(0,0,0,0.4);
+    }
+
+    .gl-container {
+        position: relative;
+        z-index: 1;
+        text-align: center;
+        color: #fff;
+        font-size: 1.2rem;
+    }
+
+    .gl-spinner {
+        width: 3rem;
+        height: 3rem;
+        border: 4px solid rgba(255,255,255,0.3);
+        border-top-color: #fff;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 10px auto;
+    }
+
+    @@keyframes spin {
+        to
+
+    {
+        transform: rotate(360deg);
+    }
+
+    }
 </style>
 
 <div class="dashboard-scroll-container">
+    <div id="globalLoader" aria-hidden="true" aria-busy="true">
+        <div class="gl-backdrop"></div>
+        <div class="gl-container">
+            <div class="gl-spinner"></div>
+            <div class="gl-text">Loading…</div>
+        </div>
+    </div>
+
     <!-- Modern Dashboard Header -->
     <div class="dashboard-header">
         <span class="user-name">Hey @Model.UserName</span> - <span class="subtext">here’s what’s happening till this date</span>
@@ -164,7 +225,7 @@
         };
         window.requestAnimationFrame(step);
     }
-
+     
     $(document).ready(function () {
         let cashVal = 0, bankVal = 0, clientTotalOutstanding = 0, supplierTotalOutstanding = 0;
 
@@ -330,4 +391,67 @@
             }
         });
     });
+
+        /* ===== Global Loader ===== */
+    (function () {
+        const loader = document.getElementById('globalLoader');
+        let hideTimer = null, locks = 0;
+
+        function showLoader(forceImmediate = false) {
+            locks++;
+            if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+            loader.classList.add('show');
+            document.body.classList.add('gl-lock');
+            if (forceImmediate) loader.offsetHeight;
+        }
+
+        function hideLoader() {
+            hideTimer = setTimeout(() => {
+                locks = Math.max(0, locks - 1);
+                if (locks === 0) {
+                    loader.classList.remove('show');
+                    document.body.classList.remove('gl-lock');
+                }
+            }, 150);
+        }
+
+        window.__globalLoader = { show: showLoader, hide: hideLoader };
+    })();
+
+     document.getElementById("getLiveData").addEventListener("change", function () {
+        if (this.checked) {
+            // Show loader immediately when checked
+            if (window.__globalLoader && typeof window.__globalLoader.show === "function") {
+                window.__globalLoader.show(true);
+            }
+
+            fetch("/api/dashboard/RunAllOutstandingProcedures", { method: "POST" })
+                .then(r => {
+                    if (!r.ok) throw new Error("API failed");
+                    return r.json();
+                })
+                .then(() => {
+                    alert("Live data refresh started!");
+                    location.reload();
+                })
+                .catch(() => {
+                    alert("Failed to run live data process.");
+                })
+                .finally(() => {
+                    // Hide loader and reset checkbox
+                    if (window.__globalLoader && typeof window.__globalLoader.hide === "function") {
+                        window.__globalLoader.hide();
+                    }
+                    this.checked = false;
+                });
+
+        } else {
+            // If user manually unchecks, hide loader
+            if (window.__globalLoader && typeof window.__globalLoader.hide === "function") {
+                window.__globalLoader.hide();
+            }
+        }
+    });
+
 </script>
+
