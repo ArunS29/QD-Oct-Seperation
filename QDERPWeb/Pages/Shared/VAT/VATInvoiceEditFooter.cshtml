@@ -346,59 +346,60 @@
 
     <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
-            .ID("btnPrint1")
-            .Text(new JS("formatMessage('Print')"))
-            .Icon("print")
-            .Width(132)
-            .ElementAttr(new { @class = "bold-button" })
-            .DropDownOptions(options => options.Width(230))
-            .ShowArrowIcon(false)
-            .Items(items =>
-            {
-                items.Add()
-                    .Text("Print Regular TAX Invoice")
+                .ID("btnPrint1")
+                .Text(new JS("formatMessage('Print')"))
+                .Icon("print")
+                .Width(132)
+                .ElementAttr(new { @class = "bold-button" })
+                .DropDownOptions(options => options.Width(230))
+                .ShowArrowIcon(false)
+                .Items(items =>
+                {
+                    items.Add()
+                    .Text(new JS("formatMessage('Print Regular TAX Invoice')"))
                     .Icon("print")
                     .Option("color", "#FF7043"); // Orange
 
-                items.Add()
-                    .Text("Print Simplified TAX Invoice")
+                    items.Add()
+                    .Text(new JS("formatMessage('Print Simplified TAX Invoice')"))
                     .Icon("file")
                     .Option("color", "#00ACC1"); // Cyan
 
-                items.Add()
-                    .Text("Additional Formats")
+                    items.Add()
+                    .Text(new JS("formatMessage('Additional Formats')"))
                     .Icon("folder")
                     .Option("color", "#AB47BC"); // Purple
 
-                items.Add()
-                    .Text("Edit Sales Voucher")
+                    items.Add()
+                    .Text(new JS("formatMessage('Edit Sales Voucher')"))
                     .Icon("edit")
                     .Option("color", "#FBBC05") // Yellow
                     .OnClick("showSalesVoucherEditPopup");
 
-                items.Add()
-                    .Text("Upload Items from Excel")
+                    items.Add()
+                    .Text(new JS("formatMessage('Upload Items from Excel')"))
                     .Icon("upload")
                     .Option("color", "#EA4335") // Red
                     .OnClick("navigateInventoryListtoUpload");
 
-                items.Add()
-                    .Text("Profit On Sale")
+                    items.Add()
+                    .Text(new JS("formatMessage('Profit On Sale')"))
                     .Icon("chart")
                     .Option("color", "#34A853") // Green
                     .OnClick("navigateToLoss");
 
-                items.Add()
-                    .Text("Invoice Cost Posting")
+                    items.Add()
+                    .Text(new JS("formatMessage('Invoice Cost Posting')"))
                     .Icon("money")
                     .Option("color", "#4285F4") // Blue
                     .OnClick("navigateToInvoiceCostPosting");
 
-                items.Add()
-                    .Text("Advance / Prepayment Adjustments")
+                    items.Add()
+                    .Text(new JS("formatMessage('Advance / Prepayment Adjustments')"))
                     .Icon("wallet")
                     .Option("color", "#AB47BC"); // Purple
-            })
+                })
+                
             .ItemTemplate(@<text>
                 <div class="custom-dropdown-item">
                     <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>

@@ -257,9 +257,9 @@
 		<div class="card blue shine compact with-sidebar">
 			<div class="tile-content">
 				<div class="title-text">
-					<h2 class="title-slide">VAT Credit Note Register</h2>
+					<h2 class="title-slide" id="vatcreditnoteregister"></h2>
 					<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-					<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+					<h6 class="fade-in" id="QuickDiceERPSolutions10"></h6>
 				</div>
 				<div class="tile-icon">
 					<!-- Icon as SVG -->
@@ -271,21 +271,21 @@
 		</div>
 
 		<div class="card with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden; text-align: left;">
-			<h2 style="margin-bottom: 10px; color: white; font-size: 1.6em; font-weight: bold;">Voucher Count</h2>
+			<h2 style="margin-bottom: 10px; color: white; font-size: 1.6em; font-weight: bold;" id="creditnotevouchercount"></h2>
 
 			<div class="voucher-slider">
 				<div class="voucher-slide active">
-					<h5 style="margin: 0;text-align: left;">No of Invoices Verified</h5>
+					<h5 style="margin: 0;text-align: left;" id="noofinvoicesverifiedcredit"></h5>
 					<h4 id="verifiedCount" style="margin: 5px 0 15px;text-align: left;">0</h4>
 				</div>
 
 				<div class="voucher-slide">
-					<h5 style="margin: 0;text-align: left;">No of Invoices Approved</h5>
+					<h5 style="margin: 0;text-align: left;" id="noofinvoicesapprovedcredit"></h5>
 					<h4 id="approvedCount" style="margin: 5px 0 15px;text-align: left;">0</h4>
 				</div>
 
 				<div class="voucher-slide">
-					<h5 style="margin: 0;text-align: left;">No of Invoices Posted</h5>
+					<h5 style="margin: 0;text-align: left;" id="noofinvoicespostedcredit"></h5>
 					<h4 id="postedCount" style="margin: 5px 0;text-align: left;">0</h4>
 				</div>
 			</div>
@@ -301,10 +301,10 @@
 
 
 		<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
-			<h2 style="margin-bottom: 10px; color: white;font-weight:bold;font-size: 1.6em;">Today</h2>
+			<h2 style="margin-bottom: 10px; color: white;font-weight:bold;font-size: 1.6em;" id="creditnotedtoday"></h2>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
-				<h4>Credit Notes Raised Today</h4>
+				<h4 id="creditnotesraisedtoday"></h4>
 				<h1 id="creditToday" style="color: white;">
 							<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 								<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -313,7 +313,7 @@
 						</h1>
 			</div>
 			<div class="voucher-slide1">
-				<h4>Credit Notes Raised Total</h4>
+				<h4 id="creditnotesraisedtotal"></h4>
 					<h1 id="creditTotal" style="color: white;">
 						<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 							<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -898,10 +898,6 @@
 		)
 </div>
 </div>
-
-<ul id="submenu" class="custom-submenu">
-	<li id="addCreditNote">Add new e-Invoice Credit Note</li>
-</ul>
 <div id="overlay" class="overlay">
 	<div class="overlay-content">
 		<span class="close-btn" onclick="closeOverlay()">×</span>
@@ -1761,6 +1757,35 @@
 			}
 		}).dxContextMenu("instance").show();
 	}
+
+	$(function () {
+		$("#vatcreditnoteregister").text(formatMessage("VAT Credit Note Register"));
+	});
+	$(function () {
+		$("#QuickDiceERPSolutions10").text(formatMessage("Quick Dice ERP Solutions"));
+	});
+	$(function () {
+		$("#creditnotevouchercount").text(formatMessage("Voucher Count"));
+	});
+	$(function () {
+		$("#creditnotedtoday").text(formatMessage("Today"));
+	});
+	$(function () {
+		$("#noofinvoicesverifiedcredit").text(formatMessage("No of Invoices Verified"));
+	});
+	$(function () {
+		$("#noofinvoicesapprovedcredit").text(formatMessage("No of Invoices Approved"));
+	});
+	$(function () {
+		$("#noofinvoicespostedcredit").text(formatMessage("No of Invoices Posted"));
+	});
+	$(function () {
+		$("#creditnotesraisedtoday").text(formatMessage("Credit Notes Raised Today"));
+	});
+	$(function () {
+		$("#creditnotesraisedtotal").text(formatMessage("Credit Notes Raised Total"));
+	});
+
 
 	function closeMainDropdown() {
 		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
