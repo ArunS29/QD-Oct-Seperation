@@ -5395,7 +5395,7 @@
             if (module === "Payments") docType = "BankCashPayment";
             if (module === "Receipts") docType = "BankCashReceipt";
 
-            window.location.href = `Finance/VoucherApproval?docType=${docType}&status=${status}`;
+           window.location.href = `/${tenantName}/Finance/VoucherApproval?docType=${docType}&status=${status}`;
         }
 
               // Open sidebar when bell clicked
@@ -5676,7 +5676,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `VAT/SalesRegisterVAT?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/VAT/SalesRegisterVAT?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
@@ -5687,7 +5687,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `VAT/VATDebitNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/VAT/VATDebitNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
@@ -5698,7 +5698,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `VAT/VATCreditNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/VAT/VATCreditNotRegister?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
@@ -5709,7 +5709,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `VAT/VATPurchaseMasterView?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/VAT/VATPurchaseMasterView?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
@@ -5783,7 +5783,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `IMS/MaterialRequestEnquiriesDetails?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/IMS/MaterialRequestEnquiriesDetails?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
@@ -5794,7 +5794,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `IMS/Quotation?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/IMS/Quotation?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
@@ -5805,7 +5805,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `IMS/SalesOrders?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/IMS/SalesOrders?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
@@ -5816,7 +5816,7 @@
             var onVatPage = window.location.pathname.toLowerCase().includes("salesregistervat");
 
             if (!onVatPage) {
-                window.location.href = `IMS/RequestforQuotationList?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
+                window.location.href = `/${tenantName}/IMS/RequestforQuotationList?module=${encodeURIComponent(module)}&status=${encodeURIComponent(status)}`;
                 return;
             }
 
