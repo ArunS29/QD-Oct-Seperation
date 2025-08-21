@@ -123,7 +123,7 @@
                 .Value(DateTime.Now)
                         .LabelMode(EditorLabelMode.Floating)
                         .Label("Voucher Date")
-
+                        .OnValueChanged("onVoucherDateChanged")
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true) // Ensures proper date input handling
                 .ElementAttr("class", "dynamicFormatDateBox"))
@@ -138,6 +138,7 @@
                         .Label("Effective Date")
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true)
+                .OnValueChanged("onVoucherDateChanged")
                 .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
 
@@ -2494,7 +2495,7 @@
          type: "GET",
          url: "/api/VoucherMaster/CheckVoucherDateLock",
          contentType: "application/json",
-         data: { voucherDate: voucherDate },
+         data: { voucherDate: formatDateOnlyLocal(voucherDate) },
          success: function (res) {
              if (res && res.isLocked === true) {
                  DevExpress.ui.dialog.alert(

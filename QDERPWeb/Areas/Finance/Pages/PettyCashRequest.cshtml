@@ -223,6 +223,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-2 col-sm-6">
@@ -233,6 +234,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-4 col-sm-6">
@@ -2554,7 +2556,7 @@
             type: "GET",
             url: "/api/VoucherMaster/CheckVoucherDateLock",
             contentType: "application/json",
-            data: { voucherDate: voucherDate },
+            data: { voucherDate: formatDateOnlyLocal(voucherDate) },
             success: function (res) {
                 if (res && res.isLocked === true) {
                     DevExpress.ui.dialog.alert(
