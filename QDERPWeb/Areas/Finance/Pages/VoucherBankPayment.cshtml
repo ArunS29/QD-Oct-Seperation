@@ -458,25 +458,36 @@
                                     .Caption(new JS("formatMessage('Debit')"))
                                     .Alignment(HorizontalAlignment.Right)
                                     .AllowEditing(false)
-                                    .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                                    .CalculateCellValue("function(data) { " +
+                                    "    if (data.DrAmount != null) { " +
+                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        var val = data.DrAmount / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}")
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
+
 
                                     columns.AddFor(m => m.CrAmount)
                                     .Caption(new JS("formatMessage('Credit')"))
                                     .Alignment(HorizontalAlignment.Right)
                                     .AllowEditing(false)
-                                    .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                                    .CalculateCellValue("function(data) { " +
+                                    "    debugger; " +
+                                    "    if (data.CrAmount != null) { " +
+                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        var val = data.CrAmount / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}")
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
+
 
 
 
@@ -555,23 +566,15 @@
 
                             totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
 
-                                    .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
 
                             totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
 
-                                    .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
 
                         });
 
@@ -3634,7 +3637,7 @@ accountGrid.clearSelection();
             }
 
             fetchVoucherDetails(voucherNo);
-            fetchVoucherEntries(voucherNo);
+            
         }
 
         function validateVoucherNo(voucherNo) {
@@ -3682,6 +3685,7 @@ accountGrid.clearSelection();
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
                     if (dataGrid) {
                         dataGrid.option("dataSource", response.data);
+                        dataGrid.refresh(true);
                         var button = $("#btnSave").dxButton("instance");
                                 button.option("text", "Update");
                                 $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
@@ -3732,42 +3736,59 @@ accountGrid.clearSelection();
             });
         }
 
-    function onVoucherDateChanged(e) {
-        let voucherDate = $("#VoucherDate").dxDateBox("instance");
-        let effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
+    //    let isSyncing = false;
 
-        if (!e.value) return;
+    // function onVoucherDateChanged(e) {
+    //     if (!e.value) return;
 
-        // Sync the other datebox with the changed one
-        if (e.element.attr("id") === "VoucherDate") {
-            effectiveDate.option("value", e.value);
-        } else {
-            voucherDate.option("value", e.value);
-        }
+    //     let voucherDate = $("#VoucherDate").dxDateBox("instance");
+    //     let effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
-        // Validate against API
-        $.ajax({
-            url: "/api/VoucherMaster/CheckVoucherDateLock",
-            type: "GET",
-            data: { voucherDate: new Date(e.value).toISOString() },
-            success: function (response) {
-                if (response && response.isLocked) {
-                    DevExpress.ui.notify(
-                        "This Voucher Entry date has been blocked. Please review your entry date.",
-                        "error",
-                        3000
-                    );
+    //     if (isSyncing) return; // prevent recursive calls
 
-                    let currentDate = new Date();
-                    voucherDate.option("value", currentDate);
-                    effectiveDate.option("value", currentDate);
-                }
-            },
-            error: function () {
-                DevExpress.ui.notify("Error checking date lock.", "error", 3000);
-            }
-        });
-    }
+    //     isSyncing = true;
+
+    //     // Sync the other box
+    //     if (e.element.attr("id") === "VoucherDate") {
+    //         effectiveDate.option("value", e.value);
+    //     } else {
+    //         voucherDate.option("value", e.value);
+    //     }
+
+    //     isSyncing = false;
+    //         // Format date as yyyy-MM-dd (only date, no time)
+    // function formatDateOnly(date) {
+    //     if (!date) return null;
+    //     return date.toISOString().split("T")[0]; // "2021-12-31"
+    // }
+
+    //     // ✅ Only one API call here
+    //     $.ajax({
+    //         url: "/api/VoucherMaster/CheckVoucherDateLock",
+    //         type: "GET",
+    //         data: { voucherDate: formatDateOnly(e.value) },
+    //         success: function (response) {
+    //             if (response && response.isLocked) {
+    //                 DevExpress.ui.notify(
+    //                     "This Voucher Entry date has been blocked. Please review your entry date.",
+    //                     "error",
+    //                     3000
+    //                 );
+
+    //                 let currentDate = new Date();
+
+    //                 isSyncing = true; // block sync loop again
+    //                 voucherDate.option("value", currentDate);
+    //                 effectiveDate.option("value", currentDate);
+    //                 isSyncing = false;
+    //             }
+    //         },
+    //         error: function () {
+    //             DevExpress.ui.notify("Error checking date lock.", "error", 3000);
+    //         }
+    //     });
+    // }
+
 
 
 
@@ -4139,8 +4160,8 @@ function fetchUpdatedData(voucherEntryNo) {
                    
                                                             syncWorkflowFromFields();
                                     initWorkflowTippyPopovers();
-                                     checkVoucherDateLock(data.VoucherDate);                                    getDocumentCount();
-
+                                     checkVoucherDateLock(data.VoucherDate);
+                                             fetchVoucherEntries(data.VoucherNo);
                     //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
                 },
@@ -4578,7 +4599,7 @@ function showMainFooter() {
                 type: "GET",
                 url: "/api/VoucherMaster/CheckVoucherDateLock",
                 contentType: "application/json",
-                data: { voucherDate: voucherDate },
+                data: { voucherDate: formatDateOnlyLocal(voucherDate) },
                 success: function (res) {
                     if (res && res.isLocked === true) {
                         DevExpress.ui.dialog.alert(

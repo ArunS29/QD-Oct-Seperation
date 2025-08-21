@@ -3696,6 +3696,21 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(new { isLocked = false });
         }
+        [HttpGet]
+        public IActionResult GetVoucherDateLocked()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            var lockDate = dbContext.Tbl90117VoucherDateLockings
+                                    .OrderByDescending(x => x.VoucherTypeCode)
+                                    .Select(x => x.VoucherDateLocked)
+                                    .FirstOrDefault();
+
+            return Json(new { voucherDateLocked = lockDate });
+        }
 
 
         [HttpGet]

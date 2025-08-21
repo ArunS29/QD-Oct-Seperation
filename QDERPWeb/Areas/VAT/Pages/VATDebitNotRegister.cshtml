@@ -312,7 +312,7 @@
 	@await Html.PartialAsync("/Pages/Shared/VAT/VATDebitNoteRegisterFooter.cshtml")
 </div>
 
-<div class="context-menu" id="contextMenu">
+<div class="context-menu" id="DebitcontextMenu">
 	<div class="context-menu-item" onclick="viewInvoice()">
 		<i class="dx-icon-edit"></i> Edit Debit Note
 	</div>
@@ -1337,7 +1337,7 @@
 					return $("<div>").attr("id", "popupFormContent");
 				}
 			}).dxPopup("instance");
-			var contextMenu = $("#contextMenu");
+				var contextMenu = $("#DebitcontextMenu");
 			$(document).on("click", function () {
 				contextMenu.hide();
 			});
