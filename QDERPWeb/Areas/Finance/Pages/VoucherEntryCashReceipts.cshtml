@@ -2961,7 +2961,7 @@ function addVoucherEntry() {
 
                                      // Retrieve the value from the TextBox
                                      var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-
+                                    getDocumentCount();
                                  },
                                  error: function (xhr, status, error) {
                                      console.error("Error loading Voucher No:", error);
@@ -3075,6 +3075,7 @@ function addVoucherEntry() {
                         }
                                                             syncWorkflowFromFields();
                                 initWorkflowTippyPopovers();
+                                getDocumentCount();
                             //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                         }
                     },

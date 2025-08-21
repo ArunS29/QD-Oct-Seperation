@@ -348,7 +348,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-            public async Task<IActionResult> GetDocuments(string folderId, string module, string menuType)
+            public async Task<IActionResult> GetDocuments(string folderId, string module, string menuType, string folderId2)
             {
                 try
                 {
@@ -376,7 +376,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var normalizedFolderId = Clean(folderId);
                     var normalizedTenant = Clean(tenantName);
                     var normalizedMenu = Clean(menuType);
-
+                    var normalizedFolderId2 = string.IsNullOrWhiteSpace(folderId2) ? Clean(folderId) : Clean(folderId2);
                     // Build partial Azure path prefix
                     var azurePathPrefix = $"{normalizedTenant}/"; // Tenant root
 
@@ -386,14 +386,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var allBlobsInTenant = await blobHelper.ListBlobsAsync(azurePathPrefix);
 
-                    var dbDocs = await dbContext.Tbl20116LedgerDocuments
-                        .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
-                                    d.AzurePath.Contains(normalizedMenu) &&
-                                    d.AzurePath.Contains(normalizedModule) &&
-                                    d.AzurePath.Contains(normalizedFolderId))
-                        .ToListAsync();
+                var dbDocs = await dbContext.Tbl20116LedgerDocuments
+                    .Where(d =>
+                        !string.IsNullOrEmpty(d.AzurePath) &&
+                        (
+                            (d.AzurePath.Contains(normalizedMenu) &&
+                             d.AzurePath.Contains(normalizedModule) &&
+                             d.AzurePath.Contains(normalizedFolderId))
+                            || d.AzurePath.Contains(normalizedFolderId2)
+                        )
+                    )
+                    .ToListAsync();
 
-                    var matchingDocs = dbDocs
+                var matchingDocs = dbDocs
                         .Where(d => allBlobsInTenant.Contains(d.AzurePath))
                         .Select((d, index) => new
                         {

@@ -1,0 +1,296 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.PropertyOperatorModel
+@{
+}
+<style>
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+</style>
+<div class="p-3">
+
+    <table style="width:100%; border-collapse: separate; border-spacing: 12px;">
+        <tr>
+            <td style="width: 50%;">
+                @(Html.DevExtreme().TextBox()
+                                .ID("PropertyNo")
+                                .Label("Property No:")
+                                .Disabled(true)
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                           )
+            </td>
+            <td style="width: 50%;">
+                @(Html.DevExtreme().TextBox()
+                                .ID("PropertyDescription")
+                                .Disabled(true)
+                                .Label("Property / Equipment Description:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                )
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("ID")
+                                .Label("ID:")
+                                .Disabled(true)
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .Value("-1"))
+            </td>
+            <td>
+                @(Html.DevExtreme().DropDownBox()
+                                .ID("OperatorType")
+                                .Label("Operator Type:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                )
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().DropDownBox()
+                                .ID("EmployeeNo")
+                                .Label("Employee No:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .DataSource(d => d.WebApi()
+                                .Controller("PropertyOperator")
+                                .LoadAction("GetAllEmployee")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("EmployeeId")
+                                )
+                                .Option("dataGridId", "GetAllEmployee-datagrid")
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .Width("100%")
+                                .ValueExpr("EmployeeId")
+                                .DisplayExpr("EmployeeId")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .OnKeyDown("onKeyDown")
+                                .ContentTemplate(new TemplateName("GetTypeOfPropertyCategoryContentTemplate"))
+                                .Width("100%"))
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("OperatorName")
+                                .Label("Operator Name:")
+                                .Disabled(true)
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%"))
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                                .ID("HourlyRate")
+                                .Label("Operator Hourly Rate: (Per Hour)")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%"))
+            </td>
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                                .ID("OvertimeRate")
+                                .Label("Overtime Rate: (Per Hour)")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%"))
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                                .ID("WorkStartDate")
+                                .Label("Work Start Date:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .Value(DateTime.Now))
+            </td>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                                .ID("Shift")
+                                .Label("Shift:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Value("Day Shift")
+                                .Width("100%"))
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextArea()
+                                .ID("Remarks")
+                                .Label("Remarks:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .Height(60))
+            </td>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                                .ID("DemobilizedOn")
+                                .Label("Demobilized On:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%"))
+            </td>
+        </tr>
+    </table>
+
+    <!-- Footer buttons -->
+    <div style="margin-top: 20px; text-align: left;">
+        @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text("Save")
+                .Type(ButtonType.Success)
+                .Icon("save")
+                .Width(120)
+        
+        )
+
+        @(Html.DevExtreme().Button()
+                .ID("btnSaveClose")
+                .Text("Save & Close")
+                .Type(ButtonType.Default)
+                .Icon("check")
+                .Width(150)
+                .ElementAttr("style", "margin-left: 10px;"))
+
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text("Back")
+                .Type(ButtonType.Normal)
+                .Icon("arrowleft")
+                .Width(120)
+                .ElementAttr("style", "margin-left: 10px;"))
+    </div>
+</div>
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertyCategoryContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("GetAllEmployee-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("PropertyOperator")
+                            .LoadAction("GetAllEmployee")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("EmployeeId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .Selection(sl => sl.Mode(SelectionMode.Single))
+                            .OnSelectionChanged("dataGridSelectionChanged3")
+                            .OnInitialized("dataGridInitialized2")
+                            .HeaderFilter(p => p.Visible(true))
+                            .FilterRow(f => f.Visible(false))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                    columns.Add().DataField("EmployeeGroup").Caption("Employee Group");
+                                    columns.Add().DataField("EmployeeId").Caption("Employee ID");
+                                    columns.Add().DataField("EmployeeName").Caption("Employee Name");
+                                    columns.Add().DataField("NationalityEn").Caption("Nationality En");
+                                    columns.Add().DataField("NationalId").Caption("National ID");
+                                    columns.Add().DataField("PassportNo").Caption("Passport ID");
+                                    columns.Add().DataField("IsDiscontinued").Caption("Is Discontinued");
+                            })
+                            )
+}
+
+<script>
+        $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const PropertyNo = urlParams.get("PropertyNo") || "";
+        const PropertyDescription = urlParams.get("PropertyDescription") || "";
+
+        // Safely set values only if the dxTextBox exists
+        if ($("#PropertyNo").data("dxTextBox")) {
+            $("#PropertyNo").dxTextBox("instance").option("value", PropertyNo);
+        }
+        if ($("#PropertyDescription").data("dxTextBox")) {
+            $("#PropertyDescription").dxTextBox("instance").option("value", PropertyDescription);
+        }
+    });
+         function dataGridSelectionChanged3(e) {
+        if (e.selectedRowsData.length > 0) {
+            var selectedRow = e.selectedRowsData[0];
+
+            var employeeId = selectedRow.EmployeeId;
+            var employeeName = selectedRow.EmployeeName;
+
+            if ($("#EmployeeNo").data("dxDropDownBox")) {
+                $("#EmployeeNo").dxDropDownBox("instance").option("value", employeeId);
+            }
+            if ($("#OperatorName").data("dxTextBox")) {
+                $("#OperatorName").dxTextBox("instance").option("value", employeeName);
+            }
+        }
+    }
+
+      function dataGridInitialized1(e) {
+        dataGrid = e.component;
+    }
+      function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+        function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        const text = ddbInstance.option("text");
+        const gridId = ddbInstance.option("dataGridId");
+        if (gridId) {
+            const grid = $("#" + gridId).dxDataGrid("instance");
+            if (grid) {
+                grid.option("searchPanel.text", text);
+            }
+        }
+    }
+     function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+
+        const gridId = ddbInstance.option("dataGridId");
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else if (grid) {
+            let focusedIndex = grid.option("focusedRowIndex");
+            let visibleRows = grid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            grid.focus(grid.getRowElement(focusedIndex));
+        }
+    }
+         function dataGridInitialized2(e) {
+        dataGrid = e.component;
+    }
+</script>

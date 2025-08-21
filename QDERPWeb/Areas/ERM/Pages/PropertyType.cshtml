@@ -174,20 +174,20 @@
 			<div>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
-										.ID("propertytype")
-										.Label(new JS("formatMessage('Type a New Property & Add to the Existing List')"))
-										.LabelMode(EditorLabelMode.Floating)
-										.Width("70%")
-										)
+							.ID("propertytype")
+							.Label(new JS("formatMessage('Type a New Property & Add to the Existing List')"))
+							.LabelMode(EditorLabelMode.Floating)
+							.Width("70%")
+							)
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-												.ID("Addproperty")
-												.Text(new JS("formatMessage('Add')"))
-												.Type(ButtonType.Success)
-												.ElementAttr(new { @class = "custom-ui-button" })
-												.Icon("plus")
-												.Width("100%")
-												)
+									.ID("Addproperty")
+									.Text(new JS("formatMessage('Add')"))
+									.Type(ButtonType.Success)
+									.ElementAttr(new { @class = "custom-ui-button" })
+									.Icon("plus")
+									.Width("100%")
+									)
 					</div>
 				</div>
 			</div>
@@ -207,7 +207,7 @@
 				.ShowRowLines(true)
 				.RowAlternationEnabled(true)
 				.DataSource(d => d.WebApi()
-				.Controller("ERStockInventory")
+				.Controller("AddNewProperty")
 				.LoadAction("GetAllPropertyTypes")
 				.UpdateAction("UpdatePropertyType")
 				.UpdateMethod("PUT")
@@ -255,9 +255,6 @@
 				.GroupPanel(g => g.Visible(false))
 				.ShowColumnHeaders(true)
 				)
-
-
-
 	</div>
 	<br />
 	<!-- Buttons -->
@@ -291,7 +288,7 @@
 				}
 
 				$.ajax({
-					url: '/api/ERStockInventory/AddPropertyType',
+					url: '/api/AddNewProperty/AddPropertyType',
 					type: 'POST',
 					contentType: 'application/json',
 					data: JSON.stringify({ PropertyType: newProperty }),
@@ -329,7 +326,7 @@
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/ERStockInventory/DeletePropertyType?key=' + e.row.data.PropertyTypeId,
+						url: '/api/AddNewProperty/DeletePropertyType?key=' + e.row.data.PropertyTypeId,
 						type: 'DELETE',
 						success: function () {
 							DevExpress.ui.notify("Property Type deleted successfully!", "success", 2000);

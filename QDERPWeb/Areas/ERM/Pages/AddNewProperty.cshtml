@@ -38,6 +38,9 @@
         min-height: 200px; /* Minimum height for the tab content */
     }
 
+    .titleCard-toggle1{
+        display:none;
+    }
     .dx-fieldset {
         margin: 3px 3px !important;
         padding: 0px;
@@ -198,23 +201,48 @@
         align-items: flex-end;
     }
 
-        .form-image img {
-            width: 280px;
-            height: 240px;
-        }
+    .form-image img {
+        width: 280px;
+        height: 240px;
+    }
 </style>
-
+@* <div class="dx-card-container">
+    <div class="dx-card-header minimal-header">
+        <div class="card-title-icon">
+            <i class="fas fa-file-invoice-dollar"></i>
+        </div>
+        <div id="AddNewQuotation" class="titleText no-border-title">Add New Quotation</div>
+    </div>
+</div> *@
 <div class="property-form">
     <div class="form-columns">
 
         <!-- Row 1: Property Type -->
         <div class="form-group" style="grid-column: span 2; display:flex;flex-direction: row;">
-            @(Html.DevExtreme().SelectBox()
+            @(Html.DevExtreme().DropDownBox()
                     .ID("PropertyType")
                     .Label(new JS("formatMessage('Property Type:*')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .ShowClearButton(true)
                     .Width("100%")
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewProperty")
+                    .LoadAction("GetAllPropertyTypes")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("PropertyType")
+                    )
+                    .Option("dataGridId", "GetPropertyType-datagrid")
+                    .OpenOnFieldClick(false)
+                    .ValueChangeEvent("input")
+                    .HoverStateEnabled(true)
+                    .ValueExpr("PropertyTypeId")
+                    .DisplayExpr("PropertyType")
+                    .OnInput("dropDownBoxOnInput")
+                    .OnOpened("onOpened")
+                    .TabIndex(1)
+                    .Width("100%")
+                    .OnKeyDown("onKeyDown")
+                    .ContentTemplate(new TemplateName("GetTypeOfPropertytypeContentTemplate"))
                     .Buttons(buttons =>
                     {
                         buttons.Add()
@@ -250,12 +278,28 @@
 
         <!-- Row 3: Category and Specification -->
         <div class="form-group" style=" display:flex; flex-direction: row;">
-            @(Html.DevExtreme().SelectBox()
+            @(Html.DevExtreme().DropDownBox()
                         .ID("PropertyCategory")
                         .Label(new JS("formatMessage('Property Category:')"))
                         .LabelMode(EditorLabelMode.Floating)
-                        .DataSource(new[] { "Category A", "Category B" })
+                        .DataSource(d => d.WebApi()
+                        .Controller("PropertyCategory")
+                        .LoadAction("GetAllProperty")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("PropertyCategoryId")
+                        )
+                        .Option("dataGridId", "GetPropertyCategory-datagrid")
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
                         .Width("100%")
+                        .ValueExpr("PropertyCategoryId")
+                        .DisplayExpr("PropertyCategoryName")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("GetTypeOfPropertyCategoryContentTemplate"))
                         .Buttons(buttons =>
                         {
                             buttons.Add()
@@ -286,12 +330,28 @@
 
         <!-- Row 4: Property Group -->
         <div class="form-group" style="display:flex; align-items:end;flex-direction: row;">
-            @(Html.DevExtreme().SelectBox()
+            @(Html.DevExtreme().DropDownBox()
                         .Label(new JS("formatMessage('Property Group:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("PropertyGroup")
-                        .DataSource(new[] { "Group 1", "Group 2" })
                         .Width("100%")
+                        .DataSource(d => d.WebApi()
+                        .Controller("PropertyGroup")
+                        .LoadAction("GetPropertyGroup")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("PropertyGroupId")
+                        )
+                        .Option("dataGridId", "GetPropertyCategory-datagrid")
+                        .OpenOnFieldClick(false)
+                        .ValueChangeEvent("input")
+                        .HoverStateEnabled(true)
+                        .ValueExpr("PropertyGroupId")
+                        .DisplayExpr("PropertyGroup")
+                        .OnInput("dropDownBoxOnInput")
+                        .OnOpened("onOpened")
+                        .TabIndex(1)
+                        .OnKeyDown("onKeyDown")
+                        .ContentTemplate(new TemplateName("GetTypeOfPropertyGroupContentTemplate"))
                         .Buttons(buttons =>
                         {
                             buttons.Add()
@@ -316,8 +376,7 @@
 </div>
 
 <div class="dx-fieldset horizontal-container">
-    @(
-        Html.DevExtreme().Tabs()
+    @(Html.DevExtreme().Tabs()
         .Items(items =>
         {
             items.Add().Icon("preferences").Text(new JS("formatMessage('Specification')"));
@@ -337,9 +396,7 @@
 <div class="dx-fieldset">
     <!-- Tab 1 Content -->
     <div id="tab-content-1" class="tab-content">
-        <!-- Nested Tabs inside Tab 1 -->
-        @(
-                Html.DevExtreme().Tabs()
+        @(Html.DevExtreme().Tabs()
                 .Items(subTabs =>
                 {
                     subTabs.Add().Icon("user").Text(new JS("formatMessage('General')"));
@@ -437,29 +494,31 @@
                     </td>
                     <td>
                         @(Html.DevExtreme().SelectBox()
-                                                .ID("Certification")
-                                                .DataSource(new[] { "Yes", "No" })
-                                                .Label(new JS("formatMessage('Certification:')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .Width("95%"))
+                                        .ID("Certification")
+                                        .DataSource(new[] { "ARAMCO", "TUV", "ARAMCO / SPSP" })
+                                        .Label(new JS("formatMessage('Certification:')"))
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .Width("95%"))
                     </td>
                 </tr>
                 <tr>
                     <td>
-                        @(Html.DevExtreme().TextBox().ID("Remarks").Label(new JS("formatMessage('Remarks:')")).LabelMode(EditorLabelMode.Floating).Width("95%"))
+                        @(Html.DevExtreme().TextArea().ID("Remarks1").Label(new JS("formatMessage('Remarks:')")).LabelMode(EditorLabelMode.Floating).Width("95%"))
                     </td>
                     <td>
                         @(Html.DevExtreme().SelectBox()
                                                 .ID("PWAS")
-                                                .DataSource(new[] { "Yes", "No" })
+                                               // .DataSource(new[] { "Yes", "No" })
                                                 .Label(new JS("formatMessage('PWAS:')"))
+                                                .AcceptCustomValue(true)
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .Width("95%"))
                     </td>
                     <td>
                         @(Html.DevExtreme().SelectBox()
                                                 .ID("Attachment")
-                                                .DataSource(new[] { "Fork", "Bucket", "Crane" }) // example items
+                                              //  .DataSource(new[] { "Fork", "Bucket", "Crane" }) // example items
+                                                .AcceptCustomValue(true)
                                                 .Label(new JS("formatMessage('Attachment:')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .Width("95%"))
@@ -487,17 +546,17 @@
                 <tr>
                     <td>
                         @(Html.DevExtreme().TextBox()
-                                                .ID("Specification1")
-                                                .Label(new JS("formatMessage('Specification 1:')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .Width("97%"))
+                                .ID("Specification1")
+                                .Label(new JS("formatMessage('Specification 1:')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("97%"))
                     </td>
                     <td>
                         @(Html.DevExtreme().TextBox()
-                                                .ID("Field1")
-                                                .Label(new JS("formatMessage('Field 1:')"))
-                                                .LabelMode(EditorLabelMode.Floating)
-                                                .Width("97%"))
+                                .ID("Field1")
+                                .Label(new JS("formatMessage('Field 1:')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("97%"))
                     </td>
                 </tr>
                 <tr>
@@ -535,9 +594,14 @@
             </table>
         </div>
         <div id="nested-tab-3" class="nested-tab-content" style="display:none;">
-
-            ?Img
-
+            
+    <!-- Image -->
+    <div class="form-image">
+     <div class="imagecontainer" id="imgBox1">
+            <span>No image data</span>
+        </div> 
+   <input type="file" id="imageInput" accept="image/*" style="display:none;" /> 
+    </div>
         </div>
     </div>
 
@@ -703,11 +767,36 @@
                                                 .Width("97%"))
                     </td>
                     <td>
-                        @(Html.DevExtreme().TextBox()
-                                                .ID("SupplierName")
+                                                @(Html.DevExtreme().DropDownBox()
                                                 .Label(new JS("formatMessage('Supplier Name:')"))
+                                                .AcceptCustomValue(true)
+                                                .DataSource(d => d.WebApi()
+                                                .Controller("MaterialReceipt")
+                                                .LoadAction("GetSupplierName")
+                                                .LoadMode(DataSourceLoadMode.Raw)
+                                                .Key("SupplierCode")
+
+                                                )
                                                 .LabelMode(EditorLabelMode.Floating)
-                                                .Width("97%"))
+                                                .ID("SupplierName")
+                                                .OpenOnFieldClick(false)
+                                                .ValueChangeEvent("input")
+                                                .HoverStateEnabled(true)
+                                                .ValueExpr("SupplierCode")
+                                                .DisplayExpr("SupplierName")
+                                                .OnInput("dropDownBoxOnInput")
+                                                .OnOpened("onOpened")
+                                                .TabIndex(1)
+                                                .Width("100%")
+                                                .OnKeyDown("onKeyDown")
+                                                .ContentTemplate(new TemplateName("GetSupplierContentTemplate"))
+                                                .ValidationRules(rules =>
+                                                {
+                                                    rules.AddRequired()
+                                                    .Message(new JS("formatMessage('Supplier Name should be entered')"));
+                                                })
+                                                )
+                                                        
                     </td>
                     <td>
                         @(Html.DevExtreme().SelectBox()
@@ -933,13 +1022,13 @@
                 .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                 .Columns(columns =>
                 {
-                    columns.Add().Caption(new JS("formatMessage('Doc No')")).DataField("DocNo");
+                    columns.Add().Caption(new JS("formatMessage('Doc No')")).DataField("DocumentNo");
                     columns.Add().Caption(new JS("formatMessage('Document Type')")).DataField("DocumentType");
                     columns.Add().Caption(new JS("formatMessage('Document Ref No')")).DataField("DocumentRefNo");
                     columns.Add().Caption(new JS("formatMessage('Document Remarks')")).DataField("DocumentRemarks");
-                    columns.Add().Caption(new JS("formatMessage('Expiry On')")).DataField("ExpiryOn").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('Expiry Arabic')")).DataField("ExpiryArabic");
-                    columns.Add().Caption(new JS("formatMessage('Notify On')")).DataField("NotifyOn").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Expiry On')")).DataField("DocumentExpDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Expiry Arabic')")).DataField("DocumentExpDateAr");
+                    columns.Add().Caption(new JS("formatMessage('Notify On')")).DataField("NotifiedOn").DataType(GridColumnDataType.Date);
                 })
                 )
     </div>
@@ -1062,6 +1151,7 @@
                         .Icon("user")
                         .Text(new JS("formatMessage('Add New Operator')"))
                         .Width(230)
+                        .OnClick("Addoperator")
                         )
         </div>
 
@@ -1078,41 +1168,488 @@
                 .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                 .Columns(columns =>
                 {
-                    columns.Add().Caption(new JS("formatMessage('Epmloye ID')")).DataField("DocNo");
-                    columns.Add().Caption(new JS("formatMessage('Operator Type')")).DataField("DocumentType");
-                    columns.Add().Caption(new JS("formatMessage('Operator Name')")).DataField("DocumentRefNo");
-                    columns.Add().Caption(new JS("formatMessage('Start Date')")).DataField("DocumentRemarks").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('End Date')")).DataField("ExpiryOn").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('Hourly Rate')")).DataField("ExpiryArabic");
-                    columns.Add().Caption(new JS("formatMessage('Overtime Rate')")).DataField("ExpiryArabic");
-                    columns.Add().Caption(new JS("formatMessage('Working Shift')")).DataField("ExpiryArabic");
+                    columns.Add().Caption(new JS("formatMessage('Epmloye ID')")).DataField("EmployeeId");
+                    columns.Add().Caption(new JS("formatMessage('Operator Type')")).DataField("OperatorType");
+                    columns.Add().Caption(new JS("formatMessage('Operator Name')")).DataField("OperatorName");
+                    columns.Add().Caption(new JS("formatMessage('Start Date')")).DataField("WorkStartDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('End Date')")).DataField("WorkEndDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Hourly Rate')")).DataField("OperatorRegHourlyRate");
+                    columns.Add().Caption(new JS("formatMessage('Overtime Rate')")).DataField("OperatorOthourlyRate");
+                    columns.Add().Caption(new JS("formatMessage('Working Shift')")).DataField("WorkingShift");
                 })
                 )
-    </div>
-
+    </div> 
 </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+<div class = "footer-fixed" style="display:flex; gap:10px;">
+        @await Html.PartialAsync("/Pages/Shared/ERM/StockEditFooter.cshtml")
+</div>
 <!-- JavaScript -->
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertytypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetItemStore-datagrid")
+                    .DataSource(d => d.WebApi()
+                    .Controller("AddNewProperty")
+                    .LoadAction("GetAllPropertyTypes")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    .Key("PropertyTypeId")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) 
+                    .OnSelectionChanged("dataGridSelectionChanged2")
+                    .OnInitialized("dataGridInitialized2")
+                    .HeaderFilter(p => p.Visible(true))
+                    .FilterRow(f => f.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                            columns.Add().DataField("PropertyType");
+                    })
+                    )
+}
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertyCategoryContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("GetAllProperty-datagrid")
+                        .DataSource(d => d.WebApi()
+                            .Controller("PropertyCategory")
+                            .LoadAction("GetAllProperty")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("PropertyCategoryId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                        .OnSelectionChanged("dataGridSelectionChanged3")
+                        .OnInitialized("dataGridInitialized2")
+                        .HeaderFilter(p => p.Visible(true))
+                        .FilterRow(f => f.Visible(false))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                                columns.Add().DataField("PropertyCategoryName").Caption("Property Category");
+                        })
+                        )
+}
+@using (Html.DevExtreme().NamedTemplate("GetSupplierContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("GetSupplier-datagrid")
+                                    .DataSource(d => d.WebApi()
+                                        .Controller("MaterialReceipt")
+                                        .LoadAction("GetSupplierName")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                        .Key("SupplierCode")
+                                    )
+                                    .WordWrapEnabled(true)
+                                    .ShowBorders(true)
+                                    .Selection(sl => sl.Mode(SelectionMode.Single)) 
+                                    .OnSelectionChanged("dataGridSelectionChanged1")
+                                    .OnInitialized("dataGridInitialized1")
+                                    .HeaderFilter(p => p.Visible(true))
+                                    .ShowBorders(true)
+                                    .HoverStateEnabled(true)
+                                    .Paging(p => p.PageSize(15))
+                                    .FilterRow(f => f.Visible(false))//
+                                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                    .Height(345)
+                                    .Selection(s => s.Mode(SelectionMode.Single))
+                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                    .Columns(columns =>
+                                    {
+                                        columns.Add().DataField("SupplierName");
+                                    })
+                                    )
+}
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertyGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                        .ID("GetPropertyGroup-datagrid")
+                        .DataSource(d => d.WebApi()
+                        .Controller("PropertyGroup")
+                        .LoadAction("GetPropertyGroup")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("PropertyGroupId")
+                        )
+                        .WordWrapEnabled(true)
+                        .ShowBorders(true)
+                        .Selection(sl => sl.Mode(SelectionMode.Single))
+                        .OnSelectionChanged("dataGridSelectionChanged4")
+                        .OnInitialized("dataGridInitialized2")
+                        .HeaderFilter(p => p.Visible(true))
+                        .FilterRow(f => f.Visible(false))
+                        .ShowBorders(true)
+                        .HoverStateEnabled(true)
+                        .Paging(p => p.PageSize(15))
+                        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                        .Height(345)
+                        .Selection(s => s.Mode(SelectionMode.Single))
+                        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                        .Columns(columns =>
+                        {
+                            columns.Add().DataField("PropertyGroup").Caption("Property Group");
+                            columns.Add().DataField("PropertyGroupCode").Caption("Property Group Code");
+                        })
+                     )
+}
+
 <script>
+     function onBackButtonClick(e) {
+        window.history.back();
+    }
+
+      function dataGridInitialized2(e) {
+        dataGrid = e.component;
+    }
+     function dataGridInitialized1(e) {
+        dataGrid = e.component;
+    }
+        function dataGridSelectionChanged3(e) {
+        const selectedKey = e.selectedRowKeys[0]; 
+        const ddbInstance = $("#PropertyCategory").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+       function dataGridSelectionChanged2(e) {
+        const selectedKey = e.selectedRowKeys[0]; 
+        const ddbInstance = $("#PropertyType").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+     function dataGridSelectionChanged1(e) {
+        const selectedKey = e.selectedRowKeys[0];
+         const ddbInstance = $("#SupplierName").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridSelectionChanged4(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#PropertyGroup").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+        function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        const text = ddbInstance.option("text");
+        const gridId = ddbInstance.option("dataGridId");
+        if (gridId) {
+            const grid = $("#" + gridId).dxDataGrid("instance");
+            if (grid) {
+                grid.option("searchPanel.text", text);
+            }
+        }
+    }
+     function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+     function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+
+        const gridId = ddbInstance.option("dataGridId");
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else if (grid) {
+            let focusedIndex = grid.option("focusedRowIndex");
+            let visibleRows = grid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            grid.focus(grid.getRowElement(focusedIndex));
+        }
+    }
+     //  let PropertyImage = null; 
+    function onSaveClicked(e) {
+        var isUpdate = $("#btnSave").data("is-update");
+        // Build data object
+        const data = {
+    PropertyType: $("#PropertyType").dxDropDownBox("instance").option("value"),
+    PropertyNo: $("#PropertyNo").dxTextBox("instance").option("value"),
+    PropertyDescription: $("#PropertyDescription").dxTextBox("instance").option("value"),
+    PropertyCategory: $("#PropertyCategory").dxDropDownBox("instance").option("value"),
+    Specifications: $("#PropertySpecification").dxTextArea("instance").option("value"),
+    PropertyGroupId: $("#PropertyGroup").dxDropDownBox("instance").option("value"),
+    // ================== Asset Details ==================
+    Brand: $("#Brand").dxTextBox("instance").option("value"),
+    Model: $("#Model").dxTextBox("instance").option("value"),
+    ModelType: $("#Type").dxTextBox("instance").option("value"),   
+    ChassisNo: $("#SerialNo").dxTextBox("instance").option("value"),  
+    EngineNo: $("#EngineNo").dxTextBox("instance").option("value"),
+    AlternatorNo: $("#AlternatorNo").dxTextBox("instance").option("value"),
+    DoorNo: $("#DoorNo").dxTextBox("instance").option("value"),
+    Color: $("#Color").dxTextBox("instance").option("value"),
+    Year: $("#Year").dxTextBox("instance").option("value"),
+    KvaorKw: $("#KVA_KW").dxTextBox("instance").option("value"),  
+    Capacity: $("#Capacity").dxTextBox("instance").option("value"),
+    Weight: $("#Weight").dxTextBox("instance").option("value"),
+    OperatingCapacity: $("#OperatingCapacity").dxTextBox("instance").option("value"),
+    OperatingWeight: $("#OperatingWeight").dxTextBox("instance").option("value"),
+    PlatformHeight: $("#PlatformHeight").dxTextBox("instance").option("value"),
+    LxWxH: $("#Dimension").dxTextBox("instance").option("value"),   
+    Location: $("#Location").dxTextBox("instance").option("value"),
+    OwnershipText: $("#Ownership").dxTextBox("instance").option("value"), 
+    PropertyCertification: $("#Certification").dxSelectBox("instance").option("value"), 
+    PropertyRemarks: $("#Remarks").dxTextBox("instance").option("value"),  
+    PropertyPwas: $("#PWAS").dxSelectBox("instance").option("value"),    
+    PropertyAttachment: $("#Attachment").dxSelectBox("instance").option("value"), 
+
+    // ================== Additional Specs ==================
+    AddlSpec1: $("#Specification1").dxTextBox("instance").option("value"),
+    AddlField1: $("#Field1").dxTextBox("instance").option("value"),
+    AddlSpec2: $("#Specification2").dxTextBox("instance").option("value"),
+    AddlField2: $("#Field2").dxTextBox("instance").option("value"),
+    AddlSpec3: $("#Specification3").dxTextBox("instance").option("value"),
+    AddlField3: $("#Field3").dxTextBox("instance").option("value"),
+
+    // ================== Purchase Info ==================
+    PurchaseDate: $("#PurchasedDate").dxDateBox("instance").option("value"),  
+    PurchasedFrom: $("#PurchasedFrom").dxTextBox("instance").option("value"),
+    PurchasedAs2: $("#PurchasedAs").dxTextBox("instance").option("value"),    
+    PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
+
+    // ================== Finance Info ==================
+    IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"), 
+    FinancierName: $("#FinancedBy").dxTextBox("instance").option("value"),       
+    InstallmentStartDate: $("#StartDate").dxDateBox("instance").option("value"), 
+    InstallmentEndDate: $("#EndDate").dxDateBox("instance").option("value"),     
+    NoOfInstallments: $("#Installments").dxNumberBox("instance").option("value"), 
+    InitialDownPayment: $("#DownPayment").dxNumberBox("instance").option("value"), 
+    MonthlyInstallment: $("#MonthlyInstallment").dxNumberBox("instance").option("value"),
+    FinalInstallment: $("#FinalPayment").dxNumberBox("instance").option("value"),  
+
+    // ================== Hiring Info ==================
+    HiredOn: $("#HiredOn").dxDateBox("instance").option("value"),
+    SupplierCode: $("#SupplierName").dxDropDownBox("instance").option("value"),
+    SupplierPono: $("#OurPONo").dxSelectBox("instance").option("value"),        
+    SupplierRefNo: $("#SupplierRefNo").dxSelectBox("instance").option("value"),
+    HiringMode: $("#HiredMode").dxSelectBox("instance").option("value"),        
+    BuyingRatePerHour: $("#RatePerHour").dxNumberBox("instance").option("value"), 
+    BuyingRatePerDay: $("#RatePerDay").dxNumberBox("instance").option("value"),   
+    BuyingRatePerWeek: $("#RatePerWeek").dxNumberBox("instance").option("value"), 
+    BuyingRatePerMonth: $("#RatePerMonth").dxNumberBox("instance").option("value"), 
+    AgreementHours: $("#AgreementHours").dxNumberBox("instance").option("value"),
+    BuyingOtratePerHour: $("#OvertimeRate").dxNumberBox("instance").option("value"), 
+    SupplierMobRate: $("#MobRate").dxNumberBox("instance").option("value"),         
+    SupplierDemobRate: $("#DemobRate").dxNumberBox("instance").option("value"),     
+
+    // ================== Operator Info ==================ReturnRemarks
+    IsOperatorIncluded: $("#IsOperatorIncluded").dxCheckBox("instance").option("value"),
+    OperatorName: $("#OperatorName").dxTextBox("instance").option("value"),
+    OperatorNationalId: $("#IqamaNo").dxTextBox("instance").option("value"),        
+    OperatorContactMobile: $("#MobileNo").dxTextBox("instance").option("value"),    
+    OperatorContactMobile2: $("#MobileNo2").dxTextBox("instance").option("value"),  
+    OperatorRate: $("#HourlyRate").dxNumberBox("instance").option("value"),         
+
+    // ================== Return Info ==================
+    IsReturned: $("#IsReturned").dxCheckBox("instance").option("value"),
+    ReturnedOn: $("#ReturnedOn").dxDateBox("instance").option("value"),
+   // ReturnedRemarks: $("#ReturnRemarks").dxTextBox("instance").option("value")
+         //   PropertyImage: PropertyImage ? PropertyImage.split(',')[1] : null
+         //  PropertyImage: PropertyImageBase64 ? PropertyImageBase64.split(',')[1] : null,
+        };
+
+        $.ajax({
+            url: '/api/AddNewProperty/SaveOrUpdatePropertyMaster',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+                if (!isUpdate) {
+                    $("#btnSave").dxButton("instance").option("text", "Update");
+                    $("#btnSave").data("is-update", true);
+                     refreshFields();
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error saving item.", "error", 3000);
+            }
+        });
+    }
+
+    function onSaveAndCloseClicked(e) {
+        var isUpdate = $("#btnSave").data("is-update");
+
+        const data = {
+              PropertyType: $("#PropertyType").dxDropDownBox("instance").option("value"),
+    PropertyNo: $("#PropertyNo").dxTextBox("instance").option("value"),
+    PropertyDescription: $("#PropertyDescription").dxTextBox("instance").option("value"),
+    PropertyCategory: $("#PropertyCategory").dxDropDownBox("instance").option("value"),
+    Specifications: $("#PropertySpecification").dxTextArea("instance").option("value"),
+    PropertyGroupId: $("#PropertyGroup").dxDropDownBox("instance").option("value"),
+
+    // ================== Asset Details ==================
+    Brand: $("#Brand").dxTextBox("instance").option("value"),
+    Model: $("#Model").dxTextBox("instance").option("value"),
+    ModelType: $("#Type").dxTextBox("instance").option("value"),   
+    ChassisNo: $("#SerialNo").dxTextBox("instance").option("value"),  
+    EngineNo: $("#EngineNo").dxTextBox("instance").option("value"),
+    AlternatorNo: $("#AlternatorNo").dxTextBox("instance").option("value"),
+    DoorNo: $("#DoorNo").dxTextBox("instance").option("value"),
+    Color: $("#Color").dxTextBox("instance").option("value"),
+    Year: $("#Year").dxTextBox("instance").option("value"),
+    KvaorKw: $("#KVA_KW").dxTextBox("instance").option("value"),   
+    Capacity: $("#Capacity").dxTextBox("instance").option("value"),
+    Weight: $("#Weight").dxTextBox("instance").option("value"),
+    OperatingCapacity: $("#OperatingCapacity").dxTextBox("instance").option("value"),
+    OperatingWeight: $("#OperatingWeight").dxTextBox("instance").option("value"),
+    PlatformHeight: $("#PlatformHeight").dxTextBox("instance").option("value"),
+    LxWxH: $("#Dimension").dxTextBox("instance").option("value"),    
+    Location: $("#Location").dxTextBox("instance").option("value"),
+    OwnershipText: $("#Ownership").dxTextBox("instance").option("value"),  
+    PropertyCertification: $("#Certification").dxSelectBox("instance").option("value"),  
+    PropertyRemarks: $("#Remarks").dxTextBox("instance").option("value"),  
+    PropertyPwas: $("#PWAS").dxSelectBox("instance").option("value"),     
+    PropertyAttachment: $("#Attachment").dxSelectBox("instance").option("value"),  
+
+    // ================== Additional Specs ==================
+    AddlSpec1: $("#Specification1").dxTextBox("instance").option("value"),
+    AddlField1: $("#Field1").dxTextBox("instance").option("value"),
+    AddlSpec2: $("#Specification2").dxTextBox("instance").option("value"),
+    AddlField2: $("#Field2").dxTextBox("instance").option("value"),
+    AddlSpec3: $("#Specification3").dxTextBox("instance").option("value"),
+    AddlField3: $("#Field3").dxTextBox("instance").option("value"),
+
+    // ================== Purchase Info ==================
+    PurchaseDate: $("#PurchasedDate").dxDateBox("instance").option("value"),  
+    PurchasedFrom: $("#PurchasedFrom").dxTextBox("instance").option("value"),
+    PurchasedAs2: $("#PurchasedAs").dxTextBox("instance").option("value"),    
+    PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
+
+    // ================== Finance Info ==================
+    IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"), 
+    FinancierName: $("#FinancedBy").dxTextBox("instance").option("value"),       
+    InstallmentStartDate: $("#StartDate").dxDateBox("instance").option("value"), 
+    InstallmentEndDate: $("#EndDate").dxDateBox("instance").option("value"),     
+    NoOfInstallments: $("#Installments").dxNumberBox("instance").option("value"), 
+    InitialDownPayment: $("#DownPayment").dxNumberBox("instance").option("value"), 
+    MonthlyInstallment: $("#MonthlyInstallment").dxNumberBox("instance").option("value"),
+    FinalInstallment: $("#FinalPayment").dxNumberBox("instance").option("value"),  
+
+    // ================== Hiring Info ==================
+    HiredOn: $("#HiredOn").dxDateBox("instance").option("value"),
+    SupplierCode: $("#SupplierName").dxDropDownBox("instance").option("value"),
+    SupplierPono: $("#OurPONo").dxSelectBox("instance").option("value"),        
+    SupplierRefNo: $("#SupplierRefNo").dxSelectBox("instance").option("value"),
+    HiringMode: $("#HiredMode").dxSelectBox("instance").option("value"),        
+    BuyingRatePerHour: $("#RatePerHour").dxNumberBox("instance").option("value"), 
+    BuyingRatePerDay: $("#RatePerDay").dxNumberBox("instance").option("value"),   
+    BuyingRatePerWeek: $("#RatePerWeek").dxNumberBox("instance").option("value"), 
+    BuyingRatePerMonth: $("#RatePerMonth").dxNumberBox("instance").option("value"), 
+    AgreementHours: $("#AgreementHours").dxNumberBox("instance").option("value"),
+    BuyingOtratePerHour: $("#OvertimeRate").dxNumberBox("instance").option("value"), 
+    SupplierMobRate: $("#MobRate").dxNumberBox("instance").option("value"),         
+    SupplierDemobRate: $("#DemobRate").dxNumberBox("instance").option("value"),     
+
+    // ================== Operator Info ==================
+    IsOperatorIncluded: $("#IsOperatorIncluded").dxCheckBox("instance").option("value"),
+    OperatorName: $("#OperatorName").dxTextBox("instance").option("value"),
+    OperatorNationalId: $("#IqamaNo").dxTextBox("instance").option("value"),        
+    OperatorContactMobile: $("#MobileNo").dxTextBox("instance").option("value"),    
+    OperatorContactMobile2: $("#MobileNo2").dxTextBox("instance").option("value"),  
+    OperatorRate: $("#HourlyRate").dxNumberBox("instance").option("value"),         
+
+    // ================== Return Info ==================
+    IsReturned: $("#IsReturned").dxCheckBox("instance").option("value"),
+    ReturnedOn: $("#ReturnedOn").dxDateBox("instance").option("value"),
+   // ReturnedRemarks: $("#ReturnRemarks").dxTextBox("instance").option("value"),
+            // Image (optional)
+         //   PropertyImage: PropertyImage ? PropertyImage.split(',')[1] : null
+       //   PropertyImage: PropertyImageBase64 ? PropertyImageBase64.split(',')[1] : null,
+        };
+
+        $.ajax({
+            url: '/api/AddNewProperty/SaveOrUpdatePropertyMaster',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+
+                if (!isUpdate) {
+                    $("#btnSave").dxButton("instance").option("text", "Update");
+                    $("#btnSave").data("is-update", true);
+                }
+                 refreshFields();
+                // Navigate back after success
+                setTimeout(() => {
+                    window.history.back();
+                }, 1000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error saving item.", "error", 3000);
+            }
+        });
+    }
+    function refreshFields() {
+            const editorTypes = [
+                "dxTextBox",
+                "dxNumberBox",
+                "dxTextArea",
+                "dxSelectBox",
+                "dxCheckBox",
+                "dxColorBox",
+                "dxDateBox",
+                "dxDropDownBox"
+            ];
+                 editorTypes.forEach(type => {
+            $(`.${type}`).each(function () {
+                const instance = $(this)[type]("instance");
+                if (!instance) return;
+
+                if (type === "dxCheckBox") {
+                    instance.option("value", false);
+                } else {
+                    instance.option("value", null);
+                }
+            });
+        });
+    }
+
           function onTabSelectionChanged(e) {
               // Hide all main tab content
               document.querySelectorAll('.tab-content').forEach(div => div.style.display = 'none');
@@ -1130,7 +1667,7 @@
               // Hide all nested tab content
               document.querySelectorAll('.nested-tab-content').forEach(div => div.style.display = 'none');
 
-              // Show selected nested tab
+              // Show selected nested tab   
               const selectedIndex = e.component.option('selectedIndex') + 1;
               const selectedTabId = `nested-tab-${selectedIndex}`;
               const selectedContent = document.getElementById(selectedTabId);
@@ -1138,23 +1675,26 @@
                   selectedContent.style.display = 'block';
               }
           }
-
-
-      
-
         function Protype(){
                   const url = `/${tenantName}/ERM/PropertyType`;
                 const title = "Property Type";
                     openModal(url, title);
-            }
+                    }
+                            function Addoperator() {
+                                    var PropertyNo = $('#PropertyNo').dxTextBox("instance").option("value");
+                                    var PropertyDescription = $('#PropertyDescription').dxTextBox("instance").option("value");
+                                    var tenantName = window.tenantName || "defaultTenant";
+                                    var modalUrl = `/${tenantName}/ERM/PropertyOperator?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+                                  openModal(modalUrl, "Property Operators", "70%", "70%");
+                                }
 
         function Progroup(){
                   const url = `/${tenantName}/ERM/PropertyGroup`;
                 const title = "Property Group";
                     openModal(url, title);
             }
-              function StockGroup(){
-                  const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
+              function Propertycategory(){
+                  const url = `/${tenantName}/IMS/Propertycategory`;
                 const title = "";
                     openModal(url, title);
             }
@@ -1172,32 +1712,76 @@
             $("#tab-content-" + (selectedTabIndex + 1)).show();
         });
 
+    $(document).ready(function () {
+        debugger;
+        const urlParams = new URLSearchParams(window.location.search);
+        const code = urlParams.get("code");
+        const mode = urlParams.get("mode");
 
-           $(function () {
-                $("#propertmaster").dxTextBox({
-                  text: formatMessage("Property Master"),
-                readOnly: true,
-                onContentReady: function(e) {
-                            $(e.element).addClass("dx-textbox-heading");
-                    }
+       if (mode === "edit") {
+            $("#btnSave").dxButton("instance").option("text", "Update");
+            $("#btnSave").data("is-update", true);
+        }
 
+
+
+        if (mode === "edit" && code) {
+            $.ajax({
+                url: `/api/AddNewProperty/GetByNo?code=${encodeURIComponent(code)}`,
+                type: "GET",
+                success: function (data) {
+                    console.log("Property Data:", data);
+            // ================== Core Info ==================
+            $("#PropertyNo").dxTextBox("instance").option("value", data.PropertyNo);
+            $("#PropertyDescription").dxTextBox("instance").option("value", data.PropertyDescription);
+            $("#PropertyCategory").dxDropDownBox("instance").option("value", data.PropertyCategory);
+            $("#PropertySpecification").dxTextArea("instance").option("value", data.Specifications);
+            $("#PropertyGroup").dxDropDownBox("instance").option("value", data.PropertyGroupId);
+            $("#PropertyType").dxDropDownBox("instance").option("value", data.PropertyType); 
+            // ================== Asset Details ==================
+            $("#Brand").dxTextBox("instance").option("value", data.Brand);
+            $("#SerialNo").dxTextBox("instance").option("value", data.ChassisNo);                       
+            $("#PlateNo").dxTextBox("instance").option("value", data.PlateNo);                             
+            $("#EngineNo").dxTextBox("instance").option("value", data.EngineNo);
+            $("#Model").dxTextBox("instance").option("value", data.Model);
+            $("#Capacity").dxTextBox("instance").option("value", data.Capacity);
+            $("#Type").dxTextBox("instance").option("value", data.ModelType);                       
+            $("#AlternatorNo").dxTextBox("instance").option("value", data.AlternatorNo);
+            $("#DoorNo").dxTextBox("instance").option("value", data.DoorNo);
+            $("#Color").dxTextBox("instance").option("value", data.Color);
+            $("#Year").dxTextBox("instance").option("value", data.Year);
+            $("#KVA_KW").dxTextBox("instance").option("value", data.KvaorKw);                            
+            $("#Weight").dxTextBox("instance").option("value", data.Weight);
+            $("#PlatformHeight").dxTextBox("instance").option("value", data.PlatformHeight);
+            $("#OperatingWeight").dxTextBox("instance").option("value", data.OperatingWeight);
+            $("#OperatingCapacity").dxTextBox("instance").option("value", data.OperatingCapacity);
+            $("#Dimension").dxTextBox("instance").option("value", data.LxWxH);                          
+            $("#Location").dxTextBox("instance").option("value", data.Location);
+            $("#Ownership").dxTextBox("instance").option("value", data.OwnershipText);                     
+            $("#Certification").dxSelectBox("instance").option("value", data.PropertyCertification);       
+            $("#Remarks").dxTextBox("instance").option("value", data.PropertyRemarks);                   
+            $("#PWAS").dxSelectBox("instance").option("value", data.PropertyPwas);                         
+            $("#Attachment").dxSelectBox("instance").option("value", data.PropertyAttachment);        
+            // ================== Additional Specs ==================
+            $("#Specification1").dxTextBox("instance").option("value", data.AddlSpec1);
+            $("#Field1").dxTextBox("instance").option("value", data.AddlField1);
+            $("#Specification2").dxTextBox("instance").option("value", data.AddlSpec2);
+            $("#Field2").dxTextBox("instance").option("value", data.AddlField2);
+            $("#Specification3").dxTextBox("instance").option("value", data.AddlSpec3);
+            $("#Field3").dxTextBox("instance").option("value", data.AddlField3);
+            // ================== Hiring Info (Dates & Supplier) ==================
+            $("#HiredOn").dxDateBox("instance").option("value", data.HiredOn);
+            $("#SupplierName").dxDropDownBox("instance").option("value", data.SupplierCode);             
+            $("#OurPONo").dxSelectBox("instance").option("value", data.SupplierPono);                  
+            $("#SupplierRefNo").dxSelectBox("instance").option("value", data.SupplierRefNo);
+                },
+                error: function (xhr) {
+                    DevExpress.ui.notify("Failed to load property data", "error", 3000);
+                    console.error("Error fetching data:", xhr);
+                }
             });
-        });
-
-        //////
-      let isEditMode = false;
-      let isViewMode = false;
-
-      function onStockGroupChange(e) {
-          var GsgroupId = e.value;
-
-          if (!isViewMode && !isEditMode && GsgroupId) {
-              $.get('/api/StockInventory/GetNextStockNumber', { GsgroupId: GsgroupId }, function (data) {
-                  $("#StockNoItemCode").dxTextBox("instance").option("value", data);
-              });
-          }
-      }
-
+        }
+    });
       async function convertToArabic() {
 
            // Get the TextBox1 (input) instance
@@ -1286,10 +1870,42 @@
            textBox2Instance.option("value", arabicTranslation);
 
       }
-         
-               function Propertycategory(){
-            const url = `/${tenantName}/ERM/PropertyCategory`;
-          const title = "Property Category";
-                openModal(url, title);
-        }
+
+     let selectedContainer = null;
+
+
+    // Add event listeners after the DOM is ready
+    document.addEventListener("DOMContentLoaded", function () {
+        const containers = document.querySelectorAll('.imagecontainer');
+
+        containers.forEach(container => {
+            container.addEventListener('click', () => {
+                selectedContainer = container;
+                document.getElementById('imageInput').click();
+            });
+        });
+
+        document.getElementById('imageInput').addEventListener('change', function (event) {
+            const file = event.target.files[0];
+            if (file && selectedContainer) {
+                const reader = new FileReader();
+
+                reader.onload = function (e) {
+                    const base64Image = e.target.result;
+
+                    selectedContainer.innerHTML = '';
+                    const img = document.createElement('img');
+                    img.src = base64Image;
+                    img.style.maxWidth = '100%';
+                    selectedContainer.appendChild(img);
+
+                    PropertyImageBase64 = base64Image;
+                };
+
+                reader.readAsDataURL(file);
+                event.target.value = '';
+            }
+        });
+    });
+
 </script>

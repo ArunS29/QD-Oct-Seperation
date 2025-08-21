@@ -393,6 +393,10 @@
                 $("#txtStoreCode").dxTextBox("instance").option("value",""),
                 $("#txtStoreName").dxTextBox("instance").option("value",""),
                  $("#ddCostcenter").dxDropDownBox("instance").option("value","")
+
+                   $("#txtStoreCode").dxValidator("instance").reset();
+                   $("#txtStoreName").dxValidator("instance").reset();
+                   
             },
             error: function (xhr) {
                 const msg = xhr.responseJSON?.message || "Failed to save.";

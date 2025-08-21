@@ -248,145 +248,115 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 			return Unauthorized(new { message = "Invalid tenant.", success = false });
 		}
-		[HttpPost]
-		public async Task<IActionResult> SaveOrUpdateQuotation([FromBody] QuotationViewModel VM)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
-
-			if (VM == null || string.IsNullOrEmpty(VM.QuoteNo))
-			{
-				return BadRequest(new { success = false, message = "Quote No. is required." });
-			}
-
-			try//
-			{
-				// Ensure child list is initialized
-				//VM.RFQDetailses = VM.RFQDetailses ?? new List<Tbl60702rfqchild>();
-
-				// Check if the master record exists
-				var existingMaster = await dbContext.Tbl60101quotationMasters
-					.FirstOrDefaultAsync(x => x.QuoteNo == VM.QuoteNo);
-
-				if (existingMaster != null)
-				{
-					//Update existing master with manual property mapping
 
 
-					existingMaster.QuoteDate = VM.QuoteDate;
-					existingMaster.ClientCode = VM.ClientCode;
-					existingMaster.SalesPersonCode = VM.SalesPersonCode;
-					existingMaster.Mprno = VM.Mprno;
-					existingMaster.Attention = VM.Attention;
-					existingMaster.ClientContactEmail = VM.ClientContactEmail;
-					existingMaster.ClientContactNo = VM.ClientContactNo;
-					existingMaster.ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte?)VM.ModeOfRequest.Value : null;
-					existingMaster.TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte?)VM.TypeOfRequest.Value : null;
-					existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
-					existingMaster.Project = VM.Project;
-					existingMaster.SubjectTitle = VM.SubjectTitle;
-					existingMaster.QuotationSummary = VM.QuotationSummary;
-					existingMaster.QuoteIntro = VM.QuoteIntro;
-					existingMaster.QuoteThanksNote = VM.QuoteThanksNote;
-					existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
-					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
-					existingMaster.ClientRefNo = VM.ClientRefNo;
-					existingMaster.QuoteSubmittedBy = VM.QuoteSubmittedBy;
-					existingMaster.QuoteSubmittedOn = VM.QuoteSubmittedOn;
-					existingMaster.BidClosingDate = VM.BidClosingDate;
-					existingMaster.QuoteStatus = VM.QuoteStatus.HasValue ? (byte?)VM.QuoteStatus.Value : null;
-					existingMaster.TransportationScope = VM.TransportationScope;
-					existingMaster.AdditionsText = VM.AdditionsText;
-					existingMaster.QuoteTransport = VM.QuoteTransport;
-					existingMaster.DiscountsText = VM.DiscountsText;
-					existingMaster.QuoteDiscount = VM.QuoteDiscount;
-					existingMaster.QuoteSignatory = VM.QuoteSignatory.HasValue ? (byte?)VM.QuoteSignatory.Value : null;
-					existingMaster.VerifiedSignatory = VM.VerifiedSignatory.HasValue ? (byte?)VM.VerifiedSignatory.Value : null;
-					existingMaster.ApprovedSignatory = VM.ApprovedSignatory.HasValue ? (byte?)VM.ApprovedSignatory.Value : null;
-					existingMaster.RevisionNo = VM.RevisionNo;
-				}
-				else
-				{
-					// Insert new master
-					var newMaster = new Tbl60101quotationMaster
-					{
 
-						 QuoteNo= VM.QuoteNo,
-    QuoteDate= VM.QuoteDate,
-    ClientCode= VM.ClientCode,
-    SalesPersonCode= VM.SalesPersonCode,
-	Mprno = VM.Mprno,
-    Attention= VM.Attention,
-    ClientContactEmail= VM.ClientContactEmail,
-    ClientContactNo=VM.ClientContactNo,
-    ModeOfRequest=Convert.ToByte(VM.ModeOfRequest),
-    TypeOfRequest=Convert.ToByte(VM.TypeOfRequest),
-    ProjectMasterCode= VM.ProjectMasterCode,
-    Project=VM.Project,
-    SubjectTitle= VM.SubjectTitle,
-    QuotationSummary= VM.QuotationSummary,
-    QuoteIntro= VM.QuoteIntro,
-    QuoteThanksNote= VM.QuoteThanksNote,
-    CompanyBranch=Convert.ToByte(VM.CompanyBranch),
-    InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
-    ClientRefNo= VM.ClientRefNo,
-    QuoteSubmittedBy= VM.QuoteSubmittedBy,
-    QuoteSubmittedOn= VM.QuoteSubmittedOn,
-    BidClosingDate= VM.BidClosingDate,
-    QuoteStatus=Convert.ToByte(VM.QuoteStatus),
-    TransportationScope=VM.TransportationScope,
-    AdditionsText= VM.AdditionsText,
-    QuoteTransport= VM.QuoteTransport,
-    DiscountsText= VM.DiscountsText,
-    QuoteDiscount= VM.QuoteDiscount,
-    QuoteSignatory=Convert.ToByte(VM.QuoteSignatory),
-    VerifiedSignatory=Convert.ToByte(VM.VerifiedSignatory),
-    ApprovedSignatory= Convert.ToByte(VM.ApprovedSignatory),
-	RevisionNo=VM.RevisionNo
 
-					};
 
-					await dbContext.Tbl60101quotationMasters.AddAsync(newMaster);
-				}
 
-				// Handle child entries
-				var existingChildren = await dbContext.Tbl60102quotationChildren
-					.Where(x => x.QuoteNo == VM.QuoteNo)
-					.ToListAsync();
 
-				foreach (var child in VM.QuotationDetailses)
-				{
-					if (child.QuoteChildId == 0)
-					{
-						// New child entry
-						child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
-						await dbContext.Tbl60102quotationChildren.AddAsync(child);
-					}
-					else
-					{
-						// Existing child entry
-						var existingChild = existingChildren
-							.FirstOrDefault(x => x.QuoteChildId == child.QuoteChildId);
 
-						if (existingChild != null)
-						{
-							dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-						}
-					}
-				}
 
-				await dbContext.SaveChangesAsync();
+        public class QuotationDetailsRequest
+        {
+            public string QuoteNo { get; set; }
+            public string DetailedDescription { get; set; }
+           // public bool? Operator { get; set; }
+            public byte? QuoteMethod2 { get; set; }
+            public decimal? Rate2 { get; set; }
+            public byte? QuoteMethod3 { get; set; }
+            public decimal? Rate3 { get; set; }
+            public string AdditionalNotes { get; set; }
+            public decimal? MobilizationRate { get; set; }
+            public decimal? DemobRate { get; set; }
+            public string DeliveryDetails { get; set; }
 
-				return Ok(new { success = true, message = "Quotation Details saved/updated successfully." });
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, new { success = false, message = ex.Message });
-			}
-		}
-		[HttpDelete]
+        }
+
+
+
+
+
+
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateQuotationChild([FromBody] QuotationDetailsRequest request)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            if (request == null || string.IsNullOrEmpty(request.QuoteNo))
+            {
+                return BadRequest(new { success = false, message = "Quote No is required." });
+            }
+
+            try
+            {
+                // Check if quotation already exists
+                var existing = await dbContext.Tbl40104PropertyQuoteChildren
+                    .FirstOrDefaultAsync(x => x.QuoteNo == request.QuoteNo);
+
+                if (existing != null)
+                {
+                    // Update existing record
+                    existing.PropertyAddlDescription = request.DetailedDescription;
+                   // existing.IsWithOperator = request.Operator;
+                    existing.UnitRateMethod2 = request.QuoteMethod2;
+                    existing.UnitRate2 = request.Rate2;
+                    existing.UnitRateMethod3 = request.QuoteMethod3;
+                    existing.UnitRate3 = request.Rate3;
+                    existing.AddlNotes = request.AdditionalNotes;
+                    existing.MobRate = request.MobilizationRate;
+                    existing.DemobRate = request.DemobRate;
+                    existing.DeliveryTerms = request.DeliveryDetails;
+                }
+                else
+                {
+                    // Insert new record
+                    var newChild = new Tbl40104PropertyQuoteChild
+                    {
+                        QuoteNo = request.QuoteNo,
+                        PropertyAddlDescription = request.DetailedDescription,
+                       // IsWithOperator = request.Operator,
+                        UnitRateMethod2 = request.QuoteMethod2,
+                        UnitRate2 = request.Rate2,
+                        UnitRateMethod3 = request.QuoteMethod3,
+                        UnitRate3 = request.Rate3,
+                        AddlNotes = request.AdditionalNotes,
+                        MobRate = request.MobilizationRate,
+                        DemobRate = request.DemobRate,
+                        DeliveryTerms = request.DeliveryDetails,
+                    };
+
+                    await dbContext.Tbl40104PropertyQuoteChildren.AddAsync(newChild);
+                }
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Quotation details saved/updated successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+        [HttpDelete]
 		public async Task<IActionResult> DeleteQuotation([FromQuery] string QuoteNo)
 		{
 			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

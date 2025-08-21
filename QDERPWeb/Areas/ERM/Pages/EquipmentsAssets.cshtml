@@ -108,7 +108,7 @@
 <div class="Footer">
     @await Html.PartialAsync("/Pages/Shared/ERM/StockInventoryFooter.cshtml")
 </div>
-<div>
+<div style="padding:10px;">
     @(
         Html.DevExtreme().DataGrid<Qry40102PropertyMasterView2>()
         .ID("dataGrid")
@@ -121,11 +121,12 @@
         .ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.Select))
         .AllowColumnReordering(true)
         .ColumnAutoWidth(true)
-        .WordWrapEnabled(true)
+        .WordWrapEnabled(false)
+        .Height("70vh")
         .AllowColumnResizing(true)
         .ColumnFixing(fixing => fixing.Enabled(true))
         .HeaderFilter(filter => filter.Visible(false))
-        .Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
+        .Paging(p => p.PageSize(20)) // Set desired page size (e.g., 10 rows per page)
         .Pager(pager =>
         {
             pager.ShowPageSizeSelector(true);
@@ -197,9 +198,9 @@
                 subColumns.AddFor(m => m.EquipmentOperatorName).Caption(new JS("formatMessage('Equipment Operator Name')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
                 subColumns.AddFor(m => m.OperatorWorkStartDate).Caption(new JS("formatMessage('Operator Work Start Date')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
 
-            });
+            @* });
             columns.Add().Caption(new JS("formatMessage('Hide the columns Details')")).Columns(subColumns =>
-            {
+            { *@
                 subColumns.AddFor(m => m.PropertyCategory).Caption(new JS("formatMessage('PropertyCategory')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Specifications).Caption(new JS("formatMessage('Specifications')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
                 subColumns.AddFor(m => m.Brand).Caption(new JS("formatMessage('Brand')")).Alignment(HorizontalAlignment.Center).Visible(false).AllowEditing(true);
@@ -328,35 +329,34 @@
 
 </div>
 
-<!-- Bottom Toolbar -->
-
-
+<div class="footer-fixed">
+    @await Html.PartialAsync("~/Pages/Shared/ERM/StockInventoryFooter.cshtml")
+</div>
 <script>
-
-               function onAssetsGridContextMenu
+        function onAssetsGridContextMenu
                (e) {
         if (e.target === "content" && e.row) {
-            const supplierCode = e.row.data.SupplierCode;
-            const tenantName = window.tenantName || "defaultTenant"; // Dynamic tenant logic
+            const PropertyNo = e.row.data.PropertyNo;
+            const tenantName = window.tenantName || "defaultTenant"; 
 
             e.items = [
                 {
-                    text: "Edit Supplier",
+                    text: "Edit Property",
                     icon: "edit",
                     onItemClick: function () {
-                        const url = `/${tenantName}/IMS/SupplierLeadMaster?supplierCode=${supplierCode}`;
-                        const title = `Edit Supplier - ${supplierCode}`;
-                        openModal(url, title);
+                        debugger;
+                       const url = `/${tenantName}/ERM/AddNewProperty?code=${PropertyNo}&mode=edit`;
+                         window.location.href = url;
                     }
                 },
                 {
-                    text: "Delete Supplier",
+                    text: "Delete Property",
                     icon: "trash",
                     onItemClick: function () {
-                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this supplier?", "Confirm Delete")
+                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this Property?", "Confirm Delete")
                             .done(function (dialogResult) {
                                 if (dialogResult) {
-                                    deleteSupplier(supplierCode);
+                                    deleteProperty(PropertyNo);
                                 }
                             });
                     }

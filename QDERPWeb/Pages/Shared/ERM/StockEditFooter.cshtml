@@ -73,78 +73,7 @@
 </style>
 <div class="dx-fieldset horizontal-container mt-2">
    
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Text(new JS("formatMessage('Layout')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().DropDownButton()
-            .ID("rowHeightProperties")
-            .Icon("") // fallback to standard icon if "rowproperties" not working
-            .Width(50)
-            .Text(new JS("formatMessage('Set Row Height')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add()
-                .Text("Short (1 Line)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="9" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Short
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('30'); }");
-
-                items.Add()
-                .Text("Medium (2 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="6" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Medium
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('60'); }");
-
-                items.Add()
-                .Text("Tall (4 Lines)")
-                .Template(@<text>
-                               <svg width="20" height="20" viewBox="0 0 20 20">
-                                   <rect x="2" y="4" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="8" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="12" width="16" height="2" fill="var(--title-background-color)" />
-                                   <rect x="2" y="16" width="16" height="2" fill="var(--title-background-color)" />
-                               </svg> Tall
-                           </text>)
-                .OnClick("function() { ChangeRowHeight('90'); }");
-
-                items.Add()
-                .Text("Extra Tall (8 Lines)")
-                .Template(@<text>
-            <svg width="20" height="20" viewBox="0 0 20 20">
-                @for (var i = 1; i <= 8; i++)
-                        {
-                            var y = 1 + (i - 1) * 2;
-                            <text><rect x="2" y="@y" width="16" height="1" fill="var(--title-background-color)" /></text>
-                        }
-            </svg> Extra Tall
-        </text>)
-                .OnClick("function() { ChangeRowHeight('130'); }");
-            })
-            .ShowArrowIcon(false)
-        )
-    </div>
+  
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnSave")
@@ -163,7 +92,7 @@
             .Text(new JS("formatMessage('Save And Close')"))
             .Hint("Save and Close")
             .Width(180)
-            .ElementAttr(new { @class = "bold-button" })
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
             .OnClick("onSaveAndCloseClicked") // Save and go back
             )
     </div>
@@ -175,7 +104,7 @@
             .Text(new JS("formatMessage('Delete')"))
             .Hint("Delete")
             .Width(150)
-            .ElementAttr(new { @class = "bold-button" })
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
             .OnClick("onDeleteClick")  // <-- Call JS function here
             )
     </div>
@@ -188,109 +117,32 @@
             .Icon("arrowleft")
             .Hint("Click to go back")
             .Width(150)
-            .ElementAttr(new { @class = "bold-button" })
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
             .OnClick("onBackButtonClick")
             )
     </div>
 
-
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Text(new JS("formatMessage('Layout')"))
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
+    </div>
 
 
 
 </div>
 <script type="text/javascript">
-
-
-
-
-
-
-
-    // $(document).ready(function () {
-    //     console.log('Start permission handling');
-    //     // Form ID
-    //     var formId = "frm201VoucherCashPayment";
-
-    //     // Call the API to get permissions
-    //     $.ajax({
-    //         url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-    //         type: 'GET',
-    //         contentType: 'application/json',
-    //         success: function (response) {
-    //             console.log("API Response:", response); // Log the API response
-
-    //             if (response.success && response.permissions) {
-    //                 // Default visibility and enable status for buttons
-    //                 var controlStates = {
-    //                     "btnSave": { "Visible": true, "Enabled": true },
-    //                     "btnSaveAndClose": { "Visible": false, "Enabled": false },
-    //                     "btnPreview1": { "Visible": true, "Enabled": true },
-    //                     "btnPrint": { "Visible": true, "Enabled": true },
-    //                     "btnDelete": { "Visible": false, "Enabled": false },
-    //                     "btnBack": { "Visible": false, "Enabled": false },
-    //                     "btnVerify": { "Visible": true, "Enabled": true },
-    //                     "btnApprove": { "Visible": false, "Enabled": false },
-    //                     "btnAttach": { "Visible": false, "Enabled": false }
-    //                 };
-
-
-    //                 // Check for full access
-    //                 var fullAccess = response.permissions.find(p =>
-    //                     p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-    //                 );
-
-    //                 if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-    //                     // Grant full access: make all controls visible and enabled
-    //                     Object.keys(controlStates).forEach(key => {
-    //                         controlStates[key] = { "Visible": true, "Enabled": true };
-    //                     });
-    //                 } else {
-    //                     // Update states based on specific permissions for each control
-    //                     Object.keys(controlStates).forEach(key => {
-    //                         var controlPermission = response.permissions.find(p =>
-    //                             p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-    //                         );
-    //                         if (controlPermission) {
-    //                             controlStates[key] = {
-    //                                 "Visible": controlPermission.ItemVisible || false,
-    //                                 "Enabled": controlPermission.ItemEnabled || false
-    //                             };
-    //                         }
-    //                     });
-    //                 }
-
-    //                 console.log("Control States:", controlStates); // Log the control states
-
-    //                 // Dynamically update button visibility and enabled state
-    //                 Object.keys(controlStates).forEach(key => {
-    //                     var button = document.getElementById(key);
-    //                     if (button) {
-    //                         // Handle visibility
-    //                         button.style.display = controlStates[key].Visible ? "" : "none";
-    //                         // Handle enable/disable state
-    //                         button.disabled = !controlStates[key].Enabled;
-    //                         // Ensure button text is visible
-    //                         button.style.color = controlStates[key].Enabled ? "black" : "gray"; // Adjust colors as needed
-    //                         console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-    //                     } else {
-    //                         console.warn(`Button with ID "${key}" not found in the DOM.`);
-    //                     }
-    //                 });
-
-    //             } else {
-    //                 console.warn("Failed to fetch permissions or no permissions available.");
-    //             }
-    //         },
-    //         error: function (xhr, status, error) {
-    //             console.error("Error fetching permissions:", error);
-    //             alert('An error occurred while fetching permissions. Please try again.');
-    //         }
-    //     });
-    //     // showColumnChooser();
-    //     console.log('End permission handling');
-    // });
-
-
     let IsDirect = true;
     $(document).on("click", function () {
         var contextMenu = $("#contextMenu");
@@ -457,135 +309,6 @@
             reader.readAsText(file);
         }
     });
-    function onSaveClicked(e) {
-        var isUpdate = $("#btnSave").data("is-update");
-
-        const data = {
-            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
-            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
-            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
-            GsgroupId: $("#StockGroup").dxSelectBox("instance").option("value"),
-            StoreId: $("#ItemStore").dxSelectBox("instance").option("value"),
-            ItemClassificationId: $("#ItemClassification").dxSelectBox("instance").option("value"),
-            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
-            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
-            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
-            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
-            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
-            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
-            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
-            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
-            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
-            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
-            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
-            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
-            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
-            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
-            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
-            ItemColor: $("#ItemColor").dxColorBox("instance").option("value"),
-            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
-            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
-            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
-            CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
-            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
-            ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
-            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
-            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
-             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
-            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
-            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
-            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
-            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
-            ItemImage: imageBase64
-
-        };
-
-        $.ajax({
-            url: '/api/StockInventory/Save',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function () {
-                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
-
-                if (!isUpdate) {
-                    $("#btnSave").dxButton("instance").option("text", "Update");
-                    $("#btnSave").data("is-update", true);
-                }
-            },
-            error: function () {
-                DevExpress.ui.notify("Error saving item.", "error", 3000);
-            }
-        });
-    }
-    function onSaveAndCloseClicked(e) {
-        // Reuse the logic of onSaveClicked, but also go back
-        var isUpdate = $("#btnSave").data("is-update");
-
-        const data = {
-            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
-            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
-            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
-            GsgroupId: $("#StockGroup").dxSelectBox("instance").option("value"),
-            StoreId: $("#ItemStore").dxSelectBox("instance").option("value"),
-            ItemClassificationId: $("#ItemClassification").dxSelectBox("instance").option("value"),
-            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
-            GsuoM: $("#UnitOfMeasure").dxSelectBox("instance").option("value"),
-            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
-            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
-            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
-            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
-            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
-            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
-            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
-            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
-            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
-            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
-            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
-            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
-            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
-            ItemColor: $("#ItemColor").dxColorBox("instance").option("value"),
-            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
-            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
-            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
-              CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
-            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
-            ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
-            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
-            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
-             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
-            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
-            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
-            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
-            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
-            ItemImage: imageBase64
-        };
-
-        $.ajax({
-            url: '/api/StockInventory/Save',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            success: function () {
-                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
-
-                if (!isUpdate) {
-                    $("#btnSave").dxButton("instance").option("text", "Update");
-                    $("#btnSave").data("is-update", true);
-                }
-
-                // Navigate back after success
-                setTimeout(() => {
-                    window.history.back();
-                }, 1000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error saving item.", "error", 3000);
-            }
-        });
-    }
     function onBackButtonClick(e) {
         window.history.back();
     }
