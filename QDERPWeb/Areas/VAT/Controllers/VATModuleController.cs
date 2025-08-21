@@ -691,6 +691,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                                     g.GsuoM,
                                     g.GspackingUnit,
                                     UnitDescription = unit.UnitDesc
+                                  //  UnitCode= unit.UnitCode
                                 };
 
                     // Get total count for pager

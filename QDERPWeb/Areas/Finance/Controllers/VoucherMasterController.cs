@@ -3045,7 +3045,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.QuantityInvoiced = child.QuantityInvoiced;
                                 existingChild.TaxSlabCode = child.TaxSlabCode;
                                 existingChild.UnitsToBill = 1;
-                                existingChild.UnitRateMethod = 49;
+                                existingChild.UnitRateMethod = child.UnitRateMethod;
                                 existingChild.ItemCode = child.ItemCode ?? string.Empty;
                                 existingChild.UoM = "Each";
                                 existingChild.Discount = child.Discount;

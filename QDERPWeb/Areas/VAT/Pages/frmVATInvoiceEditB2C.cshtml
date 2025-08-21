@@ -1413,9 +1413,10 @@
 																.Min(1)
 																.Max(99999999)
 																.Step(1)
-																 .Format("#,##0.00") 
 																.ShowSpinButtons(true)
-																.Width("90%")) <!-- Fixed pixel size -->
+																.Width("90%")
+																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+								) <!-- Fixed pixel size -->
 
 							</td>
 							<td>
@@ -1523,8 +1524,10 @@
 																.Step(1)
 																.ShowSpinButtons(true)
 																.Max(99999999)
- .Format("#,##0.00") 
-																.Width("90%"))
+																.Width("90%")
+																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
+								)
 											  							</td>
 											  							<td>
 											  								<span class="input-group-prepend" style="margin-right: 10px;">
@@ -1600,10 +1603,11 @@
 																.ID("currencyexchangerate5")
 																.Min(1)
 																.Step(1)
-																 .Format("#,##0.00") 
 																.ShowSpinButtons(true)
 																.Width("90%")
 																.Max(99999999)
+															 	.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+
 								)
 											  							</td>
 											  							<td>
@@ -4095,6 +4099,7 @@
                         dataGrid.cellValue(rowIndex, "Qty", 1);
                         dataGrid.cellValue(rowIndex, "VAT%", "15%");
                         dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+						UnitCode = selectedItem.UnitCode;
 
 						ItemNo = selectedItem.GSCode;
 				        Gsdescrpition = selectedItem.GSDescrpition;
@@ -4790,6 +4795,7 @@ return $container;
 						dataGrid.cellValue(rowIndex, "Qty", 1);
 						dataGrid.cellValue(rowIndex, "VAT%", "15%");
 						dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+						UnitCode = selectedItem.UnitCode;
 
 						ItemNo = selectedItem.GSCode;
 				        Gsdescrpition = selectedItem.GSDescrpition;
@@ -8418,6 +8424,11 @@ button.option("disabled", false);
 
 
 		$("#btnVerify").on("click", function (e) {
+				var clientnameValidator = $("#ddclientname").dxValidator("instance");
+			var clientnameValidation = clientnameValidator.validate();
+
+		if(clientnameValidation.isValid)
+			{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 			const IsDirect = false;
 			// Ensure dataGrid exists
@@ -8455,13 +8466,14 @@ button.option("disabled", false);
 					}
 				});
 			}
+			}
 		});
 
 
 
 		function proceedWithVerification() {
 			// Set VerifiedBy checkbox to true
-			$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+
 
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -8497,6 +8509,7 @@ button.option("disabled", false);
 							"VAT Invoice has been Verified.","success",2000
 							
 						);
+									$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 							initWorkflowTippyPopovers();
@@ -8518,6 +8531,11 @@ button.option("disabled", false);
 
 
 		$("#btnApprove").on("click", function (e) {
+				var clientnameValidator = $("#ddclientname").dxValidator("instance");
+			var clientnameValidation = clientnameValidator.validate();
+
+		if(clientnameValidation.isValid)
+			{
 			const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
 			// Ensure dataGrid exists
@@ -8553,12 +8571,13 @@ button.option("disabled", false);
 					}
 				});
 			}
+			}
 		});
 
 
 		  function proceedWithApproval() {
 			// Set ApprovedBy checkbox to true
-			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
+	
 			IsDirectApproval=false;
 			const vno = $("#InvoiceNo").dxTextBox("instance").option("value");
 
@@ -8584,6 +8603,7 @@ button.option("disabled", false);
 				success: function (response) {
 					if (response && response.Message) {
     DevExpress.ui.notify("VAT InvoiceNo has been Approved.", "success", 2000)
+			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
             disableEditing();
 
@@ -10208,7 +10228,7 @@ $("#btnPrint1").on("click", function (e) {
 $.get("/api/VATModule/GetCurrencyDecimals")
     .done(function (decimals) {
         currencyDecimals = decimals || 2;
-		 applyDynamicFormat(currencyDecimals);
+		 //applyDynamicFormat(currencyDecimals);
     })
     .fail(function () {
         DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
@@ -10220,17 +10240,18 @@ $.get("/api/VATModule/GetCurrencyDecimals")
     return Number(val).toFixed(currencyDecimals);
 }
 
-function applyDynamicFormat(decimals) {
-    const numberBox = $("#currencyexchangerate3").dxNumberBox("instance");
-    numberBox.option("format", getDecimalFormat(decimals));
+// function applyDynamicFormat(decimals) {
+// 	debugger;
+//     const numberBox = $("#currencyexchangerate3").dxNumberBox("instance");
+//     numberBox.option("format", getDecimalFormat(decimals));
 
-	  const numberBox1 = $("#currencyexchangerate4").dxNumberBox("instance");
-    numberBox1.option("format", getDecimalFormat(decimals));
+// 	  const numberBox1 = $("#currencyexchangerate4").dxNumberBox("instance");
+//     numberBox1.option("format", getDecimalFormat(decimals));
 
 
-	  const numberBox2 = $("#currencyexchangerate5").dxNumberBox("instance");
-    numberBox2.option("format", getDecimalFormat(decimals));
-}
+// 	  const numberBox2 = $("#currencyexchangerate5").dxNumberBox("instance");
+//     numberBox2.option("format", getDecimalFormat(decimals));
+// }
 
 
 function getDecimalFormat(decimals) {

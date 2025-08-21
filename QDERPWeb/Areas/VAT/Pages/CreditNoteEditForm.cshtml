@@ -1139,7 +1139,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("90%")) <!-- Fixed pixel size -->
+																			.Width("90%")
+																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+									) <!-- Fixed pixel size -->
 
 								</td>
 								<td>
@@ -1228,7 +1230,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("90%"))
+																			.Width("90%")
+																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+									)
 								</td>
 								<td>
 									@* <span class="input-group-prepend" style="margin-right: 10px;"> *@
@@ -1290,7 +1294,9 @@
 																			.Min(1)
 																			.Step(1)
 																			.ShowSpinButtons(true)
-																			.Width("90%"))
+																			.Width("90%")
+																.OnInitialized("function(e) { e.component.option('format', getDecimalFormat(currencyDecimals)); }")
+									)
 								</td>
 								<td>
 									<span class="input-group-prepend" style="margin-right: 10px;">
@@ -3355,6 +3361,8 @@
 			  let ItemNo=null, paymentmeanstypecode=null,amt=0, accheadid =null;
 
 	 $(document).ready(function () {
+		 if(IsCurrent!="true")
+		{
 		$.ajax({
 			url: "/api/VATModule/CreateNewInvoiceCounter",
 			type: 'POST',
@@ -3368,6 +3376,7 @@
 				DevExpress.ui.notify("Failed to load account details.", "error",3000);
 			}
 		});
+		}
 	});
 
 		function InvoiceOPenToSave(data) {
@@ -3378,7 +3387,7 @@
 		    var InvoiceMaster = {
 			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
-			//InvoiceEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
+				CreditNoteEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
 			InvoiceSupplyDate: $("#SupplyDate").dxDateBox("instance").option("value"),
 			//PaymentMeansTypeCode: paymentmeanstypecode,
 		   /// InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")
@@ -3482,6 +3491,8 @@
 							// dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
 							 $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
 							 $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
+							 $('#CreditNoteDate').dxDateBox("instance")?.option("value", account.CreditNoteDate);
+						     $('#CreditNoteIssuedDateTime').dxDateBox("instance")?.option("value", account.CreditNoteEffectiveDate);
 						     //$('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
 								dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
 								dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
@@ -6785,7 +6796,7 @@ openModal(url, title);
 		var InvoiceMaster = {
 			CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 			CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
-			//InvoiceEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
+				CreditNoteEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
 			InvoiceSupplyDate: $("#SupplyDate").dxDateBox("instance").option("value"),
 			//PaymentMeansTypeCode: paymentmeanstypecode,
 		   /// InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")
@@ -6958,7 +6969,7 @@ openModal(url, title);
 			var InvoiceMaster = {
 				CreditNoteNo: $('#CreditNoteNo').dxTextBox("instance").option("value"),
 				CreditNoteDate: $("#CreditNoteDate").dxDateBox("instance").option("value"),
-				//InvoiceEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
+			    CreditNoteEffectiveDate: $("#CreditNoteIssuedDateTime").dxDateBox("instance").option("value"),
 				InvoiceSupplyDate: $("#SupplyDate").dxDateBox("instance").option("value"),
 				//PaymentMeansTypeCode: paymentmeanstypecode,
 			   /// InvoiceTypeCode: $("#VATInvoiceType").dxDropDownBox("instance").option("value")
@@ -7394,7 +7405,7 @@ let totalValue = discountedAmount + vatValue;
 
 		function proceedWithVerification() {
 			// Set VerifiedBy checkbox to true
-			$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+		
 
 			const vno = $("#CreditNoteNo").dxTextBox("instance").option("value");
 
@@ -7427,6 +7438,7 @@ let totalValue = discountedAmount + vatValue;
 				success: function (response) {
 					if (response && response.Message) {
 					DevExpress.ui.notify("VAT Invoice has been Verified.", "success", 2000);
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 
 	                $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 	                $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -7494,7 +7506,6 @@ let totalValue = discountedAmount + vatValue;
 
 		  function proceedWithApproval() {
 			// Set ApprovedBy checkbox to true
-			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 				IsDirectApproval=false;
 			const vno = $("#CreditNoteNo").dxTextBox("instance").option("value");
 			
@@ -7524,6 +7535,7 @@ let totalValue = discountedAmount + vatValue;
 				success: function (response) {
 					if (response && response.Message) {
 						DevExpress.ui.notify("VAT InvoiceNo has been Approved.", "success", 2000);
+						   $("#ApprovedBy").dxCheckBox("instance").option("value", true);
 
 	                       disableEditing();
 	                       $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
