@@ -258,11 +258,12 @@
             $.getJSON(apiUrl, data => {
                 if (data && Array.isArray(data.data) && data.data.length > 0) {
                     let rowsHtml = "";
-                    let sumShown = 0;
+
+                    // 🔹 Calculate total first (for % calculation)
+                    const grandTotal = data.data.reduce((acc, row) => acc + Number(row.Balance ?? row.balance ?? 0), 0);
 
                     data.data.forEach(row => {
                         const bal = Number(row.Balance ?? row.balance ?? 0);
-                        sumShown += bal;
 
                         if (tabType === "client" || tabType === "supplier") {
                             const percentNum = totalOutstanding > 0 ? (bal / totalOutstanding * 100) : 0;
@@ -275,7 +276,7 @@
                                 </tr>
                             `;
                         } else if (tabType === "netAmount") {
-                            const percentNum = sumShown > 0 ? (bal / sumShown * 100) : 0;
+                            const percentNum = grandTotal > 0 ? (bal / grandTotal * 100) : 0;
                             rowsHtml += `
                                 <tr>
                                     <td>${row.AccountGroup || row.accountGroup || ''}</td>
@@ -291,7 +292,7 @@
                         rowsHtml += `
                             <tr class="total-row">
                                 <td>Total</td>
-                                <td>${sumShown.toLocaleString('en-US')}</td>
+                                <td>${grandTotal.toLocaleString('en-US')}</td>
                                 <td>100%</td>
                             </tr>
                         `;
