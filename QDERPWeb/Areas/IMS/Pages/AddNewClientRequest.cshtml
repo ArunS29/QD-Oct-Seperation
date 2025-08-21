@@ -3150,57 +3150,45 @@ if (gridInstance) {
 				}
 			});
 			const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
-
-					$("<div>").dxButton({
-			icon: "plus",
-			hint: "Add new item",
-			onClick: function () {
-				openModal(`/${tenantName}/IMS/GoodsAndService`, "");
+				$("<div>").dxButton({
+				icon: "plus",
+				hint: "Add new item",
+				onClick: function () {
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
+				},
+				width: 60,
+				height: 30
+			}).appendTo($actionButtonWrapper);
+			$("<div>").dxButton({
+				icon: "edit",
+				hint: "Edit item",
+				onClick: function () {
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+					const visibleRows = grid.getVisibleRows();
+					const rowIndex = cellInfo.rowIndex;
+					const rowData = grid.cellValue(rowIndex, "GSCode");
+					if (!rowData) {
+						DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+						return;
+					}
+					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+					openModal(url, "", function () {
+					getDropdownData().done(function (newData) {
+					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("dataSource", newData);
+					}
+					dropdownData = newData;
+					grid.refresh();
+						});
+					});
+				},
+				width: 60,
+				height: 30
+			}).appendTo($actionButtonWrapper);
+			}
 			},
-			width: 60,
-			height: 30
-		}).appendTo($actionButtonWrapper);
-		$("<div>").dxButton({
-			icon: "edit",
-			hint: "Edit item",
-			onClick: function () {
-      const grid = $("#B2BdataGrid").dxDataGrid("instance");
-      // Get the selected row via cellInfo or directly use grid methods
-      const visibleRows = grid.getVisibleRows();
-      // You are inside the cell template, so this might be useful:
-      const rowIndex = cellInfo.rowIndex; // <- works in editCellTemplate context
-      const rowData = grid.cellValue(rowIndex, "GSCode"); // Get just the GScode
-      if (!rowData) {
-          DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
-          return;
-      }
- 
-      const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-     openModal(url, "Goods And Service", function () {
-          // ✅ Reload dropdown data after edit modal closes
-          getDropdownData().done(function (newData) {
-              // Update the dataSource of the dropdown inside this cell
-              let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
-              if (dropDownBox) {
-                  dropDownBox.option("dataSource", newData);
-              }
- 
-              // Update global dropdownData if used elsewhere
-              dropdownData = newData;
- 
-              // Optional: Refresh the current grid row
-              grid.refresh();
-          });
-      });
-  },
-			width: 60,
-			height: 30
-		}).appendTo($actionButtonWrapper);
-		}
-		},
-		
-	
-							{
+				{
 					dataField: "Descriptions",
 					caption: "...",
 					   cssClass: "center-header",
@@ -3923,8 +3911,8 @@ if (gridInstance) {
 			icon: "edit",
 			hint: "Edit item",
 			onClick: function () {
-				const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`; // Example add page
-				openModal(url, "Goods and Services");
+				const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
+				openModal(url, "");
 			},
 			width: 60,
 			height: 30
