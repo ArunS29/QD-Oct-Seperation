@@ -7,6 +7,36 @@
 
 <link rel="stylesheet" href="/css/dashboard.css?v=1" />
 
+<style>
+    .revenue-reporting-section {
+        background: #fff;
+        border-radius: 16px;
+        border: 1.5px solid #ececec;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+        padding: 1.5rem;
+        margin: 1.5rem 0;
+        height: 400px;
+    }
+
+        .revenue-reporting-section canvas {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+    .summary-table tr.others-row {
+        font-weight: bold;
+        background: #f8f9fa;
+        color: #333;
+        cursor: help;
+    }
+
+    .summary-table tr.total-row {
+        font-weight: bold;
+        background: #343a40;
+        color: #fff;
+    }
+</style>
+
 <div class="dashboard-scroll-container">
     <!-- Modern Dashboard Header -->
     <div class="dashboard-header">
@@ -44,7 +74,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label">CASH BALANCE</span>
+                <span class="summary-label">CASH & BANK BALANCE</span>
                 <span id="cashBalanceTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="cashBalanceValue">0</div>
@@ -56,7 +86,7 @@
     <div class="outstanding-summary-section">
         <div class="outstanding-summary-left">
             <div class="section-header">
-                <span class="section-title">Top 5 Outstanding Summary</span>
+                <span class="section-title">Outstanding Summary</span>
             </div>
             <div class="tabs">
                 <div class="tab dashboard-tab active" id="tabClientOutstanding">Client Outstanding</div>
@@ -69,21 +99,18 @@
                         <tr>
                             <th>Account Head</th>
                             <th>Balance Amount</th>
-                            <th>Over Due Days</th>
-                            <th>Account Group</th>
+                            <th>% of Total</th>
                             <th>Account Head No</th>
                         </tr>
                     </thead>
-                    <tbody id="topOutstandingTableBody">
-                        <!-- Data will be loaded here by JS -->
-                    </tbody>
+                    <tbody id="topOutstandingTableBody"></tbody>
                 </table>
             </div>
         </div>
 
         <div class="outstanding-summary-right">
             <div class="section-header">
-                <span class="section-title">Outstanding Summary</span>
+                <span class="section-title">Cash vs Bank</span>
             </div>
             <canvas id="outstandingDonutChart" width="320" height="150"></canvas>
             <div class="donut-legend">
@@ -92,6 +119,21 @@
             </div>
         </div>
     </div>
+</div>
+
+<div class="revenue-reporting-section">
+    <div class="section-header">
+        <span class="section-title">Revenue Reporting</span>
+    </div>
+    <div id="revenueReportingChart" style="height:400px;"></div>
+</div>
+
+<div class="summary-card">
+    <div class="summary-card-header">
+        <span class="summary-label">TOTAL SALES</span>
+        <span id="salesTrend" class="summary-trend-pill"></span>
+    </div>
+    <div class="summary-value" id="totalSalesValue">0</div>
 </div>
 
 <!-- Global Loader Overlay -->
@@ -103,140 +145,188 @@
     </div>
 </div>
 
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-3d@0.3.0/dist/chartjs-plugin-3d.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
+
 <script>
-/* ===== Global Loader ===== */
-(function () {
-    const loader = document.getElementById('globalLoader');
-    let hideTimer = null, locks = 0;
-
-    function showLoader(forceImmediate = false) {
-        locks++;
-        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
-        loader.classList.add('show');
-        document.body.classList.add('gl-lock');
-        if (forceImmediate) loader.offsetHeight;
+    /* Animate number changes */
+    function animateValue(id, start, end, duration) {
+        const obj = document.querySelector(id);
+        if (!obj) return;
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            obj.textContent = Math.floor(progress * (end - start) + start).toLocaleString('en-US');
+            if (progress < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
     }
 
-    function hideLoader() {
-        hideTimer = setTimeout(() => {
-            locks = Math.max(0, locks - 1);
-            if (locks === 0) {
-                loader.classList.remove('show');
-                document.body.classList.remove('gl-lock');
-            }
-        }, 150);
-    }
+    $(document).ready(function () {
+        let cashVal = 0, bankVal = 0, clientTotalOutstanding = 0, supplierTotalOutstanding = 0;
 
-    window.__globalLoader = { show: showLoader, hide: hideLoader };
-})();
+        const apiEndpoints = [
+            { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
+            { url: "/api/Dashboard/supplieroutstanding",       target: "#totalSupplierOutstandingValue", loader: "#loaderBillsOutstanding",  key: "balance" },
+            { url: "/api/Dashboard/GetBankAccounts",           target: "#totalBankBalanceValue",        loader: "#loaderBankBalance",       key: "balance" },
+            { url: "/api/Dashboard/GetCashBalance",            target: "#cashBalanceValue",             loader: "#loaderCashBalance",       key: "balance" },
+            { url: "/api/Dashboard/GetCashBalance1",           target: null,                            loader: null,                       key: "balance" }
+        ];
 
-/* ===== Animate number changes ===== */
-function animateValue(id, start, end, duration) {
-    const obj = document.querySelector(id);
-    if (!obj) return;
-    let startTimestamp = null;
-    const step = (timestamp) => {
-        if (!startTimestamp) startTimestamp = timestamp;
-        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
-        obj.textContent = Math.floor(progress * (end - start) + start).toLocaleString('en-US');
-        if (progress < 1) window.requestAnimationFrame(step);
-    };
-    window.requestAnimationFrame(step);
-}
+        const requests = apiEndpoints.map(ep => {
+            if (ep.loader) $(ep.loader).show();
+            return $.getJSON(ep.url)
+                .done(response => {
+                    const raw = (response && (response.success === undefined || response.success) && response[ep.key] != null)
+                        ? Number(response[ep.key]) : 0;
+                    if (ep.target) animateValue(ep.target, 0, raw, 900);
 
-/* ===== Live Data Refresh ===== */
-document.getElementById("getLiveData").addEventListener("change", function () {
-    if (this.checked) {
-        window.__globalLoader.show(true);
-        fetch("/api/dashboard/RunAllOutstandingProcedures", { method: "POST" })
-        .then(r => {
-            if (!r.ok) throw new Error("API failed");
-            return r.json();
-        })
-        .then(() => { alert("Live data refresh started!"); location.reload(); })
-        .catch(() => { alert("Failed to run live data process."); })
-        .finally(() => window.__globalLoader.hide());
-    }
-});
-
-/* ===== Dashboard Data Load ===== */
-$(document).ready(function () {
-    const apiEndpoints = [
-        { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
-        { url: "/api/Dashboard/supplieroutstanding",       target: "#totalSupplierOutstandingValue", loader: "#loaderBillsOutstanding",  key: "balance" },
-        { url: "/api/Dashboard/GetBankAccounts",           target: "#totalBankBalanceValue",        loader: "#loaderBankBalance",       key: "balance" },
-        { url: "/api/Dashboard/GetCashBalance",            target: "#cashBalanceValue",             loader: "#loaderCashBalance",       key: "balance" },
-        { url: "/api/Dashboard/GetCashBalance1",           target: null,                            loader: null,                       key: "balance" } // only for chart
-    ];
-
-    let cashVal = 0, bankVal = 0;
-
-    const requests = apiEndpoints.map(ep => {
-        if (ep.loader) $(ep.loader).show();
-        return $.getJSON(ep.url)
-            .done(response => {
-                const raw = (response && (response.success === undefined || response.success) && response[ep.key] != null)
-                    ? Number(response[ep.key]) : 0;
-                if (ep.target) animateValue(ep.target, 0, raw, 900);
-
-                const urlLower = ep.url.toLowerCase();
-                if (urlLower.includes("getcashbalance1")) cashVal = raw;
-                if (urlLower.includes("getbankaccounts")) bankVal = raw;
-            })
-            .fail(() => { if (ep.target) $(ep.target).text('0'); })
-            .always(() => { if (ep.loader) $(ep.loader).hide(); });
-    });
-
-    Promise.allSettled(requests).then(() => {
-        const ctx = document.getElementById('outstandingDonutChart').getContext('2d');
-        new Chart(ctx, {
-            type: 'doughnut',
-            data: {
-                labels: ['Cash IN Hand', 'Bank Balance'],
-                datasets: [{ data: [cashVal, bankVal], backgroundColor: ['#A48CFA', '#7BC0FE'], borderWidth: 2 }]
-            },
-            options: { cutout: '70%', plugins: { legend: { display: false } } }
+                    if (ep.url.toLowerCase().includes("gettotalclientoutstanding")) clientTotalOutstanding = raw;
+                    if (ep.url.toLowerCase().includes("supplieroutstanding")) supplierTotalOutstanding = raw;
+                    if (ep.url.toLowerCase().includes("getcashbalance1")) cashVal = raw;
+                    if (ep.url.toLowerCase().includes("getbankaccounts")) bankVal = raw;
+                })
+                .always(() => { if (ep.loader) $(ep.loader).hide(); });
         });
-    });
 
-    /* ===== Outstanding Table Loader ===== */
-    function loadOutstandingTable(apiUrl) {
-        const $body = $("#topOutstandingTableBody");
-        $body.html('<tr><td colspan="5" style="text-align:center;color:#b9b9b9;">Loading...</td></tr>');
-        $.getJSON(apiUrl, data => {
-            if (data && Array.isArray(data.data) && data.data.length > 0) {
-                $body.html(data.data.map(row => `
-                    <tr>
-                        <td>${row.AccountHead || row.accountHead || ''}</td>
-                        <td>${(row.Balance ?? row.balance ?? 0).toLocaleString('en-US')}</td>
-                        <td>${row.OverdueDays ?? row.overdueDays ?? ''}</td>
-                        <td>${row.AccountGroup || row.accountGroup || ''}</td>
-                        <td>${row.AccountHeadNo || row.accountHeadNo || ''}</td>
-                    </tr>
-                `).join(''));
-            } else {
-                $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">No data found</td></tr>');
-            }
-        }).fail(() => {
-            $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">Failed to load data</td></tr>');
+        Promise.allSettled(requests).then(() => {
+            // Default: load client tab
+            loadOutstandingTable("/api/Dashboard/GetClientOutstanding", "client", clientTotalOutstanding);
+
+            // Donut chart
+            const ctx = document.getElementById('outstandingDonutChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Cash IN Hand', 'Bank Balance'],
+                    datasets: [{
+                        data: [cashVal, bankVal],
+                        backgroundColor: ['#A48CFA', '#7BC0FE'],
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    cutout: '70%',
+                    plugins: {
+                        legend: { display: false },
+                        datalabels: {
+                            color: '#fff',
+                            font: { weight: 'bold', size: 14 },
+                            formatter: (value, context) => {
+                                const dataset = context.chart.data.datasets[0].data;
+                                const total = dataset.reduce((a, b) => a + b, 0);
+                                return total > 0 ? (value / total * 100).toFixed(1) + "%" : "0%";
+                            }
+                        }
+                    }
+                },
+                plugins: [ChartDataLabels]
+            });
         });
-    }
 
-    /* Default tab load */
-    loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
+        /* Outstanding Table Loader */
+        function loadOutstandingTable(apiUrl, tabType, totalOutstanding = 0) {
+            const $body = $("#topOutstandingTableBody");
+            const $thead = $("#topOutstandingTableBody").closest("table").find("thead tr");
 
-    /* Tab click handler */
-    $(".dashboard-tab").click(function () {
-        $(".dashboard-tab").removeClass("active");
-        $(this).addClass("active");
+            // Define table headers
+            if (tabType === "netAmount") {
+                $thead.html(`<th>Account Group</th><th>Balance Amount</th><th>% of Total</th>`);
+            } else if (tabType === "client" || tabType === "supplier") {
+                $thead.html(`
+                    <th>Account Head</th>
+                    <th>Balance Amount</th>
+                    <th>% of Total</th>
+                    <th>Account Head No</th>
+                `);
+            }
 
-        if (this.id === "tabClientOutstanding") {
-            loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
-        } else if (this.id === "tabSupplierOutstanding") {
-            loadOutstandingTable("/api/Dashboard/GetBillsPayableOutstanding");
-        } else if (this.id === "tabCashBalance") {
-            loadOutstandingTable("/api/Dashboard/GetBankCashSummary");
+            $body.html(`
+                <tr>
+                    <td colspan="5" style="text-align:center;padding:20px;">
+                        <div class="spinner-border text-primary" role="status" style="width:2rem;height:2rem;">
+                            <span class="visually-hidden">Loading...</span>
+                        </div>
+                        <div style="color:#888;font-size:0.9rem;margin-top:8px;">Fetching data...</div>
+                    </td>
+                </tr>
+            `);
+
+            $.getJSON(apiUrl, data => {
+                if (data && Array.isArray(data.data) && data.data.length > 0) {
+                    let rowsHtml = "";
+                    let sumShown = 0;
+
+                    data.data.forEach(row => {
+                        const bal = Number(row.Balance ?? row.balance ?? 0);
+                        sumShown += bal;
+
+                        if (tabType === "client" || tabType === "supplier") {
+                            const percentNum = totalOutstanding > 0 ? (bal / totalOutstanding * 100) : 0;
+                            rowsHtml += `
+                                <tr>
+                                    <td>${row.AccountHead || row.accountHead || ''}</td>
+                                    <td>${bal.toLocaleString('en-US')}</td>
+                                    <td>${percentNum.toFixed(1)}%</td>
+                                    <td>${row.AccountHeadNo || row.accountHeadNo || ''}</td>
+                                </tr>
+                            `;
+                        } else if (tabType === "netAmount") {
+                            const percentNum = sumShown > 0 ? (bal / sumShown * 100) : 0;
+                            rowsHtml += `
+                                <tr>
+                                    <td>${row.AccountGroup || row.accountGroup || ''}</td>
+                                    <td>${bal.toLocaleString('en-US')}</td>
+                                    <td>${percentNum.toFixed(1)}%</td>
+                                </tr>
+                            `;
+                        }
+                    });
+
+                    // Totals
+                    if (tabType === "netAmount") {
+                        rowsHtml += `
+                            <tr class="total-row">
+                                <td>Total</td>
+                                <td>${sumShown.toLocaleString('en-US')}</td>
+                                <td>100%</td>
+                            </tr>
+                        `;
+                    } else {
+                        rowsHtml += `
+                            <tr class="total-row">
+                                <td>Total</td>
+                                <td>${totalOutstanding.toLocaleString('en-US')}</td>
+                                <td>100%</td>
+                                <td>-</td>
+                            </tr>
+                        `;
+                    }
+
+                    $body.html(rowsHtml);
+                } else {
+                    $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">No data found</td></tr>');
+                }
+            }).fail(() => {
+                $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">Failed to load data</td></tr>');
+            });
         }
+
+        /* Tab click handler */
+        $(".dashboard-tab").click(function () {
+            $(".dashboard-tab").removeClass("active");
+            $(this).addClass("active");
+
+            if (this.id === "tabClientOutstanding") {
+                loadOutstandingTable("/api/Dashboard/GetClientOutstanding", "client", clientTotalOutstanding);
+            } else if (this.id === "tabSupplierOutstanding") {
+                loadOutstandingTable("/api/Dashboard/GetBillsPayableOutstanding", "supplier", supplierTotalOutstanding);
+            } else if (this.id === "tabCashBalance") {
+                loadOutstandingTable("/api/Dashboard/GetBankCashSummary", "netAmount");
+            }
+        });
     });
-});
 </script>
