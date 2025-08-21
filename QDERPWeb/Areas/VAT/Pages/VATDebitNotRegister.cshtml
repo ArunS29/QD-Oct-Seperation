@@ -231,9 +231,9 @@
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
-				<h2 class="title-slide">VAT Debit Note Register</h2>
+				<h2 class="title-slide" id="vatdebitnoteregister"></h2>
 				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+				<h6 class="fade-in" id="QuickDiceERPSolutions11"></h6>
 			</div>
 			<div class="tile-icon">
 				<!-- Icon as SVG -->
@@ -241,26 +241,26 @@
 					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
 				</svg>
 
-			</div>
+			</div> 
 		</div>
 	</div>
 
 	
 
 	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
-		<h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;">Voucher Count</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-size: 1.6em;font-weight:bold;text-align: left;" id="debitnotevoucher"></h4>
 
 		<div class="voucher-slider">
 			<div class="voucher-slide active">
-				<h5 style ="margin: 0;text-align: left;">No of Invoices Verified</h5>
+				<h5 style ="margin: 0;text-align: left;" id="noofinvoiceverifieddebit"></h5>
 				<h4 id="verifiedCount1" style="margin: 0;text-align: left;">0</h4>
 			</div>
 			<div class="voucher-slide">
-				<h5 style="margin: 0;text-align: left;">No of Invoices Approved</h5>
+				<h5 style="margin: 0;text-align: left;" id="noofinvoiceapproveddebit"></h5>
 				<h4 id="approvedCount1" style="margin: 0;text-align: left;">0</h4>
 			</div>
 			<div class="voucher-slide">
-				<h5 style="margin: 0;text-align: left;">No of Invoices Posted</h5>
+				<h5 style="margin: 0;text-align: left;" id="noofinvoiceposteddebit"></h5>
 				<h4 id="postedCount1" style="margin: 0;text-align: left;">0</h4>
 			</div>
 
@@ -276,10 +276,10 @@
 	</div>
 
 	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important;  padding: 16px;">
-		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Today</h4>
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;" id="debitnotetoday"></h4>
 		<div class="voucher-slider">
 			<div class="voucher-slide1 active">
-				<h4>Debit Notes Raised Today</h4>
+				<h4 id="debitnoteraisedtoday"></h4>
 				<h1 id="creditTodays" style="color: white;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -288,7 +288,7 @@
 				</h1>
 			</div>
 			<div class="voucher-slide1">
-				<h4>Debit Notes Total Amount</h4>
+				<h4 id="debitnotestotalamount"></h4>
 				<h1 id="creditTotals" style="color: white;">
 					<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
 						<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
@@ -397,36 +397,36 @@
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-			columns.Add().Caption("Debit Note Details").Columns(subColumns =>
+			columns.Add().Caption(new JS("formatMessage('Debit Note Details')")).Columns(subColumns =>
 			{
 			
 			subColumns.AddFor(m => m.DebitNoteNo)
-			.Caption("Debit Note No")
+			.Caption(new JS("formatMessage('Debit Note No')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(135).MinWidth(23);
 
 			subColumns.AddFor(m => m.DebitNoteDate)
-			.Caption("Debit Note Date")
+			.Caption(new JS("formatMessage('Debit Note Date')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Format("dd-MMM-yyyy")
 			.Width(135).MinWidth(23);
 
 			subColumns.AddFor(m => m.AccountHead)
-			.Caption("Account Head")
+			.Caption(new JS("formatMessage('Account Head')"))
 			.Alignment(HorizontalAlignment.Center)
 			.Width(100).MinWidth(23);
 
 			subColumns.AddFor(m => m.DebitNoteStatus)
-			.Caption("Debit Note Status")
+			.Caption(new JS("formatMessage('Debit Note Status')"))
 			.Alignment(HorizontalAlignment.Center)
 			.CellTemplate(new JS("DebitStatusCellTemplate"))
 			.Width(180).MinWidth(23);
 		});
-			
-			columns.Add().Caption("Debit Note & Tax Amount").Columns(subColumns =>
+
+			columns.Add().Caption(new JS("formatMessage('Debit Note & Tax Amount')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.CalcLineAmount)
-			.Caption("Amount Before Tax")
+		    .Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header1" style="font-weight: bold;">
@@ -442,8 +442,8 @@
 					   	</text>);
 
 
-			subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption("Total VAT Amount")
+				subColumns.AddFor(m => m.CalcTaxAmount)
+			.Caption(new JS("formatMessage('Total VAT Amount')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header2" style="font-weight: bold;">
@@ -459,8 +459,8 @@
 					   	</text>);
 
 
-			subColumns.AddFor(m => m.TotalDebitNoteAmount)
-			.Caption("Total Amount")
+				subColumns.AddFor(m => m.TotalDebitNoteAmount)
+			.Caption(new JS("formatMessage('Total Amount')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header3" style="font-weight: bold;">
@@ -477,14 +477,14 @@
 
 			});
 
-			
 
-			columns.Add().Caption("Credit Not Classified").Columns(purchaseColumns =>
+
+			columns.Add().Caption(new JS("formatMessage('Credit Not Classified')")).Columns(purchaseColumns =>
 			{
-				purchaseColumns.Add().Caption("Domestic").Columns(subColumns =>
+				purchaseColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.DomesticStandardPurchases)
-			.Caption("Domestic 5% Purchase")
+			.Caption(new JS("formatMessage('Domestic 5% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header4" style="font-weight: bold;">
@@ -499,8 +499,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.TotalDspurchase10Perc)
-			.Caption("Domestic 10% Purchase")
+				subColumns.AddFor(m => m.TotalDspurchase10Perc)
+			.Caption(new JS("formatMessage('Domestic 10 % Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header5" style="font-weight: bold;">
@@ -515,8 +515,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.TotalDspurchase15Perc)
-			.Caption("Domestic 15% Purchase")
+				subColumns.AddFor(m => m.TotalDspurchase15Perc)
+			.Caption(new JS("formatMessage('Domestic 15% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header6" style="font-weight: bold;">
@@ -531,8 +531,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.DomesticZeroTaxPurchases)
-			.Caption("Domestic Zero Rated Purchase")
+				subColumns.AddFor(m => m.DomesticZeroTaxPurchases)
+			.Caption(new JS("formatMessage('Domestic Zero Rated Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header7" style="font-weight: bold;">
@@ -547,8 +547,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
-			.Caption("Domestic Exempted Purchase")
+				subColumns.AddFor(m => m.DomesticExemptedTaxPurchases)
+			.Caption(new JS("formatMessage('Domestic Exempted Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header8" style="font-weight: bold;">
@@ -563,12 +563,12 @@
 		</div>
 	</text>);
 
-			});		
+			});
 
-			purchaseColumns.Add().Caption("Imports").Columns(subColumns =>
+				purchaseColumns.Add().Caption(new JS("formatMessage('Imports')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ImportsVatpaidAtCustoms)
-			.Caption("Imports @5% Purchase")
+			.Caption(new JS("formatMessage('Imports @5% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header9" style="font-weight: bold;">
@@ -583,8 +583,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.TotalImportPurchase10Perc)
-			.Caption("Imports 10% Purchase")
+				subColumns.AddFor(m => m.TotalImportPurchase10Perc)
+			.Caption(new JS("formatMessage('Imports 10% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header10" style="font-weight: bold;">
@@ -599,8 +599,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.TotalImportPurchase15Perc)
-			.Caption("Imports 15% Purchase")
+				subColumns.AddFor(m => m.TotalImportPurchase15Perc)
+			.Caption(new JS("formatMessage('Imports 15% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header11" style="font-weight: bold;">
@@ -615,8 +615,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.ImportsVatthruRcm)
-			.Caption("RCM @5% Purchase")
+				subColumns.AddFor(m => m.ImportsVatthruRcm)
+			.Caption(new JS("formatMessage('RCM @5% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header12" style="font-weight: bold;">
@@ -632,7 +632,7 @@
 					   	</text>);
 
 			subColumns.AddFor(m => m.TotalRcmpurchase10Perc)
-			.Caption("RCM 10% Purchase")
+			.Caption(new JS("formatMessage('RCM 10% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header13" style="font-weight: bold;">
@@ -647,8 +647,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.TotalRcmpurchase15Perc)
-			.Caption("RCM 15% Purchase")
+				subColumns.AddFor(m => m.TotalRcmpurchase15Perc)
+			.Caption(new JS("formatMessage('RCM 15% Purchase')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header14" style="font-weight: bold;">
@@ -666,12 +666,12 @@
 			});
 
 			});
-			columns.Add().Caption("VAT Amount Classified").Columns(vatColumns =>
+			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
 			{
-				vatColumns.Add().Caption("Domestic VAT").Columns(subColumns =>
+				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.DomesticStandardPurTax)
-			.Caption("Domestic 5% VAT")
+			.Caption(new JS("formatMessage('Domestic 5% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header15" style="font-weight: bold;">
@@ -686,8 +686,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
-			.Caption("Domestic 10% VAT")
+				subColumns.AddFor(m => m.TotalDspurchaseTax10Perc)
+			.Caption(new JS("formatMessage('Domestic 10% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header16" style="font-weight: bold;">
@@ -702,8 +702,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
-			.Caption("Domestic 15% VAT")
+				subColumns.AddFor(m => m.TotalDspurchaseTax15Perc)
+			.Caption(new JS("formatMessage('Domestic 15% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header17" style="font-weight: bold;">
@@ -718,8 +718,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
-			.Caption("Domestic Zero Rated VAT")
+				subColumns.AddFor(m => m.DomesticZeroTaxPurTax)
+			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header18" style="font-weight: bold;">
@@ -734,8 +734,8 @@
 					   		</div>
 					   	</text>);
 
-			subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
-			.Caption("Domestic Exempted VAT")
+				subColumns.AddFor(m => m.DomesticExemptedTaxPurTax)
+			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header19" style="font-weight: bold;">
@@ -752,10 +752,10 @@
 
 			});
 
-				vatColumns.Add().Caption("Imports VAT").Columns(subColumns =>
+				vatColumns.Add().Caption(new JS("formatMessage('Imports VAT')")).Columns(subColumns =>
 			{
 				subColumns.AddFor(m => m.ImportsVatpaidAtCustomsTax)
-			.Caption("Imports @5% VAT")
+			.Caption(new JS("formatMessage('Imports @5% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header20" style="font-weight: bold;">
@@ -771,22 +771,25 @@
 					   	</text>);
 
 			subColumns.AddFor(m => m.TotalImportPurchaseTax10Perc)
-			.Caption("Imports @10% VAT")
+			.Caption(new JS("formatMessage('Imports @10% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
-			.HeaderCellTemplate(@<text>
-							 		<div class="Currency-header21" style="font-weight: bold;">
-							 			<%= column.caption %>
-							 		</div>
-							 	</text>)
-			.CellTemplate(@<text>
-					   		<div class="vat-pill" style="display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;">
-					   			<%- data.TotalImportPurchaseTax10Perc != null
-					   			? data.TotalImportPurchaseTax10Perc.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals })
-					   			: '' %>
-					   		</div>
-					   	</text>);
-				subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
-			.Caption("Imports @15% VAT")
+			.EncodeHtml(false)
+			.CustomizeText(@"
+		function(e) {
+		if (e.value != null) {
+		const formatted = e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals });
+		return '<span style=""display:inline-block; background-color:#e0f2f1; color:#2e7d32; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+		}
+		return '';
+		}
+		").HeaderCellTemplate(@<text>
+						   		<div class="Currency-header21" style="font-weight: bold;">
+						   			<%= column.caption %>
+						   		</div>
+						   	</text>);
+
+			subColumns.AddFor(m => m.TotalImportPurchaseTax15Perc)
+			.Caption(new JS("formatMessage('Imports @15% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header22" style="font-weight: bold;">
@@ -801,7 +804,7 @@
 					   		</div>
 					   	</text>);
 				subColumns.AddFor(m => m.ImportsVatthruRcmtax)
-			.Caption("RCM @5% VAT")
+			.Caption(new JS("formatMessage('RCM @5% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header23" style="font-weight: bold;">
@@ -817,7 +820,7 @@
 					   	</text>);
 
 			subColumns.AddFor(m => m.TotalRcmpurchaseTax10Perc)
-			.Caption("RCM @10% VAT")
+			.Caption(new JS("formatMessage('RCM @10% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header24" style="font-weight: bold;">
@@ -833,7 +836,7 @@
 					   	</text>);
 
 			subColumns.AddFor(m => m.TotalRcmpurchaseTax15Perc)
-			.Caption("RCM @15% VAT")
+			.Caption(new JS("formatMessage('RCM @15% VAT')"))
 			.Alignment(HorizontalAlignment.Center)
 			.HeaderCellTemplate(@<text>
 							 		<div class="Currency-header25" style="font-weight: bold;">
@@ -2100,5 +2103,31 @@
 				maximumFractionDigits: currencyDecimals
 			});
 		}
-		
+			$(function () {
+			$("#vatdebitnoteregister").text(formatMessage("VAT Debit Note Register"));
+		});
+		$(function () {
+			$("#QuickDiceERPSolutions11").text(formatMessage("Quick Dice ERP Solutions"));
+		});
+		$(function () {
+				$("#debitnotevoucher").text(formatMessage("Voucher Count"));
+		});
+		$(function () {
+				$("#debitnotetoday").text(formatMessage("Today"));
+		});
+		$(function () {
+				$("#noofinvoiceverifieddebit").text(formatMessage("No of Invoices Verified"));
+		});
+		$(function () {
+				$("#noofinvoiceapproveddebit").text(formatMessage("No of Invoices Approved"));
+		});
+		$(function () {
+				$("#noofinvoiceposteddebit").text(formatMessage("No of Invoices Posted"));
+		});
+		$(function () {
+					$("#debitnoteraisedtoday").text(formatMessage("Debit Notes Raised Today"));
+		});
+		$(function () {
+						$("#debitnotestotalamount").text(formatMessage("Debit Notes Total Amount"));
+		});
 </script>

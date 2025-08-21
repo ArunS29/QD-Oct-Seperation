@@ -484,7 +484,33 @@
 		box-shadow: 0 2px 5px rgba(0,0,0,0.3);
 		font-family: Arial, sans-serif;
 	}
+	.dx-datagrid .dx-data-row td[aria-colindex="3"] {
 
+    text-align: center !important;
+
+}
+
+    .header-wrap {
+
+        white-space: normal !important; /* Enable word wrap */
+
+        text-align: center !important; /* Center align text */
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-weight: bold;
+
+    }
+
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+
+        text-align: center !important;
+
+    }
 	.context-menu-itemInvoice {
 		padding: 8px 12px;
 		cursor: pointer;
@@ -1037,29 +1063,28 @@
 								<td>
 
 									@(Html.DevExtreme().DropDownBox()
-																			.ID("InvoiceTransactionsCode")
-															.Label(new JS("formatMessage('Invoice Transactions Code')"))
-																			.Value("0100000") // Default selected value
-																			.ValueExpr("ID")
-																			.DisplayExpr("ID")
-																			.LabelMode(EditorLabelMode.Floating)
-																			.AcceptCustomValue(true)
-																			
-																			.OpenOnFieldClick(false)
-																			.ValueChangeEvent("input")
-																			.Placeholder("Choose VAT Transaction Types")
-																		     .HoverStateEnabled(true)
-																			.ContentTemplate(new JS("VATTransactionTemplate")) // Reference the NamedTemplate
-																			.DataSource(new[] {
-									new { ID = 1, Name = "3rd Party Tax Invoice" },
-									new { ID = 2, Name = "Nominal Tax Invoice" },
-									new { ID = 3, Name = "Export Tax Invoice" },	
-									new { ID = 4, Name = "Summary Tax Invoice" },
-									new { ID = 5, Name = "Self Billed Tax Invoice" }
-									})
-																			.OnInitialized("onDropDownInitialized")
-																		
-																			)
+    .ID("InvoiceTransactionsCode")
+    .Label(new JS("formatMessage('Invoice Transactions Code')"))
+    .Value("0100000")
+    .ValueExpr("ID")
+    .DisplayExpr("Name") // Display the translated name
+    .LabelMode(EditorLabelMode.Floating)
+    .AcceptCustomValue(true)
+    .OpenOnFieldClick(false)
+    .ValueChangeEvent("input")
+    .Placeholder("Choose VAT Transaction Types")
+    .HoverStateEnabled(true)
+    .ContentTemplate(new JS("VATTransactionTemplate"))
+    .DataSource(new JS(@"[
+        { ID: 1, Name: formatMessage('3rd Party Tax Invoice') },
+        { ID: 2, Name: formatMessage('Nominal Tax Invoice') },
+        { ID: 3, Name: formatMessage('Export Tax Invoice') },
+        { ID: 4, Name: formatMessage('Summary Tax Invoice') },
+        { ID: 5, Name: formatMessage('Self Billed Tax Invoice') }
+    ]"))
+    .OnInitialized("onDropDownInitialized")
+)
+
 
 																			
 
@@ -1245,7 +1270,8 @@
 				<div class="card-container" style="display: flex;">
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<th>Purchase Order Details</th>
+							<th id="purchaseOrderDetails"></th>
+
 							</tr>
 							<tr>
 								<td colspan="2">
@@ -1296,7 +1322,7 @@
 					
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<th>Contract / Project References</th>
+								<th id="ContractProjectReferences"></th>
 							</tr>
 							<tr>
 
@@ -1316,7 +1342,7 @@
 						
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
-								<th>Quotation / Delivery Details</th>
+								<th id="QuotationDeliveryDetails"></th>
 							</tr>
 							<tr>					
 
@@ -2596,10 +2622,10 @@
 								.Columns(columns =>
 								{
 									// columns.Add().DataField("OpeningBalanceDrCr");
-									columns.Add().DataField("AccountId").Caption("Account Code").Alignment(HorizontalAlignment.Center);
-									columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center);
-									columns.Add().DataField("VatregistrationNo").Caption("Client VAT No").Alignment(HorizontalAlignment.Center);
-									columns.Add().DataField("ReferenceNo").Caption("ReferenceNo").Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Code')")).Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("VatregistrationNo").Caption(new JS("formatMessage('Client VAT No')")).Alignment(HorizontalAlignment.Center);
+									columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center);
 						columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')"))
 					.Alignment(HorizontalAlignment.Center)
 					.CellTemplate(@<text>
@@ -2649,7 +2675,7 @@
 								.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 								.Columns(columns =>
 								{
-						columns.Add().DataField("AccountHead").Caption("Client Name").Alignment(HorizontalAlignment.Center); 
+						columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center); 
 
 					})
 					)
@@ -3499,29 +3525,30 @@
 @using (Html.DevExtreme().NamedTemplate("VATTransactionTemplate"))
 {
 	@(Html.DevExtreme().List()
-			.ID("vatTransactionList")
-			.DataSource(new[] {
-			new { ID = 1, Name = "3rd Party Tax Invoice" },
-			new { ID = 2, Name = "Nominal Tax Invoice" },
-			new { ID = 3, Name = "Export Tax Invoice" },
-			new { ID = 4, Name = "Summary Tax Invoice" },
-			new { ID = 5, Name = "Self Billed Tax Invoice" }
-		})
-			.DisplayExpr("ID")
-			.KeyExpr("ID")
-			.SelectionMode(ListSelectionMode.Multiple)
-			.SelectedItemKeys(new[] { 1 }) // Default selected
-			.OnSelectionChanged("onVatTransactionSelectionChanged")
-			.ItemTemplate(@<text>
-	<div class="vat-item">
-		<label class="toggle-switch">
-			<input type="checkbox" class="vat-checkbox" value="<%- ID %>" />
-			<span class="slider"></span>
-		</label>
-		<span class="vat-label"><%- Name %></span>
-	</div>
-</text>)
-		)
+    .ID("vatTransactionList")
+    .DataSource(new JS(@"[
+        { ID: 1, Name: formatMessage('3rd Party Tax Invoice') },
+        { ID: 2, Name: formatMessage('Nominal Tax Invoice') },
+        { ID: 3, Name: formatMessage('Export Tax Invoice') },
+        { ID: 4, Name: formatMessage('Summary Tax Invoice') },
+        { ID: 5, Name: formatMessage('Self Billed Tax Invoice') }
+    ]"))
+    .DisplayExpr("ID")   // 👈 show translated Name instead of ID
+    .KeyExpr("ID")
+    .SelectionMode(ListSelectionMode.Multiple)
+    .SelectedItemKeys(new[] { 1 }) // Default selected
+    .OnSelectionChanged("onVatTransactionSelectionChanged")
+    .ItemTemplate(@<text>
+        <div class="vat-item">
+            <label class="toggle-switch">
+                <input type="checkbox" class="vat-checkbox" value="<%- ID %>" />
+                <span class="slider"></span>
+            </label>
+            <span class="vat-label"><%- Name %></span> <!-- 👈 now Name is localized -->
+        </div>
+    </text>)
+)
+
 }
 
 
@@ -5266,7 +5293,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 						{
 	  dataField: formatMessage('ExcemptionCode'),
-	  caption: "Excemption Code",
+	  caption: formatMessage('Excemption Code'),
 	  cssClass: "center-header",
 	  width: 150,
 	  allowEditing: false,
@@ -9026,7 +9053,7 @@ if (popover.option("visible")) {
     const url = `/${tenantName}/Finance/LedgerAccount?IsClientAdd=true`;
 
     const popup = $("#ledgerAccountPopup").dxPopup("instance");
-	  popup.option("title", "Add Ledger Account");
+	
     popup.show();
 
     setTimeout(() => {
@@ -10355,7 +10382,15 @@ function formatSummaryValue(value) {
         maximumFractionDigits: currencyDecimals 
     });
 }
-
+$(function () {
+        $("#purchaseOrderDetails").text(formatMessage("Purchase Order Details"));
+    });
+$(function () {
+        $("#ContractProjectReferences").text(formatMessage("Contract / Project References"));
+    });
+$(function () {
+        $("#QuotationDeliveryDetails").text(formatMessage("Quotation / Delivery Details"));
+    });
 
 </script>
 

@@ -2699,7 +2699,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">Tax Summary Report-Credit Notes</div>
+                        <div class="item-title no-border-input" id="taxsummaryreportsales"></div>
                     </div>
                 </div>
             </div>
@@ -2712,7 +2712,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">Account Group</div>
+                        <div class="item-title no-border-input" id="=accoungroups"></div>
                     </div>
                 </div>
 
@@ -2720,7 +2720,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">Tax Report (Revenue Classified)</div>
+                        <div class="item-title no-border-input" id="taxreportsales"></div>
                     </div>
                 </div>
 
@@ -2728,7 +2728,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">Tax Report (Revenue Classified)in arabic</div>
+                        <div class="item-title no-border-input" id="taxreportclassifiedsales"></div>
                     </div>
                 </div>
             </div>
@@ -2762,7 +2762,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">1st Quarter (Jan - Mar)</div>
+                        <div class="item-title no-border-input" id="1stquaters"></div>
                     </div>
                 </div>
 
@@ -2770,7 +2770,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">2nd Quarter (Apr - Jun)</div>
+                        <div class="item-title no-border-input" id="2ndquaters"></div>
                     </div>
                 </div>
 
@@ -2778,7 +2778,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">3rd Quarter (Jul - Sep)</div>
+                        <div class="item-title no-border-input" id="3rdquaters"></div>
                     </div>
                 </div>
 
@@ -2786,7 +2786,7 @@
                     <div style="background-color:#EA4335;height:90%;" class="side-bar"></div>
                     <div class="item-content">
                         <i class="fa fa-file"></i>
-                        <div class="item-title no-border-input">4th Quarter (Oct - Dec)</div>
+                        <div class="item-title no-border-input" id="4thquaters"></div>
                     </div>
                 </div>
             </div>
@@ -3431,6 +3431,60 @@
                });
 
 
+                $(function () {
+                    $("#accoungroups").dxTextBox({
+                        text: formatMessage("Account Group"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#taxsummaryreportsales").dxTextBox({
+                        text: formatMessage("Tax Summary Report"),
+                        readOnly: true
+
+                    });
+                });(function () {
+                    $("#taxreportsales").dxTextBox({
+                        text: formatMessage("Tax Report (Revenue Classified)"),
+                        readOnly: true
+
+                    });
+                });(function () {
+                    $("#taxreportclassifiedsales").dxTextBox({
+                        text: formatMessage("Tax Report (Revenue Classified)in Arabic"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#1stquaters").dxTextBox({
+                        text: formatMessage("1st Quarter (Jan - Mar)"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#2ndquaters").dxTextBox({
+                        text: formatMessage("2nd Quarter (Apr - Jun)"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#3rdquaters").dxTextBox({
+                        text: formatMessage("3rd Quarter (Jul - Sep)"),
+                        readOnly: true
+
+                    });
+                });
+                $(function () {
+                    $("#4thquaters").dxTextBox({
+                        text: formatMessage("4th Quarter (Oct - Dec)"),
+                        readOnly: true
+
+                    });
+                });
                 $(function () {
                     $("#Short").dxTextBox({
                         text: formatMessage("Short"),
