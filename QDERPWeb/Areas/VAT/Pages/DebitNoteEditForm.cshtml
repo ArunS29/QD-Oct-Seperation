@@ -5203,13 +5203,13 @@
 				console.log("totalValue",vatValue)
 
 				// Update values in the grid
-				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
-				grid.cellValue(rowIndex, "Unit Price",unitPrice);
+				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
+				grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
+				grid.cellValue(rowIndex, "Unit Price",formatAmount(unitPrice));
 				 grid.cellValue(rowIndex, "Qty",qty);
 				 grid.cellValue(rowIndex, "VAT Description",vatRateStr);
-				 grid.cellValue(rowIndex, "Amount",amount);
-				  grid.cellValue(rowIndex, "Units To Bill",UnitsToBillAmt);
+				 grid.cellValue(rowIndex, "Amount",formatAmount(amount));
+				  grid.cellValue(rowIndex, "Units To Bill",formatAmount(UnitsToBillAmt));
 			};
 		}
 	}
@@ -5518,13 +5518,13 @@ button.option("disabled", false);
 		let totalValue = amount + vatValue;
 		//alert(vatValue)
 					// Update values in the grid
-				grid.cellValue(rowIndex, "VAT", vatValue.toFixed(2));
-				grid.cellValue(rowIndex, "Total", totalValue.toFixed(2));
+				grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
+				grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
 				grid.cellValue(rowIndex, "Qty",qty);
-				grid.cellValue(rowIndex, "Amount",amount);
+				grid.cellValue(rowIndex, "Amount",formatAmount(amount));
 				grid.cellValue(rowIndex, "VAT Description",vatRateStr);
 				grid.cellValue(rowIndex, "TaxSlabCode",TaxSlabCode);
-			    grid.cellValue(rowIndex, "Units To Bill",UnitsToBillAmt);
+			    grid.cellValue(rowIndex, "Units To Bill",formatAmount(UnitsToBillAmt));
 
 	}
 
@@ -5698,7 +5698,7 @@ if(clientnameValidation.isValid)
 
 		function proceedWithVerification() {
 			// Set VerifiedBy checkbox to true
-			$("#VerifiedBy").dxCheckBox("instance").option("value", true);
+		
 			IsDirectVerify=false;
 			const vno = $("#DebitNoteNo").dxTextBox("instance").option("value");
 
@@ -5733,6 +5733,7 @@ if(clientnameValidation.isValid)
 						DevExpress.ui.notify(
 							"VAT Invoice has been Verified.","success",2000
 						);
+							$("#VerifiedBy").dxCheckBox("instance").option("value", true);
 							$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherVerifiedBy || "N/A");
 							$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
 							initWorkflowTippyPopovers();
@@ -5798,8 +5799,6 @@ if(clientnameValidation.isValid)
 
 
 		function proceedWithApproval() {
-			// Set ApprovedBy checkbox to true
-			$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 			IsDirectApproval=false;
 			const vno = $("#DebitNoteNo").dxTextBox("instance").option("value");
 			
@@ -5828,6 +5827,7 @@ if(clientnameValidation.isValid)
 							"VAT InvoiceNo has been Approved.","success",2000
 							
 						);
+							$("#ApprovedBy").dxCheckBox("instance").option("value", true);
 							disableEditing();
 							$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
 							$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
@@ -6626,13 +6626,13 @@ $(function () {
 		});
 	});
 
-$("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("onOpened", function (e) {
+@* $("#VATPurchaseVoucherNo").dxDropDownBox("instance").option("onOpened", function (e) {
 	debugger;
     var grid = $("#purchase-datagrid").dxDataGrid("instance");
     if (grid) {
         grid.getDataSource().reload();
     }
-});
+}); *@
 
 
  async function convertToArabic() {
