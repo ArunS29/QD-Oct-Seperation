@@ -7822,8 +7822,12 @@ if (popover.option("visible")) {
 
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
+
 			var button = $("#btnSave").dxButton("instance");
               button.option("disabled", true);
+
+			  var SaveAndClosebtn = $("#btnSaveAndClose").dxButton("instance");
+              SaveAndClosebtn.option("disabled", true);
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
 		  {
@@ -8024,6 +8028,7 @@ if (popover.option("visible")) {
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
 										button.option("disabled", false);
+										 SaveAndClosebtn.option("disabled", false);
 									}
 								});
 
@@ -8032,16 +8037,20 @@ if (popover.option("visible")) {
 
 								DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 					               button.option("disabled", false);
+								    SaveAndClosebtn.option("disabled", false);
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
                            button.option("disabled", false);
+						    SaveAndClosebtn.option("disabled", false);
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 button.option("disabled", false);
+SaveAndClosebtn.option("disabled", false);
+
 				}
 			});
 			}
@@ -8049,6 +8058,7 @@ button.option("disabled", false);
 			{
            	DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
 			   button.option("disabled", false);
+			   SaveAndClosebtn.option("disabled", false);
 			}
 
 		 }
@@ -8061,6 +8071,9 @@ button.option("disabled", false);
 				
                 var button = $("#btnSaveAndClose").dxButton("instance");
                 button.option("disabled", true);
+
+					var Savebtn = $("#btnSave").dxButton("instance");
+              Savebtn.option("disabled", true);
 			  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 			  if(revaccheadid==null)
 			  {
@@ -8243,22 +8256,26 @@ button.option("disabled", false);
 										error: function (xhr, status, error) {
 											console.error("Error fetching grid data:", error);
 											button.option("disabled", false);
+											Savebtn.option("disabled", false);
 										}
 									});
 
 									DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 								button.option("disabled", false);
+								Savebtn.option("disabled", false);
 						history.back();
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 								button.option("disabled", false);
+								Savebtn.option("disabled", false);
 							}
 						});
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 						button.option("disabled", false);
+						Savebtn.option("disabled", false);
 					}
 				});
 				}
@@ -8266,6 +8283,7 @@ button.option("disabled", false);
 				{
 					DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
 					button.option("disabled", false);
+					Savebtn.option("disabled", false);
 					
 				}
 
@@ -9634,7 +9652,7 @@ button.option("disabled", false);
 				grid.cellValue(rowIx, "Discount", discount);
 				grid.cellValue(rowIx, "CalcTaxAmount", vatValue);
 			grid.cellValue(rowIx, "LineTotal", totalValue);
-
+			 grid.saveEditData();
 			// ✅ Close the DevExtreme Popover
     const popover = $("#CalcardPopover").dxPopover("instance");
     if (popover) {
