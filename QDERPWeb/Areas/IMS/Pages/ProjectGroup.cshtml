@@ -120,7 +120,7 @@
 
 
         <div class="form-group">
-            <label for="CategoryComboBox" class="form-label">Category</label>
+           
             <div id="CategoryComboBox"></div>
         </div>
 
@@ -231,7 +231,7 @@
     });
 
     $(document).on("click", "#btnBack", function () {
-        window.history.back();
+        closeModal();
     });
     $(function () {
         const items = [];
@@ -239,6 +239,8 @@
         $("#CategoryComboBox").dxSelectBox({
             dataSource: items,
             acceptCustomValue: true,
+            label: "Category",              // ✅ Floating Label
+        labelMode: "floating",
             onCustomItemCreating: function (e) {
                 const newValue = e.text;
                 items.push(newValue);
@@ -301,8 +303,10 @@
                 DevExpress.ui.notify("ProjectGroup saved successfully!", "success", 2000);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
             },
-            error: function () {
-                DevExpress.ui.notify("Failed to save Projectgroup.", "error", 2000);
+            error: function (xhr) {
+      
+                 const msg = xhr.responseJSON?.message || "Failed to save Projectgroup.";
+                DevExpress.ui.notify(msg, "error", 3000);
             }
         });
     }
