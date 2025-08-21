@@ -5618,6 +5618,7 @@ if (popover.option("visible")) {
 									
 									InvoiceOPenToSave(data)
 									invoiceBox.option("value", data || "");
+										getDocumentCount();
 									
 								} else {
 									console.warn("Invoice TextBox not initialized.");
@@ -5728,7 +5729,7 @@ if (popover.option("visible")) {
 				InvoiceCheckedBy: ChkbySignatoryID || null,
 				InvoiceApprovedBy: ApproedbySignatoryID || null
 			};
-				getDocumentCount();
+				
 			let InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource") || [];
 
 			let updatedDataSource = InvoiceChildren.map(item => ({
@@ -5736,7 +5737,7 @@ if (popover.option("visible")) {
 				InvoiceNo: InVoiceNo,
 				TaxAmount: amt
 			}));
-
+				getDocumentCount();
 			console.log("InvoiceMaster:", InvoiceMaster);
 			console.log("InvoiceChildren:", updatedDataSource);
 
@@ -5746,6 +5747,7 @@ if (popover.option("visible")) {
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function () {
+					getDocumentCount();
 				}
 
 			});
@@ -7608,7 +7610,7 @@ if (popover.option("visible")) {
 			UnitRateMethod:UnitCode,
 			TaxAmount:amt
 		}));
-
+			getDocumentCount();
 			console.log("InvoiceMaster:", InvoiceMaster);
 			console.log("InvoiceChildren:", updatedDataSource);
 
@@ -7633,7 +7635,7 @@ if (popover.option("visible")) {
 						contentType: "application/json",
 						data: JSON.stringify(updatedDataSource),
 						success: function (response) {
-								
+									
 								$.ajax({
 									type: "GET",
 											url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
@@ -7657,16 +7659,20 @@ if (popover.option("visible")) {
 
 										// ✅ Now safely initialize the grid here
 										initializeDataGrid(rowData);
+										getDocumentCount();
 									},
 									error: function (xhr, status, error) {
+
 										console.error("Error fetching grid data:", error);
-button.option("disabled", false);
+										button.option("disabled", false);
+										getDocumentCount();
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 								  button.option("disabled", false);
+
 							 
 						},
 						error: function (xhr) {
@@ -7854,7 +7860,7 @@ button.option("disabled", false);
 						contentType: "application/json",
 						data: JSON.stringify(updatedDataSource),
 						success: function (response) {
-								
+									
 								$.ajax({
 									type: "GET",
 											url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InVoiceNo)}`,
@@ -7878,9 +7884,11 @@ button.option("disabled", false);
 
 										// ✅ Now safely initialize the grid here
 										initializeDataGrid(rowData);
+										getDocumentCount();
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
+											getDocumentCount();
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done

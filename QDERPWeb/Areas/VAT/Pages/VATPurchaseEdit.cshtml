@@ -3110,6 +3110,7 @@
 						InvoiceOPenToSave(data);
 					if (invoiceBox) {
 						invoiceBox.option("value", data || "");
+						getDocumentCount();
 					}
 				},
 				error: function (xhr, status, error) {
@@ -3273,7 +3274,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 	                                        {
 	                                        	btnPostToLedgerdisableEditing();
 	                                        }
-
+											getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -3294,9 +3295,11 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 									// ✅ Now safely initialize the grid here
 									initializeDataGrid(rowData);
+									getDocumentCount();
 								},
 								error: function (xhr, status, error) {
 									console.error("Error fetching grid data:", error);
+									getDocumentCount();
 								}
 							});
 						} else {
@@ -6377,6 +6380,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						"Purchase Invoice Details updated Successfully.","success",2000
 					);
 					button.option("disabled", false);
+					getDocumentCount();
 						}
 						// error: function (xhr) {
 						// 	DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6386,6 +6390,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 					button.option("disabled", false);
+						getDocumentCount();
 				}
 			});
 			}
@@ -6540,6 +6545,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							
 						);
 button.option("disabled", false);
+						getDocumentCount();
 						//history.back();
 
                           const url = `/${tenantName}/VAT/VATPurchaseMasterView`;
@@ -6555,6 +6561,7 @@ button.option("disabled", false);
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 						button.option("disabled", false);
+						getDocumentCount();
 					}
 				});
 				}
@@ -7037,67 +7044,9 @@ if(clientnameValidation.isValid)
 							if(response.IsDirect == true)
 							{
 								
-								// attachment bind to sales in finance with posting
-
-								const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
-								const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
-								var menuType = "vat";
-								var formType ="VATPurchase Bill";
-								// 1. Get Documents
-								const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-								const documents = await getDocRes.json();
-								if (!documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-												return;
-								}
-								// 2. Generate DocumentNo to each documents
-								const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-								const newDocNos = await docNoRes.json();
-								if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-												return;
-								}
-								// 3. Reupload each document to AddDocumentsEntry
-								const generateNo = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-								const PostVoucherType = "purchase";
-								const isMaster = false;
-								const PostMenuType = 'finance';
-								for (let i = 0; i < documents.length; i++) {
-									const doc = documents[i];
-									const newDocNo = newDocNos[i];
-
-									try {
-										const fileResponse = await fetch(doc.FileUrl);
-										const blob = await fileResponse.blob();
-
-										const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-										const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-										const formData = new FormData();
-										formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-										formData.append("DocumentNo", newDocNo);
-										formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-										formData.append("DocumentType", doc.DocumentType ?? "1");
-										formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-										formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-										formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-										formData.append("LedgerNo", generateNo); // new folder id
-
-
-											const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-											method: "POST",
-											body: formData
-										});
-
-										const uploadResult = await uploadRes.json();
-										console.log("Uploaded document:", uploadResult);
-									} catch (uploadError) {
-													console.error("Error re-uploading document:", uploadError);
-									}
-	}
+								
 								DevExpress.ui.dialog.alert(
-									"VAT Invoice has been posted to the Accounting Books With Attachments.",
+									"VAT Invoice has been posted to the Accounting Books.",
 									"Invoice Posted Successfully."
 								)
 							}
@@ -8322,6 +8271,37 @@ function formatSummaryValue(value) {
         maximumFractionDigits: currencyDecimals 
     });
 }
+
+	// Attachment Count
+	//1. Get Document Count from Grid Load in Ledger Documents
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
+
+		const purchaseNoBox = $("#InvoiceNo").dxTextBox("instance");
+        const purchaseNo = purchaseNoBox ? purchaseNoBox.option("value") : null;
+        var formType ="VATPurchase Bill";
+        var menuType = "vat";
+		let folderId2 = "";
+		const invoiceRes = await fetch(`/api/VATModule/GetPONosFromPurchaseInvoice?purchaseInvoiceNo=${encodeURIComponent(invoiceNofromPurchase)}`);
+		const invoiceData = await invoiceRes.json();
+		if (invoiceData) {
+			folderId2 = [
+				invoiceData.PurchaseVoucherNo,
+				invoiceData.MaterialReceiptNo,
+				invoiceData.PurchaseOrderNo,
+			]
+			.filter(Boolean)   //remove null/empty
+			.join(",");
+		}
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const docs = await res.json();
+		const count = docs.length;
+
+		updateAttachButtonCount("#btnAttach", count);
+	}
 
 
 
