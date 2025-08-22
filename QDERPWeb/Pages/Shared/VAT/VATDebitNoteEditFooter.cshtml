@@ -208,7 +208,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
                 )
 
     </div>
@@ -222,6 +222,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails")
                 )
     </div>
     <div class="btn-containers">
@@ -236,12 +237,13 @@
     </div>
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
-                .ID("btnAttach")
-                .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
-                              //.OnClick("onAttachButtonClick")
-                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
-                )
+            .ID("btnAttach")
+            .Text(new JS("formatMessage('Attach')"))
+            .Icon("attach")
+            .Hint("Click to attach")
+            .OnClick("onVatAttachmentButtonClick")
+            .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+            )
     </div>
     <div class="btn-containers">
         @(Html.DevExtreme().DropDownButton()
@@ -279,7 +281,7 @@
                 .ID("btnDelete")
                 .Text(new JS("formatMessage('Delete')"))
                 .Icon("close")
-                               //  .OnClick("onDeleteButtonClick")
+                 .OnClick("onDeleteButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-delete" })
                 )
     </div>
@@ -659,7 +661,7 @@
                             dataGrid.state(layout);
                         } catch (error) {
                             console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                          
                         }
                     }
                 },
@@ -1667,6 +1669,32 @@
                 }
             }
 
+    function onVatAttachmentButtonClick(e) {
 
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
+        const hasValidAmounts = data.some(row => {
+            return (row.CalcLineAmount && row.CalcLineAmount > 0);
+        });
+
+        if (!hasValidAmounts) {
+            DevExpress.ui.dialog.alert("Data Not found in the Amount Cell within the Grid", "Can't Enable Attachment");
+            return;
+        }
+        // Get Voucher No safely
+        const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");
+        const debitNoteNo = DebitNoteNoBox ? DebitNoteNoBox.option("value") : null;
+        var formType ="e-Invoice DebitNote";
+        var menuType = "vat";
+        // Log and build URL
+        console.log("Voucher No:", debitNoteNo);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(debitNoteNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
 
 </script>

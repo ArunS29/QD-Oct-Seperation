@@ -54,6 +54,10 @@
     .footerContainer {
         display: none !important;
     }
+
+    .footer-fixed {
+        bottom: 35px !important;
+    }
 </style>
 
     <div class="title">
@@ -304,7 +308,8 @@
         </div>
 
     </div>
-    <div class="Head">
+  
+    <div class="footer-fixed" style="margin-left: 15px;">
         @await Html.PartialAsync("/Pages/Shared/VAT/VATGoodsAndServicesFooter.cshtml")
     </div>
     </div>
@@ -386,7 +391,7 @@
 <script>
 
     $(document).ready(function () {
-        debugger;
+        
     var urlParams = new URLSearchParams(window.location.search);
     var ItemNo = urlParams.get('ItemNo') ?? '';
     var Gsdescrpition = urlParams.get('Gsdescrpition') ?? '';
@@ -395,6 +400,8 @@
     let GssellingRate = urlParams.get('GssellingRate');
     let ReorderQty = urlParams.get('ReorderQty');
     let ItemPartNo = urlParams.get('ItemPartNo');
+    let UnitOfMeasure = urlParams.get('UnitOfMeasure');
+
 
     CostPrice = isNaN(CostPrice) ? 1 : CostPrice;
     GssellingRate = isNaN(GssellingRate) ? 1 : GssellingRate;
@@ -416,11 +423,16 @@
     {
         GsdescriptionAr="";
     }
+     if(UnitOfMeasure==="null")
+    {
+        UnitOfMeasure="";
+    }
 
-                     // let gCode = $("#txtGoodsCode7").dxTextBox("instance").option("value");
-                     // if(gCode!="")
-                     // {
+      
                      $("#txtGoodsCode7").dxTextBox("instance").option("value",ItemNo);
+                     let gCode = $("#txtGoodsCode7").dxTextBox("instance").option("value");
+                     if(gCode!="")
+                     {
                      $("#txtItemPartNo4").dxTextBox("instance").option("value",ItemPartNo);
                      $("#txtDescription8").dxTextArea("instance").option("value",Gsdescrpition);
                      $("#txtDescriptionArabic").dxTextArea("instance").option("value",GsdescriptionAr);
@@ -428,11 +440,35 @@
                      $("#packingUnit").dxNumberBox("instance").option("value", ReorderQty ?? 1);
                      $("#sellingRate").dxNumberBox("instance").option("value", GssellingRate ?? 1);
                      $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
-
-                     // }
-                     // else{
-
-                     // }
+                     $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
+                     $("#ddlUnitMeasure9").dxDropDownBox("instance").option("value", UnitOfMeasure);
+                     
+                     }
+                     else{
+                                 $.ajax({
+                                           url: "/api/VATModule/GetGoodsAndServicesDetails", // Your API endpoint
+                                           type: "GET",
+                                           data: { gsCode: gCode }, // 👈 This sends ?gsCode=value in the query string
+                                           dataType: "json",
+                                           success: function (data) {
+                                               console.log("Filtered Goods & Services:", data);
+                                           
+                                               $("#txtGoodsCode7").dxTextBox("instance").option("value",data.Gscode);
+                                               $("#txtItemPartNo4").dxTextBox("instance").option("value",data.ItemPartNo);
+                                               $("#txtDescription8").dxTextArea("instance").option("value",data.Gsdescrpition);
+                                               $("#txtDescriptionArabic").dxTextArea("instance").option("value",data.GsdescriptionAr);
+                                               
+                                               $("#packingUnit").dxNumberBox("instance").option("value", data.ReorderQty ?? 1);
+                                               $("#sellingRate").dxNumberBox("instance").option("value", data.GssellingRate ?? 1);
+                                               $("#txtCostPrice3").dxNumberBox("instance").option("value", data.CostPrice ?? 1);
+                                               $("#ddlUnitMeasure9").dxDropDownBox("instance").option("value", data.UnitRateMethod);
+                         
+                                           },
+                                           error: function (xhr, status, error) {
+                                               console.error("API call failed:", error);
+                                           }
+                                      });
+                     }
 
         });
 

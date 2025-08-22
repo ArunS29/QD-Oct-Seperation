@@ -40,6 +40,7 @@
                 .ID("btnAttach")
                 .Icon("attach")
                 .Text(new JS("formatMessage('Attach')"))
+                .OnClick("onIMSAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 .Width(200)
                 )
@@ -357,90 +358,14 @@
             reader.readAsText(file);
         }
     });
-    function saveLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2);
-        const blob = new Blob([layoutJson], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "grid-layout.json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-    }
+    
     function openLayoutClick(e) {
         $("#loadLayoutInput").click();
     }
 
-    function loadGridState() {
-        var form = $('#formId').val();
-        $.ajax({
-            url: `/api/Utility/LoadLayout`,
-            method: 'GET',
-            data: {
-                form: form
-            },
-            success: function (response) {
-                var dataGrid = $("#dataGrid").dxDataGrid("instance");
-                if (response) {
-                    try {
-                        const layout = JSON.parse(response);
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the JSON is valid.");
-                    }
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading grid state:", error);
-            }
-        });
-    }
-    function setDefaultLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2);
-        console.log(layoutJson);
-
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: layoutJson,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-    function resetLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: null,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                grid.state({});
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
+    
+    
+    
 
 
     function ChangeRowHeight(newHeight) {
@@ -522,7 +447,11 @@
             salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
             quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
             enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
-            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value")
+            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
+                CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
+
         };
 
         // Get grid data (items)
@@ -592,7 +521,10 @@
             salesOrderNo: $("#SalesOrderNo").dxTextBox("instance").option("value"),
             quotationNo: $("#QuotationNo").dxTextBox("instance").option("value"),
             enquiryRequestNo: $("#EnquiryRequestNo").dxTextBox("instance").option("value"),
-            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value")
+            Dnsignatory: $("#Dnsignatory").dxDropDownBox("instance").option("value"),
+                CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+                BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+                CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
         };
 
         // Get grid data (items)
@@ -717,6 +649,8 @@
             .then(result => {
                 DevExpress.ui.notify(result.message, "success", 3000);
                 disableEditing(); // Disable form fields after approval
+             $("#btnPrint").dxDropDownButton("instance").option("disabled", false);
+
             })
             .catch(error => {
                 DevExpress.ui.notify(error.message || "Approval failed", "error", 3000);
@@ -726,20 +660,23 @@
 
 
 
-          function disableEditing() {
+    function disableEditing() {
         // Disable all standard HTML form fields
         $('input, select, textarea').prop('disabled', true);
 
         // Allowed buttons to NOT disable
-        const allowedButtons = [
-             'btnPrint','btnBack'
-        ];
+        const allowedButtons = ['btnPrint', 'btnBack'];
 
         // Disable all DevExtreme widgets (TextBox, DateBox, DropDownBox, etc.)
         $(".dx-widget").each(function () {
             const $el = $(this);
             const widgetType = $el.data("dxWidgetName");
             if (!widgetType) return;
+
+            // Skip if element or its closest parent has an allowed ID
+            const elId = $el.attr("id") || $el.closest("[id]").attr("id");
+            if (allowedButtons.includes(elId)) return;
+
             try {
                 const instance = $el.data(widgetType);
                 if (instance && typeof instance.option === "function") {
@@ -752,6 +689,9 @@
 
         // Explicitly disable DateBox and DropDownBox (in case missed above)
         $('.dx-datebox, .dx-dropdownbox').each(function () {
+            const elId = $(this).attr("id") || $(this).closest("[id]").attr("id");
+            if (allowedButtons.includes(elId)) return;
+
             try {
                 const instance = $(this).data("dxDateBox") || $(this).data("dxDropDownBox");
                 if (instance && typeof instance.option === "function") {
@@ -762,23 +702,26 @@
             }
         });
 
-        // Disable buttons except allowed ones
+        // Disable buttons (dxButton or dxDropDownButton) except allowed ones
         $('.dx-button, .dx-dropdownbutton').each(function () {
-            const id = $(this).attr('id');
-            if (!id || !allowedButtons.includes(id)) {
-                try {
-                    const btnInstance = $(this).data('dxButton') || $(this).data('dxDropDownButton');
-                    if (btnInstance && typeof btnInstance.option === "function") {
-                        btnInstance.option("disabled", true);
-                    }
-                } catch (e) {
-                    console.warn("Error disabling button:", e);
+            const id = $(this).attr('id') || $(this).closest("[id]").attr("id");
+            if (!id || allowedButtons.includes(id)) return;
+
+            try {
+                const btnInstance = $(this).data('dxButton') || $(this).data('dxDropDownButton');
+                if (btnInstance && typeof btnInstance.option === "function") {
+                    btnInstance.option("disabled", true);
                 }
+            } catch (e) {
+                console.warn("Error disabling button:", e);
             }
         });
 
         // Disable SelectBox and NumberBox explicitly
         $('.dx-selectbox, .dx-numberbox').each(function () {
+            const elId = $(this).attr("id") || $(this).closest("[id]").attr("id");
+            if (allowedButtons.includes(elId)) return;
+
             try {
                 const instance = $(this).data("dxSelectBox") || $(this).data("dxNumberBox");
                 if (instance && typeof instance.option === "function") {
@@ -796,12 +739,13 @@
             dataGrid.option("editing.allowDeleting", false);
         }
 
-        // Disable specific buttons
+        // Disable specific buttons explicitly
         ["btnApprove", "btnSave", "btnSaveAndClose", "btnDelete", "btnAddNewPayment"].forEach(id => {
             const btn = $("#" + id).dxButton("instance");
             if (btn) btn.option("disabled", true);
         });
     }
+
 
 
 
@@ -842,6 +786,45 @@
         window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
     }
 
+    function onIMSAttachmentButtonClick(e) {
+        // Get Voucher No safely
+        const deliveryNoBox = $("#deliveryNoteNo").dxTextBox("instance");
+        const deliveryNo = deliveryNoBox ? deliveryNoBox.option("value") : null;
+        var dataGrid = $("#itemGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
 
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.notify(
+                "Not allow to Add Attachments. Please enter some transactions in Grid.",
+                "warning",
+                4000
+                );
+            return;
+        }
+        var menuType = "inventory";
+
+        var formType = '';
+        var deliveryType = $("#DeliveryType").dxSelectBox("instance");
+        var deliveryTypevalue = deliveryType.option("value");
+        if (deliveryTypevalue == "1") 
+            formType = "Delivery To Client";
+        else if (deliveryTypevalue == "2")
+            formType = "Delivery To Store";
+        else if (deliveryTypevalue == "3")
+            formType = "Delivery To Project";
+        else if (deliveryTypevalue == "4")
+            formType = "Delivery Store Tranfers";
+            
+        // Log and build URL
+        console.log("Voucher No:", deliveryNo);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(deliveryNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
 
 </script>

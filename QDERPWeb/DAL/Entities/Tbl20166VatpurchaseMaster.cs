@@ -140,4 +140,10 @@ public partial class Tbl20166VatpurchaseMaster
     public string DiscountText { get; set; }
 
     public DateTime? InventoryEffectiveDate { get; set; }
+
+    public decimal? ExchangeRate { get; set; }
+    public string InvoiceCurrencyCode { get; set; }
+    public string TaxCurrencyCode { get; set; }
+
+
 }

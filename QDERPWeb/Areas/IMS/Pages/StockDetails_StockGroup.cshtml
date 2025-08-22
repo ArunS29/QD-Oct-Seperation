@@ -131,6 +131,11 @@
     .playIcon {
         display: none;
     }
+
+
+    .dx-button{
+        background: #98AFC7 !important;
+    }
     </style>
 
 @* <div class="title">
@@ -354,7 +359,7 @@
                     .Text(new JS("formatMessage('Add')"))
                     .Type(ButtonType.Success)
                      .ElementAttr(new { @class = "custom-ui-button" })
-                    .Width(60)
+                     .Width(100)
                     )
             </td>
         </tr> 
@@ -365,94 +370,6 @@
     <table style="width:100%;">
         <tr>
             <td>
-            @*    @(Html.DevExtreme().DataGrid<Tbl20165GoodsAndServicesGroup>()
-                    .ID("dataGrid")
-                    .DataSource(ds => ds.Mvc()
-                    .Controller("StockInventory")
-                    .LoadAction("GoodsServicesData")
-                    .UpdateAction("UpdateGoodsService")
-                    .Key("GsgroupId")
-                    )
-                    .RemoteOperations(false)
-                    .Height(400)
-
-                    .Editing(editing =>
-                    {
-                        editing.Mode(GridEditMode.Row);
-                        editing.AllowUpdating(true);
-                        editing.UseIcons(true);
-                           
-                    })
-                                .Columns(columns =>
-                    {
-                        columns.AddFor(m => m.GsgroupId)
-                        .Caption(new JS("formatMessage('Code')"))
-                        .Visible(false)
-                        .Alignment(HorizontalAlignment.Center)
-                        .AllowEditing(false); // Optional
-                        columns.AddFor(m => m.GsgroupCode)
-                        .Caption(new JS("formatMessage('Code')"))
-                        .Alignment(HorizontalAlignment.Center)
-                        .AllowEditing(false); // Optional
-
-                        columns.AddFor(m => m.GsgroupName)
-                        .Caption(new JS("formatMessage('GS Group')"))
-                        .Alignment(HorizontalAlignment.Center);
-
-                        columns.AddFor(m => m.GsgroupNameAr)
-                        .Caption(new JS("formatMessage('GS Group (In Arabic)')"))
-                        .Alignment(HorizontalAlignment.Center);
-
-                        columns.AddFor(m => m.Gscategory)
-                        .Caption(new JS("formatMessage('Category')"))
-                        .Alignment(HorizontalAlignment.Center);
-
-              
-
-                                    columns.AddFor(m => m.InventoryMasterGroupId)
-                                    .Caption(new JS("formatMessage('Inventory Master Groups')"))
-                                    .Width(200)
-                                    .Lookup(lookup => lookup
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("StockInventory")
-                                    .LoadAction("GetInventoryMasterGroups")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("InventoryMasterGroupId")
-                                    )
-                                    .ValueExpr("InventoryMasterGroupId")     // Must match the value in your model
-                                    .DisplayExpr("InventoryMasterGroup")     // The user-friendly name
-                                    );
-
-
-                        columns.AddFor(m => m.IsServicesGroup)
-                        .Caption(new JS("formatMessage('Is Services?')"))
-                        .Alignment(HorizontalAlignment.Center)
-                        .DataType(GridColumnDataType.Boolean)
-                        .CellTemplate(new JS(
-                    @"function(container, options) {
-                var data = options.data;
-                $('<input>', {
-                type: 'checkbox',
-                checked: data.IsServicesGroup,
-                change: function(e) {
-                onIsServicesChanged(data.GsgroupId, e.target.checked);
-                }
-                }).appendTo(container);
-                }"));
-                                
-                    })
-                    .ShowColumnLines(true)
-                    .ShowRowLines(true)
-                    .RowAlternationEnabled(true)
-                    .ShowColumnHeaders(true)
-                    .ColumnAutoWidth(true)
-                    .AllowColumnReordering(true)
-                    .AllowColumnResizing(true)
-                    .ColumnFixing(fixing => fixing.Enabled(true))
-                    .GroupPanel(groupPanel => groupPanel.Visible(false))
-                    .ShowBorders(true)
-                    )  *@
-
                @(Html.DevExtreme().DataGrid()
                                 .ID("dataGrid")
                                         .KeyExpr("GsgroupId")
@@ -485,7 +402,7 @@
                                 })
 
 
-                              .OnRowUpdating("onProjectUpdating")                       // Handles saving
+                              .OnRowUpdating("onProjectUpdating")                   
                                 .Columns(columns =>
                                 {
                                     columns.Add().DataField("GsgroupId").Caption("Code").Visible(false).Alignment(HorizontalAlignment.Center).AllowEditing(false);
@@ -561,8 +478,25 @@
             </td>
         </tr>
     </table>
-    <div class="limited-footer">
-        @await Html.PartialAsync("InventoryModuleFooter")
+
+
+    <div class="footer-fixed" style="display:flex; justify-content: space-between;">
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+                .ID("btnUpdate")
+                .Text(new JS("formatMessage('Update')"))
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                )
+        </div>
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
+        </div>
     </div>
 
 
@@ -688,7 +622,7 @@
     });
 
     $(document).on("click", "#btnBack", function () {
-        window.history.back();
+       window.parent.closeModal();
     });
 
      function onOpened(e) {
@@ -810,16 +744,6 @@
                 inventoryGroupValid &&
                 gsgroupNameValid 
             ) {
-                
-             //    const groupCode = $("#GroupCode").dxTextBox("instance").option("value");
-             //  const category = $("#Category").dxTextBox("instance").option("value");
-             //    const inventoryGroupId = $("#InventoryMasterGroups").dxDropDownBox("instance").option("value");
-             // const inventoryLedger = $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value");
-             //   const costLedger = $("#CostLedgerAccount").dxDropDownBox("instance").option("value");
-             //   const isServiceGroup = $("#ServicesGroup").dxCheckBox("instance").option("value");
-             //    const gsgroupName = $("#NewStockServicesGroups").dxTextArea("instance").option("value");
-             // const gsgroupNameAr = $("#StockServicesGroups").dxTextArea("instance").option("value");
-
                 const data = {
                     GsgroupCode: $("#GroupCode").dxTextBox("instance").option("value"),
                     Gscategory: $("#Category").dxTextBox("instance").option("value"),
@@ -840,15 +764,19 @@
                         DevExpress.ui.notify('Saved successfully', 'success', 2000);
                         $("#dataGrid").dxDataGrid("instance").refresh();
 
-                    $("#GroupCode").dxTextBox("instance").option("value","");
-                    $("#Category").dxTextBox("instance").option("value","");
-                    $("#InventoryMasterGroups").dxDropDownBox("instance").option("value","");
-                    $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value","");
-                     $("#CostLedgerAccount").dxDropDownBox("instance").option("value","");
-                    $("#ServicesGroup").dxCheckBox("instance").option("value","");
-                    $("#NewStockServicesGroups").dxTextArea("instance").option("value","");
-                    $("#StockServicesGroups").dxTextArea("instance").option("value","");
+                        $("#GroupCode").dxTextBox("instance").option("value","");
+                        $("#Category").dxTextBox("instance").option("value","");
+                        $("#InventoryMasterGroups").dxDropDownBox("instance").option("value","");
+                        $("#InventoryLedgerAccount").dxDropDownBox("instance").option("value","");
+                        $("#CostLedgerAccount").dxDropDownBox("instance").option("value","");
+                        $("#ServicesGroup").dxCheckBox("instance").option("value","");
+                        $("#NewStockServicesGroups").dxTextArea("instance").option("value","");
+                        $("#StockServicesGroups").dxTextArea("instance").option("value","");
 
+                       // Reset validation states
+                        groupCodeValidator.reset();
+                        inventoryGroupValidator.reset();
+                        gsgroupNameValidator.reset();
                     },
                          error: function (xhr) {
             let message = "Save failed";
@@ -876,15 +804,15 @@
     function onProjectUpdating(e) {
 
         const data = {
-            GsgroupId: e.oldData.GsgroupId,
-             GsgroupCode: e.newData.GsgroupCode ?? e.oldData.GsgroupCode,
-            Gscategory: e.newData.Gscategory ?? e.oldData.Gscategory,
-            InventoryMasterGroupId: e.newData.InventoryMasterGroupId ?? e.oldData.InventoryMasterGroupId,
-            GsgroupInventoryLedger: e.newData.GsgroupInventoryLedger ?? e.oldData.GsgroupInventoryLedger,
-               GsgroupExpenseLedger: e.newData.GsgroupExpenseLedger ?? e.oldData.GsgroupExpenseLedger,
-                  IsServicesGroup: e.newData.IsServicesGroup ?? e.oldData.IsServicesGroup,
-                     GsgroupName: e.newData.GsgroupName ?? e.oldData.GsgroupName,
-                     GsgroupNameAr: e.newData.GsgroupNameAr ?? e.oldData.GsgroupNameAr
+        GsgroupId: e.oldData.GsgroupId,
+            GsgroupCode: e.newData.GsgroupCode ?? e.oldData.GsgroupCode,
+        Gscategory: e.newData.Gscategory ?? e.oldData.Gscategory,
+        InventoryMasterGroupId: e.newData.InventoryMasterGroupId ?? e.oldData.InventoryMasterGroupId,
+        GsgroupInventoryLedger: e.newData.GsgroupInventoryLedger ?? e.oldData.GsgroupInventoryLedger,
+            GsgroupExpenseLedger: e.newData.GsgroupExpenseLedger ?? e.oldData.GsgroupExpenseLedger,
+                IsServicesGroup: e.newData.IsServicesGroup ?? e.oldData.IsServicesGroup,
+                    GsgroupName: e.newData.GsgroupName ?? e.oldData.GsgroupName,
+                    GsgroupNameAr: e.newData.GsgroupNameAr ?? e.oldData.GsgroupNameAr
 
 
            };
@@ -905,31 +833,41 @@
             }
         });
     }
-      function onDeleteButtonClicks(e) {
-        e.event.preventDefault(); // prevent default delete
+        function onDeleteButtonClicks(e) {
+        e.event.preventDefault();
 
         var grid = $("#dataGrid").dxDataGrid("instance");
-        var key = e.row.data.GsgroupId; // get the ID of the row
+        var key = e.row.data.GsgroupId;
 
-        if (confirm("Are you sure you want to delete this row?")) {
-            $.ajax({
-                url: '/api/StockInventory/DeleteStock?key=' + key,
-                type: 'DELETE',
-                success: function () {
-                    grid.refresh();
-                    DevExpress.ui.notify("Deleted successfully", "success", 2000);
-                    setTimeout(() => {
-                        if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
-                            window.parent.refreshModeOfRequestDropDown();
-                        }
-                    }, 300); // ✅ Properly closed
-                }, // ✅ This comma was missing in your version!
-                error: function () {
-                    DevExpress.ui.notify("Delete failed", "error", 2000);
-                }
-            });
-        }
+        // DevExpress confirmation dialog
+        var result = DevExpress.ui.dialog.confirm(
+            "Are you sure you want to delete this row?",
+            "Delete Confirmation"
+        );
+
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                $.ajax({
+                    url: '/api/StockInventory/DeleteStock?key=' + key,
+                    type: 'DELETE',
+                    success: function () {
+                        grid.refresh();
+                        DevExpress.ui.notify("Deleted successfully", "success", 2000);
+
+                        setTimeout(() => {
+                            if (window.parent && typeof window.parent.refreshModeOfRequestDropDown === "function") {
+                                window.parent.refreshModeOfRequestDropDown();
+                            }
+                        }, 300);
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Delete failed", "error", 2000);
+                    }
+                });
+            }
+        });
     }
+
 
     $(function () {
         var grid = $("#dataGrid").dxDataGrid("instance");
@@ -964,7 +902,7 @@
          if (!textBox1Instance || !textBox2Instance) {
 
              console.error("TextBox instances are not properly initialized.");
-
+             
              return;
 
          }
@@ -978,8 +916,8 @@
 
          if (!englishText || englishText.trim() === "") {
 
-             alert("Please enter text to translate.");
-
+             //alert("Please enter text to translate.");
+             DevExpress.ui.notify('Please enter text to translate.', 'warning', 2000);
              return;
 
          }

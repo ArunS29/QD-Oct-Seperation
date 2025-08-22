@@ -96,7 +96,7 @@
         color: #ffc107; /* Bootstrap yellow */
     }
 </style>
-
+<input id="formId" value="BillsPayable" type="hidden" />
 
     <div class="content-container-top">
         @* <div class="container-fluid"></div> *@
@@ -228,56 +228,8 @@
                 band.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Width(130)
     .Format(format => format.Type(Format.ShortDate).Formatter("function(value) { return DevExpress.localization.formatDate(new Date(value), 'dd-MMM-yyyy'); }"));
                 band.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('Voucher Ref No')")).Alignment(HorizontalAlignment.Center);
-                band.AddFor(m => m.InvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Trans Invoice Amount')"))
-    .Alignment(HorizontalAlignment.Right)
-    .CustomizeText(@"
-    function(e) {
-    if (e.value === null || e.value === undefined) {
-    return '';
-    }
-    let positiveValue = Math.abs(e.value);
-    let formattedValue = positiveValue.toLocaleString(undefined, {
-    minimumFractionDigits: 2,
-    maximumFractionDigits: 2
-    });
-    return '(' + formattedValue + ')';
-    }
-        ").CellTemplate(@<text>
-                             <div class="credit-pill">
-                                 <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
-                                 <%- data.InvoiceAmountBeforeRetention != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
-                             </div>
-                         </text>
-                    ).Visible(false).Width(130);
-
-
-
-                    @*         band.AddFor(m => m.ConvertedInvoiceAmountBeforeRetention).Caption(new JS("formatMessage('Invoice Amount')"))
-            .Alignment(HorizontalAlignment.Right)
-            .CustomizeText(@"
-        function(e) {
-        if (e.value === null || e.value === undefined) {
-        return '';
-        }
-        let positiveValue = Math.abs(e.value);
-        let formattedValue = positiveValue.toLocaleString(undefined, {
-        minimumFractionDigits: 2,
-        maximumFractionDigits: 2
-        });
-        return '(' + formattedValue + ')';
-        }
-        ").HeaderCellTemplate(@<text>
-                                   <div class="invoice-header" style="font-weight: bold;">
-                                       <%= column.caption %>
-                                   </div>
-                               </text>)
-            .CellTemplate(@<text>
-                               <div class="credit-pill">
-                                   <%- data.ConvertedInvoiceAmountBeforeRetention.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) %>
-                               </div>
-                           </text>);
- *@
-                    band.AddFor(m => m.ConvertedInvoiceAmountBeforeRetention)
+                
+                    band.AddFor(m => m.InvoiceAmountBeforeRetention)
                     .Caption(new JS("formatMessage('Invoice Amount')"))
                     .Alignment(HorizontalAlignment.Right)
                     .HeaderCellTemplate(@<text>
@@ -288,7 +240,7 @@
         )
                     .CellTemplate(@<text>
                                <%
-                               var val = data.ConvertedInvoiceAmountBeforeRetention;
+                               var val = data.InvoiceAmountBeforeRetention;
                                if (val !== null && val !== undefined) {
                                let positive = Math.abs(val);
                                let formatted = positive.toLocaleString(undefined, {
@@ -304,7 +256,7 @@
 
 
 
-                band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Trans Paid')")).Alignment(HorizontalAlignment.Right)
+                @* band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Trans Paid')")).Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -320,10 +272,10 @@
                                  <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
                                  <%- data.Paid != null ? data.Received.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                              </div>
-                                 </text>) .Visible(false).Width(130);
+                                 </text>) .Visible(false).Width(130); *@
 
 
-            band.AddFor(m => m.ConvertedPaid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
+                    band.AddFor(m => m.Paid).Caption(new JS("formatMessage('Paid')")).Alignment(HorizontalAlignment.Right)
           
             .HeaderCellTemplate(@<text>
                                    <div class="received-header" style="font-weight: bold;">
@@ -332,7 +284,7 @@
                                </text>)
             .CellTemplate(@<text>
                                <%
-                               var val = data.ConvertedPaid;
+                               var val = data.Paid;
                                if (val !== null && val !== undefined) {
                                let positive = Math.abs(val);
                                let formatted = positive.toLocaleString(undefined, {
@@ -347,7 +299,7 @@
                                    </text>).Width(130);
 
 
-                band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Trans Balance')")).Alignment(HorizontalAlignment.Right)
+                @* band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Trans Balance')")).Alignment(HorizontalAlignment.Right)
     .CustomizeText(@"
     function(e) {
     if (e.value === null || e.value === undefined) {
@@ -366,11 +318,11 @@
                                    <span style="color: black; font-weight: bold;"><%- data.TransactionCurrencySymbol %></span>
                                    <%- data.Balance != null ? data.Balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                </div>
-                                   </text>) .Visible(false).Width(130);
+                                   </text>) .Visible(false).Width(130); *@
 
 
 
-            band.AddFor(m => m.ConvertedBalance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right)
+            band.AddFor(m => m.Balance).Caption(new JS("formatMessage('Balance')")).Alignment(HorizontalAlignment.Right)
            
             .HeaderCellTemplate(@<text>
                                      <div class="balance-header" style="font-weight: bold;">
@@ -379,7 +331,7 @@
                                  </text>)
             .CellTemplate(@<text>
                                <%
-                               var val = data.ConvertedBalance;
+                               var val = data.Balance;
                                if (val !== null && val !== undefined) {
                                let positive = Math.abs(val);
                                let formatted = positive.toLocaleString(undefined, {
@@ -646,7 +598,7 @@
         }
     }
     function injectHeaderSVG() {
-         debugger;
+         
            let gridElement = $('#dataGrid');
     let dataGrid = gridElement.dxDataGrid("instance");
     if (!dataGrid) return;

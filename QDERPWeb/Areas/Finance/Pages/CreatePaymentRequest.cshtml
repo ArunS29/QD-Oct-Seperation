@@ -318,6 +318,7 @@
                             .ID("claimedAmountEditor")
                             .Value(new JS("data.ClaimedAmount"))
                             .Min(0)
+                            .Max(99999999)
                             .ShowSpinButtons(false)
                             .OnValueChanged("onClaimedAmountChanged")
                             .Format("#,##0.00")
@@ -332,6 +333,7 @@
                             .ID("approvedAmountEditor")
                             .Value(new JS("data.ApprovedAmount"))
                             .Min(0)
+                            .Max(99999999)
                             .ShowSpinButtons(false)
                             .OnValueChanged("onApprovedAmountChanged")
                             .Format("#,##0.00")
@@ -1251,7 +1253,7 @@
             }
 
             function addEmptyRowIfNeeded() {
-                debugger;
+                
                 const dataSource = dataGrid.option("dataSource") || [];
 
                 if (!Array.isArray(dataSource)) {
@@ -1411,6 +1413,7 @@
                             $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
                             $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
                             $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
+                            $("#Priorityclaim").dxSelectBox("instance").option("value", entry.Priority || null);
                             $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
                             $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccountname);
                             let radioGroup = $("#radioGroup").dxRadioGroup("instance");
@@ -1523,7 +1526,7 @@
 
 
         function onRadioGroupValueChanged(e) {
-            debugger;
+            
             let selectedValue = e.value;
             let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";
 
@@ -1566,7 +1569,8 @@
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
                 ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                 Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
                 PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
@@ -1627,7 +1631,8 @@
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
                 ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
+                ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                 Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
                 PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
@@ -1764,7 +1769,8 @@
                 ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
                 ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
                 ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
+                 ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                 Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
                 ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
                 PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
                 PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
@@ -1940,69 +1946,70 @@
                     SelectedAccountHead:selectedAccountHead,
                     SelectedPaymentType:selectedPaymentType// JS Date object ⟶ ISO is fine
                 }),
-                    success: async function (result) {
+                    success: function (result) {
                            // ✅ Update UI fields with result
                     $("#IsPaid").dxCheckBox("instance").option("value", result.IsPaid);
                     $("#paidBytext").dxTextBox("instance").option("value", result.PaidBy);
                     $("#paidOntext").dxTextBox("instance").option("value", result.PaidOn);
                     disableclaim();
-                    var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-                    var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-                    var voucherType ="Supplier PaymentRequest";
+                    // var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
+                    // var voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
+                    // var voucherType ="Supplier PaymentRequest";
+                    // var menuType = "finance";
                     // 1. Get Documents
-                    const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}`);
-                    const documents = await getDocRes.json();
-                    if (!documents.length) {
-                        DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-                        return;
-                    }
+                    // const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
+                    // const documents = await getDocRes.json();
+                    // if (!documents.length) {
+                    //     DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
+                    //     return;
+                    // }
                     // 2. Generate DocumentNo to each documents
-                    const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-                    const newDocNos = await docNoRes.json();
-                    if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-                        DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-                        return;
-                    }
+                    // const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
+                    // const newDocNos = await docNoRes.json();
+                    // if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
+                    //     DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
+                    //     return;
+                    // }
                     // 3. Reupload each document to AddDocumentsEntry
-                    const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
+                    // const generateNo = $("#GenerateVoucher").dxTextBox("instance").option("value");
 
-                    const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
-                    const isMaster = false;
+                    // const PostVoucherType = (selectedPaymentType === "Cash Payment") ? "Cash Payment": "Bank Payment";
+                    // const isMaster = false;
 
-                    for (let i = 0; i < documents.length; i++) {
-                        const doc = documents[i];
-                        const newDocNo = newDocNos[i];
+                    // for (let i = 0; i < documents.length; i++) {
+                    //     const doc = documents[i];
+                    //     const newDocNo = newDocNos[i];
 
-                        try {
-                            const fileResponse = await fetch(doc.FileUrl);
-                            const blob = await fileResponse.blob();
+                    //     try {
+                    //         const fileResponse = await fetch(doc.FileUrl);
+                    //         const blob = await fileResponse.blob();
 
-                            const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-                            const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
+                    //         const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
+                    //         const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
 
-                            const formData = new FormData();
-                            formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-                            formData.append("DocumentNo", newDocNo);
-                            formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-                            formData.append("DocumentType", doc.DocumentType ?? "1");
-                            formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-                            formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-                            formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-                            formData.append("LedgerNo", generateNo); // new folder id
+                    //         const formData = new FormData();
+                    //         formData.append("file", new File([blob], safeFileName)); no docNo prefix
+                    //         formData.append("DocumentNo", newDocNo);
+                    //         formData.append("DocumentRefNo", doc.DocumentRefNo || "");
+                    //         formData.append("DocumentType", doc.DocumentType ?? "1");
+                    //         formData.append("DocumentRemarks", doc.DocumentRemarks || "");
+                    //         formData.append("DocumentExpDate", doc.DocumentExpDate || "");
+                    //         formData.append("NotificationDate", doc.DocumentNotificationDate || "");
+                    //         formData.append("LedgerNo", generateNo); new folder id
 
 
-                            const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}`, {
-                                method: "POST",
-                                body: formData
-                            });
+                    //         const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(menuType)}`, {
+                    //             method: "POST",
+                    //             body: formData
+                    //         });
 
-                            const uploadResult = await uploadRes.json();
-                            console.log("Uploaded document:", uploadResult);
-                        } catch (uploadError) {
-                            console.error("Error re-uploading document:", uploadError);
-                        }
-                    }
-                    DevExpress.ui.notify("Voucher saved and claim marked as paid with Attachments.", "success", 2500);
+                    //         const uploadResult = await uploadRes.json();
+                    //         console.log("Uploaded document:", uploadResult);
+                    //     } catch (uploadError) {
+                    //         console.error("Error re-uploading document:", uploadError);
+                    //     }
+                    // }
+                    DevExpress.ui.notify("Voucher saved and claim marked as paid", "success", 2500);
                     
 
                 },
@@ -2215,7 +2222,7 @@
             }
             const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-
+            var menuType = "finance";
 
             var voucherType ="Supplier PaymentRequest"
             // Log and build URL
@@ -2223,7 +2230,7 @@
             console.log("Voucher Type:", voucherType);
 
             const isMaster = false;
-                    const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
             const title = "Transaction Documents";
 
             openModal(url, title);
@@ -2237,4 +2244,56 @@
             }
             });
         });
+         $("#btnDelete").on("click", function (e) {
+           e.preventDefault();
+        const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        if (!voucherNo) {
+            DevExpress.ui.notify("Voucher number is required", "error", 3000);
+            return;
+        }
+
+        $.get("/api/ExpenseClaim/CheckClaimStatus", { voucherNo: voucherNo })
+            .done(function (result) {
+                if (!result) {
+                    DevExpress.ui.notify("Claim not found", "error", 3000);
+                    return;
+                }
+
+                if (result.IsSubmitted) {
+                    DevExpress.ui.notify("Claim is already submitted, You cannot delete the Submitted Claim", "error", 4000);
+                    return;
+                }
+                if (result.IsApproved) {
+                    DevExpress.ui.notify("Claim is already Approved, You cannot delete the Approved Claim", "error", 4000);
+                    return;
+                }
+                if (result.IsPaid) {
+                    DevExpress.ui.notify("Claim is already Paid, You cannot delete the Paid Claim", "error", 4000);
+                    return;
+                }
+
+                // All false -> confirm and delete
+                DevExpress.ui.dialog.confirm("Are you sure you want to delete this claim?", "Confirm Deletion")
+                    .done(function (dialogResult) {
+                        if (dialogResult) {
+                             const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                            $.post("/api/ExpenseClaim/DeleteClaim", { voucherNo: voucherNo })
+                                .done(function (deleteResult) {
+                                    if (deleteResult.success) {
+                                        DevExpress.ui.notify("Claim deleted successfully", "success", 3000);
+                                    } else {
+                                        DevExpress.ui.notify(deleteResult.message, "error", 3000);
+                                    }
+                                })
+                                .fail(function () {
+                                    DevExpress.ui.notify("Error deleting claim", "error", 3000);
+                                });
+                        }
+                    });
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Error checking claim status", "error", 3000);
+            });
+    });
 </script>

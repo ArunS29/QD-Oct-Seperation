@@ -17,7 +17,7 @@
         background-color: #f9f9f9;
         transition: background-color 0.3s ease;
         margin-bottom: 15px;
-        max-height: 320px;
+        max-height: 300px;
     }
 
     .drag-over {
@@ -418,7 +418,7 @@
 
                 <!-- Right Column: Preview -->
                 <div id="preview"
-                     style="flex: 1; min-width: 300px; min-height: 390px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto;">
+                     style="flex: 1; min-width: 300px; min-height: 350px; border: 1px solid #ccc; padding: 10px; background-color: #f9f9f9; overflow-y: auto; margin-top:5px;">
                     <!-- File previews will appear here -->
                 </div>
             </div>
@@ -449,7 +449,7 @@
     var referenceNo = urlParams.get("ReferenceNo");
     var moduleType = urlParams.get("ModuleType");
     var isMaster = urlParams.get("isMaster");
-
+    var folderNo2 = urlParams.get("FolderNo2");
     var title = (isMaster === "true") ? "Master Documents" : "Transaction Documents";
     document.getElementById("documentTitle").textContent = title + " - " + moduleType;
     let currentEditRowIndex = -1;
@@ -458,11 +458,11 @@
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
-
+        const menuType = urlParams.get("menuType");
         $("#documentsGrid").dxDataGrid({
             dataSource: DevExpress.data.AspNet.createStore({
                 key: "DocumentNo",
-                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}`,
+                loadUrl: `/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(referenceNo)}&module=${encodeURIComponent(moduleType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`,
                 updateUrl: "/api/LedgerDocumentsF/UpdateDocumentEntry",
                 deleteUrl: "/api/LedgerDocumentsF/DeleteDocumentEntry",  // ✅ Use this, not `removeUrl`
                 updateMethod: "PUT",
@@ -479,10 +479,18 @@
                         ajaxOptions.contentType = "application/json";
                         ajaxOptions.data = JSON.stringify({ key: ajaxOptions.data.key });
                     }
-                }
+                },
+                onLoaded: function (result) {
+                    const count = result ? result.length : 0;
 
+                    // Check if parent form has setAttachCount
+                    if (window.parent && typeof window.parent.setAttachCount === "function") {
+                        window.parent.setAttachCount(count);
+                    } else {
+                        console.log("Attach count:", count); // fallback, useful if popup opened standalone
+                    }
+                },
             }),
-
             height: 250,
             width: "100%",
             showBorders: true,
@@ -559,7 +567,8 @@
                     },
                     editorType: "dxSelectBox",
                     editCellTemplate: function (cellElement, cellInfo) {
-                        $("<div>").appendTo(cellElement).dxSelectBox({
+                        const $selectBoxContainer = $("<div>").appendTo(cellElement); 
+                        $selectBoxContainer.dxSelectBox({
                             dataSource: documentTypeStore,
                             value: cellInfo.value,
                             valueExpr: "DocumentTypeId",
@@ -575,7 +584,9 @@
                                         icon: "plus",
                                         stylingMode: "text",
                                         onClick: function () {
-                                            onAddDocType();
+                                            const instance = $selectBoxContainer.dxSelectBox("instance");
+                                            onAddDocType(instance); // Pass it to the function
+                                            
                                         }
                                     }
                                 }
@@ -764,15 +775,19 @@
     });
 
 
-    function onAddDocType() {
+    function onAddDocType(selectBoxInstance) {
         const url = `/${tenantName}/IMS/DocumentTypes`;
         const title = "Add Document Type";
 
+        // Close the dropdown here
+        selectBoxInstance?.close();
+
         openModal(url, title).then(() => {
-            // reload the store after modal is closed
+            // Reload the store after modal is closed
             documentTypeStore.load();
         });
     }
+
 
 
     function formatDateForServer(dateValue) {
@@ -786,7 +801,7 @@
     
 
     function Goback() {
-        window.history.back();
+        window.parent.closeModal();
     }
 
      $(function () {
@@ -816,6 +831,7 @@
 
 
     let selectedFiles = [];
+    let fileDialogOpen = false;
 
     
     function setupDragDrop() {
@@ -828,7 +844,12 @@
             return;
         }
 
-        dropZone.addEventListener("click", () => uploader.click());
+        dropZone.addEventListener("click", () => {
+            if (fileDialogOpen) return;  // block if already open
+
+            fileDialogOpen = true;
+            uploader.click();
+        });
 
         dropZone.addEventListener("dragover", (e) => {
             e.preventDefault();
@@ -865,11 +886,14 @@
             }
         });
 
-        uploader.addEventListener("change", (e) => {
+        uploader.addEventListener("change", async (e) => {
             const files = Array.from(e.target.files);
-            handleFiles(files);
-            uploader.value = "";
+            if (files.length > 0) {
+                await handleFiles(files);
+            }
+            setTimeout(() => { fileDialogOpen = false; }, 100);
         });
+        
     }
     let isHandlingFiles = false;
 
@@ -880,16 +904,31 @@
         try {
             const preview = document.getElementById("preview");
             const validFiles = files.filter(file => {
-                const maxSizeMB = 2;
-                const disallowedTypes = ["video/", "application/zip", "application/x-zip-compressed"];
-                const isTooBig = file.size > maxSizeMB * 1024 * 1024;
-                const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
-                if (isTooBig || isDisallowed) {
-                    DevExpress.ui.notify(`Skipped: ${file.name} (too big or unsupported)`, "warning", 2500);
-                    return false;
-                }
-                return true;
-            });
+            const maxSizeMB = 2;        // Default for non-audio
+            const maxAudioSizeMB = 5;   // Limit for audio
+
+            const isAudio = file.type.startsWith("audio/");
+            const allowedSize = isAudio ? maxAudioSizeMB : maxSizeMB;
+
+            const disallowedTypes = [
+                "video/",
+                "application/zip",
+                "application/x-zip-compressed"
+            ];
+
+            const isTooBig = file.size > allowedSize * 1024 * 1024;
+            const isDisallowed = disallowedTypes.some(type => file.type.startsWith(type));
+
+            if (isTooBig || isDisallowed) {
+                DevExpress.ui.notify(
+                    `Skipped: ${file.name} (too big or unsupported)`,
+                    "warning",
+                    2500
+                );
+                return false;
+            }
+            return true;
+        });
 
             if (validFiles.length === 0) return;
 
@@ -957,6 +996,7 @@
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
         const isMaster = urlParams.get("isMaster");
+        const menuType = urlParams.get("menuType");
         console.log(isMaster)
         const formData = new FormData();
 
@@ -973,7 +1013,7 @@
             return instance ? instance.option("value") : fallback;
         };
 
-        formData.append("DocumentType", getValue("#DocumentType", "1"));
+        formData.append("DocumentType", getValue("#DocumentType", ""));
         formData.append("LedgerNo", getValue("#LedgerNo", referenceNo));
         formData.append("DocumentRefNo", getValue("#ReferenceNo", referenceNo));
         formData.append("DocumentRemarks", getValue("#DocumentRemarks", ""));
@@ -981,7 +1021,7 @@
         formData.append("NotificationDate", getValue("#NotificationDate", ""));
 
         $.ajax({
-            url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(referenceNo)}&moduleType=${encodeURIComponent(moduleType)}&isMaster=${encodeURIComponent(isMaster)}`,
+            url: `/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(referenceNo)}&moduleType=${encodeURIComponent(moduleType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`,
             type: "POST",
             data: formData,
             contentType: false,
@@ -1032,7 +1072,7 @@
         const isImage = ["jpg", "jpeg", "png", "gif", "bmp", "webp", "svg"].includes(ext);
         const isPdf = ["pdf"].includes(ext);
         const isOffice = ["doc", "docx", "xls", "xlsx", "ppt", "pptx"].includes(ext);
-
+        const isAudio = ["mp3"].includes(ext);
         let previewContent = "";
         let previewAvailable = true;
 
@@ -1072,6 +1112,13 @@
                     frameborder="0"
                     onerror="this.onerror=null; this.src=''; preview.innerHTML='<div>Unable to preview document.</div>'; previewAvailable=false;">
                 </iframe>`;
+        } else if (isAudio) { 
+        previewContent = `
+            <audio controls style="width:100%;">
+                <source src="${url}" type="audio/mpeg">
+                Your browser does not support the audio element.
+            </audio>
+        `;
         } else {
             previewAvailable = false;
             previewContent = `<div>No preview available for .${ext} files</div>`;
@@ -1101,7 +1148,7 @@
         const urlParams = new URLSearchParams(window.location.search);
         const referenceNo = urlParams.get("ReferenceNo");
         const moduleType = urlParams.get("ModuleType");
-        
+       // const menuType = urlParams.get("menuType");
 
         // 1. Bind ReferenceNo in the TextBox
         if (referenceNo) {

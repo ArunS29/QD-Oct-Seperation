@@ -1653,7 +1653,25 @@
 
 
 
-        function onAttachmentButton(mus = "Musharaf"){
-            console.log(mus);
-        }
+    // Attachment
+    function onAttachmentButton() {
+
+        
+        // Get Voucher No safely
+        const companyIdBox = $("#CompanyID").dxTextBox("instance");
+        const companyId = companyIdBox ? companyIdBox.option("value") : null;
+
+        var menuType = "general";
+        const companyName = "Company Details"
+        // Log and build URL
+        console.log("Voucher No:", companyId);
+        console.log("Voucher Type:", companyName);
+
+        const isMaster = true;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(companyId)}&ModuleType=${encodeURIComponent(companyName)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Master Documents";
+
+        openModal(url, title);
+    } 
+
 </script>

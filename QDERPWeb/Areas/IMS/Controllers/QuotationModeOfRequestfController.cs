@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<QuotationModeOfRequestfController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public QuotationModeOfRequestfController(ILogger<QuotationModeOfRequestfController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public QuotationModeOfRequestfController(ILogger<QuotationModeOfRequestfController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -46,51 +50,62 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+       
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateMode([FromBody] Tbl30103ModeOfRequestMaster model)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
+
+            try
             {
-                try
+                var existing = await dbContext.Tbl30103ModeOfRequestMasters
+                    .FirstOrDefaultAsync(x => x.ModeOfRequestId == model.ModeOfRequestId);
+
+                if (existing != null)
                 {
-                    var now = DateTime.Now;
+                    // 🔁 Update
+                    existing.ModeOfRequest = model.ModeOfRequest;
+                }
+                else
+                {
+                    // 🔍 Check if ModeOfRequest already exists (case-insensitive)
+                    bool isDuplicate = await dbContext.Tbl30103ModeOfRequestMasters
+                        .AnyAsync(x => x.ModeOfRequest.ToLower() == model.ModeOfRequest.ToLower());
 
-                    var existing = await dbContext.Tbl30103ModeOfRequestMasters
-                        .FirstOrDefaultAsync(x => x.ModeOfRequestId == model.ModeOfRequestId
-);
-
-                    if (existing != null)
+                    if (isDuplicate)
                     {
-                        existing.ModeOfRequest = model.ModeOfRequest;
-                      
-
-                    }
-                    else
-                    {
-                        // Assign new SignatoryId
-                        var lastId = await dbContext.Tbl30103ModeOfRequestMasters
-                            .OrderByDescending(x => x.ModeOfRequestId)
-                            .Select(x => x.ModeOfRequestId)
-                            .FirstOrDefaultAsync();
-
-                        model.ModeOfRequestId = (byte)(lastId + 1); // Assuming short type
-
-                        dbContext.Tbl30103ModeOfRequestMasters.Add(model);
+                        return BadRequest(new { success = false, message = "This Mode Of Request already exists in the database. Please check again." });
                     }
 
-                    await dbContext.SaveChangesAsync();
+                    // Assign new ID
+                    var lastId = await dbContext.Tbl30103ModeOfRequestMasters
+                        .OrderByDescending(x => x.ModeOfRequestId)
+                        .Select(x => x.ModeOfRequestId)
+                        .FirstOrDefaultAsync();
 
-                    return Ok(new { success = true, message = "Saved successfully", id = model.ModeOfRequestId });
+                    model.ModeOfRequestId = (byte)(lastId + 1);
+
+                    dbContext.Tbl30103ModeOfRequestMasters.Add(model);
                 }
-                catch (Exception ex)
-                {
-                    _logger.LogError($"Error in SaveSignatory: {ex}");
-                    return StatusCode(500, new { success = false, message = ex.Message });
-                }
+
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Save Or Update Mode",
+                  actionDetail: $"Saved Mode {model.ModeOfRequestId}",
+                  documentNo: $"{model.ModeOfRequestId}"
+                );
+
+                return Ok(new { success = true, message = "Saved successfully", id = model.ModeOfRequestId });
             }
-
-            return Unauthorized(new { success = false, message = "Invalid tenant" });
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in SaveOrUpdateMode: {ex}");
+                return StatusCode(500, new { success = false, message = "An error occurred while saving Mode Of Request." });
+            }
         }
+
         [HttpDelete]
         public IActionResult Delete(int key)
         {
@@ -104,6 +119,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl30103ModeOfRequestMasters.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete",
+                     actionDetail: $"Deleted {key}",
+                     documentNo: $"{key}"
+                   );
                     return Ok();
                 }
 

@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ProjectGroupController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public ProjectGroupController(ILogger<ProjectGroupController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public ProjectGroupController(ILogger<ProjectGroupController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -72,6 +76,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                      
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                         module: "IMS > Save Or Update Project Group",
+                         actionDetail: $"Saved Update Project Group  {model.ProjectGroupId}",
+                         documentNo: $"{model.ProjectGroupId}"
+                        );
 
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.ProjectGroupId });
                     }
@@ -88,6 +97,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl70006projectGroups.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                         module: "IMS > Save Or Update Project Group",
+                         actionDetail: $"Saved Update Project Group  {model.ProjectGroupId}",
+                         documentNo: $"{model.ProjectGroupId}"
+                        );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.ProjectGroupId });
                     }
@@ -114,6 +128,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl70006projectGroups.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete  ",
+                      actionDetail: $"Deleted  {key}",
+                      documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 
@@ -232,6 +250,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                         module: "IMS > Save Or Update Project ",
+                         actionDetail: $"Saved Update Project   {model.ProjectGroupId}",
+                         documentNo: $"{model.ProjectGroupId}"
+                        );
 
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.ProjectGroupId });
                     }
@@ -243,6 +266,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl70001projectMasters.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                         module: "IMS > Save Or Update Project ",
+                         actionDetail: $"Saved Update Project   {model.ProjectGroupId}",
+                         documentNo: $"{model.ProjectGroupId}"
+                        );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.ProjectId });
                     }
@@ -270,6 +298,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl70001projectMasters.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete  ",
+                      actionDetail: $"Deleted  {key}",
+                      documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 

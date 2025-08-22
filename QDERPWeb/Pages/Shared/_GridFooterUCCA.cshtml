@@ -221,61 +221,62 @@
             .Text(new JS("formatMessage('Differences')"))
             .Icon("preferences")
             .Width("100%")
+                .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(300))
             .Items(items =>
             {
-                items.Add().Text("Print Cost Differences");
-                items.Add().Text("Cost on BalanceSheet Items");
-                items.Add().Text("Clear All wrong Allocation of Cost");
+                    items.Add().Text(new JS("formatMessage('Print Cost Differences')"));
+                    items.Add().Text(new JS("formatMessage('Cost on BalanceSheet Items')"));
+                    items.Add().Text(new JS("formatMessage('Clear All wrong Allocation of Cost')"));
             })
+
             .ShowArrowIcon(true)
             .OnItemClick("onDifferencesItemClick") // Bind to JS function
             )
     </div>
 
 
-<div class="btn-container menuBtn">
-    @(Html.DevExtreme().Menu()
-        .ID("menuReports")
-        .DataSource(new[] {
-    new {
-    text = "Reports",
-    icon = "doc",
-    items = new[] {
-    new {
-    text = "Cost Center Summary Reports",
-    icon = "search",
-    items = new[] {
-    new { text = "Summary Report", icon = "chart-line" },
-    new { text = "Summary Report (By Date)", icon = "chart-line" },
-    new { text = "Cost Center Report", icon = "chart-line" },
-    new { text = "Cost Center Report (By Date)", icon = "chart-line" },
-    new { text = "Cost Center Group Report", icon = "chart-line" },
-    new { text = "Cost Center Group Report (By Date)", icon = "chart-line" }
-    }
-    },
-    new {
-    text = "Cost Center Detailed Reports",
-    icon = "search",
-    items = new[] {
-        new { text = "Detailed Report", icon = "chart-line" },
-        new { text = "Detailed Report (By Date)", icon = "chart-line" },
-        new { text = "Detailed Group Report", icon = "chart-line" },
-        new { text = "Detailed Group Report (By Date)", icon = "chart-line" },
-        new { text = "Cost Center Master Report", icon = "chart-line" },
-        new { text = "Cost Center Master Report (By Date)", icon = "chart-line" }
-    }
-    }
-    }
-    }
-    })
-        .DisplayExpr("text")
-        .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
-        .OnItemClick("handleReportsClick") // JavaScript function to handle clicks
-        )
+    <div class="btn-container menuBtn">
+        @(Html.DevExtreme().Menu()
+                .ID("menuReports")
+                .DataSource(new[] {
+                new {
+                text = new JS("formatMessage('Report')"),
+                icon = "doc",
+                items = new[] {
+                new {
+                text = new JS("formatMessage('Cost Center Summary Reports')"),
+                icon = "search",
+                items = new[] {
+                new { text = new JS("formatMessage('Summary Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Summary Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Group Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Group Report (By Date)')"), icon = "chart-line" }
+                }
+                },
+                new {
+                text = new JS("formatMessage('Cost Center Detailed Reports')"),
+                icon = "search",
+                items = new[] {
+                new { text = new JS("formatMessage('Detailed Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Detailed Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Detailed Group Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Detailed Group Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Master Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Master Report (By Date)')"), icon = "chart-line" }
+                }
+                }
+                }
+                }
+                })
+                .DisplayExpr("text")
+                .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
+                .OnItemClick("handleReportsClick") // JavaScript function to handle clicks
+                )
+    </div>
 
-
-</div>
 
 
 </div>
@@ -317,105 +318,233 @@
             reader.readAsText(file);
         }
     });
-    function saveLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-        //console.log(layoutJson);
-        // Create a Blob from the JSON string
-        const blob = new Blob([layoutJson], { type: "application/json" });
-        // Create a URL for the Blob
+    // Convert JS object to XML string
+    function sanitizeXmlTagName(name) {
+        let safeName = name.replace(/[^a-zA-Z0-9_\-]/g, "_");
+        if (/^[^a-zA-Z_]/.test(safeName)) {
+            safeName = "_" + safeName;
+        }
+        return safeName;
+    }
+
+    function objectToXml(obj, rootName) {
+        let xml = `<${sanitizeXmlTagName(rootName)} originalName="${rootName}">`;
+        for (let prop in obj) {
+            if (!obj.hasOwnProperty(prop)) continue;
+            let value = obj[prop];
+
+            // Skip undefined or null
+            if (value === undefined || value === null) continue;
+
+            if (Array.isArray(value)) {
+                xml += `<${sanitizeXmlTagName(prop)} originalName="${prop}">` +
+                    value.map(item => objectToXml(item, 'item')).join('') +
+                    `</${sanitizeXmlTagName(prop)}>`;
+            } else if (typeof value === "object") {
+                xml += objectToXml(value, prop);
+            } else {
+                xml += `<${sanitizeXmlTagName(prop)} originalName="${prop}">${String(value)
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")}</${sanitizeXmlTagName(prop)}>`;
+            }
+        }
+        xml += `</${sanitizeXmlTagName(rootName)}>`;
+        return xml;
+    }
+
+    function xmlToObject(xml) {
+        if (xml.children.length === 0) {
+            let text = xml.textContent;
+            if (text === "true") return true;
+            if (text === "false") return false;
+            if (text === "" || text === null) return undefined;
+            if (!isNaN(text) && text.trim() !== "") return Number(text);
+            return text;
+        }
+
+        const isItem = (el) => el.nodeName === "item";
+        let obj = {};
+
+        for (let child of xml.children) {
+            const key = child.getAttribute("originalName") || child.nodeName;
+            const val = xmlToObject(child);
+
+            if (key === "item") {
+                if (!Array.isArray(obj)) obj = [];
+                obj.push(val);
+            } else {
+                if (obj.hasOwnProperty(key)) {
+                    if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+                    obj[key].push(val);
+                } else {
+                    obj[key] = val;
+                }
+            }
+        }
+
+        return obj;
+    }
+
+
+    // Save as default layout
+    function setDefaultLayoutClick() {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const form = $('#formId').val();
+
+        if (!pivotGrid) {
+            DevExpress.ui.notify("Grid not found", "error", 2000);
+            return;
+        }
+
+        // Include expanded paths in state
+        const state = pivotGrid.getDataSource().state();
+        state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
+        state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
+
+        const layoutXml = objectToXml(state, "Layout");
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                layout: layoutXml,
+                form: form
+            }),
+            success: function () {
+                DevExpress.ui.notify("Default layout saved", "success", 2000);
+            },
+            error: function (xhr) {
+                console.error("SaveLayout error:", xhr.responseText);
+                DevExpress.ui.notify("Error while saving layout", "error", 2000);
+            }
+        });
+    }
+
+    // Reset layout
+    function resetLayoutClick() {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const form = $('#formId').val();
+
+        $.ajax({
+            url: '/api/Utility/SaveLayout',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({
+                layout: null,
+                form: form
+            }),
+            success: function () {
+                DevExpress.ui.notify("Layout reset successful", "success", 2000);
+                pivotGrid.getDataSource().state({});
+            },
+            error: function (xhr) {
+                console.error(xhr.responseText);
+                DevExpress.ui.notify("Error while resetting layout", "error", 2000);
+            }
+        });
+    }
+
+    // Download layout
+    function saveLayoutClick() {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+        const state = pivotGrid.getDataSource().state();
+        state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
+        state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
+
+        const layoutXml = objectToXml(state, "Layout");
+
+        const blob = new Blob([layoutXml], { type: "application/xml" });
         const url = URL.createObjectURL(blob);
-        // Create a link element
         const a = document.createElement("a");
         a.href = url;
-        a.download = "grid-layout.json"; // Set the file name for download
-        // Append the link to the body (needed for Firefox)
+        a.download = "pivotgrid-layout.xml";
         document.body.appendChild(a);
-        // Programmatically click the link to trigger the download
         a.click();
-        // Clean up by removing the link and revoking the Object URL
         document.body.removeChild(a);
         URL.revokeObjectURL(url);
-        //DevExpress.ui.notify("Layout", "success", 600);
     }
-    function openLayoutClick(e) {
-        $("#loadLayoutInput").click();
+
+    // Open layout from file
+    function openLayoutClick() {
+        const input = document.createElement("input");
+        input.type = "file";
+        input.accept = "application/xml";
+
+        input.addEventListener("change", function (event) {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                try {
+                    const parser = new DOMParser();
+                    const xmlDoc = parser.parseFromString(e.target.result, "application/xml");
+                    let layoutObj = xmlToObject(xmlDoc.documentElement);
+                    layoutObj = JSON.parse(JSON.stringify(layoutObj));
+                    const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+                    pivotGrid.getDataSource().state(layoutObj);
+                } catch (error) {
+                    DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                }
+            };
+
+            reader.readAsText(file);
+        });
+
+        input.click();
     }
+
+    // Load default layout on page ready
+    $(document).ready(function () {
+        const pivotGrid = $("#pivotGridContainer").dxPivotGrid({
+            // ... your pivot grid config
+            onContentReady: function (e) {
+                // Load layout only once on first render
+                if (!e.component.__layoutLoaded) {
+                    loadGridState();
+                    e.component.__layoutLoaded = true;
+                }
+            }
+        }).dxPivotGrid("instance");
+    });
 
     function loadGridState() {
-        var form = $('#formId').val();
-        // Call the API to get the grid state
-        $.ajax({
-            url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-            method: 'GET',
-            data: {
-                form: form
-            },
-            success: function (response) {
-                // Get the DataGrid instance
-                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        const form = $('#formId').val();
 
-                // Load the state into the DataGrid
+        $.ajax({
+            url: `/api/Utility/LoadLayout`,
+            method: 'GET',
+            data: { form: form },
+            success: function (response) {
+                const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
+
                 if (response) {
                     try {
-                        // Parse the JSON string from the file
-                        const layout = JSON.parse(response);
+                        const parser = new DOMParser();
+                        const xmlDoc = parser.parseFromString(response, "application/xml");
+                        let layoutObj = xmlToObject(xmlDoc.documentElement);
 
-                        // Restore the grid state
-                        dataGrid.state(layout);
+                        if (layoutObj.fields && Array.isArray(layoutObj.fields)) {
+                            layoutObj.fields.sort((a, b) => {
+                                const aIndex = Number(a.areaIndex ?? 0);
+                                const bIndex = Number(b.areaIndex ?? 0);
+                                return aIndex - bIndex;
+                            });
+                        }
+
+                        pivotGrid.getDataSource().state(layoutObj);
                     } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the JSON is valid.");
+                        console.error("Error parsing layout XML:", error);
                     }
                 }
             },
             error: function (xhr, status, error) {
-                console.error("Error loading grid state:", error);
+                console.error("Error loading grid layout:", error);
             }
         });
     }
-    function setDefaultLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2);
-        console.log(layoutJson);
 
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: layoutJson,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-    function resetLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: null,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                grid.state({});
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
     // Footer Group Pannel button click event
     function toggleGroupPanel() {
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -677,6 +806,7 @@
 
         var frmDate = frmDateBox.option("value");
         var toDate = toDateBox.option("value");
+        var useEffectiveDate = $("#useEffectiveDate").dxCheckBox("instance").option("value");
 
         // Validate required fields
         if (!frmDate || !toDate) {
@@ -706,9 +836,14 @@
             if (requestedBy && requestedBy !== '') {
                 url += `&requestedBy=${encodeURIComponent(requestedBy)}`;
             }
-
-            // Open Document Viewer
-            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+              const screenWidth = window.screen.availWidth;
+               const screenHeight = window.screen.availHeight;
+            url += `&useEffectiveDate=${useEffectiveDate}`;
+            window.open(
+                url,
+                '_blank',
+                `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+            );
         } else {
             console.warn('No report mapping found for:', selectedText);
         }

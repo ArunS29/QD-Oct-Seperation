@@ -202,12 +202,12 @@
     <div class="btn-containers">
         @(Html.DevExtreme().Button()
                 .ID("btnSave")
-                .Text(new JS("formatMessage('Save')"))
+                .Text(new JS("formatMessage('Update')"))
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
                 )
 
     </div>
@@ -220,6 +220,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails") // Calls the JavaScript function
                 )
     </div>
     <div class="btn-containers">
@@ -231,6 +232,16 @@
                                    // .OnClick("onBackButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-back" })
                 )
+    </div>
+    <div class="btn-containers">
+        @(Html.DevExtreme().Button()
+            .ID("btnAttach")
+            .Text(new JS("formatMessage('Attach')"))
+            .Icon("attach")
+            .Hint("Click to attach")
+            .OnClick("onVatAttachmentButtonClick")
+            .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+            )
     </div>
 
     <div class="btn-containers">
@@ -282,7 +293,8 @@
                     items.Add()
                         .Text("Upload Items From Excel")
                         .Icon("chart")
-                        .Option("color", "#FF7043"); // Orange
+                        .Option("color", "#FF7043")
+                        .OnClick("ProformaUpload");
                 })
                 .ItemTemplate(@<text>
                     <div class="custom-dropdown-item">
@@ -682,7 +694,7 @@
                             dataGrid.state(layout);
                         } catch (error) {
                             console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                        
                         }
                     }
                 },
@@ -1372,14 +1384,24 @@
                             reportName = "ProformaInvoiceEnglish";
                             break;
                         case "Preview Invoice":
-                            reportName = "ProformaPreviewInvoice";
-                            break;
+                              CheckIfProformaInvoiceHasDiscount(invoiceNo).then(function (hasDiscount) {
+                                if (hasDiscount) {
+                                    reportName = "Wtdiscountpreviewinvoice";
+                                } else {
+                                    reportName = "ProformaPreviewInvoice";
+                                }
+                                openReport(reportName, invoiceNo, watermarkText, isApproved);
+                            }).catch(function (err) {
+                                console.error("Error checking discount:", err);
+                                alert("Failed to check invoice discount.");
+                            });
+                            return;
                              case "Preview Proforma Invoice(NewFormat)":
                             reportName = "ProformaNewFormat";
                             break;
-                        case "Preview Invoices in -with discount":
-                            reportName = "Wtdiscountpreviewinvoice";
-                            break;
+                        // case "Preview Invoices in -with discount":
+                        //     reportName = "Wtdiscountpreviewinvoice";
+                        //     break;
                         case "Preview Invoices in -withOut discount":
                             reportName = "WithoutDiscountInvoice";
                             break;
@@ -1390,19 +1412,32 @@
                     default:
                         alert("Invalid report format selected.");
                         return;
+
                 }
+                        // Open report for normal cases
+        openReport(reportName, invoiceNo, watermarkText, isApproved);
 
-                window.open(
-                    `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&invoiceNo=${encodeURIComponent(invoiceNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`,
-                    '_blank',
-                    'width=1200,height=800,scrollbars=yes,resizable=yes'
-                );
-
-            }).catch(function (error) {
-                console.error("Error checking invoice approval status:", error);
-                alert("Failed to check invoice approval status.");
-            });
+    }).catch(function (error) {
+        console.error("Error checking invoice approval status:", error);
+        alert("Failed to check invoice approval status.");
+    });
         }
+
+                  function CheckIfProformaInvoiceHasDiscount(invoiceNo) {
+        return $.getJSON(`/api/VoucherMaster/CheckIfProformaInvoiceHasDiscount?invoiceNo=${encodeURIComponent(invoiceNo)}`)
+            .then(function (res) {
+                return res.hasDiscount;
+            });
+    }
+
+    // Helper function to open report
+    function openReport(reportName, invoiceNo, watermarkText, isApproved) {
+        window.open(
+            `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&invoiceNo=${encodeURIComponent(invoiceNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`,
+            '_blank',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+    }
 
         // Fetch approval status from API
         async function checkInvoiceApprovalStatus(invoiceNo) {
@@ -1690,6 +1725,39 @@
                 }
             }
 
+    // Attachment
+    function onVatAttachmentButtonClick(e) {
+
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
+        const hasValidAmounts = data.some(row => {
+            return (row.CalcLineAmount && row.CalcLineAmount > 0);
+        });
+
+        if (!hasValidAmounts) {
+            DevExpress.ui.dialog.alert("Data Not found in the Amount Cell within the Grid", "Can't Enable Attachment");
+            return;
+        }
+        // Get Voucher No safely
+        const InvoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+        const invoiceNo = InvoiceNoBox ? InvoiceNoBox.option("value") : null;
+        var menuType = "vat";
 
 
+        var formType ="Proforma Invoice";
+        // Log and build URL
+        console.log("Voucher No:", invoiceNo);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+    function ProformaUpload() {
+        var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+        var url = `/${tenantName}/VAT/ProformaUpload?ProformaInvoiceNo=${invoiceNo}`;
+        window.location.href = url; // Navigate to the page
+    }
 </script>

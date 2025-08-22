@@ -21,6 +21,28 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
+        [HttpGet]
+        public async Task<IActionResult> GetAllowDataModeSelection()
+        {
+            var defaultCompanyIdStr = HttpContext.Session.GetString("DefaultcompanyID");
+
+            if (string.IsNullOrEmpty(defaultCompanyIdStr) || !int.TryParse(defaultCompanyIdStr, out int defaultCompanyId))
+            {
+                return BadRequest(new { message = "Company ID is missing or invalid.", success = false });
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var allow = await dbContext.Tbl901CompanyDetails
+                    .Where(c => c.CompanyId == defaultCompanyId)
+                    .Select(c => c.AllowDataModeSelection)
+                    .FirstOrDefaultAsync();
+
+                return Ok(new { allowDataMode = allow });
+            }
+
+            return Unauthorized(new { message = "Invalid context.", success = false });
+        }
 
         [HttpGet]
         public async Task<ActionResult> GetUser()
@@ -98,6 +120,54 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetOfflineTrialBalances(DateTime? startDate, DateTime? endDate, string accountGroup)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var result = await dbContext.FinancialSummaryReports
+                        .Where(x =>
+                            (!startDate.HasValue || x.VoucherDate >= startDate.Value) &&
+                            (!endDate.HasValue || x.VoucherDate <= endDate.Value))
+                        .ToListAsync();
+
+                    if (!string.IsNullOrEmpty(accountGroup))
+                    {
+                        result = result.Where(x => x.AccountGroup == accountGroup).ToList();
+                    }
+
+                    var simplifiedData = result.Select(item => new
+                    {
+                        item.AccountHead,
+                        item.AccountHeadName,
+                        item.VoucherAmountFormatted,
+                        item.AccountGroup,
+                        item.MasterGroup,
+                        item.MonthYear,
+                        item.DrCr,
+                        item.DrAmount,
+                        item.CrAmount,
+                        TransactionsFull = item.TransactionsFull ?? "N/A",
+                        AccountHeadArabic = item.AccountHeadArabic ?? string.Empty,
+                        AccountGroupAr = item.AccountGroupAr ?? string.Empty,
+                        MasterGroupAr = item.MasterGroupAr ?? string.Empty
+                    });
+
+
+                    return Ok(simplifiedData);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetOfflineTrialBalances: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
 
 
     }

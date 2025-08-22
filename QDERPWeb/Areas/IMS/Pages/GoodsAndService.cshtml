@@ -55,8 +55,14 @@
         display: none !important;
     }
 </style>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Goods and Services</h3>
+</div>
 
-<div class="form-grid">
+<div class="form-grid" style="padding:10px;">
     <!-- Row 1 -->
     <div class="rows">
 
@@ -71,7 +77,7 @@
                 {
                     rules.AddRequired().Message("Goods Code is required");
                 }))
-    </div>
+        </div>
         <div class="col" style="display:flex;align-items:end;justify-content:center;width: 33.33%;">
         
            
@@ -113,19 +119,19 @@
                     .Name("dropDown");
                 }))
 
-    </div>
+          </div>
         <div class="col" style="width: 33.33%;">
         @(Html.DevExtreme().TextBox()
                 .ID("txtItemPartNo4")
                 .Label(new JS("formatMessage('Item Part No:')"))
             .LabelMode(EditorLabelMode.Floating)
             .Width("100%"))
-    </div>
+        </div>
     </div>
     <!-- Row 2 -->
     <div class="rows">
 
-    <div class="col" style="width:50%; display:flex; align-items:center;">
+       <div class="col" style="width:50%; display:flex; align-items:center;gap:10px;">
         @(Html.DevExtreme().TextArea()
                 .ID("txtDescription8")
                 .Label(new JS("formatMessage('Goods & Services Description:')"))
@@ -143,8 +149,8 @@
                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
                 .OnClick("function() { convertDescriptionToArabic(); }")
                 )
-    </div>
-        <div class="col" style="width:50%;">
+       </div>
+       <div class="col" style="width:50%;">
             @(Html.DevExtreme().TextArea()
                 .Label(new JS("formatMessage('Goods & Services Description (in Arabic):')"))
                 .LabelMode(EditorLabelMode.Floating)
@@ -152,7 +158,7 @@
                 .ElementAttr("style", "height:150px !important;"))
         
            
-    </div>
+       </div>
     </div>
     <!-- Row 3 -->
     <div class="rows">
@@ -197,35 +203,35 @@
                         buttons.Add()
                         .Name("dropDown");
                     }))
-    </div>
-    <div class="col" style="width:25%">
+          </div>
+       <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("packingUnit")
                 .Label(new JS("formatMessage('Packing Unit:')"))
             .LabelMode(EditorLabelMode.Floating)
             .Value(1)
             .Width("100%"))
-    </div>
-        <div class="col" style="width:25%">
+       </div>
+       <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("sellingRate")
                 .Label(new JS("formatMessage('Selling Rate:')"))
             .LabelMode(EditorLabelMode.Floating)
             .Value(1)
             .Width("100%"))
-    </div>
-        <div class="col" style="width:25%">
+       </div>
+       <div class="col" style="width:25%">
         @(Html.DevExtreme().NumberBox()
                 .ID("txtCostPrice3")
                 .Label(new JS("formatMessage('Cost Price:')"))
             .LabelMode(EditorLabelMode.Floating)
             .Value(1)
             .Width("100%"))
-    </div>
+       </div>
     </div>
     <!-- Row 4 -->
     <div class="rows">
-        <div class="col" style="width:50%; display:flex; align-items:center;">
+       <div class="col" style="width:50%; display:flex; align-items:center;gap:10px;">
         @(Html.DevExtreme().TextArea()
                 .ID("txtDetailedDescription")
                 .Label(new JS("formatMessage('Detailed Description:')"))
@@ -238,7 +244,7 @@
                         .ElementAttr(new { @class = "custom-hover-button add-hover" })
                 .OnClick("function() { convertDetailedDescToArabic(); }")
                 )
-    </div>
+       </div>
         <div class="col" style="width:50%">
             @(Html.DevExtreme().TextArea()
                 .Label(new JS("formatMessage('Detailed Description (in Arabic):')"))
@@ -249,13 +255,10 @@
 
         </div>
 
-        </div>
-    <div class="Head">
-        <div class="limited-footer">
-            @await Html.PartialAsync("InventoryModuleFooter")
-
-        </div> 
-       @*  <div class="d-flex justify-content-start" style="gap: 10px; margin-bottom: 20px;">
+    </div>
+    
+        <div class="footer-fixed" style="display:flex; gap:5px;">
+        
             @(Html.DevExtreme().Button()
                 .ID("btnSave")
                 .Text("Save")
@@ -263,7 +266,7 @@
                 .Type(ButtonType.Success)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .OnClick("onSaveClientMasterClick")
-                .ElementAttr("style", "color: black;")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save" })
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnSaveandClose")
@@ -271,36 +274,30 @@
                 .Icon("save")
                 .Type(ButtonType.Success)
                 .StylingMode(ButtonStylingMode.Outlined)
-                .OnClick("onSaveClientMasterClick")
-                .ElementAttr("style", "color: black;")
+                .OnClick("onSaveAndClose")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
                 )
 
-            @(Html.DevExtreme().Button()
-                .ID("btnDelete")
-                .Text(new JS("formatMessage('Delete')"))
-                .Type(ButtonType.Danger)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("trash")
-                .ElementAttr("style", "color: black;")
-                )
-            @(Html.DevExtreme().Button()
-                .ID("btnPrint")
-                .Text(new JS("formatMessage('Print')"))
-                .Icon("print")
-                .Type(ButtonType.Default)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .ElementAttr("style", "color: black;")
-                )
+         
             @(Html.DevExtreme().Button()
                 .ID("btnBack")
                 .Text(new JS("formatMessage('Back')"))
                 .Icon("arrowleft")
                 .Type(ButtonType.Default)
                 .StylingMode(ButtonStylingMode.Outlined)
-                .ElementAttr("style", "color: black;")
+                .OnClick("onBack")
+                        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                        )
+            @(Html.DevExtreme().Button()
+                .ID("btnDelete")
+                .Text(new JS("formatMessage('Delete')"))
+                .Type(ButtonType.Danger)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("trash")
+                        .ElementAttr(new { @class = "dx-button-custom btn-delete" })
                 )
-        </div> *@
-    </div>
+        </div> 
+
     @using (Html.DevExtreme().NamedTemplate("GoodsandServicesContentTemplate"))
     {
         @(Html.DevExtreme().DataGrid()
@@ -595,12 +592,9 @@
 
      $("#btnSaveAndClose").on("click", function (e) {
         e.preventDefault();
-        onSaveClientMasterClick();
+        onSaveAndClose();
 
-        setTimeout(() => {
-            window.location.history();
-        }, 1000);
-    });
+           });
 
     $("#btnSave").on("click", function (e) {
         e.preventDefault();
@@ -617,6 +611,11 @@
 
         var GsdescriptionAr = $('#txtDescriptionArabic').dxTextArea("instance").option("value");
         var GsuoM = $('#GetLedgerNoDropDown').dxDropDownBox("instance").option("value");
+            
+    if (GsuoM === "" || GsuoM === undefined) {
+        GsuoM = null;
+    }
+
 
         var GspackingUnit = $('#packingUnit').dxNumberBox("instance").option("value");
         var GssellingRate = $('#sellingRate').dxNumberBox("instance").option("value");
@@ -679,6 +678,82 @@
             DevExpress.ui.notify("Please fill all required fields", "error", 3000);
         }
     }
+            function onSaveAndClose(e) {
+                debugger;
+
+            // Collecting form data from client master form
+            var Gscode = $('#txtGoodsCode7').dxTextBox("instance").option("value");
+
+            var GsgroupId = $('#GetProjectDropDown').dxDropDownBox("instance").option("value");
+            var ItemPartNo = $('#txtItemPartNo4').dxTextBox("instance").option("value");
+            var Gsdescrpition = $('#txtDescription8').dxTextArea("instance").option("value");
+
+            var GsdescriptionAr = $('#txtDescriptionArabic').dxTextArea("instance").option("value");
+            var GsuoM = $('#GetLedgerNoDropDown').dxDropDownBox("instance").option("value");
+
+        if (GsuoM === "" || GsuoM === undefined) {
+            GsuoM = null;
+        }
+
+
+            var GspackingUnit = $('#packingUnit').dxNumberBox("instance").option("value");
+            var GssellingRate = $('#sellingRate').dxNumberBox("instance").option("value");
+
+            var CostPrice = $('#txtCostPrice3').dxNumberBox("instance").option("value");
+
+            var GsdetailedDesc = $('#txtDetailedDescription').dxTextArea("instance").option("value");
+            var GsdetailedDescAr = $('#txtDetailedDescriptionArabic').dxTextArea("instance").option("value");
+
+
+            // Validate required fields
+            var clientNameValidator = $("#txtGoodsCode7").dxValidator("instance");
+            var clientCodeValidator = $("#txtDescription8").dxValidator("instance");
+
+            var clientNameValidation = clientNameValidator.validate();
+            var clientCodeValidation = clientCodeValidator.validate();
+
+            if (clientNameValidation.isValid && clientCodeValidation.isValid) {
+                // Construct the data object to send to the API
+                const data = {
+                    Gscode: Gscode,
+                    GsgroupId: GsgroupId,
+                    ItemPartNo: ItemPartNo,
+                    Gsdescrpition: Gsdescrpition,
+                    GsdescriptionAr: GsdescriptionAr,
+                    GsuoM: GsuoM,
+                    GspackingUnit: GspackingUnit,
+                    GssellingRate: GssellingRate,
+                    CostPrice: CostPrice,
+                    GsdetailedDesc: GsdetailedDesc,
+                    GsdetailedDescAr: GsdetailedDescAr
+
+                };
+
+                console.log(data);
+
+                // Send data via AJAX POST request
+                $.ajax({
+                    url: '/api/GoodsandServices/InsertOrUpdate', // Change this URL to your actual API endpoint
+                    type: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(data), // Send the data as a JSON string
+                    success: function (response) {
+                        if (response.success) {
+                            DevExpress.ui.notify(response.message, "success", 3000);
+                            window.parent.closeModal();
+                        } else {
+                            DevExpress.ui.notify("Error: " + response.message, "error", 3000);
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.log("Error: " + error);
+                        DevExpress.ui.notify("An error occurred while saving the data", "error", 3000);
+                    }
+                });
+            } else {
+                DevExpress.ui.notify("Please fill all required fields", "error", 3000);
+            }
+        }
 
     //delete
     $("#btnDelete").on("click", function (e) {
@@ -739,14 +814,15 @@ function bindGoodsAndServiceData() {
     }
 }
 
-// Call this function on page load (for direct navigation)
-$(function () {
-    bindGoodsAndServiceData();
-});
-function Unitofmeasure(){
-        window.location.href=`/${tenantName}/IMS/UnitOfMeasure`;
-       
-}
-// If your modal loads content via AJAX, make sure to call bindGoodsAndServiceData() after the modal content is loaded.// After modal content is loaded:
-
+        $(function () {
+            bindGoodsAndServiceData();
+        });
+        function Unitofmeasure(){
+                const url = `/${tenantName}/IMS/UnitOfMeasure`;
+                const title = "Unit Of Measure";
+                        openModal(url, title ,"","75%");
+        }
+            function onBack(){
+                window.parent.closeModal();
+            }
 </script>

@@ -1,0 +1,804 @@
+﻿@page
+@model QD.ERP.Web.Areas.Finance.Pages.SalesPersonMasterModel
+@{
+}
+@using DevExtreme.AspNet.Mvc
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<!-- Add SweetAlert CSS and JS CDN -->
+<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.4.10/dist/sweetalert2.min.js"></script>
+
+<style type="text/css">
+    .mainContainer {
+        background-color: white;
+        margin-top: 0px !important;
+        margin-left: 0px !important;
+        width: 97%;
+        height: 100vh;
+        /* overflow: hidden; */
+        /* padding: 20px; */
+    }
+
+    .card-container {
+        background-color: white;
+        padding: 20px;
+        padding-top: 0px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+        .card-container label {
+            color: blue;
+        }
+
+    .dx-datagrid .dx-row {
+        border-bottom: 1px solid #ccc;
+    }
+
+    .dx-datagrid-headers .dx-header-row .dx-datagrid-text-content {
+        color: #2d5799;
+    }
+
+    .dx-datagrid-headers .dx-header-row {
+        background-color: #e7f2fe;
+    }
+
+    .dx-button-add {
+        background-color: #f5f8fb !important;
+        color: red !important;
+        border: 1px solid #b0c4de;
+    }
+
+        .dx-button-add .dx-icon {
+            color: green !important;
+        }
+
+    .action-buttons-container {
+        display: flex;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+    }
+
+        .action-buttons-container .dx-button {
+            margin: 5px;
+        }
+
+    .container,
+    .frame,
+    .footerContainer,
+    .playIcon {
+        display: none !important;
+    }
+
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+
+    #goToTopBtn {
+        z-index: 100;
+    }
+
+    /* Responsive tweaks */
+    @@media (max-width: 768px) {
+        .dx-textbox, .dx-button {
+            width: 100% !important;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+    }
+ </style>
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Sales Person Master</h3>
+</div>
+<div class="container-fluid">
+
+
+    <div class="row gx-3 gy-3">
+        <!-- Row 1: SalesPerson Name, User Code, Email Address -->
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .ID("txtSalesPersonName")
+                                .Label(new JS("formatMessage('Type a new SalesPerson/ Project Manager & Add to the Existing List')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('Sales Person Name Cannot be Empty')"));
+                                })
+                                )
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().DropDownBox()
+                                .Label(new JS("formatMessage('User Code')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("DDlUserId")
+                                .DataSource(d => d.WebApi().Controller("AddNewQuotation").LoadAction("GetUserddl").LoadMode(DataSourceLoadMode.Raw).Key("UserId"))
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('User Code is required')"));
+                                })
+                                .Placeholder(new JS("formatMessage('Please Select UserCode')"))
+                                .ShowClearButton(true)
+                                .AcceptCustomValue(true)
+                                .OpenOnFieldClick(true)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .ValueExpr("UserId")
+                                .DisplayExpr("UserId")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .OnKeyDown("onKeyDown")
+                                .ContentTemplate(new TemplateName("ClientNameContentTemplate"))
+                                )
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Email Address')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("txtEmailAddress")
+                                .OnChange("validateEmail")
+                                .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('Email Address Cannot be Empty')"));
+                                })
+                                )
+            </div>
+        </div>
+
+        <!-- DataGrid inside the DropDownBox (template) -->
+        <div >
+            @using (Html.DevExtreme().NamedTemplate("ClientNameContentTemplate"))
+            {
+                @(
+                            Html.DevExtreme().DataGrid()
+                            .ID("clientname-datagrid")
+                            .DataSource(d => d.WebApi().Controller("AddNewQuotation").LoadAction("GetUserddl").LoadMode(DataSourceLoadMode.Raw).Key("UserId"))
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                            .Selection(sl => sl.Mode(SelectionMode.Single))
+                            .OnSelectionChanged("dataGridSelectionChanged")
+                            .OnInitialized("dataGridInitialized")
+                            .HeaderFilter(p => p.Visible(true))
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .FilterRow(f => f.Visible(true))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                columns.Add().DataField("UserId")
+                            .Caption(new JS("formatMessage('User Id')"))
+                            .Width(60);
+                                columns.Add().DataField("UserName").Caption(new JS("formatMessage('User Name')")).Alignment(HorizontalAlignment.Center);
+                            })
+                            )
+                        }
+        </div>
+
+        <!-- Row 2: Contact No, Code, Add Button -->
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('Contact Number')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("txtSalesPersonContactNo")
+                                .Value(null)
+                                )
+            </div>
+        </div>
+
+        <div class="col-md-4">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().TextBox()
+                                .Label(new JS("formatMessage('SalesPerson/ Project Manager Code')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ID("txtSalesPersonCode")
+                                .Value(null)
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message(new JS("formatMessage('Sales Person Code Cannot be Empty')"));
+                                })
+                                )
+            </div>
+            
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+               
+                @(Html.DevExtreme().NumberBox()
+                                .ID("txtTargetPerMonth")
+                                .Label(new JS("formatMessage('Sales Target(Per Month)')"))
+                                .Min(0)
+                             @*    .Max(100) *@
+                                .ShowSpinButtons(true)
+                                .ShowClearButton(true)
+                                )
+            </div>
+
+        </div>
+        <div class="col-2">
+            <div class="form-group">
+                @(
+                                Html.DevExtreme().Button()
+                                .ID("btnAddSalesPerson")
+                                .Text(new JS("formatMessage('ADD')"))
+                                .Height(50)
+
+                                .Icon("plus")
+                                .OnClick("function() { addSalesPerson(); }")
+                                .ElementAttr(new { @class = "dx-button-add" })
+                                )
+            </div>
+        </div>
+       
+
+        <div class="col-12 mt-4">
+            <div id="gridContainer"></div>
+        </div>
+    </div>
+
+</div>
+
+
+<script type="text/javascript">
+            $(function () {
+                $("#SalesPersonMaster").dxTextBox({
+                    text:formatMessage("Sales Person Master"),
+                    readOnly: true,
+                        onContentReady: function(e) {
+                        $(e.element).addClass("dx-textbox-heading");
+                }
+                });
+            });
+
+        $(function () {
+        var updatedRows = []; // To store the updated rows
+        var searchPanelVisible = false; // Track the visibility of the search panel
+
+        $("#gridContainer").dxDataGrid({
+            dataSource: new DevExpress.data.CustomStore({
+                key: "SalesPersonCode",
+                load: function () {
+                    return $.getJSON('/api/Master/GetSalesPersons'); // Fetch data from the API
+                },
+                   update: function (key, values) {
+        var updatedSalesPerson = {
+            SalesPersonCode: key,
+            SalesPersonName: values.SalesPersonName,
+            UserCode: values.UserCode,
+            EmailAddress: values.EmailAddress,
+            SalesPersonContactNo: values.SalesPersonContactNo,
+            TargetPerMonth: values.TargetPerMonth
+        };
+
+        return $.ajax({
+            type: "POST",
+            url: "/api/AddNewQuotation/UpdateSalesPerson",
+            data: JSON.stringify(updatedSalesPerson),
+            contentType: "application/json",
+            success: function () {
+                DevExpress.ui.notify("The sales person has been successfully updated", "success", 2000);
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.status === 500
+                    ? "Please try again later"
+                    : "Validation error: " + xhr.responseText;
+                DevExpress.ui.notify(errorMessage, "error", 3000);
+            }
+        });
+    }
+    ,
+                remove: function (key) {
+                    // Confirm before deleting
+                    Swal.fire({
+                        title: formatMessage('Are you sure?'),
+                        text: formatMessage('You won\'t be able to revert this!'),
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: formatMessage('Yes, delete it!')
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Send the delete request to the backend via AJAX
+                            $.ajax({
+                                type: "DELETE",
+                                url: "/api/Master/DeleteSalesPerson/" + key,
+                                success: function (response) {
+                                    Swal.fire({
+                                        icon: 'success',
+                                        title: formatMessage('Sales Person Deleted'),
+                                        text: formatMessage('The sales person has been successfully deleted.'),
+                                        confirmButtonText: 'OK'
+                                    });
+                                    $("#gridContainer").dxDataGrid("instance").refresh(); // Refresh the grid
+                                },
+                                error: function (xhr) {
+                                    var errorMessage = xhr.status === 500
+                                        ? "Server error: Please try again later."
+                                        : "Validation error: " + xhr.responseText;
+                                    Swal.fire({
+                                        icon: 'error',
+                                        title: formatMessage('Error'),
+                                        text: errorMessage,
+                                        confirmButtonText: 'OK'
+                                    });
+                                }
+                            });
+                        }
+                    });
+                }
+            }),
+            editing: {
+                mode: "batch", // Enable batch edit mode for multiple row editing
+                allowUpdating: true, // Allow row updates
+                allowAdding: false,  // No new rows
+                allowDeleting: true, // Allow row deletion
+                useIcons: true, // Use icons for save/cancel
+                texts: {
+                    saveAllChanges: "Update", // Custom text for save button
+                    cancelAllChanges: "Cancel All Changes" // Custom text for cancel button
+                }
+            },
+            columns: [
+                { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: true },
+                { dataField: "SalesPersonName", caption: formatMessage("Sales Person Name"), allowFiltering: true },
+                { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true },
+                { dataField: "SalesPersonContactNo", caption: formatMessage("Sales Person Contact Number"), allowFiltering: true },
+                { dataField: "TargetPerMonth", caption: formatMessage("Sales Target"), allowFiltering: true },
+                {
+                    type: "buttons",
+                    buttons: [
+                        "edit",
+                        {
+                            icon: "trash",
+                            hint: "Delete",
+                            onClick: function (e) {
+                                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                                var selectedData = e.row.data;
+                                var salesPersonCode = selectedData.SalesPersonCode;
+
+                                // Send delete request to the API
+                                $.ajax({
+                                    type: "DELETE",
+                                    url: "/api/Master/DeleteSalesPerson/" + salesPersonCode,
+                                    success: function (response) {
+                                        if (response.success) {
+                                            dataGrid.refresh(); // Refresh the grid
+                                            Swal.fire({
+                                                icon: 'success',
+                                                title: 'Success',
+                                                text: formatMessage('Sales person deleted successfully.'),
+                                                confirmButtonText: 'OK'
+                                            });
+                                        } else {
+                                            Swal.fire({
+                                                icon: 'error',
+                                                title: 'Error',
+                                                text: response.message,
+                                                confirmButtonText: 'OK'
+                                            });
+                                        }
+                                    },
+                                    error: function (xhr) {
+                                        Swal.fire({
+                                            icon: 'error',
+                                            title: 'Error',
+                                            text: xhr.responseText,
+                                            confirmButtonText: 'OK'
+                                        });
+                                    }
+                                });
+                            }
+                        }
+                    ]
+                }
+            ],
+            showBorders: true,
+            paging: {
+                pageSize: 10
+            },
+            pager: {
+                showPageSizeSelector: true,
+                allowedPageSizes: [5, 10, 20],
+                showInfo: true
+            },
+            filterRow: {
+                visible: searchPanelVisible, // Set initial visibility of the filter row
+                applyFilter: "auto"
+            },
+            toolbar: {
+                items: [
+                    {
+                        widget: "dxButton",
+                        options: {
+                            icon: "save",  // Icon for the Save button
+                            text: formatMessage("Update"),  // Text alongside the icon
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").saveEditData(); 
+                                // Save all changes
+                            }
+                        },
+                        location: "after"
+                    },
+                    {
+                        widget: "dxButton",  // Adding Cancel button
+                        options: {
+                            icon: "close",  // Icon for Cancel button
+                            text: formatMessage("Cancel"),  // Text for Cancel button
+                            onClick: function () {
+                                $("#gridContainer").dxDataGrid("instance").cancelEditData();  // Cancel all edits
+                            },
+                            visible: false // Initially hide the cancel button
+                        },
+                        location: "after",
+                        name: "cancelButton"
+                    },
+                    {
+                        widget: "dxButton",  // Adding Search Toggle button
+                        options: {
+                            icon: "search",  // Icon for Search button
+                            text: formatMessage("Toggle Search"),  // Text for Search button
+                            onClick: function () {
+                                searchPanelVisible = !searchPanelVisible; // Toggle the visibility
+                                $("#gridContainer").dxDataGrid("instance").option("filterRow.visible", searchPanelVisible); // Update the grid
+                            }
+                        },
+                        location: "after"
+                    }
+                ]
+            },
+            onEditingStart: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = true; // Show the cancel button when editing starts
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onSaved: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing ends
+                dataGrid.option("toolbar.items", toolbarItems);
+            },
+            onEditCanceling: function (e) {
+                var dataGrid = $("#gridContainer").dxDataGrid("instance");
+                var toolbarItems = dataGrid.option("toolbar.items");
+                var cancelButton = toolbarItems.find(item => item.name === "cancelButton");
+                cancelButton.options.visible = false; // Hide the cancel button when editing is canceled
+                dataGrid.option("toolbar.items", toolbarItems);
+             },
+            // onRowUpdated: function (e) {
+            //     Swal.fire({
+            //         icon: 'success',
+            //         title: formatMessage('Row Updated'),
+            //         text: formatMessage('The row data was successfully updated.'),
+            //         confirmButtonText: 'OK'
+            //     });
+            // },
+            // onRowRemoved: function (e) {
+            //     Swal.fire({
+            //         icon: 'info',
+            //         title: formatMessage('Row Removed'),
+            //         text: formatMessage('The row has been removed from the grid.'),
+            //         confirmButtonText: 'OK'
+            //     });
+            // },
+            height: "60%",
+            width: "100%"
+        });
+    });
+
+
+
+    function validateAndNotify() {
+        let missingFields = [];
+
+        // Check if Sales Person Name is empty
+        const salesPersonName = $("#txtSalesPersonName").dxTextBox("instance").option("value");
+        if (!salesPersonName) {
+            missingFields.push("Sales Person Name");
+        }
+
+        // Check if User Code is empty
+        const userCode = $("#DDlUserId").dxDropDownBox("instance").option("value");
+        if (!userCode) {
+            missingFields.push("User Code");
+        }
+
+        // Check if Email Address is empty
+        const emailAddress = $("#txtEmailAddress").dxTextBox("instance").option("value");
+        if (!emailAddress) {
+            missingFields.push("Email Address");
+        }
+
+        // Check if Sales Person Code is empty
+        const salesPersonCode = $("#txtSalesPersonCode").dxTextBox("instance").option("value");
+        if (!salesPersonCode) {
+            missingFields.push("Sales Person Code");
+        }
+
+        // If there are missing fields, show a notification
+        if (missingFields.length > 0) {
+            const message = `Please fill the following required fields: ${missingFields.join(", ")}`;
+            DevExpress.ui.notify(message, "error", 2000);
+        } else {
+            DevExpress.ui.notify("All fields are valid!", "success", 2000);
+        }
+    }
+
+
+       // Function to handle adding a new salesperson
+    function addSalesPerson() {
+
+
+        var salesPersonName = $("#txtSalesPersonName").dxTextBox("instance").option("value");
+
+            var ddbInstance = $("#DDlUserId").dxDropDownBox("instance");
+
+            var userCode = ddbInstance.option("value");
+
+        var emailAddress = $("#txtEmailAddress").dxTextBox("instance").option("value");
+
+        var salesPersonContactNo = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
+        var SalesPersonCode = $("#txtSalesPersonCode").dxTextBox("instance").option("value");
+              var TargetPerMonth = $("#txtTargetPerMonth").dxNumberBox("instance").option("value");
+
+        // var ddbInstancevalidator = $("#DDlUserId").dxValidator("instance");
+        // var ddluservalidation = ddbInstancevalidator.validate();
+
+            var SalesPersonvalidator = $("#txtSalesPersonName").dxValidator("instance");
+            var Salespersonuservalidation = SalesPersonvalidator.validate();
+
+               var emailAddressvalidator = $("#txtEmailAddress").dxValidator("instance");
+            var emailAddressvalidation = emailAddressvalidator.validate();
+
+               var SalesPersonCodevalidator = $("#txtSalesPersonCode").dxValidator("instance");
+            var SalesPersonCodevalidation = SalesPersonCodevalidator.validate();
+
+        
+            if (Salespersonuservalidation.isValid && emailAddressvalidation.isValid && SalesPersonCodevalidation.isValid) {
+
+                // If all fields are valid, proceed with sending the data ddluservalidation.isValid &&
+                var salesPersonData = {
+                    SalesPersonName: salesPersonName,
+                    UserCode: userCode,
+                    EmailAddress: emailAddress,
+                    SalesPersonContactNo: salesPersonContactNo,
+                    SalesPersonCode: SalesPersonCode,
+                    TargetPerMonth:TargetPerMonth
+                };
+                console.log(salesPersonData);
+
+                $.ajax({
+                    type: "POST",
+                    url: "/api/Master/AddSalesPerson",
+                    data: JSON.stringify(salesPersonData),
+                    contentType: "application/json",
+                    success: function (response) {
+                        DevExpress.ui.notify("Sales Person Added Successfully", "success", 2000);
+                        
+                    },
+                    error: function (xhr) {
+                        var errorMessage = xhr.status === 500
+
+                         DevExpress.ui.notify("Duplicate SalesPerson/ Project Manager Code", "success", 2000);
+                    }
+                });
+            } else {
+            validateAndNotify()
+        }
+
+    }
+
+    // Function to handle updating an existing salesperson
+    function updateSalesPerson() {
+        var salesPersonName = $("#txtSalesPersonName").dxTextBox("instance").option("value");
+        var userCode = $("#txtUserCode").dxTextBox("instance").option("value");
+          var emailAddress = $("#txtEmailAddress").dxTextBox("instance").option("value");
+        var salesPersonContactNo = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
+        var SalesPersonCode = $("#txtSalesPersonCode").dxTextBox("instance").option("value");
+        var TargetPerMonth = $("#txtTargetPerMonth").dxNumberBox("instance").option("value");
+
+        // Validate if all required fields are filled
+        if (!salesPersonName || !userCode || !emailAddress || !salesPersonContactNo || !SalesPersonCode ||!TargetPerMonth) {
+            Swal.fire({
+                icon: 'warning',
+                title: formatMessage('Incomplete Form'),
+                text: formatMessage('Please fill in all fields before submitting.'),
+                confirmButtonText: 'OK'
+            });
+            return; // Stop further processing if fields are not filled
+        }
+
+
+        // If all fields are valid, proceed with sending the data
+        var salesPersonData = {
+            SalesPersonName: salesPersonName,
+            UserCode: userCode,
+            EmailAddress: emailAddress,
+            SalesPersonContactNo: salesPersonContactNo,
+            SalesPersonCode: SalesPersonCode,
+            TargetPerMonth:TargetPerMonth
+        };
+
+        $.ajax({
+            type: "POST",
+            url: "/api/Master/UpdateSalesPerson", // Update endpoint
+            data: JSON.stringify(salesPersonData),
+            contentType: "application/json",
+            success: function (response) {
+
+                        location.reload();
+
+            },
+            error: function (xhr) {
+                var errorMessage = xhr.status === 500
+                    ? "Server error: Please try again later."
+                    : "Validation error: " + xhr.responseText;
+
+                Swal.fire({
+                    icon: formatMessage('error'),
+                    title: 'Error',
+                    text: errorMessage,
+                    confirmButtonText: 'OK'
+                });
+            }
+        });
+    }
+
+
+        function dataGridSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#ClientNameDropDown").dxDropDownBox("instance");
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+            }
+
+        }
+        function dataGridSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#DDlUserId").dxDropDownBox("instance"); // Use the correct ID here
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey); // Set the value to selected key
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close(); // Close the dropdown if open
+                }
+            }
+        }
+
+        function dropDownBoxOnInput(e) {
+            const ddbInstance = e.component;
+            if (!ddbInstance.option("opened")) ddbInstance.open();
+
+
+            const text = ddbInstance.option("text");
+            if (dataGrid) {
+                dataGrid.option("searchPanel.text", text);
+            }
+        }
+
+        function onOpened(e) {
+            setTimeout(() => {
+                e.component.focus();
+            });
+        }
+
+        function onKeyDown(e) {
+            const ddbInstance = e.component;
+            if (e.event.keyCode !== 40) return;
+            if (!ddbInstance.option("opened")) {
+                ddbInstance.open();
+            } else {
+                let focusedIndex = dataGrid.option("focusedRowIndex");
+                let visibleRows = dataGrid.getVisibleRows().length - 1;
+                if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+                dataGrid.focus(dataGrid.getRowElement(focusedIndex));
+            }
+        }
+        function dataGridInitialized(e) {
+            dataGrid = e.component;
+        }
+        function dataGridAccountHeadInitialized(e) {
+            dataGrid = e.component;
+        }
+
+
+        // Function to validate email format
+        function validateEmail() {
+            // Get the email value from the DevExtreme TextBox
+            const email = $("#txtEmailAddress").dxTextBox("instance").option("value");
+
+            // Create a temporary input element to validate the email
+            const tempInput = document.createElement("input");
+            tempInput.type = "email";
+            tempInput.value = email;
+
+            // Check if the email is valid
+            if (!tempInput.checkValidity()) {
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is Invalid"),
+                    type: "error",
+                    displayTime: 3000
+
+                });
+
+                // Clear the email input field
+                $("#txtEmailAddress").dxTextBox("instance").option("value", "");
+            } else {
+                DevExpress.ui.notify({
+                    message: formatMessage("Your Email ID is valid"),
+                    type: "success",
+                    displayTime: 3000,
+                    position: { my: "top right", at: "top right", of: window, offset: "0 30" }
+                });
+            }
+        }
+
+        // Function to validate the contact number (basic validation)
+        function validateContactNumber() {
+            // Get the contact number from the DevExtreme TextBox
+            const contactNumber = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
+
+            // Regular expression for validating a 10-digit contact number
+            const regex = /^[0-9]{10}$/;
+
+            // Check if the contact number is valid
+            if (!regex.test(contactNumber)) {
+                DevExpress.ui.notify({
+                    message: formatMessage("Please enter a valid 10-digit contact number."),
+                    type: "error",
+                    displayTime: 3000,
+                    position: { my: "top right", at: "top right", of: window, offset: "0 50" }
+                });
+
+                // Clear the contact number input field
+                $("#txtSalesPersonContactNo").dxTextBox("instance").option("value", "");
+            } else {
+                DevExpress.ui.notify({
+                    message: formatMessage("Contact Number is valid."),
+                    type: "success",
+                    displayTime: 3000,
+                    position: { my: "top right", at: "top right", of: window, offset: "0 50" }
+                });
+
+
+            }
+        }
+
+</script>
+

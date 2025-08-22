@@ -7,139 +7,139 @@
 @using DevExtreme.AspNet.Mvc.Builders
 <style>
     .signatory-form-container {
-        padding: 20px;
+    padding: 20px;
     }
 
     .form-row {
-        display: flex;
-        gap:15px;
-        align-items: end;
+    display: flex;
+    gap:15px;
+    align-items: end;
     }
 
     .dx-datagrid-save-button,
     .dx-datagrid-cancel-button {
-        display: none !important;
+    display: none !important;
     }
 
     /* Also hide the entire right-aligned toolbar space */
     .dx-toolbar-after {
-        display: none !important;
+    display: none !important;
     }
 
     /* Optionally, remove padding/margin if needed */
     .dx-datagrid-headers .dx-toolbar {
-        padding-right: 0 !important;
+    padding-right: 0 !important;
     }
     .form-row .form-row-btn {
-        margin: 2px;
-        
-        width: 340px;
-        padding: 0px;
+    margin: 2px;
+
+    width: 340px;
+    padding: 0px;
     }
 
     .rtl-textbox input {
-        text-align: right;
+    text-align: right;
     }
-        .form-row input,
-        .form-row .dx-textbox,
-        .form-row .dx-selectbox {
-            flex: 1;
-        }
+    .form-row input,
+    .form-row .dx-textbox,
+    .form-row .dx-selectbox {
+    flex: 1;
+    }
 
     .dx-fileuploader-input-wrapper .dx-button {
-        float: left;
-        margin-top: -10px;
+    float: left;
+    margin-top: -10px;
     }
     .image-upload-row {
-        align-items: center;
-        gap: 10px;
+    align-items: center;
+    gap: 10px;
     }
 
     .signature-upload {
-        border: 1px solid #ccc;
-        background-color: #fff;
+    border: 1px solid #ccc;
+    background-color: #fff;
     }
 
     .limited-footer .btn-container:not(:has(#btnUpdate,#btnBack)) {
-        display: none !important;
+    display: none !important;
     }
-    
+
     .upload{
-        display: block;
-        top: 26px;
-        position: relative;
-        left: 0px;
+    display: block;
+    top: 26px;
+    position: relative;
+    left: 0px;
     }
 
     .grid{
-        padding:20px;
+    padding:20px;
     }
 
     .container {
-        display: none !important;
+    display: none !important;
     }
 
     .frame {
-        display: none !important;
+    display: none !important;
     }
 
     .footerContainer {
-        display: none !important;
+    display: none !important;
     }
 
     .bodyContainer {
-        display: flex;
-        justify-content: center;
+    display: flex;
+    justify-content: center;
     }
 
     .imagecontainer {
-        border-bottom: 2px;
+    border-bottom: 2px;
     }
 
     .mainContainer {
-        margin-top: 1em;
-        width: 100%;
+    margin-top: 1em;
+    width: 100%;
     }
 
     .playIcon {
-        display: none;
+    display: none;
     }
     .mainContainer {
-        width: 100%;
-        margin-top: 0px;
-        }
+    width: 100%;
+    margin-top: 0px;
+    }
     .imagecontainer {
-        background-color: #fff;
-        border: 1px solid #90caf9;
-        height: 100px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-        overflow: hidden;
-        position: relative;
+    background-color: #fff;
+    border: 1px solid #90caf9;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    overflow: hidden;
+    position: relative;
     }
 
-        .imagecontainer img {
-            max-height: 100%;
-            max-width: 100%;
-            object-fit: contain;
-        }
+    .imagecontainer img {
+    max-height: 100%;
+    max-width: 100%;
+    object-fit: contain;
+    }
 
-        .imagecontainer span {
-            color: #555;
-            font-style: italic;
-            position: absolute;
-        }
+    .imagecontainer span {
+    color: #555;
+    font-style: italic;
+    position: absolute;
+    }
 
     .dx-datagrid-action .dx-cell-focus-disabled{
-        text-align:center;
+    text-align:center;
     }
     .dx-button-text{
-        color:black;
+    color:black;
     }
     .playIcon {
-        display: none;
+    display: none;
     }
 </style>
 @* <div class="title">
@@ -147,91 +147,113 @@
         <div id="Openingbalance" class="no-border-input"></div>
     </div>
 </div> *@
-    <!-- FORM LAYOUT -->
-    <div style="display:flex;gap:100px;">
-        <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; width:100%;">
-            <!-- Stock Code -->
-            <div style="flex: 1;">
-                @(Html.DevExtreme().SelectBox()
+<!-- FORM LAYOUT -->
+<div style="display:flex;gap:100px;">
+    <div style="display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; width:100%;">
+        <!-- Stock Code -->
+        <div style="flex: 1;">
+            @(Html.DevExtreme().SelectBox()
                     .ID("txtStockCode")
                     .Label("Stock Code")
                     .LabelMode(EditorLabelMode.Floating)
+                    .ReadOnly(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
-            </div>
+        </div>
 
-            <!-- Description -->
-            <div style="flex: 2;">
-                @(Html.DevExtreme().TextBox()
+        <!-- Description -->
+        <div style="flex: 2;">
+            @(Html.DevExtreme().TextBox()
                     .ID("txtStockDescription")
                     .Label("Stock Item Description")
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
-            </div>
+        </div>
 
-            <!-- Opening Balance -->
-            <div style="flex: 1;">
-                @(Html.DevExtreme().NumberBox()
+        <!-- Opening Balance -->
+        <div style="flex: 1;">
+            @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningBalance")
+                    .Format("#,##0.00")
                     .Label("Opening Balance")
                     .LabelMode(EditorLabelMode.Floating)
                     .StylingMode(EditorStylingMode.Outlined)
                     )
-            </div>
         </div>
-        <div>
-            <div style="gap: 10px;display: flex;flex-direction: column;padding: 10px;">
-                @(Html.DevExtreme().NumberBox()
+    </div>
+    <div>
+        <div style="gap: 10px;display: flex;flex-direction: column;padding: 10px;">
+            @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningQty")
                     .ReadOnly(true)
-                    .Value(13)
                     .ShowSpinButtons(true)
                     .StylingMode(EditorStylingMode.Outlined)
                     .Placeholder("Qty")
                     )
-                @(Html.DevExtreme().NumberBox()
+            @(Html.DevExtreme().NumberBox()
                     .ID("txtOpeningRate")
-                    .Value(700.0000)
                     .ReadOnly(true)
                     .Format("#,##0.0000")
                     .ShowSpinButtons(true)
                     )
-            </div>
         </div>
     </div>
+</div>
 
-    <!-- GRID -->
-    <div>
-        @(Html.DevExtreme().DataGrid()
+<!-- GRID -->
+<div>
+    @(
+    Html.DevExtreme().DataGrid()
             .ID("gridOpeningBalance")
             .DataSource(new object[] { }) // You can bind actual data here
             .Columns(columns =>
             {
-                columns.Add().DataField("StockCode").Caption("Stock Code");
-                columns.Add().DataField("Unit").Caption("Unit");
-                columns.Add().DataField("UnitPrice").Caption("Unit Price");
-                columns.Add().DataField("Quantity").Caption("Quantity");
-                columns.Add().DataField("ExpiryDate").Caption("Expiry Date").DataType(GridColumnDataType.Date);
-                columns.Add().DataField("BatchNo").Caption("Batch No");
-            })
-            .ShowBorders(true)
-            .ShowRowLines(true)
-            .RowAlternationEnabled(true)
-            .ColumnAutoWidth(true)
-            .Height(450)
-            .Width("100%")
+                columns.Add().DataField("ReceiptChildSlNo").AllowEditing(false).Visible(false);
+                columns.Add().DataField("Gscode").Caption("Stock Code").AllowEditing(false);
+                columns.Add().DataField("Unit").Caption("Unit")
+                    .Lookup(lookup => lookup
+                    .DataSource(d => d.WebApi()
+                    .Controller("StockInventory")
+                    .LoadAction("GetUnitCodes")
+                    .Key("UnitCode") // Assuming this is the key
+                    )
+                    .ValueExpr("UnitCode")       // The value from your grid's data
+                    .DisplayExpr("UnitType"))
+                    .AllowEditing(false);
+                    
+                columns.Add().DataField("UnitPrice").Caption("Unit Price").AllowEditing(false); 
+                columns.Add().DataField("Quantity").Caption("Quantity").AllowEditing(false); 
+                columns.Add().DataField("ExpiryDate").Caption("Expiry Date").DataType(GridColumnDataType.Date).AllowEditing(true); 
+                columns.Add().DataField("BatchNo").Caption("Batch No").AllowEditing(true); 
+                })
+                .Editing(editing =>
+                {
+                    editing.Mode(GridEditMode.Cell); // or Row, depending on your preference
+                    editing.AllowUpdating(true);
+                    editing.AllowAdding(false);
+                    editing.AllowDeleting(false);
+
+                })
+                //.OnCellClick("onStoryUpdating")
+                .OnRowUpdating("onStoryUpdating")
+                .ShowBorders(true)
+                .ShowRowLines(true)
+                .RowAlternationEnabled(true)
+                .ColumnAutoWidth(true)
+                .Height(450)
+                .Width("100%")
+                .OnCellPrepared("onOpeningBalanceCellPrepared")
             )
     </div>
 
     <!-- BUTTON FOOTER -->
-    <div style="text-align: left;">
-        @(Html.DevExtreme().Button().ID("btnSave").Text("Save & Close").Type(ButtonType.Success).Icon("save"))
-        @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
-        @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").Type(ButtonType.Danger))
-        @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("back").Type(ButtonType.Normal))
+    <div class="footer-fixed" style="display:flex; gap:10px;">
+    @(Html.DevExtreme().Button().ID("btnUpdate").Text("Save & Close").Type(ButtonType.Success).ElementAttr(new { @class = "dx-button-custom btn-save" }).Icon("save"))
+    @(Html.DevExtreme().Button().ID("btnPrint").Text("Print").Icon("print"))
+    @(Html.DevExtreme().Button().ID("btnDelete").Text("Delete").Icon("trash").ElementAttr(new { @class = "dx-button-custom btn-delete" }).Type(ButtonType.Danger))
+    @(Html.DevExtreme().Button().ID("btnBack").Text("Back").Icon("arrowleft").ElementAttr(new { @class = "dx-button-custom btn-back" }).Type(ButtonType.Normal))
     </div>
-</div>
 
  <script>
 
@@ -246,11 +268,10 @@
               }
 
           });
-
       });
 
     $(document).on("click", "#btnBack", function () {
-        window.history.back();
+        window.parent.closeModal();
     });
 
       $(function () {
@@ -298,82 +319,97 @@
 
     
   
-    function addStoreToGrid() {
-        // Validate fields using the Validator components
-        //const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
-        //const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
+    // function addStoreToGrid() {
+    //     Validate fields using the Validator components
+    //     const nameValidationResult = $("#SignatoryName").dxValidator("instance").validate();
+    //     const positionValidationResult = $("#SignatoryPosition").dxValidator("instance").validate();
 
-        // if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
-        //     DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
-        //     return;
-        // }
+    //     if (!nameValidationResult.isValid || !positionValidationResult.isValid) {
+    //         DevExpress.ui.notify("Please fill all required fields.", "warning", 2000);
+    //         return;
+    //     }
 
-        const data = {
-            StoreId: $("#txtStoreCode").dxTextBox("instance").option("value"),
-            StoreName: $("#txtStoreName").dxTextBox("instance").option("value"),
-          
-            CostAllocationUnitId: $("#ddCostcenter").dxDropDownBox("instance").option("value")
-           
-        };
+    //     const data = {
+    //         StoreId: $("#txtStoreCode").dxTextBox("instance").option("value"),
+    //         StoreName: $("#txtStoreName").dxTextBox("instance").option("value"),
+            
+    //         CostAllocationUnitId: $("#ddCostcenter").dxDropDownBox("instance").option("value")
+            
+    //     };
 
-        $.ajax({
-            url: '/api/StoreCode/SaveOrUpdateStory',
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function () {
-                DevExpress.ui.notify("Story saved successfully!", "success", 2000);
-                $("#StoryGrid").dxDataGrid("instance").refresh();
-            },
-            error: function () {
-                DevExpress.ui.notify("Failed to save Story.", "error", 2000);
-            }
-        });
-    }
+    //     $.ajax({
+    //         url: '/api/StoreCode/SaveOrUpdateStory',
+    //         method: "POST",
+    //         contentType: "application/json",
+    //         data: JSON.stringify(data),
+    //         success: function () {
+    //             DevExpress.ui.notify("Story saved successfully!", "success", 2000);
+    //             $("#gridOpeningBalance").dxDataGrid("instance").refresh();
+    //         },
+    //         error: function () {
+    //             DevExpress.ui.notify("Failed to save Story.", "error", 2000);
+    //         }
+    //     });
+    // }
 
 
     $("#btnUpdate").on("click", function () {
-        const grid = $("#StoryGrid").dxDataGrid("instance");
+        const grid = $("#gridOpeningBalance").dxDataGrid("instance");
         grid.saveEditData(); // 🔥 only triggers on manual click
     });
 
 
     function onStoryUpdating(e) {
-        debugger;
+        const allowedFields = ['BatchNo', 'ExpiryDate'];
+        const filteredNewData = {};
+
+        for (const key of allowedFields) {
+            if (key in e.newData) {
+                filteredNewData[key] = e.newData[key];
+            }
+        }
+
         const data = {
-            StoreId: e.oldData.StoreId,
-            StoreName: e.newData.StoreName ?? e.oldData.StoreName,
-            CostAllocationUnitId: e.newData.CostAllocationUnitId ?? e.oldData.CostAllocationUnitId
-          
+            ReceiptChildSlNo: e.oldData.ReceiptChildSlNo,
+            Gscode: e.oldData.Gscode,
+            BatchNo: filteredNewData.BatchNo ?? e.oldData.BatchNo,
+            ExpiryDate: filteredNewData.ExpiryDate ?? e.oldData.ExpiryDate
         };
 
-        e.cancel = true; // prevents grid from doing its own update
-
-        return $.ajax({
-            url: '/api/StoreCode/SaveOrUpdateStory',
-            method: "POST",
-            contentType: "application/json",
-            data: JSON.stringify(data),
-            success: function () {
-                DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
-                $("#StoryGrid").dxDataGrid("instance").refresh();
-            },
-            error: function () {
-                DevExpress.ui.notify("Failed to save.", "error", 1500);
-            }
+        e.promise = $.ajax({
+            url: '/api/StockInventory/UpdateOpeningBalanceItem',
+            method: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data)
+        })
+        .done(() => {
+            DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
+        })
+        .fail(() => {
+            DevExpress.ui.notify("Failed to save.", "error", 1500);
+            // Optionally cancel editing on error
+            // e.cancel = true; // but usually this is handled internally
         });
     }
-          $(function () {
+
+
+
+
+    $(function () {
         setTimeout(function () {
             const urlParams = new URLSearchParams(window.location.search);
             const gscode = urlParams.get('gscode');
             const description = urlParams.get('description');
-
+            const openingbal = urlParams.get('OpeningBalance');
+            const costPrice = urlParams.get('CostPrice');
+            const unitCode = urlParams.get('UnitCode');
             console.log("URL Params - gscode:", gscode, "description:", description);
 
             const stockBox = $("#txtStockCode").dxSelectBox("instance");
             const descBox = $("#txtStockDescription").dxTextBox("instance");
-
+            const openingBalBox = $("#txtOpeningBalance").dxNumberBox("instance");
+            const costPriceBox = $("#txtOpeningRate").dxNumberBox("instance");
+            const unitTypeBox = $("#txtOpeningQty").dxNumberBox("instance");
             if (gscode) {
                 stockBox.option("acceptCustomValue", true); // This is important
                 stockBox.option("value", gscode);
@@ -381,6 +417,18 @@
 
             if (description) {
                 descBox.option("value", description);
+            }
+
+            if (openingbal) {
+                openingBalBox.option("value", openingbal);
+            }
+
+            if (costPrice) {
+                costPriceBox.option("value", costPrice);
+            }
+
+            if (unitCode) {
+                unitTypeBox.option("value", unitCode);
             }
 
             loadOpeningBalanceGrid(gscode);
@@ -403,7 +451,14 @@
             }
         });
     }
-
+    function onOpeningBalanceCellPrepared(e) {
+        if (e.rowType === "data") {
+            const greenColumns = ["Quantity", "ExpiryDate", "BatchNo"];
+            if (greenColumns.includes(e.column.dataField)) {
+                e.cellElement.css("background-color", "#d4edda"); // light green
+            }
+        }
+    }
 
    
 

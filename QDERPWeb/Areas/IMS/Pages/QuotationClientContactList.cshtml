@@ -235,12 +235,29 @@
 					columns.Add().Caption(new JS("formatMessage('Client ContactSlNo')")).DataField("ClientContactSlNo").Visible(false);
 					columns.Add().Caption(new JS("formatMessage('Location')")).DataField("ContactLocation");
 					columns.Add().Caption(new JS("formatMessage('Division')")).DataField("ContactDivision");
-					columns.Add().Caption(new JS("formatMessage('Add')")).DataField("ContactDivision");
+					columns.Add().Caption("Add").Width(80).Alignment(HorizontalAlignment.Center)
+						.CellTemplate(new JS("contactCellTemplate"));
 				}
 				) )
 	</div>
 
 <script>
+	function contactCellTemplate(container, options) {
+		$("<a>")
+		.attr("href", "javascript:void(0);")
+		.css({ color: "#0398fc", "text-decoration": "none", "font-size": "16px" })
+		.html('<i class="dx-icon dx-icon-add"></i>')
+		.on("click", function () {
+			window.parent.selectContact(
+				(options.data.ContactPerson || '').replace(/'/g, "\\'"),
+				(options.data.ContactEmail || '').replace(/'/g, "\\'"),
+				(options.data.ContactMobile1 || '').replace(/'/g, "\\'"),
+				(options.data.ContactPhone1 || '').replace(/'/g, "\\'")
+			);
+		})
+		.appendTo(container);
+	}
+
 	  $(document).ready(function () {
 		const urlParams = new URLSearchParams(window.location.search);
 		const clientCode = urlParams.get("clientCode");	
@@ -256,7 +273,7 @@
 		$("#txtClientName").dxTextBox("instance").option("value", cleanclientName);
 	});
 		function loadContactListGrid(cleanClientCode) {
-			debugger;
+			
 		$.ajax({
 			url: `/api/ClientLeadMaster/GetContactList?clientCode=${encodeURIComponent(cleanClientCode )}`,
 			type: 'GET',

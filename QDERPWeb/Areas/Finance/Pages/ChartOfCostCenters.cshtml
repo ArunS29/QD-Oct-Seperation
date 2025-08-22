@@ -336,8 +336,8 @@
         </div>
 
         <!-- BALANCE -->
-        <div id="cardBalance" class="titleCard-card cool-blue">
-            <div class="header">Cost Allocation Group</div>
+        <div id="cardVoucher" class="titleCard-card cool-blue">
+            <div class="header">Cost Center Created</div>
             <div class="value-block">
                 <div class="value-slider">
                     <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
@@ -356,7 +356,7 @@
 
         <!-- DEBIT -->
         <div id="cardDebit" class="titleCard-card deep-purple">
-            <div class="header">Total Debit</div>
+            <div class="header">Top Cost Center Master</div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -371,7 +371,7 @@
 
         <!-- CREDIT -->
         <div id="cardCredit" class="titleCard-card mint-green">
-            <div class="header">Total Credit</div>
+            <div class="header">Top Cost Center Group</div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -388,7 +388,7 @@
 </div>
 <div style="margin-top:10px;">
     @await Html.PartialAsync("FooterChartOfCostCenters")
-</divn>
+</div>
 @* <div id="popupContainer"></div> *@
 
 <div class="dx-field ledgerResult">
@@ -510,6 +510,7 @@
         .OnContextMenuPreparing("onContextMenuPreparing") // Handle right-click event
         .OnRowPrepared("onRowPrepared")       // Handle row appearance dynamically
         .OnCellPrepared("oncellPrepared")
+        .OnContentReady("function(e) { handleGridContentReady(e); }")
         .ColumnChooser(c => c.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
         .Paging(paging => paging.Enabled(true))
         .Scrolling(scrolling => scrolling
@@ -666,6 +667,97 @@
             if (e.rowType === "group" && (e.column.dataField === "CostAllocationMasterGroup" || e.column.dataField === "CostAllocationGroup")) {
                 e.cellElement.css("font-weight", "bold");
             }
+        }
+             function handleGridContentReady(e){
+
+             
+                e.component.getDataSource().store().load().then(function (fullData) {
+                    updateCards(fullData);
+                });
+
+        }
+                function updateCards(data) {
+            const now = new Date();
+            const currentYear = now.getFullYear();
+            const currentMonth = now.getMonth();
+
+            const masterGroupCount = {};
+            const creditGroupCount = {};
+
+            let totalCount = 0;
+            let monthCount = 0;
+            let yearCount = 0;
+
+            data.forEach(item => {
+                // === Count CostAllocationMasterGroup ===
+                const masterGroup = item.CostAllocationMasterGroup || "Unknown";
+                masterGroupCount[masterGroup] = (masterGroupCount[masterGroup] || 0) + 1;
+
+                // === Count CostAllocationGroup ===
+                const creditGroup = item.CostAllocationGroup || "Unknown";
+                creditGroupCount[creditGroup] = (creditGroupCount[creditGroup] || 0) + 1;
+
+                // === Count CostAllocationUnitId based on CreatedOn ===
+                if (item.CostAllocationUnitId) {
+                    const createdOn = new Date(item.CreatedOn);
+                    if (!isNaN(createdOn)) {
+                        totalCount++;
+
+                        if (createdOn.getFullYear() === currentYear) {
+                            yearCount++;
+
+                            if (createdOn.getMonth() === currentMonth) {
+                                monthCount++;
+                            }
+                        }
+                    }
+                }
+            });
+
+            const format = num => num.toLocaleString(undefined, {
+                minimumFractionDigits: 0,
+                maximumFractionDigits: 0
+            });
+
+            // === CardDebit: Top 3 CostAllocationMasterGroup ===
+            const topMasterGroups = Object.entries(masterGroupCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+
+            const debitSlider = $("#cardDebit .value-slider span");
+            const debitOverlay = $("#cardDebit .overlay .detail");
+
+            topMasterGroups.forEach(([group, count], i) => {
+                debitSlider.eq(i).html(`<strong>${group}: ${format(count)}</strong>`);
+                debitOverlay.eq(i).html(`${group}: ${format(count)}`);
+            });
+
+            // === CardCredit: Top 3 CostAllocationGroup ===
+            const topCreditGroups = Object.entries(creditGroupCount)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 3);
+
+            const creditSlider = $("#cardCredit .value-slider span");
+            const creditOverlay = $("#cardCredit .overlay .detail");
+
+            topCreditGroups.forEach(([group, count], i) => {
+                creditSlider.eq(i).html(`<strong>${group}: ${format(count)}</strong>`);
+                creditOverlay.eq(i).html(`${group}: ${format(count)}`);
+            });
+
+            // === CardVoucher: Total / Month / Year based on CreatedOn ===
+            const voucherSlider = $("#cardVoucher .value-slider span");
+            const voucherOverlay = $("#cardVoucher .overlay .detail");
+
+            voucherSlider.eq(0).html(`<i class="fa-solid fa-briefcase"></i> Total: ${format(totalCount)}`);
+            voucherSlider.eq(1).html(`<i class="fa-solid fa-briefcase"></i> This Month: ${format(monthCount)}`);
+            voucherSlider.eq(2).html(`<i class="fa-solid fa-briefcase"></i> This Year: ${format(yearCount)}`);
+
+            voucherOverlay.eq(0).html(`<i class="fa-solid fa-briefcase"></i> Total: ${format(totalCount)}`);
+            voucherOverlay.eq(1).html(`<i class="fa-solid fa-briefcase"></i> This Month: ${format(monthCount)}`);
+            voucherOverlay.eq(2).html(`<i class="fa-solid fa-briefcase"></i> This Year: ${format(yearCount)}`);
+
+            
         }
 
 </script>

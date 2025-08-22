@@ -141,54 +141,211 @@
 		overflow: hidden;
 	}
 
+	.tabs {
+		display: flex;
+		justify-content: space-around;
+		margin-bottom: 15px;
+	}
+
+	.tab-text {
+		cursor: pointer;
+		font-weight: bold;
+		color: #333;
+	}
+
+		.tab-text.active {
+			color: #2196f3;
+		}
+
+	.tab-content {
+		display: none;
+		text-align: center;
+	}
+
+		.tab-content.active {
+			display: block;
+		}
+
+	.count {
+		font-size: 31px;
+		font-weight: bold;
+		margin-top: 10px;
+	}
+
+		.count.bounce {
+			animation: bounce 0.5s ease;
+		}
+
+	@@keyframes bounce {
+		0%
+
+	{
+		transform: scale(1);
+	}
+
+	50% {
+		transform: scale(1.2);
+	}
+
+	100% {
+		transform: scale(1);
+	}
+
+	}
+
+	.voucher-slider {
+		position: relative;
+		height: 120px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.5s ease;
+		text-align: center;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+		.voucher-slide.slide-up {
+			transform: translateY(-100%);
+		}
+	.voucher-slide1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.5s ease;
+		text-align: center;
+	}
+
+		.voucher-slide1.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+		.voucher-slide1.slide-up {
+			transform: translateY(-100%);
+		}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
+
+	.tile-icon {
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		height: 100%;
+		position: absolute;
+		left: 355px;
+		bottom: 10px;
+	}
 </style>
 
 <div class="title">
 	<input id="formId" value="frm201LedgerView" type="hidden" />
-
-	<div class="card blue shine compact">
-		<h2 class="title-slide">Quotation</h2>
-		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
-
-	</div>
-
-	<div id="mainCard" class="card today-bg">
-		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
-		</div>
-
-		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
-			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
-			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">Quotation to Clients</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			<div class="tile-icon">
+				<!-- Icon as SVG -->
+				<svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+				</svg>
+			</div>
 		</div>
 	</div>
-	<div class="card purple sparkle">
-		<p>&#10024;</p>
-		<h4>No of Items</h4>
-		<h1 id="turnover">0</h1>
-		<h3>for this period</h3>
+
+	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;text-align:left;font-size: 1.6em;font-weight:bold;">Quotation Details</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide active">
+				<h4 style="text-align:left">New Quotation</h4>
+				<h1 id="newquotationtotals" style="color: white;text-align:left;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide">
+				<h4 style="text-align:left">Pending of Approvals</h4>
+				<h1 id="pendingofapproval" style="color: white;text-align:left;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide">
+				<h4 style="text-align:left">Waiting for sale order</h4>
+				<h1 id="waitingsaleorder" style="color: white;text-align:left;">
+					0
+				</h1>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M35.1094 18.375H23.625C22.5377 18.375 21.6096 17.9906 20.8408 17.2217C20.0719 16.4529 19.6875 15.5248 19.6875 14.4375V2.95312C19.6875 2.86252 19.6555 2.78518 19.5914 2.72111C19.5273 2.65704 19.45 2.625 19.3594 2.625H11.8125C10.3628 2.625 9.12532 3.13756 8.10019 4.16269C7.07506 5.18782 6.5625 6.42525 6.5625 7.875V34.125C6.5625 35.5747 7.07506 36.8122 8.10019 37.8373C9.12532 38.8624 10.3628 39.375 11.8125 39.375H30.1875C31.6372 39.375 32.8747 38.8624 33.8998 37.8373C34.9249 36.8122 35.4375 35.5747 35.4375 34.125V18.7031C35.4375 18.6125 35.4055 18.5352 35.3414 18.4711C35.2773 18.407 35.2 18.375 35.1094 18.375ZM27.5625 31.5H14.4375C14.0751 31.5 13.7657 31.3719 13.5094 31.1156C13.2531 30.8593 13.125 30.5499 13.125 30.1875C13.125 29.8251 13.2531 29.5157 13.5094 29.2594C13.7657 29.0031 14.0751 28.875 14.4375 28.875H27.5625C27.9249 28.875 28.2343 29.0031 28.4906 29.2594C28.7469 29.5157 28.875 29.8251 28.875 30.1875C28.875 30.5499 28.7469 30.8593 28.4906 31.1156C28.2343 31.3719 27.9249 31.5 27.5625 31.5ZM27.5625 24.9375H14.4375C14.0751 24.9375 13.7657 24.8094 13.5094 24.5531C13.2531 24.2968 13.125 23.9874 13.125 23.625C13.125 23.2626 13.2531 22.9532 13.5094 22.6969C13.7657 22.4406 14.0751 22.3125 14.4375 22.3125H27.5625C27.9249 22.3125 28.2343 22.4406 28.4906 22.6969C28.7469 22.9532 28.875 23.2626 28.875 23.625C28.875 23.9874 28.7469 24.2968 28.4906 24.5531C28.2343 24.8094 27.9249 24.9375 27.5625 24.9375Z" fill="white" fill-opacity="0.301961" />
+				<path d="M34.3891 15.4702L22.5922 3.67332C22.5688 3.65001 22.5408 3.63514 22.5084 3.62873C22.4759 3.62231 22.4444 3.62543 22.4139 3.63806C22.3833 3.6507 22.3588 3.67074 22.3404 3.6982C22.3219 3.72565 22.3126 3.75591 22.3125 3.78899V14.4375C22.3125 14.7999 22.4406 15.1093 22.6969 15.3655C22.9532 15.6218 23.2626 15.75 23.625 15.75H34.2735C34.3066 15.7498 34.3368 15.7405 34.3643 15.7221C34.3917 15.7037 34.4118 15.6792 34.4244 15.6486C34.437 15.618 34.4402 15.5865 34.4337 15.5541C34.4273 15.5216 34.4125 15.4937 34.3891 15.4702Z" fill="white" fill-opacity="0.301961" />
+			</svg>
+
+		</div>
+	</div>
+
+
+
+	<!-- QUOTATION AMOUNT CARD -->
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d); padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white; font-weight: bold;">Quotation Invoices</h4>
+		<div class="voucher-slider">
+		<div class="voucher-slide1 active">
+			<h4 style="color: white;text-align:left;">No of quotation raised today</h4>
+				<h1 id="quotationraisetoday" style="color: white; font-weight: bold;text-align:left;">
+				0
+			</h1>
+		</div>
+			<div class="voucher-slide1">
+				<h4 style="color: white;text-align:left;">Total no of quotation</h4>
+				<h1 id="totalnoofquotation" style="color: white; font-weight: bold;text-align:left;">
+					0
+				</h1>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M33.5442 0.00147154H29.4536C29.022 0.00765929 28.6103 0.18525 28.3083 0.495563L26.1812 2.63663L24.0541 0.495563C23.752 0.18525 23.3403 0.00765929 22.9087 0.00147154H2.45581C2.13042 -0.0100313 1.80616 0.046002 1.50322 0.166083C1.20027 0.286165 0.925125 0.467724 0.694899 0.699461C0.464674 0.931198 0.284298 1.20815 0.165 1.51309C0.0457017 1.81802 -0.00996585 2.14441 0.00146195 2.47193V25.5295C0.00146195 26.1847 0.260044 26.8131 0.720323 27.2764C1.1806 27.7397 1.80487 28 2.45581 28H22.9087C23.3403 27.9938 23.752 27.8162 24.0541 27.5059L26.1812 25.3648L28.3083 27.5059C28.6103 27.8162 29.022 27.9938 29.4536 28H33.5442C34.1951 28 34.8194 27.7397 35.2797 27.2764C35.74 26.8131 35.9985 26.1847 35.9985 25.5295V2.47193C36.01 2.14441 35.9543 1.81802 35.835 1.51309C35.7157 1.20815 35.5353 0.931198 35.3051 0.699461C35.0749 0.467724 34.7997 0.286165 34.4968 0.166083C34.1938 0.046002 33.8696 -0.0100313 33.5442 0.00147154ZM9.81885 9.05982C10.1425 9.05982 10.4588 9.15641 10.7279 9.33738C10.997 9.51836 11.2067 9.77558 11.3305 10.0765C11.4544 10.3775 11.4868 10.7086 11.4236 11.0281C11.3605 11.3476 11.2047 11.641 10.9758 11.8714C10.747 12.1017 10.4555 12.2586 10.1381 12.3221C9.82066 12.3857 9.49167 12.3531 9.19269 12.2284C8.89371 12.1037 8.63816 11.8926 8.45837 11.6218C8.27858 11.351 8.18262 11.0325 8.18262 10.7068C8.18262 10.27 8.355 9.85107 8.66186 9.54221C8.96871 9.23334 9.38489 9.05982 9.81885 9.05982ZM16.3638 18.9417C16.0402 18.9417 15.7238 18.8451 15.4547 18.6641C15.1857 18.4831 14.9759 18.2259 14.8521 17.9249C14.7282 17.624 14.6958 17.2929 14.759 16.9734C14.8221 16.6539 14.9779 16.3604 15.2068 16.1301C15.4356 15.8998 15.7272 15.7429 16.0446 15.6794C16.362 15.6158 16.6909 15.6484 16.9899 15.7731C17.2889 15.8977 17.5445 16.1088 17.7242 16.3797C17.904 16.6505 18 16.9689 18 17.2947C18 17.7315 17.8276 18.1504 17.5208 18.4593C17.2139 18.7681 16.7977 18.9417 16.3638 18.9417ZM18.3272 11.0362L10.1461 19.271C10.0005 19.4308 9.82348 19.5583 9.62631 19.6456C9.42914 19.7328 9.21611 19.7779 9.00073 19.7779C8.78535 19.7779 8.57232 19.7328 8.37515 19.6456C8.17798 19.5583 8.00098 19.4308 7.85537 19.271C7.69667 19.1245 7.56996 18.9463 7.48328 18.7479C7.3966 18.5494 7.35184 18.335 7.35184 18.1182C7.35184 17.9014 7.3966 17.6869 7.48328 17.4885C7.56996 17.29 7.69667 17.1119 7.85537 16.9653L16.0365 8.73042C16.3516 8.49255 16.7414 8.37707 17.1343 8.40517C17.5271 8.43328 17.8967 8.60308 18.1753 8.88342C18.4538 9.16375 18.6225 9.5358 18.6504 9.93125C18.6783 10.3267 18.5636 10.719 18.3272 11.0362ZM27.8174 21.4121C27.8174 21.8489 27.645 22.2678 27.3381 22.5767C27.0313 22.8856 26.6151 23.0591 26.1812 23.0591C25.7472 23.0591 25.331 22.8856 25.0242 22.5767C24.7173 22.2678 24.5449 21.8489 24.5449 21.4121V19.7651C24.5449 19.3283 24.7173 18.9094 25.0242 18.6006C25.331 18.2917 25.7472 18.1182 26.1812 18.1182C26.6151 18.1182 27.0313 18.2917 27.3381 18.6006C27.645 18.9094 27.8174 19.3283 27.8174 19.7651V21.4121ZM27.8174 14.8242C27.8174 15.261 27.645 15.6799 27.3381 15.9888C27.0313 16.2977 26.6151 16.4712 26.1812 16.4712C25.7472 16.4712 25.331 16.2977 25.0242 15.9888C24.7173 15.6799 24.5449 15.261 24.5449 14.8242V13.1772C24.5449 12.7404 24.7173 12.3215 25.0242 12.0127C25.331 11.7038 25.7472 11.5303 26.1812 11.5303C26.6151 11.5303 27.0313 11.7038 27.3381 12.0127C27.645 12.3215 27.8174 12.7404 27.8174 13.1772V14.8242ZM27.8174 8.23633C27.8174 8.67314 27.645 9.09205 27.3381 9.40092C27.0313 9.70979 26.6151 9.88331 26.1812 9.88331C25.7472 9.88331 25.331 9.70979 25.0242 9.40092C24.7173 9.09205 24.5449 8.67314 24.5449 8.23633V6.58936C24.5449 6.15256 24.7173 5.73364 25.0242 5.42478C25.331 5.11591 25.7472 4.94239 26.1812 4.94239C26.6151 4.94239 27.0313 5.11591 27.3381 5.42478C27.645 5.73364 27.8174 6.15256 27.8174 6.58936V8.23633Z" fill="white" fill-opacity="0.5" />
+			</svg>
+
+		</div>
 	</div>
 </div>
-
 @* <div class="title">
 	<div class="header-container">
 		<div id="Quotation" class="no-border-input"></div>
@@ -237,6 +394,7 @@
 					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
 					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
 					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			        items.Add().Text(new JS("formatMessage('By Quarter')")).Icon("event").Option("color", "#00ACC1").OnClick("quarterSubMenu");
 					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
 					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
 					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
@@ -264,6 +422,7 @@
 		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry60104quotationViewMaster>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
+		.OnInitialized("onStatusCardReady")
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
@@ -339,7 +498,26 @@
 			});
 			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Right).Visible(true).AllowEditing(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', 
+		color: '#b58900',          
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		")); 
 
 
 
@@ -348,85 +526,126 @@
 
 			columns.Add().Caption(new JS("formatMessage('Quoted Amount')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-		function(e) {
-		if (e.value === null || e.value === undefined) {
-		return '';
-		}
-		let value = Math.abs(e.value);
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
 		}
-		");
+		}
+		"));
 
-				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-		function(e) {
-		if (e.value === null || e.value === undefined) {
-		return '';
-		}
-		let value = Math.abs(e.value);
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
 		}
-		");
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-    function(e) {
-        if (e.value === null || e.value === undefined) {
-            return '';
-        }
-        let value = Math.abs(e.value);
-       return value.toLocaleString(undefined, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-");
-
-
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-    function(e) {
-        if (e.value === null || e.value === undefined) {
-            return '';
-        }
-		let value = Math.abs(e.value);
-
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
-    }
-");
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
-
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Right).Visible(true).CustomizeText(@"
-    function(e) {
-        if (e.value === null || e.value === undefined) {
-            return '';
-        }
-        let value = Math.abs(e.value);
-		return value.toLocaleString(undefined, {
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: 2,
 		maximumFractionDigits: 2
-		});
-    }
-");
-
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Right).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 			});
 			
 		})
 		.Height("60vh") // Fixed height for the grid
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
-		.OnCellClick("function(e) {handleCellClick(e);}")
+		@* .WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}") *@
 		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
 		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
@@ -541,9 +760,135 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+				function onStatusCardReady(e) {
+		const gridInstance = e.component;
+		const dataSource = gridInstance.getDataSource();
+		const gridId = e.element.attr("id");
 
+		if (!dataSource || !gridId) return;
 
-			 $(function () {
+		const handleData = (data) => {
+			if (gridId === "dataGrid") {
+				updateNewQuotationTotal(data);          // ✅ pass data
+				updateWaitingSaleOrderCount(data);      // ✅ pass data
+				updateQuotationRaiseTodayCount(data);   // ✅ pass data
+				updateTotalQuotationCount(data);        // ✅ pass data
+			} else {
+				updateVoucherCounts(data);
+				updateNewQuotationTotal(data);          // ✅ pass data
+				updatePendingApprovalCount(data);       // ✅ pass data
+			}
+		};
+
+		dataSource.load().done(handleData);
+	}
+
+		function updateNewQuotationTotal(data) {
+		if (!data || !Array.isArray(data)) return;
+
+		let total = 0;
+		data.forEach(item => {
+			const value = parseFloat(item.TotalWithTax);
+			if (!isNaN(value)) {
+				total += value;
+			}
+		});
+
+		document.getElementById("newquotationtotals").innerHTML = total.toLocaleString(undefined, {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
+		});
+	}
+
+		function updatePendingApprovalCount(data) {
+		if (!data || !Array.isArray(data)) return;
+
+		let totalQuotes = 0;
+		let approvedCount = 0;
+
+		data.forEach(item => {
+			if (item.QuoteNo) {
+				totalQuotes++;
+				if (item.IsApproved === true || item.IsApproved === "true") {
+					approvedCount++;
+				}
+			}
+		});
+
+		const pendingCount = totalQuotes - approvedCount;
+		document.getElementById("pendingofapproval").innerHTML = pendingCount.toLocaleString();
+	}
+
+			function updateWaitingSaleOrderCount(data) {
+		if (!data || !Array.isArray(data)) return;
+
+		let totalQuotes = 0;
+		let withSalesOrder = 0;
+
+		data.forEach(item => {
+			if (item.QuoteNo) {
+				totalQuotes++;
+				if (item.SalesOrderNo && item.SalesOrderNo.trim() !== "") {
+					withSalesOrder++;
+				}
+			}
+		});
+
+		const waitingCount = totalQuotes - withSalesOrder;
+		document.getElementById("waitingsaleorder").innerHTML = waitingCount.toLocaleString();
+	}
+
+		function updateQuotationRaiseTodayCount(data) {
+		if (!data || !Array.isArray(data)) return;
+
+		let todayCount = 0;
+		const today = new Date();
+		const todayString = today.toISOString().split('T')[0];
+
+		data.forEach(item => {
+			if (item.QuoteDate) {
+				const quoteDate = new Date(item.QuoteDate);
+				const quoteDateString = quoteDate.toISOString().split('T')[0];
+
+				if (quoteDateString === todayString) {
+					todayCount++;
+				}
+			}
+		});
+
+		document.getElementById("quotationraisetoday").innerHTML = todayCount.toLocaleString();
+	}
+
+		function updateTotalQuotationCount(data) {
+		if (!data || !Array.isArray(data)) return;
+
+		const totalCount = data.filter(item => item.QuoteNo !== null && item.QuoteNo !== undefined && item.QuoteNo !== '').length;
+
+		document.getElementById("totalnoofquotation").innerHTML = totalCount.toLocaleString();
+	}
+
+			let currentSlideIndex = 0;
+			const slides = document.querySelectorAll('.voucher-slide');
+
+			setInterval(() => {
+				slides[currentSlideIndex].classList.remove('active');
+
+				currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+				slides[currentSlideIndex].classList.add('active');
+			}, 2000);
+			let currentSlideIndex1 = 0;
+			const slides1 = document.querySelectorAll('.voucher-slide1');
+
+			setInterval(() => {
+				slides1[currentSlideIndex1].classList.remove('active');
+
+				currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+
+				slides1[currentSlideIndex1].classList.add('active');
+			}, 2000);
+
+				 $(function () {
 				const dateBox = $("#frmdateBox").dxDateBox("instance");
 
 				// When focus/typing starts, change to dd-MM-yyyy
@@ -641,6 +986,25 @@
 					// Get the first and last day of the current month
 					frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1); // First day of month
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
+					break;
+						case 'q1': // Jan - Mar
+					frmDate = new Date(new Date().getFullYear(), 0, 1);
+					toDate = new Date(new Date().getFullYear(), 2, 31);
+					break;
+
+				case 'q2': // Apr - Jun
+					frmDate = new Date(new Date().getFullYear(), 3, 1);
+					toDate = new Date(new Date().getFullYear(), 5, 30);
+					break;
+
+				case 'q3': // Jul - Sep
+					frmDate = new Date(new Date().getFullYear(), 6, 1);
+					toDate = new Date(new Date().getFullYear(), 8, 30);
+					break;
+
+				case 'q4': // Oct - Dec
+					frmDate = new Date(new Date().getFullYear(), 9, 1);
+					toDate = new Date(new Date().getFullYear(), 11, 31);
 					break;
 			}
 						frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
@@ -915,6 +1279,7 @@ $(document).ready(function () {
 						"btnPrint": { "Visible": false, "Enabled": false },
 						"btnToggleSearch": { "Visible": false, "Enabled": false },
 						"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+						"btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
 						"btnColumnChooser": { "Visible": false, "Enabled": false },
 						"btnAddNewQuotation": { "Visible": false, "Enabled": false },
 						"ddBtnShowRecords": { "Visible": false, "Enabled": false },
@@ -970,87 +1335,32 @@ $(document).ready(function () {
 
 		console.log('End permission handling');
 	});
+				$(document).ready(function () {
 
-			 function countUpTurnover(targetStr) {
-			  const el = document.getElementById("turnover");
-			  const target = parseFloat(targetStr);
-			  let current = 0.0;
 
-			  const interval = setInterval(() => {
-				current += 0.5;
-				if (current >= target) {
-				  el.textContent = targetStr + " K";
-				  clearInterval(interval);
-				} else {
-				  el.textContent = current.toFixed(1) + " K";
-				}
-			  }, 30);
-			}
+					const urlParams = new URLSearchParams(window.location.search);
+					const module = urlParams.get("module");
+					const status = urlParams.get("status");
 
-			// Animate to 46.2 K
-			countUpTurnover("46.2");
+					if (module && status) {
+						const grid = $("#dataGrid").dxDataGrid("instance");
 
-			  const card = document.getElementById('mainCard');
-			const counts = [8, 15, 5];
-			const countEls = [
-			  document.getElementById("count0"),
-			  document.getElementById("count1"),
-			  document.getElementById("count2"),
-			];
-			const tabs = document.querySelectorAll(".tab-text");
-			const contents = document.querySelectorAll(".tab-content");
-
-			function animateCount(el, target) {
-			  let i = 0;
-			  el.innerText = i;
-			  el.classList.remove('bounce');
-			  const interval = setInterval(() => {
-				if (i >= target) {
-				  el.innerText = target;
-				  el.classList.add('bounce');
-				  clearInterval(interval);
-				} else {
-				  el.innerText = i++;
-				}
-			  }, 30);
-			}
-
-			function switchTab(index) {
-			  tabs.forEach((tab, i) => {
-				tab.classList.toggle('active', i === index);
-				contents[i].classList.toggle('active', i === index);
-			  });
-
-			  // Change background class
-			  card.className = "card";
-			  if (index === 0) card.classList.add("today-bg");
-			  if (index === 1) card.classList.add("week-bg");
-			  if (index === 2) card.classList.add("month-bg");
-
-			  // Animate count
-			  animateCount(countEls[index], counts[index]);
-			}
-
-			// Start "Today" count immediately
-			animateCount(countEls[0], counts[0]);
-
-			function switchTab(index) {
-			  tabs.forEach((tab, i) => {
-				tab.classList.toggle('active', i === index);
-				contents[i].classList.toggle('active', i === index);
-			  });
-
-			  // Change background class
-			  card.className = "card";
-			  if (index === 0) card.classList.add("today-bg");
-			  if (index === 1) card.classList.add("week-bg");
-			  if (index === 2) card.classList.add("month-bg");
-
-			  // Animate count
-			  animateCount(countEls[index], counts[index]);
-			}
-
-			// Auto-start animation for "Today"
-			animateCount(countEls[0], counts[0]);
-
+						if (grid) {
+							grid.beginCustomLoading("Loading...");
+							$.ajax({
+									url: '/api/Quotation/GetIMSQuotation',
+								type: 'GET',
+								data: { module, status },
+								success: function (data) {
+									grid.option("dataSource", data);
+									grid.endCustomLoading();
+								},
+								error: function () {
+									grid.endCustomLoading();
+								}
+							});
+						}
+					}
+				});
+			
 </script>

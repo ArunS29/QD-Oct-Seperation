@@ -1,41 +1,43 @@
 ﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
     <div class="btn-container">
         @(Html.DevExtreme().Button()
-                .ID("btnSave")
-                .Text(new JS("formatMessage('Save')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                )
+                    .ID("btnSave")
+                    .Text(new JS("formatMessage('Save')"))
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                    )
 
     </div>
     <div class="btn-container">
 
         @(Html.DevExtreme().Button()
-                .ID("btnSaveAndClose")
-                .Text(new JS("formatMessage('Save and Close')"))
-                .Type(ButtonType.Normal)
-                .StylingMode(ButtonStylingMode.Outlined)
-                .Icon("save")
-                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
-                )
+                    .ID("btnSaveAndClose")
+                    .Text(new JS("formatMessage('Save and Close')"))
+                    .Type(ButtonType.Normal)
+                    .StylingMode(ButtonStylingMode.Outlined)
+                    .Icon("save")
+                    .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                    )
     </div>
 
     <div class="btn-container">
 
         @(Html.DevExtreme().Button()
-                .ID("btnBack")
-                .Text(new JS("formatMessage('Back')"))
-                .Icon("arrowleft")
-                .ElementAttr(new { @class = "dx-button-custom btn-back" })
-                )
+                    .ID("btnBack")
+                    .Text(new JS("formatMessage('Back')"))
+                    .Icon("arrowleft")
+                    .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                    )
     </div>
     <div class="btn-container">
-        @(Html.DevExtreme().Button()
+        @(
+            Html.DevExtreme().Button()
                 .ID("btnAttach")
                 .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
+                .Icon("attach")
+                .OnClick("onIMSAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>
@@ -276,7 +278,7 @@
         }
                  async function handleCreditReportPrinting(e) {
 
-           debugger;
+           
 
         const itemText = e.itemData?.text;
 
@@ -400,5 +402,36 @@
             console.error("Failed to open report:", error);
             alert("An error occurred while trying to open the report.");
         }
+    }
+
+    function onIMSAttachmentButtonClick(e) {
+        // Get Voucher No safely
+        const materialRecNoBox = $("#txtMaterialReceiptNo").dxTextBox("instance");
+        const materialReceiptNo = materialRecNoBox ? materialRecNoBox.option("value") : null;
+        var dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var dataSource = dataGrid.option("dataSource");
+
+        if (rowCount === 0 || rowCount === null) {
+            DevExpress.ui.notify(
+                "Not allow to Add Attachments. Please enter some transactions in Grid.",
+                "warning",
+                4000
+                );
+            return;
+        }
+        var menuType = "inventory";
+
+
+        var formType ="Material Receipts";
+        // Log and build URL
+        console.log("Voucher No:", materialReceiptNo);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(materialReceiptNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
     }
 </script>

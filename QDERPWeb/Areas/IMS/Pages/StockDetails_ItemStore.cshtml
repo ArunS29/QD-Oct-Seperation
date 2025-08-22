@@ -309,16 +309,29 @@
 
 
         </div>
-
-
-        <br />
-        <div class="limited-footer">
-            @await Html.PartialAsync("InventoryModuleFooter")
+      
+    <div class="footer-fixed" style="display:flex; gap:10px;">
+        <div>
+            @(Html.DevExtreme().Button()
+                        .ID("btnUpdate")
+                        .Text(new JS("formatMessage('Update')"))
+                        .Icon("arrowleft")
+                        .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                        )
         </div>
-       
+        <div>
+
+            @(Html.DevExtreme().Button()
+                        .ID("btnBack")
+                        .Text(new JS("formatMessage('Back')"))
+                        .Icon("back")
+                        .OnClick("goback")
+                        .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                       )
+        </div>
+    </div>
 
     </div>
-</div>
 
 <script>
     $(document).ready(function () {
@@ -335,9 +348,10 @@
 
     });
 
-    $(document).on("click", "#btnBack", function () {
-        window.history.back();
-    });
+    function goback() {
+       window.parent.closeModal();
+    }
+
     $(function () {
         // Set the header title text box (readonly)
         $("#StockDetailsItemStore").dxTextBox({
@@ -357,7 +371,7 @@
 
        
         if (!isStoreIdValid || !isStoreNameValid) {
-                 DevExpress.ui.notify('Please fill all required fields correctly.', 'error', 3000);
+                DevExpress.ui.notify('Please fill all required fields correctly.', 'error', 3000);
             return;
         }
 
@@ -376,6 +390,7 @@
                 success: function (res) {
         DevExpress.ui.notify("Store added successfully!", "success", 2000);
         // Reload grid data after add
+                
         $("#storeGrid").dxDataGrid("instance").refresh();
         // Clear inputs
         $("#StoreId").dxTextBox("instance").option("value", "");
@@ -386,6 +401,9 @@
         $("#StoreId").dxValidator("instance").reset();
         $("#StoreName").dxValidator("instance").reset();
         $("#CostCenter").dxValidator("instance").reset();
+
+        const grid = $("#storeGrid").dxDataGrid("instance");
+            grid.saveEditData();
     },
 
             error: function (xhr) {
@@ -399,30 +417,39 @@
                   const grid = $("#storeGrid").dxDataGrid("instance");
               grid.saveEditData(); // 🔥 only triggers on manual click
           });
-          function onProjectUpdating(e) {
+    function onProjectUpdating(e) {
+        const isEdit = !!e.oldData.StoreId; // Check if old record exists
 
-              const data = {
-                          StoreId: e.newData.StoreId ?? e.oldData.StoreId,
-                              StoreName: e.newData.StoreName ?? e.oldData.StoreName,
-                              CostAllocationUnitId: e.newData.CostAllocationUnitId ?? e.oldData.CostAllocationUnitId
-                 };
+        const data = {
+            StoreId: e.newData.StoreId ?? e.oldData.StoreId,
+            StoreName: e.newData.StoreName ?? e.oldData.StoreName,
+            CostAllocationUnitId: e.newData.CostAllocationUnitId ?? e.oldData.CostAllocationUnitId
+        };
 
-              e.cancel = true;
+        e.cancel = true; // Prevent default grid update behavior
 
-              return $.ajax({
-                          url: '/api/StockInventory/SaveOrUpdateStore',
-                  method: "POST",
-                  contentType: "application/json",
-                  data: JSON.stringify(data),
-                  success: function () {
-                      DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
-                          $("#storeGrid").dxDataGrid("instance").refresh();
-                  },
-                  error: function () {
-                      DevExpress.ui.notify("Failed to save.", "error", 1500);
-                  }
-              });
-          }  $(function() {
+        // Build URL with originalStoreId only in edit mode
+        const url = isEdit
+            ? `/api/StockInventory/SaveOrUpdateStore?originalStoreId=${encodeURIComponent(e.oldData.StoreId)}`
+            : `/api/StockInventory/SaveOrUpdateStore`;
+
+        return $.ajax({
+            url: url,
+            method: "POST",
+            contentType: "application/json",
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify("Data Updated Successfully!", "success", 1500);
+                $("#storeGrid").dxDataGrid("instance").refresh();
+            },
+            error: function (xhr) {
+                const errorMessage = xhr?.responseJSON?.message || "Failed to save.";
+                DevExpress.ui.notify(errorMessage, "error", 2000);
+            }
+        });
+    }
+
+        $(function() {
         var grid = $("#storeGrid").dxDataGrid("instance");
         if(grid) {
             grid.option("onRowUpdated", function(e) {

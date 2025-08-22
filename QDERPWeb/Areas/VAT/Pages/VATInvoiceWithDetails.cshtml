@@ -154,9 +154,9 @@
 </div>
 
 <div class="Head">
-	<div class="limited-footer" style="margin: 10px;">
-		@await Html.PartialAsync("VATModuleFooter")
-	</div>
+	
+		@await Html.PartialAsync("/Pages/Shared/VAT/VATInvoiceWithDetailsFooter.cshtml")
+	
 </div>
 
 <div class="context-menuInvoice" id="contextMenu">
@@ -304,19 +304,24 @@
 		) *@
 		.OnCellPrepared("onCellPrepared")
 	@* 	.OnCellClick("function(e) {handleCellClick(e);}") *@
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop))
-		.Height(680) // <<< fixed height
+		@* .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Column Chooser')")).Mode(GridColumnChooserMode.DragAndDrop)) *@
+		.Height("60vh") // <<< fixed height
+		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.ColumnAutoWidth(true)
 		.Width("98%")
-		.WordWrapEnabled(true)
-		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		@* .WordWrapEnabled(true)
+		.OnCellClick("function(e) {handleCellClick(e);}") *@
+		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.Enabled(false))
-		.Pager(pager => pager.Visible(false))
+		.Paging(p => p.Enabled(true).PageSize(15))    // enable paging with 15 rows per page
+		.Pager(pager => pager
+		.Visible(true)                            // show pager UI (page numbers etc)
+		.ShowPageSizeSelector(true)              // allow user to change page size
+		.AllowedPageSizes(new[] { 10, 15, 20 })  // optional page size options
+		.ShowInfo(true))
 		.Grouping(grouping => grouping.AutoExpandAll(true))
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -457,13 +462,13 @@
 		})
 
 
-		.StateStoring(stateStoring =>
+		@* .StateStoring(stateStoring =>
 		{
 			stateStoring
 			.Enabled(true)
 			.Type(StateStoringType.LocalStorage)
 			.StorageKey("gridContainerState");
-		})
+		}) *@
 		.OnInitialized("function(e) { loadGridState(); }")
 		)
 </div>
@@ -479,7 +484,17 @@
 
 
 <script>
+		function showColumnChooser() {
+		var dataGrid = $("#dataGrid").dxDataGrid("instance");
+		var isColumnChooserVisible = dataGrid.option("columnChooser.enabled");
 
+		if (isColumnChooserVisible) {
+			dataGrid.option("columnChooser.enabled", false); // Disable the column chooser
+		} else {
+			dataGrid.option("columnChooser.enabled", true);
+			dataGrid.showColumnChooser();
+		}
+	}
 		$(document).ready(function () {
 		$(".limited-footer .btn-container").each(function () {
 			if (!$(this).find("#InvoiceDetailsddButtonLayout,#btnPrint, #btnToggleSearch, #btnToggleHeaderFilter,#btntoggleGroupPanel").length) {
@@ -605,6 +620,9 @@
 			// Show the context menu at cursor position
 			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
 		});
+	});
+		$(document).ready(function () {
+		ddBtnShowRecords_click("fullmonth");
 	});
 
 		function ddBtnShowRecords_click(duration) {

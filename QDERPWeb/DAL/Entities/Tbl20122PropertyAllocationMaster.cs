@@ -38,4 +38,5 @@ public partial class Tbl20122PropertyAllocationMaster
     public string VoucherNo { get; set; }
 
     public string LedgerAccountNo { get; set; }
+    public decimal? CurrencyRate { get; set; }
 }

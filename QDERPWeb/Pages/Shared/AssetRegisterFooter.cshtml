@@ -150,9 +150,17 @@
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("ddReports")
-            .Icon("doc")
+            .Icon("")
             .Width("100%")
-            .Text(new JS("formatMessage('Report')"))
+                .Icon("")
+                .Template(@<text>
+            <svg width="30px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path opacity="0.4" d="M20.5 10.19H17.61C15.24 10.19 13.31 8.26 13.31 5.89V3C13.31 2.45 12.86 2 12.31 2H8.07C4.99 2 2.5 4 2.5 7.57V16.43C2.5 20 4.99 22 8.07 22H15.93C19.01 22 21.5 20 21.5 16.43V11.19C21.5 10.64 21.05 10.19 20.5 10.19Z" fill="#292D32" />
+                <path d="M15.7997 2.20999C15.3897 1.79999 14.6797 2.07999 14.6797 2.64999V6.13999C14.6797 7.59999 15.9197 8.80999 17.4297 8.80999C18.3797 8.81999 19.6997 8.81999 20.8297 8.81999C21.3997 8.81999 21.6997 8.14999 21.2997 7.74999C19.8597 6.29999 17.2797 3.68999 15.7997 2.20999Z" fill="#292D32" />
+                <path d="M12.2795 14.72C11.9895 14.43 11.5095 14.43 11.2195 14.72L10.4995 15.44V11.25C10.4995 10.84 10.1595 10.5 9.74945 10.5C9.33945 10.5 8.99945 10.84 8.99945 11.25V15.44L8.27945 14.72C7.98945 14.43 7.50945 14.43 7.21945 14.72C6.92945 15.01 6.92945 15.49 7.21945 15.78L9.21945 17.78C9.22945 17.79 9.23945 17.79 9.23945 17.8C9.29945 17.86 9.37945 17.91 9.45945 17.95C9.55945 17.98 9.64945 18 9.74945 18C9.84945 18 9.93945 17.98 10.0295 17.94C10.1195 17.9 10.1995 17.85 10.2795 17.78L12.2795 15.78C12.5695 15.49 12.5695 15.01 12.2795 14.72Z" fill="#292D32" />
+            </svg>
+            <span id="Reportsss"></span>
+        </text>)
             .DropDownOptions(options => options.Width(485))
             .Items(items =>
             {
@@ -185,9 +193,17 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnShowDayBooks")
-            .Icon("bookmark")
+            .Icon("")
+                .Template(@<text>
+            <svg width="30px" height="25px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path opacity="0.5" d="M4.72718 2.73332C5.03258 2.42535 5.46135 2.22456 6.27103 2.11478C7.10452 2.00177 8.2092 2 9.7931 2H14.2069C15.7908 2 16.8955 2.00177 17.729 2.11478C18.5387 2.22456 18.9674 2.42535 19.2728 2.73332C19.5782 3.0413 19.7773 3.47368 19.8862 4.2902C19.9982 5.13073 20 6.24474 20 7.84202L20 18H7.42598C6.34236 18 5.96352 18.0057 5.67321 18.0681C5.15982 18.1785 4.71351 18.4151 4.38811 18.7347C4.27837 18.8425 4.22351 18.8964 4.09696 19.2397C4.02435 19.4367 4 19.5687 4 19.7003V7.84202C4 6.24474 4.00176 5.13073 4.11382 4.2902C4.22268 3.47368 4.42179 3.0413 4.72718 2.73332Z" fill="#1C274D" />
+                <path d="M20 18H7.42598C6.34236 18 5.96352 18.0057 5.67321 18.0681C5.15982 18.1785 4.71351 18.4151 4.38811 18.7347C4.27837 18.8425 4.22351 18.8964 4.09696 19.2397C3.97041 19.5831 3.99045 19.7288 4.03053 20.02C4.03761 20.0714 4.04522 20.1216 4.05343 20.1706C4.16271 20.8228 4.36259 21.1682 4.66916 21.4142C4.97573 21.6602 5.40616 21.8206 6.21896 21.9083C7.05566 21.9986 8.1646 22 9.75461 22H14.1854C15.7754 22 16.8844 21.9986 17.7211 21.9083C18.5339 21.8206 18.9643 21.6602 19.2709 21.4142C19.4705 21.254 19.6249 21.0517 19.7385 20.75H8C7.58579 20.75 7.25 20.4142 7.25 20C7.25 19.5858 7.58579 19.25 8 19.25H19.9754C19.9926 18.8868 19.9982 18.4741 20 18Z" fill="#1C274D" />
+                <path d="M7.25 7C7.25 6.58579 7.58579 6.25 8 6.25H16C16.4142 6.25 16.75 6.58579 16.75 7C16.75 7.41421 16.4142 7.75 16 7.75H8C7.58579 7.75 7.25 7.41421 7.25 7Z" fill="#1C274D" />
+                <path d="M8 9.75C7.58579 9.75 7.25 10.0858 7.25 10.5C7.25 10.9142 7.58579 11.25 8 11.25H13C13.4142 11.25 13.75 10.9142 13.75 10.5C13.75 10.0858 13.4142 9.75 13 9.75H8Z" fill="#1C274D" />
+            </svg>
+            <span id="ShowDayBooks"></span>
+        </text>)
             .Width("100%")
-            .Text(new JS("formatMessage('Show Day Books')"))
             .OnClick("loadAllVouchers")
             )
     </div>
@@ -366,134 +382,147 @@
         var newWindow = window.open();
         newWindow.document.write('<iframe width="100%" height="100%" src="' + string + '"></iframe>');
     }
-    function saveLayoutClick() {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var layout = grid.option("columns"); // Get current column configuration
+                 function setDefaultLayoutClick(e) {
+         const grid = $("#dataGrid").dxDataGrid("instance");
+         const form = $('#formId').val();
 
-        if (!layout) {
-            DevExpress.ui.notify("No layout to save!", "error", 2000);
-            return;
-        }
+         if (!grid) {
+             DevExpress.ui.notify("Grid not found", "error", 2000);
+             return;
+         }
 
-        const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+         const layout = grid.state();
+         const layoutJson = JSON.stringify(layout); // ✅ Save as JSON string
 
-        // Create a Blob from the JSON string
-        const blob = new Blob([layoutJson], { type: "application/json" });
-        const url = URL.createObjectURL(blob);
-
-        // Create a download link
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "grid-layout.json";
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-
-        DevExpress.ui.notify("Layout saved successfully!", "success", 2000);
-    }
-
-    // function openLayoutClick(e) {
-    //     $("#loadLayoutInput").click();
-    // }
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: layoutJson,
+                 form: form
+             }),
+             success: function (data) {
+                 DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+             },
+             error: function (xhr) {
+                 console.error("SaveLayout error:", xhr.responseText);
+                 DevExpress.ui.notify("Error while saving data", "error", 2000);
+             }
+         });
+     }
 
 
-     function openLayoutClick(e) {
-        // Create an input element dynamically
-        const input = document.createElement("input");
-        input.type = "file";
-        input.accept = "application/json";
+     function resetLayoutClick(e) {
+         const grid = $("#dataGrid").dxDataGrid("instance");
+         const form = $('#formId').val();
 
-        // When a file is selected
-        input.addEventListener("change", function (event) {
-            const file = event.target.files[0];
-            if (!file) return;
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: null, // 👈 this will trigger the backend to delete or reset
+                 form: form
+             }),
+             success: function (data) {
+                 DevExpress.ui.notify("Layout reset successful", "success", 2000);
+                 grid.state(null); // 👈 clear client-side layout too
+             },
+             error: function (xhr) {
+                 console.error(xhr.responseText);
+                 DevExpress.ui.notify("Error while resetting layout", "error", 2000);
+             }
+         });
+     }
 
-            const reader = new FileReader();
-            reader.onload = function (e) {
-                try {
-                    const layout = JSON.parse(e.target.result);
-                    const grid = $("#dataGrid").dxDataGrid("instance");
-                    grid.state(layout);
-                    //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
-                } catch (error) {
-                    DevExpress.ui.notify("Invalid layout file!", "error", 600);
-                }
-            };
+         function saveLayoutClick(e) {
+             var grid = $("#dataGrid").dxDataGrid("instance");
+             var layout = grid.state();
+             const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+             //console.log(layoutJson);
+             // Create a Blob from the JSON string
+             const blob = new Blob([layoutJson], { type: "application/json" });
+             // Create a URL for the Blob
+             const url = URL.createObjectURL(blob);
+             // Create a link element
+             const a = document.createElement("a");
+             a.href = url;
+             a.download = "grid-layout.json"; // Set the file name for download
+             // Append the link to the body (needed for Firefox)
+             document.body.appendChild(a);
+             // Programmatically click the link to trigger the download
+             a.click();
+             // Clean up by removing the link and revoking the Object URL
+             document.body.removeChild(a);
+             URL.revokeObjectURL(url);
+             //DevExpress.ui.notify("Layout", "success", 600);
+         }
+         function openLayoutClick(e) {
+             // Create an input element dynamically
+             const input = document.createElement("input");
+             input.type = "file";
+             input.accept = "application/json";
 
-            reader.readAsText(file);
-        });
+             // When a file is selected
+             input.addEventListener("change", function (event) {
+                 const file = event.target.files[0];
+                 if (!file) return;
 
-        // Trigger the file input click event
-        input.click();
-    }
+                 const reader = new FileReader();
+                 reader.onload = function (e) {
+                     try {
+                         const layout = JSON.parse(e.target.result);
+                         const grid = $("#dataGrid").dxDataGrid("instance");
+                         grid.state(layout);
+                         //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                     } catch (error) {
+                         DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                     }
+                 };
 
-    function loadGridState() {
-        var form = $('#formId').val();
-        // Call the API to get the grid state
-        $.ajax({
-            url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-            method: 'GET',
-            data: {
-                form: form
-            },
-            success: function (response) {
-                // Get the DataGrid instance
-                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                 reader.readAsText(file);
+             });
 
-                // Load the state into the DataGrid
-                if (response) {
-                    try {
-                        // Parse the JSON string from the file
-                        const layout = JSON.parse(response);
+             // Trigger the file input click event
+             input.click();
+         }
+             $(document).ready(function () {
+         loadGridState(); // 👈 This must be called explicitly
+     });
+         function loadGridState() {
 
-                        // Restore the grid state
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the JSON is valid.");
-                    }
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading grid state:", error);
-            }
-        });
-    }
+             var form = $('#formId').val();
+             // Call the API to get the grid state
+             $.ajax({
+                 url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                 method: 'GET',
+                 data: {
+                     form: form
+                 },
+                 success: function (response) {
+                     // Get the DataGrid instance
+                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-    function setDefaultLayoutClick(e) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        const form = $('#formId').val();
+                     // Load the state into the DataGrid
+                     if (response) {
+                         try {
+                             // Parse the JSON string from the file
+                             const layout = JSON.parse(response);
 
-        if (!grid) {
-            DevExpress.ui.notify("Grid not found", "error", 2000);
-            return;
-        }
-
-        const layout = grid.state();
-     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
-
-       // console.log("JSON Layout:", layoutJson);
-        console.log("XML Layout:", layoutJson); // Comment if not needed
-
-        $.ajax({
-            url: '/api/Utility/SaveLayout',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                layout: layoutJson, // or use layoutXml if backend expects XML
-                form: form
-            }),
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function (xhr) {
-                console.error("SaveLayout error:", xhr.responseText);
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
+                             // Restore the grid state
+                             dataGrid.state(layout);
+                         } catch (error) {
+                             console.error("Error parsing JSON:", error);
+                             // alert("Failed to load layout. Please ensure the JSON is valid.");
+                         }
+                     }
+                 },
+                 error: function (xhr, status, error) {
+                     console.error("Error loading grid state:", error);
+                 }
+             });
+         }
 
     // Optional: Convert DevExtreme JSON to custom XML format (not real XtraSerializer)
     function convertLayoutToXml(layout) {
@@ -515,34 +544,7 @@
 
 
 
-        function resetLayoutClick(e) {
-            var grid = $("#dataGrid").dxDataGrid("instance");
-            var form = $('#formId').val();
 
-            const layout = grid.state();
-     //   const layoutJson = JSON.stringify(layout, null, 2); // JSON string
-        const layoutJson = convertLayoutToXml(layout); // Optional: to get XML string
-
-       // console.log("JSON Layout:", layoutJson);
-        console.log("XML Layout:", layoutJson); // Comment if not needed
-
-        $.ajax({
-            url: '/api/Utility/SaveLayout',
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify({
-                layout: layoutJson, // or use layoutXml if backend expects XML
-                form: form
-            }),
-                success: function (data) {
-                    DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                    grid.state({});
-                },
-                error: function () {
-                    DevExpress.ui.notify("Error while saving data", "error", 2000);
-                }
-            });
-        }
 
     // Footer Group Pannel button click event
     function toggleGroupPanel() {
@@ -826,6 +828,13 @@
             ChangeRowHeight(70);
         }
     }
+     
+      $(function () {
+        $("#ShowDayBooks").text(formatMessage("Show Day Books"));
+    });
+      $(function () {
+        $("#Reportsss").text(formatMessage("Report"));
+    });
 
 
 </script>

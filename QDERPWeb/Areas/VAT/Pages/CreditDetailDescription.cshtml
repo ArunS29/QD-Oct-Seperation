@@ -115,7 +115,7 @@
         <div class="top-buttons">
             @(Html.DevExtreme().Button()
                 .ID("btnUseDetailedDesc")
-                .Text("Use Detailed Description")
+                .Text("Use Detailed Description of test")
                 .Type(ButtonType.Default)
                 )
             @(Html.DevExtreme().Button()
@@ -261,7 +261,7 @@
     async function convertToArabicbtn() {
         const textBox1Instance = $("#DetailedDescription").dxTextBox("instance");
         const textBox2Instance = $("#DetailedDescriptionArabic").dxTextBox("instance");
-        debugger;
+        
         if (!textBox1Instance || !textBox2Instance) {
             console.error("TextBox instances are not properly initialized.");
             return;
@@ -304,4 +304,33 @@
 
                 });
         });
+
+            // ✅ Use Detailed Description
+    $("#btnUseDetailedDesc").dxButton("instance").option("onClick", function () {
+        alert('hi')
+        const textBox = $("#DetailedDescription").dxTextBox("instance");
+        const currentValue = textBox.option("value"); // whatever is currently inside
+
+        if (!currentValue || currentValue.trim() === "") {
+            alert("No description found to search for.");
+            return;
+        }
+
+        $.get("/VAT/CreditDetailDescription?handler=DetailedDescription",
+            { description: currentValue })
+            .done(function (data) {
+                if (data && data.trim() !== "") {
+                    textBox.option("value", data); // replace with detailed desc
+                } else {
+                    DevExpress.ui.notify("No detailed description found.", "info", 2000);
+                }
+            });
+    });
+
+    // ✅ Use Item Description → just keep current textbox value
+    $("#btnUseItemDesc").dxButton("instance").option("onClick", function () {
+        // do nothing, it already has the item description
+        DevExpress.ui.notify("Item description kept as is.", "info", 2000);
+    });
+
 </script>

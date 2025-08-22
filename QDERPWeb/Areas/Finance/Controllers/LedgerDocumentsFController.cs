@@ -1,4 +1,5 @@
 ﻿using Azure.Storage.Blobs;
+using DevExpress.CodeParser;
 using DevExpress.Office.Drawing;
 using DevExpress.XtraRichEdit.Import.Html;
 using DevExtreme.AspNet.Data;
@@ -101,7 +102,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> AddDocumentsEntry(string folderId, string moduleType, string isMaster)
+        public async Task<IActionResult> AddDocumentsEntry(string folderId, string moduleType, string isMaster, string menuType)
         {
             try
             {
@@ -140,40 +141,126 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 string documentType = (isMasterNormalized == "true" || isMasterNormalized == "master documents")
                     ? "Master Documents"
                     : "Transaction Documents";
-
+                menuType = Clean(menuType);
                 // Get voucher date if transaction document
                 DateTime? voucherDate = null;
                 if (documentType == "Transaction Documents")
                 {
-                    DateTime? task1 = await dbContext.Tbl201VoucherEntries
-                        .Where(v => v.VoucherNo == folderId)
-                        .Select(v => (DateTime?)v.AddedOn)
-                        .FirstOrDefaultAsync();
 
-                    DateTime? task2 = await dbContext.Tbl20102ExpenseClaimMasters
-                        .Where(c => c.ClaimRefNo == folderId)
-                        .Select(c => (DateTime?)c.ClaimCreatedOn)
-                        .FirstOrDefaultAsync();
+                    if (menuType == "finance")
+                    {
 
-                    DateTime? task3 = await dbContext.Tbl20126JournalRegisterMasters
-                        .Where(c => c.JournalRefNo == folderId)
-                        .Select(c => (DateTime?)c.JournalEntryDate)
-                        .FirstOrDefaultAsync();
 
-                    DateTime? task4 = await dbContext.Tbl201ChartOfAccounts
-                       .Where(c => c.AccountId == folderId)
-                       .Select(c => (DateTime?)c.RecordCreatedOn)
-                       .FirstOrDefaultAsync();
+                        DateTime? task1 = await dbContext.Tbl201VoucherEntries
+                            .Where(v => v.VoucherNo == folderId)
+                            .Select(v => (DateTime?)v.AddedOn)
+                            .FirstOrDefaultAsync();
 
-                    DateTime? task5 = await dbContext.Tbl20105AssetMasters
-                       .Where(c => c.AssetLedgerNo == folderId)
-                       .Select(c => (DateTime?)c.AddedOn)
-                       .FirstOrDefaultAsync();
+                        DateTime? task2 = await dbContext.Tbl20102ExpenseClaimMasters
+                            .Where(c => c.ClaimRefNo == folderId)
+                            .Select(c => (DateTime?)c.ClaimCreatedOn)
+                            .FirstOrDefaultAsync();
 
-                    voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
+                        DateTime? task3 = await dbContext.Tbl20126JournalRegisterMasters
+                            .Where(c => c.JournalRefNo == folderId)
+                            .Select(c => (DateTime?)c.JournalEntryDate)
+                            .FirstOrDefaultAsync();
 
+                        DateTime? task4 = await dbContext.Tbl201ChartOfAccounts
+                           .Where(c => c.AccountId == folderId)
+                           .Select(c => (DateTime?)c.RecordCreatedOn)
+                           .FirstOrDefaultAsync();
+
+                        DateTime? task5 = await dbContext.Tbl20105AssetMasters
+                           .Where(c => c.AssetLedgerNo == folderId)
+                           .Select(c => (DateTime?)c.AddedOn)
+                           .FirstOrDefaultAsync();
+
+
+
+                        voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
+
+
+
+                    }
+                    else if (menuType == "vat")
+                    {
+
+
+                        DateTime? task1 = await dbContext.Tbl20170VatcreditNoteMasters
+                            .Where(v => v.CreditNoteNo == folderId)
+                            .Select(v => (DateTime?)v.CreditNoteDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task2 = await dbContext.Tbl20161VatinvoiceMasters
+                            .Where(c => c.InvoiceNo == folderId)
+                            .Select(c => (DateTime?)c.InvoiceDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task3 = await dbContext.Tbl20166VatpurchaseMasters
+                            .Where(c => c.PurchaseVoucherNo == folderId)
+                            .Select(c => (DateTime?)c.PurchaseVoucherDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task4 = await dbContext.Tbl20172VatdebitNoteMasters
+                            .Where(c => c.DebitNoteNo == folderId)
+                            .Select(c => (DateTime?)c.DebitNoteDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task5 = await dbContext.Tbl20181ProformaInvoiceMasters
+                            .Where(c => c.ProformaInvoiceNo == folderId)
+                            .Select(c => (DateTime?)c.ProformaInvoiceDate)
+                            .FirstOrDefaultAsync();
+
+                        voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5;
+
+                    }
+                    else if (menuType == "inventory")
+                    {
+
+                        DateTime? task1 = await dbContext.Tbl60601purchaseRequestMasters
+                            .Where(c => c.Mprno == folderId)
+                            .Select(c => (DateTime?)c.Mprdate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task2 = await dbContext.Tbl20164GoodsAndServicesMasters
+                            .Where(c => c.Gscode == folderId)
+                            .Select(c => (DateTime?)c.CreatedOn)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task3 = await dbContext.Tbl60101quotationMasters
+                            .Where(c => c.QuoteNo == folderId)
+                            .Select(c => (DateTime?)c.QuoteDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task4 = await dbContext.Tbl60201salesOrderMasters
+                            .Where(c => c.SalesOrderNo == folderId)
+                            .Select(c => (DateTime?)c.SalesOrderDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task5 = await dbContext.Tbl60301deliveryNoteMasters
+                            .Where(c => c.DeliveryNoteNo == folderId)
+                            .Select(c => (DateTime?)c.DeliveryDate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task6 = await dbContext.Tbl60701rfqmasters
+                            .Where(c => c.Rfqno == folderId)
+                            .Select(c => (DateTime?)c.Rfqdate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task7 = await dbContext.Tbl60401purchaseOrderMasters
+                            .Where(c => c.Pono == folderId)
+                            .Select(c => (DateTime?)c.Podate)
+                            .FirstOrDefaultAsync();
+
+                        DateTime? task8 = await dbContext.Tbl60501materialReceiptMasters
+                            .Where(c => c.ReceiptNo == folderId)
+                            .Select(c => (DateTime?)c.ReceiptDate)
+                            .FirstOrDefaultAsync();
+
+                        voucherDate = task1 ?? task2 ?? task3 ?? task4 ?? task5 ?? task6 ?? task7 ?? task8;
+                    }
                 }
-
 
                 int year = voucherDate?.Year ?? DateTime.Now.Year;
                 string month = (voucherDate?.Month ?? DateTime.Now.Month).ToString("00");
@@ -188,8 +275,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var fileName = $"{docNo}_{Path.GetFileName(file.FileName)}";
                     string blobPath = (documentType == "Transaction Documents")
-                        ? $"transaction_documents/{area}/year{year}/{month}/{moduleType}/{folderId}/{fileName}"
-                        : $"master_documents/{area}/{moduleType}/{folderId}/{fileName}";
+                        ? $"transaction_documents/{menuType}/year{year}/{month}/{moduleType}/{folderId}/{fileName}"
+                        : $"master_documents/{menuType}/{moduleType}/{folderId}/{fileName}";
 
                     var azurePath = await blobHelper.UploadFileAsync(file, blobPath, tenantName);
 
@@ -261,7 +348,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
 
         [HttpGet]
-            public async Task<IActionResult> GetDocuments(string folderId, string module)
+            public async Task<IActionResult> GetDocuments(string folderId, string module, string menuType, string folderId2)
             {
                 try
                 {
@@ -288,7 +375,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var normalizedModule = Clean(module);
                     var normalizedFolderId = Clean(folderId);
                     var normalizedTenant = Clean(tenantName);
-
+                    var normalizedMenu = Clean(menuType);
+                    var normalizedFolderId2 = string.IsNullOrWhiteSpace(folderId2) ? Clean(folderId) : Clean(folderId2);
                     // Build partial Azure path prefix
                     var azurePathPrefix = $"{normalizedTenant}/"; // Tenant root
 
@@ -298,13 +386,19 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var allBlobsInTenant = await blobHelper.ListBlobsAsync(azurePathPrefix);
 
-                    var dbDocs = await dbContext.Tbl20116LedgerDocuments
-                        .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
-                                    d.AzurePath.Contains(normalizedModule) &&
-                                    d.AzurePath.Contains(normalizedFolderId))
-                        .ToListAsync();
+                var dbDocs = await dbContext.Tbl20116LedgerDocuments
+                    .Where(d =>
+                        !string.IsNullOrEmpty(d.AzurePath) &&
+                        (
+                            (d.AzurePath.Contains(normalizedMenu) &&
+                             d.AzurePath.Contains(normalizedModule) &&
+                             d.AzurePath.Contains(normalizedFolderId))
+                            || d.AzurePath.Contains(normalizedFolderId2)
+                        )
+                    )
+                    .ToListAsync();
 
-                    var matchingDocs = dbDocs
+                var matchingDocs = dbDocs
                         .Where(d => allBlobsInTenant.Contains(d.AzurePath))
                         .Select((d, index) => new
                         {

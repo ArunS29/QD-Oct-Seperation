@@ -17,20 +17,18 @@
     var currentReportName = '@Model.ReportName';
 
     function onDocumentViewerReady(s, e) {
-        s.preview.zoom(1.5); // Set zoom level
+        // Set zoom level correctly
+        s.GetPreviewModel().reportPreview.zoom(1.8);
 
-        // Ask the user
-        const wantsFullscreen = confirm("Would you like to view the report in fullscreen mode?");
-
-        if (wantsFullscreen) {
-            const viewerContainer = document.querySelector(".dxrd-preview-wrapper");
-            if (viewerContainer && viewerContainer.requestFullscreen) {
-                viewerContainer.requestFullscreen().catch(err => {
-                    console.warn("Fullscreen request failed:", err);
-                });
-            }
-        }
+        // Wait until the toolbar is rendered
+        setTimeout(() => {
+            tryTriggerFullScreen();
+        }, 1000);
     }
+
+
+
+
 
 
 
@@ -59,12 +57,14 @@
     function refreshEmailPopup() {
         document.getElementById("emailFrame").src = document.getElementById("emailFrame").src;
     }
+
+
+
 </script>
 
 <button class="btn btn-primary send-email-btn" onclick="openEmailPopup()">📧 Send Email</button>
 @(Html.DevExpress().WebDocumentViewer("documentViewer")
     .Height("82em")
-    
     .ClientSideEvents(events => events.DocumentReady("onDocumentViewerReady"))
     .Bind(Model.Report)
 )
@@ -345,5 +345,10 @@
 
         window.open(reportDesignerUrl, "_blank", "noopener,noreferrer,width=1200,height=800");
     }
+        document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" || event.keyCode === 27) {
+            window.close();
+        }
+    });
 </script>
 

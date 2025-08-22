@@ -3,9 +3,11 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Globalization;
 using System.Net;
 
@@ -17,10 +19,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 	{
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<MaterialRequestEnquiriesDetailsController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public MaterialRequestEnquiriesDetailsController(ILogger<MaterialRequestEnquiriesDetailsController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public MaterialRequestEnquiriesDetailsController(ILogger<MaterialRequestEnquiriesDetailsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
 		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 		
@@ -37,11 +42,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
 						return BadRequest("Invalid toDate format. Use MM/dd/yyyy.");
 
-					var data = await dbContext.Qry60604purchaseRequestViewMasters
-						.Where(x => x.Mprdate >= from && x.Mprdate <= to)
-						.ToListAsync();
+                    var data = await dbContext.Qry60604purchaseRequestViewMasters
+                        .Where(x => x.Mprdate >= from && x.Mprdate <= to)
+                        .Where(x => !EF.Functions.Like(x.Mprno, "%(R%)")) // excludes any (R...)
+                        .ToListAsync();
 
-					return Ok(data);
+
+                    return Ok(data);
 				}
 				catch (Exception ex)
 				{
@@ -179,11 +186,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					//DeleteDocumentPDF(Mprno, "VoucherScanned\\IMSEnquiry");
 
 					dbContext.SaveChanges();
-					
-					// Log the deletion
-					//InsertUserEntryLogSheet("IMS Purchase Request", $"IMS Purchase Request Ref No. {Mprno} has been deleted by User ID: {User.Identity.Name}.", User.Identity.Name, Mprno);
+                    _userActionLogger.LogAsync(module: "IMS > Delete Purchase Request  ",
+                      actionDetail: $"Deleted Purchase Request {Mprno}",
+                      documentNo: $"{Mprno}"
+                    );
 
-					return Json(new { success = true, message = "Request/Enquiry has been successfully removed from the database." });
+                    // Log the deletion
+                    //InsertUserEntryLogSheet("IMS Purchase Request", $"IMS Purchase Request Ref No. {Mprno} has been deleted by User ID: {User.Identity.Name}.", User.Identity.Name, Mprno);
+
+                    return Json(new { success = true, message = "Request/Enquiry has been successfully removed from the database." });
 				}
 				catch (Exception ex)
 				{
@@ -194,41 +205,83 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 			return Json(new { success = false, message = "Invalid tenant context." });
 		}
+       
+
+
         [HttpPost]
-        public async Task<IActionResult> UnlockMaterialRequest([FromBody] PurchaseRequestViewModel request)
+        public async Task<IActionResult> UnlockPurchaseRequest([FromBody] PurchaseRequestViewModel request)
         {
             try
             {
-                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                    return Unauthorized(new { success = false, message = "Invalid tenant." });
-
                 if (string.IsNullOrWhiteSpace(request?.Mprno))
                     return BadRequest(new { success = false, message = "MPR No is required." });
 
-                var existingEntity = await dbContext.Tbl60601purchaseRequestMasters
+                var tenantName = HttpContext.Session.GetString("TenantName");
+                if (string.IsNullOrWhiteSpace(tenantName) || !_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized(new { success = false, message = "Tenant not found." });
+
+                var currentUserId = Convert.ToInt32(HttpContext.Session.GetString("UserId"));
+                var userName = HttpContext.Session.GetString("UserName");
+
+                // ✅ Fetch user level
+                var userLevel = await dbContext.TblUserMasters
+                    .Where(u => u.UserId == currentUserId)
+                    .Select(u => u.UserLevel)
+                    .FirstOrDefaultAsync();
+
+                if (userLevel != 99)
+                    return Forbid("Only admin users can unlock the Purchase Request.");
+
+                // ✅ Fetch the MPR record
+                var mpr = await dbContext.Tbl60601purchaseRequestMasters
                     .FirstOrDefaultAsync(x => x.Mprno == request.Mprno);
 
-                if (existingEntity == null)
-                    return NotFound(new { success = false, message = "Request/Enquiry not found." });
+                if (mpr == null)
+                    return NotFound(new { success = false, message = "Purchase Request not found." });
 
-                if (existingEntity.IsApproved != true && existingEntity.IsSubmitted != true && existingEntity.IsVerified != true)
-                    return Ok(new { success = false, message = "Request/Enquiry is already unlocked." });
+                // ✅ Unlock logic
+                mpr.IsSubmitted = false;
+                mpr.SubmittedBy = null;
+                mpr.SubmittedOn = null;
 
-                existingEntity.IsApproved = false;
-				existingEntity.IsSubmitted = false;
-				existingEntity.IsVerified = false;
+                mpr.IsVerified = false;
+                mpr.VerifiedBy = null;
+                mpr.VerifiedOn = null;
 
-                dbContext.Tbl60601purchaseRequestMasters.Update(existingEntity);
+                mpr.IsApproved = false;
+                mpr.ApprovedBy = null;
+                mpr.ApprovedOn = null;
+
+                mpr.RequestSignatory = null;
+                mpr.MprverifiedSign = null;
+                mpr.MprapprovedSign = null;
+
+                mpr.PurchaseRequestStatusId = 34; // Re-Initiated
+
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Request/Enquiry has been unlocked successfully." });
+                // ✅ Optional: Logging to stored procedure
+                //string logDetails = $"IMS Purchase Request Ref No. {request.Mprno} has been Unlocked by User ID: {currentUserId}, User Name: {userName}.";
+
+                //await dbContext.Database.ExecuteSqlRawAsync(
+                //    "EXEC sp90116InsertUserLogEntry @p0, @p1, @p2, @p3",
+                //    new object[]
+                //    {
+                //"IMS Purchase Request", // @p0
+                //logDetails,             // @p1
+                //userName,               // @p2
+                //request.Mprno           // @p3
+                //    });
+
+                return Ok(new { success = true, message = "Purchase Request has been unlocked." });
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error while unlocking Request/Enquiry.");
-                return StatusCode(500, new { success = false, message = "Internal server error", details = ex.Message });
+                return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
             }
         }
+
+
         [HttpGet]
         public ActionResult<string> GetNewRequestNoApi()
         {
@@ -300,14 +353,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             try
             {
-                // ✅ Retrieve tenantName from session
-                var tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
-                    return NotFound("Company not found.");
+                    return NotFound(new { success = false, message = "Company not found." });
+
 
                 // ✅ Generate new MPR No
                 string newMprNo = GetNewMprNo(
@@ -328,6 +391,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Clone Purchase Request",
+                     actionDetail: $":Cloned Purchase Request {originalMprNo}",
+                     documentNo: $"{originalMprNo}"
+                   );
 
                 return Ok(new
                 {
@@ -343,7 +410,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
         [HttpPost]
-        public IActionResult ReviseRequest([FromBody] string originalMprNo)
+        public IActionResult ReviseRequest1([FromBody] string originalMprNo)
         {
             if (string.IsNullOrWhiteSpace(originalMprNo))
                 return BadRequest(new { success = false, message = "Original MPR No is required." });
@@ -367,8 +434,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 );
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Revise Request",
+                 actionDetail: $":Revised Request {originalMprNo}",
+                 documentNo: $"{originalMprNo}"
+                );
+                var currentRevisionno = dbContext.Tbl60601purchaseRequestMasters
+           .Where(p => p.Mprno.StartsWith(originalMprNo))
+           .Max(p => p.MprrevisionNo);
 
-                return Ok(new { success = true, message = "Purchase Request revised successfully.", newMprNo });
+                return Ok(new { success = true, message = "Purchase Request revised successfully.", newMprNo,RevisionNo= currentRevisionno });
             }
             catch (Exception ex)
             {
@@ -376,12 +450,139 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Revision failed", detail = ex.Message });
             }
         }
+
+
+        [HttpPost]
+        public IActionResult ReviseRequest([FromBody] string originalMprNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalMprNo))
+                return BadRequest(new { success = false, message = "Original MPR No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+            {
+                // ✅ Get Default Company ID from session
+                var companyIdStr = HttpContext.Session.GetString("DefaultcompanyID");
+                if (!int.TryParse(companyIdStr, out int companyId))
+                    return BadRequest(new { success = false, message = "Invalid or missing Company ID in session." });
+
+                // ✅ Fetch revision setting using companyId
+                var revisionSetting = dbContext.Tbl901CompanyDetails02s
+                    .FirstOrDefault(x => x.CompanyId == companyId);
+
+                if (revisionSetting == null || revisionSetting.IsAllowMprrevision == false)
+                {
+                    return BadRequest(new { success = false, message = "MPR Revision Workflow is Disabled. You cannot revise the Purchase Request." });
+                }
+
+                // ✅ Unlock the original PR by resetting all status fields
+                var prMaster = dbContext.Tbl60601purchaseRequestMasters
+                    .FirstOrDefault(x => x.Mprno == originalMprNo);
+
+                if (prMaster != null)
+                {
+                    prMaster.IsSubmitted = false;
+                    prMaster.SubmittedBy = string.Empty;
+                    prMaster.SubmittedOn = null;
+
+                    prMaster.IsVerified = false;
+                    prMaster.VerifiedBy = string.Empty;
+                    prMaster.VerifiedOn = null;
+
+                    prMaster.IsApproved = false;
+                    prMaster.ApprovedBy = string.Empty;
+                    prMaster.ApprovedOn = null;
+
+                    prMaster.RequestSignatory = null;
+                    prMaster.MprverifiedSign = null;
+                    prMaster.MprapprovedSign = null;
+                }
+
+                // ✅ Get current revision, create new MPR No
+                var currentRevision = dbContext.Tbl60601purchaseRequestMasters
+                    .Where(p => p.Mprno.StartsWith(originalMprNo))
+                    .Max(p => p.MprrevisionId ?? 0);
+
+                int nextRevision = currentRevision + 1;
+                string newMprNo = $"{originalMprNo}-(R{currentRevision})";
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+
+                // ✅ Execute SP to clone & create new revised MPR
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp600_32CreateNewRevisedMPR @p0, @p1, @p2, @p3",
+                    originalMprNo, newMprNo, nextRevision, user
+                );
+
+                dbContext.SaveChanges();
+
+                // ✅ Log user action
+                _userActionLogger.LogAsync(
+                    module: "IMS > Revise Request",
+                    actionDetail: $":Revised Request {originalMprNo}",
+                    documentNo: $"{originalMprNo}"
+                );
+
+                // ✅ Return new MPR No and Revision No
+                var currentRevisionNo = dbContext.Tbl60601purchaseRequestMasters
+                    .Where(p => p.Mprno.StartsWith(originalMprNo))
+                    .Max(p => p.MprrevisionNo);
+
+                return Ok(new
+                {
+                    success = true,
+                    message = "Purchase Request revised successfully.",
+                    newMprNo,
+                    RevisionNo = currentRevisionNo
+                });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error revising purchase request: " + ex.Message);
+                return StatusCode(500, new
+                {
+                    success = false,
+                    message = "Revision failed",
+                    detail = ex.Message
+                });
+            }
+        }
+
+
         //New RFQ
+
+        [HttpGet]
+        public async Task<IActionResult> GetIsEnableMPRWorkflow()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var companyIdStr = HttpContext.Session.GetString("DefaultcompanyID");
+                if (!int.TryParse(companyIdStr, out int companyId))
+                    return BadRequest("Invalid Company ID");
+
+                var isEnabled = await dbContext.Tbl901CompanyDetails02s
+                    .Where(x => x.CompanyId == companyId)
+                    .Select(x => x.IsEnableMprworkflow ?? false)
+                    .FirstOrDefaultAsync();
+
+                return Ok(isEnabled);
+            }
+
+            return BadRequest("Invalid tenant or DB context.");
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> CheckIfApproved(string mprNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+
+
+
+
                 var isApproved = await dbContext.Tbl60601purchaseRequestMasters
                     .Where(x => x.Mprno == mprNo)
                     .Select(x => x.IsApproved ?? false)
@@ -477,15 +678,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-                // 1. Get tenant name from session
-                string tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // 2. Get company settings
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 string rfqAbbrv = company.Rfqabbrv ?? "RFQ";
                 int yearDigits = company.InvoiceYearDigits ?? 0;
@@ -523,6 +733,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 2; // Assuming '2' is the 'converted to RFQ' status
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Create Rfq From Mpr",
+                      actionDetail: $":Created Rfq From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 // 6. Return success
@@ -545,14 +760,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-                string tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // Step 1: Get company info
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 // Step 2: Get NoOfDigits for quotation from CompanyDetails02
                 int noOfDigits = dbContext.Tbl901CompanyDetails02s
@@ -598,6 +823,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 4; // Assume 3 = Quotation created
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Created Quotation From Mpr",
+                      actionDetail: $":Created Quotation From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 return Ok(new { success = true, message = "Quotation created successfully.", quoteno = quoteNo });
@@ -619,14 +849,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant." });
 
-                string tenantName = HttpContext.Session.GetString("TenantName");
-                if (string.IsNullOrWhiteSpace(tenantName))
-                    return Unauthorized(new { success = false, message = "Tenant name not found in session." });
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // Step 1: Get company details
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
                 if (company == null)
                     return NotFound(new { success = false, message = "Company not found." });
+
 
                 // Step 2: Generate Receipt No
                 string abbrv = company.RequestAbbrv ?? "MR";
@@ -665,6 +905,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 8; // ✅ Set status for "Material Receipt Created"
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Create Material Receipt From Mpr",
+                      actionDetail: $":Created Material Receipt From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 return Ok(new
@@ -690,12 +935,25 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
                     return Unauthorized(new { success = false, message = "Invalid tenant context." });
-
-                string tenantName = HttpContext.Session.GetString("TenantName");
                 string addedBy = HttpContext.Session.GetString("UserName") ?? "System";
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
 
-                // 1. Generate new PO No
-                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
                 var config = dbContext.Tbl901CompanyDetails02s.FirstOrDefault(c => c.CompanyId == company.CompanyId);
                 string prefix = company.PurchaseOrderAbbrv ?? "PO";
                 int yearDigits = company.InvoiceYearDigits ?? 0;
@@ -729,6 +987,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     mpr.PurchaseRequestStatusId = 6;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Create PO From Mpr",
+                      actionDetail: $":Created PO From Mpr  {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
                 }
 
                 return Ok(new { success = true, poNo = newPoNo, message = "Purchase Order created successfully." });
@@ -737,6 +1000,38 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
             }
+        }
+        [HttpGet]
+        public IActionResult GetIMSMaterial(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry60604purchaseRequestViewMasters.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                        // not verified
+                        query = query.Where(x => x.IsSubmitted == true && x.IsVerified != true);
+                        break;
+
+                    case "tobeapproved":
+                        // verified but not approved
+                        query = query.Where(x => x.IsVerified == true && x.IsApproved != true);
+                        break;
+
+                    case "tobecancelled":
+                        // approved but not posted
+                        query = query.Where(x =>  x.IsCancelled == true);
+                        break;
+                }
+            }
+
+            var result = query.ToList(); // get the actual records
+            return Json(result);
         }
 
 

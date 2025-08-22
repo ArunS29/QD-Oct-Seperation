@@ -6,12 +6,12 @@
 @using QD.ERP.Web.Pages.Shared.IMS
 @{
 }
-@{
-    var enteredBy = HttpContext.Session.GetString("UserName");
-    var enteredOn = DateTime.Now.ToString("dd-MMM-yyyy");
-    var modifiedBy = HttpContext.Session.GetString("UserName");
-    var modifiedOn = DateTime.Now.ToString("dd-MMM-yyyy");
-}
+@* @{ *@
+@*     var enteredBy = HttpContext.Session.GetString("UserName"); *@
+@*     var enteredOn = DateTime.Now.ToString("dd-MMM-yyyy"); *@
+@*     var modifiedBy = HttpContext.Session.GetString("UserName"); *@
+@*     var modifiedOn = DateTime.Now.ToString("dd-MMM-yyyy"); *@
+@* } *@
 <style>
     .form-tablee {
         width: 100%;
@@ -182,7 +182,7 @@
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
-<input id="formId" value="frm201LedgerAccount" type="hidden" />
+<input id="formId" value="frm60001InventoryStockEdit" type="hidden" />
 <div class="containerInventoryStock">
 
         <div class="dx-fieldset horizontal-container">
@@ -195,103 +195,249 @@
                             .LabelMode(EditorLabelMode.Floating)
                             .ReadOnly(true)
                             .OnValueChanged("onGscodeChanged")
-                            .Width("90%"))
+                            .Width("100%")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Stock Item Code is required.");
+                            })
+                        )
                     </td>
-                    <td>
-                        <div style="display:flex;align-items:end;">
-                            @(Html.DevExtreme().SelectBox()
-                                .ID("StockGroup")
-                                .DisplayExpr("GsgroupName")
-                                .ValueExpr("GsgroupId")
-                                .DataSource(d => d.WebApi()
-                                .Controller("StockInventory")
-                                .LoadAction("GetStockGroups")
-                                )
-                                .Label(new JS("formatMessage('Stock Group')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .SearchEnabled(true)
-                                .Width("90%")
-                                .OnValueChanged("onStockGroupChange")
-                                .Buttons(buttons =>
-                                {
-                                    buttons.Add()
-                                    .Name("btnAddAccount")
-                                    .Location(TextEditorButtonLocation.After)
-                                    .Widget(w => w.Button()
-                                    .Type(ButtonType.Default)
-                                    .Icon("plus")
-                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                                    .OnClick("StockGroup"));
-                                    buttons.Add()
-                                    .Name("dropDown");
-                                }))
-                        </div>
-                    </td>
+                <td>
+                    <div style="display:flex;align-items:end;">
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                            .ID("StockGroup")
+                            .Label(new JS("formatMessage('Stock Group')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("StockInventory")
+                            .LoadAction("GetStockGroups")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("GsgroupId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Option("dataGridId", "StockGroupGrid-datagrid")
+                            .Width("90%")
+                            .OpenOnFieldClick(false)
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("GsgroupId")
+                            .DisplayExpr("GsgroupName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .Width("100%")
+                            .OnKeyDown("onKeyDown")
+                            .OnValueChanged("onStockGroupChange") 
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetTypeOfGroupContentTemplate"))
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Stock Group is required.");
+                            })
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("StockGroup"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            })
+                            )
+                    </div>
+                </td>
+                    @* <td> *@
+                    @*     <div style="display:flex;align-items:end;"> *@
+                    @*         @(Html.DevExtreme().SelectBox() *@
+                    @*             .ID("StockGroup1") *@
+                    @*             .DisplayExpr("GsgroupName") *@
+                    @*             .ValueExpr("GsgroupId") *@
+                    @*             .DataSource(d => d.WebApi() *@
+                    @*             .Controller("StockInventory") *@
+                    @*             .LoadAction("GetStockGroups") *@
+                    @*             ) *@
+                    @*             .Label(new JS("formatMessage('Stock Group')")) *@
+                    @*             .LabelMode(EditorLabelMode.Floating) *@
+                    @*             .SearchEnabled(true) *@
+                    @*             .Width("90%") *@
+                    @*             .OnValueChanged("onStockGroupChange") *@
+                    @*             .Buttons(buttons => *@
+                    @*             { *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("btnAddAccount") *@
+                    @*                 .Location(TextEditorButtonLocation.After) *@
+                    @*                 .Widget(w => w.Button() *@
+                    @*                 .Type(ButtonType.Default) *@
+                    @*                 .Icon("plus") *@
+                    @*                 .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                    @*                                 .OnClick("StockGroup")); *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("dropDown"); *@
+                    @*             })) *@
+                    @*     </div> *@
+                    @* </td> *@
                     <td colspan="2">
                         @(Html.DevExtreme().TextBox()
                             .ID("ItemName")
                             .Label(new JS("formatMessage('Item Name / Description')"))
                             .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%"))
+                            .Width("100%")
+                            .ValidationRules(rules =>
+                            {
+                                rules.AddRequired().Message("Item name is required.");
+                            })
+                        )
                     </td>
                 </tr>
                 <tr>
-                    <td>
-                        <div style="display:flex;align-items:end;" ;>
-                        @(Html.DevExtreme().SelectBox()
-                                .ID("ItemStore")
-                                .DisplayExpr("StoreName")
-                                .ValueExpr("StoreId")
-                                .DataSource(d => d.WebApi()
-                                .Controller("ERStockInventory")
-                                .LoadAction("GetStores")
-                                )
-                                .Label(new JS("formatMessage('Item Store')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("90%")
-                                .Buttons(buttons =>
+                <td>
+                    <div style="display:flex;align-items:end;" ;>
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                            .Label(new JS("formatMessage('Item Store')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("ERStockInventory")
+                            .LoadAction("GetStores")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("StoreId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ItemStore")
+                            .Option("dataGridId", "GetItemStore-datagrid")
+                            .Width("90%")
+                            .OpenOnFieldClick(false)
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("StoreId")
+                            .DisplayExpr("StoreName")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .Width("100%")
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetTypeOfItemStoreContentTemplate"))
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("AddItemStore"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            })
+                                .ValidationRules(rules =>
                                 {
-                                    buttons.Add()
-                                    .Name("btnAddAccount")
-                                    .Location(TextEditorButtonLocation.After)
-                                    .Widget(w => w.Button()
-                                    .Type(ButtonType.Default)
-                                    .Icon("plus")
-                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                    .OnClick("ItemStore"));
-                                    buttons.Add()
-                                    .Name("dropDown");
-                                }))
-                        </div>
+                                    rules.AddRequired().Message("Item Store is required.");
+                                })
+                            )
+                    </div>
+                </td>
+                    @* <td> *@
+                    @*     <div style="display:flex;align-items:end;" ;> *@
+                    @*     @(Html.DevExtreme().SelectBox() *@
+                    @*             .ID("ItemStore") *@
+                    @*             .DisplayExpr("StoreName") *@
+                    @*             .ValueExpr("StoreId1") *@
+                    @*             .DataSource(d => d.WebApi() *@
+                    @*             .Controller("ERStockInventory") *@
+                    @*             .LoadAction("GetStores") *@
+                    @*             ) *@
+                    @*             .Label(new JS("formatMessage('Item Store')")) *@
+                    @*             .LabelMode(EditorLabelMode.Floating) *@
+                    @*             .Width("90%") *@
+                    @*             .Buttons(buttons => *@
+                    @*             { *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("btnAddAccount") *@
+                    @*                 .Location(TextEditorButtonLocation.After) *@
+                    @*                 .Widget(w => w.Button() *@
+                    @*                 .Type(ButtonType.Default) *@
+                    @*                 .Icon("plus") *@
+                    @*                 .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                    @*                 .OnClick("ItemStore")); *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("dropDown"); *@
+                    @*             })) *@
+                    @*     </div> *@
+                    @* </td> *@
+                <td>
+                    <div style="display:flex;align-items:end;">
+                        @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                            .Label(new JS("formatMessage('Item Classification')"))
+                            .DataSource(d => d.WebApi()
+                            .Controller("ERStockInventory")
+                            .LoadAction("GetItemClassifications")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("StockClassId")
+                            )
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ID("ItemClassification")
+                            .Option("dataGridId", "GetItemClassification-datagrid")
+                            .Width("90%")
+                            @*  .ShowClearButton(true)
+.AcceptCustomValue(true) *@
+                            .OpenOnFieldClick(false)//
+                            .ValueChangeEvent("input")
+                            .HoverStateEnabled(true)
+                            .ValueExpr("StockClassId")
+                            .DisplayExpr("StockClassification")
+                            .OnInput("dropDownBoxOnInput")
+                            .OnOpened("onOpened")
+                            .TabIndex(1)
+                            .Width("100%")
+                            .OnKeyDown("onKeyDown")
+                            //.OnValueChanged("dropDownBoxValueChanged")
+                            .ContentTemplate(new TemplateName("GetTypeOfClassificationContentTemplate"))
+                            .Buttons(buttons =>
+                            {
+                                buttons.Add()
+                                .Name("btnAddAccount")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                .Type(ButtonType.Default)
+                                .Icon("plus")
+                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                .OnClick("AddItemClassification"));
+                                buttons.Add()
+                                .Name("dropDown");
+                            }))
+                    </div>
                     </td>
-                    <td>
-                        <div style="display:flex;align-items:end;">
-                        @(Html.DevExtreme().SelectBox()
-                                .ID("ItemClassification")
-                                .DisplayExpr("StockClassification")
-                                .ValueExpr("StockClassId")
-                                .DataSource(d => d.WebApi()
-                                .Controller("ERStockInventory")
-                                .LoadAction("GetItemClassifications")
-                                )
-                                .Label(new JS("formatMessage('Item Classification')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .Width("90%")
-                                .Buttons(buttons =>
-                                {
-                                    buttons.Add()
-                                    .Name("btnAddAccount")
-                                    .Location(TextEditorButtonLocation.After)
-                                    .Widget(w => w.Button()
-                                    .Type(ButtonType.Default)
-                                    .Icon("plus")
-                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
-                                    .OnClick("ItemClassification"));
-                                    buttons.Add()
-                                    .Name("dropDown");
-                                }))
-                        </div>
-                    </td>
+                    @* <td> *@
+                    @*     <div style="display:flex;align-items:end;"> *@
+                    @*     @(Html.DevExtreme().SelectBox() *@
+                    @*             .ID("ItemClassification2") *@
+                    @*             .DisplayExpr("StockClassification") *@
+                    @*             .ValueExpr("StockClassId") *@
+                    @*             .DataSource(d => d.WebApi() *@
+                    @*             .Controller("ERStockInventory") *@
+                    @*             .LoadAction("GetItemClassifications") *@
+                    @*             ) *@
+                    @*             .Label(new JS("formatMessage('Item Classification')")) *@
+                    @*             .LabelMode(EditorLabelMode.Floating) *@
+                    @*             .Width("90%") *@
+                    @*             .Buttons(buttons => *@
+                    @*             { *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("btnAddAccount") *@
+                    @*                 .Location(TextEditorButtonLocation.After) *@
+                    @*                 .Widget(w => w.Button() *@
+                    @*                 .Type(ButtonType.Default) *@
+                    @*                 .Icon("plus") *@
+                    @*                 .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                    @*                 .OnClick("ItemClassification")); *@
+                    @*                 buttons.Add() *@
+                    @*                 .Name("dropDown"); *@
+                    @*             })) *@
+                    @*     </div> *@
+                    @* </td> *@
                     <th style="display:flex; align-items:end;">
                         @(Html.DevExtreme().Button()
                             .ID("convertToArabic2")
@@ -507,32 +653,76 @@
 
                             <td>
                                 <div style="display:flex; align-items:end;">
-                                @(Html.DevExtreme().SelectBox()
-                                    .ID("UnitOfMeasure")
-                                    .DisplayExpr("UnitType")
-                                    .SearchEnabled(true)
-                                    .ValueExpr("UnitCode")
-                                    .DataSource(d => d.WebApi()
-                                    .Controller("StockInventory")
-                                    .LoadAction("GetUnitCodes")
-                                    )
+                                    @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Unit of Measure : *')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("260")
-                                    .Buttons(buttons =>
-                                    {
-                                        buttons.Add()
-                                        .Name("btnAddAccount")
-                                        .Location(TextEditorButtonLocation.After)
-                                        .Widget(w => w.Button()
-                                        .Type(ButtonType.Default)
-                                        .Icon("plus")
-                                        .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                        .DataSource(d => d.WebApi()
+                                            .Controller("StockInventory")
+                                            .LoadAction("GetUnitCodes")
+                                            .LoadMode(DataSourceLoadMode.Raw)
+                                            .Key("UnitCode")
+                                        )
+                                        .LabelMode(EditorLabelMode.Floating)
+                                        .ID("UnitOfMeasure")
+                                        .Option("dataGridId", "GetUOM-datagrid")
+                                        .Width("90%")
+                                        .OpenOnFieldClick(false)
+                                        .ValueChangeEvent("input")
+                                        .HoverStateEnabled(true)
+                                        .ValueExpr("UnitCode")
+                                        .DisplayExpr("UnitType")
+                                        .OnInput("dropDownBoxOnInput")
+                                        .OnOpened("onOpened")
+                                        .TabIndex(1)
+                                        .Width("100%")
+                                        .OnKeyDown("onKeyDown")
+                                        //.OnValueChanged("dropDownBoxValueChanged")
+                                        .ContentTemplate(new TemplateName("GetTypeOfUOMContentTemplate"))
+                                        .Buttons(buttons =>
+                                        {
+                                            buttons.Add()
+                                            .Name("btnAddAccount")
+                                            .Location(TextEditorButtonLocation.After)
+                                            .Widget(w => w.Button()
+                                            .Type(ButtonType.Default)
+                                            .Icon("plus")
+                                            .ElementAttr(new { @class = "custom-hover-button add-hover" })
                                         .OnClick("UnitOfMeasure"));
-                                        buttons.Add()
-                                        .Name("dropDown");
-                                    }))
+                                            buttons.Add()
+                                            .Name("dropDown");
+                                        })
+                                        .ValidationRules(rules =>
+                                        {
+                                            rules.AddRequired().Message("Unit Of Measurement is required.");
+                                        })
+                                        )
                                 </div>
+                                @* <div style="display:flex; align-items:end;"> *@
+                                @* @(Html.DevExtreme().SelectBox() *@
+                                @*     .ID("UnitOfMeasure1") *@
+                                @*     .DisplayExpr("UnitType") *@
+                                @*     .SearchEnabled(true) *@
+                                @*     .ValueExpr("UnitCode") *@
+                                @*     .DataSource(d => d.WebApi() *@
+                                @*     .Controller("StockInventory") *@
+                                @*     .LoadAction("GetUnitCodes") *@
+                                @*     ) *@
+                                @*     .Label(new JS("formatMessage('Unit of Measure : *')")) *@
+                                @*     .LabelMode(EditorLabelMode.Floating) *@
+                                @*     .Width("260") *@
+                                @*     .Buttons(buttons => *@
+                                @*     { *@
+                                @*         buttons.Add() *@
+                                @*         .Name("btnAddAccount") *@
+                                @*         .Location(TextEditorButtonLocation.After) *@
+                                @*         .Widget(w => w.Button() *@
+                                @*         .Type(ButtonType.Default) *@
+                                @*         .Icon("plus") *@
+                                @*         .ElementAttr(new { @class = "custom-hover-button add-hover" }) *@
+                                @*         .OnClick("UnitOfMeasure")); *@
+                                @*         buttons.Add() *@
+                                @*         .Name("dropDown"); *@
+                                @*     })) *@
+                                @* </div> *@
                             </td>
 
                             <td>
@@ -731,11 +921,22 @@
                                 .LabelMode(EditorLabelMode.Floating))
                             </td>
 
+                        
+                        </tr>
+                    <tr class="flex-row" style="margin-top: 6px;">
+                        <td>
+                            @(Html.DevExtreme().TextBox()
+                                .ID("AvgCostPrice")
+                                .Disabled(true)
+                                .Label(new JS("formatMessage('Avg Cost Price :')"))
+                                .LabelMode(EditorLabelMode.Floating)
+                                .ReadOnly(true))
+                        </td>
                         <td>
                             <label class="item-discontinued-label" id="ItemDiscontinuedLabel"></label>
                             @(Html.DevExtreme().CheckBox()
-                            .ID("ItemDiscontinued")
-                            .Value(true))   
+                                .ID("ItemDiscontinued")
+                                .Value(true))
                         </td>
                         </tr>
                     </table>
@@ -747,8 +948,7 @@
                     <!-- Entered By -->
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
-                                                .ID("EnteredBy")
-                                                .Value(enteredBy)
+                                                .ID("EnteredBy")                                                
                                                 .Label(new JS("formatMessage('Entered By')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ReadOnly(true)
@@ -759,7 +959,6 @@
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                                 .ID("EnteredOn")
-                                                .Value(enteredOn)
                                                 .Label(new JS("formatMessage('Entered On : ')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ReadOnly(true)
@@ -771,7 +970,6 @@
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                     .ID("ModifiedBy")
-                                    .Value(modifiedBy)
                                     .Label(new JS("formatMessage('Modified By')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ReadOnly(true)
@@ -783,7 +981,6 @@
                     <div style="flex: 1;">
                         @(Html.DevExtreme().TextArea()
                                     .ID("ModifiedOn")
-                                    .Value(modifiedOn)
                                     .Label(new JS("formatMessage('Modified On')"))
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ReadOnly(true)
@@ -820,16 +1017,13 @@
                     });
                     function UnitOfMeasure() {
                         const url = `/${tenantName}/IMS/UnitOfMeasure`;
-                    const title = "Unit Of Measure";
-                        openModal(url, title);
+                        var dropDownBox = $("#UnitOfMeasure").dxDropDownBox("instance");
+                        dropDownBox.close();
+                        const title = "Unit Of Measure";
+                        openModal(url, title,"70%","70%");
                     }
-                                            $(function () {
-                        // Direct assignment using Razor variables
-                        $("#EnteredBy").dxTextArea("instance").option("value", "@enteredBy");
-                        $("#EnteredOn").dxTextArea("instance").option("value", "@enteredOn");
-                        $("#ModifiedBy").dxTextArea("instance").option("value", "@modifiedBy");
-                        $("#ModifiedOn").dxTextArea("instance").option("value", "@modifiedOn");
-                    });
+                         
+                    
 
                 </script>
             </div>
@@ -998,7 +1192,7 @@
                                     .ID("MinQty")
                                     .Label(new JS("formatMessage('Minimum Quantity')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1007,7 +1201,7 @@
                                     .ID("MaxQty")
                                     .Label(new JS("formatMessage('Maximum Quantity')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1016,7 +1210,7 @@
                                     .ID("ReorderLevel")
                                     .Label(new JS("formatMessage('Reorder Level')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1025,7 +1219,7 @@
                                     .ID("ReorderQty")
                                     .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1034,7 +1228,7 @@
                                     .ID("ReorderLeadTime")
                                     .Label(new JS("formatMessage('Reorder Lead Time')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(350)
+                                    .Width(300)
                                     .ShowSpinButtons(true))
                             </td>
 
@@ -1072,12 +1266,7 @@
                         </td>
                     </tr>
                 </table>
-                @* <div class="dx-field ledgerResult" style="margin-bottom: 100px"> *@
-                @* <!-- Page Title --> *@
-                @* <h2 style="margin-left: 13px; font-weight: bold;">Stock Control</h2> *@
-
                 <!-- Spacer (optional) -->
-                <div style="height: 20px;"></div>
                     <table style="width:100%; margin-top: 15px;">
                    
                         <tr>
@@ -1140,23 +1329,19 @@
                                 .ShowColumnLines(true)
                                 .ShowRowLines(true)
                                 .RowAlternationEnabled(true)
+                                .AllowColumnReordering(false)
                                 .ShowColumnHeaders(true)
                                 .ColumnAutoWidth(true)
                                 .AllowColumnReordering(true)
                                 .ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
-
                                 .AllowColumnResizing(true)
                                 .ColumnFixing(fixing => fixing.Enabled(true))
                                 .GroupPanel(panel => panel.Visible(false))
                                 .ShowBorders(true)
                                 )
-
-
-
                             </td>
                         </tr>
                     </table>
-
                 </div>
 
                 <script>
@@ -1841,11 +2026,11 @@
                                                        </a>
                                                    </text>);
 
-                             columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
+                        columns.Add().DataField("ReceiptDate").Caption(new JS("formatMessage('Receipt Date')")).DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy");
                         columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
                         columns.Add().DataField("QtyReceived").Caption(new JS("formatMessage('Qty')")).DataType(GridColumnDataType.Number);
                         columns.Add().DataField("UnitDesc").Caption(new JS("formatMessage('Unit Desc')"));
-                                    columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
+                        columns.Add().DataField("UnitPrice").Caption(new JS("formatMessage('Unit Price')")).Format("##,##0.00");
                         columns.Add().DataField("ItemDiscount").Caption(new JS("formatMessage('Discount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTaxAmount").Caption(new JS("formatMessage('VAT Amount')")).Format("##,##0.00");
                         columns.Add().DataField("LineTotalWithTax").Caption(new JS("formatMessage('Total')")).Format("##,##0.00");
@@ -1944,14 +2129,22 @@
                         editing.AllowUpdating(true);
                         editing.UseIcons(true);
                     })
+                .OnRowUpdated("onUnitConversionRowUpdated")
                     .Columns(columns =>
                     {
+
+                        columns.Add()
+                        .DataField("GSCode")
+                        .Visible(false);
+
                         columns.Add()
                         .DataField("UnitCodeOfConversion")
                         .Width(300)
                         .Caption(new JS("formatMessage('Unit Code Of Conversion')"))
-                        .EditCellTemplate(new JS("unitCodeDropDownEditor")); // ✅ Use as editor
+                        .EditCellTemplate(new JS("unitCodeDropDownEditor")) // ✅ Use as editor
+                        .CellTemplate(new JS("unitCodeCellTemplate"));
 
+                        
                         columns.Add()
                         .DataField("UnitConverted")
                         .Caption(new JS("formatMessage('Unit Converted')"))
@@ -2021,16 +2214,32 @@
                             });
                         });
                     });
-                   
+
+            function onUnitConversionRowUpdated(e) {
+                const stockNoBox = $("#StockNoItemCode").dxTextBox("instance");
+                selectedGsCode = stockNoBox.option("value"); // set from your stock group selection
+                e.data.GSCode = selectedGsCode;
+
+                $.ajax({
+                    url: "/api/StockInventory/SaveUnitConversion",
+                    method: "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(e.data),
+                    success: function () {
+                        DevExpress.ui.notify("Saved successfully", "success", 2000);
+                    },
+                    error: function () {
+                        DevExpress.ui.notify("Error saving data", "error", 2000);
+                    }
+                });
+            }
 
                     // ✅ Dropdown Editor Template
                     function unitCodeDropDownEditor(cellElement, cellInfo) {
                         $("<div>").appendTo(cellElement).dxDropDownBox({
                             value: cellInfo.value,
                             valueExpr: "UnitCode",
-                            displayExpr: function (item) {
-                                return item ? `${item.UnitType}` : "";
-                            },
+                            displayExpr: "UnitType",
                             dataSource: unitCodeLookupData,
                             showClearButton: true,
                             dropDownOptions: { width: 600 },
@@ -2226,7 +2435,7 @@
                         .Icon("attach")
                         .Type(ButtonType.Default)
                         .Width(250)
-                        .OnClick("inventoryDocumentBind") // JavaScript function
+                        .OnClick("onIMSAttachmentButtonClick") // JavaScript function
                         )
                          @(Html.DevExtreme().Button()
                          .Text(new JS("formatMessage('Merge Selected Files')"))
@@ -2565,6 +2774,149 @@
         </div>
 
         </div>
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfGroupContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+            .ID("StockGroupGrid-datagrid")
+            .DataSource(d => d.WebApi()
+                .Controller("StockInventory")
+                .LoadAction("GetStockGroups")
+            .LoadMode(DataSourceLoadMode.Raw)
+                .Key("GsgroupId")
+            )
+            .WordWrapEnabled(true)
+            .ShowBorders(true)
+            @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+            .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+            .OnSelectionChanged("dataGridSelectionChanged1")
+            .OnInitialized("dataGridInitialized1")
+            .HeaderFilter(p => p.Visible(true))
+            .FilterRow(f => f.Visible(false))
+            .ShowBorders(true)
+            .HoverStateEnabled(true)
+            .Paging(p => p.PageSize(15))
+            //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+            .Height(345)
+            .Selection(s => s.Mode(SelectionMode.Single))
+            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+            .Columns(columns =>
+            {
+                    columns.Add().DataField("GsgroupName");
+
+
+
+            })
+            )
+}
+
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfItemStoreContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                .ID("GetItemStore-datagrid")
+                .DataSource(d => d.WebApi()
+                .Controller("ERStockInventory")
+                .LoadAction("GetStores")
+                .LoadMode(DataSourceLoadMode.Raw)
+                .Key("StoreId")
+                )
+                .WordWrapEnabled(true)
+                .ShowBorders(true)
+                @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                .OnSelectionChanged("dataGridSelectionChanged2")
+                .OnInitialized("dataGridInitialized2")
+                .HeaderFilter(p => p.Visible(true))
+                .FilterRow(f => f.Visible(false))
+                .ShowBorders(true)
+                .HoverStateEnabled(true)
+                .Paging(p => p.PageSize(15))
+                //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                .Height(345)
+                .Selection(s => s.Mode(SelectionMode.Single))
+                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                .Columns(columns =>
+                {
+                    columns.Add().DataField("StoreName");
+
+
+
+                })
+                )
+}
+
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfClassificationContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+        .ID("GetItemClassification-datagrid")
+        .DataSource(d => d.WebApi()
+        .Controller("ERStockInventory")
+        .LoadAction("GetItemClassifications")
+        .LoadMode(DataSourceLoadMode.Raw)
+        .Key("StockClassId")
+        )
+        .WordWrapEnabled(true)
+        .ShowBorders(true)
+        @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+        .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+        .OnSelectionChanged("dataGridSelectionChanged3")
+        .OnInitialized("dataGridInitialized3")
+        .HeaderFilter(p => p.Visible(true))
+        .FilterRow(f => f.Visible(false))
+        .ShowBorders(true)
+        .HoverStateEnabled(true)
+        .Paging(p => p.PageSize(15))
+        //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+        .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+        .Height(345)
+        .Selection(s => s.Mode(SelectionMode.Single))
+        .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+        .Columns(columns =>
+        {
+                columns.Add().DataField("StockClassification");
+
+
+
+        })
+        )
+}
+
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfUOMContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                    .ID("GetUOM-datagrid")
+                    .DataSource(d => d.WebApi()
+                        .Controller("StockInventory")
+                        .LoadAction("GetUnitCodes")
+                        .LoadMode(DataSourceLoadMode.Raw)
+                        .Key("UnitCode")
+                    )
+                    .WordWrapEnabled(true)
+                    .ShowBorders(true)
+                    @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+                    .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged4")
+                    .OnInitialized("dataGridInitialized4")
+                    .HeaderFilter(p => p.Visible(true))
+                    .FilterRow(f => f.Visible(false))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    //.SearchPanel(sp => sp.Visible(true).HighlightSearchText(true).Width(235))
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                            columns.Add().DataField("UnitType");
+
+
+
+                    })
+                    )
+}
 <script>
 
             function onTabSelectionChanged(e) {
@@ -2628,20 +2980,26 @@
                   openModal(url, title);
           }
 
-      function ItemStore(){
+      function AddItemStore(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemStore`;
-              const title = "Item Store";
-                  openModal(url, title);
+                var dropDownBox = $("#ItemStore").dxDropDownBox("instance");
+                dropDownBox.close();
+                const title = "Item Store";
+                openModal(url, title, "","60%");
           }
             function StockGroup(){
                 const url = `/${tenantName}/IMS/StockDetails_StockGroup`;
-              const title = "Stock Group";
-                  openModal(url, title);
+                var dropDownBox = $("#StockGroup").dxDropDownBox("instance");
+                dropDownBox.close();
+                const title = "Stock Group";
+                openModal(url, title,"","70%");
           }
-            function ItemClassification(){
+            function AddItemClassification(){
                 const url = `/${tenantName}/IMS/StockDetails_ItemClassification`;
-              const title = "Item Classification";
-                  openModal(url, title);
+                var dropDownBox = $("#ItemClassification").dxDropDownBox("instance");
+                dropDownBox.close();
+                const title = "Item Classification";
+                openModal(url, title);
           }
             $(document).ready(function () {
           // Ensure dxTabs has loaded, then get the selected index
@@ -2686,7 +3044,10 @@
         if (code) {
             isEditMode = mode === "edit";
             isViewMode = mode === "view";
-
+            if (isEditMode || isViewMode) {
+                var btn = $("#btnSave").dxButton("instance");
+                btn.option("text", "Update");
+            }
             setTimeout(() => {
                 fetch(`/api/StockInventory/GetByCode?code=${encodeURIComponent(code)}`)
                     .then(response => {
@@ -2698,12 +3059,12 @@
                             $("#StockNoItemCode").dxTextBox("instance").option("value", data.Gscode);
                             $("#ItemName").dxTextBox("instance").option("value", data.Gsdescrpition);
                             $("#ItemNameArabic").dxTextBox("instance").option("value", data.GsdescriptionAr);
-                            $("#StockGroup").dxSelectBox("instance").option("value", data.GsgroupId);
-                            $("#ItemStore").dxSelectBox("instance").option("value", data.StoreId);
-                            $("#ItemClassification").dxSelectBox("instance").option("value", data.ItemClassificationId);
+                            $("#StockGroup").dxDropDownBox("instance").option("value", data.GsgroupId);
+                            $("#ItemStore").dxDropDownBox("instance").option("value", data.StoreCode);
+                            $("#ItemClassification").dxDropDownBox("instance").option("value", data.ItemClassificationId);
                             $("#DetailedDescription").dxTextArea("instance").option("value", data.GsdetailedDesc);
                             $("#ArabicDescription").dxTextArea("instance").option("value", data.GsdetailedDescAr);
-                            $("#UnitOfMeasure").dxSelectBox("instance").option("value", data.GsuoM);
+                            $("#UnitOfMeasure").dxDropDownBox("instance").option("value", data.GsuoM);
                             $("#PackingUnit").dxNumberBox("instance").option("value", data.GspackingUnit);
                             $("#ItemSize").dxSelectBox("instance").option("value", data.ItemSize);
                             $("#ItemThickness").dxSelectBox("instance").option("value", data.ItemThickness);
@@ -2722,7 +3083,18 @@
                             $("#ItemManufacturer").dxSelectBox("instance").option("value", data.ItemMake);
                             $("#CountryOfOrigin").dxTextBox("instance").option("value", data.CountryOfOrigin);
                             $("#EnteredBy").dxTextArea("instance").option("value", data.CreatedBy);
+                                var dt = new Date(data.CreatedOn);
+                                var dateOnly = dt.toISOString().split('T')[0];  // "YYYY-MM-DD"
+                            $("#EnteredOn").dxTextArea("instance").option("value", dateOnly);
                             $("#ModifiedBy").dxTextArea("instance").option("value", data.ModifiedBy);
+                                    if (data.ModifiedOn) {
+                                        var dt2 = new Date(data.ModifiedOn);
+                                        var dateOnly2 = dt2.toISOString().split('T')[0];
+                                        $("#ModifiedOn").dxTextArea("instance").option("value", dateOnly2);
+                                    } else {
+                                        $("#ModifiedOn").dxTextArea("instance").option("value", ""); // clear if empty
+                                    }
+                            $("#AvgCostPrice").dxTextBox("instance").option("value", data.CostPrice); // need to calculate value
                             $("#ItemDiscontinued").dxCheckBox("instance").option("value", data.IsDiscontinued);
                                 // Load Item Image (Base64)
                             if (data.ItemImage) {
@@ -2808,7 +3180,7 @@
     function OpeningBalanceOPB() {
         // Get instances safely
         const gscodeInstance = $("#StockNoItemCode").dxTextBox("instance");
-        const descriptionInstance = $("#DetailedDescription").dxTextArea("instance");
+        const descriptionInstance = $("#ItemName").dxTextBox("instance");
 
         // Check if both controls exist
         if (!gscodeInstance || !descriptionInstance) {
@@ -2819,10 +3191,13 @@
         // Safely get values
         const gscode = gscodeInstance.option("value") || '';
         const description = descriptionInstance.option("value") || '';
-
+        const openingBalance = $("#OpeningBalance").dxNumberBox("instance").option("value");
+        const costPrice = $("#CostPrice").dxNumberBox("instance").option("value");
+        const unitOfMeasureInstance = $("#UnitOfMeasure").dxDropDownBox("instance");
+        const unitCode = unitOfMeasureInstance.option("value");
         // Encode the parameters to ensure URL safety
-        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&modal=true`;
-        openModal(url, "Opening Balance");
+        const url = `/${tenantName}/IMS/OpeningBalance?gscode=${encodeURIComponent(gscode)}&description=${encodeURIComponent(description)}&OpeningBalance=${encodeURIComponent(openingBalance)}&CostPrice=${encodeURIComponent(costPrice)}&UnitCode=${encodeURIComponent(unitCode)}&modal=true`;
+        openModal(url, "Opening Balance Entries");
     }
 
     async function convertToArabic() {
@@ -2913,6 +3288,332 @@
          textBox2Instance.option("value", arabicTranslation);
 
     }
+    // Attachment
+    function onIMSAttachmentButtonClick() {
+        // Get Voucher No safely
+        const stockCodeBox = $("#StockNoItemCode").dxTextBox("instance");
+        const stockCode = stockCodeBox ? stockCodeBox.option("value") : null;
+        var button = $("#btnSave").dxButton("instance");
+        var buttonText = button ? button.option("text") : "";
+
+
+        if (!stockCode || stockCode == null || stockCode == "") {
+            DevExpress.ui.notify(
+                "Select Stock Group",
+                "warning",
+                4000
+            );            
+            return;
+        }
+        
+
+        if (buttonText !== "Update") {
+            DevExpress.ui.notify(
+                "Please, Save Stock Detail",
+                "warning",
+                    4000
+            );
+            return;
+        }
+        var menuType = "inventory";
+
+
+        var formType ="Stock Inventory";
+        // Log and build URL
+        console.log("Voucher No:", stockCode);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(stockCode)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
+    function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        const text = ddbInstance.option("text");
+        const gridId = ddbInstance.option("dataGridId");
+        if (gridId) {
+            const grid = $("#" + gridId).dxDataGrid("instance");
+            if (grid) {
+                grid.option("searchPanel.text", text);
+            }
+        }
+    }
+
+    function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+
+        const gridId = ddbInstance.option("dataGridId");
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else if (grid) {
+            let focusedIndex = grid.option("focusedRowIndex");
+            let visibleRows = grid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            grid.focus(grid.getRowElement(focusedIndex));
+        }
+    }
+
+    function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); // 👈 Get common ID
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); // refresh data
+        }
+
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+    //Classification
+    function dataGridSelectionChanged3(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ItemClassification").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized3(e) {
+        dataGrid = e.component;
+    }
+    //Group
+    function dataGridSelectionChanged1(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#StockGroup").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized1(e) {
+        dataGrid = e.component;
+    }
+    //Item Store
+    function dataGridSelectionChanged2(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#ItemStore").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized2(e) {
+        dataGrid = e.component;
+    }
+    //UOM
+    function dataGridSelectionChanged4(e) {
+        const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+        const ddbInstance = $("#UnitOfMeasure").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+    function dataGridInitialized4(e) {
+        dataGrid = e.component;
+    }
+    //Unit of Convertion - unittype data
+    function unitCodeCellTemplate(cellElement, cellInfo) {
+        const rawCode = cellInfo.data.UnitCodeOfConversion;
+
+        if (rawCode == null || rawCode === "" || isNaN(Number(rawCode))) {
+            cellElement.text(""); // or "—" or "N/A"
+            return;
+        }
+
+        const code = Number(rawCode);
+        const unit = unitCodeLookupData.find(x => Number(x.UnitCode) === code);
+        const display = unit ? unit.UnitType : code;
+        cellElement.text(display);
+    }
+       function onSaveClicked(e) {
+            const isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
+            const isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
+            const isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
+            const isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
+            const isUOM = $("#UnitOfMeasure").dxValidator("instance").validate().isValid;
+
+
+            if (!isStoreValid || !isStockGroupValid || !isItemNameValid || !isStockCodeValid || !isUOM) {
+                DevExpress.ui.notify("Please, Fill Required Fields", "error", 3000);
+                return;
+            }
+
+
+            var isUpdate = $("#btnSave").data("is-update");
+        const data = {
+            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
+            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
+            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
+            GsgroupId: $("#StockGroup").dxDropDownBox("instance").option("value"),
+            StoreCode: $("#ItemStore").dxDropDownBox("instance").option("value"),
+            ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
+            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
+            GsuoM: $("#UnitOfMeasure").dxDropDownBox("instance").option("value"),
+            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
+            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
+            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
+            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
+            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
+            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
+            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
+            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
+            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
+            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
+            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
+            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
+            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
+            ItemColor: $("#ItemColor").dxColorBox("instance").option("value"),
+            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
+            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
+            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
+            // CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
+            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
+            // ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
+            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
+            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
+             MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
+            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
+            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
+            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
+            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
+            ItemImage: imageBase64
+
+        };
+
+        $.ajax({
+            url: '/api/StockInventory/Save',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+
+                if (!isUpdate) {
+                    $("#btnSave").dxButton("instance").option("text", "Update");
+                    $("#btnSave").data("is-update", true);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("Error saving item.", "error", 3000);
+            }
+        });
+    }
+        function onSaveAndCloseClicked(e) {
+            const isStockCodeValid = $("#StockNoItemCode").dxValidator("instance").validate().isValid;
+            const isStockGroupValid = $("#StockGroup").dxValidator("instance").validate().isValid;
+            const isItemNameValid = $("#ItemName").dxValidator("instance").validate().isValid;
+            const isStoreValid = $("#ItemStore").dxValidator("instance").validate().isValid;
+            const isUOM = $("#UnitOfMeasure").dxValidator("instance").validate().isValid;
+
+
+            if (!isStoreValid || !isStockGroupValid || !isItemNameValid || !isStockCodeValid || !isUOM) {
+                DevExpress.ui.notify("Please, Fill Required Fields", "error", 3000);
+                return;
+            }
+
+        var isUpdate = $("#btnSave").data("is-update");
+
+        const data = {
+            Gscode: $("#StockNoItemCode").dxTextBox("instance").option("value"),
+            Gsdescrpition: $("#ItemName").dxTextBox("instance").option("value"),
+            GsdescriptionAr: $("#ItemNameArabic").dxTextBox("instance").option("value"),
+            GsgroupId: $("#StockGroup").dxDropDownBox("instance").option("value"),
+            StoreCode: $("#ItemStore").dxDropDownBox("instance").option("value"),
+            ItemClassificationId: $("#ItemClassification").dxDropDownBox("instance").option("value"),
+            GsdetailedDesc: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            GsdetailedDescAr: $("#ArabicDescription").dxTextArea("instance").option("value"),
+            GsuoM: $("#UnitOfMeasure").dxDropDownBox("instance").option("value"),
+            GspackingUnit: $("#PackingUnit").dxNumberBox("instance").option("value"),
+            ItemSize: $("#ItemSize").dxSelectBox("instance").option("value"),
+            ItemThickness: $("#ItemThickness").dxSelectBox("instance").option("value"),
+            ItemDimension: $("#ItemDimension").dxSelectBox("instance").option("value"),
+            ActualSize: $("#ActualSize").dxTextBox("instance").option("value"),
+            OpeningBalance: $("#OpeningBalance").dxNumberBox("instance").option("value"),
+            CostPrice: $("#CostPrice").dxNumberBox("instance").option("value"),
+            ExFactoryCostPrice: $("#ExFactoryPrice").dxNumberBox("instance").option("value"),
+            GssellingRate: $("#SellingPrice").dxNumberBox("instance").option("value"),
+            MinSellingPrice: $("#MinSellingPrice").dxNumberBox("instance").option("value"),
+            MaxSellingPrice: $("#MaxSellingPrice").dxNumberBox("instance").option("value"),
+            ItemPartNo: $("#ItemPartNo").dxTextBox("instance").option("value"),
+            Hscode: $("#ItemHSCode").dxTextBox("instance").option("value"),
+            ItemColor: $("#ItemColor").dxColorBox("instance").option("value"),
+            ItemBrand: $("#ItemBrand").dxSelectBox("instance").option("value"),
+            ItemMake: $("#ItemManufacturer").dxSelectBox("instance").option("value"),
+            CountryOfOrigin: $("#CountryOfOrigin").dxTextBox("instance").option("value"),
+            // CreatedBy: $("#EnteredBy").dxTextArea("instance").option("value"),
+            // CreatedOn: new Date($("#EnteredOn").dxTextArea("instance").option("value")).toISOString(),
+            // ModifiedBy: $("#ModifiedBy").dxTextArea("instance").option("value"),
+            // ModifiedOn: new Date($("#ModifiedOn").dxTextArea("instance").option("value")).toISOString(),
+            IsDiscontinued: $("#ItemDiscontinued").dxCheckBox("instance").option("value"),
+            MinQty: $("#MinQty").dxNumberBox("instance").option("value"),
+            MaxQty: $("#MaxQty").dxNumberBox("instance").option("value"),
+            ReorderLevel: $("#ReorderLevel").dxNumberBox("instance").option("value"),
+            ReorderQty: $("#ReorderQty").dxNumberBox("instance").option("value"),
+            ReorderLeadTime: $("#ReorderLeadTime").dxNumberBox("instance").option("value"),
+            ItemImage: imageBase64
+        };
+
+        $.ajax({
+            url: '/api/StockInventory/Save',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(data),
+            success: function () {
+                DevExpress.ui.notify(isUpdate ? "Updated successfully!" : "Saved successfully!", "success", 3000);
+
+                if (!isUpdate) {
+                    $("#btnSave").dxButton("instance").option("text", "Update");
+                    $("#btnSave").data("is-update", true);
+                }
+
+                // Navigate back after success
+                setTimeout(() => {
+                    window.history.back();
+                }, 1000);
+            },
+            error: function () {
+                DevExpress.ui.notify("Error saving item.", "error", 3000);
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        debugger;
+            var urlParams = new URLSearchParams(window.location.search);
+            var Gsdescrpition = urlParams.get('Gsdescrpition');
+            var GsdescriptionAr = urlParams.get('GsdescriptionAr');
+            var UnitOfMeasure = urlParams.get('UnitOfMeasure');
+           
+              $("#DetailedDescription").dxTextArea("instance").option("value", Gsdescrpition);
+              $("#ArabicDescription").dxTextArea("instance").option("value", GsdescriptionAr);
+              $("#UnitOfMeasure").dxSelectBox("instance").option("value", UnitOfMeasure);
+              
+        });
 
       
 </script>

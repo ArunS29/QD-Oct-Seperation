@@ -1,4 +1,4 @@
-﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+﻿<div class="horizontal-container" style="gap:10px;background-color:transparent;">
 
 
     <div class="btn-container">
@@ -99,6 +99,33 @@
             .OnClick("toggleGroupPanel")
             )
     </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnToggleHeaderFilter")
+
+            .Text(new JS("formatMessage(' Filter')"))
+            .ElementAttr(new { style = "display: none;" })
+            @* .Icon("filter") *@
+            .OnClick("toggleHeaderFilter")
+            .Template(@<text>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="none">
+                    <!-- Circle background -->
+                    <circle cx="12" cy="12" r="12" fill="var(--title-background-color)" />
+                    <!-- Filter funnel icon in white -->
+                    <polygon points="6 8 18 8 13 13 13 17 11 17 11 13 6 8" fill="#ffffff" />
+                </svg>
+            </div>
+        </text>)
+            )
+
+    </div>
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
@@ -109,22 +136,23 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+                .ID("btnSalesOrderDetails")
+                .Icon("overflow")
+                .Text(new JS("formatMessage('Sales Order Details')"))
+                .OnClick("btnSalesOrderDetail")
+                )
+
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
             .ID("btnAddSalesOrder")
-            .Icon("folder")
+            .Icon("plus")
             .Text(new JS("formatMessage('Add New Sales Order')"))
             .OnClick("AddNewSalesOrder")
             )
 
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-            .ID("btnSalesOrderDetails")
-            .Icon("overflow")
-            .Text(new JS("formatMessage('Sales Order Details')"))
-            .OnClick("btnSalesOrderDetail")
-            )
 
-    </div>
 
    
 </div>

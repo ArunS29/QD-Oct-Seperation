@@ -15,11 +15,11 @@
     function openEmailPopup() {
         alert('Preparing');
 
-        var voucherNo = '@Model.VoucherNo'; 
-        var currentReportName = 'cashPayments'; 
+        var voucherNo = '@Model.VoucherNo';
+        var currentReportName = 'cashPayments';
 
-        console.log("Voucher No:", voucherNo); 
-        console.log("Current Report Name:", currentReportName); 
+        console.log("Voucher No:", voucherNo);
+        console.log("Current Report Name:", currentReportName);
 
         fetch('/api/ReportAttachment/Prepare', {
             method: 'POST',
@@ -31,31 +31,34 @@
                 voucherNo: voucherNo
             })
         })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    const fileName = data.fileName;
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const fileName = data.fileName;
+                const tenantName = window.location.pathname.split('/')[1]; // e.g., 'Sudhir'
 
-                    const popup = document.getElementById("emailPopup");
-                    document.getElementById("emailFrame").src = "/Pages/EmailCompose?fileName=" + encodeURIComponent(fileName);
+                // ✅ FIXED PATH (removed /Pages)
+                document.getElementById("emailFrame").src =
+                    `/${tenantName}/EmailCompose?fileName=${encodeURIComponent(fileName)}`;
 
-                    popup.style.display = "flex";
-                    popup.classList.add("fade-in");
+                const popup = document.getElementById("emailPopup");
+                popup.style.display = "flex";
+                popup.classList.add("fade-in");
 
-                    document.getElementById("emailLoader").style.display = "block";
-                    setTimeout(() => {
-                        document.getElementById("emailLoader").style.display = "none";
-                    }, 1500);
-                } else {
-                    alert("Failed to prepare attachment.");
-                }
-            })
-
-            .catch(err => {
-                console.error("Attachment generation failed:", err);
-                alert("Error preparing email attachment.");
-            });
+                document.getElementById("emailLoader").style.display = "block";
+                setTimeout(() => {
+                    document.getElementById("emailLoader").style.display = "none";
+                }, 1500);
+            } else {
+                alert("Failed to prepare attachment.");
+            }
+        })
+        .catch(err => {
+            console.error("Attachment generation failed:", err);
+            alert("Error preparing email attachment.");
+        });
     }
+
 
 
     function closeEmailPopup() {
@@ -112,6 +115,13 @@
     }
 
     document.addEventListener("DOMContentLoaded", makeDraggable);
+
+
+            document.addEventListener("keydown", function (event) {
+        if (event.key === "Escape" || event.keyCode === 27) {
+            window.close();
+        }
+    });
 </script>
 
 <button class="btn btn-primary send-email-btn" onclick="openEmailPopup()">📧 Send Email</button>
@@ -301,6 +311,34 @@
         height: 100vh;
         overflow: hidden;
         padding: 0px;
+    }
+    /* Floating Close Button */
+
+    .send-email-btn {
+        position: fixed;
+        top: 14px; /* Positioning from the top */
+
+        left: 4px; /* Adjusting position from the right (so it doesn't overlap with Open Designer button) */
+
+        background-color: transparent;
+        border: 1px solid #dc3545; /* Border to make it rectangular */
+
+        padding: 5px 15px; /* Adjusting padding */
+
+        font-size: 14px;
+        color: #dc3545; /* Button color */
+
+        border-radius: 15px; /* Curved edges */
+
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Slight shadow */
+
+        cursor: pointer;
+        z-index: 9999; /* Ensure it's on top of other elements */
+
+        transition: all 0.3s ease;
+        display: flex;
+        align-items: center;
+        height: 35px;
     }
 
 </style>

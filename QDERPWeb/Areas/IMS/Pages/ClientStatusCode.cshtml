@@ -65,6 +65,11 @@
             .LabelMode(EditorLabelMode.Floating)
             .ID("Status")
             .Value("")
+                .ValidationRules(rules =>
+                {
+                    rules.AddRequired()
+                    .Message(new JS("formatMessage('Client Status is required')"));
+                })
             .Width("60%")
             )
        
@@ -215,7 +220,12 @@
         var Status = $("#Status").dxTextBox("instance").option("value");
         //var StatusCode = $("#StatusCode").dxTextBox("instance").option("value");
 
+          var Statusvalidator = $("#Status").dxValidator("instance");
+      
+        var Statusvalidation = Statusvalidator.validate();
+    
 
+        if (Statusvalidation.isValid) {
         // Prepare the object to send
         var VE = {
             "Status": Status,
@@ -235,12 +245,19 @@
                 $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
                 $("#Status").dxTextBox("instance").option("value", "");
-                $("#StatusCode").dxTextBox("instance").option("value", "");
+                // $("#StatusCode").dxTextBox("instance").option("value", "");
+                      
+                $("#Status").dxValidator("instance").reset();
+      
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.notify("Error occurred while updating data: " + error, "error", 3000);
             }
         });
+         } else {
+            // If validation fails, show a notification
+            DevExpress.ui.notify(formatMessage('Please fill required details!'), "error", 2000);
+        }
     }
 
 

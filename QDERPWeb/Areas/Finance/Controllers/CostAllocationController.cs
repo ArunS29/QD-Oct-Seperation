@@ -144,7 +144,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     AmountAllocated = dto.AmountAllocated,
                     CostAllocRemarks = dto.CostAllocRemarks,
                     VoucherEntryId = dto.VoucherEntryId,
-                    VoucherNo = dto.VoucherNo
+                    VoucherNo = dto.VoucherNo,
+                    CurrencyRate = dto.CurrencyRate
                 };
 
                 dbContext.Tbl201CostAllocationMasters.Add(entity);
@@ -245,7 +246,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             }
 
             var allocations = dbContext.Tbl201CostAllocationMasters
-                .Where(x => x.VoucherNo == request.VoucherNo)
+                .Where(x => x.VoucherNo == request.VoucherNo && x.VoucherEntryId == request.VoucherEntryId)
                 .ToList();
 
             if (!allocations.Any())

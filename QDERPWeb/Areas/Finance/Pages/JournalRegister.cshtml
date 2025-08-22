@@ -372,15 +372,15 @@
         <!-- STATIC -->
         <div id="Static" class="titleCard-card vibrant-pink">
             <div class="value-block">
-
-                <h2>Journal Register</h2>
-                <h6>Quick Dice ERP Solutions</h6>
+                <h2 id="Journalregister"></h2>
+                <h6 id="QuickDiceERPSolutions5"></h6>
+               
 
             </div>
         </div>
 
         <div id="cardVoucher" class="titleCard-card cool-blue">
-            <div class="header">Total Vouchers</div>
+            <div class="header" id="accountingvoucherstotal"></div>
             <div class="value-block">
                 <div class="value-slider">
                     <span><i class="fa-solid fa-book"></i> 0</span>
@@ -400,7 +400,7 @@
 
         <!-- DEBIT -->
         <div id="cardDebit" class="titleCard-card deep-purple">
-            <div class="header">Total Debit</div>
+            <div class="header" id="TotalsDebitjournal"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -415,7 +415,7 @@
 
         <!-- CREDIT -->
         <div id="cardCredit" class="titleCard-card mint-green">
-            <div class="header">Total Credit</div>
+            <div class="header" id="Totalscreditjournal"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -552,7 +552,7 @@
         .ElementAttr("class", "dynamicFormatDateBox"))
     @(Html.DevExtreme().Button()
         .ID("btnShowallsubmission") 
-        .Text("Show All Submission")
+        .Text(new JS("formatMessage('Show All Submissions')"))
         .Type(ButtonType.Normal)
         .StylingMode(ButtonStylingMode.Contained)
         .Width(200)
@@ -1315,7 +1315,7 @@
                 url: '/api/AccountingLedgers/GetCurrencyIcon',
                 type: 'GET',
                 success: function (response) {
-                    debugger;
+                    
                     let svgIcon = response.Icon;
                     if (!svgIcon) return;
 
@@ -1368,7 +1368,7 @@
                 url: "/api/AccountingLedgers/GetCurrencyIcon",
                 method: "GET",
                 success: function (response) {
-                    debugger;
+                    
                     if (!response || !response.Icon) return;
 
                     const icon = response.Icon.trim();
@@ -1390,7 +1390,7 @@
                 }
             });
         }
-               function updateCards(data) {
+                 function updateCards(data) {
         const now = new Date();
 
         const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
@@ -1402,7 +1402,6 @@
         let todayDr = 0, weekDr = 0, monthDr = 0;
         let todayCr = 0, weekCr = 0, monthCr = 0;
 
-        // For vouchers
         const uniqueVoucherToday = new Set();
         const uniqueVoucherWeek = new Set();
         const uniqueVoucherMonth = new Set();
@@ -1445,54 +1444,44 @@
             maximumFractionDigits: 2
         });
 
-        // ========== Update Total Debit Card ==========
+        // ===== Update Total Debit Card =====
         $("#cardDebit .value-slider span").eq(0).html(format(todayDr));
         $("#cardDebit .value-slider span").eq(1).html(format(weekDr));
         $("#cardDebit .value-slider span").eq(2).html(format(monthDr));
-        $("#cardDebit .overlay .detail").eq(0).html(`Today: ${format(todayDr)}`);
-        $("#cardDebit .overlay .detail").eq(1).html(`This Week: ${format(weekDr)}`);
-        $("#cardDebit .overlay .detail").eq(2).html(`This Month: ${format(monthDr)}`);
+        $("#cardDebit .overlay .detail").eq(0).html(formatMessage("Today") + `: ${format(todayDr)}`);
+        $("#cardDebit .overlay .detail").eq(1).html(formatMessage("This Week") + `: ${format(weekDr)}`);
+        $("#cardDebit .overlay .detail").eq(2).html(formatMessage("This Month") + `: ${format(monthDr)}`);
 
-        // ========== Update Total Credit Card ==========
+        // ===== Update Total Credit Card =====
         $("#cardCredit .value-slider span").eq(0).html(format(todayCr));
         $("#cardCredit .value-slider span").eq(1).html(format(weekCr));
         $("#cardCredit .value-slider span").eq(2).html(format(monthCr));
-        $("#cardCredit .overlay .detail").eq(0).html(`Today: ${format(todayCr)}`);
-        $("#cardCredit .overlay .detail").eq(1).html(`This Week: ${format(weekCr)}`);
-        $("#cardCredit .overlay .detail").eq(2).html(`This Month: ${format(monthCr)}`);
-             function getVoucherStatus(voucherSet, startDate, endDate) {
-                let approved = 0, posted = 0;
+        $("#cardCredit .overlay .detail").eq(0).html(formatMessage("Today") + `: ${format(todayCr)}`);
+        $("#cardCredit .overlay .detail").eq(1).html(formatMessage("This Week") + `: ${format(weekCr)}`);
+        $("#cardCredit .overlay .detail").eq(2).html(formatMessage("This Month") + `: ${format(monthCr)}`);
 
-                voucherSet.forEach(voucherNo => {
-                    const filtered = data.filter(item =>
-                        item.JournalRefNo === voucherNo &&
-                        item.JournalEntryDate &&
-                        new Date(item.JournalEntryDate) >= startDate &&
-                        new Date(item.JournalEntryDate) <= endDate
-                    );
+        function getVoucherStatus(voucherSet, startDate, endDate) {
+            let approved = 0, posted = 0;
+            voucherSet.forEach(voucherNo => {
+                const filtered = data.filter(item =>
+                    item.JournalRefNo === voucherNo &&
+                    item.JournalEntryDate &&
+                    new Date(item.JournalEntryDate) >= startDate &&
+                    new Date(item.JournalEntryDate) <= endDate
+                );
+                if (filtered.some(x => x.IsApproved)) approved++;
+                if (filtered.some(x => x.IsPosted)) posted++;
+            });
+            return { total: voucherSet.size, approved, posted };
+        }
 
-                    if (filtered.some(x => x.IsApproved)) approved++;
-                    if (filtered.some(x => x.IsPosted)) posted++;
-                });
-
-                return {
-                    total: voucherSet.size,
-                    approved,
-                    posted
-                };
-            }
-        // ======== Voucher Summary Helper ========
-            let totalCount = 0;
-        let approvedCount = 0;
-        let postedCount = 0;
+        // ===== Voucher Summary =====
+        let totalCount = 0, approvedCount = 0, postedCount = 0;
         const countedVouchers = new Set();
 
         data.forEach(item => {
             if (!item.JournalRefNo) return;
-
             totalCount++;
-
-            // Only count approved/post status once per unique voucher
             if (!countedVouchers.has(item.JournalRefNo)) {
                 const matching = data.filter(x => x.JournalRefNo === item.JournalRefNo);
                 if (matching.some(x => x.IsApproved)) approvedCount++;
@@ -1501,26 +1490,19 @@
             }
         });
 
-        // ======== Voucher Status Counts ========
         const todayStatus = getVoucherStatus(uniqueVoucherToday, today, today);
         const weekStatus = getVoucherStatus(uniqueVoucherWeek, thisWeekStart, today);
         const monthStatus = getVoucherStatus(uniqueVoucherMonth, thisMonthStart, today);
 
-        // ======== Update Voucher Card ========
-        $("#cardVoucher .value-slider span").eq(0).html(`<i class="fa-solid fa-book"></i> Today: ${todayStatus.total}`);
-        $("#cardVoucher .value-slider span").eq(1).html(`<i class="fa-solid fa-book"></i> This Week: ${weekStatus.total}`);
-        $("#cardVoucher .value-slider span").eq(2).html(`<i class="fa-solid fa-book"></i> This Month: ${monthStatus.total}`);
+        $("#cardVoucher .value-slider span").eq(0).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Today")}: ${todayStatus.total}`);
+        $("#cardVoucher .value-slider span").eq(1).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Week")}: ${weekStatus.total}`);
+        $("#cardVoucher .value-slider span").eq(2).html(`<i class="fa-solid fa-book"></i> ${formatMessage("This Month")}: ${monthStatus.total}`);
 
-        $("#cardVoucher .overlay .detail").eq(0).html(`
-            <i class="fa-solid fa-book"></i> Total: ${totalCount}
-        `);
-        $("#cardVoucher .overlay .detail").eq(1).html(`
-            <i class="fa-solid fa-book"></i> Approved: ${approvedCount} 
-        `);
-        $("#cardVoucher .overlay .detail").eq(2).html(`
-                <i class="fa-solid fa-book"></i>  Posted: ${postedCount}
-        `);
+        $("#cardVoucher .overlay .detail").eq(0).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Total")}: ${totalCount}`);
+        $("#cardVoucher .overlay .detail").eq(1).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Approved")}: ${approvedCount}`);
+        $("#cardVoucher .overlay .detail").eq(2).html(`<i class="fa-solid fa-book"></i> ${formatMessage("Posted")}: ${postedCount}`);
     }
+
 
 
 
@@ -1538,5 +1520,21 @@
              injectCurrencyToCards();// slight delay to wait for DOM re-render
         }
     }
+        $(function () {
+                    $("#Journalregister").text(formatMessage("Journal Register"));
+        });
+        $(function () {
+            $("#QuickDiceERPSolutions5").text(formatMessage("Quick Dice ERP Solutions"));
+        });
+        $(function () {
+                $("#accountingvoucherstotal").text(formatMessage("Total Vouchers"));
+        });
+        $(function () {
+            $("#TotalsDebitjournal").text(formatMessage("Total Debit"));
+        });
+        $(function () {
+            $("#Totalscreditjournal").text(formatMessage("Total Credit"));
+        });
+       
 </script>
 

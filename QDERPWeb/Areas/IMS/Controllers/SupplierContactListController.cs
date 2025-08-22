@@ -1,8 +1,10 @@
 ﻿using DevExpress.CodeParser;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,8 +14,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SupplierContactListController> _logger;
-        public SupplierContactListController(ILogger<SupplierContactListController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly IUserActionLogger _userActionLogger;
+        public SupplierContactListController(ILogger<SupplierContactListController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -71,6 +75,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             existing.ContactEmail = item.ContactEmail;
 
                             dbContext.SaveChanges();
+                            _userActionLogger.LogAsync(module: "IMS > Save Or Update Supplier Contact",
+                                actionDetail: $"Saved Supplier Contact {item.SupplierCode}",
+                                documentNo: $"{item.SupplierCode}"
+                            );
 
                             return Ok(new
                             {
@@ -86,6 +94,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         // Insert
                         dbContext.Tbl3019902SupplierContactLists.Add(item);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Save Or Update Supplier Contact",
+                               actionDetail: $"Saved Supplier Contact {item.SupplierCode}",
+                               documentNo: $"{item.SupplierCode}"
+                           );
 
                         return Ok(new
                         {
@@ -122,6 +134,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl3019902SupplierContactLists.Remove(entity);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete Supplier Contact List",
+                               actionDetail: $"Deleted upplier ContactList {SupplierContactSlNo}",
+                               documentNo: $"{SupplierContactSlNo}"
+                           );
 
                     return Ok(new { success = true, message = "Deleted successfully." });
                 }

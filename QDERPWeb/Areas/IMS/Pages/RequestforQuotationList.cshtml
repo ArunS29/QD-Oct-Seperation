@@ -141,6 +141,54 @@
 		overflow: hidden;
 	}
 
+	.voucher-slider {
+		position: relative;
+		height: 100px;
+		overflow: hidden;
+	}
+	.voucher-slide1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide1.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
+
+	.tile-icon {
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		height: 100%;
+		position: absolute;
+		left: 335px;
+		bottom: 10px;
+	}
 </style>
 
 @* <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -150,49 +198,48 @@
 	</div>
 </div> *@
 
-<div class="title">
+<div class="title" style="width:43% !important">
 	<input id="formId" value="frm201LedgerView" type="hidden" />
-
-	<div class="card blue shine compact">
-		<h2 class="title-slide">Request for Quotation List</h2>
-		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
-
-	</div>
-	<div id="mainCard" class="card today-bg">
-		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
-		</div>
-
-		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
-			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
-			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">Request for Quotation List</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			<div class="tile-icon">
+				<!-- Icon as SVG -->
+				<svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+				</svg>
+			</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<p>&#10024;</p>
-		<h4>No of Items</h4>
-		<h1 id="turnover">0</h1>
-		<h3>for this period</h3>
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">No of Items</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide1 active">
+				<h4>Total Before Tax</h4>
+				<h1 id="Totalbeforetaxcount" style="color: white;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide1">
+				<h4>Total After Discount</h4>
+				<h1 id="totalafterdiscount" style="color: white;">
+					0
+				</h1>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M35.1094 18.375H23.625C22.5377 18.375 21.6096 17.9906 20.8408 17.2217C20.0719 16.4529 19.6875 15.5248 19.6875 14.4375V2.95312C19.6875 2.86252 19.6555 2.78518 19.5914 2.72111C19.5273 2.65704 19.45 2.625 19.3594 2.625H11.8125C10.3628 2.625 9.12532 3.13756 8.10019 4.16269C7.07506 5.18782 6.5625 6.42525 6.5625 7.875V34.125C6.5625 35.5747 7.07506 36.8122 8.10019 37.8373C9.12532 38.8624 10.3628 39.375 11.8125 39.375H30.1875C31.6372 39.375 32.8747 38.8624 33.8998 37.8373C34.9249 36.8122 35.4375 35.5747 35.4375 34.125V18.7031C35.4375 18.6125 35.4055 18.5352 35.3414 18.4711C35.2773 18.407 35.2 18.375 35.1094 18.375ZM27.5625 31.5H14.4375C14.0751 31.5 13.7657 31.3719 13.5094 31.1156C13.2531 30.8593 13.125 30.5499 13.125 30.1875C13.125 29.8251 13.2531 29.5157 13.5094 29.2594C13.7657 29.0031 14.0751 28.875 14.4375 28.875H27.5625C27.9249 28.875 28.2343 29.0031 28.4906 29.2594C28.7469 29.5157 28.875 29.8251 28.875 30.1875C28.875 30.5499 28.7469 30.8593 28.4906 31.1156C28.2343 31.3719 27.9249 31.5 27.5625 31.5ZM27.5625 24.9375H14.4375C14.0751 24.9375 13.7657 24.8094 13.5094 24.5531C13.2531 24.2968 13.125 23.9874 13.125 23.625C13.125 23.2626 13.2531 22.9532 13.5094 22.6969C13.7657 22.4406 14.0751 22.3125 14.4375 22.3125H27.5625C27.9249 22.3125 28.2343 22.4406 28.4906 22.6969C28.7469 22.9532 28.875 23.2626 28.875 23.625C28.875 23.9874 28.7469 24.2968 28.4906 24.5531C28.2343 24.8094 27.9249 24.9375 27.5625 24.9375Z" fill="white" fill-opacity="0.301961" />
+				<path d="M34.3891 15.4702L22.5922 3.67332C22.5688 3.65001 22.5408 3.63514 22.5084 3.62873C22.4759 3.62231 22.4444 3.62543 22.4139 3.63806C22.3833 3.6507 22.3588 3.67074 22.3404 3.6982C22.3219 3.72565 22.3126 3.75591 22.3125 3.78899V14.4375C22.3125 14.7999 22.4406 15.1093 22.6969 15.3655C22.9532 15.6218 23.2626 15.75 23.625 15.75H34.2735C34.3066 15.7498 34.3368 15.7405 34.3643 15.7221C34.3917 15.7037 34.4118 15.6792 34.4244 15.6486C34.437 15.618 34.4402 15.5865 34.4337 15.5541C34.4273 15.5216 34.4125 15.4937 34.3891 15.4702Z" fill="white" fill-opacity="0.301961" />
+			</svg>
+
+		</div>
 	</div>
 </div>
 
@@ -283,16 +330,115 @@
 		</div>
 	</text>
 		);
-				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.Pono).Caption(new JS("formatMessage('Po No')")).Alignment(HorizontalAlignment.Center).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', // Light yellow
+		color: '#b58900',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
 
 
 			});
 				columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#fff9cc', // Light yellow
+		color: '#b58900',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
+				subColumns.AddFor(m => m.TotalBeforeTax).Caption(new JS("formatMessage('Total Before Tax')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.TotalDiscount).Caption(new JS("formatMessage('Total Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true)
+			.CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 			});
 			
 			
@@ -333,6 +479,17 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+
+		let currentSlideIndex1 = 0;
+		const slides1 = document.querySelectorAll('.voucher-slide1');
+
+		setInterval(() => {
+			slides1[currentSlideIndex1].classList.remove('active');
+
+			currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+
+			slides1[currentSlideIndex1].classList.add('active');
+		}, 2000);
 		 $(function () {
 	$("#RequestforQuotationList").dxTextBox({
 	text: formatMessage("Request for Quotation List"),
@@ -406,29 +563,28 @@
 					toDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 0); // Last day of month
 					break;
 			}
+				frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
+				toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
 				frmDate = frmDate.toISOString().split('T')[0];
-	toDate = toDate.toISOString().split('T')[0];
+				toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/RequestforQuotationList/GetRFQRequest',
-		type: 'GET',
-		data: {
-			fromDate: frmDate,
-			toDate: toDate
-		},
-		success: function (data) {
-			console.log("Returned Data: ", data); // debug
-			$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
-		},
-		error: function (xhr) {
-			console.log("AJAX Error", xhr.responseText); // debug
-			DevExpress.ui.notify("Error while loading data", "error", 2000);
+					url: '/api/RequestforQuotationList/GetRFQRequest',
+					type: 'GET',
+					data: {
+						fromDate: frmDate,
+						toDate: toDate
+					},
+					success: function (data) {
+						console.log("Returned Data: ", data); // debug
+						$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+					},
+					error: function (xhr) {
+						console.log("AJAX Error", xhr.responseText); // debug
+						DevExpress.ui.notify("Error while loading data", "error", 2000);
+					}
+				});
 		}
-	});
-
-
-
-	}
 
 
 	function onContextMenuPreparing(e) {
@@ -551,7 +707,7 @@
 			success: function (response) {
 				if (response.success) {
 					DevExpress.ui.notify(response.message, 'success', 2000);
-					$("#dataGrid").dxDataGrid("instance").refresh();
+					ddBtnShowRecords_click('range');
 				} else {
 					DevExpress.ui.notify(response.message, 'error', 3000);
 				}
@@ -583,6 +739,7 @@
 						"btnPrint": { "Visible": false, "Enabled": false },
 						"btnToggleSearch": { "Visible": false, "Enabled": false },
 						"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+						"btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
 						"btnColumnChooser": { "Visible": false, "Enabled": false },
 						"btnRfqDetails": { "Visible": false, "Enabled": false },
 						"btnAddNewRFQ": { "Visible": false, "Enabled": false },
@@ -640,85 +797,96 @@
 		console.log('End permission handling');
 	});
 
-	 function countUpTurnover(targetStr) {
-		  const el = document.getElementById("turnover");
-		  const target = parseFloat(targetStr);
-		  let current = 0.0;
+	
+		//   const card = document.getElementById('mainCard');
+		// const counts = [8, 15, 5];
+		// const countEls = [
+		//   document.getElementById("count0"),
+		//   document.getElementById("count1"),
+		//   document.getElementById("count2"),
+		// ];
+		// const tabs = document.querySelectorAll(".tab-text");
+		// const contents = document.querySelectorAll(".tab-content");
 
-		  const interval = setInterval(() => {
-			current += 0.5;
-			if (current >= target) {
-			  el.textContent = targetStr + " K";
-			  clearInterval(interval);
-			} else {
-			  el.textContent = current.toFixed(1) + " K";
-			}
-		  }, 30);
-		}
+		// function animateCount(el, target) {
+		//   let i = 0;
+		//   el.innerText = i;
+		//   el.classList.remove('bounce');
+		//   const interval = setInterval(() => {
+		// 	if (i >= target) {
+		// 	  el.innerText = target;
+		// 	  el.classList.add('bounce');
+		// 	  clearInterval(interval);
+		// 	} else {
+		// 	  el.innerText = i++;
+		// 	}
+		//   }, 30);
+		// }
 
-		// Animate to 46.2 K
-		countUpTurnover("46.2");
+		// function switchTab(index) {
+		//   tabs.forEach((tab, i) => {
+		// 	tab.classList.toggle('active', i === index);
+		// 	contents[i].classList.toggle('active', i === index);
+		//   });
 
-		  const card = document.getElementById('mainCard');
-		const counts = [8, 15, 5];
-		const countEls = [
-		  document.getElementById("count0"),
-		  document.getElementById("count1"),
-		  document.getElementById("count2"),
-		];
-		const tabs = document.querySelectorAll(".tab-text");
-		const contents = document.querySelectorAll(".tab-content");
+		//   Change background class
+		//   card.className = "card";
+		//   if (index === 0) card.classList.add("today-bg");
+		//   if (index === 1) card.classList.add("week-bg");
+		//   if (index === 2) card.classList.add("month-bg");
 
-		function animateCount(el, target) {
-		  let i = 0;
-		  el.innerText = i;
-		  el.classList.remove('bounce');
-		  const interval = setInterval(() => {
-			if (i >= target) {
-			  el.innerText = target;
-			  el.classList.add('bounce');
-			  clearInterval(interval);
-			} else {
-			  el.innerText = i++;
-			}
-		  }, 30);
-		}
-
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
+		//   Animate count
+		//   animateCount(countEls[index], counts[index]);
+		// }
 
 		// Start "Today" count immediately
-		animateCount(countEls[0], counts[0]);
+		// animateCount(countEls[0], counts[0]);
 
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
+		// function switchTab(index) {
+		//   tabs.forEach((tab, i) => {
+		// 	tab.classList.toggle('active', i === index);
+		// 	contents[i].classList.toggle('active', i === index);
+		//   });
 
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
+		//   Change background class
+		//   card.className = "card";
+		//   if (index === 0) card.classList.add("today-bg");
+		//   if (index === 1) card.classList.add("week-bg");
+		//   if (index === 2) card.classList.add("month-bg");
 
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
+		//   Animate count
+		//   animateCount(countEls[index], counts[index]);
+		// }
 
 		// Auto-start animation for "Today"
-		animateCount(countEls[0], counts[0]);
+		// animateCount(countEls[0], counts[0]);
+
+
+				$(document).ready(function () {
+
+
+				const urlParams = new URLSearchParams(window.location.search);
+				const module = urlParams.get("module");
+				const status = urlParams.get("status");
+
+				if (module && status) {
+					const grid = $("#dataGrid").dxDataGrid("instance");
+
+					if (grid) {
+						grid.beginCustomLoading("Loading...");
+						$.ajax({
+								url: '/api/RequestforQuotationList/GetIMSRFQ',
+							type: 'GET',
+							data: { module, status },
+							success: function (data) {
+								grid.option("dataSource", data);
+								grid.endCustomLoading();
+							},
+							error: function () {
+								grid.endCustomLoading();
+							}
+						});
+					}
+				}
+			});
 </script>

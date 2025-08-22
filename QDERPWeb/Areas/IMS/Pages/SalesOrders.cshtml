@@ -132,52 +132,165 @@
 	overflow: hidden;
 	}
 
+	.voucher-slider {
+		position: relative;
+		height: 100px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	.voucher-slide1 {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.6s ease;
+		z-index: 0;
+	}
+
+		.voucher-slide1.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	#fullydeliveredCount {
+		font-weight: bold;
+	}
+
+	#partiallydeliveredCount {
+		font-weight: bold;
+	}
+
+	#notdeliveredCount {
+		font-weight: bold;
+	}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
+
+	.tile-icon {
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		height: 100%;
+		position: absolute;
+		left: 330px;
+		bottom: 10px;
+	}
+
+	.tile-icon {
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		height: 100%;
+		position: absolute;
+		left: 350px;
+		bottom: 10px;
+	}
 </style>
 <div class="title">
-	<input id="formId" value="frm201LedgerView" type="hidden" />
+	<input id="formId" value="frm60103SalesOrderEdit" type="hidden" />
 
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">Sales Order</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			<div class="tile-icon">
+				<!-- Icon as SVG -->
+				<svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+				</svg>
 
-	<div class="card blue shine compact">
-		<h2 class="title-slide">Sales Order</h2>
-		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
-
-	</div>
-
-	<div id="mainCard" class="card today-bg">
-		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
-		</div>
-
-		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
-			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
-		</div>
-
-		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
-			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+			</div>
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<p>&#10024;</p>
-		<h4>No of Items</h4>
-		<h1 id="turnover">0</h1>
-		<h3>for this period</h3>
+	<div class="card orange-theme with-sidebar" style="background: linear-gradient(135deg, #fb8c00, #ffe0b2); padding: 20px; border-radius: 16px; color: white; box-shadow: 0 4px 12px rgba(0,0,0,0.2); overflow: hidden;">
+		<h4 style="margin-bottom: 10px; color: white;">Sales Orders Details</h4>
+
+		<div class="voucher-slider">
+			<div class="voucher-slide active">
+				<h4>New Sales Order</h4>
+				<h3 id="fullydeliveredCount">0</h3>
+			</div>
+
+			<div class="voucher-slide">
+				<h4>Pending for Approvals</h4>
+				<h3 id="partiallydeliveredCount">0</h3>
+			</div>
+
+			<div class="voucher-slide">
+				<h4>Total Sales Order</h4>
+				<h3 id="notdeliveredCount">0</h3>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M33.5442 0.00147154H29.4536C29.022 0.00765929 28.6103 0.18525 28.3083 0.495563L26.1812 2.63663L24.0541 0.495563C23.752 0.18525 23.3403 0.00765929 22.9087 0.00147154H2.45581C2.13042 -0.0100313 1.80616 0.046002 1.50322 0.166083C1.20027 0.286165 0.925125 0.467724 0.694899 0.699461C0.464674 0.931198 0.284298 1.20815 0.165 1.51309C0.0457017 1.81802 -0.00996585 2.14441 0.00146195 2.47193V25.5295C0.00146195 26.1847 0.260044 26.8131 0.720323 27.2764C1.1806 27.7397 1.80487 28 2.45581 28H22.9087C23.3403 27.9938 23.752 27.8162 24.0541 27.5059L26.1812 25.3648L28.3083 27.5059C28.6103 27.8162 29.022 27.9938 29.4536 28H33.5442C34.1951 28 34.8194 27.7397 35.2797 27.2764C35.74 26.8131 35.9985 26.1847 35.9985 25.5295V2.47193C36.01 2.14441 35.9543 1.81802 35.835 1.51309C35.7157 1.20815 35.5353 0.931198 35.3051 0.699461C35.0749 0.467724 34.7997 0.286165 34.4968 0.166083C34.1938 0.046002 33.8696 -0.0100313 33.5442 0.00147154ZM9.81885 9.05982C10.1425 9.05982 10.4588 9.15641 10.7279 9.33738C10.997 9.51836 11.2067 9.77558 11.3305 10.0765C11.4544 10.3775 11.4868 10.7086 11.4236 11.0281C11.3605 11.3476 11.2047 11.641 10.9758 11.8714C10.747 12.1017 10.4555 12.2586 10.1381 12.3221C9.82066 12.3857 9.49167 12.3531 9.19269 12.2284C8.89371 12.1037 8.63816 11.8926 8.45837 11.6218C8.27858 11.351 8.18262 11.0325 8.18262 10.7068C8.18262 10.27 8.355 9.85107 8.66186 9.54221C8.96871 9.23334 9.38489 9.05982 9.81885 9.05982ZM16.3638 18.9417C16.0402 18.9417 15.7238 18.8451 15.4547 18.6641C15.1857 18.4831 14.9759 18.2259 14.8521 17.9249C14.7282 17.624 14.6958 17.2929 14.759 16.9734C14.8221 16.6539 14.9779 16.3604 15.2068 16.1301C15.4356 15.8998 15.7272 15.7429 16.0446 15.6794C16.362 15.6158 16.6909 15.6484 16.9899 15.7731C17.2889 15.8977 17.5445 16.1088 17.7242 16.3797C17.904 16.6505 18 16.9689 18 17.2947C18 17.7315 17.8276 18.1504 17.5208 18.4593C17.2139 18.7681 16.7977 18.9417 16.3638 18.9417ZM18.3272 11.0362L10.1461 19.271C10.0005 19.4308 9.82348 19.5583 9.62631 19.6456C9.42914 19.7328 9.21611 19.7779 9.00073 19.7779C8.78535 19.7779 8.57232 19.7328 8.37515 19.6456C8.17798 19.5583 8.00098 19.4308 7.85537 19.271C7.69667 19.1245 7.56996 18.9463 7.48328 18.7479C7.3966 18.5494 7.35184 18.335 7.35184 18.1182C7.35184 17.9014 7.3966 17.6869 7.48328 17.4885C7.56996 17.29 7.69667 17.1119 7.85537 16.9653L16.0365 8.73042C16.3516 8.49255 16.7414 8.37707 17.1343 8.40517C17.5271 8.43328 17.8967 8.60308 18.1753 8.88342C18.4538 9.16375 18.6225 9.5358 18.6504 9.93125C18.6783 10.3267 18.5636 10.719 18.3272 11.0362ZM27.8174 21.4121C27.8174 21.8489 27.645 22.2678 27.3381 22.5767C27.0313 22.8856 26.6151 23.0591 26.1812 23.0591C25.7472 23.0591 25.331 22.8856 25.0242 22.5767C24.7173 22.2678 24.5449 21.8489 24.5449 21.4121V19.7651C24.5449 19.3283 24.7173 18.9094 25.0242 18.6006C25.331 18.2917 25.7472 18.1182 26.1812 18.1182C26.6151 18.1182 27.0313 18.2917 27.3381 18.6006C27.645 18.9094 27.8174 19.3283 27.8174 19.7651V21.4121ZM27.8174 14.8242C27.8174 15.261 27.645 15.6799 27.3381 15.9888C27.0313 16.2977 26.6151 16.4712 26.1812 16.4712C25.7472 16.4712 25.331 16.2977 25.0242 15.9888C24.7173 15.6799 24.5449 15.261 24.5449 14.8242V13.1772C24.5449 12.7404 24.7173 12.3215 25.0242 12.0127C25.331 11.7038 25.7472 11.5303 26.1812 11.5303C26.6151 11.5303 27.0313 11.7038 27.3381 12.0127C27.645 12.3215 27.8174 12.7404 27.8174 13.1772V14.8242ZM27.8174 8.23633C27.8174 8.67314 27.645 9.09205 27.3381 9.40092C27.0313 9.70979 26.6151 9.88331 26.1812 9.88331C25.7472 9.88331 25.331 9.70979 25.0242 9.40092C24.7173 9.09205 24.5449 8.67314 24.5449 8.23633V6.58936C24.5449 6.15256 24.7173 5.73364 25.0242 5.42478C25.331 5.11591 25.7472 4.94239 26.1812 4.94239C26.6151 4.94239 27.0313 5.11591 27.3381 5.42478C27.645 5.73364 27.8174 6.15256 27.8174 6.58936V8.23633Z" fill="white" fill-opacity="0.5" />
+			</svg>
+
+		</div>
+	</div>
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px;">
+		<h4 style="margin-bottom: 10px; color: white;font-weight:bold;">Sales Orders Value</h4>
+		<div class="voucher-slider">
+			<div class="voucher-slide1 active">
+				<h4>Total Number of Sales Orders Value</h4>
+				<h1 id="fullyinvoicedToday" style="color: white;">
+					0
+				</h1>
+			</div>
+			<div class="voucher-slide1">
+				<h4>New Sales Orders Value</h4>
+				<h1 id="notinvoicedcount" style="color: white;">
+					0
+				</h1>
+			</div>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M33.5442 0.00147154H29.4536C29.022 0.00765929 28.6103 0.18525 28.3083 0.495563L26.1812 2.63663L24.0541 0.495563C23.752 0.18525 23.3403 0.00765929 22.9087 0.00147154H2.45581C2.13042 -0.0100313 1.80616 0.046002 1.50322 0.166083C1.20027 0.286165 0.925125 0.467724 0.694899 0.699461C0.464674 0.931198 0.284298 1.20815 0.165 1.51309C0.0457017 1.81802 -0.00996585 2.14441 0.00146195 2.47193V25.5295C0.00146195 26.1847 0.260044 26.8131 0.720323 27.2764C1.1806 27.7397 1.80487 28 2.45581 28H22.9087C23.3403 27.9938 23.752 27.8162 24.0541 27.5059L26.1812 25.3648L28.3083 27.5059C28.6103 27.8162 29.022 27.9938 29.4536 28H33.5442C34.1951 28 34.8194 27.7397 35.2797 27.2764C35.74 26.8131 35.9985 26.1847 35.9985 25.5295V2.47193C36.01 2.14441 35.9543 1.81802 35.835 1.51309C35.7157 1.20815 35.5353 0.931198 35.3051 0.699461C35.0749 0.467724 34.7997 0.286165 34.4968 0.166083C34.1938 0.046002 33.8696 -0.0100313 33.5442 0.00147154ZM9.81885 9.05982C10.1425 9.05982 10.4588 9.15641 10.7279 9.33738C10.997 9.51836 11.2067 9.77558 11.3305 10.0765C11.4544 10.3775 11.4868 10.7086 11.4236 11.0281C11.3605 11.3476 11.2047 11.641 10.9758 11.8714C10.747 12.1017 10.4555 12.2586 10.1381 12.3221C9.82066 12.3857 9.49167 12.3531 9.19269 12.2284C8.89371 12.1037 8.63816 11.8926 8.45837 11.6218C8.27858 11.351 8.18262 11.0325 8.18262 10.7068C8.18262 10.27 8.355 9.85107 8.66186 9.54221C8.96871 9.23334 9.38489 9.05982 9.81885 9.05982ZM16.3638 18.9417C16.0402 18.9417 15.7238 18.8451 15.4547 18.6641C15.1857 18.4831 14.9759 18.2259 14.8521 17.9249C14.7282 17.624 14.6958 17.2929 14.759 16.9734C14.8221 16.6539 14.9779 16.3604 15.2068 16.1301C15.4356 15.8998 15.7272 15.7429 16.0446 15.6794C16.362 15.6158 16.6909 15.6484 16.9899 15.7731C17.2889 15.8977 17.5445 16.1088 17.7242 16.3797C17.904 16.6505 18 16.9689 18 17.2947C18 17.7315 17.8276 18.1504 17.5208 18.4593C17.2139 18.7681 16.7977 18.9417 16.3638 18.9417ZM18.3272 11.0362L10.1461 19.271C10.0005 19.4308 9.82348 19.5583 9.62631 19.6456C9.42914 19.7328 9.21611 19.7779 9.00073 19.7779C8.78535 19.7779 8.57232 19.7328 8.37515 19.6456C8.17798 19.5583 8.00098 19.4308 7.85537 19.271C7.69667 19.1245 7.56996 18.9463 7.48328 18.7479C7.3966 18.5494 7.35184 18.335 7.35184 18.1182C7.35184 17.9014 7.3966 17.6869 7.48328 17.4885C7.56996 17.29 7.69667 17.1119 7.85537 16.9653L16.0365 8.73042C16.3516 8.49255 16.7414 8.37707 17.1343 8.40517C17.5271 8.43328 17.8967 8.60308 18.1753 8.88342C18.4538 9.16375 18.6225 9.5358 18.6504 9.93125C18.6783 10.3267 18.5636 10.719 18.3272 11.0362ZM27.8174 21.4121C27.8174 21.8489 27.645 22.2678 27.3381 22.5767C27.0313 22.8856 26.6151 23.0591 26.1812 23.0591C25.7472 23.0591 25.331 22.8856 25.0242 22.5767C24.7173 22.2678 24.5449 21.8489 24.5449 21.4121V19.7651C24.5449 19.3283 24.7173 18.9094 25.0242 18.6006C25.331 18.2917 25.7472 18.1182 26.1812 18.1182C26.6151 18.1182 27.0313 18.2917 27.3381 18.6006C27.645 18.9094 27.8174 19.3283 27.8174 19.7651V21.4121ZM27.8174 14.8242C27.8174 15.261 27.645 15.6799 27.3381 15.9888C27.0313 16.2977 26.6151 16.4712 26.1812 16.4712C25.7472 16.4712 25.331 16.2977 25.0242 15.9888C24.7173 15.6799 24.5449 15.261 24.5449 14.8242V13.1772C24.5449 12.7404 24.7173 12.3215 25.0242 12.0127C25.331 11.7038 25.7472 11.5303 26.1812 11.5303C26.6151 11.5303 27.0313 11.7038 27.3381 12.0127C27.645 12.3215 27.8174 12.7404 27.8174 13.1772V14.8242ZM27.8174 8.23633C27.8174 8.67314 27.645 9.09205 27.3381 9.40092C27.0313 9.70979 26.6151 9.88331 26.1812 9.88331C25.7472 9.88331 25.331 9.70979 25.0242 9.40092C24.7173 9.09205 24.5449 8.67314 24.5449 8.23633V6.58936C24.5449 6.15256 24.7173 5.73364 25.0242 5.42478C25.331 5.11591 25.7472 4.94239 26.1812 4.94239C26.6151 4.94239 27.0313 5.11591 27.3381 5.42478C27.645 5.73364 27.8174 6.15256 27.8174 6.58936V8.23633Z" fill="white" fill-opacity="0.5" />
+			</svg>
+
+		</div>
 	</div>
 </div>
 
@@ -187,10 +300,10 @@
 	</div>
 </div> *@
 
+		
+		@await Html.PartialAsync("/Pages/Shared/IMS/SaleOrderFooter.cshtml")
 
-		@await Html.PartialAsync("/Pages/Shared/IMS/SaleorderFooter.cshtml")
-
-<div class="horizontal-container" style="padding: 5px;">
+<div class="horizontal-container">
 	@(Html.DevExtreme().DateBox()
 					.ID("frmdateBox")
 					.Label(new JS("formatMessage('Start Date')"))
@@ -221,20 +334,33 @@
 					.Width(180)
 					.ElementAttr("class", "button-alignment-up")
 					.TabIndex(4)
+					.SplitButton(true) // This enables main-button vs arrow split behavior
+					.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 					.DropDownOptions(options => options.Width(230))
 					.Items(items =>
-					{
-						items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-						items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-						items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-						items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-						items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-						items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-						items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-						items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-						items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-						items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-					})
+				{
+					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+				})
+				.ItemTemplate(@<text>
+            <div class="custom-dropdown-item" >
+                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
 					)
 
 </div>
@@ -258,23 +384,166 @@
 							subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 						});
-						columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
+						columns.Add().Caption(new JS("formatMessage('No Of Items')"))
+						.Columns(subColumns =>
 						{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-						});
+				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true).CellTemplate(new JS(@"
+								function(cellElement, cellInfo) {
+								if (cellInfo.value != null && cellInfo.value !== '') {
+								$('<span>')
+								.text(cellInfo.value)
+								.css({
+								display: 'inline-block',
+								backgroundColor: '#fff9cc', // Light yellow
+								color: '#b58900',            // Amber text
+								fontWeight: 'bold',
+								padding: '4px 10px',
+								borderRadius: '20px',
+								minWidth: '24px',
+								textAlign: 'center'
+								})
+								.appendTo(cellElement);
+								}
+								// else: do nothing (no span rendered)
+								}
+								"));
+								});
 
 
 						columns.Add().Caption(new JS("formatMessage('Sales Order Amount')")).Columns(subColumns =>
-	{
-		        subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
-				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				{
+				subColumns.AddFor(m => m.TotalBeforeDiscount).Caption(new JS("formatMessage('Total Before Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.Discount).Caption(new JS("formatMessage('Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+				subColumns.AddFor(m => m.TotalAfterDiscount).Caption(new JS("formatMessage('Total After Discount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null && cellInfo.value !== '') {
+		$('<span>')
+		.text(cellInfo.value)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6', // Light yellow
+		color: '#d93025',            // Amber text
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px',
+		minWidth: '24px',
+		textAlign: 'center'
+		})
+		.appendTo(cellElement);
+		}
+		// else: do nothing (no span rendered)
+		}
+		"));
 
-				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.TotalTaxAmount).Caption(new JS("formatMessage('Total Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
+				subColumns.AddFor(m => m.TotalWithTax).Caption(new JS("formatMessage('Total With Tax')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+subColumns.Add().DataField("cost")
+					.Caption(new JS("formatMessage('Total With Tax')"))
+					.CellTemplate(new JS(@"
+					function(cellElement, cellInfo) {
+					if (cellInfo.value != null) {
+					const formattedValue = new Intl.NumberFormat('en-US', {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2
+					}).format(cellInfo.value);
+					$('<span>')
+					.text(formattedValue)
+					.css({
+					display: 'inline-block',
+					backgroundColor: '#fff9cc',
+					color: '#b58900',
+					fontWeight: 'bold',
+					padding: '4px 10px',
+					borderRadius: '20px'
+					})
+					.appendTo(cellElement);
+		
+					}
+					}
+					")); 
 	});
 		})
 		//.ElementAttr("style", "height: 444px !important;")
@@ -291,35 +560,77 @@
 		.Paging(p => p.Enabled(false))
 		.Pager(pager => pager.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
-		.Summary(s => s
-		.TotalItems(totalItems =>
+		.Summary(summary =>
 		{
-			totalItems.AddFor(m => m.TotalBeforeDiscount)
-			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
+			
+			summary.TotalItems(items =>
+			{
 
-			totalItems.AddFor(m => m.Discount)
-			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
 
-			totalItems.AddFor(m => m.TotalAfterDiscount)
+				items.Add().Column("TotalBeforeDiscount")
 			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
+			.CustomizeText(@"
+		function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
 
-			totalItems.AddFor(m => m.TotalTaxAmount)
+				items.Add().Column("Discount")
 			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
-
-			totalItems.AddFor(m => m.TotalWithTax)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("TotalAfterDiscount")
 			.SummaryType(SummaryType.Sum)
-			.DisplayFormat("Total: {0}")
-			.Alignment(HorizontalAlignment.Right);
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("TotalTaxAmount")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+				items.Add().Column("TotalWithTax")
+			.SummaryType(SummaryType.Sum)
+			.CustomizeText(@"function(e) {
+		if (e.value === null || e.value === undefined) {
+		return '';
+		}
+		return e.value.toLocaleString(undefined, {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		});
+		}
+		");
+			});
 		})
-		)
 		.ShowBorders(true)
 		.ShowRowLines(true)
 
@@ -345,6 +656,66 @@
 <div id="invoiceErrorPopup"></div>
 
 <script>
+		let currentSlideIndex = 0;
+		const slides = document.querySelectorAll('.voucher-slide');
+
+		setInterval(() => {
+			slides[currentSlideIndex].classList.remove('active');
+
+			currentSlideIndex = (currentSlideIndex + 1) % slides.length;
+
+			slides[currentSlideIndex].classList.add('active');
+		}, 2000);
+		let currentSlideIndex1 = 0;
+		const slides1 = document.querySelectorAll('.voucher-slide1');
+
+		setInterval(() => {
+			slides1[currentSlideIndex1].classList.remove('active');
+
+			currentSlideIndex1 = (currentSlideIndex1 + 1) % slides1.length;
+
+			slides1[currentSlideIndex1].classList.add('active');
+		}, 2000);
+
+
+
+
+
+
+
+	 $(function () {
+	const dateBox = $("#frmdateBox").dxDateBox("instance");
+
+	// When focus/typing starts, change to dd-MM-yyyy
+	$("#frmdateBox").on("focusin", function () {
+		dateBox.option("displayFormat", "dd-MM-yyyy");
+	});
+
+	// When focus/typing ends, change back to dd-MMM-yyyy
+	$("#frmdateBox").on("focusout", function () {
+		dateBox.option("displayFormat", "dd-MMM-yyyy");
+	});
+});
+ $(function () {
+	const dateBox = $("#todateBox").dxDateBox("instance");
+
+	// When focus/typing starts, change to dd-MM-yyyy
+	$("#todateBox").on("focusin", function () {
+		dateBox.option("displayFormat", "dd-MM-yyyy");
+	});
+
+	// When focus/typing ends, change back to dd-MMM-yyyy
+	$("#todateBox").on("focusout", function () {
+		dateBox.option("displayFormat", "dd-MMM-yyyy");
+	});
+});
+
+
+
+
+
+
+
 
 
 			 $(function () {
@@ -475,11 +846,13 @@
 						break;
 				}
 				 // ✅ Update DateBoxes to reflect selection
-	frmDateBox.option("value", frmDate);
-	toDateBox.option("value", toDate);
+			frmDateBox.option("value", frmDate);
+			toDateBox.option("value", toDate);
 
-					frmDate = frmDate.toISOString().split('T')[0];
-		toDate = toDate.toISOString().split('T')[0];
+			frmDate.setMinutes(frmDate.getMinutes() - frmDate.getTimezoneOffset());
+			toDate.setMinutes(toDate.getMinutes() - toDate.getTimezoneOffset());
+			frmDate = frmDate.toISOString().split('T')[0];
+			toDate = toDate.toISOString().split('T')[0];
 
 					$.ajax({
 			url: '/api/SalesOrders/GetSalesOrders',
@@ -714,19 +1087,34 @@
         }, "Create full Delivery for this sales order");
     }
 },
-							{
-		text: "create invoice for this sales order",
-		icon: "box",
-		onItemClick: function () {
-			const salesOrderNo = e.row.data.SalesOrderNo;
-			const clientCode = e.row.data.ClientCode; // Make sure this is available in your grid data
-			let tenantName = window.tenantName || "defaultTenant";
-			checkIfApprovedAndProceed(salesOrderNo, function () {
-			let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
-			window.location.href = url;
+								{
+			text: "create invoice for this sales order",
+			icon: "box",
+			onItemClick: function () {
+				const salesOrderNo = e.row.data.SalesOrderNo;
+				const clientCode = e.row.data.ClientCode; // Make sure this is available in your grid data
+				let tenantName = window.tenantName || "defaultTenant";
+				checkIfApprovedAndProceed(salesOrderNo, function () {
+					$.get("/api/SalesOrders/HasLedger", { clientCode: clientCode })
+					.done(function (hasLedger) {
+						if (!hasLedger) {
+							DevExpress.ui.dialog.alert(
+								"Client does not have a Ledger Account.", // Message
+								"Can't Generate Invoice" // Title
+							).done(function () {
+								
+							});
+							return;
+						}
+				let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
+				window.location.href = url;
+	})
+					.fail(function () {
+						DevExpress.ui.notify("Error checking client ledger.", "error", 3000);
+					});
 			}, "create invoice for this sales order");
-		}
-	},
+			}
+		},
 
 					];
 				}
@@ -770,6 +1158,7 @@ $(document).ready(function () {
 						"btnPrint": { "Visible": false, "Enabled": false },
 						"btnToggleSearch": { "Visible": false, "Enabled": false },
 						"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+						"btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
 						"btnColumnChooser": { "Visible": false, "Enabled": false },
 						"btnSalesOrderDetails": { "Visible": false, "Enabled": false },
 						"btnAddSalesOrder": { "Visible": false, "Enabled": false },
@@ -826,85 +1215,33 @@ $(document).ready(function () {
 
 		console.log('End permission handling');
 	});
-		function countUpTurnover(targetStr) {
-		  const el = document.getElementById("turnover");
-		  const target = parseFloat(targetStr);
-		  let current = 0.0;
 
-		  const interval = setInterval(() => {
-			current += 0.5;
-			if (current >= target) {
-			  el.textContent = targetStr + " K";
-			  clearInterval(interval);
-			} else {
-			  el.textContent = current.toFixed(1) + " K";
-			}
-		  }, 30);
-		}
+				$(document).ready(function () {
 
-		// Animate to 46.2 K
-		countUpTurnover("46.2");
 
-		  const card = document.getElementById('mainCard');
-		const counts = [8, 15, 5];
-		const countEls = [
-		  document.getElementById("count0"),
-		  document.getElementById("count1"),
-		  document.getElementById("count2"),
-		];
-		const tabs = document.querySelectorAll(".tab-text");
-		const contents = document.querySelectorAll(".tab-content");
+					const urlParams = new URLSearchParams(window.location.search);
+					const module = urlParams.get("module");
+					const status = urlParams.get("status");
 
-		function animateCount(el, target) {
-		  let i = 0;
-		  el.innerText = i;
-		  el.classList.remove('bounce');
-		  const interval = setInterval(() => {
-			if (i >= target) {
-			  el.innerText = target;
-			  el.classList.add('bounce');
-			  clearInterval(interval);
-			} else {
-			  el.innerText = i++;
-			}
-		  }, 30);
-		}
+					if (module && status) {
+						const grid = $("#dataGrid").dxDataGrid("instance");
 
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
+						if (grid) {
+							grid.beginCustomLoading("Loading...");
+							$.ajax({
+									url: '/api/SalesOrders/GetIMSSales',
+								type: 'GET',
+								data: { module, status },
+								success: function (data) {
+									grid.option("dataSource", data);
+									grid.endCustomLoading();
+								},
+								error: function () {
+									grid.endCustomLoading();
+								}
+							});
+						}
+					}
+				});
 
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
-
-		// Start "Today" count immediately
-		animateCount(countEls[0], counts[0]);
-
-		function switchTab(index) {
-		  tabs.forEach((tab, i) => {
-			tab.classList.toggle('active', i === index);
-			contents[i].classList.toggle('active', i === index);
-		  });
-
-		  // Change background class
-		  card.className = "card";
-		  if (index === 0) card.classList.add("today-bg");
-		  if (index === 1) card.classList.add("week-bg");
-		  if (index === 2) card.classList.add("month-bg");
-
-		  // Animate count
-		  animateCount(countEls[index], counts[index]);
-		}
-
-		// Auto-start animation for "Today"
-		animateCount(countEls[0], counts[0]);
 </script>

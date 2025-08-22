@@ -13,6 +13,7 @@ using System.Data;
 using Microsoft.Data.SqlClient;
 using System.Linq;
 using System.Threading.Tasks;
+using QDERPWeb.Models;
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -23,10 +24,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ExpenseClaimController> _logger;
 
-        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly FcmService _fcmService;
+
+        public ExpenseClaimController(ILogger<ExpenseClaimController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _fcmService = fcmService;
         }
 
         [HttpGet]
@@ -364,6 +368,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             try
             {
+                var TenantName = HttpContext.Session.GetString("TenantName");
                 // Get user session data
                 string userIdStr = HttpContext.Session.GetString("UserId");
                 byte claimerId = Convert.ToByte(userIdStr); // ✅ Convert string to byte
@@ -385,6 +390,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     existingMaster.ClaimModifiedOn = now;
                     existingMaster.PaymentType = model.PaymentType;
                     existingMaster.PaymentAccount = model.PaymentAccount;
+                    existingMaster.Priority = model.Priority;
                     dbContext.Tbl20102ExpenseClaimMasters.Update(existingMaster);
                 }
                 else
@@ -400,6 +406,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                         ClaimerId = claimerId,
                         PaymentType = model.PaymentType,
                         PaymentAccount = model.PaymentAccount,
+                        Priority = model.Priority,
                         ClaimCreatedBy = userName,
                         ClaimCreatedOn = now,
                         FundRequestTypeId = model.FundRequestTypeId
@@ -442,6 +449,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                 await dbContext.SaveChangesAsync();
 
+                                    var notifyRequest = new NotificationRequest
+             {
+                 UserId = userIdStr, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "You have one claim to submit",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
                 return Ok(new { success = true });
             }
             catch (Exception ex)
@@ -470,6 +487,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var userName = HttpContext.Session.GetString("UserName");
+                var UserId = HttpContext.Session.GetString("UserId");
+                var TenantName = HttpContext.Session.GetString("TenantName");
+
                 var submittedOn = DateTime.Now;
 
                 var claim = await dbContext.Tbl20102ExpenseClaimMasters
@@ -482,6 +502,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.SubmittedOn = submittedOn;
 
                     await dbContext.SaveChangesAsync();
+
+                    var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "You have one claim to verify",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Json(new
                     {
@@ -503,7 +533,10 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                var userName = HttpContext.Session.GetString("UserName");
+                var userName = HttpContext.Session.GetString("UserName") ?? "System";
+                var UserId = HttpContext.Session.GetString("UserId");
+                var TenantName = HttpContext.Session.GetString("TenantName");
+
                 var verifiedOn = DateTime.Now;
 
                 var claim = await dbContext.Tbl20102ExpenseClaimMasters
@@ -516,6 +549,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.VerifiedOn = verifiedOn;
 
                     await dbContext.SaveChangesAsync();
+
+                    var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "You have one claim to approve",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Json(new
                     {
@@ -536,6 +579,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 var userName = HttpContext.Session.GetString("UserName");
+                var UserId = HttpContext.Session.GetString("UserId");
+                var TenantName = HttpContext.Session.GetString("TenantName");
+
                 var approveOn = DateTime.Now;
 
                 var claim = await dbContext.Tbl20102ExpenseClaimMasters
@@ -548,6 +594,16 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     claim.ApprovedOn = approveOn;
 
                     await dbContext.SaveChangesAsync();
+
+                        var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = model.ClaimRefNo,
+                 ActionType = "You have one claim to pay",
+                TenantName = TenantName 
+        };
+
+        await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Json(new
                     {
@@ -567,40 +623,76 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+
+
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0; // or any default value you want
+
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    // Safest way (avoids exceptions):
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                }
+
+                // Now use defaultCompanyByte as needed
+
+
+
+                byte companyId = defaultCompanyByte;
+
+                // Step 2: Get NoOfDigitsInVouchers
+                var companyConfig = await dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == companyId)
+                    .Select(c => new { c.NoOfDigitsInVouchers })
+                    .FirstOrDefaultAsync();
+
+                byte configuredDigitCount = companyConfig?.NoOfDigitsInVouchers ?? 3; // Default to 3 if not found
+
+                // Step 3: Prepare voucher prefix
                 DateTime currentDate = DateTime.Now;
-                string currentYear = currentDate.Year.ToString();
-                string currentMonth = currentDate.Month.ToString("00");
-                string voucherString = "CP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+                string yearPart = currentDate.Year.ToString().Substring(2); // "25"
+                string monthPart = currentDate.Month.ToString("00"); // "06"
+                string voucherPrefix = $"CP-{yearPart}-{monthPart}-";
+                string likePattern = voucherPrefix + "%";
+
+                int digitCountToUse = configuredDigitCount; // this might change if series already exists
                 string strNewReceiptNo;
-
-                // SQL query with interpolated string
-                string likePattern = voucherString + "%";
-
                 try
                 {
-                    // Use raw SQL query to fetch the maximum voucher number
+                    // Step 4: Check if any vouchers already exist for current month
+                    var existingVoucher = await dbContext.Tbl201VoucherEntries
+                        .Where(v => v.VoucherNo.StartsWith(voucherPrefix))
+                        .OrderByDescending(v => v.VoucherNo)
+                        .Select(v => v.VoucherNo)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(existingVoucher))
+                    {
+                        // Step 5: Existing series found → infer digit count from length of number part
+                        string numberPart = existingVoucher.Substring(voucherPrefix.Length);
+                        digitCountToUse = numberPart.Length;
+                    }
+
+                    // Step 6: Fetch max number using resolved digit count
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
-                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                FROM Tbl201VoucherEntry
-                WHERE VoucherNo LIKE {likePattern}")
+                    SELECT MAX(CAST(RIGHT(VoucherNo, {digitCountToUse}) AS INT)) AS MaxVoucherNo
+                    FROM Tbl201VoucherMaster
+                    WHERE VoucherNo LIKE {likePattern}")
                         .ToListAsync();
 
                     int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-
                     int newVoucherNo = maxVoucherNo + 1;
 
-                    // Format the new voucher number with leading zeros
-                    strNewReceiptNo = "000" + newVoucherNo.ToString();
-                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
-
-                    // Concatenate with the voucher string
-                    strNewReceiptNo = voucherString + strNewReceiptNo;
+                    string paddedNo = newVoucherNo.ToString().PadLeft(digitCountToUse, '0');
+                    strNewReceiptNo = voucherPrefix + paddedNo;
                 }
                 catch (Exception)
                 {
-                    // Handle cases where there's no existing voucher number
-                    strNewReceiptNo = voucherString + "001";
+                    // fallback if any failure
+                    string fallback = "1".PadLeft(configuredDigitCount, '0');
+                    strNewReceiptNo = voucherPrefix + fallback;
                 }
 
                 return Json(strNewReceiptNo);
@@ -609,47 +701,80 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         }
 
 
-
-
         [HttpGet]
         public async Task<ActionResult> GetNewBPVoucherNo(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
+
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0; // or any default value you want
+
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    // Safest way (avoids exceptions):
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                }
+
+                // Now use defaultCompanyByte as needed
+
+
+
+                byte companyId = defaultCompanyByte;
+
+                // Step 2: Get NoOfDigitsInVouchers
+                var companyConfig = await dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == companyId)
+                    .Select(c => new { c.NoOfDigitsInVouchers })
+                    .FirstOrDefaultAsync();
+
+                byte configuredDigitCount = companyConfig?.NoOfDigitsInVouchers ?? 3; // Default to 3 if not found
+
+                // Step 3: Prepare voucher prefix
                 DateTime currentDate = DateTime.Now;
-                string currentYear = currentDate.Year.ToString();
-                string currentMonth = currentDate.Month.ToString("00");
-                string voucherString = "BP-" + currentYear.Substring(currentYear.Length - 2, 2) + "-" + currentMonth + "-";
+                string yearPart = currentDate.Year.ToString().Substring(2); // "25"
+                string monthPart = currentDate.Month.ToString("00"); // "06"
+                string voucherPrefix = $"BP-{yearPart}-{monthPart}-";
+                string likePattern = voucherPrefix + "%";
+
+                int digitCountToUse = configuredDigitCount; // this might change if series already exists
                 string strNewReceiptNo;
-
-                // SQL query with interpolated string
-                string likePattern = voucherString + "%";
-
                 try
                 {
-                    // Use raw SQL query to fetch the maximum voucher number
+                    // Step 4: Check if any vouchers already exist for current month
+                    var existingVoucher = await dbContext.Tbl201VoucherEntries
+                        .Where(v => v.VoucherNo.StartsWith(voucherPrefix))
+                        .OrderByDescending(v => v.VoucherNo)
+                        .Select(v => v.VoucherNo)
+                        .FirstOrDefaultAsync();
+
+                    if (!string.IsNullOrEmpty(existingVoucher))
+                    {
+                        // Step 5: Existing series found → infer digit count from length of number part
+                        string numberPart = existingVoucher.Substring(voucherPrefix.Length);
+                        digitCountToUse = numberPart.Length;
+                    }
+
+                    // Step 6: Fetch max number using resolved digit count
                     var result = await dbContext.VoucherResults
                         .FromSqlInterpolated($@"
-                SELECT MAX(CAST(RIGHT(VoucherNo, 3) AS INT)) AS MaxVoucherNo
-                FROM Tbl201VoucherEntry
-                WHERE VoucherNo LIKE {likePattern}")
+                    SELECT MAX(CAST(RIGHT(VoucherNo, {digitCountToUse}) AS INT)) AS MaxVoucherNo
+                    FROM Tbl201VoucherMaster
+                    WHERE VoucherNo LIKE {likePattern}")
                         .ToListAsync();
 
                     int maxVoucherNo = result.FirstOrDefault()?.MaxVoucherNo ?? 0;
-
                     int newVoucherNo = maxVoucherNo + 1;
 
-                    // Format the new voucher number with leading zeros
-                    strNewReceiptNo = "000" + newVoucherNo.ToString();
-                    strNewReceiptNo = strNewReceiptNo.Substring(strNewReceiptNo.Length - 3);
-
-                    // Concatenate with the voucher string
-                    strNewReceiptNo = voucherString + strNewReceiptNo;
+                    string paddedNo = newVoucherNo.ToString().PadLeft(digitCountToUse, '0');
+                    strNewReceiptNo = voucherPrefix + paddedNo;
                 }
                 catch (Exception)
                 {
-                    // Handle cases where there's no existing voucher number
-                    strNewReceiptNo = voucherString + "001";
+                    // fallback if any failure
+                    string fallback = "1".PadLeft(configuredDigitCount, '0');
+                    strNewReceiptNo = voucherPrefix + fallback;
                 }
 
                 return Json(strNewReceiptNo);
@@ -684,6 +809,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                         x.ClaimRefNo,
                                         x.ClaimDate,
                                         x.ProjectClaimedFor,
+                                        x.Priority,
                                         x.ClaimRemarks,
                                         x.IsSubmittedToFinance,
                                         x.SubmittedBy,
@@ -1276,7 +1402,138 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Ok(new { success = true });
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateVoucheronload([FromBody] ExpenseClaimViewModel model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
 
+           
+
+            try
+            {
+                // Get user session data
+                string userIdStr = HttpContext.Session.GetString("UserId");
+                byte claimerId = Convert.ToByte(userIdStr); // ✅ Convert string to byte
+
+                string userName = HttpContext.Session.GetString("UserName");
+                DateTime now = DateTime.Now;
+                // Check if master record exists
+                var existingMaster = await dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefaultAsync(m => m.ClaimRefNo == model.ClaimRefNo);
+
+                if (existingMaster != null)
+                {
+                    // ✅ Update master record
+                    existingMaster.ClaimDate = model.ClaimDate;
+                    existingMaster.ClaimEffectiveDate = model.ClaimEffectiveDate;
+                    existingMaster.ProjectClaimedFor = model.ProjectClaimedFor;
+                    existingMaster.ClaimRemarks = model.ClaimRemarks;
+                    existingMaster.ClaimModifiedBy = userName;
+                    existingMaster.ClaimModifiedOn = now;
+                    existingMaster.PaymentType = model.PaymentType;
+                    existingMaster.PaymentAccount = model.PaymentAccount;
+                    dbContext.Tbl20102ExpenseClaimMasters.Update(existingMaster);
+                }
+                else
+                {
+                    // ✅ Insert new master
+                    var newMaster = new Tbl20102ExpenseClaimMaster
+                    {
+                        ClaimRefNo = model.ClaimRefNo,
+                        ClaimDate = model.ClaimDate,
+                        ClaimEffectiveDate = model.ClaimEffectiveDate,
+                        ProjectClaimedFor = model.ProjectClaimedFor,
+                        ClaimRemarks = model.ClaimRemarks,
+                        ClaimerId = claimerId,
+                        PaymentType = model.PaymentType,
+                        PaymentAccount = model.PaymentAccount,
+                        ClaimCreatedBy = userName,
+                        ClaimCreatedOn = now,
+                        FundRequestTypeId = model.FundRequestTypeId
+                    };
+
+                    dbContext.Tbl20102ExpenseClaimMasters.Add(newMaster);
+                }
+
+                await dbContext.SaveChangesAsync();
+                return Ok(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public IActionResult CheckClaimStatus(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrWhiteSpace(voucherNo))
+                return BadRequest(new { success = false, message = "Voucher number is required." });
+
+            var claim = dbContext.Tbl20102ExpenseClaimMasters
+                .Where(c => c.ClaimRefNo == voucherNo)
+                .Select(c => new
+                {
+                    c.IsSubmittedToFinance,
+                    c.IsApproved,
+                    c.IsPaid
+                })
+                .FirstOrDefault();
+
+            if (claim == null)
+                return NotFound(new { success = false, message = "Claim not found." });
+
+            return Json(claim);
+        }
+        [HttpPost]
+        public IActionResult DeleteClaim(string voucherNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant." });
+            }
+
+            if (string.IsNullOrWhiteSpace(voucherNo))
+                return Json(new { success = false, message = "Voucher number is required." });
+
+            using var transaction = dbContext.Database.BeginTransaction();
+            try
+            {
+                var master = dbContext.Tbl20102ExpenseClaimMasters
+                    .FirstOrDefault(c => c.ClaimRefNo == voucherNo);
+
+                if (master == null)
+                    return Json(new { success = false, message = "Claim not found." });
+
+               
+
+                // Delete children
+                var children = dbContext.Tbl20103ExpenseClaimChildren
+                    .Where(c => c.ClaimRefNo == voucherNo)
+                    .ToList();
+                dbContext.Tbl20103ExpenseClaimChildren.RemoveRange(children);
+
+                // Delete master
+                dbContext.Tbl20102ExpenseClaimMasters.Remove(master);
+
+                dbContext.SaveChanges();
+                transaction.Commit();
+
+                return Json(new { success = true });
+            }
+            catch (Exception ex)
+            {
+                transaction.Rollback();
+                return Json(new { success = false, message = ex.Message });
+            }
+        }
 
     }
 }

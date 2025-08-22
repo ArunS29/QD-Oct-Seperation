@@ -1,0 +1,274 @@
+﻿@page
+@model QD.ERP.Web.Areas.IMS.Pages.DetailedDescriptionPOModel
+@{
+}
+
+<style>
+    .container {
+        display: none !important;
+    }
+ 
+    .frame {
+        display: none !important;
+    }
+ 
+    .footerContainer {
+        display: none !important;
+    }
+ 
+    .bodyContainer {
+        display: flex;
+        justify-content: center;
+    }
+ 
+    .imagecontainer {
+        border-bottom: 2px;
+    }
+ 
+    .mainContainer {
+        margin-top: 1em;
+        width: 100%;
+    }
+ 
+    .playIcon {
+        display: none;
+    }
+ 
+ 
+</style>
+ 
+<div style="padding: 10px; border-radius: 5px;">
+<div style="display: flex; justify-content: space-between; align-items: center;">
+<label style="font-weight: bold;">Detailed Description / Specification:</label>
+<div>
+            @(Html.DevExtreme().Button()
+                        .ID("btnUseDetailedDescription")
+                        .Text("Use Detailed Description")
+                        .Icon("info")
+                        .Type(ButtonType.Normal)
+                        .StylingMode(ButtonStylingMode.Contained)
+                        .OnClick("getDetailedDescription")
+                        .ElementAttr("style", "margin-right: 10px;"))
+            @(Html.DevExtreme().Button()
+                        .ID("btnUseItemDesc")
+                        .Text("Use Item Desc.")
+                        .Icon("info")
+                        .Type(ButtonType.Normal)
+                        .OnClick("getItemDescription")
+                        .StylingMode(ButtonStylingMode.Contained))
+</div>
+</div>
+ 
+    <!-- TextArea -->
+<div style="margin-top: 10px;">
+        @(Html.DevExtreme().TextArea()
+                .ID("DetailedDescription")
+                .Height(100)
+                .Label("Detailed Description / Specification")
+                .LabelMode(EditorLabelMode.Floating)
+                .ElementAttr("style", "width: 100%; height:30px;"))
+</div>
+ 
+    <!-- 3 Column Row: Purpose / Priority / Expected Date -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("Remarks")
+                .Label("Remarks")
+                .LabelMode(EditorLabelMode.Floating)
+                .ElementAttr("style", "width: 100%;"))
+ 
+        @(Html.DevExtreme().TextBox()
+                .ID("mritemno")
+                .Label("MR Item No")
+                .LabelMode(EditorLabelMode.Floating))
+ 
+ 
+    </div>
+<!-- Size / Manufacturer / Brand -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("Size")
+                .Label("Size")
+                .LabelMode(EditorLabelMode.Floating))
+ 
+        @(Html.DevExtreme().TextBox()
+                .ID("Manufacturer")
+                .Label("Manufacturer")
+                .LabelMode(EditorLabelMode.Floating))
+ 
+        @(Html.DevExtreme().TextBox()
+                .ID("Brand")
+                .Label("Brand")
+                .LabelMode(EditorLabelMode.Floating))
+</div>
+ 
+    <!-- Part No / Delivery Period / Plan No -->
+<div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 15px;">
+        @(Html.DevExtreme().TextBox()
+                .ID("PartNo")
+                .Label("Part No")
+                .LabelMode(EditorLabelMode.Floating))
+ 
+        @(Html.DevExtreme().TextBox()
+                .ID("DeliveryPeriod")
+                .Label("Delivery Period")
+                .LabelMode(EditorLabelMode.Floating))
+ 
+        @(Html.DevExtreme().TextBox()
+                .ID("PlanNo")
+                .Label("Plan No")
+                .LabelMode(EditorLabelMode.Floating))
+</div>
+    @(Html.DevExtreme().Button()
+        .ID("btnApplyAndClose")
+        .Text("Apply & Close")
+        .Icon("check")
+        .OnClick("applyAndClose"))
+</div>
+<script>
+    let GSCode = null;
+    let poChildNo1=null;
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+         const poChildNos = urlParams.get("poChildNo");
+         alert(poChildNos);
+          poChildNo1 = poChildNos ? poChildNos.split("?")[0] : null;
+          if(poChildNo1){
+              loadeditData(poChildNo1);
+          }
+
+        const GSCodes = urlParams.get("gsCode");
+       GSCode = GSCodes ? GSCodes.split("?")[0] : null;
+       alert(GSCodes);
+        console.log("Loaded GSCode:", GSCode);
+        if (GSCode) {
+                // If Mprno is present, load client details
+                loadClientDetails(GSCode);
+            }
+
+    });
+
+
+        function loadClientDetails(GSCode) {
+       $.ajax({
+            url: `/api/AddNewClientRequest/GetdataByGSCode?GSCode=${encodeURIComponent(GSCode)}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function (res)  {
+                console.log("ddd",res);
+            $("#Size").dxTextBox("instance").option("value",res.ItemSize);
+            $("#Manufacturer").dxTextBox("instance").option("value",res.ItemMake);
+            $("#Brand").dxTextBox("instance").option("value",res.ItemBrand);
+            $("#PartNo").dxTextBox("instance").option("value",res.ItemPartNo);
+            },
+            error: function (xhr) {
+                console.log("data fetch failed:", xhr.responseText);
+            }
+        });
+    }
+      function  loadeditData(poChildNo1) {
+       $.ajax({
+           url: `/api/PurchaseOrders/GetDetaildescriptiondata?poChildNo=${encodeURIComponent(poChildNo1)}`,
+            type: 'GET',
+            dataType: 'json',
+            success: function (res)  {
+                console.log("ddd111",res);
+                $("#DetailedDescription").dxTextArea("instance").option("value",res.AddlDescription);
+
+               $("#Remarks").dxTextBox("instance").option("value",res.PoitemRemarks);
+               $("#mritemno").dxTextBox("instance").option("value",res.MritemNo);
+                $("#DeliveryPeriod").dxTextBox("instance").option("value",res.DeliveryPeriod);
+              $("#PlanNo").dxTextBox("instance").option("value",res.PlanNo);
+            },
+            error: function (xhr) {
+                console.log("data fetch failed:", xhr.responseText);
+            }
+        });
+    }
+
+    // 🔧 This must be globally accessible
+    function getItemDescription() {
+        if (!GSCode) {
+            DevExpress.ui.notify("GSCode is missing", "error", 2000);
+            return;
+        }
+
+        $.ajax({
+
+            url: `/api/AddNewClientRequest/GetGSCodeDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            type: "GET",
+            success: function (data) {
+                $("#DetailedDescription").dxTextArea("instance").option("value", data);
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to fetch description", "error", 2000);
+            }
+        });
+    }
+
+    function getDetailedDescription() {
+        if (!GSCode) {
+            DevExpress.ui.notify("GSCode is missing", "error", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: `/api/AddNewClientRequest/GetGSCodeDetailedDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            type: "GET",
+            success: function (data) {
+                $("#DetailedDescription").dxTextArea("instance").option("value", data);
+            },
+            error: function () {
+                DevExpress.ui.notify("Failed to fetch detailed description", "error", 2000);
+            }
+        });
+    }
+
+
+
+
+        function collectModalFields() {
+        return {
+            GSCode: GSCode,
+            AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
+           
+            PoitemRemarks: $("#Remarks").dxTextBox("instance").option("value"),
+            MritemNo: $("#mritemno").dxTextBox("instance").option("value"),
+            DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
+            PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
+        };
+    }
+
+    // Send data to Page 1 when window is closing
+    window.onbeforeunload = function () {
+        if (window.opener && typeof window.opener.receiveModalFieldData === "function") {
+            const fieldValues = collectModalFields();
+            window.opener.receiveModalFieldData(fieldValues);
+        }
+    };
+       function applyAndClose() {
+        const modalData = {
+           AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
+
+            PoitemRemarks: $("#Remarks").dxTextBox("instance").option("value"),
+            MritemNo: $("#mritemno").dxTextBox("instance").option("value"),
+            DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
+            PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
+        };
+
+        console.log("📤 Sending to parent:", modalData);
+
+        if (window.parent && typeof window.parent.receiveModalFieldData === "function") {
+            window.parent.receiveModalFieldData(modalData);
+            window.parent.closeModal(); // or your custom modal close logic
+        } else {
+            alert("Could not send to parent.");
+        }
+    }
+
+
+
+
+</script>
+

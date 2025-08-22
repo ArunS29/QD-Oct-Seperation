@@ -2,6 +2,10 @@
 @using DevExtreme.AspNet.Mvc
 @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
+     var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
 }
 
 <style>
@@ -345,7 +349,36 @@
                                                 .OnOpened("ddlAccountGrouponOpened")
                                                 .OnKeyDown("ddlAccountGrouponKeyDown")
                                                 .OnValueChanged("ddlAccountGroupValueChanged")
-                                                .ContentTemplate(new TemplateName("AccountGroupContentTemplate")))
+                                                .ContentTemplate(new TemplateName("AccountGroupContentTemplate"))
+                                                				.Buttons(buttons => {
+					// Built-in clear button
+					buttons.Add()
+					.Name("clear");
+
+					buttons.Add()
+					.Name("btnAddAccount")
+					.Location(TextEditorButtonLocation.After)
+					.Widget(w => w.Button()
+					.Type(ButtonType.Default)
+					.Icon("plus")
+					.ElementAttr(new { @class = "custom-hover-button add-hover" })
+					.OnClick("redirectledgerAccountMaster"));
+
+					buttons.Add()
+					.Name("btnEditAccount")
+					.Location(TextEditorButtonLocation.After)
+					.Widget(w => w.Button()
+					.Type(ButtonType.Default)
+					.Icon("edit")
+					.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+					.OnClick("function() {  var dropDownBox = $('#ddlAccountGroup').dxDropDownBox('instance');  var selectedValue = dropDownBox.option('value');  if (selectedValue === null || selectedValue === '') { alert('Please Select the Account Group.');  return;  } redirectledgerAccountMaster() }"));
+
+
+
+					buttons.Add()
+					.Name("dropDown");
+				})
+                                                )
                     </div>
                   
                 </div>
@@ -422,11 +455,35 @@
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .Format(f => f.Type("fixedPoint").Precision(2))
                                                         .Width("100%")
+                                                        .Max(99999999)
                                                         .Step(1)
                                                         .ShowSpinButtons(true)
                                                         .InputAttr(new { style = "text-align: right; color:darkred; font-weight:bold;" }))
                         </div>
-
+                        <div class="col-md-2">
+                           @(Html.DevExtreme().DropDownBox()
+                            .ID("ddlBaseCurrency")
+                            .DataSource(d => d.WebApi()
+                                .Controller("Utility")
+                                .LoadAction("GetCurrencyList")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("CurrencyExchangeId")
+                            )
+                            .ValueExpr("CurrencyExchangeId")
+                            .DisplayExpr("CurrencyName")
+                            // now use your renamed variable
+                            .Value(baseCurrencyIdnew)
+                            .Label(new JS("formatMessage('Base Currency')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .ValidationRules(rules => rules.AddRequired().Message("Please select a base currency."))
+                            .ShowClearButton(true)
+                            .AcceptCustomValue(false)
+                            .DropDownOptions(o => o.Width(300))
+                            .ReadOnly(true)
+    
+                            .ElementAttr(new { @class = "custom-disabled-selectbox" })
+                        )
+                        </div>
                         <div class="col-md-3">
                             @(Html.DevExtreme().DropDownBox()
                                                         .DataSource(d => d.WebApi()
@@ -487,7 +544,7 @@
                            
                             <div class="col-md-4">
                                 @(Html.DevExtreme().TextBox()
-                                                                .Label("Voucher Abbr")
+                                                                .Label(new JS("formatMessage('Voucher Abbreviation')"))
                                                                 .LabelMode(EditorLabelMode.Floating)
                                                                 .ID("txtVoucherNoAbbr")
                                                                 .InputAttr("aria-label", "Text")
@@ -511,7 +568,8 @@
                             
                             <div class="col-md-4">
                                 @(Html.DevExtreme().NumberBox()
-                                                                .Label("No Of Days")
+
+                                                                .Label(new JS("formatMessage('No Of Days')"))
                                                                 .LabelMode(EditorLabelMode.Floating)
                                                                 .ID("txtNoDays")
                                                                 .Value(0)
@@ -583,7 +641,8 @@
                     <div class="row g-3 align-items-end">
                         <div class="col-md-4">
                             @(Html.DevExtreme().DropDownBox()
-                                                         .Label("Branch")
+
+                                                         .Label(new JS("formatMessage('Branch')"))
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .DataSource(d => d.WebApi().Controller("AccountLedgerMaster").LoadAction("getAccountBranch").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
                                                         .ID("ddlbranch")
@@ -757,7 +816,8 @@
                                                         .Label("Mobile No")
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .ID("txtPersonMobile")
-                                                        .InputAttr("aria-label", "Text")
+                                                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                                                        
                                                         .Width("100%"))
                         </div>
 
@@ -799,7 +859,7 @@
                         <div class="col-md-5">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtBankAccountNameAr")
-                                .Label("Bank Account Name (AR)")
+                                .Label(new JS("formatMessage('Bank Account Name (AR)')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -831,7 +891,7 @@
                         <div class="col-md-5">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtBankNameAr")
-                                 .Label("Bank  Name (AR)")
+                                .Label(new JS("formatMessage('Bank  Name (AR)')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -863,7 +923,7 @@
                         <div class="col-md-5">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtBankBranchAr")
-                                 .Label("Bank Branch (AR)")
+                                .Label(new JS("formatMessage('Bank Branch (AR)')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -898,6 +958,7 @@
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtSwiftCode")
                                 .Label("SWIFT Code")
+                                .Label(new JS("formatMessage('Swift Code:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
                                 .Width("100%")
@@ -2625,7 +2686,7 @@ function syncSupVATNumbers(e) {
    $(function () {
     // Initialize the TextBox with default text
     $("#LedgerActive").dxTextBox({
-        value: "Ledger is Currently Active:",
+        value: formatMessage("Ledger is Currently Active:"),
         readOnly: true
     });
 
@@ -3221,6 +3282,10 @@ function syncSupVATNumbers(e) {
         var accgroupid = urlParams.get('AccountGroupID') || "";
          var IsPurchaseEdit=urlParams.get('IsPurchaseEdit') || "";
          var IsB2CEdit=urlParams.get('IsB2CEdit') || "";
+         var IsDebitEdit=urlParams.get('IsDebitEdit') || "";
+         var IsDebitAdd=urlParams.get('IsDebitAdd') || "";
+         var IsClientAdd=urlParams.get('IsClientAdd') || "";
+         var IsPurchaseAdd=urlParams.get('IsPurchaseAdd') || "";
     
          debugger;
         acgid = accgroupid;
@@ -3234,28 +3299,65 @@ function syncSupVATNumbers(e) {
             accountheadid = urlParams.get('AccountId');  // Use the already declared accountheadid
 
         }
-        if(IsPurchaseEdit=='true')
+        if(IsDebitAdd=='true')
         { 
              disableTabs(["tab-content-3", "tab-content-7"]);
         var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
-    // Set the value
-    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+        // Set the value
+        accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
 
-    // Disable the textbox
+         // Disable the textbox
         accountGroupDropDownBox.option("disabled", true);
                  
         }
+        if(IsDebitEdit=='true' || IsPurchaseEdit=='true')
+        {
+        disableTabs(["tab-content-3", "tab-content-7"]);
+        var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+         // Disable the textbox
+        accountGroupDropDownBox.option("disabled", true);
+        }
+
+       
         if(IsB2CEdit=='true')
         {
         var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
 
     // Set the value
-    accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+    accountGroupDropDownBox.option("value", "SUNDRY DEBTORS");
 
     // Disable the textbox
         accountGroupDropDownBox.option("disabled", true);
             }
+
+                    if(IsPurchaseAdd=='true')
+                     { 
+                 
+                      disableTabs(["tab-content-3", "tab-content-7"]);
+                     var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+                 
+                 // Set the value
+                 accountGroupDropDownBox.option("value", "SUNDRY CREDITORS");
+                 
+                 // Disable the textbox
+                     accountGroupDropDownBox.option("disabled", true);
+                              
+                     }
+
+                      if(IsClientAdd=='true')
+                     { 
+                 
+                      disableTabs(["tab-content-3", "tab-content-7"]);
+                     var accountGroupDropDownBox = $("#ddlAccountGroup").dxDropDownBox("instance");
+                 
+                 // Set the value
+                 accountGroupDropDownBox.option("value", "SUNDRY DEBTORS");
+                 
+                 // Disable the textbox
+                     accountGroupDropDownBox.option("disabled", true);
+                              
+                     }
 
         // alert(IsCharOfAccounts);
         // Check if IsCharOfAccounts is 'true' (string comparison)
@@ -3797,7 +3899,7 @@ function syncSupVATNumbers(e) {
                     }
 
                     
-
+                    
 
 
 
@@ -3822,7 +3924,7 @@ function syncSupVATNumbers(e) {
 
 
         // Check if the parameter IsCharOfAccounts is 'true'
-                if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
+          if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true' && IsDebitEdit !=='true' && IsClientAdd=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
             // Reset validator if it exists
             var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
             if (AccountHeadNameValidator) {
@@ -3905,6 +4007,12 @@ function syncSupVATNumbers(e) {
 
 
   function redirectToBranchMaster() {
+       const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlbranch"));
+
+    // Close the dropdown if it's open
+    if (dropDownInstance.option("opened")) {
+        dropDownInstance.close();
+    }
     const url = `/${tenantName}/Finance/Divmaster`;
 
     const modalOverlay = document.createElement("div");
@@ -3949,6 +4057,12 @@ function syncSupVATNumbers(e) {
     }
 
   function redirecttoledgersubgroup() {
+        const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlSubgroup"));
+
+    // Close the dropdown if it's open
+    if (dropDownInstance.option("opened")) {
+        dropDownInstance.close();
+    }
     const url = `/${tenantName}/Finance/LedgerSubGroupMaster`;
 
     const modalOverlay = document.createElement("div");
@@ -3994,6 +4108,12 @@ function syncSupVATNumbers(e) {
     }
 
  function redirecttosalespersonmaster() {
+        const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlSales"));
+
+// Close the dropdown if it's open
+if (dropDownInstance.option("opened")) {
+    dropDownInstance.close();
+}
     const url = `/${tenantName}/Finance/SalesPersonMaster`;
 
     const modalOverlay = document.createElement("div");
@@ -4062,6 +4182,12 @@ function syncSupVATNumbers(e) {
     }
 
     function redirectledgerAccountMaster() {
+           const dropDownInstance = DevExpress.ui.dxDropDownBox.getInstance(document.getElementById("ddlAccountGroup"));
+
+// Close the dropdown if it's open
+if (dropDownInstance.option("opened")) {
+    dropDownInstance.close();
+}
         if (["M5", "M6", "M7", "M8", "M2", "M9", "M4", "M1"].includes(accgrpunder)) {
             disableTabs(["tab-content-1", "tab-content-2", "tab-content-3", "tab-content-7"]);
         } else if (["M3"].includes(accgrpunder)) {
@@ -4255,18 +4381,35 @@ function syncSupVATNumbers(e) {
         }
     }
 
-    function onTabSelectionChanged(e) {
-        // Hide all tab content
-        $(".tab-content").hide();
+    // function onTabSelectionChanged(e) {
+    //     Hide all tab content
+    //     $(".tab-content").hide();
 
-        // Show the content of the selected tab
-        var selectedTabIndex = e.component.option("selectedIndex");
-        $("#tab-content-" + (selectedTabIndex + 1)).show();
-    }
+    //     Show the content of the selected tab
+    //     var selectedTabIndex = e.component.option("selectedIndex");
+    //     $("#tab-content-" + (selectedTabIndex + 1)).show();
+    // }
 
     // function onPostButtonClick(e) {
     //     alert("Opening Balance Entry Posted successfully");
     // }
+    function onTabSelectionChanged(e) {
+    const disabledIndex = $(".custom-tabs").data("disabledTabIndex");
+    const selectedTabIndex = e.component.option("selectedIndex");
+
+    // Prevent navigating to the disabled tab
+    if (disabledIndex !== undefined && selectedTabIndex === disabledIndex) {
+        const previousIndex = e.previousIndex ?? 0;
+        e.component.option("selectedIndex", previousIndex);
+        DevExpress.ui.notify("", "warning", 2000);
+        return;
+    }
+
+    // Show only the selected tab's content
+    $(".tab-content").hide();
+    $("#tab-content-" + (selectedTabIndex + 1)).show();
+}
+
 
     function txtAccountHeadFocusOut(e) {
 
@@ -5017,7 +5160,7 @@ function syncSupVATNumbers(e) {
         var openingBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
         var dropDown = $('#ddlAccountGroup').dxDropDownBox("instance");
         var isAssetGroupText = dropDown.option("displayValue");
-
+            var menuType = "finance";
         // If it's an array (common in DropDownBox), convert to string
         if (Array.isArray(isAssetGroupText)) {
             isAssetGroupText = isAssetGroupText[0] || "";
@@ -5045,7 +5188,7 @@ function syncSupVATNumbers(e) {
         }
 
         // Redirect
-        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
+        window.location.href = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`;
     }
 
 
@@ -5086,12 +5229,21 @@ function syncSupVATNumbers(e) {
      });
  }
     function onsaveLedgerAccountClick(e) {
+        var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
+        debugger;
+        if(sAccountGroup=="SUNDRY CREDITORS")
+        {
+            sAccountGroup="A003";
+        }
+        else if(sAccountGroup=="SUNDRY DEBTORS")
+       {
+            sAccountGroup="A011";
+       }
 
         var sAccountID = $('#txtAccountId').dxTextBox("instance").option("value");
         var sRefNo = $('#txtReferenceNo').dxTextBox("instance").option("value");
         var sAcccountHead = $('#txtAccountHead').dxTextBox("instance").option("value");
         var sAcccountHeadAr = $('#txtAccountHeadAr').dxTextBox("instance").option("value");
-        var sAccountGroup = $('#ddlAccountGroup').dxDropDownBox("instance").option("value");
         acgid = sAccountGroup;
         //Setting Tab Values
         var sOpeningBalance = $('#txtOpeningBalance').dxNumberBox("instance").option("value");
@@ -6291,36 +6443,48 @@ function syncSupVATNumbers(e) {
         textBox2Instance.option("value", arabicTranslation);
 
     }
-    $(document).ready(function () {
-    const urlParams = new URLSearchParams(window.location.search);
 
-    // Correct text value to match DropDownBox entries
-    const sundryCreditorValue = "SUNDARY CREDITORS"; // Exact match required from your data source
 
-    if (urlParams.get('IsSupplier') === 'true') {
-        // From Add popup → select & disable 'SUNDARY CREDITORS'
-        setTimeout(() => {
-            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
-            if (group) {
-                group.option({
-                    value: sundryCreditorValue,
-                    disabled: true
-                });
-            }
-        }, 300);
-    }
+// $(window).on("load", function () {
+//     const urlParams = new URLSearchParams(window.location.search);
+//     const isClientAdd = urlParams.get('IsClientAdd') === 'true';
+//     const isPurchaseEdit = urlParams.get('IsPurchaseEdit') === 'true';
 
-    if (urlParams.get('IsPurchaseEdit') === 'true') {
-        // From Edit popup → just disable Account Group
-        setTimeout(() => {
-            const group = $("#ddlAccountGroup").dxDropDownBox("instance");
-            if (group) {
-                group.option("disabled", true);
-            }
-        }, 300);
-    }
-});
+//     const checkAndApplyFormState = () => {
+//         const group = $("#ddlAccountGroup").dxDropDownBox("instance");
+//         const tabsInstance = $(".custom-tabs").dxTabs("instance");
 
+//         if (!group || !tabsInstance) {
+//             setTimeout(checkAndApplyFormState, 100);
+//             return;
+//         }
+
+//         if (isClientAdd) {
+//             group.option({
+//                 value: "SUNDRY DEBTORS",
+//                 disabled: true
+//             });
+
+//             $("#accountGroupContainer").show();
+//             $("#nameFieldContainer").hide();
+//             $("#editButton").hide();
+//             $("#addButton").show();
+
+//             // ❌ Disable tab 4 (Supplier Details) ONLY on add
+//             $(".custom-tabs").data("disabledTabIndex", 4);
+//         } else {
+//             group.option("disabled", isPurchaseEdit);
+//             $("#accountGroupContainer").toggle(!isPurchaseEdit);
+//             $("#nameFieldContainer").toggle(isPurchaseEdit);
+//             $("#editButton").toggle(isPurchaseEdit);
+//             $("#addButton").hide();
+
+//             // ✅ Enable all tabs again
+//             $(".custom-tabs").removeData("disabledTabIndex");
+//         }
+//     };
+//     checkAndApplyFormState();
+// });
 
 
     // alert("two");

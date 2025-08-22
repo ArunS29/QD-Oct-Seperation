@@ -36,7 +36,7 @@ namespace QD.ERP.Web.Pages
             _tenantDbContextHelper = tenantDbContextHelper;
         }
 
-        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy)
+        public IActionResult OnGet(string reportName, string voucherType, DateTime? frmDate, DateTime? toDate, string requestedBy,bool useEffectiveDate)
         {
 
             if (string.IsNullOrEmpty(reportName))
@@ -62,7 +62,7 @@ namespace QD.ERP.Web.Pages
             // Company Info
             var companyDetails = _eRPMasterWtDataContext.Tbl901CompanyDetails
                 .FirstOrDefault(x => x.CompanyId == defaultCompanyId);
-
+            var DefaultCurrencyDecimals = companyDetails?.DefaultCurrencyDecimals ?? 0;
             string companyName = companyDetails?.CompanyName ?? string.Empty;
             string companyAddress = companyDetails?.CompanyFullAddress ?? string.Empty;
             string companyNameAr = companyDetails?.CompanyNameAr ?? string.Empty;
@@ -135,7 +135,7 @@ namespace QD.ERP.Web.Pages
                     case "SummaryReportByDate":
                         Report = new SummaryReport_ByDate_(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
                         );
                         break;
 
@@ -147,10 +147,10 @@ namespace QD.ERP.Web.Pages
                         break;
 
                     case "CostCenterReportByDate":
-                        Report = new CostcenterBydate(
-                            string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
-                        );
+                       Report = new CostcenterBydate(
+                          string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
+                          frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
+                       );
                         break;
 
                     case "CostCenterGroupReport":
@@ -163,7 +163,7 @@ namespace QD.ERP.Web.Pages
                     case "CostCenterGroupReportByDate":
                         Report = new CostcenterGroupByDate(
                             string.IsNullOrEmpty(requestedBy) ? "N/A" : requestedBy,
-                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName
+                            frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, _tenantDbContextHelper, userName, useEffectiveDate
                         );
                         break;
 
@@ -209,29 +209,29 @@ namespace QD.ERP.Web.Pages
 
              
                     case "TaxSummaryReport":
-                        Report = new TaxSummaryReport(frmDate.Value,toDate.Value,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new TaxSummaryReport(frmDate.Value,toDate.Value,tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
                         break;
 
                     case "TaxVATReport":
                         Report = new TaxVATReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "TaxReportRevenueInArabic":
-                        Report = new TaxReportRevenueInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new TaxReportRevenueInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
                         break;
                     case "CreditSummary":
-                        Report = new CreditSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new CreditSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
                         break;
                     case "DebitNoteSummary":
-                        Report = new DebitNoteSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new DebitNoteSummary(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
                         break;
                     case "VATPurchasesAndExpReport":
-                        Report = new VATPurchasesAndExpReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new VATPurchasesAndExpReport(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
                         break;
                     case "TaxSummaryReportPurchaseInArabic":
                         Report = new TaxSummaryReportPurchaseInArabic(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "VATReturnsform":
-                        Report = new VATReturnsform(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new VATReturnsform(frmDate.Value, toDate.Value, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper, DefaultCurrencyDecimals);
                         break;
                   
                     default:

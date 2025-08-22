@@ -144,7 +144,7 @@
 	}
 </style>
 
-<input id="formId" value="frm201LedgerView" type="hidden" />
+<input id="formId" value="frm60135PurchaseRequestItemDetails" type="hidden" />
 <div class="title">
 	<div class="header-container">
 		<div id="Quotation" class="no-border-input"></div>
@@ -244,7 +244,27 @@
 				columns.AddFor(m => m.Gscode).Caption(new JS("formatMessage('GS Code')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				columns.AddFor(m => m.Gsdescrpition).Caption(new JS("formatMessage('GS Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				columns.AddFor(m => m.UnitDesc).Caption(new JS("formatMessage('Unit Desc')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.QtyRequested).Caption(new JS("formatMessage('Qty Requested')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.QtyRequested).Caption(new JS("formatMessage('Qty Requested')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+					function(cellElement, cellInfo) {
+					if (cellInfo.value != null) {
+					const formattedValue = new Intl.NumberFormat('en-US', {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2
+					}).format(cellInfo.value);
+					$('<span>')
+					.text(formattedValue)
+					.css({
+					display: 'inline-block',
+					backgroundColor: '#e6ffe6',
+					color: '#1a8f1a',
+					fontWeight: 'bold',
+					padding: '4px 10px',
+					borderRadius: '20px'
+					})
+					.appendTo(cellElement);
+					}
+					}
+					"));
 				columns.AddFor(m => m.RequestedNameRef).Caption(new JS("formatMessage('Requested Name Ref')")).Alignment(HorizontalAlignment.Center).Visible(true);
 
 				columns.AddFor(m => m.ProjectDescription).Caption(new JS("formatMessage('Project Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
@@ -255,11 +275,91 @@
 				columns.AddFor(m => m.ReceiptStatus).Caption(new JS("formatMessage('Receipt Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				columns.AddFor(m => m.ReceiptNo).Caption(new JS("formatMessage('Receipt No')")).Alignment(HorizontalAlignment.Center).Visible(true);
 				columns.AddFor(m => m.ReceiptDate).Caption(new JS("formatMessage('Receipt Date')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.ReceivedQty).Caption(new JS("formatMessage('Received Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				columns.AddFor(m => m.ReceivedQty).Caption(new JS("formatMessage('Received Qty')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+						function(cellElement, cellInfo) {
+						if (cellInfo.value != null) {
+						const formattedValue = new Intl.NumberFormat('en-US', {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+						}).format(cellInfo.value);
+						$('<span>')
+						.text(formattedValue)
+						.css({
+						display: 'inline-block',
+						backgroundColor: '#e6ffe6',
+						color: '#1a8f1a',
+						fontWeight: 'bold',
+						padding: '4px 10px',
+						borderRadius: '20px'
+						})
+						.appendTo(cellElement);
+						}
+						}
+						"));
 
-				columns.AddFor(m => m.BalanceToReceive).Caption(new JS("formatMessage('Balance To Receive')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.TotalIssuedQty).Caption(new JS("formatMessage('Total Issued Qty')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				columns.AddFor(m => m.BalanceToIssue).Caption(new JS("formatMessage('Balance To Issue')")).Alignment(HorizontalAlignment.Center).Visible(true);
+			columns.AddFor(m => m.BalanceToReceive).Caption(new JS("formatMessage('Balance To Receive')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+					function(cellElement, cellInfo) {
+					if (cellInfo.value != null) {
+					const formattedValue = new Intl.NumberFormat('en-US', {
+					minimumFractionDigits: 2,
+					maximumFractionDigits: 2
+					}).format(cellInfo.value);
+					$('<span>')
+					.text(formattedValue)
+					.css({
+					display: 'inline-block',
+					backgroundColor: '#e6ffe6',
+					color: '#1a8f1a',
+					fontWeight: 'bold',
+					padding: '4px 10px',
+					borderRadius: '20px'
+					})
+					.appendTo(cellElement);
+					}
+					}
+					"));
+			columns.AddFor(m => m.TotalIssuedQty).Caption(new JS("formatMessage('Total Issued Qty')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+			columns.AddFor(m => m.BalanceToIssue).Caption(new JS("formatMessage('Balance To Issue')")).Alignment(HorizontalAlignment.Center).Visible(true).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#ffe6e6',
+		color: '#d93025',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 
 
 			columns.AddFor(m => m.ClientCode).Caption(new JS("formatMessage('Client Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
@@ -289,8 +389,48 @@
 			columns.AddFor(m => m.ItemReqExpectedDate).Caption(new JS("formatMessage('Item Req Expected Date')")).Alignment(HorizontalAlignment.Center).Visible(false);
 			columns.AddFor(m => m.ExpectedUnitRate).Caption(new JS("formatMessage('Expected Unit Rate')")).Alignment(HorizontalAlignment.Center).Visible(false);
 			columns.AddFor(m => m.LineTotal).Caption(new JS("formatMessage('Line Total')")).Alignment(HorizontalAlignment.Center).Visible(false);
-			columns.AddFor(m => m.ExpectedTaxAmount).Caption(new JS("formatMessage('Expected Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(false);
-			columns.AddFor(m => m.ExpectedTotalAmount).Caption(new JS("formatMessage('Expected Total Amount')")).Alignment(HorizontalAlignment.Center).Visible(false);
+			columns.AddFor(m => m.ExpectedTaxAmount).Caption(new JS("formatMessage('Expected Tax Amount')")).Alignment(HorizontalAlignment.Center).Visible(false).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
+			columns.AddFor(m => m.ExpectedTotalAmount).Caption(new JS("formatMessage('Expected Total Amount')")).Alignment(HorizontalAlignment.Center).Visible(false).CellTemplate(new JS(@"
+		function(cellElement, cellInfo) {
+		if (cellInfo.value != null) {
+		const formattedValue = new Intl.NumberFormat('en-US', {
+		minimumFractionDigits: 2,
+		maximumFractionDigits: 2
+		}).format(cellInfo.value);
+		$('<span>')
+		.text(formattedValue)
+		.css({
+		display: 'inline-block',
+		backgroundColor: '#e6ffe6',
+		color: '#1a8f1a',
+		fontWeight: 'bold',
+		padding: '4px 10px',
+		borderRadius: '20px'
+		})
+		.appendTo(cellElement);
+		}
+		}
+		"));
 			columns.AddFor(m => m.TotalRequestCost).Caption(new JS("formatMessage('Total Request Cost')")).Alignment(HorizontalAlignment.Center).Visible(false);
 			columns.AddFor(m => m.CostCenterText).Caption(new JS("formatMessage('Cost Center Text')")).Alignment(HorizontalAlignment.Center).Visible(false);
 			columns.AddFor(m => m.ProjectMasterCode).Caption(new JS("formatMessage('Project Master Code')")).Alignment(HorizontalAlignment.Center).Visible(false);
@@ -330,7 +470,7 @@
 			columns.AddFor(m => m.ProjectSubUnitName).Caption(new JS("formatMessage('Project Sub Unit')")).Alignment(HorizontalAlignment.Center).Visible(false);
 
 		})
-		.Height("60vh") // Fixed height for the grid
+		.Height("60vh") 
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)

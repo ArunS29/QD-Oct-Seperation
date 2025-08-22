@@ -3,20 +3,39 @@
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
-            .ID("ddButtonLayout")
-            .Icon("smalliconslayout")
-            .Width("100%")
-            .Text(new JS("formatMessage('Layout')"))
-            .DropDownOptions(options => options.Width(230))
-            .Items(items =>
-            {
-                items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Icon("lock").OnClick("setDefaultLayoutClick");
-                items.Add().Text(new JS("formatMessage('Reset Layout')")).Icon("revert").OnClick("resetLayoutClick");
-                items.Add().Text(new JS("formatMessage('Open Layout')")).Icon("activefolder").OnClick("openLayoutClick");
-                items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
-            })
-            .ShowArrowIcon(false)
-            )
+                .ID("ddButtonLayout")
+                .Icon("smalliconslayout")
+                .Width(50)
+                .Text(new JS("formatMessage('Layout')"))
+                .ElementAttr(new { style = "display: none;" })
+                .DropDownOptions(options => options.Width(230))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Set as Default Layout')")).Template(@<text>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path fill="var(--title-background-color)" d="M6 10V7a6 6 0 1 1 12 0v3" />
+                            <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                            <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                        </svg>Set as Default Layout
+                        </text>).OnClick("setDefaultLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Reset Layout')")).Template(@<text>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="var(--title-background-color)" viewBox="0 0 16 16">
+                            <path d="M8 3a5 5 0 1 1-4.546 2.914.5.5 0 0 1 .908-.418A4 4 0 1 0 8 4V1l-3 3 3 3V5z" />
+                        </svg>Reset Layout            </text>).OnClick("resetLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Open Layout')")).Template(@<text>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path fill="var(--title-background-color)" d="M17 10V7a5 5 0 0 0-10 0" />
+                            <rect x="4" y="10" width="16" height="12" rx="2" fill="#444" />
+                            <circle cx="12" cy="16" r="1.5" fill="#b0b0b0" />
+                        </svg>Open Layout</text>).OnClick("openLayoutClick");
+                    items.Add().Text(new JS("formatMessage('Save Layout')")).Template(@<text>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" fill="none" viewBox="0 0 24 24">
+                            <path fill="var(--title-background-color)" d="M17 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7l-2-4z" />
+                            <path fill="#444" d="M17 7H7V5h10v2zM9 14h6v5H9z" />
+                        </svg>Save Layout</text>).OnClick("saveLayoutClick");
+                })
+                .ShowArrowIcon(false)
+                )
     </div>
 <div class="btn-container">
     @(Html.DevExtreme().DropDownButton()
@@ -99,6 +118,33 @@
             .OnClick("toggleGroupPanel")
             )
     </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+            .ID("btnToggleHeaderFilter")
+
+            .Text(new JS("formatMessage(' Filter')"))
+            .ElementAttr(new { style = "display: none;" })
+            @* .Icon("filter") *@
+            .OnClick("toggleHeaderFilter")
+            .Template(@<text>
+            <div style="display: flex; justify-content: center; align-items: center;">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="20" height="20"
+                     viewBox="0 0 24 24"
+                     fill="none"
+                     stroke="none">
+                    <!-- Circle background -->
+                    <circle cx="12" cy="12" r="12" fill="var(--title-background-color)" />
+                    <!-- Filter funnel icon in white -->
+                    <polygon points="6 8 18 8 13 13 13 17 11 17 11 13 6 8" fill="#ffffff" />
+                </svg>
+            </div>
+        </text>)
+            )
+
+    </div>
+
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnColumnChooser")
@@ -116,7 +162,7 @@
             )
 
     </div>
-    <div class="btn-container">
+   @*  <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
             .ID("btnAddNewReceipt")
             .Icon("plus")
@@ -143,6 +189,34 @@
             .OnItemClick("addNewMaterialReceipt")
             .ShowArrowIcon(false)
             )
+    </div> *@
+    <div class="btn-container">
+        @(Html.DevExtreme().DropDownButton()
+                .ID("btnAddMaterialRequest")
+                .Icon("add")
+                .Width("150%")
+                .Text(new JS("formatMessage('Create New')"))
+                .DropDownOptions(options => options.Width(370))
+                .Items(items =>
+                {
+                    items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Supplier')")).Icon("user").Option("color", "#FF7043");
+                    items.Add().Text(new JS("formatMessage('Add New Material Receipt-From Project')")).Icon("cart").Option("color", "#00ACC1");
+                  
+                })
+                .ItemTemplate(@<text>
+            <div class="custom-dropdown-item">
+                <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
+                <div class="item-content">
+                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                    <div>
+                        <div class="item-title"><%- text %></div>
+                    </div>
+                </div>
+            </div>
+        </text>)
+                .OnItemClick("addNewMaterialReceipt")
+                .ShowArrowIcon(false)
+                )
     </div>
 </div>
 
@@ -173,17 +247,35 @@
         function MaterialReceiptDetails() {
             window.location.href = `/${tenantName}/IMS/MaterialReceiptDetails`;
         }
-        function addNewMaterialReceipt(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Material Receipt-From Supplier'):
-                    url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
+        // function addNewMaterialReceipt(e) {
+        //     let url = ''; // Declare once
+        //     switch (e.itemData.text) {
+        //         case formatMessage('Add New Material Receipt-From Supplier'):
+        //             url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
+        //             break;
+        //         default:
+        //             console.log("Clicked item: ", e.itemData.text);
+        //             return;
+        //     }
 
-            window.location.href = url;
+        //     window.location.href = url;
+        // }
+
+          function addNewMaterialReceipt(e) {
+        let url = ''; // Declare once
+        switch (e.itemData.text) {
+            case formatMessage('Add New Material Receipt-From Supplier'):
+                url = `/${tenantName}/IMS/MaterialReceiptFromSupplier`;
+                break;
+            case formatMessage('Add New Material Receipt-From Project'):
+                url = `/${tenantName}/IMS/MaterialReceiptFromProject`;
+                break;
+          
+            default:
+                console.log("Clicked item: ", e.itemData.text);
+                return;
         }
+
+        window.location.href = url;
+    }
 </script>

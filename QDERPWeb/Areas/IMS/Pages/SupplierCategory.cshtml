@@ -97,11 +97,6 @@
         justify-content: center;
     }
 
-    .mainContainer {
-        margin-top: 1em;
-        width: 100%;
-    }
-
     .container {
         display: none !important;
     }
@@ -137,72 +132,73 @@
     }
 
 </style>
-
-@* <div class="title">
+@* 
+<div class="title">
     <div class="header-container">
         <div id="SupplierCategory" class="no-border-title"></div>
     </div>
-</div> *@
+</div>  *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Supplier Category</h3>
+</div>
 <div class="content-container-top" style="padding:10px;">
-    <div class="form-group">
+    <div class="form-group" style="display:flex; align-items:end; gap:10px;">
 
-        @(
-            Html.DevExtreme().TextBox()
+        @(Html.DevExtreme().TextBox()
             .Label(new JS("formatMessage('Type a New Supplier Category & Add to the Existing List:')"))
             .LabelMode(EditorLabelMode.Floating)
             .ID("txtSupplierCategory")
             .Value(null)
+            .Width(730)
             .ValidationRules(rules =>
             {
                 rules.AddRequired()
                 .Message(new JS("formatMessage('Supplier Category is required')"));
             })
             )
-
-    </div>
-
-    <div class="col-md-8">
-        <div class="form-group" style="display:flex; gap:500px; width:150%; align-items:end; justify-content:space-between;">
-            @(
-                Html.DevExtreme().TextBox()
+        @(Html.DevExtreme().TextBox()
                 .Label(new JS("formatMessage('Supplier Category Code:')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .ID("txtCategoryCode")
                 .Width("100%")
                 .Value(null)
-                        .ValidationRules(rules =>
-                        {
-                            rules.AddRequired()
-                            .Message(new JS("formatMessage('Category Code is required')"));
-                        })
+                .ValidationRules(rules =>
+                {
+                    rules.AddRequired()
+                    .Message(new JS("formatMessage('Category Code is required')"));
+                })
                 )
-            @(Html.DevExtreme().Button()
-                        .ID("btnadd")
-                        .Text(new JS("formatMessage('ADD')"))
-                        .Height(40)
-                        .Width(178)
-                        .Icon("plus")
-                        .OnClick("function() { adddivmaster(); }")
-                        .ElementAttr(new { @class = "dx-button-add" })
-                        )
-        </div>
+        @(Html.DevExtreme().Button()
+                .ID("btnadd")
+                .Text(new JS("formatMessage('ADD')"))
+                .Height(40)
+                .Width(178)
+                .Icon("plus")
+                .OnClick("function() { adddivmaster(); }")
+                .ElementAttr(new { @class = "dx-button-add" })
+                )
     </div>
+
     <br />  
     <div id="gridContainer"></div>
     <div id="gridContainer"></div>
     <br />
+</div>
+<div style="footer-fixed">
     <div class="form-group">
         @(Html.DevExtreme().Button()
-            .ID("btnback")
-            .Text(new JS("formatMessage('Back')"))
-            .Type(ButtonType.Normal)
-            .StylingMode(ButtonStylingMode.Outlined)
-            .Icon("arrowleft")
-            .OnClick("btnbackbt")
-            )
+                .ID("btnback")
+                .Text(new JS("formatMessage('Back')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("arrowleft")
+                .OnClick("btnbackbt")
+                )
     </div>
 </div>
-
 <script type="text/javascript">
 
          function btnbackbt() {
@@ -452,7 +448,7 @@
                 rowRenderingMode: "virtual", // Optimizes row rendering
                 useNative: true // Use native scrolling for better performance
             },
-            height: "60vh", // Set a fixed height for the grid (this helps in showing vertical scrollbar)
+            height: "65vh", // Set a fixed height for the grid (this helps in showing vertical scrollbar)
             width: "100%" // Make grid responsive and take full width of the container
         });
     });
@@ -517,6 +513,9 @@
                         // Clear the text inputs after success
                         $("#txtSupplierCategory").dxTextBox("instance").option("value", "");
                         $("#txtCategoryCode").dxTextBox("instance").option("value", "");
+                             
+                           $("#txtSupplierCategory").dxValidator("instance").reset();
+                             $("#txtCategoryCode").dxValidator("instance").reset();
 
                         // Optionally, you can reload the data grid to reflect the newly added branch
                         $("#gridContainer").dxDataGrid("instance").refresh();

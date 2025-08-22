@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -17,10 +18,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<MaterialReceiptController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public MaterialReceiptController(ILogger<MaterialReceiptController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
 		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 
@@ -256,25 +260,32 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		{
 			try
 			{
-				// Retrieve tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
-
 				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Use tenantName to find the company
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-					if (company == null)
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+                    if (company == null)
 					{
 						return NotFound("Company not found.");
 					}
 
-					string RequestAbbrv = company.RequestAbbrv;
+					string RequestAbbrv = company.MaterialReceiptAbbrv;
 					int invoiceYearDigits = company.InvoiceYearDigits ?? 0;
 					bool isResetInvoiceInYear = company.IsResetInvoiceInYear ?? false;
 					DateTime invoiceDate = DateTime.Now;
@@ -390,7 +401,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         .Where(x => x.ReceiptNo == ReceiptNo)
 						.ToList();
 
-					foreach (var gridDetails in result)
+                    var currencyRate = await dbContext.Tbl60501materialReceiptMasters
+                            .Where(x => x.ReceiptNo == ReceiptNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                    foreach (var gridDetails in result)
 					{
 						dynamic item = new ExpandoObject();
 						var dict = (IDictionary<string, object>)item;
@@ -420,7 +435,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						dict["UnitDesc"] = unitDesc;
 
 						dict["GsDescription"] = gsDescription;
-                        dict["GScode"] = gridDetails.Gscode;
+                        dict["GSCode"] = gridDetails.Gscode;
+                        dict["UnitPrice"] = gridDetails.UnitPrice / currencyRate;
+                        dict["ItemDiscount"] = gridDetails.ItemDiscount / currencyRate;
+                        dict["PurchaseTaxRate"] = gridDetails.PurchaseTaxRate / currencyRate;
+                        dict["LineTotalBeforeTax"] = gridDetails.LineTotalBeforeTax / currencyRate;
+                        dict["LineTotalAfterDisc"] = gridDetails.LineTotalAfterDisc / currencyRate;
+                        dict["LineTaxAmount"] = gridDetails.LineTaxAmount / currencyRate;
+                        dict["LineTotalWithTax"] = gridDetails.LineTotalWithTax / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -466,6 +488,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingMaster.JobCode = VM.JobCode;
                     existingMaster.ClientCode = VM.ClientCode;
                     existingMaster.Rfqno = VM.Rfqno;
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
                     existingMaster.OurPurchaseOrderNo = VM.OurPurchaseOrderNo;
                     existingMaster.SalesPersonCode = VM.SalesPersonCode;
                     existingMaster.StoreReceivedIn = VM.StoreReceivedIn;
@@ -498,7 +523,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         IssueRemarks = VM.IssueRemarks,
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
                         InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
-                        ModeOfReceiptId = Convert.ToByte(VM.ModeOfReceiptId)
+                        ModeOfReceiptId = Convert.ToByte(VM.ModeOfReceiptId),
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1
+
                     };
 
                     await dbContext.Tbl60501materialReceiptMasters.AddAsync(newMaster);
@@ -529,6 +558,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 foreach (var child in VM.MaterialReceiptDetailses)
                 {
                     child.ReceiptNo = VM.ReceiptNo;
+                    child.UnitPrice = child.UnitPrice * VM.CurrencyRate;
+                    child.ItemDiscount = child.ItemDiscount * VM.CurrencyRate;
 
                     if (child.ReceiptChildSlNo == 0)
                     {
@@ -547,8 +578,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Save Or Update Material Receipt",
+                   actionDetail: $"Saved MaterialReceipt  {VM.ReceiptNo}",
+                   documentNo: $"{VM.ReceiptNo}"
+                );
 
-                return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully." });
+                return Ok(new { success = true, message = "Material Receipt Details saved/updated successfully.", receiptno = VM.ReceiptNo });
             }
             catch (Exception ex)
             {
@@ -591,8 +627,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				dbContext.Tbl60501materialReceiptMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete Material Receipt",
+                   actionDetail: $"Deleted Material Receipt  {ReceiptNo}",
+                   documentNo: $"{ReceiptNo}"
+                );
 
-				return Ok(new { success = true, message = "Material Receipt details deleted successfully." });
+                return Ok(new { success = true, message = "Material Receipt details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -643,8 +684,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 					// Save changes
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Submit Material Receipt",
+                   actionDetail: $"Submited Material Receipt  {ReceiptNo}",
+                   documentNo: $"{ReceiptNo}"
+                );
 
-				return Ok(new { success = true, message = "Material Receipt submitted successfully." });
+                return Ok(new { success = true, message = "Material Receipt submitted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -701,6 +747,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             voucher.VerifiedBy = userName;
 
              await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+              module: "IMS > Verify Material Receipt",
+              actionDetail: $"Verified Material Receipt  {ReceiptNo}",
+              documentNo: $"{ReceiptNo}"
+            );
 
             return Ok(new
             {
@@ -748,6 +799,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     voucher.ReceiptSignatory = (byte)signatoryId.Value;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                 module: "IMS > Approve Material Receipt",
+                 actionDetail: $"Approved Material Receipt {ReceiptNo}",
+                  documentNo: $"{ReceiptNo}"
+                );
 
                 return Ok(new
                 {
@@ -782,6 +838,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60502materialReceiptChildren.Remove(child);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Delete Child By Id",
+                  actionDetail: $"Deleted Child By Id  {childId}",
+                   documentNo: $"{childId}"
+                );
 
                 return Ok(new { success = true, message = "Child row deleted successfully." });
             }
@@ -791,6 +852,96 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 return StatusCode(500, new { success = false, message = "Internal server error." });
             }
         }
+        [HttpGet]
+        public IActionResult GetGSCodeDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var description = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.Gsdescrpition)
+                    .FirstOrDefault();
 
+                return Ok(description ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
+        }
+
+        [HttpGet]
+        public IActionResult GetGSCodeDetailedDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var detailedDesc = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.GsdetailedDesc)
+                    .FirstOrDefault();
+
+                return Ok(detailedDesc ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetdataByGSCode(string GSCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (string.IsNullOrEmpty(GSCode))
+                    return BadRequest("GSCode  is required.");
+
+                try
+                {
+
+                    var client = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(c => c.Gscode == GSCode)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("GS data not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetGSData: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata(long ReceiptChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (ReceiptChildSlNo == 0)
+                    return BadRequest("ReceiptChildSlNo is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Tbl60502materialReceiptChildren
+                        .Where(c => c.ReceiptChildSlNo == ReceiptChildSlNo)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
     }
 }

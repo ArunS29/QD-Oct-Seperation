@@ -128,4 +128,8 @@ public partial class Tbl60401purchaseOrderMaster
     public string Mprno { get; set; }
 
     public short? ProjectSubUnitCode { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
+
 }

@@ -88,4 +88,11 @@ public partial class Qry201SubLedgerReceivablesMaster
     public string SesreferenceNo { get; set; }
 
     public string ProjectOrContractNo { get; set; }
+    public decimal? ConvertedReceivableAmount { get; set; }
+    public decimal? ConvertedReceived { get; set; }
+    public decimal? ConvertedBalance { get; set; }
+
+    public int basecurrencyid { get; set; }
+    public int Currencyid { get; set; }
+    public decimal CurrencyRate { get; set; }
 }

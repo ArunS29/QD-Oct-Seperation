@@ -246,9 +246,9 @@
         margin: 4px 0;
     }
 
-        .count.bounce {
+        /* .count.bounce {
             animation: bounceIn 0.4s ease;
-        }
+        } */
 
     .trend {
         font-size: 14px;
@@ -293,7 +293,7 @@
         }
     }
 
-    @@keyframes bounceIn {
+  /*   @@keyframes bounceIn {
         0% {
             transform: scale(0.9);
             opacity: 0;
@@ -307,7 +307,7 @@
         100% {
             transform: scale(1);
         }
-    }
+    } */
 
     @@keyframes gradientPulse {
         0% {
@@ -330,10 +330,10 @@
     }
 
 
-    .card:hover {
+    /* .card:hover {
         transform: translateY(-6px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-    }
+    } */
 
     h1 {
         font-size: 42px;
@@ -347,11 +347,11 @@
     }
 
     /* Count animation bounce */
-    h1.bounce {
+    /* h1.bounce {
         animation: bounceIn 0.5s ease;
-    }
+    } */
 
-    @@keyframes bounceIn {
+  /*   @@keyframes bounceIn {
         0% {
             transform: scale(0.9);
             opacity: 0;
@@ -365,11 +365,11 @@
         100% {
             transform: scale(1);
         }
-    }
+    } */
 
     /* Sparkle effect (optional) */
     .sparkle::after {
-        content: '✨';
+        /* content: '✨'; */
         position: absolute;
         top: 10px;
         right: 15px;
@@ -397,10 +397,10 @@
         background: linear-gradient(135deg, #e53935, #ef5350); /* rich red gradient */
     }
 
-    .card:hover {
+    /* .card:hover {
         transform: translateY(-6px);
         box-shadow: 0 12px 24px rgba(0, 0, 0, 0.25);
-    }
+    } */
 
     h4 {
         font-size: 13px;
@@ -425,7 +425,7 @@
         animation-delay: 0.5s;
     }
 
-    /* Animations */
+    /* Animations
     @@keyframes bounceIn {
         0% {
             transform: scale(0.9);
@@ -440,7 +440,7 @@
         100% {
             transform: scale(1);
         }
-    }
+    } */
 
     @@keyframes fadeIn {
         to {
@@ -582,38 +582,77 @@
             transform: translateY(-50%) scale(1.1);
         }
 
+    .with-sidebar {
+        position: relative;
+        overflow: hidden;
+    }
 
+        .with-sidebar::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 0;
+            width: 10px;
+            height: 80%;
+            background: rgba(255, 255, 255, 0.4);
+            border-top-right-radius: 12px;
+            border-bottom-right-radius: 12px;
+        }
+
+    .tile-icon {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        height: 100%;
+        position: absolute;
+        left: 250px;
+        bottom: 10px;
+    }
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 @* <div class="content-container-top"> *@
-<div class="title" style="display: flex; align-items: center;margin-top: 10px;width:55%">
+<div class="title" style="display: flex; align-items: center;margin-top: 10px;width:51%">
 <input id="formId" value="frm201LedgerAccount1" type="hidden" />
 
-	
-
-    <div class="card blue shine compact">
-        <h2 class="title-slide">VAT Invoice Register</h2>
-        <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-        <h6 class="fade-in">QuickDice ERP Solutions</h6>
+    <div class="card blue shine compact with-sidebar">
+        <div class="tile-content">
+            <div class="title-text">
+                <h2 class="title-slide">VAT Returns</h2>
+                <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+                <h6 class="fade-in">Quick Dice ERP Solutions</h6>
+            </div>
+            <div class="tile-icon">
+                <svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+                </svg>
+            </div>
+        </div>
     </div>
-
-    <div class="card green sparkle">
+    
+    <div class="card green sparkle with-sidebar">
         <h1 class="title-slide">VAT on Sales</h1>
         <h2 id="vatSalesTurnover">0</h2>
-
-        <i class="dx-icon-cart" style="font-size: 24px; color: white;"></i>
+        <div class="tile-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="31" fill="white" viewBox="0 0 24 25">
+                <path d="M7 18c-1.104 0-1.99.896-1.99 2S5.896 22 7 22s2-.896 2-2-.896-2-2-2zm10
+  0c-1.104 0-1.99.896-1.99 2S15.896 22 17 22s2-.896 2-2-.896-2-2-2zM7.01
+  16l.941-2H17c.768 0 1.434-.437 1.752-1.117l3.244-7.034A1 1 0 0
+  0 21.1 4H5.21l-.94-2H1v2h2l3.6 7.59-1.35 2.44C4.52
+  14.37 5.48 16 7.01 16z" />
+            </svg>
+        </div>
     </div>
 
-
-    <div class="card red shine">
+    <div class="card red shine with-sidebar">
         <h1 class="title-slide">VAT on Purchase</h1>
         <h2 id="vatPurchaseTurnover">0</h2>
-
-        <i class="dx-icon-box" style="font-size: 24px; color: white;"></i>
+        <div class="tile-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" width="33" height="31" fill="white" viewBox="0 0 24 24">
+                <path d="M21 16V8c0-.3-.1-.5-.3-.7l-8-5c-.4-.2-.9-.2-1.3 0l-8 5c-.2.2-.4.4-.4.7v8c0 .3.2.6.4.7l8 5c.4.2.9.2 1.3 0l8-5c.2-.1.3-.4.3-.7zM12 3.3L18.7 8 12 12.7 5.3 8 12 3.3zM4 9.5l7 4.4v6.8L4 16.2V9.5zm9 11.2v-6.8l7-4.4v6.7l-7 4.5z" />
+            </svg>
+        </div>
     </div>
-
-
 </div>
 
 <div class="horizontal-container">
@@ -644,6 +683,7 @@
         .Width(180)
         .ElementAttr("class", "button-alignment-up")
         .TabIndex(4)
+        .SplitButton(true)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
@@ -651,6 +691,7 @@
             items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
             items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
             items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
+            items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
             items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
             items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
             items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
@@ -658,6 +699,17 @@
             items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
             items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
         })
+        .ItemTemplate(@<text>
+        <div class="custom-dropdown-item">
+            <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+            <div class="item-content">
+                <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                <div>
+                    <div class="item-title"><%- text %></div>
+                </div>
+            </div>
+        </div>
+    </text>)
         )
     <div>
 
@@ -752,7 +804,7 @@
                                                                         .ID("RevenueTotal")
                                                                         .Disabled(true)
                                                                         .Format("#,##0.00")
-                                                                .OnValueChanged("calculateRevenueTotal")
+                                                               // .OnValueChanged("calculateRevenueTotal")
 
                                                                         .ShowSpinButtons(false)
                                                                         .ElementAttr("class", "dx-numberbox-iconed text-right-number")
@@ -782,7 +834,7 @@
                                                                 .Format("#,##0.00")
                                                                 .ShowSpinButtons(false)
                                                                 .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
-                                <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('DSSTotalSalesTax', 'Total Sales - Sales Tax')"></span>
+                                @* <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('DSSTotalSalesTax', 'Total Sales - Sales Tax')"></span> *@
                             </div>
                         </td>
 
@@ -902,7 +954,7 @@
                                                                         .Format("#,##0.00")
                                                                         .ShowSpinButtons(false)
                                                                         .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
-                                    <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('TotalPurchaseTax', 'Total Purchases - Tax Total')"></span>
+                                    @* <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('TotalPurchaseTax', 'Total Purchases - Tax Total')"></span> *@
                                 </div>
                             </td>
 
@@ -923,19 +975,33 @@
 
 
 <script>
-     function calculateRevenueTotal() {
-        const dss15Revenue = parseFloat($("#Dss15Revenue").dxNumberBox("instance").option("value")) || 0;
-        const dexRevenue = parseFloat($("#DexRevenue").dxNumberBox("instance").option("value")) || 0;
-        setTimeout(calculateRevenueTotal, 300);
+    //  function calculateRevenueTotal() {
+    //     const dss15Revenue = parseFloat($("#Dss15Revenue").dxNumberBox("instance").option("value")) || 0;
+    //     const dexRevenue = parseFloat($("#DexRevenue").dxNumberBox("instance").option("value")) || 0;
+    //     setTimeout(calculateRevenueTotal, 300);
 
-        const total = dss15Revenue + dexRevenue;
+    //     const total = dss15Revenue + dexRevenue;
 
-        $("#RevenueTotal").dxNumberBox("instance").option("value", total.toFixed(2));
+    //     $("#RevenueTotal").dxNumberBox("instance").option("value", total.toFixed(2));
+    // }
+
+           function calculateRevenueTotal() {
+        var total =
+            (Number($("#DssRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#Dss15Revenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#GccRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#ExpRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#DexRevenue").dxNumberBox("instance").option("value")) || 0) +
+            (Number($("#DzrRevenue").dxNumberBox("instance").option("value")) || 0);
+
+        $("#RevenueTotal").dxNumberBox("instance").option("value", total);
     }
 
     // Call this on page load
     $(document).ready(function () {
         calculateRevenueTotal();
+        updateVatSalesTurnoverCard();
+
     });
 
     function animateCount(el, target) {
@@ -989,6 +1055,23 @@
         var toDate = new Date(toDateBox.option("value"));
         var currentDate = new Date();
         switch (duration) {
+
+             case 'q1':
+            frmDate = new Date(currentDate.getFullYear(), 0, 1);   // Jan 1
+            toDate  = new Date(currentDate.getFullYear(), 2, 31);  // Mar 31
+            break;
+            case 'q2':
+                frmDate = new Date(currentDate.getFullYear(), 3, 1);   // Apr 1
+                toDate  = new Date(currentDate.getFullYear(), 5, 30);  // Jun 30
+                break;
+            case 'q3':
+                frmDate = new Date(currentDate.getFullYear(), 6, 1);   // Jul 1
+                toDate  = new Date(currentDate.getFullYear(), 8, 30);  // Sep 30
+                break;
+            case 'q4':
+                frmDate = new Date(currentDate.getFullYear(), 9, 1);   // Oct 1
+                toDate  = new Date(currentDate.getFullYear(), 11, 31); // Dec 31
+                break;
             case 'today':
                 frmDate = toDate = currentDate;
                 break;
@@ -1076,14 +1159,16 @@
               $("#ExpRevenue").dxNumberBox("instance").option("value", data[0].EXP_Revenue);
               $("#ExpCreditNote").dxNumberBox("instance").option("value", data[0].EXP_CreditNote);
               $("#DexCreditNote").dxNumberBox("instance").option("value", data[0].DEX_CreditNote);
-              $("#RevenueTotal").dxNumberBox("instance").option("value", data[0].RevenueTotal);
+               $("#RevenueTotal").dxNumberBox("instance").option("value", data[0].RevenueTotal);
+
               $("#CreditNoteTotal").dxNumberBox("instance").option("value", data[0].CreditNoteTotal);
               $("#DSSTotalSalesTax").dxNumberBox("instance").option("value", data[0].DSS_Total_SalesTax_BH);
               $("#DssPurchases").dxNumberBox("instance").option("value", data[0].DSS_Purchases);
               $("#DssDebitNote").dxNumberBox("instance").option("value", data[0].DSS_CreditNote);
               $("#DssPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_Pur_TaxAfterAdj);
               $("#DssPurchases15Perc").dxNumberBox("instance").option("value", data[0].DSS_Purchases15Perc);
-              $("#Dss15PerDebitNote").dxNumberBox("instance").option("value", data[0].DSS_DebitNote);
+              $("#Dss15Revenue").dxNumberBox("instance").option("value", data[0].DSS_15_Revenue);
+              $("#Dss15PerDebitNote").dxNumberBox("instance").option("value", data[0].DSS_15Per_DebitNote);
               $("#Dss15PerPurTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_15Per_Pur_TaxAfterAdj);
               $("#IPCPurchases").dxNumberBox("instance").option("value", data[0].IPC_Purchases);
               $("#IPCDebitNote").dxNumberBox("instance").option("value", data[0].IPC_DebitNote);
@@ -1108,8 +1193,12 @@
               $("#Dss15SalesTaxAfterAdj").dxNumberBox("instance").option("value", data[0].DSS_15_Sales_TaxAfterAdj);
                   $("#DSSTotalSalesTax").dxNumberBox("instance").option("value",
         (data[0].DSS_Sales_TaxAfterAdj || 0) + (data[0].DSS_15_Sales_TaxAfterAdj || 0)
+      
     );
+      $("#PurchaseTotal").dxNumberBox("instance").option("value", data[0].PurchaseTotal);
+          $("#DebitNoteTotal").dxNumberBox("instance").option("value", data[0].DebitNoteTotal);
 
+ 
 
             },
             error: function () {
@@ -1126,6 +1215,19 @@
 
         // Set to DevExtreme NumberBox in the total row
         $("#RevenueTotal").dxNumberBox("instance").option("value", total);
+    }
+    function updateVatSalesTurnoverCard() {
+        const value1 = parseFloat($("#DssSalesTaxAfterAdj").dxNumberBox("instance").option("value")) || 0;
+        const value2 = parseFloat($("#Dss15SalesTaxAfterAdj").dxNumberBox("instance").option("value")) || 0;
+
+        const total = value1 + value2;
+
+        // Format and display the total
+        const formatted = total.toLocaleString(undefined, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        });
+        document.getElementById("vatSalesTurnover").textContent = formatted + " SAR";
     }
 
     $(function () {
@@ -1221,7 +1323,7 @@
         });
     });
      $(document).ready(function () {
-         debugger;
+         
                                 console.log('Start permission handling');
                                 // Form ID
                                                 var formId = "frm20166VATReturnsForm";
@@ -1296,4 +1398,64 @@
                                 showColumnChooser();
                                 console.log('End permission handling');
                             });
+
+
+                            function onByQuarterClick(e) {
+        // Prevent the main dropdown from closing
+        e.event.stopPropagation();
+
+        // Reopen main dropdown in case DevExtreme tried to close it
+        const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+        dd.open();
+        // Open the submenu near the "By Quarter" element
+        openQuarterMenu(e.element);
+    }
+
+            function openQuarterMenu(targetElement) {
+        if ($("#quarterMenu").data("dxContextMenu")) {
+            $("#quarterMenu").dxContextMenu("instance").dispose();
+        }
+
+        $("#quarterMenu").dxContextMenu({
+            target: targetElement,
+            showEvent: "",
+            width: 230,
+            position: {
+                at: "right center",
+                my: "left center",
+                of: targetElement,
+                offset: "8 0"
+            },
+            items: [
+                { text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
+                { text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
+                { text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
+                { text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+            ],
+            onItemClick: function(e) {
+                const quarter = e.itemData.value;
+                if (quarter) {
+                    ddBtnShowRecords_click(quarter, 1);
+                    closeMainDropdown();
+                }
+            },
+            itemTemplate: function(itemData) {
+                return $("<div>").addClass("custom-dropdown-item")
+                    .append(
+                        $("<div>").addClass("side-bar").css({
+                            "background-color": itemData.color,
+                            "height": "90%"
+                        })
+                    )
+                    .append(
+                        $("<div>").addClass("item-content").append(
+                            $("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+                            $("<div>").append(
+                                $("<div>").addClass("item-title").text(itemData.text)
+                            )
+                        )
+                    );
+            }
+        }).dxContextMenu("instance").show();
+    }
 </script>

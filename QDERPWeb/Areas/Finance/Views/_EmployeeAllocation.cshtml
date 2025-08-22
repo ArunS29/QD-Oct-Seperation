@@ -10,6 +10,8 @@
 	string voucherAmount = ViewBag.VoucherAmount;
 	long voucherEntryNo = ViewBag.VoucherEntryNo;
 	string accountId = ViewBag.AccountID;
+	decimal currencyRate = ViewBag.CurrencyRate;
+	double? originalAmount = null;
 	double? voucherAmountParsed = null;
 
 	// Try parsing the voucherAmount to a nullable double
@@ -28,8 +30,14 @@
 	{
 		// Format the amount to 2 decimal places and then parse it back to double
 		voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
+		originalAmount = (double)(voucherAmountParsed.Value / (double)currencyRate);
 	}
 }
+
+<script>
+	var currencyRate =' @currencyRate';
+</script>
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 <!-- DevExtreme CSS -->
 @* <link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/22.2.5/css/dx.light.css"> *@
@@ -42,11 +50,11 @@
 	<script src="https://cdn3.devexpress.com/jslib/22.2.5/js/dx.all.js"></script> *@
 
 <style type="text/css">
-	.dx-popup-title.dx-toolbar {
+	/* .dx-popup-title.dx-toolbar {
 		background-color: blue !important;
 		color: white !important;
 	}
-
+ */
 
 
 	/* Fixed floating footer */
@@ -183,7 +191,7 @@
 				)
 	</div>
 </div> *@
-<div class="container5">
+
 
 	
 
@@ -222,7 +230,7 @@
 				<div class="col-md-1">
 					@(Html.DevExtreme().NumberBox()
 										.ID("vAmount")
-										.Value(voucherAmountParsed)
+										.Value(originalAmount)
 										.Format("#,##0.000")
 										.Label(new JS("formatMessage('Amount')"))
 										.LabelMode(EditorLabelMode.Floating)
@@ -270,6 +278,7 @@
 					.DataSource(new object[] { })
 					.Columns(columns =>
 					{
+						columns.AddFor(m => m.EmployeeAllocationId).Caption("EmployeeAllocation Id").DataField("EmployeeAllocationId").Width(100).AllowEditing(false).Visible(false);
 						columns.AddFor(m => m.EmpAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
 							columns.AddFor(m => m.EmployeeNo)
 							.DataField("EmployeeId")
@@ -363,7 +372,17 @@
 			)
 		</text>);
 
-						columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+					columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
+					"    if (data.VoucherAmount != null && currencyRate != 0) { " +
+					"        var val = data.VoucherAmount / currencyRate; " +
+					"        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+					"    } " +
+					"    return null; " +
+					"}")
+					.CustomizeText("function(e) { " +
+					"return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+					"}");
+					
 						columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
 						columns.AddFor(m => m.EnteredOn).Caption("Add Loan Schedule");
 						columns.AddFor(m => m.LoanId).Caption("Loan Doc ID");
@@ -380,9 +399,7 @@
 				.GroupPanel(groupPanel => groupPanel.Visible(false)) // Display group panel
 				.ShowBorders(true)
 				.Width("100%")
-				.Selection(s => s.Mode(SelectionMode.Multiple).ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)) // Enable selection
-				.Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true))
-				// Add Summary
+				.Editing(editing => editing.Mode(GridEditMode.Cell).AllowAdding(false).AllowUpdating(true).AllowDeleting(true).UseIcons(true))
 				.Summary(s => s
 				.TotalItems(items =>
 				{
@@ -525,7 +542,8 @@
 											CostAllocRemarks: null,
 											VoucherEntryId: VoucherEntryId,
 											VoucherNo: voucherno,
-											LedgerAccountNo: accountId
+											LedgerAccountNo: accountId,
+											 CurrencyRate: Number(currencyRate)
 										};
 
 										// Save to backend
@@ -799,7 +817,7 @@
 
 					 $("#AEbtnSave").on("click", function (e) {
 			e.preventDefault();
-			debugger;
+			
 			let grid = $("#AEdataGrid").dxDataGrid("instance");
 			let allRowsData = grid.getDataSource().items();
 			let voucherchildno = parseInt('@voucherEntryNo'.trim(), 10);
@@ -950,7 +968,7 @@
 		$(document).ready(function () {
 			const dataGrid = $("#AEdataGrid").dxDataGrid("instance");
 			   dataGrid.option("onRowUpdating", function (e) {
-					debugger;
+					
 							const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
 							const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
 							const drCr = '@drCr';
@@ -961,8 +979,8 @@
 						const oldData = e.oldData;
 						const newData = e.newData;
 
-						const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount);
-						const originalAmount = parseFloat(oldData.VoucherAmount);
+						   const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount) / currencyRate;
+	                       const originalAmount = parseFloat(oldData.VoucherAmount) / currencyRate;
 
 						// Check if VoucherAmount changed
 						const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
@@ -985,11 +1003,14 @@
 
 						// Case 1: Amount changed and is lower than original — split
 						if (isVoucherAmountChanged && updatedAmount < originalAmount) {
-							const remainingAmount = originalAmount - updatedAmount;
+								const remainingAmount = originalAmount - updatedAmount;
+								const updateAmount = updatedAmount * currencyRate;
+								const remainAmount = remainingAmount * currencyRate;
+
 
 							const adjustOldRow = {
 								EmployeeAllocationId: oldData.EmployeeAllocationId,
-								VoucherAmount: updatedAmount,
+								VoucherAmount: updateAmount,
 								CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
 								EmployeeNo: newData.EmployeeNo ?? oldData.EmployeeNo,
 								EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
@@ -1000,11 +1021,12 @@
 												EmpAllocDrCr: drCr,
 												EmployeeNo:  null,
 												EffectiveDate: new Date(),
-												AmountAllocated: remainingAmount.toFixed(2),
+												AmountAllocated: remainAmount.toFixed(2),
 												CostAllocRemarks: null,
 												VoucherEntryId: VoucherEntryId,
 												VoucherNo: voucherno,
-												LedgerAccountNo: accountId
+												LedgerAccountNo: accountId,
+												 CurrencyRate: Number(currencyRate)
 										};
 
 							// Update old amount first
@@ -1044,9 +1066,10 @@
 						}
 						// Case 2: Other fields updated — update existing row directly
 						else {
+							const updateAmount = updatedAmount * currencyRate;
 							const updateRow = {
 								EmployeeAllocationId: oldData.EmployeeAllocationId,
-								VoucherAmount: updatedAmount,
+								VoucherAmount: updateAmount,
 								CostAllocRemarks: newData.CostAllocRemarks ?? oldData.CostAllocRemarks,
 								EmployeeNo: newData.EmployeeNo ?? oldData.EmployeeNo,
 								EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
@@ -1079,7 +1102,7 @@
 						}
 			   });
 			   dataGrid.option("onRowRemoving", function (e) {
-				   debugger;
+				   
 					const rowData = e.data;
 					const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
 					const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
@@ -1153,7 +1176,7 @@
 					}
 
 					if (deletedRowIndex > 0) {
-							const previousRow = allRows[deletedRowIndex + 1];
+							const previousRow = allRows[deletedRowIndex - 1];
 							const currentRow = allRows[deletedRowIndex];
 							const EmployeeAllocationId = currentRow.EmployeeAllocationId;;
 
@@ -1223,63 +1246,81 @@
 				}, 500);
 
 			function confirmDelete() {
-					const dataGrid = $("#AEdataGrid").dxDataGrid("instance");
+						const dataGrid = $("#AEdataGrid").dxDataGrid("instance");
 
-					const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
-					const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
-					const drCr = '@drCr';
-					const voucherno = '@VoucherNo';
-					const accountId = '@accountId';
+						const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
+						const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
+						const drCr = '@drCr';
+						const voucherno = '@VoucherNo';
+						const accountId = '@accountId';
 
 
-					// Step 1: Delete all by VoucherNo
+
+				const visibleRowCount = dataGrid.getVisibleRows().length;
+
+				const insertAndRefresh = () => {
+					const newRow = {
+								EmployeeAllocationId: 0,
+								EmpAllocDrCr: drCr,
+								EmployeeNo:  null,
+								EffectiveDate: new Date(),
+								AmountAllocated: initialVoucherAmount.toFixed(2),
+								CostAllocRemarks: null,
+								VoucherEntryId: VoucherEntryId,
+								VoucherNo: voucherno,
+								LedgerAccountNo: accountId,
+								 CurrencyRate: Number(currencyRate)
+			        };
+
+					$.ajax({
+						type: "POST",
+						url: "/api/EmployeeAllocation/InsertDefaultEmployeeAllocation",
+						contentType: "application/json",
+						data: JSON.stringify(newRow),
+						success: function () {
+							// Step 3: Refresh grid
+							$.ajax({
+								url: `/api/EmployeeAllocation/GetEmployeeAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+								type: 'GET',
+								success: function (refreshedData) {
+									dataGrid.option('dataSource', refreshedData);
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+								}
+							});
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+						}
+					});
+
+
+				};
+
+				if (visibleRowCount > 0) {
+					const deleterequest = {
+
+										VoucherEntryId: VoucherEntryId,
+										VoucherNo: voucherno,
+
+
+					};
 					$.ajax({
 						type: "POST",
 						url: "/api/EmployeeAllocation/DeleteByVoucherNo",
 						contentType: "application/json",
-						data: JSON.stringify({ voucherNo: voucherno }),
+						data: JSON.stringify(deleterequest),
 						success: function () {
-							// Step 2: Insert default row
-									const newRow = {
-										EmployeeAllocationId: 0,
-										EmpAllocDrCr: drCr,
-										EmployeeNo:  null,
-										EffectiveDate: new Date(),
-										AmountAllocated: initialVoucherAmount.toFixed(2),
-										CostAllocRemarks: null,
-										VoucherEntryId: VoucherEntryId,
-										VoucherNo: voucherno,
-										LedgerAccountNo: accountId
-		                           };
-
-							$.ajax({
-								type: "POST",
-								url: "/api/EmployeeAllocation/InsertDefaultEmployeeAllocation",
-								contentType: "application/json",
-								data: JSON.stringify(newRow),
-								success: function () {
-									// Step 3: Refresh grid
-									$.ajax({
-										url: `/api/EmployeeAllocation/GetEmployeeAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
-										type: 'GET',
-										success: function (refreshedData) {
-											dataGrid.option('dataSource', refreshedData);
-										},
-										error: function () {
-											DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
-										}
-									});
-								},
-								error: function () {
-									DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
-								}
-							});
+							insertAndRefresh();
 						},
 						error: function () {
 							DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
 						}
 					});
-
+				} else {
+					insertAndRefresh();
+				}
 			}
 
 			

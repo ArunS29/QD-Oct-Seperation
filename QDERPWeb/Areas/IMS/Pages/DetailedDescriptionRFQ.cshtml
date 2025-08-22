@@ -53,7 +53,8 @@
 
                         .StylingMode(ButtonStylingMode.Contained)
 
-                        .ElementAttr("style", "margin-right: 10px;"))
+                        .ElementAttr("style", "margin-right: 10px;")
+                        .OnClick("getDetailedDescription"))
 
             @(Html.DevExtreme().Button()
 
@@ -64,7 +65,7 @@
                         .Icon("info")
 
                         .Type(ButtonType.Normal)
-
+                        .OnClick("getItemDescription")
                         .StylingMode(ButtonStylingMode.Contained))
         </div>
     </div>
@@ -154,19 +155,28 @@
                 .Label("Plan No")
 
                 .LabelMode(EditorLabelMode.Floating))
+
     </div>
+
+@(Html.DevExtreme().Button()
+        .ID("btnApplyAndClose")
+        .Text("Apply & Close")
+        .Icon("check")
+        .OnClick("applyAndClose"))
+
+
 </div>
 
 <script>
     let GSCode = null;
-    let MprchildSlNo1=null;
+    let RfqchildSlNo1=null;
 
     $(document).ready(function () {
         const urlParams = new URLSearchParams(window.location.search);
-         const MprchildSlNos = urlParams.get("MprchildSlNo");
-          MprchildSlNo1 = MprchildSlNos ? MprchildSlNos.split("?")[0] : null;
-          if(MprchildSlNo1){
-              loadeditData(MprchildSlNo1);
+         const RfqchildSlNos = urlParams.get("RfqchildSlNo");
+          RfqchildSlNo1 = RfqchildSlNos ? RfqchildSlNos.split("?")[0] : null;
+          if(RfqchildSlNo1){
+              loadeditData(RfqchildSlNo1);
           }
 
         const GSCodes = urlParams.get("gsCode");
@@ -182,7 +192,7 @@
 
         function loadClientDetails(GSCode) {
        $.ajax({
-            url: `/api/AddNewClientRequest/GetdataByGSCode?GSCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/RequestforQuotationList/GetdataByGSCode?GSCode=${encodeURIComponent(GSCode)}`,
             type: 'GET',
             dataType: 'json',
             success: function (res)  {
@@ -197,20 +207,19 @@
             }
         });
     }
-      function  loadeditData(MprchildSlNo1) {
+      function  loadeditData(RfqchildSlNo1) {
        $.ajax({
-           url: `/api/AddNewClientRequest/GetDetaildescriptiondata?MprchildSlNo=${encodeURIComponent(MprchildSlNo1)}`,
+           url: `/api/RequestforQuotationList/GetDetaildescriptiondata?RfqchildSlNo=${encodeURIComponent(RfqchildSlNo1)}`,
             type: 'GET',
             dataType: 'json',
             success: function (res)  {
                 console.log("ddd111",res);
+
+
             $("#DetailedDescription").dxTextArea("instance").option("value",res.AddlDescription);
-            $("#PlanNo").dxTextBox("instance").option("value",res.PlanNo);
-            $("#DeliveryPeriod").dxTextBox("instance").option("value",res.DeliveryPeriod);
-            $("#PurposeOfRequest").dxTextBox("instance").option("value",res.ItemReqPurpose);
-            $("#PriorityOfRequest").dxSelectBox("instance").option("value",res.ItemReqPriority);
-           $("#ExpectedDate").dxDateBox("instance").option("value",res.ItemReqExpectedDate);
-           $("#Remarks").dxTextBox("instance").option("value",res.ItemRemarks);
+            $("#Remarks").dxTextBox("instance").option("value",res.QuotationRemarks);
+           $("#DeliveryPeriod").dxTextBox("instance").option("value",res.DeliveryPeriod);
+          $("#PlanNo").dxTextBox("instance").option("value",res.PlanNo);
             },
             error: function (xhr) {
                 console.log("data fetch failed:", xhr.responseText);
@@ -227,7 +236,7 @@
 
         $.ajax({
 
-            url: `/api/AddNewClientRequest/GetGSCodeDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/RequestforQuotationList/GetGSCodeDescription?gsCode=${encodeURIComponent(GSCode)}`,
             type: "GET",
             success: function (data) {
                 $("#DetailedDescription").dxTextArea("instance").option("value", data);
@@ -245,7 +254,7 @@
         }
 
         $.ajax({
-            url: `/api/AddNewClientRequest/GetGSCodeDetailedDescription?gsCode=${encodeURIComponent(GSCode)}`,
+            url: `/api/RequestforQuotationList/GetGSCodeDetailedDescription?gsCode=${encodeURIComponent(GSCode)}`,
             type: "GET",
             success: function (data) {
                 $("#DetailedDescription").dxTextArea("instance").option("value", data);
@@ -263,14 +272,7 @@
         return {
             GSCode: GSCode,
             AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            ItemReqPurpose: $("#PurposeOfRequest").dxTextBox("instance").option("value"),
-            ItemReqPriority: $("#PriorityOfRequest").dxSelectBox("instance").option("value"),
-            ItemReqExpectedDate: $("#ExpectedDate").dxDateBox("instance").option("value"),
-            ItemRemarks: $("#Remarks").dxTextBox("instance").option("value"),
-           // ItemSize: $("#Size").dxTextBox("instance").option("value"),
-           // ItemMake: $("#Manufacturer").dxTextBox("instance").option("value"),
-           // ItemBrand: $("#Brand").dxTextBox("instance").option("value"),
-          //  ItemPartNo: $("#PartNo").dxTextBox("instance").option("value"),
+            QuotationRemarks: $("#Remarks").dxTextBox("instance").option("value"),
             DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
             PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
         };
@@ -285,13 +287,10 @@
     };
        function applyAndClose() {
         const modalData = {
-            AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
-            PlanNo: $("#PlanNo").dxTextBox("instance").option("value"),
+             AddlDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            QuotationRemarks: $("#Remarks").dxTextBox("instance").option("value"),
             DeliveryPeriod: $("#DeliveryPeriod").dxTextBox("instance").option("value"),
-            ItemReqPurpose: $("#PurposeOfRequest").dxTextBox("instance").option("value"),
-            ItemReqPriority: $("#PriorityOfRequest").dxSelectBox("instance").option("value"),
-            ItemReqExpectedDate: $("#ExpectedDate").dxDateBox("instance").option("value"),
-            ItemRemarks: $("#Remarks").dxTextBox("instance").option("value")
+            PlanNo: $("#PlanNo").dxTextBox("instance").option("value")
         };
 
         console.log("📤 Sending to parent:", modalData);

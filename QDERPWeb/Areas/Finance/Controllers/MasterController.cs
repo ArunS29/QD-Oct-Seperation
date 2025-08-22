@@ -521,7 +521,9 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    var salesPersons = await dbContext.Tbl20101SalesPersonMasters.ToListAsync();
+                    var salesPersons = await dbContext.Tbl20101SalesPersonMasters
+                         .OrderBy(x => x.UserCode)
+                        .ToListAsync();
                     return Ok(salesPersons);
                 }
                 catch (Exception ex)
@@ -586,7 +588,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 try
                 {
                     var existingSalesPerson = await dbContext.Tbl20101SalesPersonMasters
-                        .FirstOrDefaultAsync(s => s.SalesPersonCode == salesPerson.SalesPersonCode);
+                        .FirstOrDefaultAsync(s => s.UserCode == salesPerson.UserCode);
 
                     if (existingSalesPerson == null)
                     {
@@ -611,8 +613,8 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     if (!string.IsNullOrEmpty(salesPerson.SalesPersonName))
                         existingSalesPerson.SalesPersonName = salesPerson.SalesPersonName;
-                    if (salesPerson.UserCode.HasValue)
-                        existingSalesPerson.UserCode = salesPerson.UserCode.Value;
+                    //if (salesPerson.UserCode.HasValue)
+                    //    existingSalesPerson.UserCode = salesPerson.UserCode.Value;
                     if (!string.IsNullOrEmpty(salesPerson.EmailAddress))
                         existingSalesPerson.EmailAddress = salesPerson.EmailAddress;
                     if (!string.IsNullOrEmpty(salesPerson.SalesPersonContactNo))

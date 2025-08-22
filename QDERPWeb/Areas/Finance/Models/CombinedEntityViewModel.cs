@@ -453,6 +453,8 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string PaymentType { get; set; }
         public string PaymentAccount { get; set; }
 
+        public string Priority { get; set; }
+
         public byte FundRequestTypeId { get; set; }
 
         public List<Tbl20103ExpenseClaimChild> ExpenseDetails { get; set; }
@@ -573,8 +575,11 @@ namespace QD.ERP.Web.Areas.Finance.Models
 		public string RemarksByApprover { get; set; }
 
 		public string RemarksByVerifier { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
 
-		public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
+        public List<Tbl60602purchaseRequestChild> PurchaseRequestDetails { get; set; }
 		
 	}
     public class SalesorderViewModel
@@ -602,6 +607,9 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string QuoteType { get; set; }
 
         public decimal? QuoteTransport { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
 
         public decimal? QuoteDiscount { get; set; }
 
@@ -693,7 +701,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
     }
     public class RFQViewModel
 	{
-		public string Rfqno { get; set; }
+        public string Rfqno { get; set; }
 
 		public DateTime? Rfqdate { get; set; }
 
@@ -772,6 +780,10 @@ namespace QD.ERP.Web.Areas.Finance.Models
 		public DateTime? VerifiedOn { get; set; }
 
 		public string SalesPersonCode { get; set; }
+
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
 
 		public List<Tbl60702rfqchild> RFQDetailses { get; set; }
 		
@@ -901,13 +913,22 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
 		public string TransportationScope { get; set; }
 
-		public List<Tbl60102quotationChild> QuotationDetailses { get; set; }
+        public decimal? CurrencyRate { get; set; }
+        public int? BaseCurrencyId { get; set; }
+        public int? CurrencyId { get; set; }
+        public List<Tbl60102quotationChild> QuotationDetailses { get; set; }
 
 
 	}
 	public class MaterialReceiptViewModel
 	{
-		public string ReceiptNo { get; set; }
+        public decimal? CurrencyRate { get; set; }
+
+        public int? BaseCurrencyId { get; set; }
+
+        public int? CurrencyId { get; set; }
+
+        public string ReceiptNo { get; set; }
 
 		public DateTime? ReceiptDate { get; set; }
 
@@ -1073,6 +1094,23 @@ namespace QD.ERP.Web.Areas.Finance.Models
 
         public decimal? TotalCostOfItemInclAll { get; set; }
     }
+    public class PODiscountDistributionDto
+    {
+        public string PONo { get; set; }
+        public long POChildNo { get; set; }
+        public string GSCode { get; set; }
+        public decimal? QuotedQuantity { get; set; }
+        public decimal? UnitPrice { get; set; }
+        public decimal? PostingAmount { get; set; }
+        public decimal? PostingPercentage { get; set; }
+        public string PostingCostItemCode { get; set; }
+        public decimal? TotalCostOfItemInclAll { get; set; }
+     public int MethodType { get; set; }
+    }
+    public class CreateQuotationRequest
+    {
+        public List<string> MprNos { get; set; }
+    }
     public class CostAllocationDto
     {
         public byte CostAllocationId { get; set; }
@@ -1083,6 +1121,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string CostAllocRemarks { get; set; }
         public long VoucherEntryId { get; set; }
         public string VoucherNo { get; set; }
+        public decimal CurrencyRate { get; set; }
     }
     public class PropertyAllocationDto
     {
@@ -1096,6 +1135,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string VoucherNo { get; set; }
 
         public string LedgerAccountNo { get; set; }
+        public decimal CurrencyRate { get; set; }
     }
     public class EmployeeAllocationDto
     {
@@ -1109,6 +1149,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string VoucherNo { get; set; }
 
         public string LedgerAccountNo { get; set; }
+        public decimal? CurrencyRate { get; set; }
     }
     public class UpdateCostAllocationFieldsDto
     {
@@ -1137,6 +1178,7 @@ namespace QD.ERP.Web.Areas.Finance.Models
     public class VoucherDeleteRequest
     {
         public string VoucherNo { get; set; }
+        public long VoucherEntryId { get; set; }
     }
     public class SubLedgerDto
     {
@@ -1159,6 +1201,45 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string ClaimRefNo { get; set; }
         public string ClaimRemarks { get; set; }
         public string SupplierPaymentLedgerNo { get; set; }
+    }
+    public class ZeroToWonDto
+    {
+        public string Mprno { get; set; }
+        public string GsCode { get; set; }
+    }
+
+    public class UpdateIsWonDto
+    {
+        public int RFQChildSlNo { get; set; }
+        public string ReasonForSelection { get; set; }
+    }
+    public class DepreciationTotalRequest
+    {
+        public string DocNo { get; set; }
+    }
+    public class InsertDepreciationVoucherRequest
+    {
+        public string DepreciationDocNo { get; set; }
+        public string PaymentVoucherNo { get; set; }
+        public string DebitAccount { get; set; }
+        public string CreditAccount { get; set; }
+        public string AddedBy { get; set; }
+        public DateTime AddedOn { get; set; }
+        public string VoucherNarration { get; set; }
+        public decimal TotalAmount { get; set; }
+        public int JustAddedVoucherEntryNo { get; set; }
+    }
+    public class LayoutDto
+    {
+        public string FormId { get; set; }
+        public string LayoutJson { get; set; }
+    }
+    public class CurrencyUpdateModel
+    {
+        public string VoucherNo { get; set; }
+        public int BaseCurrency { get; set; }
+        public int Currency { get; set; }
+        public decimal CurrencyRate { get; set; }
     }
 
 }

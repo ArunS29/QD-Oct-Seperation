@@ -1,8 +1,7 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -24,9 +24,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<JobOrdersController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public JobOrdersController(ILogger<JobOrdersController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public JobOrdersController(ILogger<JobOrdersController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -151,6 +154,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update Job Order Status",
+                      actionDetail: $"Saved Job Order Status  {model.JobOrderStatusId}",
+                      documentNo: $"{model.JobOrderStatusId}"
+                    );
+
 
                     return Ok(new
                     {
@@ -186,6 +195,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60806jobOrderStatusMasters.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Delete Job Order Status",
+                      actionDetail: $"Deleted Job Order Status  {id}",
+                      documentNo: $"{id}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }
@@ -253,6 +267,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 // DeleteDocumentPDF(JobOrderNo, "VoucherScanned\\IMSJobOrder");
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete Job Order View ",
+                 actionDetail: $"Deleted Job Order View{JobOrderNo}",
+                 documentNo: $"{JobOrderNo}"
+                );
 
                 // ✅ Log deletion (if logging is implemented)
                 //string userId = HttpContext.Session.GetString("UserID") ?? "Unknown";
@@ -301,6 +319,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60801jobOrderMasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                      module: "IMS > Unlock Job Order",
+                      actionDetail: $":Unlocked Job Order  {request.JobOrderNo}",
+                      documentNo: $"{request.JobOrderNo}"
+                );
 
                 return Ok(new { success = true, message = "Job Order has been unlocked successfully." });
             }

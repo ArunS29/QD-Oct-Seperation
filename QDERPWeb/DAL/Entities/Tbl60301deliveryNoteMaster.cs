@@ -100,4 +100,7 @@ public partial class Tbl60301deliveryNoteMaster
     public byte? InventoryMasterGroupId { get; set; }
 
     public DateTime? InventoryEffectiveDate { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }

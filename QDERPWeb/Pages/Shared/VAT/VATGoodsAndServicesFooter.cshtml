@@ -143,6 +143,307 @@
         white-space: normal;
     }
 
+    .workflow-container {
+        position: relative;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        /* padding: 16px 0; */
+        background: #fff;
+        border-radius: 12px;
+        box-shadow: 0 6px 10px rgba(0, 0, 0, 0.06);
+        gap: 10px;
+        height: 48px;
+    }
+
+    /* FIXED: Single full connector line behind steps */
+    .workflow-line {
+        position: absolute;
+        top: 19px;
+        /* right: 10px; */
+        left: 25px;
+        width: 97%;
+        height: 2px;
+        background: #d1d5db;
+        z-index: 0;
+        pointer-events: none;
+        transition: background 0.3s ease;
+    }
+
+    .workflow-step {
+        padding-right: 20px;
+        padding-left: 20px;
+        /* flex: 1; */
+        text-align: center;
+        position: relative;
+        transition: all 0.3s ease;
+        z-index: 1;
+    }
+
+    .step-circle {
+        width: 36px;
+        height: 36px;
+        margin: 0 auto;
+        border-radius: 50%;
+        background: #d1d5db;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: #fff;
+        font-size: 14px;
+        z-index: 2;
+        transition: background 0.3s ease;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .step-label {
+        /* margin-top: 6px; */
+        font-weight: 500;
+        font-size: 12px;
+        color: #4b5563;
+        transition: color 0.3s ease;
+    }
+
+    .step-status-msg {
+        margin-top: 4px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #9ca3af;
+        opacity: 0;
+        transform: translateY(-4px);
+        transition: all 0.3s ease;
+    }
+
+    /* Status-based Colors */
+    .workflow-step.completed .step-circle {
+        background: #10b981;
+    }
+
+    .workflow-step.completed .step-label,
+    .workflow-step.completed .step-status-msg {
+        color: #10b981;
+    }
+
+    .workflow-step.current .step-circle {
+        background: #3b82f6;
+    }
+
+    .workflow-step.current .step-label {
+        color: #3b82f6;
+    }
+
+    .workflow-step.current .step-status-msg {
+        color: #3b82f6;
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background: #d1d5db;
+    }
+
+    .workflow-step.upcoming .step-label,
+    .workflow-step.upcoming .step-status-msg {
+        color: #9ca3af;
+    }
+
+    /* Optional: Hover Animation */
+    .workflow-step:hover .step-circle {
+        transform: scale(1.05);
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.3);
+    }
+
+    #dataGrid .dx-datagrid-headers .dx-datagrid-action {
+        text-align: center !important;
+    }
+
+    #dataGrid .dx-datagrid-headers .dx-cell-focus-disabled {
+        text-align: center !important;
+    }
+
+    .horizontal-container {
+        display: flex;
+        flex-wrap: inherit; /* Allow buttons to wrap */
+        gap: 12px;
+        justify-content: flex-start;
+        align-items: center;
+        padding: 10px 15px;
+    }
+
+    .dx-dropdownbutton-popup-wrapper {
+        z-index: 1050 !important; /* Higher than Bootstrap modals (1040) if used */
+        transform: translate(0px, -91px) !important;
+    }
+
+
+    /* Base button customization */
+    .dx-button-custom .dx-button-content {
+        border-radius: 6px;
+        font-weight: 600;
+        min-width: 120px; /* Reduced min-width for small screens */
+        max-width: 100%; /* Avoid overflow */
+        padding: 8px 14px;
+        transition: background-color 0.3s, color 0.3s;
+        text-align: center;
+    }
+
+
+    /* Back */
+    .dx-button-custom.btn-back .dx-button-content {
+        background-color: #f5f5f5;
+        color: #333;
+        border: 1px solid #ccc;
+    }
+
+    .dx-button-custom.btn-back:hover .dx-button-content {
+        background-color: #e4e4e4;
+    }
+
+    /* Delete */
+    .dx-button-custom.btn-delete .dx-button-content {
+        background-color: #fff0f0;
+        color: #d9534f;
+        border: 1px solid #d9534f;
+    }
+
+    .dx-button-custom.btn-delete:hover .dx-button-content {
+        background-color: #f8d7da;
+        color: #a94442;
+    }
+
+    /* Attach */
+    .dx-button-custom.btn-attach .dx-button-content {
+        background-color: #ffffff;
+        color: #000;
+        border: 1px solid #444;
+    }
+
+    .dx-button-custom.btn-attach:hover .dx-button-content {
+        background-color: #eee;
+    }
+
+    /* Preview */
+    .dx-button-custom.btn-preview .dx-button-content {
+        background-color: #e0faff;
+        color: #17a2b8;
+        border: 1px solid #17a2b8;
+    }
+
+    .dx-button-custom.btn-preview:hover .dx-button-content {
+        background-color: #c2f1fa;
+    }
+
+    /* Save */
+    .dx-button-custom.btn-save .dx-button-content {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
+    }
+
+    .dx-button-custom.btn-save:hover .dx-button-content {
+        background-color: #0069d9;
+    }
+
+    /* Save & Close */
+    .dx-button-custom.btn-save-close .dx-button-content {
+        background-color: #28a745;
+        color: #fff;
+        border: 1px solid #28a745;
+    }
+
+    .dx-button-custom.btn-save-close:hover .dx-button-content {
+        background-color: #218838;
+    }
+
+    /* Verify */
+    .dx-button-custom.btn-verify .dx-button-content {
+        background-color: #ffc107;
+        color: #fff;
+        border: 1px solid #ffc107;
+    }
+
+    .dx-button-custom.btn-verify:hover .dx-button-content {
+        background-color: #e0a800;
+    }
+
+    /* Approve */
+    .dx-button-custom.btn-approve .dx-button-content {
+        background-color: #17c1e8;
+        color: #fff;
+        border: 1px solid #17c1e8;
+    }
+
+    .dx-button-custom.btn-approve:hover .dx-button-content {
+        background-color: #12a5ca;
+    }
+
+    @@media (max-width: 768px) {
+        .horizontal-container {
+            flex-direction: column; /* Stack vertically on small screens */
+            align-items: stretch;
+        }
+
+        .dx-button-custom {
+            width: 100% !important; /* Full width buttons */
+        }
+    }
+
+    .workflow-step.completed .step-circle {
+        background-color: #4caf50;
+        color: white;
+        transition: all 0.3s ease;
+    }
+
+    .workflow-step.current .step-circle {
+        background-color: #ffc107;
+        color: black;
+        animation: pulse 1s infinite;
+    }
+
+    .workflow-step.upcoming .step-circle {
+        background-color: #e0e0e0;
+        color: #888;
+    }
+
+    .workflow-step.done .step-circle {
+        background-color: #2196f3;
+        color: white;
+    }
+
+    @@keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(255,193,7, 0.7);
+        }
+
+        70% {
+            box-shadow: 0 0 0 10px rgba(255,193,7, 0);
+        }
+
+        100% {
+            box-shadow: 0 0 0 0 rgba(255,193,7, 0);
+        }
+    }
+
+    .popover-box {
+        position: absolute;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        padding: 8px 12px;
+        border-radius: 6px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+        font-size: 13px;
+        display: none;
+        z-index: 9999;
+        white-space: nowrap;
+    }
+
+    .dx-fieldset {
+        margin: 0px !important;
+    }
+
+    .dx-button {
+        height: 35px !important;
+    }
 </style>
 
 <div class="dx-fieldset horizontal-container" style="width:1000px;background-color:transparent;">
@@ -256,12 +557,13 @@
     <div class="btn-containers">
 
         @(Html.DevExtreme().Button()
-            .ID("btnBack")
-            .Text(new JS("formatMessage('Back')"))
-            .Icon("arrowleft")
-            // .OnClick("onBackButtonClick")
-            .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-            )
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("back")
+                .Width(180)
+                .Hint("Click to back")
+                .OnClick("Goback")
+                .ElementAttr(new { @class = "dx-button-custom btn-back  white-icon" }))
     </div>
 
 
@@ -355,7 +657,9 @@
             }));
         });
     }
-
+    function Goback() {
+        window.parent.closeModal(); // This closes the current window/tab
+    }
 
      // Handle button clicks
         function addPrintButton_click(e) {
@@ -568,7 +872,7 @@
                             dataGrid.state(layout);
                         } catch (error) {
                             console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                          
                         }
                     }
                 },
@@ -1576,6 +1880,86 @@
                 }
             }
 
+             $(document).ready(function () {
+        console.log('Start permission handling');
+        // Form ID
+        var formId = "VATGoodsandServices";
+
+        // Call the API to get permissions
+        $.ajax({
+            url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+            type: 'GET',
+            contentType: 'application/json',
+            success: function (response) {
+                console.log("API Response:", response); // Log the API response
+
+                if (response.success && response.permissions) {
+                    // Default visibility and enable status for buttons
+                    var controlStates = {
+                        "btnSave": { "Visible": true, "Enabled": true },
+                        "btnSaveAndClose": { "Visible": false, "Enabled": false },
+                        "btnPrint1": { "Visible": true, "Enabled": true },
+                        "btnDelete": { "Visible": true, "Enabled": true },
+                        "btnBack": { "Visible": false, "Enabled": false },
+                    };
+
+
+                    // Check for full access
+                    var fullAccess = response.permissions.find(p =>
+                        p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+                    );
+
+                    if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+                        // Grant full access: make all controls visible and enabled
+                        Object.keys(controlStates).forEach(key => {
+                            controlStates[key] = { "Visible": true, "Enabled": true };
+                        });
+                    } else {
+                        // Update states based on specific permissions for each control
+                        Object.keys(controlStates).forEach(key => {
+                            var controlPermission = response.permissions.find(p =>
+                                p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+                            );
+                            if (controlPermission) {
+                                controlStates[key] = {
+                                    "Visible": controlPermission.ItemVisible || false,
+                                    "Enabled": controlPermission.ItemEnabled || false
+                                };
+                            }
+                        });
+                    }
+
+                    console.log("Control States:", controlStates); // Log the control states
+
+                    // Dynamically update button visibility and enabled state
+                    Object.keys(controlStates).forEach(key => {
+                        var button = document.getElementById(key);
+                        if (button) {
+                            // Handle visibility
+                            button.style.display = controlStates[key].Visible ? "" : "none";
+                            // Handle enable/disable state
+                            button.disabled = !controlStates[key].Enabled;
+                            // Ensure button text is visible
+                            button.style.color = controlStates[key].Enabled ? "black" : "gray"; // Adjust colors as needed
+                            console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+                        } else {
+                            console.warn(`Button with ID "${key}" not found in the DOM.`);
+                        }
+                    });
+
+                } else {
+                    console.warn("Failed to fetch permissions or no permissions available.");
+                }
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching permissions:", error);
+                alert('An error occurred while fetching permissions. Please try again.');
+            }
+        });
+        // showColumnChooser();
+        console.log('End permission handling');
+
+    });
 
 
 </script>

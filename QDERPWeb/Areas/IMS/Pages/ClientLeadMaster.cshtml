@@ -5,8 +5,6 @@
     ViewData["Title"] = "Asset View";
 }
 
-
-
 <style>
 
     /* Ensure tab text is styled properly */
@@ -33,21 +31,11 @@
     .mainContainer{
         overflow-x: hidden;
     }
-    .form-container1 {
-        margin: 10px;
-        width: 98%;
-        border-radius: 1px; /* Optional: Rounded corners */
-    }
-
-    .form-container {
-        width: 100%;
-        border-radius: 1px;
-    }
 
     .form-row {
         display: flex;
         gap: 10px;
-            padding: 0px 17px 4px;
+        padding: 0px 9px 1px;
         width: 97%;
     }
 
@@ -62,29 +50,10 @@
         align-items: center;
         gap:10px;
     }
-
-    .dx-textbox .dx-texteditor-input,
-    .dx-numberbox .dx-texteditor-input,
-    .dx-selectbox .dx-texteditor-input {
-        /*  background-color: white; */
-    }
-
-    .dx-button{
-        margin-left:5px;
-    }
     .dx-selectbox {
         width: 100%;
     }
-
-    .footer-buttons .row {
-        margin-top: 20px; /* Add some space between the form and footer */
-    }
-
-    .footer-buttons .col-md-1 {
-        /*  padding-left: 10px;
-                                    padding-right: 10px; */
-    }
-
+ 
     /* Adds border to form control elements */
     .form-control-with-border {
         /* border: 1px solid gray; */
@@ -92,15 +61,6 @@
         padding: 8px;
         width: 100%;
     }
-
-
-    .horizontal-container {
-    display: flex;
-    gap: 20px; /* Adds spacing between buttons */
-    justify-content: start; /* Aligns buttons to the left */
-    align-items: center; /* Vertically centers the buttons */
-    margin: 15px;
-}
     .button-group {
         align-items: center;
         justify-content: center;
@@ -151,7 +111,7 @@
     .imagecontainer {
         background-color: #e0f7fa;
         border: 1px solid #90caf9;
-        height: 200px;
+        height: 190px;
         display: flex;
         align-items: center;
         justify-content: center;
@@ -172,32 +132,35 @@
             position: absolute;
         }
 
+    #ClientTabs .dx-tabpanel-tabs {
+        display: flex !important;
+    }
+
+    #ClientTabs .dx-tab {
+        flex-grow: 1;
+        max-width: none;
+    }
+
+
 </style>
-<meta charset="UTF-8">
-@* <div class="title">
+@*<meta charset="UTF-8">*@
+@*  <div class="title">
     <div class="header-container">
         <div id="ClientMaster" class="no-border-input"></div>
     </div>
-</div> *@
+</div>  *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Client Master</h3>
+</div>
 <div class="form-container1">
-
-    <div class="col-md-12">
-        <div class="outline-container">
-
-            <div class="row">
-
-                <!-- Asset Ledger No Field -->
-                <div class="col-md-2">
-        @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").ReadOnly(true).Label(new JS("formatMessage('Client Code')"))
+    <div style="display:flex; align-items:end; gap:10px;  padding: 2px 13px;">
+        @(Html.DevExtreme().TextBox().ID("txtClientCode").Value("").Width(310).ReadOnly(true).Label(new JS("formatMessage('Client Code')"))
             .LabelMode(EditorLabelMode.Floating)
          .ValidationRules(r => r.AddRequired().Message("Client Code is required.")))
-                </div>
-
-
-
-                <!-- Asset Category Dropdown -->
-                <div class="col-md-8 " >
-                    <div class="form-group-row" style="display:flex; align-items:end;">
+               
         @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true).Label(new JS("formatMessage('Client Category')"))
             .LabelMode(EditorLabelMode.Floating)
      .DataSource(d => d.WebApi()
@@ -208,10 +171,8 @@
      )
      .LabelMode(EditorLabelMode.Floating)
      .ID("GetProjectDropDown")
-     .Width(900)
-     @*  .ShowClearButton(true)
-                 .AcceptCustomValue(true) *@
-     .OpenOnFieldClick(false)//
+     .Width(360)
+     .OpenOnFieldClick(false)
      .ValueChangeEvent("input")
      .HoverStateEnabled(true)
      .ValueExpr("ClientCategoryCode")
@@ -219,7 +180,6 @@
      .OnInput("dropDownBoxOnInput")
      .OnOpened("onOpened")
      .TabIndex(1)
-     .Width("100%")
      .OnKeyDown("onKeyDown")
      //.OnValueChanged("dropDownBoxValueChanged")
      .ContentTemplate(new TemplateName("GetProjectContentTemplate"))
@@ -236,47 +196,17 @@
        buttons.Add()
        .Name("dropDown");
    }))
+            @(Html.DevExtreme().TextBox()
+                        .ID("txtClientName").Label(new JS("formatMessage('Client Name')"))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .Width(360)
+                        .ValidationRules(r => r.AddRequired().Message("Client Name is required."))
+                        )
+                            
                     </div>
-                </div>
-            </div>
+    
 
-
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-6">
-                        <div class="row">
-                            <!-- Asset Description Field -->
-                            <div class="col-md-12">
-                                
-        @(
-            Html.DevExtreme().TextBox()
-            .ID("txtClientName").Label(new JS("formatMessage('Client Name')"))
-            .LabelMode(EditorLabelMode.Floating)
-             .ValidationRules(r => r.AddRequired().Message("Client Name is required."))
-            )
-                            </div>
-
-
-                        </div>
-
-
-                    </div>
-
-                    
-
-                </div>
-            </div>
-
-
-
-
-            <div class="row">
-            </div>
-        </div>
-    </div>
-
-
-    <div class="form-container">
+    <div class="form-container" style="margin:0px 10px">
 
         <!-- Tab Menu -->
         @(
@@ -329,7 +259,7 @@
                 <div class="form-row">
                         <div class="col-md-12">
                         @(Html.DevExtreme().TextArea().ID("ClientAddress").Label(new JS("formatMessage('Client Address')"))
-                        .LabelMode(EditorLabelMode.Floating).ElementAttr(new { style = "height: 70px !important;" }))
+                        .LabelMode(EditorLabelMode.Floating).ElementAttr(new { style = "height: 70px !important;width: 1090px;" }))
                         </div>
                 </div>
                 <div class="form-row">
@@ -349,22 +279,30 @@
                   <div class="form-row">
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("MobileNumber1").Label(new JS("formatMessage('Mobile Number (1)')"))
-                        .LabelMode(EditorLabelMode.Floating))
+                        .LabelMode(EditorLabelMode.Floating)
+                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                        )
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("PhoneNumber1").Label(new JS("formatMessage('Phone No (1)')"))
-                        .LabelMode(EditorLabelMode.Floating))
+                        .LabelMode(EditorLabelMode.Floating)
+                      .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                        )
                     </div>
                 </div>
 
                 <div class="form-row">
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("MobileNumber2").Label(new JS("formatMessage('Mobile Number (2)')"))
-                        .LabelMode(EditorLabelMode.Floating))
+                        .LabelMode(EditorLabelMode.Floating)
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                        )
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("PhoneNumber2").Label(new JS("formatMessage('Phone No (2)')"))
-                        .LabelMode(EditorLabelMode.Floating))
+                        .LabelMode(EditorLabelMode.Floating)
+                      .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                        )
                     </div>
                     
                 </div>
@@ -375,7 +313,8 @@
                     </div>
                     <div class="col-md-6">
                         @(Html.DevExtreme().TextBox().ID("Email").Label(new JS("formatMessage('Email')"))
-                        .LabelMode(EditorLabelMode.Floating))
+                        .LabelMode(EditorLabelMode.Floating)
+                       .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')"))))
                     </div>
                 </div>
 
@@ -416,17 +355,13 @@
                   
                     <div class="col-md-12">
                         @(Html.DevExtreme().TextArea().ID("Remarks").Label(new JS("formatMessage('Remarks')"))
-                        .LabelMode(EditorLabelMode.Floating).Height(60))
+                        .LabelMode(EditorLabelMode.Floating).Height(60).Width(1090))
                     </div>
                 </div>
             </div>
         </text>);
-
-
-
-
                     item.Add().Title(new JS("formatMessage('Business Card')")).Text("Business Card").Template(@<text>
-            <div class="dx-fieldset" style="display:flex;flex-direction:column;gap: 10px;width:50%;">
+              <div style="display:flex;flex-direction:column;gap: 10px;width:50%; margin: 8px 10px;">
                 <div class="imagecontainer" id="imgBox1">
                     <span>No image data</span>
                 </div>
@@ -550,41 +485,20 @@
                     )
 
                 </div>
-
-
-
-
             </div>
-
-
         </text>);
                 })
             )
 
     </div>
+    <div class="footer-fixed" style="display:flex;gap:8px;height:45px;padding:1px 10px;">
+        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("onSaveClientMasterClick"))
 
-        
-         
-   <div class="form-container">
-        <div class="footer-buttons">
-            <div class="col-md-12">
-                <div class="row">
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnSave").Text(new JS("formatMessage('Save')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save" }).OnClick("onSaveClientMasterClick"))
+        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).OnClick("function() { saveAndClose(); }"))
 
-                    </div>
-                 <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnSaveClose").Text(new JS("formatMessage('Save & Close')")).Icon("check").ElementAttr(new { @class = "dx-button-custom btn-save-close" }).OnClick("function() { saveAndClose(); }"))
-                </div> 
-                <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
-                    </div>
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("GoBack"))
-                    </div>
-                </div>
-            </div>
-        </div>
+        @(Html.DevExtreme().Button().ID("btnDelete").Text(new JS("formatMessage('Delete')")).ElementAttr(new { @class = "dx-button-custom btn-delete" }).Icon("trash"))
+
+        @(Html.DevExtreme().Button().ID("btnBack").Text(new JS("formatMessage('Back')")).ElementAttr(new { @class = "dx-button-custom btn-back" }).Icon("arrowleft").OnClick("GoBack"))
     </div>
 </div>
 @using (Html.DevExtreme().NamedTemplate("GetProjectContentTemplate"))
@@ -599,23 +513,23 @@
                  )
                  .WordWrapEnabled(true)
                  .ShowBorders(true)
-                 @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
-                 .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                 .OnSelectionChanged("dataGridSelectionChanged1")
-                 .OnInitialized("dataGridInitialized1")
-                 .HeaderFilter(p => p.Visible(true))
-                 .ShowBorders(true)
-                 .HoverStateEnabled(true)
-                 .Paging(p => p.PageSize(15))
-                 //.FilterRow(f => f.Visible(true))//
-                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
-                 .Height(345)
-                 .Selection(s => s.Mode(SelectionMode.Single))
-                 .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                 .Columns(columns =>
-                 {
-                                columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('ID')"));
-                                columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')"));
+   @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
+   .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
+                    .OnSelectionChanged("dataGridSelectionChanged1")
+                    .OnInitialized("dataGridInitialized1")
+                    .HeaderFilter(p => p.Visible(true))
+                    .ShowBorders(true)
+                    .HoverStateEnabled(true)
+                    .Paging(p => p.PageSize(15))
+                    //.FilterRow(f => f.Visible(true))//
+                    .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                    .Height(345)
+                    .Selection(s => s.Mode(SelectionMode.Single))
+                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("ClientCategoryCode").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(80);
+                        columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')")).Width(80);
                                 columns.Add().DataField("ClientCategory").Caption(new JS("formatMessage('Category')"));
 
 
@@ -649,7 +563,7 @@
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                     columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId");
+                         columns.Add().Caption(new JS("formatMessage('Ledger No')")).DataField("AccountId").Alignment(HorizontalAlignment.Center).Width(95);
                      columns.Add().DataField("AccountHead");
 
 
@@ -683,7 +597,7 @@
                  .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                  .Columns(columns =>
                  {
-                     columns.Add().Caption(new JS("formatMessage('Code')")).DataField("SalesPersonCode");
+                         columns.Add().Caption(new JS("formatMessage('Code')")).DataField("SalesPersonCode").Alignment(HorizontalAlignment.Center).Width(80);
                      columns.Add().DataField("SalesPersonName");
 
 
@@ -985,7 +899,7 @@ function generateNextClientCode(categoryCode) {
 }
 
  function getClientCodeParams() {
-            debugger;
+            
     const clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
     console.log("Sending clientCode:", clientCode);
     return { clientCode: clientCode };
@@ -1072,8 +986,7 @@ ContactRemarks:clientRemarks,
                                 dataGrid.refresh();
                             }
                         }
-                        //$('#modalIframe').modal('hide');
-                        setTimeout(() => window.location.reload(), 2000);
+                      
                 } else {
                     DevExpress.ui.notify("Error: " + response.message, "error", 3000);
                 }
@@ -1222,8 +1135,8 @@ ContactRemarks:clientRemarks,
                 onItemClick: function () {
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientStatusUpdate?clientStatusNo=${ClientStatusNo}`;
-                    let title = `Edit Client - ${ClientStatusNo}`;
-                    openModal(url, title);
+                    let title = `Client Status Update`;
+                    openModal(url, title ,"65%","75%");
                 }
             },
             {
@@ -1273,7 +1186,7 @@ ContactRemarks:clientRemarks,
 //         }
 //     }
     function onClientsGridContextMenu2(e) {
-        debugger;
+        
     if (e.target === "content" && e.row) {
         let ClientContactSlNo = e.row.data.ClientContactSlNo;
         const clientCode = e.row.data.ClientCode;
@@ -1289,7 +1202,7 @@ ContactRemarks:clientRemarks,
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodedClientName}`;
                     let title = `Edit Client - ${clientCode}`;
-                    openModal(url, title);
+                    openModal(url, title,"","80%");
                 }
             },
             {
@@ -1298,7 +1211,7 @@ ContactRemarks:clientRemarks,
                     let tenantName = window.tenantName || "defaultTenant";
                     let url = `/${tenantName}/IMS/ClientContactList?ClientContactSlNo=${ClientContactSlNo}&clientName=${encodedClientName}`;
                     let title = `Edit Client - ${ClientContactSlNo}`;
-                    openModal(url, title);
+                    openModal(url, title,"","80%");
                 }
             },
             {
@@ -1332,8 +1245,8 @@ ContactRemarks:clientRemarks,
 
  function redirectToClientCategory() {
         let url = `/${tenantName}/IMS/ClientCategory1`;
-            let title = "Client Category";
-        openModal(url, title);
+            let title = " ";
+        openModal(url, title ,"","80%");
         refreshClientCategorySelectBox()
     }
     
@@ -1341,8 +1254,8 @@ ContactRemarks:clientRemarks,
         var clientName = $('#txtClientName').dxTextBox("instance").option("value");
             var clientCode = $('#txtClientCode').dxTextBox("instance").option("value");
         let url = `/${tenantName}/IMS/ClientStatusUpdate?clientName=${encodeURIComponent(clientName)}&clientCode=${encodeURIComponent(clientCode)}`;
-            let title = "Client Status Update";
-        openModal(url, title ,"80%","90%");
+            let title = " ";
+        openModal(url, title ,"71%","75%");
 
     }
    
@@ -1354,12 +1267,24 @@ ContactRemarks:clientRemarks,
    // var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
             var url = `/${tenantName}/IMS/ClientContactList?clientCode=${encodeURIComponent(clientCode)}&clientName=${encodeURIComponent(clientName)}`;
 
-    var title = `Contact List ${clientName}`;
-    
-    openModal(url, title);
+    var title = " ";
+
+        openModal(url,title,"85%","75%");
 }
 
+    $(function () {
+            const dateBox = $("#ClientVisitedOn").dxDateBox("instance");
 
+        // When focus/typing starts, change to dd-MM-yyyy
+            $("#ClientVisitedOn").on("focusin", function () {
+            dateBox.option("displayFormat", "dd-MM-yyyy");
+        });
+
+        // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#ClientVisitedOn").on("focusout", function () {
+            dateBox.option("displayFormat", "dd-MMM-yyyy");
+        });
+    });
 
 
 

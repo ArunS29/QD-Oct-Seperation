@@ -119,15 +119,28 @@
             position: absolute;
         }
 
+    .fieldset{
+        margin: 7px 0px;
+    }
     .playIcon {
         display: none;
     }
+
+    
+
+
 </style>
 @* <div class="title">
     <div class="header-container">
         <div id="DatabaseSignatories1" class="no-border-title"></div>
     </div>
 </div> *@
+<div class="dx-card-header minimal-header">
+    <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Signatories</h3>
+</div>
 <div class="signatory-form-container">
         <table style="width: 100%;">
             <tr>
@@ -161,6 +174,8 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("SignatoryContact")
                             .Label(new JS("formatMessage('Signatory Contact No.')"))
+                             .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+
                             .LabelMode(EditorLabelMode.Floating)
                             )
                     </div>
@@ -272,13 +287,15 @@
                         @(Html.DevExtreme().TextBox()
                             .ID("SignatoryEmail")
                             .Label(new JS("formatMessage('Signatory Email')"))
+                             .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
+
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                     </div>
 
                     <div class="form-group">
-                        <div class="dx-fieldset" style="width: 375px;">
+                    <div class="fieldset" style="width: 370px;">
                             <div class="imagecontainer" id="imgBox1" style="width: 142%; height: 100px; background-color: white;">
                                 <span>Upload Signature</span>
                             </div>
@@ -293,32 +310,74 @@
         
     
 <div class="dx-field ledgerResult">
-    @(Html.DevExtreme().DataGrid()
-            .ID("SignatoryGrid")
-            .KeyExpr("SignatoryID")
-            .RemoteOperations(false)
-            .DataSource(d => d.WebApi()
-        .Controller("Signatories")
-        .LoadAction("GetAllSignData")
-            .LoadMode(DataSourceLoadMode.Raw)
-            )
-        .Editing(editing => editing
-        .Mode(GridEditMode.Batch)
-        .AllowUpdating(true)
-            .AllowDeleting(true)
-        )
-        .Toolbar(toolbar =>
-        {
-            toolbar.Items(items => { }); // hide default toolbar
-        })
-        .OnRowUpdating("onSignatoryUpdating")                       // Handles saving
-            .Columns(columns =>
-            {
-                columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
-                columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Width(200);
-                columns.Add().DataField("SignatoryPosition").Caption(new JS("formatMessage('Position')")).Width(200);
-                columns.Add().DataField("SignatoryContact").Caption(new JS("formatMessage('Contact')")).Width(150);
-                columns.Add().DataField("SignatoryEmail").Caption(new JS("formatMessage('Email')")).Width(250);
+        @(
+                Html.DevExtreme().DataGrid()
+                    .ID("SignatoryGrid")
+                    .KeyExpr("SignatoryID")
+                    .RemoteOperations(false)
+                    .DataSource(d => d.WebApi()
+                .Controller("Signatories")
+                .LoadAction("GetAllSignData")
+                    .LoadMode(DataSourceLoadMode.Raw)
+                    )
+                .Editing(editing => editing
+                .Mode(GridEditMode.Batch)
+                .AllowUpdating(true)
+                    .AllowDeleting(true)
+                )
+                .Toolbar(toolbar =>
+                {
+                    toolbar.Items(items => { }); // hide default toolbar
+                })
+                        .Toolbar(toolbar =>
+                        {
+                            toolbar.Items(items =>
+                            {
+                                items.Add()
+                            .Widget(w => w.Button()
+                            .Text("Delete Selected")
+                            .Icon("trash")
+                    .Type(ButtonType.Danger)
+                    .ElementAttr(new { @class = "dx-button-custom btn-delete" })// Apply custom CSS class// semantic danger
+                                .OnClick("deleteSelectedSignatories")
+                            )
+                            .Location(ToolbarItemLocation.Before);
+                            });
+                        })
+
+                .OnRowUpdating("onSignatoryUpdating")                      
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
+                        columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Width(200);
+                        columns.Add().DataField("SignatoryPosition").Caption(new JS("formatMessage('Position')")).Width(200);
+                    columns.Add().DataField("SignatoryContact")
+                    .Caption(new JS("formatMessage('Contact')"))
+                    .Width(150)
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                    .Message("Contact No. is required");
+
+                        rules.AddCustom()
+                    .ValidationCallback("validateContact")
+                    .Message("Contact number must be 7–15 digits and contain only numbers");
+                    });
+
+
+columns.Add().DataField("SignatoryEmail")
+    .Caption(new JS("formatMessage('Email')"))
+    .Width(250)
+    .ValidationRules(rules =>
+    {
+        rules.AddRequired()
+            .Message("Email is required");
+
+        rules.AddEmail()
+            .Message("Please enter a valid Email Address");
+    });
+;
+
             // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1")
             .Caption(new JS("formatMessage('Signature Image')"))
@@ -345,7 +404,7 @@
                 });
                
   })
-        .Height("40vh")
+        .Height("38vh")
         .ColumnAutoWidth(true)
         .AllowColumnReordering(true)
         .AllowColumnResizing(true)
@@ -368,14 +427,40 @@
 </div>
 
 </div>
-<div class="limited-footer">
-    @await Html.PartialAsync("InventoryModuleFooter")
+<div class="footer-fixed" style="display:flex; height:50px; gap:20px;">
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnUpdate")
+                .Text(new JS("formatMessage('Update')"))
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                )
+    </div>
+    <div class="btn-container">
+
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                )
+    </div>
 </div>
  <script>
+         function validateContact(e) {
+        if (!e.value) return false; // empty is already blocked by required
+
+        const regex = /^[0-9]+$/;   // digits only
+        if (!regex.test(e.value)) return false;
+
+        if (e.value.length < 7 || e.value.length > 15) return false;
+
+        return true;
+    }
 
     $(document).ready(function () {
 
-        $(".limited-footer .btn-container").each(function () {
+        $(".footer-fixed .btn-container").each(function () {
 
               if (!$(this).find("#btnUpdate,#btnBack").length) {
 
@@ -387,8 +472,8 @@
 
       });
 
-    $(document).on("click", "#btnBack", function () {
-        window.history.back();
+      $(document).on("click", "#btnBack", function () {
+        window.parent.closeModal();
     });
 
       $(function () {
@@ -533,6 +618,9 @@
     }
 
 
+
+
+
     //Imageupload
 
     let selectedContainer = null;
@@ -572,6 +660,42 @@
         });
     });
 
+      
+    function deleteSelectedSignatories() {
+        const grid = $("#SignatoryGrid").dxDataGrid("instance");
+        const selectedRows = grid.getSelectedRowKeys();
+         const selectedIds = selectedRows.map(r => parseInt(r.SignatoryID));
+
+        if (selectedIds.length === 0) {
+            DevExpress.ui.notify("Please select at least one row to delete.", "warning", 2000);
+            return;
+        }
+
+        DevExpress.ui.dialog.confirm("Are you sure you want to delete the selected records?", "Confirm Deletion")
+            .done(function (dialogResult) {
+                if (dialogResult) {
+                    $.ajax({
+                        url: "/api/Signatories/DeleteMultiple",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(selectedIds),
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.notify("Selected signatories deleted successfully.", "success", 2000);
+                                grid.refresh();
+                            } else {
+                                DevExpress.ui.notify("Deletion failed: " + (response.message || "Unknown error"), "error", 2000);
+                            }
+                        },
+                        error: function (xhr) {
+                            DevExpress.ui.notify("Error during deletion: " + xhr.responseText, "error", 2000);
+                        }
+                    });
+                }
+            });
+    }
+</script>
 
 
-    </script>
+
+ 

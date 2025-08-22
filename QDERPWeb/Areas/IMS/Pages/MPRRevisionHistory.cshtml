@@ -73,7 +73,18 @@
         .Columns(columns =>
         {
             columns.Add().Type(GridCommandColumnType.Selection);
-            columns.Add().DataField("Mprno").Caption(new JS("formatMessage('MPRNo')"));
+            columns.Add().DataField("Mprno").Caption(new JS("formatMessage('MPR No')")).CellTemplate(@<text>
+                                                                                                          <a href="javascript:void(0);"
+                                                                                                             style="color: #0398fc; text-decoration: underline;"
+                                                                                                             onclick="handleMprClick('<%= data.Mprno %>', '<%= data.RequestEnquiry %>')">
+                                                                                                              <%= data.Mprno %>
+                                                                                                          </a>
+                                                                                                      </text>);
+
+
+
+
+
             columns.Add().DataField("Mprdate").Caption(new JS("formatMessage('MPR Date')"));
             columns.Add().DataField("MprrevisedBy").Caption(new JS("formatMessage('MPR Revised By')"));
             columns.Add().DataField("MprrevisedOn").Caption(new JS("formatMessage('MPR Revised On')"));
@@ -91,6 +102,34 @@
 
 
 <script>
+        function handleMprClick(mprNo, requestEnquiry) {
+        if (!mprNo || !requestEnquiry) {
+            DevExpress.ui.notify("Invalid data", "error", 2000);
+            return;
+        }
+
+        const tenant = window.tenantName || "defaultTenant";
+        let targetPage = "";
+
+        switch (requestEnquiry) {
+            case "Client Request":
+                targetPage = "IMS/AddNewClientRequest";
+                break;
+            case "Project Request":
+                targetPage = "IMS/MRAddNewProjectRequest";
+                break;
+            case "Store Request":
+                targetPage = "IMS/MRAddNewStoreRequest";
+                break;
+            default:
+                DevExpress.ui.notify("Unknown Request Type", "error", 2000);
+                return;
+        }
+
+        const fullUrl = `/${tenant}/${targetPage}?Mprno=${encodeURIComponent(mprNo)}`;
+        window.open(fullUrl, "_blank");  // Open in new tab
+    }
+
     function getQueryParam(param) {
         const urlParams = new URLSearchParams(window.location.search);
         return urlParams.get(param);

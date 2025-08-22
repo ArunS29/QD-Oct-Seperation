@@ -312,9 +312,9 @@
                                        <path opacity="0.4" d="M2 7V21C2 21.83 2.94001 22.3 3.60001 21.8L5.31 20.52C5.71 20.22 6.27 20.26 6.63 20.62L8.28999 22.29C8.67999 22.68 9.32001 22.68 9.71001 22.29L11.39 20.61C11.74 20.26 12.3 20.22 12.69 20.52L14.4 21.8C15.06 22.29 16 21.82 16 21V4C16 2.9 16.9 2 18 2H7H6C3 2 2 3.79 2 6V7Z" fill="#292D32" />
                                        <path d="M11.75 9.25H9.75V7.25C9.75 6.84 9.41 6.5 9 6.5C8.59 6.5 8.25 6.84 8.25 7.25V9.25H6.25C5.84 9.25 5.5 9.59 5.5 10C5.5 10.41 5.84 10.75 6.25 10.75H8.25V12.75C8.25 13.16 8.59 13.5 9 13.5C9.41 13.5 9.75 13.16 9.75 12.75V10.75H11.75C12.16 10.75 12.5 10.41 12.5 10C12.5 9.59 12.16 9.25 11.75 9.25Z" fill="#292D32" />
                                    </svg>
-                                   <span>Add Receipt</span>
+                                <span id="AddReceipt"></span>
                                </text>)
-                .Text(new JS("formatMessage('Add Receipt')"))
+              
                 .ElementAttr(new { style = "display: none;" })
                 .DropDownOptions(options => options.Width(230))
                 .Items(items =>
@@ -353,7 +353,7 @@
                                        <path d="M23 22.75H1C0.59 22.75 0.25 22.41 0.25 22C0.25 21.59 0.59 21.25 1 21.25H23C23.41 21.25 23.75 21.59 23.75 22C23.75 22.41 23.41 22.75 23 22.75Z" fill="#292D32" />
                                        <path d="M21.37 5.74982L12.37 2.14984C12.17 2.06984 11.83 2.06984 11.63 2.14984L2.63 5.74982C2.28 5.88982 2 6.29981 2 6.67981V9.99982C2 10.5498 2.45 10.9998 3 10.9998H21C21.55 10.9998 22 10.5498 22 9.99982V6.67981C22 6.29981 21.72 5.88982 21.37 5.74982ZM12 8.49982C11.17 8.49982 10.5 7.82982 10.5 6.99982C10.5 6.16982 11.17 5.49982 12 5.49982C12.83 5.49982 13.5 6.16982 13.5 6.99982C13.5 7.82982 12.83 8.49982 12 8.49982Z" fill="#292D32" />
                                    </svg>
-                                   <span>Add Payment</span>
+                                   <span id="AddPayment"></span>
                                </text>)
                 .Text(new JS("formatMessage('Add Payment')"))
                 .ElementAttr(new { style = "display: none;" })
@@ -391,7 +391,7 @@
                                        <path d="M7.25 7C7.25 6.58579 7.58579 6.25 8 6.25H16C16.4142 6.25 16.75 6.58579 16.75 7C16.75 7.41421 16.4142 7.75 16 7.75H8C7.58579 7.75 7.25 7.41421 7.25 7Z" fill="#1C274D" />
                                        <path d="M8 9.75C7.58579 9.75 7.25 10.0858 7.25 10.5C7.25 10.9142 7.58579 11.25 8 11.25H13C13.4142 11.25 13.75 10.9142 13.75 10.5C13.75 10.0858 13.4142 9.75 13 9.75H8Z" fill="#1C274D" />
                                    </svg>
-                                   <span>Other Vouchers</span>
+                                   <span id="OtherVouchers"></span>
                                </text>)
                 .Text(new JS("formatMessage('Other Vouchers')"))
                 .ElementAttr(new { style = "display: none;" })
@@ -428,41 +428,48 @@
                                        <path d="M15.7997 2.20999C15.3897 1.79999 14.6797 2.07999 14.6797 2.64999V6.13999C14.6797 7.59999 15.9197 8.80999 17.4297 8.80999C18.3797 8.81999 19.6997 8.81999 20.8297 8.81999C21.3997 8.81999 21.6997 8.14999 21.2997 7.74999C19.8597 6.29999 17.2797 3.68999 15.7997 2.20999Z" fill="#292D32" />
                                        <path d="M12.2795 14.72C11.9895 14.43 11.5095 14.43 11.2195 14.72L10.4995 15.44V11.25C10.4995 10.84 10.1595 10.5 9.74945 10.5C9.33945 10.5 8.99945 10.84 8.99945 11.25V15.44L8.27945 14.72C7.98945 14.43 7.50945 14.43 7.21945 14.72C6.92945 15.01 6.92945 15.49 7.21945 15.78L9.21945 17.78C9.22945 17.79 9.23945 17.79 9.23945 17.8C9.29945 17.86 9.37945 17.91 9.45945 17.95C9.55945 17.98 9.64945 18 9.74945 18C9.84945 18 9.93945 17.98 10.0295 17.94C10.1195 17.9 10.1995 17.85 10.2795 17.78L12.2795 15.78C12.5695 15.49 12.5695 15.01 12.2795 14.72Z" fill="#292D32" />
                                    </svg>
-                                   <span>Reports</span>
+                                   <span id="Reportss"></span>
                                </text>)
                 .Text(new JS("formatMessage('Report')"))
                 .DropDownOptions(options => options.Width(320))
                 .Items(items =>
                 {
-                    items.Add().Text("Account Statements")
+                    items.Add()
+                    .Text(new JS("formatMessage('Account Statements')"))
                     .Icon("home") // use DevExtreme icon name
                     .Option("color", "#4285F4") // Blue
                     .OnClick("showSubmenu4");
 
-                    items.Add().Text("Receivable Statements")
+                    items.Add()
                     .Icon("money")
+                    .Text(new JS("formatMessage('Receivable Statements')"))
                     .Option("color", "#34A853") // Green
                     .OnClick("showSubmenu5");
 
-                    items.Add().Text("Payable Statements")
+                    items.Add()
+                    .Text(new JS("formatMessage('Payable Statements')"))
                     .Icon("cart")
                     .Option("color", "#EA4335") // Red
                     .OnClick("showSubmenu6");
 
-                    items.Add().Text("Cost Reports")
+                    items.Add()
+                    .Text(new JS("formatMessage('Cost Reports')"))
                     .Icon("chart")
                     .Option("color", "#FBBC05") // Yellow
                     .OnClick("showSubmenu7");
 
-                    items.Add().Text("Bank Reconciliation")
+                    items.Add()
+                    .Text(new JS("formatMessage('Bank Reconciliation')"))
                     .Icon("product")
                     .Option("color", "#AB47BC"); // Purple
 
-                    items.Add().Text("Ledger to Receivable/Payable Mapping")
+                    items.Add()
+                    .Text(new JS("formatMessage('Ledger to Receivable/Payable Mapping')"))
                     .Icon("product")
                     .Option("color", "#00ACC1"); // Teal
 
-                    items.Add().Text("Ledger to Salary Payable Mapping")
+                    items.Add()
+                    .Text(new JS("formatMessage('Ledger to Salary Payable Mapping')"))
                     .Icon("product")
                     .Option("color", "#FF7043"); // Orange
                 })
@@ -590,19 +597,19 @@
     });
 
     // Footer Recipits button event
-    function addRecipitsButton_click(e) {
+        function addRecipitsButton_click(e) {
         switch (e.itemData.text) {
             case (formatMessage('Add Cash Receipts')):
-                window.open(`/${tenantName}/Finance/VoucherEntryCashReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
                 break;
             case (formatMessage('Add Bank Receipts')):
-                window.open(`/${tenantName}/Finance/VoucherEntryReceipts`, 'popupWindow', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryReceipts`;
                 break;
-            // You can handle other cases here if needed
             default:
                 console.log("Clicked item: ", e.itemData.text);
         }
     }
+
     function addReportsButton_click(e) {
         let pageUrl = '';
         let selectedText = e.itemData.text;
@@ -611,7 +618,7 @@
             case (formatMessage('Ledger to Salary Payable Mapping')):
                 var accountDropDown = $("#accountDropDownBox").dxDropDownBox("instance");
                 var selectedAccountId = accountDropDown.option("value");
-                debugger;
+                
                 if (!selectedAccountId) {
                     Swal.fire({
                         icon: 'warning',
@@ -714,60 +721,53 @@
         $("#overlay-frame").attr("src", ""); // Clear iframe to stop loading
     }
   
-    // Handle button clicks
-    function addRecipitsButton_click(e) {
-        let url = "";
-        let title = "Receipts";
+
+       // Footer Recipits button event
+        function addRecipitsButton_click(e) {
         switch (e.itemData.text) {
             case (formatMessage('Add Cash Receipts')):
-                url = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
-                title = formatMessage('Add Cash Receipts');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryCashReceipts`;
                 break;
             case (formatMessage('Add Bank Receipts')):
-                url = `/${tenantName}/Finance/VoucherEntryReceipts`;
-                title = formatMessage('Add Bank Receipts');
+                window.location.href = `/${tenantName}/Finance/VoucherEntryReceipts`;
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
-                return;
         }
-        openModal(url, title);
     }
 
     function addPaymentButton_click(e) {
-        let url = "";
-        let title = "Payments";
+
         switch (e.itemData.text) {
             case (formatMessage('Add Cash Payment')):
-                url = `/${tenantName}/Finance/VoucherCashPayment`;
-                title = formatMessage('Add Cash Payment');
+                window.location.href = `/${tenantName}/Finance/VoucherCashPayment`;
+              
                 break;
             case (formatMessage('Add Bank Payment')):
-                url = `/${tenantName}/Finance/VoucherBankPayment`;
-                title = formatMessage('Add Bank Payment');
+                window.location.href = `/${tenantName}/Finance/VoucherBankPayment`;
+
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
                 return;
         }
-        openModal(url, title);
+
     }
 
     function otherVoucherButton_click(e) {
-        let url = "";
-        let title = "Vouchers";
+
         switch (e.itemData.text) {
             case (formatMessage('Add Purchase Voucher')):
-                url = `/${tenantName}/Finance/Purchasevoucher`;
-                title = formatMessage('Add Purchase Voucher');
+                window.location.href = `/${tenantName}/Finance/Purchasevoucher`;
+               
                 break;
             case (formatMessage('Add Sales Voucher')):
-                url = `/${tenantName}/Finance/Salesvoucher`;
-                title = formatMessage('Add Sales Voucher');
+                window.location.href = `/${tenantName}/Finance/Salesvoucher`;
+
                 break;
             case (formatMessage('Add Journal Voucher')):
-                url = `/${tenantName}/Finance/Voucherjournal`;
-                title = formatMessage('Add Journal Voucher');
+               window.location.href = `/${tenantName}/Finance/Voucherjournal`;
+
                 break;
             default:
                 console.log("Clicked item: ", e.itemData.text);
@@ -1001,7 +1001,7 @@
 
        function showSubmenu6(e) {
         e.event.stopPropagation();
-        debugger;
+        
         if (!currentAccGroup.toUpperCase().includes("SUNDRY CREDITORS")) {
             showToastModal('warning', 'Warning!', 'No records to print');
             // $("#popupWarningMessage").text("No records to print");
@@ -1130,5 +1130,174 @@
     function onCreateNewClick() {
         window.location.href = `/${tenantName}/Finance/JournalEntryEdit`;
     }
-   
+                    function setDefaultLayoutClick(e) {
+         const grid = $("#dataGrid").dxDataGrid("instance");
+         const form = $('#formId').val();
+
+         if (!grid) {
+             DevExpress.ui.notify("Grid not found", "error", 2000);
+             return;
+         }
+
+         const layout = grid.state();
+         const layoutJson = JSON.stringify(layout); // ✅ Save as JSON string
+
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: layoutJson,
+                 form: form
+             }),
+             success: function (data) {
+                 DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+             },
+             error: function (xhr) {
+                 console.error("SaveLayout error:", xhr.responseText);
+                 DevExpress.ui.notify("Error while saving data", "error", 2000);
+             }
+         });
+     }
+
+
+     function resetLayoutClick(e) {
+         const grid = $("#dataGrid").dxDataGrid("instance");
+         const form = $('#formId').val();
+
+         $.ajax({
+             url: '/api/Utility/SaveLayout',
+             type: 'POST',
+             contentType: 'application/json',
+             data: JSON.stringify({
+                 layout: null, // 👈 this will trigger the backend to delete or reset
+                 form: form
+             }),
+             success: function (data) {
+                 DevExpress.ui.notify("Layout reset successful", "success", 2000);
+                 grid.state(null); // 👈 clear client-side layout too
+             },
+             error: function (xhr) {
+                 console.error(xhr.responseText);
+                 DevExpress.ui.notify("Error while resetting layout", "error", 2000);
+             }
+         });
+     }
+
+         function saveLayoutClick(e) {
+             var grid = $("#dataGrid").dxDataGrid("instance");
+             var layout = grid.state();
+             const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+             //console.log(layoutJson);
+             // Create a Blob from the JSON string
+             const blob = new Blob([layoutJson], { type: "application/json" });
+             // Create a URL for the Blob
+             const url = URL.createObjectURL(blob);
+             // Create a link element
+             const a = document.createElement("a");
+             a.href = url;
+             a.download = "grid-layout.json"; // Set the file name for download
+             // Append the link to the body (needed for Firefox)
+             document.body.appendChild(a);
+             // Programmatically click the link to trigger the download
+             a.click();
+             // Clean up by removing the link and revoking the Object URL
+             document.body.removeChild(a);
+             URL.revokeObjectURL(url);
+             //DevExpress.ui.notify("Layout", "success", 600);
+         }
+         function openLayoutClick(e) {
+             // Create an input element dynamically
+             const input = document.createElement("input");
+             input.type = "file";
+             input.accept = "application/json";
+
+             // When a file is selected
+             input.addEventListener("change", function (event) {
+                 const file = event.target.files[0];
+                 if (!file) return;
+
+                 const reader = new FileReader();
+                 reader.onload = function (e) {
+                     try {
+                         const layout = JSON.parse(e.target.result);
+                         const grid = $("#dataGrid").dxDataGrid("instance");
+                         grid.state(layout);
+                         //DevExpress.ui.notify("Layout applied successfully!", "success", 600);
+                     } catch (error) {
+                         DevExpress.ui.notify("Invalid layout file!", "error", 600);
+                     }
+                 };
+
+                 reader.readAsText(file);
+             });
+
+             // Trigger the file input click event
+             input.click();
+         }
+             $(document).ready(function () {
+         loadGridState(); // 👈 This must be called explicitly
+     });
+         function loadGridState() {
+
+             var form = $('#formId').val();
+             // Call the API to get the grid state
+             $.ajax({
+                 url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+                 method: 'GET',
+                 data: {
+                     form: form
+                 },
+                 success: function (response) {
+                     // Get the DataGrid instance
+                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
+
+                     // Load the state into the DataGrid
+                     if (response) {
+                         try {
+                             // Parse the JSON string from the file
+                             const layout = JSON.parse(response);
+
+                             // Restore the grid state
+                             dataGrid.state(layout);
+                         } catch (error) {
+                             console.error("Error parsing JSON:", error);
+                            
+                         }
+                     }
+                 },
+                 error: function (xhr, status, error) {
+                     console.error("Error loading grid state:", error);
+                 }
+             });
+         }
+         $(function () {
+            $("#AddReceipt").dxTextBox({
+                text: formatMessage("Add Receipt"),
+                readOnly: true,
+                width:85,
+            });
+        });
+         $(function () {
+            $("#AddPayment").dxTextBox({
+                text: formatMessage("Add Payment"),
+                readOnly: true,
+                width:85,
+            });
+        });
+         $(function () {
+            $("#OtherVouchers").dxTextBox({
+                text: formatMessage("Other Vouchers"),
+                readOnly: true,
+                width:85,
+            });
+        });
+        
+         $(function () {
+            $("#Reportss").dxTextBox({
+                text: formatMessage("Report"),
+                readOnly: true,
+                width:85,
+            });
+        });
 </script>

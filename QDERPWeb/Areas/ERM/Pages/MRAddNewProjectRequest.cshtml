@@ -2,11 +2,23 @@
 @model QD.ERP.Web.Areas.ERM.Pages.MRAddNewProjectRequestModel
 @{
 }
-
-
-
-
 <style>
+	.dx-datagrid .dx-data-row td[aria-colindex="3"] {
+		text-align: center !important;
+	}
+
+	.header-wrap {
+		white-space: normal !important; /* Enable word wrap */
+		text-align: center !important; /* Center align text */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+	}
+
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+		text-align: center !important;
+	}
 	.toggle-switch {
 		position: relative;
 		display: inline-block;

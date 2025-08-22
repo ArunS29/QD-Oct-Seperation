@@ -3,9 +3,11 @@ using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -16,10 +18,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 	{
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<AddNewQuotationController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public AddNewQuotationController(ILogger<AddNewQuotationController> logger, TenantDbContextHelper tenantDbContextHelper)
-		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+
+        public AddNewQuotationController(ILogger<AddNewQuotationController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        {
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 
@@ -71,21 +76,27 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		{
 			try
 			{
-				// Step 1: Get tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-				// Step 2: Try to get DbContext for tenant
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Step 3: Get company from Tbl901CompanyDetails using tenantName
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
 
-					if (company == null)
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
+                    if (company == null)
 					{
 						return NotFound("Company not found in Tbl901CompanyDetails.");
 					}
@@ -223,9 +234,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 							.FirstOrDefaultAsync();
 
 
-
-						// Retrieve Gsdescription based on Gscode
-						var gsDescription = await dbContext.Tbl20164GoodsAndServicesMasters
+                        var currencyRate = await dbContext.Tbl60101quotationMasters
+                            .Where(x => x.QuoteNo == QuoteNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                        // Retrieve Gsdescription based on Gscode
+                        var gsDescription = await dbContext.Tbl20164GoodsAndServicesMasters
 							.Where(x => x.Gscode == gridDetails.Gscode)
 							.Select(x => x.Gsdescrpition)
 							.FirstOrDefaultAsync();
@@ -236,6 +250,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 						dict["GsDescription"] = gsDescription;
                        
                         dict["GSCode"] = gridDetails.Gscode;
+                        dict["CostPrice"] = gridDetails.CostPrice / currencyRate;
+                        dict["QuotedUnitPrice"] = gridDetails.QuotedUnitPrice / currencyRate;
+                        dict["QuotedDiscount"] = gridDetails.QuotedDiscount / currencyRate;
+                        dict["LineTaxAmount"] = gridDetails.LineTaxAmount / currencyRate;
+                        dict["LineTotalWithTax"] = gridDetails.LineTotalWithTax / currencyRate;
+                        dict["TotalCostOfItem"] = gridDetails.TotalCostOfItem / currencyRate;
+                        dict["ItemProfitOrLoss"] = gridDetails.ItemProfitOrLoss / currencyRate;
+                        dict["UnitCostPriceTotal"] = gridDetails.UnitCostPriceTotal / currencyRate;
+                        dict["LineTotalAfterDiscount"] = gridDetails.LineTotalAfterDiscount / currencyRate;
+                        dict["LineTotalBeforeDiscount"] = gridDetails.LineTotalBeforeDiscount / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -306,7 +330,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					existingMaster.ApprovedSignatory = VM.ApprovedSignatory.HasValue ? (byte?)VM.ApprovedSignatory.Value : null;
 					existingMaster.RevisionNo = VM.RevisionNo;
 					existingMaster.QuoteValidity = VM.QuoteValidity;
-				}
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
+
+                }
 				else
 				{
 					// Insert new master
@@ -314,40 +342,43 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					{
 
 						 QuoteNo= VM.QuoteNo,
-    QuoteDate= VM.QuoteDate,
-    ClientCode= VM.ClientCode,
-    SalesPersonCode= VM.SalesPersonCode,
-	Mprno = VM.Mprno,
-    Attention= VM.Attention,
-    ClientContactEmail= VM.ClientContactEmail,
-    ClientContactNo=VM.ClientContactNo,
-    ModeOfRequest=Convert.ToByte(VM.ModeOfRequest),
-    TypeOfRequest=Convert.ToByte(VM.TypeOfRequest),
-    ProjectMasterCode= VM.ProjectMasterCode,
-    Project=VM.Project,
-    SubjectTitle= VM.SubjectTitle,
-    QuotationSummary= VM.QuotationSummary,
-    QuoteIntro= VM.QuoteIntro,
-    QuoteThanksNote= VM.QuoteThanksNote,
-    CompanyBranch=Convert.ToByte(VM.CompanyBranch),
-    InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
-    ClientRefNo= VM.ClientRefNo,
-    QuoteSubmittedBy= VM.QuoteSubmittedBy,
-    QuoteSubmittedOn= VM.QuoteSubmittedOn,
-    BidClosingDate= VM.BidClosingDate,
-    QuoteStatus=Convert.ToByte(VM.QuoteStatus),
-    TransportationScope=VM.TransportationScope,
-    AdditionsText= VM.AdditionsText,
-    QuoteTransport= VM.QuoteTransport,
-    DiscountsText= VM.DiscountsText,
-    QuoteDiscount= VM.QuoteDiscount,
-    QuoteSignatory=Convert.ToByte(VM.QuoteSignatory),
-    VerifiedSignatory=Convert.ToByte(VM.VerifiedSignatory),
-    ApprovedSignatory= Convert.ToByte(VM.ApprovedSignatory),
-	RevisionNo=VM.RevisionNo,
-	QuoteValidity=VM.QuoteValidity,
+                    QuoteDate= VM.QuoteDate,
+                    ClientCode= VM.ClientCode,
+                    SalesPersonCode= VM.SalesPersonCode,
+	                Mprno = VM.Mprno,
+                    Attention= VM.Attention,
+                    ClientContactEmail= VM.ClientContactEmail,
+                    ClientContactNo=VM.ClientContactNo,
+                    ModeOfRequest=Convert.ToByte(VM.ModeOfRequest),
+                    TypeOfRequest=Convert.ToByte(VM.TypeOfRequest),
+                    ProjectMasterCode= VM.ProjectMasterCode,
+                    Project=VM.Project,
+                    SubjectTitle= VM.SubjectTitle,
+                    QuotationSummary= VM.QuotationSummary,
+                    QuoteIntro= VM.QuoteIntro,
+                    QuoteThanksNote= VM.QuoteThanksNote,
+                    CompanyBranch=Convert.ToByte(VM.CompanyBranch),
+                    InventoryMasterGroupId=Convert.ToByte(VM.InventoryMasterGroupId),
+                    ClientRefNo= VM.ClientRefNo,
+                    QuoteSubmittedBy= VM.QuoteSubmittedBy,
+                    QuoteSubmittedOn= VM.QuoteSubmittedOn,
+                    BidClosingDate= VM.BidClosingDate,
+                    QuoteStatus=Convert.ToByte(VM.QuoteStatus),
+                    TransportationScope=VM.TransportationScope,
+                    AdditionsText= VM.AdditionsText,
+                    QuoteTransport= VM.QuoteTransport,
+                    DiscountsText= VM.DiscountsText,
+                    QuoteDiscount= VM.QuoteDiscount,
+                    QuoteSignatory=Convert.ToByte(VM.QuoteSignatory),
+                    VerifiedSignatory=Convert.ToByte(VM.VerifiedSignatory),
+                    ApprovedSignatory= Convert.ToByte(VM.ApprovedSignatory),
+	                RevisionNo=VM.RevisionNo,
+	                QuoteValidity=VM.QuoteValidity,
+                    CurrencyId = VM.CurrencyId ?? 1,
+                    CurrencyRate = VM.CurrencyRate ?? 1,
+                    BaseCurrencyId = VM.BaseCurrencyId ?? 1,
 
-					};
+                    };
 
 					await dbContext.Tbl60101quotationMasters.AddAsync(newMaster);
 				}
@@ -356,7 +387,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				var existingChildren = await dbContext.Tbl60102quotationChildren
 					.Where(x => x.QuoteNo == VM.QuoteNo)
 					.ToListAsync();
-
+                var currencyRate = await dbContext.Tbl60101quotationMasters
+                            .Where(x => x.QuoteNo == VM.QuoteNo)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
                 // Track QuoteChildId from client
                 var incomingIds = VM.QuotationDetailses
                     .Where(x => x.QuoteChildId > 0)
@@ -380,6 +414,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					{
 						// New child entry
 						child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
+						child.CostPrice = child.CostPrice * currencyRate;
+						child.QuotedUnitPrice = child.QuotedUnitPrice * currencyRate;
+						child.QuotedDiscount = child.QuotedDiscount * currencyRate;
 						await dbContext.Tbl60102quotationChildren.AddAsync(child);
 					}
 					else
@@ -396,8 +433,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				}
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Save Quotation",
+                   actionDetail: $"Saved Quotation: {VM.QuoteNo}",
+                    documentNo: $"{VM.QuoteNo}"
+                );
 
-				return Ok(new { success = true, message = "Quotation Details saved/updated successfully." });
+                return Ok(new { success = true, message = "Quotation Details saved/updated successfully.",quoteno=VM.QuoteNo });
 			}
 			catch (Exception ex)
 			{
@@ -438,8 +480,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				dbContext.Tbl60101quotationMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Delete Quotation",
+                   actionDetail: $"Quotation Deleted: {QuoteNo}",
+                   documentNo: $"{QuoteNo}"
+                );
 
-				return Ok(new { success = true, message = "Quotation details deleted successfully." });
+                return Ok(new { success = true, message = "Quotation details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -504,6 +551,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
            // master.PurchaseRequestStatusId = 31; // Enquiry/Request Submitted
 
             await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+                   module: "IMS > Submit Quotation",
+                   actionDetail: $"Quotation Submitted: {QuoteNo}",
+                   documentNo: $"{QuoteNo}"
+                );
 
             return Ok(new
             {
@@ -560,6 +612,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Verify Quotation",
+                  actionDetail: $"Quotation Verified: {quoteNo}",
+                  documentNo: $"{quoteNo}"
+                );
 
                 return Ok(new
                 {
@@ -625,6 +682,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     voucher.ApprovedSignatory = (byte)signatoryId.Value;
                 }
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Approved Quotation",
+                  actionDetail: $"Quotation Approved: {QuoteNo}",
+                  documentNo: $"{QuoteNo}"
+                );
 
                 return Ok(new
                 {
@@ -709,6 +771,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60102quotationChildren.Remove(child);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Delete Child By Id",
+                  actionDetail: $" Deleted Child: {childId}",
+                  documentNo: $"{childId}"
+                );
 
                 return Ok(new { success = true, message = "Child row deleted successfully." });
             }
@@ -778,5 +845,127 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
+        [HttpGet]
+        public async Task<ActionResult> GetUserddl(DataSourceLoadOptions loadOptions)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var users = dbContext.TblUserMasters.Select(u => new { u.UserId, u.UserName });
+                    return Json(await DataSourceLoader.LoadAsync(users, loadOptions));
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetUserddl: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateSalesPerson([FromBody] Tbl20101SalesPersonMaster salesPerson)
+        {
+            if (salesPerson == null || string.IsNullOrEmpty(salesPerson.SalesPersonCode))
+            {
+                return BadRequest("Invalid salesperson data.");
+            }
+
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var existingSalesPerson = await dbContext.Tbl20101SalesPersonMasters
+                        .FirstOrDefaultAsync(s => s.SalesPersonCode == salesPerson.SalesPersonCode);
+
+                    if (existingSalesPerson == null)
+                    {
+                        return NotFound(new { success = false, message = $"Salesperson with code {salesPerson.SalesPersonCode} not found." });
+                    }
+
+                    if (salesPerson.UserCode.HasValue)
+                    {
+                        var userCodeExists = await dbContext.Tbl20101SalesPersonMasters
+                            .AnyAsync(s => s.UserCode == salesPerson.UserCode && s.SalesPersonCode != salesPerson.SalesPersonCode);
+
+                        if (!userCodeExists)
+                        {
+                            return BadRequest(new { success = false, message = $"The provided UserCode {salesPerson.UserCode} does not exist for any other salesperson." });
+                        }
+
+                        if (salesPerson.UserCode < 0 || salesPerson.UserCode > 255)
+                        {
+                            return BadRequest(new { success = false, message = "UserCode must be between 0 and 255." });
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(salesPerson.SalesPersonName))
+                        existingSalesPerson.SalesPersonName = salesPerson.SalesPersonName;
+                    if (salesPerson.UserCode.HasValue)
+                        existingSalesPerson.UserCode = salesPerson.UserCode.Value;
+                    if (!string.IsNullOrEmpty(salesPerson.EmailAddress))
+                        existingSalesPerson.EmailAddress = salesPerson.EmailAddress;
+                    if (!string.IsNullOrEmpty(salesPerson.SalesPersonContactNo))
+                        existingSalesPerson.SalesPersonContactNo = salesPerson.SalesPersonContactNo;
+                    if (salesPerson.TargetPerMonth.HasValue)
+                    {
+                        existingSalesPerson.TargetPerMonth = salesPerson.TargetPerMonth;
+                    }
+
+
+                    dbContext.Entry(existingSalesPerson).State = EntityState.Modified;
+                    await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                           module: "IMS > Update Sales Person",
+                           actionDetail: $" Updated Sales Person: {salesPerson.SalesPersonCode}",
+                            documentNo: $"{salesPerson.SalesPersonCode}"
+                    );
+
+                    return Ok(new { success = true, message = "Salesperson updated successfully." });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in UpdateSalesPerson: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> IsDateLocked()
+        {
+            // ✅ Resolve tenant and DB context
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { Message = "Invalid tenant." });
+
+            try
+            {
+                // ✅ Get Default Company ID from session
+                var companyIdStr = HttpContext.Session.GetString("DefaultcompanyID");
+                if (!int.TryParse(companyIdStr, out int companyId))
+                    return BadRequest(new { Message = "Invalid or missing Company ID." });
+
+                // ✅ Fetch IsDateLockingEnabled flag from company settings
+                var isDateLockingEnabled = await dbContext.Tbl901CompanyDetails02s
+                    .Where(x => x.CompanyId == companyId)
+                    .Select(x => x.IsDateLockingEnabled ?? false)
+                    .FirstOrDefaultAsync();
+
+                return Ok(isDateLockingEnabled);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in IsDateLocked: {ex}");
+                return StatusCode(500, new { Message = "Internal Server Error", Details = ex.Message });
+            }
+        }
+
+
+
+
     }
 }

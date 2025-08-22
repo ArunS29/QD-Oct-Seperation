@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.VAT.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -13,9 +14,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SignatoriesController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public SignatoriesController(ILogger<SignatoriesController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public SignatoriesController(ILogger<SignatoriesController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -77,11 +81,16 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         existingRecord.SignatoryPosition = model.SignatoryPosition;
                         existingRecord.SignatoryContact = model.SignatoryContact;
                         existingRecord.SignatoryEmail = model.SignatoryEmail;
-                       
+
                         existingRecord.SignatureImage = model.SignatureImage;
-               
+
 
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                          module: "IMS > Save Or Update Signatory",
+                          actionDetail: $"Saved Signatory {model.SignatoryId}",
+                          documentNo: $"{model.SignatoryId}"
+                        );
 
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.SignatoryId });
                     }
@@ -94,10 +103,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                             .FirstOrDefaultAsync();
 
                         model.SignatoryId = lastId == 0 ? (byte)1 : (byte)(lastId + 1);
-                       
+
 
                         dbContext.Tbl90104DocumentSignatories.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                          module: "IMS > Save Or Update Signatory",
+                          actionDetail: $"Saved Signatory {model.SignatoryId}",
+                          documentNo: $"{model.SignatoryId}"
+                        );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.SignatoryId });
                     }
@@ -124,6 +138,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl90104DocumentSignatories.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete ",
+                        actionDetail: $"Deleted  {key}",
+                        documentNo: $"{key}"
+                       );
                     return Ok();
                 }
 
@@ -131,11 +149,48 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                                    _logger.LogError($"Error in GetProject: {ex.Message}");
-                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                _logger.LogError($"Error in GetProject: {ex.Message}");
+                return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
 
             }
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteMultiple([FromBody] List<int> signatoryIds)
+        {
+            if (signatoryIds == null || !signatoryIds.Any())
+                return BadRequest(new { success = false, message = "No IDs provided" });
+
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var toDelete = dbContext.Tbl90104DocumentSignatories
+                                            .Where(s => signatoryIds.Contains(s.SignatoryId)) // ✅ Make sure 'SignatoryId' is correct
+                                            .ToList();
+
+                    if (toDelete.Count == 0)
+                        return NotFound(new { success = false, message = "No matching records found" });
+
+                    dbContext.Tbl90104DocumentSignatories.RemoveRange(toDelete);
+                    await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                          module: "IMS > Delete Multiple",
+                          actionDetail: $"Deleted Multiple {signatoryIds}",
+                          documentNo: $"{signatoryIds}"
+                    );
+
+                    return Ok(new { success = true });
+                }
+
+                return Unauthorized(new { success = false, message = "Invalid tenant" });
             }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error deleting signatories");
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
 
 
 

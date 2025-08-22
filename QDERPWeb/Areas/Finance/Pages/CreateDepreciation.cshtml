@@ -194,7 +194,7 @@
         .StylingMode(ButtonStylingMode.Outlined)
     
         .Width(180)
-
+        
         )
     @(Html.DevExtreme().Button()
         .ID("btnGenaeratedepreciation")
@@ -310,7 +310,7 @@
                 data: { depreciationdocno: voucherNoFromUrl },
                 success: function (data) {
                      // optional check
-                     debugger;
+                     
                     if (data) {
                         $("#Docno").dxTextBox("instance").option("value", data[0].DepreciationDocNo);
                         $("#StartDate").dxDateBox("instance").option("value", data[0].DeprStartDate);
@@ -374,7 +374,7 @@
         }));
     });
      function generateDepreciationAndReload() {
-         debugger;
+         
         const startDateBox = $("#StartDate").dxDateBox("instance");
         const endDateBox = $("#EndDate").dxDateBox("instance");
         const docNoBox = $("#Docno").dxTextBox("instance");
@@ -463,5 +463,80 @@
         
         
     });
-  
+    function onPostDepreciationClick() {
+        const docNo = $("#Docno").dxTextBox("instance").option("value");
+        const startDate = $("#StartDate").dxDateBox("instance").option("value");
+        const endDate = $("#EndDate").dxDateBox("instance").option("value");
+
+        if (!docNo) {
+            DevExpress.ui.notify("Doc No is required.", "error", 3000);
+            return;
+        }
+
+        let generatedVoucherNo = "";
+        let totalDepreciationAmount = 0;
+
+        // Step 1: Get generated voucher number
+        $.get('/api/JournalEntryEdit/GetGeneratedVoucherNo')
+            .done(function (voucherNo) {
+                generatedVoucherNo = voucherNo;
+
+                $.ajax({
+                    url: '/api/DepreciationMaster/GetDepreciationTotal',
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify({ docNo: docNo }),
+                    success: function (data) {
+                        const totalDepreciationAmount =data.totalAmount ;
+                           // Step 3: Call SP to insert voucher
+                        const payload = {
+                            DepreciationDocNo: docNo,
+                            PaymentVoucherNo: generatedVoucherNo,
+                            DebitAccount: "L00011",
+                            CreditAccount: "L00021",
+                            AddedBy: sessionStorage.getItem("UserName") || "", // or get from backend/session
+                            AddedOn: new Date(),
+                            VoucherNarration: `Depreciation for the period from ${formatDate(startDate)} to ${formatDate(endDate)}`,
+                            TotalAmount: totalDepreciationAmount,
+                            JustAddedVoucherEntryNo: 0
+                        };
+
+                        $.ajax({
+                            url: '/api/DepreciationMaster/InsertDepreciationToVoucher',
+                            method: 'POST',
+                            contentType: "application/json",
+                            data: JSON.stringify(payload),
+                            success: function (response) {
+                                if (response.success) {
+                                    DevExpress.ui.notify(`Depreciation Created for the Voucher ${generatedVoucherNo}`, "success", 3000);
+                                } else {
+                                    DevExpress.ui.notify(response.message || "Failed to insert voucher.", "error", 3000);
+                                }
+                            },
+                            error: function () {
+                                DevExpress.ui.notify("Error occurred while inserting depreciation voucher.", "error", 3000);
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
+                    }
+                });
+
+            })
+            .fail(function () {
+                DevExpress.ui.notify("Failed to generate voucher number.", "error", 3000);
+            });
+    }
+
+    function formatDate(date) {
+        if (!date) return '';
+        const d = new Date(date);
+        return d.toLocaleDateString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric'
+        }).replace(/ /g, '-');
+    }
+
 </script>

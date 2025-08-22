@@ -1,16 +1,18 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.Pdf;
+using DevExpress.Printing.Utils.DocumentStoring;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Newtonsoft.Json;
+using PdfSharpCore.Pdf;
+using PdfSharpCore.Pdf.IO;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
-using Microsoft.EntityFrameworkCore;
-using Newtonsoft.Json;
-using DevExpress.Printing.Utils.DocumentStoring;
-using DevExpress.Pdf;
-using System.IO;
-using PdfSharpCore.Pdf.IO;
-using PdfSharpCore.Pdf;
+using QD.ERP.Web.Services.Logging;
 using System.Collections.Generic;
+using System.IO;
 using System.IO;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
@@ -22,9 +24,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<StockInventoryController> _logger;
         private readonly IConfiguration _configuration; // ✅ Add this
+        private readonly IUserActionLogger _userActionLogger;
 
-        public StockInventoryController(ILogger<StockInventoryController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration)
+
+        public StockInventoryController(ILogger<StockInventoryController> logger, TenantDbContextHelper tenantDbContextHelper, IConfiguration configuration, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
             _configuration = configuration;
@@ -188,6 +193,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     entity.IsServicesGroup = request.IsServicesGroup;
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Delete Multiple",
+                      actionDetail: $"Deleted Multiple {request.GsgroupId}",
+                       documentNo: $"{request.GsgroupId}"
+                    );
 
                     return Ok(new { success = true });
                 }
@@ -326,6 +336,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl20165GoodsAndServicesGroups.Add(model);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Add Goods Service Group",
+                      actionDetail: $":Added Goods Service Group {model.GsgroupId}",
+                      documentNo: $"{model.GsgroupId}"
+                    );
 
                     return Ok(new { message = "Saved successfully", success = true });
                 }
@@ -352,6 +366,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     JsonConvert.PopulateObject(values, item);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Update Goods Service",
+                      actionDetail: $":Updated Goods Service {key}",
+                      documentNo: $"{key}"
+                    );
 
                     return Ok(item);
                 }
@@ -544,39 +562,80 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         //    }
         //}
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdateStore([FromBody] Tbl60001storeMaster model)
+        public async Task<IActionResult> SaveOrUpdateStore([FromQuery] string originalStoreId, [FromBody] Tbl60001storeMaster model)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
+                    // Check for duplicate name
                     bool isDuplicate = await dbContext.Tbl60001storeMasters
-               .AnyAsync(x => x.StoreName == model.StoreName && x.StoreId != model.StoreId);
+                        .AnyAsync(x => x.StoreName == model.StoreName && x.StoreId != originalStoreId);
 
                     if (isDuplicate)
                     {
                         return BadRequest(new { success = false, message = "This Store Name already exists." });
                     }
 
-
+                    // Get existing record using original ID
                     var existingRecord = await dbContext.Tbl60001storeMasters
-                        .FirstOrDefaultAsync(x => x.StoreId == model.StoreId);
+                        .FirstOrDefaultAsync(x => x.StoreId == originalStoreId);
 
                     if (existingRecord != null)
                     {
-                        existingRecord.StoreId = model.StoreId;
-                        existingRecord.StoreName = model.StoreName;
-                        existingRecord.CostAllocationUnitId = model.CostAllocationUnitId;
+                        if (originalStoreId != model.StoreId)
+                        {
+                            // Check if the new StoreId already exists
+                            bool idExists = await dbContext.Tbl60001storeMasters
+                                .AnyAsync(x => x.StoreId == model.StoreId);
+
+                            if (idExists)
+                            {
+                                return BadRequest(new { success = false, message = "This Store ID already exists." });
+                            }
+
+                            // Remove old record
+                            dbContext.Tbl60001storeMasters.Remove(existingRecord);
+
+                            // Add new record with new StoreId
+                            var newRecord = new Tbl60001storeMaster
+                            {
+                                StoreId = model.StoreId,
+                                StoreName = model.StoreName,
+                                CostAllocationUnitId = model.CostAllocationUnitId,
+                                // add other fields if required
+                            };
+
+                            dbContext.Tbl60001storeMasters.Add(newRecord);
+                        }
+                        else
+                        {
+                            // Just update fields (StoreId not changed)
+                            existingRecord.StoreName = model.StoreName;
+                            existingRecord.CostAllocationUnitId = model.CostAllocationUnitId;
+                            // other updates
+                        }
 
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                            module: "IMS > Save Or Update Store",
+                            actionDetail: $"Saved Store {model.StoreId}",
+                            documentNo: $"{model.StoreId}"
+                        );
 
-                        return Ok(new { success = true, message = "Updated successfully", id = model.StoreId });
+                        return Ok(new { success = true, message = "Saved or updated successfully", id = model.StoreId });                        
                     }
+
                     else
                     {
-                        // ➕ ADD logic (no auto-ID generation here)
+                        // If not found, treat as new
                         dbContext.Tbl60001storeMasters.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                            module: "IMS > Save Or Update Store",
+                            actionDetail: $"Saved Store {model.StoreId}",
+                            documentNo: $"{model.StoreId}"
+                        );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.StoreId });
                     }
@@ -590,6 +649,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+
 
 
 
@@ -653,6 +713,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl30111StockClassificationMasters.Add(newStockClass);
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Add Stock Classification",
+                  actionDetail: $":Added Stock Classification {model.StockClassification}",
+                  documentNo: $"{model.StockClassification}"
+                );
 
                 return Ok(new { message = "Stock Classification saved successfully." });
             }
@@ -692,6 +756,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 JsonConvert.PopulateObject(jsonValues, existing);
 
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Update Stock Classification",
+                  actionDetail: $":Updated Stock Classification {updateDto.Key}",
+                  documentNo: $"{updateDto.Key}"
+                );
 
                 return Ok(new { message = "Stock Classification updated successfully." });
             }
@@ -718,6 +786,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl30111StockClassificationMasters.Remove(stockClass);
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete Stock Classification",
+                  actionDetail: $"Deleted Stock Classification {key}",
+                  documentNo: $"{key}"
+                );
 
                 return Ok(new { message = "Deleted successfully." });
             }
@@ -768,9 +840,15 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 var existingItem = await dbContext.Tbl20164GoodsAndServicesMasters
                     .FirstOrDefaultAsync(x => x.Gscode == model.Gscode);
+                var addedBy = HttpContext.Session.GetString("UserName") ?? "System";
 
                 if (existingItem == null)
                 {
+                    // set default value
+                    model.CreatedBy = addedBy;
+                    model.CreatedOn = DateTime.Now;
+                    model.ModifiedBy = null;
+                    model.ModifiedOn = null;
                     // Add new item in main table
                     dbContext.Tbl20164GoodsAndServicesMasters.Add(model);
 
@@ -780,7 +858,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         model.Gscode,
                         model.OpeningBalance,
                         model.CostPrice,
-                        model.CostPrice  // or some other value if you want a different method
+                        model.GsuoM  // or some other value if you want a different method
                     );
                 }
                 else
@@ -817,7 +895,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingItem.ReorderQty = model.ReorderQty;
                     existingItem.ReorderLevel = model.ReorderLevel;
                     existingItem.ReorderLeadTime = model.ReorderLeadTime;
-                    existingItem.ModifiedBy = User.Identity?.Name ?? "Unknown";
+                    existingItem.ModifiedBy = addedBy;
                     existingItem.ModifiedOn = DateTime.Now;
                     existingItem.ItemImage = model.ItemImage;
 
@@ -831,6 +909,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                            module: "IMS > Save",
+                            actionDetail: $"Saved  {model.Gscode}",
+                            documentNo: $"{model.Gscode}"
+                );
 
                 return Ok(new { message = "Record saved successfully", success = true });
             }
@@ -873,6 +956,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl20164GoodsAndServicesMasters.Remove(itemToDelete);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                            module: "IMS > Delete Stock Item",
+                            actionDetail: $"Deleted Stock Item  {code}",
+                            documentNo: $"{code}"
+                );
 
                 return Ok(new { message = "Stock item deleted successfully", success = true });
             }
@@ -1060,6 +1148,48 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveUnitConversion([FromBody] Tbl60003unitConversionMaster record)
+        {
+            if (record == null || string.IsNullOrWhiteSpace(record.Gscode))
+                return BadRequest("Invalid data.");
+
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (record.UnitConversionId == 0) // ✅ Insert
+                {
+                    dbContext.Tbl60003unitConversionMasters.Add(record);
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { message = "Record added successfully", data = record });
+                }
+                else // ✅ Update
+                {
+                    var existing = await dbContext.Tbl60003unitConversionMasters
+                        .FirstOrDefaultAsync(x => x.UnitConversionId == record.UnitConversionId);
+
+                    if (existing == null)
+                        return NotFound("Record not found.");
+
+                    existing.UnitCodeOfConversion = record.UnitCodeOfConversion;
+                    existing.UnitConverted = record.UnitConverted;
+                    existing.UnitConversionRemarks = record.UnitConversionRemarks;
+
+                    await dbContext.SaveChangesAsync();
+                    return Ok(new { message = "Record updated successfully", data = existing });
+                }
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error saving UnitConversion: {ex}");
+                return StatusCode(500, "An error occurred while saving.");
+            }
+        }
+
+
+
         [HttpGet]
         public async Task<IActionResult> GetUnitConversionGridData(string gscode)
         {
@@ -1239,6 +1369,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl20164GoodsAndServicesMasters.Remove(item);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                            module: "IMS > Delete By Code",
+                            actionDetail: $"Deleted By Code  {code}",
+                            documentNo: $"{code}"
+                );
 
                 return Ok(new { success = true, message = "Stock item deleted successfully." });
             }
@@ -1311,6 +1446,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Save Document",
+                    actionDetail: $"Saved Document  {model.DocumentNo}",
+                     documentNo: $"{model.DocumentNo}"
+                );
                 return Json(new { success = true, documentNo = model.DocumentNo });
             }
             catch (Exception ex)
@@ -1441,12 +1581,49 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl70003projectDocuments.Add(model);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                   module: "IMS > Save Project Document",
+                   actionDetail: $":Savedd Project Document  {form["DocumentNo"]}",
+                   documentNo: $"{form["DocumentNo"]}"
+                );
 
                 return Ok(new { success = true, message = "Document saved and uploaded successfully." });
             }
             catch (Exception ex)
             {
                 _logger.LogError($"Error in SaveProjectDocument: {ex.Message}");
+                return StatusCode(500, $"An error occurred: {ex.Message}");
+            }
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOpeningBalanceItem([FromBody] Tbl60502materialReceiptChild update)
+        {
+            try
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                    return Unauthorized("Invalid tenant context.");
+
+                if (update == null || string.IsNullOrEmpty(update.Gscode))
+                    return BadRequest("Invalid update data.");
+
+                var entity = await dbContext.Tbl60502materialReceiptChildren
+                    .FirstOrDefaultAsync(x => x.Gscode == update.Gscode && x.ReceiptChildSlNo == update.ReceiptChildSlNo);
+                
+                if (entity == null)
+                    return NotFound("Record not found.");
+
+                // Update only the fields you want (ExpiryDate, BatchNo)
+                entity.ExpiryDate = update.ExpiryDate;
+                entity.BatchNo = update.BatchNo;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { message = "Update successful" });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in UpdateOpeningBalanceItem: {ex.Message}");
                 return StatusCode(500, $"An error occurred: {ex.Message}");
             }
         }
@@ -1470,7 +1647,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     .Where(x => x.Gscode == gscode)
                     .Select(x => new
                     {
-                        StockCode = x.Gscode,
+                        ReceiptChildSlNo = x.ReceiptChildSlNo,
+                        Gscode = x.Gscode,
                         Unit = x.UnitRateMethod, 
                         UnitPrice = x.UnitPrice,
                         Quantity = x.QtyReceived,
@@ -1770,6 +1948,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl20165GoodsAndServicesGroups.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete Stock",
+                      actionDetail: $"Deleted Stock {key}",
+                      documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 
@@ -1893,6 +2075,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60001storeMasters.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete ",
+                      actionDetail: $"Deleted {key}",
+                      documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 
@@ -1955,6 +2141,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingRecord.GsgroupNameAr = model.GsgroupNameAr;
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                       module: "IMS > Save Project Document",
+                       actionDetail: $":Savedd Project Document  {model.GsgroupId}",
+                       documentNo: $"{model.GsgroupId}"
+                    );
 
                     return Ok(new { success = true, message = "Updated successfully" });
                 }

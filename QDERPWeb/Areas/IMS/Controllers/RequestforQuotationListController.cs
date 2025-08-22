@@ -1,21 +1,22 @@
 ﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
 using Microsoft.Identity.Client;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
+using System.Dynamic;
 using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -25,9 +26,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<RequestforQuotationListController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public RequestforQuotationListController(ILogger<RequestforQuotationListController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public RequestforQuotationListController(ILogger<RequestforQuotationListController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -68,6 +73,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         i.TotalBeforeTax,
                         i.TotalDiscount,
                         i.TotalAfterDiscount,
+
                     }).ToListAsync();
 
                     return Json(data);
@@ -141,18 +147,25 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 		{
 			try
 			{
-				// Retrieve tenant name from session
-				var tenantName = HttpContext.Session.GetString("TenantName");
-				if (string.IsNullOrWhiteSpace(tenantName))
-				{
-					return Unauthorized(new { message = "Tenant name not found in session.", success = false });
-				}
+				 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
 
-				if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-				{
-					// Use tenantName to find the company
-					var company = dbContext.Tbl901CompanyDetails
-										   .FirstOrDefault(c => c.CompanyNameShort == tenantName);
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+
+                    byte companyId = defaultCompanyByte;
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
 
 					if (company == null)
 					{
@@ -375,8 +388,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 					var result = dbContext.Qry60702rfqchildren  
                         .Where(x => x.Rfqno == RFQno)
 						.ToList();
-
-					foreach (var gridDetails in result)
+                    var currencyRate = await dbContext.Tbl60701rfqmasters
+                            .Where(x => x.Rfqno == RFQno)
+                            .Select(x => x.CurrencyRate)
+                            .FirstOrDefaultAsync();
+                    foreach (var gridDetails in result)
 					{
 						dynamic item = new ExpandoObject();
 						var dict = (IDictionary<string, object>)item;
@@ -407,6 +423,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
 						dict["GsDescription"] = gsDescription;
                         dict["GSCode"] = gridDetails.Gscode;
+                        dict["UnitPrice"] = gridDetails.UnitPrice / currencyRate;
+                        dict["LineTotalBeforeTax"] = gridDetails.LineTotalBeforeTax / currencyRate;
+                        dict["LineTotalAfterDisc"] = gridDetails.LineTotalAfterDisc / currencyRate;
+                        dict["ItemDiscount"] = gridDetails.ItemDiscount / currencyRate;
 
                         resultWithDetails.Add(item);
 					}
@@ -459,6 +479,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     existingMaster.Rfqsignatory = VM.Rfqsignatory.HasValue ? (byte?)VM.Rfqsignatory.Value : null;
                     existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
                     existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                    existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
                 }
                 else
                 {
@@ -481,7 +504,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                         SalesPersonCode = VM.SalesPersonCode,
                         Rfqsignatory = Convert.ToByte(VM.Rfqsignatory),
                         CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId)
+                        InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
+                        CurrencyId = VM.CurrencyId ?? 1,
+                        CurrencyRate = VM.CurrencyRate ?? 1,
+                        BaseCurrencyId = VM.BaseCurrencyId ?? 1,
+
                     };
 
                     await dbContext.Tbl60701rfqmasters.AddAsync(newMaster);
@@ -512,6 +539,8 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 foreach (var child in VM.RFQDetailses)
                 {
                     child.Rfqno = VM.Rfqno;
+                    child.UnitPrice = child.UnitPrice * VM.CurrencyRate;
+                    child.ItemDiscount = child.ItemDiscount * VM.CurrencyRate;
 
                     if (child.RfqchildSlNo == 0)
                     {
@@ -530,8 +559,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update RFQ",
+                      actionDetail: $"Saved RFQ {VM.Rfqno}",
+                       documentNo: $"{VM.Rfqno}"
+                );
 
-                return Ok(new { success = true, message = "RFQ Details saved/updated successfully." });
+
+                return Ok(new { success = true, message = "RFQ Details saved/updated successfully.", rfqno = VM.Rfqno });
             }
             catch (Exception ex)
             {
@@ -589,8 +624,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 				dbContext.Tbl60701rfqmasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Delete Rfq",
+                  actionDetail: $"Deleted Rfq {Rfqno}",
+                  documentNo: $"{Rfqno}"
+                );
 
-				return Ok(new { success = true, message = "RFQ details deleted successfully." });
+                return Ok(new { success = true, message = "RFQ details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -639,8 +679,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 			
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+                             module: "IMS > Submit RFQ",
+                             actionDetail: $": Submited RFQ {Rfqno}",
+                             documentNo: $"{Rfqno}"
+                           );
 
-			return Ok(new { success = true, message = "RFQ submitted successfully." });
+            return Ok(new { success = true, message = "RFQ submitted successfully." });
 		}
         [HttpPost]
         public async Task<IActionResult> VerifyRFQ(string Rfqno)
@@ -677,6 +722,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             voucher.VerifiedBy = userName;
 
             await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+              module: "IMS > Verify RFQ",
+               actionDetail: $"Verified RFQ {Rfqno}",
+               documentNo: $"{Rfqno}"
+            );
 
             return Ok(new
             {
@@ -724,6 +774,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     voucher.Rfqsignatory = (byte)signatoryId.Value;
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+              module: "IMS > Approve RFQ",
+               actionDetail: $"Approved RFQ {Rfqno}",
+               documentNo: $"{Rfqno}"
+            );
 
                 return Ok(new
                 {
@@ -771,6 +826,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 // Save Changes
                 dbContext.SaveChanges();
+                _userActionLogger.LogAsync(module: "IMS > Delete RFQ View ",
+                        actionDetail: $"Deleted RFQ View  {Rfqno}",
+                        documentNo: $"{Rfqno}"
+                       );
 
                 // Log Deletion
                 //string userId = HttpContext.Session.GetString("UserID") ?? "Unknown";
@@ -818,6 +877,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60701rfqmasters.Update(existingEntity);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Unlock RFQ",
+                    actionDetail: $":Unlocked RFQ {request.Rfqno}",
+                    documentNo: $"{request.Rfqno}"
+                );
 
                 return Ok(new { success = true, message = "Quotation has been unlocked successfully." });
             }
@@ -846,6 +910,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 {
                     pr.PurchaseRequestStatusId = 2;
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Unlock RFQ",
+                       actionDetail: $":Unlocked RFQ {mprNo}",
+                       documentNo: $"{mprNo}"
+                    );
+
                 }
 
                 return Ok(new { message = "RFQ inserted from MPR successfully." });
@@ -870,12 +940,24 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 string addedBy = User.Identity?.Name ?? "System";
 
-                // Step 1: Get Company Info
-                var company = await dbContext.Tbl901CompanyDetails
-                    .FirstOrDefaultAsync(c => c.CompanyNameShort == tenant.Name);
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
+
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
 
                 if (company == null)
-                    return NotFound(new { message = "Company not found in Tbl901CompanyDetails.", success = false });
+                    return NotFound(new { success = false, message = "Company not found." });
+
 
                 // Step 2: Setup PO number prefix
                 string prefix = company.PurchaseOrderAbbrv ?? "";
@@ -906,6 +988,21 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 int nextNumber = maxNumber + 1;
                 string newPoNo = $"{basePrefix}{nextNumber.ToString().PadLeft(noOfDigits, '0')}";
+                // ✅ Step 4: Mark RFQ child items as IsWonForPO = 1 (so SP will insert them)
+                List<Tbl60702rfqchild> rfqChildren = await dbContext.Tbl60702rfqchildren
+      .Where(c => c.Rfqno == rfqNo)
+      .ToListAsync();
+
+                foreach (var item in rfqChildren)
+                {
+                    item.IsWonForPo = true;
+                }
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Create PO From RFQ",
+                  actionDetail: $":Created PO From RFQ {rfqNo}",
+                  documentNo: $"{rfqNo}"
+                );
 
                 // Step 4: Execute stored procedure to insert PO from RFQ
                 await dbContext.Database.ExecuteSqlRawAsync(
@@ -967,6 +1064,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl60702rfqchildren.Remove(child);
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Delete Child By Id",
+                  actionDetail: $"Deleted Child By Id {childId}",
+                  documentNo: $"{childId}"
+                );
 
                 return Ok(new { success = true, message = "Child row deleted successfully." });
             }
@@ -1004,5 +1106,132 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { Message = "Invalid tenant.", Success = false });
 
         }
+
+        //Detailed Description
+        [HttpGet]
+        public async Task<IActionResult> GetdataByGSCode(string GSCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (string.IsNullOrEmpty(GSCode))
+                    return BadRequest("GSCode  is required.");
+
+                try
+                {
+
+                    var client = await dbContext.Tbl20164GoodsAndServicesMasters
+                        .Where(c => c.Gscode == GSCode)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("GS data not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetGSData: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public IActionResult GetGSCodeDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var description = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.Gsdescrpition)
+                    .FirstOrDefault();
+
+                return Ok(description ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
+        }
+
+        [HttpGet]
+        public IActionResult GetGSCodeDetailedDescription(string gsCode)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+            {
+                var detailedDesc = dbContext.Tbl20164GoodsAndServicesMasters
+                    .Where(x => x.Gscode == gsCode)
+                    .Select(x => x.GsdetailedDesc)
+                    .FirstOrDefault();
+
+                return Ok(detailedDesc ?? "");
+            }
+
+            return BadRequest("Failed to resolve tenant");
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDetaildescriptiondata(long RfqchildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                if (RfqchildSlNo == 0)
+                    return BadRequest("MPR Child Sl No is required.");
+
+
+                try
+                {
+
+                    var client = await dbContext.Tbl60702rfqchildren
+                        .Where(c => c.RfqchildSlNo == RfqchildSlNo)
+                        .FirstOrDefaultAsync();
+
+                    if (client == null)
+                        return NotFound("Client not found.");
+
+                    return Ok(client);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        [HttpGet]
+        public IActionResult GetIMSRFQ(string module, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized();
+
+            var query = dbContext.Qry60704rfqviewMasters.AsQueryable();
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                switch (status.ToLower())
+                {
+                    case "tobeverified":
+                        // not verified
+                        query = query.Where(x => x.IsQuoted == false);
+                        break;
+
+                    //case "ToBeApproved":
+                    //    // verified but not approved
+                    //    query = query.Where(x => x.IsVerified == true && x.IsApproved == false);
+                    //    break;
+
+                    case "tobeapproved":
+                        // approved but not posted
+                        query = query.Where(x => x.IsQuoted == true);
+                        break;
+                }
+            }
+
+            var result = query.ToList(); // get the actual records
+            return Json(result);
+        }
     }
 }
+

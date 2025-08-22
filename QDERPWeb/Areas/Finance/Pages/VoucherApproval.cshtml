@@ -202,29 +202,74 @@
 
 
 <div class="content-container-top">
-    <!-- Card 1: Total Vouchers -->
-    <div class="kpi-card blue" onclick="clearGridFilter()">
-        <div class="header">Total Vouchers</div>
-        <div class="value">Count: <span id="totalCount">0</span></div>
-        <div class="value">Debit: <span id="totalDebit">0.00</span></div>
-        <div class="value">Credit: <span id="totalCredit">0.00</span></div>
+    <div class="title" id="kpiCarousel">
+        <div class="titleCard-cards">
+
+            <!-- STATIC -->
+            <div id="Static" class="titleCard-card vibrant-pink">
+                <div class="value-block">
+
+                    <h2 id="VoucherVerification"></h2>
+                    <h6 id="QuickDiceERPSolutions"></h6>
+                </div>
+            </div>
+
+            <!-- BALANCE -->
+            <div id="cardVoucher" class="titleCard-card cool-blue">
+                <div class="header" id="vouchersvoucher"></div>
+                <div class="value-block">
+                    <div class="value-slider">
+                        <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
+                        <span>0.00</span>
+                        <span>0.00</span>
+                    </div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail" id="submittedvoucher"></div>
+                    <div class="detail" id="verifiedvoucher"></div>
+                    <div class="detail" id="approvedvoucher"></div>
+                </div>
+            </div>
+
+            <!-- DEBIT -->
+            <div id="cardDebit" class="titleCard-card deep-purple">
+                <div class="header" id="approvedVouchers"></div>
+                <div class="value-block">
+                    <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-right"></i></div>
+
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail" id="Bankpayment"></div>
+                    <div class="detail" id="salesvoucher"></div>
+                    <div class="detail" id="puchasevoucher"></div>
+                </div>
+            </div>
+
+            <!-- CREDIT -->
+            <div id="cardCredit" class="titleCard-card mint-green">
+                <div class="header" id="auditedVoucherss"></div>
+                <div class="value-block">
+                    <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
+                </div>
+                <div class="trend">0% <i class="fa-solid fa-arrow-up"></i></div>
+
+                @* <div class="bar"><span style="width:50%"></span></div> *@
+                <div class="overlay">
+                    <div class="detail" id="voucherverify"></div>
+                    <div class="detail" id="audivoucher"></div>
+                    <div class="detail" id="audivoucherverify"></div>
+                </div>
+            </div>
+
+        </div>
     </div>
 
-    <!-- Card 2: Approval Status -->
-    <div class="kpi-card green">
-        <div class="header">Approval Status</div>
-        <div class="value clickable" onclick="filterByApproval(true)">✅ Approved: <span id="approvedCount">0</span></div>
-        <div class="value clickable" onclick="filterByApproval(false)">❌ Not Approved: <span id="notApprovedCount">0</span></div>
-    </div>
-
-    <!-- Card 3: Verification Status -->
-    <div class="kpi-card purple">
-        <div class="header">Verification Status</div>
-        <div class="value clickable" onclick="filterByVerification(true)">📝 Verified: <span id="verifiedCount">0</span></div>
-        <div class="value clickable" onclick="filterByVerification(false)">🕐 Pending: <span id="notVerifiedCount">0</span></div>
-    </div>
-
-<input id="formId" value="VoucherApproval" type="hidden" />
+        <input id="formId" value="VoucherApproval" type="hidden" />
     <div style="margin: 10px 0px;">
         @await Html.PartialAsync("GridFooterApproval")
     </div>
@@ -299,35 +344,27 @@
 
 
 <div class="dx-field ledgerResult">
-    @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20136VoucherMasterList>()
-            .ID("dataGrid")
-            .KeyExpr("VoucherNo")
-            .RemoteOperations(false)
-            
-            .Columns(columns =>
-            {
-                
+        @(
+                Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20136VoucherMasterList>()
+                    .ID("dataGrid")
+                    .KeyExpr("VoucherNo")
+                    .RemoteOperations(false)
 
-                columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(120)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Voucher No</div>
-    </text>);
+                    .Columns(columns =>
+                    {
+
+
+                        columns.Add().DataField("VoucherNo").Caption(new JS("formatMessage('Voucher No')")).Width(120);
+        
 
                 columns.Add().DataField("VoucherDate").Caption(new JS("formatMessage('Voucher Date')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy").Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Voucher Date</div>
-    </text>);
+           ;
 
-                columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Voucher Narration</div>
-    </text>);
-                columns.Add().DataField("VoucherEffectiveDate").Caption("Effective On").Width(120)
-            .DataType(GridColumnDataType.Date).Format("MMM-yyyy").Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Effective On</div>
-    </text>);
+                            columns.Add().DataField("VoucherNarration").Caption(new JS("formatMessage('Voucher Narration')")).Width(150).Visible(true);
+
+                columns.Add().DataField("VoucherEffectiveDate")  .Caption(new JS("formatMessage('Effective On')")).Width(120)
+            .DataType(GridColumnDataType.Date).Format("MMM-yyyy").Visible(true);
 
                     columns.AddFor(m => m.ConvertedDrAmount)
                     .Caption(new JS("formatMessage('Debit')"))
@@ -394,28 +431,18 @@
     </text>); *@
 
                 columns.Add().DataField("VoucherEnteredBy").Caption(new JS("formatMessage('Entered By')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Entered By</div>
-    </text>);
+           ;
 
                 columns.Add().DataField("VoucherVerifiedBy").Caption(new JS("formatMessage('Verified By')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Verified By</div>
-    </text>);
+            ;
 
                 columns.Add().DataField("VoucherApprovedBy").Caption(new JS("formatMessage('Approved By')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Approved By</div>
-    </text>);
+            ;
 
                 columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(false)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Audit</div>
-    </text>);
+            ;
                 columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('VoucherType')")).Width(120).Visible(true)
-            .HeaderCellTemplate(@<text>
-        <div class="headerBolder">VoucherType</div>
-    </text>);
+            ;
                 // Checkbox Columns for Approved, Verified, and Audit
                 columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
             .DataType(GridColumnDataType.Boolean)
@@ -424,21 +451,20 @@
         .Value(new JS("data.IsApproved"))
         .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsApproved', data); }"))
     </text>)
-        .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Approved ?</div>
-    </text>);
+        ;
 
-                @* columns.Add().DataField("IsVerified").Caption(new JS("formatMessage('Verified')")).Width(120)
-            .DataType(GridColumnDataType.Boolean)
-            .CellTemplate(@<text>
-        @(Html.DevExtreme().CheckBox()
-        .Value(new JS("data.IsVerified"))
-        .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
-    </text>)
-        .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Verified</div>
-    </text>); *@
-                columns.Add().Caption("Verify").Width(120).CellTemplate(@<text>
+                    columns.Add().DataField("IsVerified")
+                    .Caption(new JS("formatMessage('Verified')"))
+                    .Width(120)
+                    .DataType(GridColumnDataType.Boolean)
+                    .Visible(false) // Hide this column
+                    .CellTemplate(@<text>
+                @(Html.DevExtreme().CheckBox()
+                            .Value(new JS("data.IsVerified"))
+                            .OnValueChanged("function(e) { updateVoucherVerification(e.value, 'IsVerified', data); }"))
+                                                                                                                   </text>)
+                    ;
+                columns.Add().Caption(new JS("formatMessage('Verify')")).Width(120).CellTemplate(@<text>
         <div class="text-center">
             @(Html.DevExtreme().Button()
             
@@ -448,9 +474,7 @@
             )
         </div>
     </text>)
-    .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Verify</div>
-    </text>);
+    ;
 
 
 
@@ -462,47 +486,45 @@
         .ReadOnly(new JS("data.IsAuditVerified"))
         .OnValueChanged("function(e) { onAuditCheckChanged(e.value, data); }"))
     </text>)
-        .HeaderCellTemplate(@<text>
-        <div class="headerBolder">Audit</div>
-    </text>);
+        ;
 
                 columns.Add().DataField("VoucherRefNo").Caption("Voucher Ref No").Width(120)
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Voucher Ref No</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherEnteredOn").Caption("Entered On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Entered On</div></text>);
+       ;
 
                 columns.Add().DataField("VoucherVerifiedOn").Caption("Verified On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Verified On</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherApprovedOn").Caption("Approved On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Approved On</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherEffectiveDate").Caption("Effective Date").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Effective Date</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherModifiedBy").Caption("Modified By").Width(120)
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Modified By</div></text>);
+           ;
 
                 columns.Add().DataField("VoucherModifiedOn").Caption("Modified On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Modified On</div></text>);
+           ;
 
                 columns.Add().DataField("AuditVerifiedOn").Caption("Audit Verified On").Width(120)
             .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
             .Visible(false)
-            .HeaderCellTemplate(@<text><div style="text-align: center;">Audit Verified On</div></text>);
+        ;
 
 
             })
@@ -539,6 +561,7 @@
         .OnRowPrepared("onRowPrepared")
         .OnCellPrepared("onCellPrepared")
         .OnOptionChanged("handleGridOptionChanged")
+       
 
         )
 </div>
@@ -739,6 +762,11 @@
                     const targetGrid = $("#dataGrid").dxDataGrid("instance");
                     targetGrid.option("dataSource", data);
                     targetGrid.refresh();
+                           setTimeout(function () {
+                        injectHeaderSVG();
+                        updateCards(data);
+                    }, 500); // delay in milliseconds (e.g., 500ms = 0.5 seconds)
+
                 },
                 error: function (err) {
                     DevExpress.ui.notify("Failed to load data", "error", 2000);
@@ -749,7 +777,9 @@
     }
 
     $(function () {
+      
         loadVoucherApprovals();
+          injectHeaderSVG();
         var selectedVoucherNos = [];
         var selectedVoucherTypes = [];
 
@@ -857,6 +887,7 @@
                                     DevExpress.ui.notify("Vouchers deleted successfully!", "success", 2000);
                                     // Call your own custom reload function
                                     loadVoucherApprovals();
+                                    injectHeaderSVG();
                                 } else {
                                     DevExpress.ui.notify(response.message || "Failed to delete vouchers!", "error", 2000);
                                 }
@@ -885,6 +916,7 @@
                         DevExpress.ui.notify(response.message, "success", 2000);
                         // Call your own custom reload function
                         loadVoucherApprovals();
+                        injectHeaderSVG();
                     } else {
                         alert("Error: " + response.message);
                     }
@@ -900,7 +932,7 @@
                 alert("Invalid voucher details.");
                 return;
             }
-
+            
             let formattedVoucher = voucherNo.trim().toUpperCase();
             let formattedVoucherType = voucherType.trim();
 
@@ -910,7 +942,7 @@
                 "Bank Receipts": `/${tenantName}/finance/VoucherEntryReceipts`,
                 "Cash Receipts": `/${tenantName}/finance/VoucherEntryCashReceipts`,
                 "Sales": `/${tenantName}/finance/SalesVoucher`,
-                "purchases": `/${tenantName}/finance/PurchaseVoucher`,
+                "Purchases": `/${tenantName}/finance/PurchaseVoucher`,
                 "Journal": `/${tenantName}/finance/VoucherJournal`
             };
 
@@ -985,6 +1017,7 @@
                 const targetGrid = $("#dataGrid").dxDataGrid("instance");
                
                 targetGrid.reload();
+                   injectHeaderSVG();
             },
             error: function (err) {
                 DevExpress.ui.notify("Error verifying voucher", "error", 2000);
@@ -994,6 +1027,24 @@
     }
 
     function loadVoucherApprovals() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const docType = urlParams.get('docType');
+        const status = urlParams.get('status');
+
+        // ✅ If coming from notification → load filtered data & exit early
+        if (docType && status) {
+            $.getJSON(`/api/VoucherApproval/GetVoucherApprovalFiltered?docType=${encodeURIComponent(docType)}&status=${encodeURIComponent(status)}`, function (data) {
+                const grid = $("#dataGrid").dxDataGrid("instance");
+                grid.option("dataSource", data);
+                injectHeaderSVG();
+                grid.refresh();
+                injectHeaderSVG();
+                updateCards(data);
+            });
+            return; // prevent normal flow
+        }
+
+        // ✅ Normal existing logic (untouched)
         const startDateComponent = $("#VoucherDate").dxDateBox("instance");
         const endDateComponent = $("#EffectiveDate").dxDateBox("instance");
 
@@ -1018,7 +1069,7 @@
 
         const useFormattedDate = true;
         const formattedStart = useFormattedDate
-            ? startDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' }) // Format: yyyy-mm-dd
+            ? startDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' })
             : startDate.toISOString();
 
         const formattedEnd = useFormattedDate
@@ -1036,7 +1087,10 @@
             success: function (data) {
                 const targetGrid = $("#dataGrid").dxDataGrid("instance");
                 targetGrid.option("dataSource", data);
+                injectHeaderSVG();
                 targetGrid.refresh();
+                injectHeaderSVG();
+                updateCards(data);
             },
             error: function (err) {
                 DevExpress.ui.notify("Failed to load data", "error", 2000);
@@ -1044,6 +1098,7 @@
             }
         });
     }
+
 
     function onAuditCheckChanged(value, data) {
         if (!value) return; // Only handle when checked
@@ -1078,6 +1133,7 @@
                             DevExpress.ui.notify("Voucher audited successfully!", "success", 2000);
 
                             grid.refresh();
+                               injectHeaderSVG();
                         }
                     }
 
@@ -1096,125 +1152,237 @@
             injectHeaderSVG(); // slight delay to wait for DOM re-render
         }
     }
-    function injectHeaderSVG() {
-        debugger;
-        let gridElement = $('#dataGrid');
-        let dataGrid = gridElement.dxDataGrid("instance");
-        if (!dataGrid) return;
+         function injectHeaderSVG() {
+               $.ajax({
+                   url: '/api/AccountingLedgers/GetCurrencyIcon',
+                   type: 'GET',
+                   success: function (response) {
+                       
+                       let svgIcon = response.Icon;
+                       if (!svgIcon) return;
 
-        let dataSource = dataGrid.option("dataSource");
-        if (!dataSource || dataSource.length === 0) return;
+                       // Set default width/height for SVG if needed
+                       if (svgIcon.startsWith("<svg")) {
+                           svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+                       } else {
+                           // If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+                           svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+                       }
 
-        let svgIcon = dataSource[0].CurrencyImage;
-        if (!svgIcon) return;
+                       let $grid = $('#dataGrid');
+                       let gridInstance = $grid.dxDataGrid("instance");
+                       if (!gridInstance) return;
 
-        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+                       $grid.find(".dx-header-row td").each(function () {
+                           const $cell = $(this);
 
-        gridElement.find(".dx-header-row td").each(function () {
-                debugger;
-            const $cell = $(this);
-            const dataField = $cell.attr("data-field");  // 👈 This is key
+                           const $debitHeader = $(".debit-header");
+                           const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                           $debitHeader.data("original-text", debitText);
+                           $debitHeader.html(`
+                               <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                   ${svgIcon}
+                                   <span style="font-weight: bold;">${debitText}</span>
+                               </div>
+                           `);
 
-                const $debitHeader = $(".debit-header");
-                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
-                $debitHeader.data("original-text", debitText); // Save original once
+                           const $creditHeader = $(".credit-header");
+                           const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                           $creditHeader.data("original-text", creditText);
+                           $creditHeader.html(`
+                               <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                   ${svgIcon}
+                                   <span style="font-weight: bold;">${creditText}</span>
+                               </div>
+                           `);
 
-                $debitHeader.html(`
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-                        ${svgIcon}
-                        <span style="font-weight: bold;">${debitText}</span>
-                    </div>
-                `);
-                debugger;
-                // 👉 Credit
-                const $creditHeader = $(".credit-header");
-                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
-                $creditHeader.data("original-text", creditText);
 
-                $creditHeader.html(`
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-                        ${svgIcon}
-                        <span style="font-weight: bold;">${creditText}</span>
-                    </div>
-                `);
+                       });
+                   },
+                   error: function (xhr) {
+                       console.error("Failed to load currency icon:", xhr.responseText);
+                   }
+               });
+           }
 
-               
+    function handleGridContentReady(e){
+
+          injectHeaderSVG();
+           
+            e.component.getDataSource().store().load().then(function (fullData) {
+                updateCards(fullData);
+            });
+
+    }
+
+           @* function injectCurrencyToCards() {
+               $.ajax({
+                   url: "/api/AccountingLedgers/GetCurrencyIcon",
+                   method: "GET",
+                   success: function (response) {
+                       
+                       if (!response || !response.Icon) return;
+
+                       const icon = response.Icon.trim();
+
+
+
+                       // Inject into Debit
+                       $('#cardDebit .value-slider span').each(function () {
+                           $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                       });
+
+                       // Inject into Credit
+                       $('#cardCredit .value-slider span').each(function () {
+                           $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                       });
+                   },
+                   error: function (err) {
+                       console.error("Failed to load currency icon:", err);
+                   }
+               });
+           } *@
+
+        function updateCards(data) {
+        const now = new Date();
+        const currentYear = now.getFullYear();
+        const currentMonth = now.getMonth();
+
+        const uniqueVoucherNos = new Set();
+        const approvedVoucherNos = new Set();
+        const verifiedVoucherNos = new Set();
+
+        let voucherDateTotal = 0;
+        let voucherDateMonth = 0;
+        let voucherDateYear = 0;
+
+        data.forEach(item => {
+            const voucherNo = item.VoucherNo;
+
+            // === Unique VoucherNo Collection ===
+            if (voucherNo) {
+                uniqueVoucherNos.add(voucherNo);
+
+                if (item.IsApproved === true || item.IsApproved === 1) {
+                    approvedVoucherNos.add(voucherNo);
+                }
+
+                if (item.IsAuditVerified === true || item.IsAuditVerified === 1) {
+                    verifiedVoucherNos.add(voucherNo);
+                }
+            }
+
+            // === VoucherDate calculations ===
+            if (item.VoucherDate) {
+                const voucherDate = new Date(item.VoucherDate);
+                if (!isNaN(voucherDate)) {
+                    voucherDateTotal++;
+
+                    if (voucherDate.getFullYear() === currentYear) {
+                        voucherDateYear++;
+
+                        if (voucherDate.getMonth() === currentMonth) {
+                            voucherDateMonth++;
+                        }
+                    }
+                }
+            }
         });
-    }
 
-    @* // Date Focus *@
-    @* $(function () { *@
-    @*     const dateBox = $("#VoucherDate").dxDateBox("instance"); *@
-
-    @*     // When focus/typing starts, change to dd-MM-yyyy *@
-    @*     $("#VoucherDate").on("focusin", function () { *@
-    @*         dateBox.option("displayFormat", "dd-MM-yyyy"); *@
-    @*     }); *@
-
-    @*     // When focus/typing ends, change back to dd-MMM-yyyy *@
-    @*     $("#VoucherDate").on("focusout", function () { *@
-    @*         dateBox.option("displayFormat", "dd-MMM-yyyy"); *@
-    @*     }); *@
-    @* }); *@
-
-    function refreshKpiCards() {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        const data = grid.getDataSource().items();
-
-        const totalCount = data.length;
-        const totalDebit = data.reduce((sum, d) => sum + parseFloat(d.ConvertedDrAmount || 0), 0);
-        const totalCredit = data.reduce((sum, d) => sum + parseFloat(d.ConvertedCrAmount || 0), 0);
-
-        const approved = data.filter(d => d.IsApproved === true).length;
-        const notApproved = totalCount - approved;
-
-        const verified = data.filter(d => d.VoucherVerifiedBy && d.VoucherVerifiedBy !== "").length;
-        const notVerified = totalCount - verified;
-
-        document.getElementById("totalCount").textContent = totalCount;
-        document.getElementById("totalDebit").textContent = totalDebit.toFixed(2);
-        document.getElementById("totalCredit").textContent = totalCredit.toFixed(2);
-
-        document.getElementById("approvedCount").textContent = approved;
-        document.getElementById("notApprovedCount").textContent = notApproved;
-
-        document.getElementById("verifiedCount").textContent = verified;
-        document.getElementById("notVerifiedCount").textContent = notVerified;
-    }
-
-
-      function filterByApproval(status) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        grid.clearFilter(); // Clear existing filter
-        grid.filter(["IsApproved", "=", status]);
-    }
-
-    function filterByVerification(isVerified) {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-        grid.clearFilter();
-        if (isVerified) {
-            grid.filter(["VoucherVerifiedBy", "!=", null]);
-        } else {
-            grid.filter(["VoucherVerifiedBy", "=", null]);
-        }
-    }
-
-
-    function clearGridFilter() {
-        $("#dataGrid").dxDataGrid("instance").clearFilter();
-    }
-
-    // Hook into DataGrid events
-    $(function () {
-        const grid = $("#dataGrid").dxDataGrid("instance");
-
-        grid.option("onContentReady", function () {
-            refreshKpiCards();
+        const format = num => num.toLocaleString(undefined, {
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
         });
 
-        grid.getDataSource().on("changed", refreshKpiCards);
+        // === CardDebit: Voucher Approval Stats ===
+        const totalVouchers = uniqueVoucherNos.size;
+        const approvedCount = approvedVoucherNos.size;
+        const pendingApproval = totalVouchers - approvedCount;
+
+        const debitSlider = $("#cardDebit .value-slider span");
+        const debitOverlay = $("#cardDebit .overlay .detail");
+
+        debitSlider.eq(0).html(`<strong>Total: ${format(approvedCount)}</strong>`);
+        debitSlider.eq(1).html(`<strong>Approved: ${format(approvedCount)}</strong>`);
+        debitSlider.eq(2).html(`<strong>Pending: ${format(pendingApproval)}</strong>`);
+
+        debitOverlay.eq(0).html(`Total: ${format(totalVouchers)}`);
+        debitOverlay.eq(1).html(`Approved: ${format(approvedCount)}`);
+        debitOverlay.eq(2).html(`Pending: ${format(pendingApproval)}`);
+
+        // === CardCredit: Audit Verification Stats ===
+        const verifiedCount = verifiedVoucherNos.size;
+        const pendingVerification = totalVouchers - verifiedCount;
+
+        const creditSlider = $("#cardCredit .value-slider span");
+        const creditOverlay = $("#cardCredit .overlay .detail");
+
+        creditSlider.eq(0).html(`<strong>Total: ${format(verifiedCount)}</strong>`);
+        creditSlider.eq(1).html(`<strong>Verified: ${format(verifiedCount)}</strong>`);
+        creditSlider.eq(2).html(`<strong>Pending: ${format(pendingVerification)}</strong>`);
+
+        creditOverlay.eq(0).html(`Total: ${format(totalVouchers)}`);
+        creditOverlay.eq(1).html(`Verified: ${format(verifiedCount)}`);
+        creditOverlay.eq(2).html(`Pending: ${format(pendingVerification)}`);
+
+        // === CardVoucher: Count based on VoucherDate ===
+        const voucherSlider = $("#cardVoucher .value-slider span");
+        const voucherOverlay = $("#cardVoucher .overlay .detail");
+
+        voucherSlider.eq(0).html(`<i class="fas fa-file-invoice-dollar"></i> Total: ${format(voucherDateTotal)}`);
+        voucherSlider.eq(1).html(`<i class="fas fa-file-invoice-dollar"></i> This Month: ${format(voucherDateMonth)}`);
+        voucherSlider.eq(2).html(`<i class="fas fa-file-invoice-dollar"></i> This Year: ${format(voucherDateYear)}`);
+
+        voucherOverlay.eq(0).html(`<i class="fas fa-file-invoice-dollar"></i> Total: ${format(voucherDateTotal)}`);
+        voucherOverlay.eq(1).html(`<i class="fas fa-file-invoice-dollar"></i> This Month: ${format(voucherDateMonth)}`);
+        voucherOverlay.eq(2).html(`<i class="fas fa-file-invoice-dollar"></i> This Year: ${format(voucherDateYear)}`);
+
+       
+    }
+
+  
+          $(function () {
+        $("#QuickDiceERPSolutions").text(formatMessage("Quick Dice ERP Solutions"));
     });
-
-
+          $(function () {
+        $("#VoucherVerification").text(formatMessage("Voucher Verification"));
+    });
+          $(function () {
+        $("#vouchersvoucher").text(formatMessage("Vouchers"));
+    });
+          $(function () {
+        $("#submittedvoucher").text(formatMessage("Submitted: 0.00"));
+    });
+          $(function () {
+        $("#verifiedvoucher").text(formatMessage("Verified: 0.00"));
+    });
+          $(function () {
+        $("#approvedvoucher").text(formatMessage("Approved: 0.00"));
+    });
+          $(function () {
+        $("#approvedVouchers").text(formatMessage("Approved Vouchers"));
+    });
+          $(function () {
+        $("#Bankpayment").text(formatMessage("Bank Payment: 0.00"));
+    });
+          $(function () {
+        $("#salesvoucher").text(formatMessage("Sales: 0.00"));
+    });
+          $(function () {
+        $("#puchasevoucher").text(formatMessage("Purchase: 0.00"));
+    });
+          $(function () {
+        $("#auditedVoucherss").text(formatMessage("Audited Vouchers"));
+    });
+          $(function () {
+        $("#voucherverify").text(formatMessage("Verify: 0.00"));
+    });
+          $(function () {
+        $("#audivoucher").text(formatMessage("Audit: 0.00"));
+    });
+          $(function () {
+        $("#audivoucherverify").text(formatMessage("Audit: 0.00"));
+    });
+ 
 
 </script>

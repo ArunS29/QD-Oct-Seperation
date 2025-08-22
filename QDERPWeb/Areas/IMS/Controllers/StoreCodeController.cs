@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<StoreCodeController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public StoreCodeController(ILogger<StoreCodeController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public StoreCodeController(ILogger<StoreCodeController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -80,6 +84,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Project Document",
+                      actionDetail: $"Saved Project Document  {model.StoreId}",
+                      documentNo: $"{model.StoreId}"
+                    );
 
                     return Ok(new { success = true, message = "Saved successfully", id = model.StoreId });
                 }
@@ -134,6 +143,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60001storeMasters.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete ",
+                        actionDetail: $"Deleted  {key}",
+                        documentNo: $"{key}"
+                       );
+
                     return Ok();
                 }
 

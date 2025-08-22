@@ -62,9 +62,9 @@
 	}
 
 	/* 	.limited-footer .btn-container:not(:has(#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddReport12)) {
-			display: none !important;
-		}
-	 */
+				display: none !important;
+			}
+		 */
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -152,7 +152,7 @@
 	.context-menu-item {
 		/* display: flex; */
 		align-items: center;
-		padding: 10px 15px; 
+		padding: 10px 15px;
 		font-size: 14px;
 		cursor: pointer;
 		transition: background 0.2s ease-in-out;
@@ -181,6 +181,128 @@
 		margin-top: 10px;
 	}
 
+	.voucher-slider {
+		position: relative;
+		height: 120px;
+		overflow: hidden;
+	}
+
+	.voucher-slide {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		opacity: 0;
+		transform: translateY(100%);
+		transition: all 0.5s ease;
+		text-align: left;
+	}
+
+		.voucher-slide.active {
+			opacity: 1;
+			transform: translateY(0);
+			z-index: 2;
+		}
+
+	.with-sidebar {
+		position: relative;
+		overflow: hidden;
+	}
+
+		.with-sidebar::before {
+			content: '';
+			position: absolute;
+			top: 10px;
+			left: 0;
+			width: 10px;
+			height: 80%;
+			background: rgba(255, 255, 255, 0.4);
+			border-top-right-radius: 12px;
+			border-bottom-right-radius: 12px;
+		}
+
+
+	.switch-heading4 {
+		font-weight: bold;
+		font-size: 20px;
+		color: white;
+		animation: fadeIn 0.6s ease-in-out;
+	}
+
+	.value-display4 {
+		font-size: 28px;
+		color: white;
+		transition: all 0.3s ease-in-out;
+	}
+
+	@@keyframes fadeIn {
+		from {
+			opacity: 0;
+			transform: translateY(-5px);
+		}
+
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+
+	.switch-heading4 {
+		transition: opacity 0.4s ease;
+		opacity: 1;
+	}
+
+		.switch-heading4.fade-out {
+			opacity: 0;
+		}
+
+	.tabs {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 12px;
+		gap: 10px;
+	}
+
+	.tab-text {
+		flex: 1;
+		text-align: center;
+		cursor: pointer;
+		font-weight: bold;
+		padding: 2px 0;
+		border-radius: 13px;
+		background: rgba(255, 255, 255, 0.2);
+		transition: background 0.3s ease;
+	}
+
+		.tab-text.active {
+			background: rgba(255, 255, 255, 0.9);
+			color: rgb(0 0 0);
+		}
+
+
+	.tab-content {
+		display: none;
+		text-align: center;
+		animation: fadeSlideIn 0.4s ease;
+	}
+
+	.tile-icon {
+		display: flex;
+		align-items: flex-end;
+		justify-content: flex-end;
+		height: 100%;
+		position: absolute;
+		left: 250px;
+		bottom: 10px;
+	}
+
+	.title {
+		display: flex;
+		gap: 20px;
+		align-items: center;
+		width: 70% !important;
+	}
+
 </style>
 
 @* <input id="formId" value="frm201LedgerView" type="hidden" />
@@ -192,47 +314,95 @@
  *@
 <div class="title">
 
-	 <input id="formId" value="frm201LedgerView" type="hidden" />
+	<input id="formId" value="frm201LedgerView" type="hidden" />
+	<div class="card blue shine compact with-sidebar">
+		<div class="tile-content">
+			<div class="title-text">
+				<h2 class="title-slide">Proforma Invoice Register</h2>
+				<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
+				<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+			</div>
+			<div class="tile-icon">
+				<!-- Icon as SVG -->
+				<svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
+					<path d="M0 20.4875H10.5709V31H0V20.4875ZM13.8952 31H24.4663V20.4875H13.8952V31ZM0.200247 17.381H10.7712V6.86897H0.200247V17.381ZM23.2604 5.64552L19.5726 0L13.8952 3.66724L17.5832 9.31276L23.2604 5.64552ZM15.6751 14.2814L20.7524 18.7348L25.2304 13.6861L20.1532 9.23231L15.6751 14.2814ZM29.4516 3.21126L23.6866 6.74027L27.235 12.4731L33 8.94455L29.4516 3.21126Z" fill="white" fill-opacity="0.4" />
+				</svg>
 
-	<div class="card blue shine compact">
-		<h2 class="title-slide">Proforma Invoice Register</h2>
-		<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-		<h6 class="fade-in">QuickDice ERP Solutions</h6>
-
+			</div>
+		</div>
 	</div>
-	<div id="mainCard" class="card today-bg">
-		<div class="tabs">
-			<div class="tab-text active" onclick="switchTab(0)">Today</div>
-			<div class="tab-text" onclick="switchTab(1)">Week</div>
-			<div class="tab-text" onclick="switchTab(2)">Month</div>
+	<div id="mainCard" class="card today-bg with-sidebar">
+		<div class="tabs" style="gap:10px;">
+			<div class="tab-text active" onclick="switchTab(0)">Verified</div>
+			<div class="tab-text" onclick="switchTab(1)">Approved</div>
+			<div class="tab-text" onclick="switchTab(2)">Posted</div>
 		</div>
 
 		<div class="tab-content active">
-			<h4>&#128276; Pending Verifications</h4>
 			<div class="count" id="count0">0</div>
-			@* <div class="trend">🔺 12% more than yesterday</div> *@
-			@* <div class="message">You're getting things moving!</div> *@
 		</div>
 
 		<div class="tab-content">
-			<h4>&#9989; Vouchers Verified</h4>
-			<div class="count" id="count1">0</div>
-			@* <div class="trend">🔼 25% higher than last week</div> *@
-			@* <div class="message">Awesome pace — keep it up!</div> *@
+			<div class="count" id="count1">0</div> <!-- Approved -->
 		</div>
 
 		<div class="tab-content">
-			<h4>&#128229; New Vouchers</h4>
 			<div class="count" id="count2">0</div>
-			@* <div class="trend">🔽 10% drop this month</div> *@
-			@* <div class="message">Fewer vouchers — time to catch up?</div> *@
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 35 35" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M17.5 0C7.8506 0 0 7.8506 0 17.5C0 27.1494 7.8506 35 17.5 35C27.1494 35 35 27.1494 35 17.5C35 7.8506 27.1494 0 17.5 0ZM26.6075 11.635L15.2998 25.0965C15.1744 25.2459 15.0235 25.3626 14.8473 25.4465C14.6711 25.5303 14.4854 25.5738 14.2902 25.5769H14.2675C14.0767 25.5768 13.8942 25.538 13.72 25.4603C13.5457 25.3826 13.3948 25.2729 13.2672 25.131L8.42104 19.7464C8.16183 19.4715 8.03998 19.1453 8.05547 18.7677C8.07096 18.3902 8.21914 18.0751 8.50001 17.8223C8.78087 17.5696 9.10987 17.4553 9.48689 17.4795C9.86399 17.5038 10.1756 17.6593 10.4217 17.9459L14.2323 22.1796L24.5463 9.90347C24.787 9.62518 25.0907 9.47145 25.4575 9.44219C25.8243 9.41303 26.1485 9.51668 26.4303 9.75333C26.712 9.98999 26.8701 10.2915 26.9047 10.6579C26.9391 11.0241 26.8402 11.3499 26.6075 11.635Z" fill="white" fill-opacity="0.5" />
+			</svg>
+
+		</div>
+	</div>
+	<div class="card sparkle with-sidebar" style="background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 16px; border-radius: 12px; width: 220px; color: white;">
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Invoice Details</h2>
+
+		<!-- Rotating Heading -->
+		<h5 id="statusHeading3" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Invoice Amount</h5>
+
+		<!-- Value with SVG -->
+		<div id="switchValue33" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
+			<!-- SVG icon -->
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>
+			0.00
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 42 42" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M35.1094 18.375H23.625C22.5377 18.375 21.6096 17.9906 20.8408 17.2217C20.0719 16.4529 19.6875 15.5248 19.6875 14.4375V2.95312C19.6875 2.86252 19.6555 2.78518 19.5914 2.72111C19.5273 2.65704 19.45 2.625 19.3594 2.625H11.8125C10.3628 2.625 9.12532 3.13756 8.10019 4.16269C7.07506 5.18782 6.5625 6.42525 6.5625 7.875V34.125C6.5625 35.5747 7.07506 36.8122 8.10019 37.8373C9.12532 38.8624 10.3628 39.375 11.8125 39.375H30.1875C31.6372 39.375 32.8747 38.8624 33.8998 37.8373C34.9249 36.8122 35.4375 35.5747 35.4375 34.125V18.7031C35.4375 18.6125 35.4055 18.5352 35.3414 18.4711C35.2773 18.407 35.2 18.375 35.1094 18.375ZM27.5625 31.5H14.4375C14.0751 31.5 13.7657 31.3719 13.5094 31.1156C13.2531 30.8593 13.125 30.5499 13.125 30.1875C13.125 29.8251 13.2531 29.5157 13.5094 29.2594C13.7657 29.0031 14.0751 28.875 14.4375 28.875H27.5625C27.9249 28.875 28.2343 29.0031 28.4906 29.2594C28.7469 29.5157 28.875 29.8251 28.875 30.1875C28.875 30.5499 28.7469 30.8593 28.4906 31.1156C28.2343 31.3719 27.9249 31.5 27.5625 31.5ZM27.5625 24.9375H14.4375C14.0751 24.9375 13.7657 24.8094 13.5094 24.5531C13.2531 24.2968 13.125 23.9874 13.125 23.625C13.125 23.2626 13.2531 22.9532 13.5094 22.6969C13.7657 22.4406 14.0751 22.3125 14.4375 22.3125H27.5625C27.9249 22.3125 28.2343 22.4406 28.4906 22.6969C28.7469 22.9532 28.875 23.2626 28.875 23.625C28.875 23.9874 28.7469 24.2968 28.4906 24.5531C28.2343 24.8094 27.9249 24.9375 27.5625 24.9375Z" fill="white" fill-opacity="0.301961" />
+				<path d="M34.3891 15.4702L22.5922 3.67332C22.5688 3.65001 22.5408 3.63514 22.5084 3.62873C22.4759 3.62231 22.4444 3.62543 22.4139 3.63806C22.3833 3.6507 22.3588 3.67074 22.3404 3.6982C22.3219 3.72565 22.3126 3.75591 22.3125 3.78899V14.4375C22.3125 14.7999 22.4406 15.1093 22.6969 15.3655C22.9532 15.6218 23.2626 15.75 23.625 15.75H34.2735C34.3066 15.7498 34.3368 15.7405 34.3643 15.7221C34.3917 15.7037 34.4118 15.6792 34.4244 15.6486C34.437 15.618 34.4402 15.5865 34.4337 15.5541C34.4273 15.5216 34.4125 15.4937 34.3891 15.4702Z" fill="white" fill-opacity="0.301961" />
+			</svg>
+
+		</div>
+	</div>
+	<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px; border-radius: 12px; width: 240px;">
+
+		<!-- Main Heading: Voucher Count -->
+		<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Voucher Count</h2>
+
+		<!-- Rotating Heading -->
+		<h3 id="statusHeading4" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;">Last 5 Years</h3>
+
+		<!-- Value -->
+		<div id="statusValue4" style="color: white; font-size: 24px; font-weight: bold;">
+			<span id="valueDisplay4" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">0</span>
+		</div>
+		<div class="tile-icon">
+			<!-- Icon as SVG -->
+			<svg width="33" height="31" viewBox="0 0 36 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+				<path d="M33.5442 0.00147154H29.4536C29.022 0.00765929 28.6103 0.18525 28.3083 0.495563L26.1812 2.63663L24.0541 0.495563C23.752 0.18525 23.3403 0.00765929 22.9087 0.00147154H2.45581C2.13042 -0.0100313 1.80616 0.046002 1.50322 0.166083C1.20027 0.286165 0.925125 0.467724 0.694899 0.699461C0.464674 0.931198 0.284298 1.20815 0.165 1.51309C0.0457017 1.81802 -0.00996585 2.14441 0.00146195 2.47193V25.5295C0.00146195 26.1847 0.260044 26.8131 0.720323 27.2764C1.1806 27.7397 1.80487 28 2.45581 28H22.9087C23.3403 27.9938 23.752 27.8162 24.0541 27.5059L26.1812 25.3648L28.3083 27.5059C28.6103 27.8162 29.022 27.9938 29.4536 28H33.5442C34.1951 28 34.8194 27.7397 35.2797 27.2764C35.74 26.8131 35.9985 26.1847 35.9985 25.5295V2.47193C36.01 2.14441 35.9543 1.81802 35.835 1.51309C35.7157 1.20815 35.5353 0.931198 35.3051 0.699461C35.0749 0.467724 34.7997 0.286165 34.4968 0.166083C34.1938 0.046002 33.8696 -0.0100313 33.5442 0.00147154ZM9.81885 9.05982C10.1425 9.05982 10.4588 9.15641 10.7279 9.33738C10.997 9.51836 11.2067 9.77558 11.3305 10.0765C11.4544 10.3775 11.4868 10.7086 11.4236 11.0281C11.3605 11.3476 11.2047 11.641 10.9758 11.8714C10.747 12.1017 10.4555 12.2586 10.1381 12.3221C9.82066 12.3857 9.49167 12.3531 9.19269 12.2284C8.89371 12.1037 8.63816 11.8926 8.45837 11.6218C8.27858 11.351 8.18262 11.0325 8.18262 10.7068C8.18262 10.27 8.355 9.85107 8.66186 9.54221C8.96871 9.23334 9.38489 9.05982 9.81885 9.05982ZM16.3638 18.9417C16.0402 18.9417 15.7238 18.8451 15.4547 18.6641C15.1857 18.4831 14.9759 18.2259 14.8521 17.9249C14.7282 17.624 14.6958 17.2929 14.759 16.9734C14.8221 16.6539 14.9779 16.3604 15.2068 16.1301C15.4356 15.8998 15.7272 15.7429 16.0446 15.6794C16.362 15.6158 16.6909 15.6484 16.9899 15.7731C17.2889 15.8977 17.5445 16.1088 17.7242 16.3797C17.904 16.6505 18 16.9689 18 17.2947C18 17.7315 17.8276 18.1504 17.5208 18.4593C17.2139 18.7681 16.7977 18.9417 16.3638 18.9417ZM18.3272 11.0362L10.1461 19.271C10.0005 19.4308 9.82348 19.5583 9.62631 19.6456C9.42914 19.7328 9.21611 19.7779 9.00073 19.7779C8.78535 19.7779 8.57232 19.7328 8.37515 19.6456C8.17798 19.5583 8.00098 19.4308 7.85537 19.271C7.69667 19.1245 7.56996 18.9463 7.48328 18.7479C7.3966 18.5494 7.35184 18.335 7.35184 18.1182C7.35184 17.9014 7.3966 17.6869 7.48328 17.4885C7.56996 17.29 7.69667 17.1119 7.85537 16.9653L16.0365 8.73042C16.3516 8.49255 16.7414 8.37707 17.1343 8.40517C17.5271 8.43328 17.8967 8.60308 18.1753 8.88342C18.4538 9.16375 18.6225 9.5358 18.6504 9.93125C18.6783 10.3267 18.5636 10.719 18.3272 11.0362ZM27.8174 21.4121C27.8174 21.8489 27.645 22.2678 27.3381 22.5767C27.0313 22.8856 26.6151 23.0591 26.1812 23.0591C25.7472 23.0591 25.331 22.8856 25.0242 22.5767C24.7173 22.2678 24.5449 21.8489 24.5449 21.4121V19.7651C24.5449 19.3283 24.7173 18.9094 25.0242 18.6006C25.331 18.2917 25.7472 18.1182 26.1812 18.1182C26.6151 18.1182 27.0313 18.2917 27.3381 18.6006C27.645 18.9094 27.8174 19.3283 27.8174 19.7651V21.4121ZM27.8174 14.8242C27.8174 15.261 27.645 15.6799 27.3381 15.9888C27.0313 16.2977 26.6151 16.4712 26.1812 16.4712C25.7472 16.4712 25.331 16.2977 25.0242 15.9888C24.7173 15.6799 24.5449 15.261 24.5449 14.8242V13.1772C24.5449 12.7404 24.7173 12.3215 25.0242 12.0127C25.331 11.7038 25.7472 11.5303 26.1812 11.5303C26.6151 11.5303 27.0313 11.7038 27.3381 12.0127C27.645 12.3215 27.8174 12.7404 27.8174 13.1772V14.8242ZM27.8174 8.23633C27.8174 8.67314 27.645 9.09205 27.3381 9.40092C27.0313 9.70979 26.6151 9.88331 26.1812 9.88331C25.7472 9.88331 25.331 9.70979 25.0242 9.40092C24.7173 9.09205 24.5449 8.67314 24.5449 8.23633V6.58936C24.5449 6.15256 24.7173 5.73364 25.0242 5.42478C25.331 5.11591 25.7472 4.94239 26.1812 4.94239C26.6151 4.94239 27.0313 5.11591 27.3381 5.42478C27.645 5.73364 27.8174 6.15256 27.8174 6.58936V8.23633Z" fill="white" fill-opacity="0.5" />
+			</svg>
+
 		</div>
 	</div>
 
-	<div class="card purple sparkle">
-		<h1 id="invoiceCount">0</h1>
-		<h3>No of Invoices</h3>
-	</div>
+	
 </div>
 
 <div class="Head">
@@ -247,9 +417,8 @@
 		<i class="dx-icon-close"></i> Delete Proforma Invoice
 	</div>
 	<div class="context-menu-item" onclick="UnlockInvoice()">
-		<i class="dx-icon-unlocked"></i> Unlock Proforma Invoice
+		<i class="dx-icon-unlock"></i> Unlock Proforma Invoice
 	</div>
-
 	<div class="context-menu-item" onclick="cloneEInvoice()">
 		<i class="dx-icon-copy"></i> Duplicate Proforma Invoice
 	</div>
@@ -265,6 +434,9 @@
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1)) // First day of the month
 		.DisplayFormat("dd-MMM-yyyy")
+		.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+		.ShowClearButton(true) // shows clear (X) button
+		.ElementAttr("class", "dynamicFormatDateBox")
 		.TabIndex(2)
 		)
 
@@ -276,6 +448,9 @@
 		.Type(DateBoxType.Date)
 		.Value(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month))) // Last day of the month
 		.DisplayFormat("dd-MMM-yyyy")
+		.ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
+		.ShowClearButton(true) // shows clear (X) button
+		.ElementAttr("class", "dynamicFormatDateBox")
 		.TabIndex(3)
 		)
 
@@ -287,39 +462,46 @@
 		.Width(180)
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
-				.DropDownOptions(options => options.Width(230))
-				.Items(items =>
-				{
-					items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
-					items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
-					items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-					items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
-					items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-					items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-					items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-					items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-					items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
-				})
-				.ItemTemplate(@<text>
-            <div class="custom-dropdown-item" >
-                  <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
-                <div class="item-content">
-                    <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                    <div>
-                        <div class="item-title"><%- text %></div>
-                    </div>
-                </div>
-            </div>
-        </text>)
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+		.DropDownOptions(options => options.Width(230))
+		.Items(items =>
+		{
+			items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+			items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+			items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+			items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+			items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+			items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+			items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+			items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+			items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+			items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+		})
+		.ItemTemplate(@<text>
+				   		<div class="custom-dropdown-item">
+				   			<div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+				   			<div class="item-content">
+				   				<div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+				   				<div>
+				   					<div class="item-title"><%- text %></div>
+				   				</div>
+				   			</div>
+				   		</div>
+				   	</text>)
 		)
-
+	<div id="quarterMenu"></div>
+	@(Html.DevExtreme().CheckBox()
+		.ID("chkUseEffectiveDate")
+		.Text(new JS("formatMessage('Use Effective Date')"))
+		.Value(false)
+		)
 </div>
 <div class="dx-field ledgerResult">
 	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201657proformaInvoiceRegisterMainView>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
+		.OnContentReady("onGridContentReady")
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
@@ -347,8 +529,9 @@
 
 				subColumns.AddFor(m => m.InvoiceStatus)
 			.Caption(new JS("formatMessage('Invoice Status')"))
+			.CellTemplate(new JS("invoiceStatusCellTemplate"))
 			.Alignment(HorizontalAlignment.Center)
-			.Width(87).MinWidth(23);
+			.Width(135).MinWidth(23);
 			});
 
 			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
@@ -356,18 +539,33 @@
 				subColumns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount)
 			.Caption(new JS("formatMessage('Amount Before Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-	    	.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header1" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>);
 
 				subColumns.AddFor(m => m.CalcTaxAmount)
 			.Caption(new JS("formatMessage('Total VAT Amount')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header2" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>);
 
 
-				subColumns.AddFor(m => m.CalcLineAmount) // Ensure this line is not duplicated
+			subColumns.AddFor(m => m.TotalInvoiceAmount)
 			.Caption(new JS("formatMessage('Invoiced Amount')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+		<div class="Currency-header3" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -378,28 +576,46 @@
 				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header4" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>);
 
 
 				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+		.HeaderCellTemplate(@<text>
+						 		<div class="Currency-header5" style="font-weight: bold;">
+						 			<%= column.caption %>
+						 		</div>
+						 	</text>);
 
 				subColumns.AddFor(m => m.DomesticExemptedRevenue)
 			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
-
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+		.HeaderCellTemplate(@<text>
+						 		<div class="Currency-header6" style="font-weight: bold;">
+						 			<%= column.caption %>
+						 		</div>
+						 	</text>);
 			});
 
 				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.InvoiceStatus)
+				subColumns.AddFor(m => m.GccexpemptedRevenue)
 			.Caption(new JS("formatMessage('GCC Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+		<div class="Currency-header7" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -408,7 +624,12 @@
 				subColumns.AddFor(m => m.ExportsRevenue)
 			.Caption(new JS("formatMessage('Exports Revenue')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+		<div class="Currency-header8" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 			});
@@ -420,19 +641,34 @@
 				subColumns.AddFor(m => m.DomesticStandartRatedTax)
 			.Caption(new JS("formatMessage('Domestic Standard Rated Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header9" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>);
 
 
 				subColumns.AddFor(m => m.DomesticZeroRatedTax)
 			.Caption(new JS("formatMessage('Domestic Zero Rated Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+							 		<div class="Currency-header10" style="font-weight: bold;">
+							 			<%= column.caption %>
+							 		</div>
+							 	</text>);
 
 
 				subColumns.AddFor(m => m.DomesticExemptedTax)
 			.Caption(new JS("formatMessage('Domestic Exempted Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+		<div class="Currency-header11" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -441,7 +677,12 @@
 				subColumns.AddFor(m => m.GccstandardRatedRevenue)
 			.Caption(new JS("formatMessage('GCC Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+		<div class="Currency-header12" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 
@@ -450,19 +691,77 @@
 				subColumns.AddFor(m => m.GccstandardRatedTax)
 			.Caption(new JS("formatMessage('Exports Tax')"))
 			.Alignment(HorizontalAlignment.Right)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }")
+			.HeaderCellTemplate(@<text>
+		<div class="Currency-header13" style="font-weight: bold;">
+			<%= column.caption %>
+		</div>
+	</text>);
 
 			});
 			});
-		})
-		.Editing(editing => editing
-		.Mode(GridEditMode.Row)
-		)
+    columns.AddFor(m => m.InvoiceDateAr).Caption("Invoice Date Ar").Visible(false);
+    columns.AddFor(m => m.InvoiceDeliveryDate).Caption("Invoice Delivery Date").Visible(false);
+    columns.AddFor(m => m.InvoiceDeliveryDateAr).Caption("Invoice Delivery Date Ar").Visible(false);
+    columns.AddFor(m => m.QuotationNo).Caption("Quotation No").Visible(false);
+    columns.AddFor(m => m.DeliveryNoteNos).Caption("Delivery Note Nos").Visible(false);
+    columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Visible(false);
+  //  columns.AddFor(m => m.SOSReferenceNo).Caption("SOS Reference No").Visible(false);
+  //  columns.AddFor(m => m.PONo).Caption("PO No").Visible(false);
+  //  columns.AddFor(m => m.PODate).Caption("PO Date").Visible(false);
+  //  columns.AddFor(m => m.PODateAr).Caption("PO Date Ar").Visible(false);
+    columns.AddFor(m => m.ClientReferenceName).Caption("Client Reference Name").Visible(false);
+    columns.AddFor(m => m.ClientContactNo).Caption("Client Contact No").Visible(false);
+    columns.AddFor(m => m.ClientEmail).Caption("Client Email").Visible(false);
+    columns.AddFor(m => m.RemarksInEn).Caption("Remarks In En").Visible(false);
+    columns.AddFor(m => m.Discount).Caption("Discount").Visible(false);
+    columns.AddFor(m => m.RemarksInAr).Caption("Remarks In Ar").Visible(false);
+    columns.AddFor(m => m.IsSubmitted).Caption("Is Submitted").Visible(false);
+    columns.AddFor(m => m.SubmittedBy).Caption("Submitted By").Visible(false);
+    columns.AddFor(m => m.SubmittedByAr).Caption("Submitted By Ar").Visible(false);
+    columns.AddFor(m => m.SubmittedOn).Caption("Submitted On").Visible(false);
+    columns.AddFor(m => m.IsVerified).Caption("Is Verified").Visible(false);
+    columns.AddFor(m => m.VerifiedBy).Caption("Verified By").Visible(false);
+    columns.AddFor(m => m.VerifiedByAr).Caption("Verified By Ar").Visible(false);
+    columns.AddFor(m => m.VerifiedOn).Caption("Verified On").Visible(false);
+    columns.AddFor(m => m.IsApproved).Caption("Is Approved").Visible(false);
+    columns.AddFor(m => m.ApprovedBy).Caption("Approved By").Visible(false);
+    columns.AddFor(m => m.ApprovedByAr).Caption("Approved By Ar").Visible(false);
+    columns.AddFor(m => m.ApprovedOn).Caption("Approved On").Visible(false);
+    columns.AddFor(m => m.AddedBy).Caption("Added By").Visible(false);
+    columns.AddFor(m => m.AddedByAr).Caption("Added By Ar").Visible(false);
+    columns.AddFor(m => m.AddedOn).Caption("Added On").Visible(false);
+    columns.AddFor(m => m.ModifiedBy).Caption("Modified By").Visible(false);
+    columns.AddFor(m => m.ModifiedByAr).Caption("Modified By Ar").Visible(false);
+    columns.AddFor(m => m.ModifiedOn).Caption("Modified On").Visible(false);
+   // columns.AddFor(m => m.TaxCategoryID).Caption("Tax Category ID").Visible(false);
+   // columns.AddFor(m => m.AccountID).Caption("Account ID").Visible(false);
+    columns.AddFor(m => m.AdvanceAmount).Caption("Advance Amount").Visible(false);
+    columns.AddFor(m => m.BillingAddress).Caption("Billing Address").Visible(false);
+    columns.AddFor(m => m.BillingAddressAr).Caption("Billing Address Ar").Visible(false);
+    columns.AddFor(m => m.BillingName).Caption("Billing Name").Visible(false);
+    columns.AddFor(m => m.BillingNameAr).Caption("Billing Name Ar").Visible(false);
+    columns.AddFor(m => m.IsPosted).Caption("Is Posted").Visible(false);
+    columns.AddFor(m => m.PostedBy).Caption("Posted By").Visible(false);
+    columns.AddFor(m => m.PostedOn).Caption("Posted On").Visible(false);
+    columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Visible(false);
+    columns.AddFor(m => m.TotalDiscount).Caption("Total Discount").Visible(false);
+    columns.AddFor(m => m.TotalInvoiceAmountBeforeDiscount).Caption("Total Invoice Amount Before Discount").Visible(false);
+   // columns.AddFor(m => m.VATRegistrationNo).Caption("VAT Registration No").Visible(false);
+    columns.AddFor(m => m.CompanyBranch).Caption("Company Branch").Visible(false);
+    columns.AddFor(m => m.CostAllocationGroup).Caption("Cost Allocation Group").Visible(false);
+    columns.AddFor(m => m.CostAllocationMasterGroup).Caption("Cost Allocation Master Group").Visible(false);
+    columns.AddFor(m => m.CostAllocationUnit).Caption("Cost Allocation Unit").Visible(false);
+ //   columns.AddFor(m => m.CRNo).Caption("CR No").Visible(false);
+    columns.AddFor(m => m.SalesPersonName).Caption("Sales Person Name").Visible(false);
+})
+
+	   	@* .Editing(editing => editing.Mode(GridEditMode.Row)) *@
 		.Height("60vh") // <<< fixed height
-		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.ColumnAutoWidth(true)
+		.ColumnResizingMode(ColumnResizingMode.Widget)
 		.Width("98%")
-		@* .WordWrapEnabled(true) *@
+				  	@* .WordWrapEnabled(true) *@
 		//.OnCellClick("function(e) {handleCellClick(e);}")
 		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
@@ -480,6 +779,7 @@
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
+		.OnOptionChanged("handleGridOptionChanged")
 		.Summary(summary =>
 		{
 			summary.TotalItems(totalItems =>
@@ -488,58 +788,66 @@
 			.DisplayFormat(new JS("formatMessage('Count: {0}')"));
 
 				totalItems.Add().Column("CalcLineAmount").SummaryType(SummaryType.Sum)
-		    .CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("CalcTaxAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalCreditNoteAmount").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticStandartRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalRevenueOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalRevenueOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticZeroRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticExemptedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
-				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+				totalItems.Add().Column("GccexpemptedRevenue").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("ExportsRevenue").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticStandartRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalTaxOf10Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("TotalTaxOf15Perc").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticZeroRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("DomesticExemptedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+
+				totalItems.Add().Column("GccstandardRatedRevenue").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("GccstandardRatedTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
 
 				totalItems.Add().Column("ExportsTax").SummaryType(SummaryType.Sum)
-			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }");
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+
+				totalItems.Add().Column("TotalInvoiceAmountBeforeDiscount").SummaryType(SummaryType.Sum)
+			.CustomizeText("function(e) { return e.value != null ? e.value.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) : ''; }");
+
 			});
 		}))
 </div>
+
 
 
 
@@ -555,15 +863,281 @@
 </div>
 
 <script>
-	$(document).ready(function () {
-		$(".limited-footer .btn-containerIvoiceEdit").each(function () {
-			if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReports").length) {
-				$(this).remove();
-			}
+			const card = document.getElementById('mainCard');
+	const counts = [0, 0, 0]; // [Verified, Approved, Posted]
+	const countEls = [
+	  document.getElementById("count0"),
+	  document.getElementById("count1"),
+	  document.getElementById("count2"),
+	];
+	const tabs = document.querySelectorAll(".tab-text");
+	const contents = document.querySelectorAll(".tab-content");
+
+	let currentTab = 0,currencyDecimals = 2;
+	const intervalTime = 3000; // 3 seconds per tab
+	let tabInterval;
+
+	// Animate the count numbers
+	function animateCount(el, target) {
+	  let i = 0;
+	  el.innerText = i;
+	  el.classList.remove('bounce');
+	  const interval = setInterval(() => {
+		if (i >= target) {
+		  el.innerText = target;
+		  el.classList.add('bounce');
+		  clearInterval(interval);
+		} else {
+		  el.innerText = i++;
+		}
+	  }, 30);
+	}
+
+	// Switch tab and update background
+	function switchTab(index) {
+	  tabs.forEach((tab, i) => {
+		tab.classList.toggle('active', i === index);
+		contents[i].classList.toggle('active', i === index);
+	  });
+
+	  card.className = "card";
+	  if (index === 0) card.classList.add("today-bg");
+	  if (index === 1) card.classList.add("week-bg");
+	  if (index === 2) card.classList.add("month-bg");
+
+	  animateCount(countEls[index], counts[index]);
+	}
+
+	// Start auto rotation
+	function startAutoTabs() {
+	  tabInterval = setInterval(() => {
+		currentTab = (currentTab + 1) % tabs.length;
+		switchTab(currentTab);
+	  }, intervalTime);
+	}
+
+	// Stop auto rotation
+	function stopAutoTabs() {
+	  clearInterval(tabInterval);
+	}
+
+	// Hover events to pause/resume
+	card.addEventListener("mouseenter", stopAutoTabs);
+	card.addEventListener("mouseleave", startAutoTabs);
+
+	// ✅ Count Approved Invoices From Grid
+	function updateApprovedCountFromGrid() {
+	  const grid = $("#dataGrid").dxDataGrid("instance");
+	  const data = grid.getVisibleRows().map(row => row.data);
+
+	  counts[0] = data.filter(item => item.InvoiceStatus === "Verified").length;
+	  counts[1] = data.filter(item => item.InvoiceStatus === "Approved").length;
+	  counts[2] = data.filter(item => item.InvoiceStatus === "Posted").length;
+
+	  countEls[0].textContent = counts[0];
+	  countEls[1].textContent = counts[1];
+	  countEls[2].textContent = counts[2];
+
+	  animateCount(countEls[0], counts[0]); // Start with Verified
+	}
+
+	// Initialize
+	switchTab(currentTab);
+	startAutoTabs();
+
+
+
+		function onGridContentReady(e) {
+		updateApprovedCountFromGrid();
+		
+		const component = e.component;
+		const data = component.getDataSource().items();
+
+	updateProformaAmountCard(data);  // ✅ Total invoice
+		updateTotalVATValuess(data);             // ✅ Total VAT
+		injectHeaderSVG();
+	}
+
+	const headings = ["Invoice Amount", "VAT Value"];
+	let currentIndex = 0;
+
+	// Default values
+	let invoiceAmountss = "0.00";
+	let vatTotalValuess = "0.00";
+
+	// Format helper
+	function formatNumber(num) {
+		return Number(num || 0).toLocaleString("en-US", {
+			minimumFractionDigits: 2,
+			maximumFractionDigits: 2
 		});
-	});
+	}
+
+	// Update values from your data functions
+	function updateProformaAmountCard(data) {
+		if (Array.isArray(data)) {
+			const total = data.reduce((sum, item) => sum + (parseFloat(item.CalcLineAmount) || 0), 0);
+			invoiceAmountss = formatNumber(total);
+		} else {
+			invoiceAmountss = formatNumber(0);
+		}
+	}
+
+	function updateTotalVATValuess(data) {
+		if (Array.isArray(data)) {
+			const total = data.reduce((sum, item) =>
+				sum +
+				(parseFloat(item.DomesticStandartRatedTax) || 0) +
+				(parseFloat(item.DomesticZeroRatedTax) || 0) +
+				(parseFloat(item.DomesticExemptedTax) || 0), 0
+			);
+			vatTotalValuess = formatNumber(total);
+		} else {
+			vatTotalValuess = formatNumber(0);
+		}
+	}
+
+	// Switch every 2 seconds
+	setInterval(() => {
+		currentIndex = (currentIndex + 1) % 2;
+
+		const headingEl = document.getElementById("statusHeading3");
+		const valueEl = document.getElementById("switchValue33");
+
+		headingEl.textContent = headings[currentIndex];
+		valueEl.innerHTML = `
+			<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
+				<path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" />
+				<path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" />
+			</svg>
+			${currentIndex === 0 ? invoiceAmountss : vatTotalValuess}
+		`;
+	}, 2000);
+
+
+	function animateTodayVoucherCount(target) {
+		let i = 0;
+		const el = document.getElementById("todayCount");
+		if (!el) return;
+
+		el.classList.remove('bounce');
+
+		const timer = setInterval(() => {
+			if (i >= target) {
+				el.innerText = target;
+				el.classList.add('bounce');
+				clearInterval(timer);
+			} else {
+				el.innerText = i++;
+			}
+		}, 30);
+	}
+			function animateTodayVoucherCount(target) {
+		let i = 0;
+		const el = document.getElementById("valueDisplay4");
+		if (!el) return;
+
+		el.classList.remove('bounce');
+
+		const timer = setInterval(() => {
+			if (i >= target) {
+				el.innerText = target;
+				el.classList.add('bounce');
+				clearInterval(timer);
+			} else {
+				el.innerText = i++;
+			}
+		}, 30);
+	}
+
+		let isLast5Years = true; // Initial state
+
+	function switchData() {
+		const heading = document.getElementById("statusHeading4");
+		const value = document.getElementById("valueDisplay4");
+
+		if (isLast5Years) {
+			heading.textContent = "New Voucher Today";
+
+			const todayTarget = parseInt(document.getElementById("todayCount")?.textContent || "0", 10);
+			animateTodayVoucherCount(todayTarget); // Animate count-up
+		} else {
+			heading.textContent = "Last 5 Years";
+			value.textContent = document.getElementById("fiveYearCount")?.textContent || "0";
+		}
+
+		isLast5Years = !isLast5Years;
+	}
+
+	// Call once on page load
+	switchData();
+
+	// Automatically switch every 5 seconds
+	setInterval(switchData, 2000); // 5000 ms = 5 seconds
+
+	// 		function onGridContentReady(e) {
+	// 	updateApprovedCountFromGrid();
+
+	// 	const component = e.component;
+	// 	const data = component.getDataSource().items();
+
+	// 	updateProformaAmountCard(data);     // ✅ Total invoice
+	// 	updateTotalVATValue(data);             // ✅ Total VAT
+	// }
+
+		function onToolbarPreparing(e) {
+		// Remove/hide the column chooser button on initial load
+		e.toolbarOptions.items = e.toolbarOptions.items.filter(function (item) {
+			return item.name !== "columnChooserButton";
+		});
+	}
+	// $(document).ready(function () {
+	// 		ddBtnShowRecords_click("range")
+	// 	$(".limited-footer .btn-containerIvoiceEdit").each(function () {
+	// 		if (!$(this).find("#ddButtonLayout,#btnToggleSearch,#btnPrint,#btntoggleGroupPanel,#btnAddNew1,#ddButtonPayment,#ddReports").length) {
+	// 			$(this).remove();
+	// 		}
+	// 	});
+	// });
+	function invoiceStatusCellTemplate(cellElement, cellInfo) {
+			const status = cellInfo.value;
+			let backgroundColor = "";
+			let textColor = "black";
+
+			switch (status) {
+				case "Not Processed":
+					backgroundColor = "#f8d7da"; // light red
+					textColor = "#721c24";       // dark red text
+					break;
+				case "Verified":
+					backgroundColor = "#d4edda"; // light green
+					textColor = "#155724";       // dark green text
+					break;
+				case "Approved":
+					backgroundColor = "#c3e6cb"; // darker green
+					textColor = "#0b3d18";
+					break;
+				case "Posted":
+					backgroundColor = "#ffeeba"; // light orange/yellow
+					textColor = "#856404";
+					break;
+				default:
+					backgroundColor = "#f0f0f0";
+					textColor = "#000000";
+			}
+
+			cellElement.text(status);
+			cellElement.css({
+				"background-color": backgroundColor,
+				"color": textColor,
+				"font-weight": "bold",
+				"padding": "5px",
+				"border-radius": "4px",
+				"text-align": "center"
+			});
+		}
+			
 	$(function () {
-			ddBtnShowRecords_click("range")
 					$("#ProformaInvoiceMasterView").dxTextBox({
 						text: formatMessage("Proforma Invoice Master View"),
 						readOnly: true,
@@ -573,6 +1147,36 @@
 
 					});
 				});
+	$(function () {
+			ddBtnShowRecords_click("range")
+		var inputPopupInstance = $("#inputPopupContainer").dxPopup({
+			width: 600,
+			height: 400,
+			showTitle: true,
+			title: "Details",
+			visible: false,
+			dragEnabled: true,
+			closeOnOutsideClick: true,
+			contentTemplate: function () {
+				return $("<div>").attr("id", "popupFormContent");
+			}
+		}).dxPopup("instance");
+		var contextMenu = $("#contextMenu");
+		$(document).on("click", function () {
+			contextMenu.hide();
+		});
+		$("#dataGrid").customizeGridContextMenu();
+		$("#dataGrid").on("contextmenu", ".dx-data-row", function (e) {
+			e.preventDefault();
+			var rowIndex = $(this).index();
+			var rowData = $("#dataGrid").dxDataGrid("instance").getDataSource().items()[rowIndex];
+					CreditNoteNo = rowData.CreditNoteNo;
+			console.log(rowData);
+			contextMenu.css({ top: e.pageY + "px", left: e.pageX + "px" }).show();
+		});
+	});
+
+
 	// Assuming tenantName is already defined globally
 	let invoiceNo = null,InvoiceStatus=null;
 	let IsEdit = false;
@@ -586,7 +1190,7 @@
 		IsEdit = true;
 
 		const url = `/${tenantName}/VAT/ProformaInvoiceEditForm?ProformaInvoiceNo=${encodeURIComponent(invoiceNo)}&IsEditflag=${encodeURIComponent(IsEdit)}`;
-	
+
 		window.location.href = url; // Navigate to the page
 
 	}
@@ -594,11 +1198,31 @@
 	function ddBtnShowRecords_click(duration) {
 		const frmDateBox = $("#frmdateBox").dxDateBox("instance");
 		const toDateBox = $("#todateBox").dxDateBox("instance");
-		let frmDate = new Date(frmDateBox.option("value"));
-		let toDate = new Date(toDateBox.option("value"));
+
+		let frmDateVal = frmDateBox.option("value");
+		let toDateVal = toDateBox.option("value");
+
+		let frmDate = frmDateVal ? new Date(frmDateVal) : null;
+		let toDate = toDateVal ? new Date(toDateVal) : null;
 		const currentDate = new Date();
 
 		switch (duration) {
+				case 'q1':
+			frmDate = new Date(currentDate.getFullYear(), 0, 1);   // Jan 1
+			toDate  = new Date(currentDate.getFullYear(), 2, 31);  // Mar 31
+			break;
+			case 'q2':
+				frmDate = new Date(currentDate.getFullYear(), 3, 1);   // Apr 1
+				toDate  = new Date(currentDate.getFullYear(), 5, 30);  // Jun 30
+				break;
+			case 'q3':
+				frmDate = new Date(currentDate.getFullYear(), 6, 1);   // Jul 1
+				toDate  = new Date(currentDate.getFullYear(), 8, 30);  // Sep 30
+				break;
+			case 'q4':
+				frmDate = new Date(currentDate.getFullYear(), 9, 1);   // Oct 1
+				toDate  = new Date(currentDate.getFullYear(), 11, 31); // Dec 31
+				break;
 			case 'today':
 				frmDate = toDate = currentDate;
 				break;
@@ -608,10 +1232,13 @@
 				frmDate = toDate = dateObj;
 				break;
 			case 'week':
-				const dayOfWeek = currentDate.getDay();
-				const startOfWeek = currentDate.getDate() - (dayOfWeek + 1) % 7;
-				frmDate = new Date(currentDate.setDate(startOfWeek));
-				toDate = new Date(currentDate.setDate(startOfWeek + 6));
+				const today = new Date();
+				const dayOfWeek = today.getDay(); // Sunday = 0
+				const startOfWeek = new Date(today);
+				startOfWeek.setDate(today.getDate() - (dayOfWeek || 7) + 1); // Monday as start
+				frmDate = startOfWeek;
+				toDate = new Date(startOfWeek);
+				toDate.setDate(startOfWeek.getDate() + 6);
 				break;
 			case 'tillmonth':
 				frmDate = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -639,21 +1266,82 @@
 				break;
 		}
 
-		frmDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
-		toDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		// If dates are still null (cleared by user), handle gracefully
+		if (!frmDate || !toDate) {
+			DevExpress.ui.notify("Please select both Start Date and End Date.", "warning", 2000);
+			return;
+		}
 
+		// Format dates for server/API
+		const formattedFromDate = frmDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		const formattedToDate = toDate.toLocaleDateString('en-US', { year: 'numeric', month: '2-digit', day: '2-digit' });
+		
+		// Update DateBoxes visually if needed
 		frmDateBox.option("value", frmDate);
 		toDateBox.option("value", toDate);
 
+		// API call
 		$.ajax({
 			url: '/api/VATModule/GetVatProformaDetails',
 			type: 'GET',
 			data: {
-				frmDate: frmDate,
-				toDate: toDate
+				frmDate: formattedFromDate,
+				toDate: formattedToDate
 			},
 			success: function (data) {
+				console.log("ShowData", data);
 				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+				if (data.length === 0 && page > 1) return;
+
+				currentPage = Number(data.currentPage);
+				var grid = $("#dataGrid").dxDataGrid("instance");
+				grid.option("dataSource", data);
+
+				//updateInvoiceAmountCardss(data);
+				console.log("SalesRegisterGrid", data);
+
+				if (data && data.length > 0) {
+					VoucherAmountFormatted = data[data.length - 1].VoucherAmountFormatted;
+					firstrowVoucherAmountFormatted = data[0].VoucherAmountFormatted;
+				}
+
+				const totalPages = Math.ceil(Number(data.totalCount) / Number(data.pageSize));
+				$("#pageInfo").text(`Page ${data.currentPage} of ${totalPages} (${data.totalCount} items)`);
+				$("#nextPage").prop("disabled", totalPages === data.currentPage);
+				$("#previousPage").prop("disabled", data.currentPage === 1);
+
+				const animatedCount = data.length;
+				animateInvoiceCardCount(animatedCount);
+
+				let periodLabel = "Invoices";
+				switch (duration) {
+					case 'today': periodLabel = "Today's Invoices"; break;
+					case 'yesterday': periodLabel = "Yesterday's Invoices"; break;
+					case 'week': periodLabel = "This Week's Invoices"; break;
+					case 'tillmonth':
+					case 'fullmonth': periodLabel = "This Month's Invoices"; break;
+					case 'tillyear':
+					case 'fullyear': periodLabel = "This Year's Invoices"; break;
+					case 'lastmonth': periodLabel = "Last Month's Invoices"; break;
+					case 'lastyear': periodLabel = "Last Year's Invoices"; break;
+					default: periodLabel = "Invoices";
+				}
+
+				$("#invoicePeriodLabel").text(periodLabel);
+				const today = new Date();
+				today.setHours(0, 0, 0, 0);
+
+				const fiveYearsAgo = new Date();
+				fiveYearsAgo.setFullYear(today.getFullYear() - 5);
+				fiveYearsAgo.setHours(0, 0, 0, 0);
+
+				const fiveYearCount = data.filter(row => {
+					const d = new Date(row.InvoiceDate); // or row.VoucherDate
+					d.setHours(0, 0, 0, 0);
+					return d >= fiveYearsAgo && d <= today;
+				}).length;
+
+				animateVoucherCount("fiveYearCount", fiveYearCount);
 			},
 			error: function () {
 				DevExpress.ui.notify("Error while loading data", "error", 2000);
@@ -661,9 +1349,34 @@
 		});
 	}
 
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+	function formatDate(date) {
+		var d = new Date(date),
+			month = '' + (d.getMonth() + 1),
+			day = '' + d.getDate(),
+			year = d.getFullYear();
+
+		var strmonth = d.toLocaleString('default', { month: 'short' });
+		if (day.length < 2)
+			day = '0' + day;
+
+		return [day, strmonth, year].join('-');
+	}
+
+	
 
 
-			
 	$(document).ready(function () {
 						console.log('Start permission handling');
 						// Form ID
@@ -768,87 +1481,61 @@
 			dateBox.option("displayFormat", "dd-MMM-yyyy");
 		});
 	});
-		function countUpTurnover(targetStr) {
-	  const el = document.getElementById("turnover");
-	  const target = parseFloat(targetStr);
-	  let current = 0.0;
 
-	  const interval = setInterval(() => {
-		current += 0.5;
-		if (current >= target) {
-		  el.textContent = targetStr + " K";
-		  clearInterval(interval);
-		} else {
-		  el.textContent = current.toFixed(1) + " K";
-		}
-	  }, 30);
+		function loadRegisterGridData() {
+		$.ajax({
+			url: '/api/VATModule/GetVatProformaDetails',
+			method: 'GET',
+			dataType: 'json',
+			success: function (data) {
+				const gridInstance = $("#dataGrid").dxDataGrid("instance");
+				
+				if (gridInstance) {
+					// If grid already exists, just update its dataSource
+					gridInstance.option("dataSource", data);
+					gridInstance.refresh();
+				} else {
+					// Create the grid for the first time
+					$("#dataGrid").dxDataGrid({
+						dataSource: data,
+						keyExpr: "ProformaInvoiceNo", // or your unique key
+						height: "45vh",
+						showBorders: true,
+						columnAutoWidth: true,
+						allowColumnReordering: true,
+						allowColumnResizing: true,
+						// Add more grid options here...
+					});
+				}
+				$.ajax({
+			url: '/api/VATModule/GetVatProformaDetails',
+			type: 'GET',
+			data: {
+				frmDate: frmDate,
+				toDate: toDate
+			},
+			success: function (data) {
+				$("#dataGrid").dxDataGrid("instance").option("dataSource", data);
+
+
+			},
+			error: function () {
+				DevExpress.ui.notify("Error while loading data", "error", 2000);
+			}
+		});
+
+			},
+			error: function (err) {
+				console.error("Grid load failed", err);
+			}
+		});
 	}
 
-	// Animate to 46.2 K
-	countUpTurnover("46.2");
+	$(document).ready(function () {
+		loadRegisterGridData(); // Initial load
+	});
 
-	  const card = document.getElementById('mainCard');
-	const counts = [8, 15, 5];
-	const countEls = [
-	  document.getElementById("count0"),
-	  document.getElementById("count1"),
-	  document.getElementById("count2"),
-	];
-	const tabs = document.querySelectorAll(".tab-text");
-	const contents = document.querySelectorAll(".tab-content");
 
-	function animateCount(el, target) {
-	  let i = 0;
-	  el.innerText = i;
-	  el.classList.remove('bounce');
-	  const interval = setInterval(() => {
-		if (i >= target) {
-		  el.innerText = target;
-		  el.classList.add('bounce');
-		  clearInterval(interval);
-		} else {
-		  el.innerText = i++;
-		}
-	  }, 30);
-	}
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Start "Today" count immediately
-	animateCount(countEls[0], counts[0]);
-
-	function switchTab(index) {
-	  tabs.forEach((tab, i) => {
-		tab.classList.toggle('active', i === index);
-		contents[i].classList.toggle('active', i === index);
-	  });
-
-	  // Change background class
-	  card.className = "card";
-	  if (index === 0) card.classList.add("today-bg");
-	  if (index === 1) card.classList.add("week-bg");
-	  if (index === 2) card.classList.add("month-bg");
-
-	  // Animate count
-	  animateCount(countEls[index], counts[index]);
-	}
-
-	// Auto-start animation for "Today"
-	animateCount(countEls[0], counts[0]);
 
 	function UnlockInvoice() {
 
@@ -859,7 +1546,7 @@
 			3000
 		);
 		return;
-	          }
+			  }
 
 		DevExpress.ui.dialog.confirm("Are you sure you want to unlock this Purchase Bill?", "Confirm Unlock")
 			.done(function (dialogResult) {
@@ -919,10 +1606,6 @@
 		function refreshGrid() {
 		$("#dataGrid").dxDataGrid("instance").refresh();
 	}
-
-
-
-
 
 	 function cloneEInvoice() {
 
@@ -987,4 +1670,257 @@
 		});
 	});
 
+
+
+	function handleGridOptionChanged(e) {
+		if (e.name === "columns" || e.name === "visible") {
+			// Columns changed, so re-inject SVG
+			injectHeaderSVG(); // slight delay to wait for DOM re-render
+		}
+	}
+
+
+
+	function injectHeaderSVG() {
+	
+
+		$.ajax({
+			url: '/api/AccountingLedgers/GetCurrencyIcon',
+			type: 'GET',
+			success: function (response) {
+					
+				let svgIcon = response.Icon;
+				if (!svgIcon) return;
+
+				// Set default width/height for SVG if needed
+				if (svgIcon.startsWith("<svg")) {
+					svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+				} else {
+					svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+				}
+
+				let gridElement = $('#dataGrid');
+				let dataGrid = gridElement.dxDataGrid("instance");
+				if (!dataGrid) return;
+
+				gridElement.find(".dx-header-row td").each(function () {
+
+					const $AmtBeforeTaxHeader = $(".AmtBeforeTax-header");
+					const AmtBeforeTaxText = $AmtBeforeTaxHeader.data("original-text") || $AmtBeforeTaxHeader.text().trim();
+					$AmtBeforeTaxHeader.data("original-text", AmtBeforeTaxText);
+					$AmtBeforeTaxHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${AmtBeforeTaxText}</span>
+						</div>
+					`);
+
+					const $CalcTaxAmtHeader = $(".CalcTaxAmt-header");
+					const CalcTaxAmtText = $CalcTaxAmtHeader.data("original-text") || $CalcTaxAmtHeader.text().trim();
+					$CalcTaxAmtHeader.data("original-text", CalcTaxAmtText);
+					$CalcTaxAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${CalcTaxAmtText}</span>
+						</div>
+					`);
+
+					const $ToatlAmtHeader = $(".ToatlAmt-header");
+					const ToatlAmtText = $ToatlAmtHeader.data("original-text") || $ToatlAmtHeader.text().trim();
+					$ToatlAmtHeader.data("original-text", ToatlAmtText);
+					$ToatlAmtHeader.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ToatlAmtText}</span>
+						</div>
+					`);
+
+					const $DomesticRevenue = $(".DomesticRevenue-header");
+					const DomesticRevenueText = $DomesticRevenue.data("original-text") || $DomesticRevenue.text().trim();
+					$DomesticRevenue.data("original-text", DomesticRevenueText);
+					$DomesticRevenue.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenueText}</span>
+						</div>
+					`);
+
+					const $DomesticRevenue1 = $(".DomesticRevenue1-header");
+					const DomesticRevenue1Text = $DomesticRevenue1.data("original-text") || $DomesticRevenue1.text().trim();
+					$DomesticRevenue1.data("original-text", DomesticRevenue1Text);
+					$DomesticRevenue1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenue1Text}</span>
+						</div>
+					`);
+
+					const $DomesticRevenue2 = $(".DomesticRevenue2-header");
+					const DomesticRevenue2Text = $DomesticRevenue2.data("original-text") || $DomesticRevenue2.text().trim();
+					$DomesticRevenue2.data("original-text", DomesticRevenue2Text);
+					$DomesticRevenue2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticRevenue2Text}</span>
+						</div>
+					`);
+
+					const $DomesticZeroTaxPurchases = $(".DomesticZeroTaxPurchases-header");
+					const DomesticZeroTaxPurchasesText = $DomesticZeroTaxPurchases.data("original-text") || $DomesticZeroTaxPurchases.text().trim();
+					$DomesticZeroTaxPurchases.data("original-text", DomesticZeroTaxPurchasesText);
+					$DomesticZeroTaxPurchases.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${DomesticZeroTaxPurchasesText}</span>
+						</div>
+					`);
+
+					const $ExemptedRevenue = $(".ExemptedRevenue-header");
+					const ExemptedRevenueText = $ExemptedRevenue.data("original-text") || $ExemptedRevenue.text().trim();
+					$ExemptedRevenue.data("original-text", ExemptedRevenueText);
+					$ExemptedRevenue.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ExemptedRevenueText}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase = $(".ImportsPurchase-header");
+					const ImportsPurchaseText = $ImportsPurchase.data("original-text") || $ImportsPurchase.text().trim();
+					$ImportsPurchase.data("original-text", ImportsPurchaseText);
+					$ImportsPurchase.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchaseText}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase1 = $(".ImportsPurchase1-header");
+					const ImportsPurchase1Text = $ImportsPurchase1.data("original-text") || $ImportsPurchase1.text().trim();
+					$ImportsPurchase1.data("original-text", ImportsPurchase1Text);
+					$ImportsPurchase1.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchase1Text}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase2 = $(".ImportsPurchase2-header");
+					const ImportsPurchase2Text = $ImportsPurchase2.data("original-text") || $ImportsPurchase2.text().trim();
+					$ImportsPurchase2.data("original-text", ImportsPurchase2Text);
+					$ImportsPurchase2.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchase2Text}</span>
+						</div>
+					`);
+
+					const $ImportsPurchase3 = $(".ImportsPurchase3-header");
+					const ImportsPurchase3Text = $ImportsPurchase3.data("original-text") || $ImportsPurchase3.text().trim();
+					$ImportsPurchase3.data("original-text", ImportsPurchase3Text);
+					$ImportsPurchase3.html(`
+						<div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+							${svgIcon}
+							<span style="font-weight: bold;">${ImportsPurchase3Text}</span>
+						</div>
+					`);
+
+				}); // closes .each()
+			} // closes success function
+		}); // closes ajax
+	} // closes injectHeaderSVG function
+
+	$(document).ready(function () {
+		injectHeaderSVG();
+	});
+
+			function onByQuarterClick(e) {
+		// Prevent the main dropdown from closing
+		e.event.stopPropagation();
+
+		// Reopen main dropdown in case DevExtreme tried to close it
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.open();
+
+		// Open the submenu near the "By Quarter" element
+		openQuarterMenu(e.element);
+	}
+
+			function openQuarterMenu(targetElement) {
+		if ($("#quarterMenu").data("dxContextMenu")) {
+			$("#quarterMenu").dxContextMenu("instance").dispose();
+		}
+
+		$("#quarterMenu").dxContextMenu({
+			target: targetElement,
+			showEvent: "",
+			width: 230,
+			position: {
+				at: "right center",
+				my: "left center",
+				of: targetElement,
+				offset: "8 0"
+			},
+			items: [
+				{ text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
+				{ text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
+				{ text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
+				{ text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+			],
+			onItemClick: function(e) {
+				const quarter = e.itemData.value;
+				if (quarter) {
+					ddBtnShowRecords_click(quarter, 1);
+					closeMainDropdown();
+				}
+			},
+			itemTemplate: function(itemData) {
+				return $("<div>").addClass("custom-dropdown-item")
+					.append(
+						$("<div>").addClass("side-bar").css({
+							"background-color": itemData.color,
+							"height": "90%"
+						})
+					)
+					.append(
+						$("<div>").addClass("item-content").append(
+							$("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+							$("<div>").append(
+								$("<div>").addClass("item-title").text(itemData.text)
+							)
+						)
+					);
+			}
+		}).dxContextMenu("instance").show();
+	}
+
+
+
+
+	function closeMainDropdown() {
+		const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+		dd.close();  // ✅ closes only after submenu item click
+	}
+
+					// Fetch from API on page load
+	$.get("/api/VATModule/GetCurrencyDecimals")
+		.done(function (decimals) {
+			if (decimals != null) {
+				currencyDecimals = decimals;
+			}
+		})
+		.fail(function () {
+			DevExpress.ui.notify("Failed to load decimals, using 2", "warning", 3000);
+		});
+
+			function formatSummaryValue(value) {
+		if (value == null || isNaN(value)) return 0;
+		return value.toLocaleString(undefined, {
+			minimumFractionDigits: currencyDecimals,
+			maximumFractionDigits: currencyDecimals
+		});
+	}
+
+
+		
 </script>

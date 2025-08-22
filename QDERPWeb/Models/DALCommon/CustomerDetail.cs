@@ -30,4 +30,5 @@ public partial class CustomerDetail
     public DateTime? LicExpiryDate { get; set; }
 
     public decimal? ExtendedDays { get; set; }
+    public string TenantName { get; set; }
 }

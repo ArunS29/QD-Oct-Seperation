@@ -24,12 +24,12 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
             string companyNameAr,
             string companyAddressAr,
             string username,
-            TenantDbContextHelper tenantDbContextHelper)
+            TenantDbContextHelper tenantDbContextHelper,Decimal DefaultCurrencyDecimals)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             InitializeComponent();
             LoadCurrencySymbolAndImage();
-            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  username);
+            SetReportParameters(frmDate, toDate, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,  username, DefaultCurrencyDecimals);
         }
 
         public VATPurchasesAndExpReport()
@@ -45,7 +45,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
             Image logoImage,
             string companyNameAr,
             string companyAddressAr,
-            string username)
+            string username,Decimal DefaultCurrencyDecimals)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)
             {
@@ -92,7 +92,17 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
                userNameArLabel.Text = username;
             if (FindControl("xrLabelCompanyAddressAr", true) is XRLabel addressArLabel)
                 addressArLabel.Text = companyAddressAr;
+            // ✅ Change decimal formatting only if value is 3
+            if (DefaultCurrencyDecimals == 3)
+            {
+                for (int i = 34; i <= 65; i++)
+                {
+                    string labelName = $"xrLabel{i}";
+                    if (FindControl(labelName, true) is XRLabel lbl)
+                        lbl.TextFormatString = "{0:n3}";
+                }
 
+            }
             ConfigureSqlDataSource(frmDate, toDate);
         }
 
@@ -211,7 +221,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
                     return;
                 }
 
-                string[] pictureBoxNames = { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
+                string[] pictureBoxNames = {  "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
 
                 foreach (string name in pictureBoxNames)
                 {
@@ -230,7 +240,7 @@ namespace QD.ERP.Web.Areas.VAT.Reports.PurchaseRegister
         }
         private void SetCurrencyImageNull()
         {
-            string[] pictureBoxNames = { "xrPictureBox1", "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
+            string[] pictureBoxNames = {  "xrPictureBox2", "xrPictureBox3", "xrPictureBox4", "xrPictureBox5", "xrPictureBox6", "xrPictureBox8" };
 
             foreach (string name in pictureBoxNames)
             {

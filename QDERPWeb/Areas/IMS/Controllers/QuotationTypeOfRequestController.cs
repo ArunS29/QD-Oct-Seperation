@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +13,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<QuotationTypeOfRequestController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public QuotationTypeOfRequestController(ILogger<QuotationTypeOfRequestController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public QuotationTypeOfRequestController(ILogger<QuotationTypeOfRequestController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -80,6 +84,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update Signatory",
+                      actionDetail: $"Saved Signatory {model.TypeOfRequestId}",
+                       documentNo: $"{model.TypeOfRequestId}"
+                    );
 
                     return Ok(new { success = true, message = "Saved successfully", id = model.TypeOfRequestId });
                 }
@@ -105,6 +114,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl30104TypeOfRequestMasters.Remove(record);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete1",
+                      actionDetail: $"Deleted {key}",
+                      documentNo: $"{key}"
+                    );
                     return Ok();
                 }
 

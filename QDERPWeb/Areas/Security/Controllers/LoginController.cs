@@ -61,10 +61,10 @@ namespace QD.ERP.Web.Areas.Security.Controllers
 
         private async Task<bool> IsLicenseValidAsync(Tenant tenant)
         {
-            if (tenant == null || string.IsNullOrWhiteSpace(tenant.Name))
+            if (tenant == null || string.IsNullOrWhiteSpace(tenant.TenantName))
                 return false;
 
-            return await _licenseService.IsLicenseValidAsync(tenant.Name);
+            return await _licenseService.IsLicenseValidAsync(tenant.TenantName);
         }
 
         [HttpPost]

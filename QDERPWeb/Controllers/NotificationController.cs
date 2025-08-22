@@ -48,8 +48,7 @@ namespace QD.ERP.Web.Controllers
                             x.AlertStatusRemarks,
                             x.AlertUserOn,
                             x.AlertBySystem,
-                            x.AlertNotifiedByUser,
-                            x.IsSeen
+                            x.AlertNotifiedByUser
                         });
 
                     var result = await DataSourceLoader.LoadAsync(query, loadOptions);
@@ -59,6 +58,7 @@ namespace QD.ERP.Web.Controllers
 
             return Unauthorized(new { message = "Invalid tenant", success = false });
         }
+
 
 
         /// <summary>
@@ -216,6 +216,426 @@ namespace QD.ERP.Web.Controllers
             }
 
             return Unauthorized(new { success = false, message = "Invalid tenant or database context." });
+        }
+        [HttpGet]
+        public IActionResult GetFinanceNotificationSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var vouchers = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                // --- Summary counts ---
+                Func<List<string>, object> getCounts = (types) =>
+                {
+                    var filtered = vouchers.Where(v => types.Contains(v.VoucherType));
+                    return new
+                    {
+                        ToBeVerified = filtered.Count(v => !v.IsVerified),
+                        ToBeApproved = filtered.Count(v => v.IsVerified && !v.IsApproved),
+                        ToBeAudited = filtered.Count(v => v.IsApproved && !v.IsAuditVerified)
+                    };
+                };
+
+                var summary = new
+                {
+                    Payments = getCounts(new List<string> { "Bank Payment", "Cash Payment" }),
+                    Receipts = getCounts(new List<string> { "Bank Receipts", "Cash Receipts" }),
+                    SalesPurchase = getCounts(new List<string> { "Sales", "Purchase" }),
+                    Journals = getCounts(new List<string> { "Journal" }),
+                    ExpenseClaims = getCounts(new List<string> { "ExpenseClaim" })
+                };
+
+                // --- Detailed notifications ---
+                var notifications = vouchers.Select(v => new
+                {
+                    VoucherType = v.VoucherType,
+                    VoucherNumber = v.VoucherNo,
+                    Amount = v.DebitAmount ?? v.CreditAmount,
+                    User = !v.IsVerified ? v.VoucherEnteredBy
+                           : v.IsVerified && !v.IsApproved ? v.VoucherVerifiedBy
+                           : v.IsApproved && !v.IsAuditVerified ? v.VoucherApprovedBy
+                           : v.VoucherEnteredBy,
+                    Status = !v.IsVerified ? "waiting for verification"
+                           : v.IsVerified && !v.IsApproved ? "awaiting your approval"
+                           : v.IsApproved && !v.IsAuditVerified ? "awaiting audit"
+                           : "completed",
+                    CreatedOn = v.VoucherEnteredOn ?? DateTime.Now
+                })
+                .OrderByDescending(v => v.CreatedOn)
+                .Take(20) // last 20 notifications
+                .ToList();
+
+                return Ok(new
+                {
+                    Summary = summary,
+                    Notifications = notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "Error while fetching finance notifications", error = ex.Message });
+            }
+        }
+
+        public IActionResult GetVatSalesNotificationSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var sales = dbContext.Tbl20161VatinvoiceMasters.AsQueryable();
+
+                // Summary counts
+                var summary = new
+                {
+                    ToBeVerified = sales.Count(x => x.IsSubmitted == true && (x.IsVerified != true)),
+                    ToBeApproved = sales.Count(x => x.IsVerified == true && (x.IsApproved != true)),
+                    ToBeAudited = sales.Count(x => x.IsApproved == true /* && (x.IsAuditVerified != true) */)
+                };
+
+                // Latest notifications
+                var notifications = sales
+                    .Select(v => new
+                    {
+                        VoucherType = "VAT Sales",
+                        VoucherNumber = v.InvoiceNo,
+                        Amount = (decimal?)0, // Replace if you have actual amount field
+                        User = (v.IsVerified != true) ? v.SubmittedBy
+                               : (v.IsVerified == true && v.IsApproved != true) ? v.VerifiedBy
+                               : (v.IsApproved == true /* && v.IsAuditVerified != true */) ? v.ApprovedBy
+                               : v.SubmittedBy,
+                        Status = (v.IsVerified != true) ? "waiting for verification"
+                               : (v.IsVerified == true && v.IsApproved != true) ? "awaiting your approval"
+                               : (v.IsApproved == true /* && v.IsAuditVerified != true */) ? "awaiting audit"
+                               : "completed",
+                        CreatedOn = v.SubmittedOn ?? DateTime.Now
+                    })
+                    .OrderByDescending(v => v.CreatedOn)
+                    .Take(20)
+                    .ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    Summary = summary,
+                    Notifications = notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+      
+        public IActionResult GetVatDebitNotificationSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var debitNotes = dbContext.Qry201907vatdebitNoteRegisterMainViews.AsQueryable();
+
+                // Summary counts
+                var summary = new
+                {
+                    ToBeVerified = debitNotes.Count(x => x.IsSubmitted == true && (x.IsVerified ?? false) == false),
+                    ToBeApproved = debitNotes.Count(x => x.IsVerified == true && (x.IsApproved ?? false) == false),
+                    ToBeAudited = debitNotes.Count(x => x.IsApproved == true  && (x.IsPosted ?? false) == false )
+                };
+
+                // Latest notifications
+                var notifications = debitNotes
+                    .Select(v => new
+                    {
+                        VoucherType = "VAT Debit",
+                        VoucherNumber = v.DebitNoteNo,
+                        Amount = (decimal?)0, // replace if you have amount field
+                        User = !(v.IsVerified ?? false) ? v.SubmittedBy
+                               : (v.IsVerified ?? false) && !(v.IsApproved ?? false) ? v.VerifiedBy
+                               : (v.IsApproved ?? false) /* && !(v.IsAuditVerified ?? false) */ ? v.ApprovedBy
+                               : v.SubmittedBy,
+                        Status = !(v.IsVerified ?? false) ? "waiting for verification"
+                               : (v.IsVerified ?? false) && !(v.IsApproved ?? false) ? "awaiting your approval"
+                               : (v.IsApproved ?? false) /* && !(v.IsAuditVerified ?? false) */ ? "awaiting audit"
+                               : "completed",
+                        CreatedOn = v.SubmittedOn ?? DateTime.Now
+                    })
+                    .OrderByDescending(v => v.CreatedOn)
+                    .Take(20)
+                    .ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    Summary = summary,
+                    Notifications = notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+
+        [HttpGet]
+        public IActionResult GetVatCreditNotificationSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var creditNotes = dbContext.Tbl20170VatcreditNoteMasters.AsQueryable();
+
+                // Summary counts
+                var summary = new
+                {
+                    ToBeVerified = creditNotes.Count(x => x.IsSubmitted == true && (x.IsVerified ?? false) == false),
+                    ToBeApproved = creditNotes.Count(x => x.IsVerified == true && (x.IsApproved ?? false) == false),
+                    ToBeAudited = creditNotes.Count(x => x.IsApproved == true && (x.IsPosted ?? false) == false)
+                };
+
+                // Latest notifications
+                var notifications = creditNotes
+                    .Select(v => new
+                    {
+                        VoucherType = "VAT Credit",
+                        VoucherNumber = v.CreditNoteNo,
+                        Amount = (decimal?)0, // replace if you have amount field
+                        User = !(v.IsVerified ?? false) ? v.SubmittedBy
+                               : (v.IsVerified ?? false) && !(v.IsApproved ?? false) ? v.VerifiedBy
+                               : (v.IsApproved ?? false) && !(v.IsPosted ?? false) ? v.ApprovedBy
+                               : v.SubmittedBy,
+                        Status = !(v.IsVerified ?? false) ? "waiting for verification"
+                               : (v.IsVerified ?? false) && !(v.IsApproved ?? false) ? "awaiting your approval"
+                               : (v.IsApproved ?? false) && !(v.IsPosted ?? false) ? "awaiting audit"
+                               : "completed",
+                        CreatedOn = v.SubmittedOn ?? v.AddedOn ?? DateTime.Now
+                    })
+                    .OrderByDescending(v => v.CreatedOn)
+                    .Take(20)
+                    .ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    Summary = summary,
+                    Notifications = notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        public IActionResult GetVatPurchaseNotificationSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var purchaseNotes = dbContext.Tbl20166VatpurchaseMasters.AsQueryable();
+
+                var summary = new
+                {
+                    ToBeVerified = purchaseNotes.Count(x => x.IsVerified == false || x.IsVerified == null),
+                    ToBeApproved = purchaseNotes.Count(x => x.IsVerified == true && (x.IsApproved == false || x.IsApproved == null)),
+                    ToBeAudited = purchaseNotes.Count(x => x.IsApproved == true) // Adjust if you have audit logic
+                };
+
+                var notifications = purchaseNotes
+                    .Select(v => new
+                    {
+                        VoucherType = "VAT Purchase",
+                        VoucherNumber = v.PurchaseVoucherNo,
+                        Amount = (decimal?)0, // replace with amount field if exists
+                        User = !(v.IsVerified ?? false) ? v.AddedBy
+                               : (v.IsVerified ?? false) && !(v.IsApproved ?? false) ? v.VerifiedBy
+                               : (v.IsApproved ?? false) ? v.ApprovedBy
+                               : v.AddedBy,
+                        Status = !(v.IsVerified ?? false) ? "waiting for verification"
+                               : (v.IsVerified ?? false) && !(v.IsApproved ?? false) ? "awaiting your approval"
+                               : (v.IsApproved ?? false) ? "awaiting audit"
+                               : "completed",
+                        CreatedOn = v.AddedOn ?? DateTime.Now
+                    })
+                    .OrderByDescending(v => v.CreatedOn)
+                    .Take(20)
+                    .ToList();
+
+                return Ok(new
+                {
+                    success = true,
+                    Summary = summary,
+                    Notifications = notifications
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetMaterialRequestSummary()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // Query the view
+                    var query = dbContext.Qry60604purchaseRequestViewMasters.AsQueryable();
+
+                    // Build summary counts (Stages from your table)
+                    var summary = new
+                    {
+                        ToBeVerified = await query.CountAsync(x => x.IsSubmitted == true && x.IsVerified != true ),
+                        ToBeApproved = await query.CountAsync(x => x.IsVerified == true && x.IsApproved != true ),
+                        ToBeCancelled = await query.CountAsync(x => x.IsCancelled == true)
+                    };
+
+                    // Get recent notifications (optional, for UI display)
+                    var notifications = await query
+                        .OrderByDescending(x => x.AddedOn)
+                        .Take(10)
+                        .Select(x => new
+                        {
+                            VoucherNumber = x.Mprno,
+                            VoucherType = "Material Request",
+                            Status = x.IsCancelled ? "Cancelled"
+                                   : x.IsApproved == true ? "Approved"
+                                   : x.IsVerified == true ? "Verified"
+                                   : x.IsSubmitted == true ? "Submitted"
+                                   : "Draft",
+                            User = x.PreparedBy ?? "System",
+                            Amount = x.TotalRequestCost,
+                            CreatedOn = x.AddedOn
+                        })
+                        .ToListAsync();
+
+                    return Ok(new { success = true, Summary = summary, Notifications = notifications });
+                }
+                catch (Exception ex)
+                {
+                    
+                    return BadRequest(new { success = false, message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetQuotationSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var query = dbContext.Qry60104quotationViewMasters.AsQueryable();
+
+                // Group summary counts
+                var summary = new
+                {
+                    ToBeVerified = await query.CountAsync(x => x.IsSubmitted == true && x.IsVerified != true),
+                    ToBeApproved = await query.CountAsync(x => x.IsVerified == true && x.IsApproved != true),
+
+                    // ✅ Replace "Cancelled" with your actual column/property name
+                    //ToBeCancelled = await query.CountAsync(x => x.IsCancelled == true)
+                };
+
+                return Ok(new { success = true, data = summary });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+        [HttpGet]
+        public IActionResult GetSalesOrderSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var query = dbContext.Qry60204salesOrderViewMasters.AsQueryable();
+
+                var summary = new
+                {
+                    Total = query.Count(),
+
+                    // Verification status
+                    Verified = query.Count(x => x.IsVerified == true),
+                    ToBeVerified = query.Count(x => x.IsVerified != true),
+
+                    // Approval status
+                    Approved = query.Count(x => x.IsApproved == true),
+                    ToBeApproved = query.Count(x => x.IsVerified == true && x.IsApproved != true),
+
+                    // Posting status
+                    Posted = query.Count(x => x.OrderStatus == "Posted"),
+                    ToBePosted = query.Count(x => x.IsVerified == true && x.IsApproved == true && x.OrderStatus != "Posted")
+                };
+
+                return Ok(new { success = true, data = summary });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetRFQSummary()
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var query = dbContext.Qry60704rfqviewMasters.AsQueryable();
+
+                // Build summary counts (customize statuses based on your business rules)
+                var summary = new
+                {
+                    ToBeQuoted = await query.CountAsync(x => x.IsQuoted != true), // not quoted yet
+                    Quoted = await query.CountAsync(x => x.IsQuoted == true && x.IsWon != true), // quoted but not won
+                    Won = await query.CountAsync(x => x.IsWon == true), // RFQ won
+                    Lost = await query.CountAsync(x => x.IsQuoted == true && x.IsWon != true && x.ReasonWon != null) // lost or rejected
+                };
+
+                // Optional: get recent notifications (last 10 RFQs)
+                var notifications = await query
+                    .OrderByDescending(x => x.AddedOn)
+                    .Take(10)
+                    .Select(x => new
+                    {
+                        VoucherNumber = x.Rfqno,
+                        VoucherType = "RFQ",
+                        Status = x.IsWon == true ? "Won"
+                               : x.IsQuoted == true ? "Quoted"
+                               : "To Be Quoted",
+                        User = x.PreparedBy ?? "System",
+                        Amount = x.TotalAfterDiscount,
+                        CreatedOn = x.AddedOn
+                    })
+                    .ToListAsync();
+
+                return Ok(new { success = true, Summary = summary, Notifications = notifications });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
         }
     }
 

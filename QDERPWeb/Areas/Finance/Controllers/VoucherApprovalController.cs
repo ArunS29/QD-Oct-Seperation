@@ -4,6 +4,9 @@ using Microsoft.Extensions.Logging;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QDERPWeb.Models;
+using System.Linq.Expressions;
+
 
 namespace QDWEB.Areas.Finance.Controllers
 {
@@ -13,10 +16,13 @@ namespace QDWEB.Areas.Finance.Controllers
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<VoucherApprovalController> _logger;
 
-        public VoucherApprovalController(ILogger<VoucherApprovalController> logger, TenantDbContextHelper tenantDbContextHelper)
+        private readonly FcmService _fcmService;
+
+        public VoucherApprovalController(ILogger<VoucherApprovalController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _fcmService = fcmService;
         }
         [HttpGet]
         public IActionResult GetVoucherApproval(string voucherTypes)
@@ -161,13 +167,16 @@ namespace QDWEB.Areas.Finance.Controllers
         }
 
         [HttpPost]
-        public IActionResult UpdateVoucherStatus([FromBody] VoucherUpdateRequest request)
+        public async Task<IActionResult> UpdateVoucherStatus([FromBody] VoucherUpdateRequest request)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 return Unauthorized(new { success = false, message = "Invalid tenant." });
             }
             var UserName = HttpContext.Session.GetString("UserName");
+            var UserId = HttpContext.Session.GetString("UserId");
+            var TenantName = HttpContext.Session.GetString("TenantName");
+
             var vouchers = dbContext.Tbl201VoucherMasters
                 .Where(v => request.VoucherNos.Contains(v.VoucherNo))
                 .ToList();
@@ -223,18 +232,30 @@ namespace QDWEB.Areas.Finance.Controllers
                 _ => "Operation completed."
             };
 
-            return Json(new { success = true, message = message });
-        }
+             var notifyRequest = new NotificationRequest
+             {
+                 UserId = UserId, // or fetch from session/DB
+                 VoucherName = vouchers[0].VoucherNo,
+                 ActionType = request.ActionType,
+                TenantName = TenantName 
+            };
 
+        await _fcmService.SendNotificationAsync(notifyRequest);
+
+        return Json(new { success = true, message = message });
+        
+}
 
         [HttpPost]
-        public IActionResult VerifyVoucher(string voucherNo)
+        public async Task<IActionResult> VerifyVoucher(string voucherNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
                     var UserName = HttpContext.Session.GetString("UserName");
+                    var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
 
                     if (string.IsNullOrEmpty(voucherNo))
                         return BadRequest("Invalid VoucherNo");
@@ -248,6 +269,16 @@ namespace QDWEB.Areas.Finance.Controllers
                     voucher.IsVerified = true;
 
                     dbContext.SaveChanges();
+
+                       var notifyRequest = new NotificationRequest
+                                {
+                                    UserId = UserId, // or fetch from session/DB
+                                    VoucherName = voucher.VoucherNo,
+                                    ActionType = "Verify Voucher",
+                                    TenantName = TenantName 
+                                };
+
+                    await _fcmService.SendNotificationAsync(notifyRequest);
 
                     return Ok(new
                     {
@@ -322,6 +353,90 @@ namespace QDWEB.Areas.Finance.Controllers
             return Ok();
         }
 
+        [HttpGet]
+        public IActionResult GetVoucherApprovalFiltered(string docType, string status)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+
+            try
+            {
+                var query = dbContext.Qry20136VoucherMasterLists.AsQueryable();
+
+                // Status column mapping
+                var statusColumnMap = new Dictionary<string, Expression<Func<Qry20136VoucherMasterList, bool>>>()
+        {
+            { "ToBeVerified", v => v.IsVerified == false },
+            { "ToBeApproved", v => v.IsApproved == false },
+            { "ToBeAudited", v => v.IsAuditVerified == false }
+        };
+
+                // Apply voucher type filter
+                if (!string.IsNullOrEmpty(docType))
+                {
+                    if (docType == "BankCashPayment")
+                    {
+                        query = query.Where(v => v.VoucherType == "Bank Payment" || v.VoucherType == "Cash Payment");
+                    }
+                    else if (docType == "BankCashReceipt")
+                    {
+                        query = query.Where(v => v.VoucherType == "Bank Receipt" || v.VoucherType == "Cash Receipt");
+                    }
+                    else
+                    {
+                        query = query.Where(v => v.VoucherType == docType);
+                    }
+                }
+
+                // Apply status filter
+                if (!string.IsNullOrEmpty(status) && statusColumnMap.ContainsKey(status))
+                {
+                    query = query.Where(statusColumnMap[status]);
+                }
+
+                // Get company details
+                var company = dbContext.Tbl901CompanyDetails.FirstOrDefault();
+
+                // Select and return data
+                var data = query.Select(v => new
+                {
+                    v.VoucherNo,
+                    VoucherDate = v.VoucherDate.ToString("dd-MMM-yyyy"),
+                    v.VoucherEffectiveDate,
+                    v.VoucherRefNo,
+                    v.VoucherNarration,
+                    v.VoucherEnteredBy,
+                    v.VoucherEnteredOn,
+                    v.IsVerified,
+                    v.VoucherVerifiedBy,
+                    v.VoucherVerifiedOn,
+                    v.IsApproved,
+                    v.VoucherApprovedBy,
+                    v.VoucherApprovedOn,
+                    v.VoucherType,
+
+                    // Add these so DataGrid can bind
+                    ConvertedDrAmount = v.DebitAmount,
+                    ConvertedCrAmount = v.CreditAmount,
+                    DrAmount = v.DebitAmount,
+                    CrAmount = v.CreditAmount,
+                    TransactionCurrencySymbol = company.CurrencyImage,
+
+                    // If you really need audit fields
+                    AuditVerifiedBy = v.AuditVerifiedBy,
+                    IsAuditVerified = v.IsAuditVerified,
+                    AuditVerifiedOn = v.AuditVerifiedOn
+                }).ToList();
+
+
+                return Json(data);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error in GetVoucherApprovalFiltered: {ex.Message}");
+                return BadRequest(new { message = "An error occurred while fetching filtered data.", error = ex.Message });
+            }
+        }
 
     }
 }

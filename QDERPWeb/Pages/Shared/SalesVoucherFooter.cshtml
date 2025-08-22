@@ -820,7 +820,7 @@
         });
     }
 
-    function onBackButtonClick() {
+        function onBackButtonClick() {
         const dataGrid = $("#dataGrid").dxDataGrid("instance");
         const rowCount = dataGrid.getVisibleRows().length;
 
@@ -830,19 +830,38 @@
                 "No line items"
             ).done(function (dialogResult) {
                 if (dialogResult) {
-                    if (typeof onConfirm === "function") {
-                        onConfirm(); // Ensure onConfirm is defined before calling
+                    const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                    if (!voucherNo) {
+                        DevExpress.ui.notify("Voucher number is missing.", "error", 2000);
+                        return;
                     }
-                    DevExpress.ui.dialog.alert(
-                        "Voucher has been successfully removed from the database.",
-                        "Data Deleted Successfully"
-                    ).done(function () {
-                        history.back(); // Go back to the previous page
+
+                    // Call API to check and delete if exists
+                    $.ajax({
+                        url: `/api/VoucherMaster/DeleteVoucherIfExists?voucherNo=${encodeURIComponent(voucherNo)}`,
+                        type: "POST",
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.dialog.alert(
+                                    "Voucher has been successfully removed from the database.",
+                                    "Data Deleted Successfully"
+                                ).done(function () {
+                                    history.back();
+                                });
+                            } else {
+                                DevExpress.ui.notify("Voucher not found in the database.", "warning", 2000);
+                                history.back();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("Error checking voucher in database.", "error", 2000);
+                        }
                     });
                 }
             });
         } else {
-            history.back(); // Closes or navigates back
+            history.back(); // Go back directly if there are rows
         }
     }
 
@@ -1287,17 +1306,22 @@
         }
 
         // Ensure a valid report is selected
-        if (!reportName) {
-            alert("Invalid report format selected.");
-            return;
-        }
+           if (!reportName) {
+        alert("Invalid report format selected.");
+        return;
+    }
 
-        // Open the XtraReport with Voucher No as a parameter
-        window.open(
-            `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
-            '_blank',
-            'width=1200,height=800,scrollbars=yes,resizable=yes'
-        );
+    
+            const screenWidth = window.screen.availWidth;
+            const screenHeight = window.screen.availHeight;
+
+          
+            window.open(
+                `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
+                '_blank',
+                `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
+            );
+
     }
 
 
@@ -1316,12 +1340,12 @@
         } else {
             var voucherNoBox = $("#VoucherNo").dxTextBox("instance");
             var voucherNo = voucherNoBox.option("value");
-
+            var menuType = "finance";
             var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
             var voucherType = voucherTypeBox.option("value");
             const isMaster = false;
             console.log(voucherType)
-            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
             const title = "Transaction Documents";
             openModal(url, title);
         }

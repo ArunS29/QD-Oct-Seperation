@@ -10,6 +10,9 @@
 	string voucherAmount = ViewBag.VoucherAmount;
 	long voucherEntryNo = ViewBag.VoucherEntryNo;
 	string accountId = ViewBag.AccountID;
+	decimal currencyRate = ViewBag.CurrencyRate;
+	double? originalAmount = null;
+
 	double? voucherAmountParsed = null;
 
 	// Try parsing the voucherAmount to a nullable double
@@ -27,21 +30,24 @@
 	{
 		// Format the amount to 2 decimal places and then parse it back to double
 		voucherAmountParsed = Math.Round(voucherAmountParsed.Value, 2);
+		originalAmount = (double)(voucherAmountParsed.Value / (double)currencyRate);
 	}
 
 }
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-
+<script>
+	var currencyRate =' @currencyRate';
+</script>
 
 <style type="text/css">
 	.dx-button {
 		margin-left: 8px;
 	}
 
-	.dx-popup-title.dx-toolbar {
+	/* .dx-popup-title.dx-toolbar {
 		background-color: lightskyblue !important;
 		color: white !important;
-	}
+	} */
 
 
 	.horizontal-container {
@@ -229,7 +235,7 @@
 			<div class="col-md-2 col-6">
 				@(Html.DevExtreme().NumberBox()
 								.ID("propertyAmount")
-								.Value(voucherAmountParsed)
+								.Value(originalAmount)
 								.ShowSpinButtons(true)
 								.ReadOnly(true)
 								.Format("#,##0.00")
@@ -390,7 +396,16 @@
 		</text>);
 
 						@* columns.Add().Caption("Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
-						columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+					columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
+					"    if (data.VoucherAmount != null && currencyRate != 0) { " +
+					"        var val = data.VoucherAmount / currencyRate; " +
+					"        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+					"    } " +
+					"    return null; " +
+					"}")
+					.CustomizeText("function(e) { " +
+					"return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+					"}");
 						columns.AddFor(m => m.PropertyAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
 						columns.AddFor(m => m.PropertyAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
 
@@ -522,6 +537,8 @@
 	
 	let propertyno = null;
 	let Amount = 0;
+	let editingRowIndex = null;
+	let editingColumn = null;
 
 </script>
 <script>
@@ -559,7 +576,9 @@
 										PropertyAllocRemarks: null,
 										VoucherEntryId: VoucherEntryId,
 										VoucherNo: voucherno,
-                                        LedgerAccountNo: accountId
+                                        LedgerAccountNo: accountId,
+										CurrencyRate: Number(currencyRate)
+
 									};
 
 									// Save to backend
@@ -720,7 +739,7 @@
 	// Save Button Click
 	$("#btnpropertySave").on("click", function (e) {
 		e.preventDefault();
-		debugger;
+		
 		let grid = $("#propertydataGrid").dxDataGrid("instance");
 		let allRowsData = grid.getDataSource().items();
 		let voucherchildno = parseInt('@voucherEntryNo'.trim(), 10);
@@ -844,14 +863,13 @@
 		popupInstance.hide();
 	}
 
-	let editingRowIndex = null;
-	let editingColumn = null;
+	
 
 
 	$(document).ready(function () {
 		const dataGrid = $("#propertydataGrid").dxDataGrid("instance");
 		   dataGrid.option("onRowUpdating", function (e) {
-				debugger;
+				
 						const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
 						const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
 						const drCr = '@drCr';
@@ -862,8 +880,9 @@
 					const oldData = e.oldData;
 					const newData = e.newData;
 
-					const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount);
-					const originalAmount = parseFloat(oldData.VoucherAmount);
+					const updatedAmount = newData.VoucherAmount !== undefined ? parseFloat(newData.VoucherAmount) : parseFloat(oldData.VoucherAmount) / currencyRate;
+                    const originalAmount = parseFloat(oldData.VoucherAmount) / currencyRate;
+
 
 					// Check if VoucherAmount changed
 					const isVoucherAmountChanged = newData.VoucherAmount !== undefined && updatedAmount !== originalAmount;
@@ -886,11 +905,13 @@
 
 					// Case 1: Amount changed and is lower than original — split
 					if (isVoucherAmountChanged && updatedAmount < originalAmount) {
-						const remainingAmount = originalAmount - updatedAmount;
+						   const remainingAmount = originalAmount - updatedAmount;
+							const updateAmount = updatedAmount * currencyRate;
+							const remainAmount = remainingAmount * currencyRate;
 
 						const adjustOldRow = {
 							PropertyAllocationId: oldData.PropertyAllocationId,
-							VoucherAmount: updatedAmount,
+							VoucherAmount: updateAmount,
 							PropertyAllocRemarks: newData.PropertyAllocRemarks ?? oldData.PropertyAllocRemarks,
 							PropertyNo: newData.PropertyNo ?? oldData.PropertyNo,
 							EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
@@ -901,11 +922,12 @@
 										PropertyAllocDrCr: drCr,
 										PropertyNo:  null,
 										EffectiveDate: new Date(),
-										AmountAllocated: remainingAmount.toFixed(2),
+										AmountAllocated: remainAmount.toFixed(2),
 										PropertyAllocRemarks: null,
 										VoucherEntryId: VoucherEntryId,
 										VoucherNo: voucherno,
-										LedgerAccountNo: accountId
+										LedgerAccountNo: accountId,
+                                        CurrencyRate: Number(currencyRate)
 									};
 
 						// Update old amount first
@@ -945,9 +967,10 @@
 					}
 					// Case 2: Other fields updated — update existing row directly
 					else {
+						const updateAmount = updatedAmount * currencyRate;
 						const updateRow = {
 							PropertyAllocationId: oldData.PropertyAllocationId,
-							VoucherAmount: updatedAmount,
+							VoucherAmount: updateAmount,
 							PropertyAllocRemarks: newData.PropertyAllocRemarks ?? oldData.PropertyAllocRemarks,
 							PropertyNo: newData.PropertyNo ?? oldData.PropertyNo,
 							EffectiveDate: newData.EffectiveDate ?? oldData.EffectiveDate
@@ -980,7 +1003,7 @@
 					}
 		   });
 		   dataGrid.option("onRowRemoving", function (e) {
-			   debugger;
+			   
 				const rowData = e.data;
 				const VoucherEntryId = parseInt('@voucherEntryNo'.trim(), 10);
 				const initialVoucherAmount = parseFloat('@voucherAmountParsed'.replace(/"/g, '')) || 0;
@@ -1133,54 +1156,71 @@
 				const accountId = '@accountId';
 
 
-				// Step 1: Delete all by VoucherNo
+			const visibleRowCount = dataGrid.getVisibleRows().length;
+
+			const insertAndRefresh = () => {
+				const newRow = {
+									PropertyAllocationId: 0,
+									PropertyAllocDrCr: drCr,
+									PropertyNo:  null,
+									EffectiveDate: new Date(),
+									AmountAllocated: initialVoucherAmount.toFixed(2),
+									PropertyAllocRemarks: null,
+									VoucherEntryId: VoucherEntryId,
+									VoucherNo: voucherno,
+									LedgerAccountNo: accountId,
+									CurrencyRate: Number(currencyRate)
+
+					};
+
+					$.ajax({
+						type: "POST",
+						url: "/api/PropertyAllocation/InsertDefaultPropertyAllocation",
+						contentType: "application/json",
+						data: JSON.stringify(newRow),
+						success: function () {
+							// Step 3: Refresh grid
+							$.ajax({
+								url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
+								type: 'GET',
+								success: function (refreshedData) {
+									dataGrid.option('dataSource', refreshedData);
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
+								}
+							});
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
+						}
+					});
+
+			};
+
+			if (visibleRowCount > 0) {
+				const deleterequest = {
+									
+									VoucherEntryId: VoucherEntryId,
+									VoucherNo: voucherno,
+									
+
+				};
 				$.ajax({
 					type: "POST",
 					url: "/api/PropertyAllocation/DeleteByVoucherNo",
 					contentType: "application/json",
-					data: JSON.stringify({ voucherNo: voucherno }),
+					data: JSON.stringify(deleterequest),
 					success: function () {
-						// Step 2: Insert default row
-						const newRow = {
-										PropertyAllocationId: 0,
-										PropertyAllocDrCr: drCr,
-										PropertyNo:  null,
-										EffectiveDate: new Date(),
-										AmountAllocated: initialVoucherAmount.toFixed(2),
-										PropertyAllocRemarks: null,
-										VoucherEntryId: VoucherEntryId,
-										VoucherNo: voucherno,
-										LedgerAccountNo: accountId
-						};
-
-						$.ajax({
-							type: "POST",
-							url: "/api/PropertyAllocation/InsertDefaultPropertyAllocation",
-							contentType: "application/json",
-							data: JSON.stringify(newRow),
-							success: function () {
-								// Step 3: Refresh grid
-								$.ajax({
-									url: `/api/PropertyAllocation/GetPropertyAllocationsBydatagrid?voucherEntryId=${VoucherEntryId}`,
-									type: 'GET',
-									success: function (refreshedData) {
-										dataGrid.option('dataSource', refreshedData);
-									},
-									error: function () {
-										DevExpress.ui.notify("Failed to refresh cost allocation data.", "error", 4000);
-									}
-								});
-							},
-							error: function () {
-								DevExpress.ui.notify("Failed to insert default cost allocation.", "error", 3000);
-							}
-						});
+						insertAndRefresh();
 					},
 					error: function () {
 						DevExpress.ui.notify("Failed to delete cost allocations.", "error", 3000);
 					}
 				});
-
+			} else {
+				insertAndRefresh();
+			}
 		}
 
 		 // Attach onEditorPreparing

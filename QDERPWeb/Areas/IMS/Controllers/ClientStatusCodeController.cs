@@ -1,10 +1,12 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.PivotGrid.PivotTable;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -15,11 +17,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         private ERPMasterWtDataContext _context;
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<ClientLeadsController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-       
 
-        public ClientStatusCodeController(ILogger<ClientLeadsController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+
+        public ClientStatusCodeController(ILogger<ClientLeadsController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -79,6 +84,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                  module: "IMS > Batch Update",
+                  actionDetail: $":Batch Updated {updates[0].key}",
+                   documentNo: $"{updates[0].key}"
+                );
 
                 return Json(new { success = true, message = "Updated successfully." });
             }
@@ -120,8 +130,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 dbContext.Tbl30103ClientStatusCodes.Add(newCategory);
                 dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Create Client Category",
+                     actionDetail: $":Created Client Category {vm.StatusCode}",
+                     documentNo: $"{vm.StatusCode}"
+                   );
 
-                var allData = dbContext.Tbl30103ClientStatusCodes
+
+                    var allData = dbContext.Tbl30103ClientStatusCodes
              .OrderBy(e => e.StatusCode)
              .Select(e => new ClientStatusDisplayDTO
              {
@@ -165,7 +180,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 }
 
                 dbContext.SaveChanges();
-                return Ok(new { message = "Updated successfully" });
+                    _userActionLogger.LogAsync(module: "IMS > Update Client Categories",
+                      actionDetail: $":Updated Client Categories {updatedList[0].StatusCode}",
+                      documentNo: $"{updatedList[0].StatusCode}"
+                    );
+                    return Ok(new { message = "Updated successfully" });
                 }
 
                 return Unauthorized(new { message = "Invalid tenant.", success = false });

@@ -353,7 +353,7 @@
         <div class="dx-fieldset horizontal-container">
             @(Html.DevExtreme().Button()
                         .ID("btnSave")
-                        .Text("Save")
+                        .Text(new JS("formatMessage('Save')"))
                         .Icon("save")
                         .Width(180)
                         .Hint("Click to save")
@@ -361,7 +361,7 @@
 
             @(Html.DevExtreme().Button()
                         .ID("btnSaveAndClose")
-                        .Text("Save & Close")
+                        .Text(new JS("formatMessage('Save & Close')"))
                         .Icon("save")
                         .Width(180)
                         .Hint("Click to save and close")
@@ -421,7 +421,7 @@
 
             @(Html.DevExtreme().Button()
                         .ID("btnDelete")
-                        .Text("Delete")
+                        .Text(new JS("formatMessage('Delete')"))
                         .Icon("trash")
                         .Width(180)
                         .Hint("Click to delete")
@@ -835,21 +835,41 @@
                 "No line items"
             ).done(function (dialogResult) {
                 if (dialogResult) {
-                    if (typeof onConfirm === "function") {
-                        onConfirm(); // Ensure onConfirm is defined before calling
+                    const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+                    if (!voucherNo) {
+                        DevExpress.ui.notify("Voucher number is missing.", "error", 2000);
+                        return;
                     }
-                    DevExpress.ui.dialog.alert(
-                        "Voucher has been successfully removed from the database.",
-                        "Data Deleted Successfully"
-                    ).done(function () {
-                        history.back(); // Go back to the previous page
+
+                    // Call API to check and delete if exists
+                    $.ajax({
+                        url: `/api/VoucherMaster/DeleteVoucherIfExists?voucherNo=${encodeURIComponent(voucherNo)}`,
+                        type: "POST",
+                        success: function (response) {
+                            if (response.success) {
+                                DevExpress.ui.dialog.alert(
+                                    "Voucher has been successfully removed from the database.",
+                                    "Data Deleted Successfully"
+                                ).done(function () {
+                                    history.back();
+                                });
+                            } else {
+                                DevExpress.ui.notify("Voucher not found in the database.", "warning", 2000);
+                                history.back();
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            DevExpress.ui.notify("Error checking voucher in database.", "error", 2000);
+                        }
                     });
                 }
             });
         } else {
-            history.back(); // Closes or navigates back
+            history.back(); // Go back directly if there are rows
         }
     }
+
 
 
     function onVerifyButtonClick() {
@@ -1324,10 +1344,13 @@
         }
 
         // Open the XtraReport with Voucher No as a parameter
-       window.open(
+         const screenWidth = window.screen.availWidth;
+         const screenHeight = window.screen.availHeight;
+
+        window.open(
             `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&voucherNo=${encodeURIComponent(voucherNo)}&skipPreview=true`,
             '_blank',
-            'width=1200,height=800,scrollbars=yes,resizable=yes'
+            `top=0,left=0,width=${screenWidth},height=${screenHeight},scrollbars=yes,resizable=yes`
         );
     }
    
@@ -1364,58 +1387,86 @@
                 var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                 var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); 
                 var voucherType = voucherTypeBox.option("value");
+                var folderNo2 = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null;
+                var menuType = "finance";
                 const isMaster = false;
                 console.log(voucherType)
-                const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&modal=true`;
+                const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderNo2)}&modal=true`;
                 const title = "Transaction Documents";
                 openModal(url, title);
             }
         }
-        //  $(document).ready(function () {
-        //     const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-        //     const voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
 
-        //     if (voucherNoBox && voucherTypeBox) {
-        //         const voucherNo = voucherNoBox.option("value");
-        //         const voucherType = voucherTypeBox.option("value");
+        // Attachment Count
+        //1. Button Modify in btn-attach
+        //2. Get Update the count of button for Attachment
 
-        //         if (voucherNo && voucherType) {
-        //             updateAttachButtonUI(voucherNo, voucherType);
-        //         }
-        //     }
-        // });
+        function updateAttachButtonCount(buttonSelector, count) {
+            var btn = $(buttonSelector);
+            var btnInstance = btn.dxButton("instance");
+            if (!btnInstance) return;
 
+            var originalText = btnInstance.option("text");
+            var color = count > 0 ? "green" : "red";
+
+            btnInstance.option({
+                template: function() {
+                    // Icon element
+                    var iconElement = $("<span>")
+                    .addClass("dx-icon dx-icon-attach")
+                    .addClass(count > 0 ? "icon-green" : "icon-red")
+                    .css({
+                        "font-size": "15px",
+                        "vertical-align": "middle",
+                        "margin-right": "4px"
+                    })[0];
+
+                    // Create fragment
+                    var fragment = document.createDocumentFragment();
+                    fragment.appendChild(iconElement);
+
+                    // Append count only if > 0
+                    if (count > 0) {
+                        var countSpan = document.createElement("span");
+                        countSpan.style.color = color;
+                        countSpan.style.fontWeight = "bold";
+                        countSpan.style.fontSize = "15px";
+                        countSpan.style.marginRight = "2px";
+                        countSpan.textContent = count;
+                        fragment.appendChild(countSpan);
+                    }
+
+                    // Append original text
+                    fragment.appendChild(document.createTextNode(originalText));
+
+                    return fragment;
+                }
+            });
+        }
+
+            //1. Get Document Count from Grid Load in Ledger Documents
+        function setAttachCount(count) {
+            updateAttachButtonCount("#btnAttach", count);
+        }
+        //2. Get Document Count
+        async function getDocumentCount() {
+            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+            var voucherType = voucherTypeBox.option("value");
+            var folderNo2 = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null;
+            var menuType = "finance";
+            
+            const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
+            const docs = await res.json();
+            const count = docs.length;
+
+            updateAttachButtonCount("#btnAttach", count);
+
+            // No need to return anything if you don't want to
+        }
 
    
-    async function updateAttachButtonUI(folderId, module) {
-       
-        const button = document.querySelector("#btnAttach .dx-button-content");
-        if (!button) return;
-
-        try {
-            const response = await fetch(`/api/Finance/GetDocumentCount?folderId=${encodeURIComponent(folderId)}&module=${encodeURIComponent(module)}`);
-            if (!response.ok) throw new Error("Error fetching count");
-
-            const count = await response.json();
-
-            // Update icon color
-            const icon = button.querySelector("i");
-            if (icon) {
-                icon.classList.remove("text-muted", "text-danger", "text-success");
-                icon.classList.add(count > 0 ? "text-success" : "text-danger");
-            }
-
-            // Update count
-            const countSpan = button.querySelector(".attach-count");
-            if (countSpan) {
-                countSpan.textContent = `(${count})`;
-                countSpan.classList.remove("text-muted", "text-danger", "text-success");
-                countSpan.classList.add(count > 0 ? "text-success" : "text-danger");
-            }
-        } catch (err) {
-            console.error("Attach count fetch failed", err);
-        }
-    }
+    
 
  
 </script>

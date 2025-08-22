@@ -1,8 +1,12 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Mvc;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using System.Globalization;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +16,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<PurchaseOrderController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public PurchaseOrderController(ILogger<PurchaseOrderController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -72,6 +79,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update Purchase Order Categories",
+                      actionDetail: $"Saved Purchase Order Categories  {model.PocategoryId}",
+                      documentNo: $"{model.PocategoryId}"
+                    );
                     return Ok(new { success = true, message = "Saved successfully", id = model.PocategoryId });
                 }
                 catch (Exception ex)
@@ -100,6 +112,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60404pocategories.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                     module: "IMS > Delete Purchase Order Categories",
+                     actionDetail: $"Deleted Purchase Order Categories  {id}",
+                     documentNo: $"{id}"
+                   );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }
@@ -112,6 +129,56 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { success = false, message = "Invalid tenant" });
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPurchaseItemDetailsByPoDate(string frmDate, string toDate){
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext)){
+                try{
+                    if (!DateTime.TryParseExact(frmDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime from))
+                        return BadRequest("Invalid fromDate format. Use MM/dd/yyyy.");
+                     
 
+                    if (!DateTime.TryParseExact(toDate, "MM/dd/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime to))
+                        return BadRequest("Invalid toDate format. Use MM/dd/yyyy.");
+
+                    var data = await dbContext.Qry60410purchaseItemDetails
+                        .Where(x => x.Podate >= from && x.Podate <= to)
+                        .ToListAsync();
+
+                    return Ok(data);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
+        [HttpGet]
+        public IActionResult Get(DataSourceLoadOptions loadOptions, string Mprno){
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+            try
+                {
+                    var data = dbContext.Qry60404purchaseOrderViewMasters.AsQueryable();
+
+                    if (!string.IsNullOrEmpty(Mprno))
+                    {
+                        data = data.Where(item => item.Pono == Mprno);
+                    }
+
+                    var result = DataSourceLoader.Load(data, loadOptions);
+                    return Json(result);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"An error occurred while fetching the data : {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
+        }
     }
 }

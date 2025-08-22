@@ -1582,7 +1582,7 @@
                                     valueExpr: "TaxSlabCode",
                                     displayExpr: "TaxCodeToDisplay",
                                     value: cellInfo.value,
-                                    dropDownOptions: { width: 400 },
+                                    dropDownOptions: { width: 280 },
                                     placeholder: "Select an Item / Services",
                                     onValueChanged: function (e) {
                                         let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
@@ -1717,7 +1717,7 @@
             e.editorOptions.onValueChanged = function (args) {
                 let grid = $("#itemGrid").dxDataGrid("instance");
                 let rowIndex = e.row.rowIndex;
-                    debugger;
+                    
                 let newValue = args.value;
 
                 // Get existing values or updated ones

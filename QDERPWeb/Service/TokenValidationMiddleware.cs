@@ -114,7 +114,7 @@ namespace QD.ERP.Web.Middleware
             {
                 var tenantName = context.GetRouteValue("tenantName")?.ToString();
                 var redirectUrl = string.IsNullOrEmpty(tenantName)
-                    ? "/pulse/Security/Login"
+                    ? "/Aicon/security/login"
                     : $"/{tenantName}/Security/Login";
 
                 context.Response.Redirect(redirectUrl);

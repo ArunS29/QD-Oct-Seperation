@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.VAT.Models;
+using QD.ERP.Web.Models;
 
 namespace QD.ERP.Web.DAL.Entities;
 
@@ -17,7 +18,11 @@ public partial class ERPMasterWtDataContext : DbContext
 
     public DbSet<SupplierOutstanding> SupplierOutstandings { get; set; }
     public virtual DbSet<CurrencyMaster> CurrencyMasters { get; set; }
+    public virtual DbSet<FinancialSummaryReport> FinancialSummaryReports { get; set; }
 
+  
+
+    public virtual DbSet<TblFcmDeviceToken> TblFcmDeviceTokens { get; set; }
     public virtual DbSet<Language> Languages { get; set; }
     public virtual DbSet<TblUserAccessWeb> TblUserAccessWebs { get; set; }
 
@@ -3406,6 +3411,7 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<AssetRegisterViews> AssetRegisterViews { get; set; }
     public virtual DbSet<ExpenseClaimViews> ExpenseClaimViews { get; set; }
     public virtual DbSet<AccountRegister> AccountRegisters { get; set; }
+    public DbSet<TotalDepreciationResult> TotalDepreciationResults { get; set; }
 
     public virtual DbSet<JournalRegisterView> JournalRegisterViews { get; set; }
     public virtual DbSet<VoucherViewModel> VoucherViewModels { get; set; }
@@ -3418,6 +3424,10 @@ public partial class ERPMasterWtDataContext : DbContext
     public virtual DbSet<MaterialReceiptViewModel> MaterialReceiptViewModels { get; set; }
     public DbSet<Qry01Bankandcashbalance> Qry01Bankandcashbalance { get; set; }
     public DbSet<Qry01SupplierOutstanding> Qry01SupplierOutstanding { get; set; }
+    public DbSet<ZeroToWonDto> ZeroToWonDtos { get; set; }
+    public DbSet<UpdateIsWonDto> UpdateIsWonDtos { get; set; }
+    public DbSet<PODiscountDistributionDto> PODiscountDistributionDtos { get; set; }
+   // public DbSet<CreateQuotationRequest> CreateQuotationRequests { get; set; }
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -3443,11 +3453,20 @@ public partial class ERPMasterWtDataContext : DbContext
         modelBuilder.Entity<RFQViewModel>().HasNoKey();
 		modelBuilder.Entity<QuotationViewModel>().HasNoKey();
         modelBuilder.Entity<MaterialReceiptViewModel>().HasNoKey();
-
+        modelBuilder.Entity<ZeroToWonDto>().HasNoKey();
+        modelBuilder.Entity<PODiscountDistributionDto>().HasNoKey();
+       // modelBuilder.Entity<CreateQuotationRequest>().HasNoKey();
+        modelBuilder.Entity<UpdateIsWonDto>().HasNoKey();
+        modelBuilder.Entity<TotalDepreciationResult>().HasNoKey();
         modelBuilder.Entity<Qry01Bankandcashbalance>().HasNoKey().ToView("qry01Bankandcashbalance");
         modelBuilder.Entity<Qry01SupplierOutstanding>().HasNoKey().ToView("qry01supplieroutstanding");
 
-
+        modelBuilder.Entity<FinancialSummaryReport>(entity =>
+        {
+            entity.HasNoKey(); // required for views or tables without PK
+            entity.ToTable("FinancialSummaryReport"); // actual table or view name
+        });
+      
         //modelBuilder.Entity<ClientCategoryDisplayDTO>.HasNoKey();
         modelBuilder.Entity<A01CheckIfAnyCostEntriesOrphan>(entity =>
         {
@@ -19292,6 +19311,38 @@ public partial class ERPMasterWtDataContext : DbContext
             entity.Property(e => e.VerifiedBy).IsUnicode(false);
             entity.Property(e => e.VerifiedOn).HasColumnType("datetime");
         });
+
+
+
+           modelBuilder.Entity<TblFcmDeviceToken>(entity =>
+    {
+        entity.ToTable("tblFcmDeviceTokens");
+
+        entity.HasKey(e => e.Id).HasName("PK_tblFcmDeviceTokens");
+
+        entity.Property(e => e.UserId)
+              .IsRequired()
+              .HasMaxLength(50);
+
+        entity.Property(e => e.TenantName)
+              .IsRequired()
+              .HasMaxLength(255);
+
+        entity.Property(e => e.DeviceId)
+              .IsRequired()
+              .HasMaxLength(100);
+
+        entity.Property(e => e.Token)
+              .IsRequired()
+              .HasMaxLength(255);
+
+        entity.Property(e => e.Platform)
+              .HasMaxLength(50);
+
+        entity.Property(e => e.LastUpdated)
+              .HasColumnType("datetime")
+              .HasDefaultValueSql("GETDATE()");
+    });
         // Specify the correct table name if it differs from the class name
         modelBuilder.Entity<Language>(entity =>
         {
@@ -59542,7 +59593,7 @@ public partial class ERPMasterWtDataContext : DbContext
                 .HasColumnName("FormID");
             entity.Property(e => e.LayoutDescription).IsUnicode(false);
             entity.Property(e => e.LayoutXml).HasColumnType("xml");
-            entity.Property(e => e.UserId).HasColumnName("UserID");
+            entity.Property(e => e.UserID).HasColumnName("UserID");
         });
 
         modelBuilder.Entity<Tbl90112ReportAttribute>(entity =>

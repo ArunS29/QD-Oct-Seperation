@@ -124,4 +124,8 @@ public partial class Tbl60601purchaseRequestMaster
     public string RemarksByApprover { get; set; }
 
     public string RemarksByVerifier { get; set; }
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
+
 }

@@ -100,7 +100,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Sales Person Master</h3>
+    <div id="SalesPersonMasters" class="titleText no-border-title"></div>
 </div>
 <div class="container-fluid">
 
@@ -277,9 +277,9 @@
                 },
                 update: function (key, values) {
                     var updatedSalesPerson = {
-                        SalesPersonCode: key, // Use the key for the salesperson to identify it
+                        SalesPersonCode:  values.SalesPersonName, // Use the key for the salesperson to identify it
                         SalesPersonName: values.SalesPersonName,
-                        UserCode: values.UserCode,
+                        UserCode:key,
                         EmailAddress: values.EmailAddress,
                         SalesPersonContactNo: values.SalesPersonContactNo
                     };
@@ -364,7 +364,7 @@
                 }
             },
             columns: [
-                { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: true },
+                { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: true, allowEditing: false  },
                 { dataField: "SalesPersonName", caption: formatMessage("Sales Person Name"), allowFiltering: true },
                 { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true },
                 { dataField: "SalesPersonContactNo", caption: formatMessage("Sales Person Contact Number"), allowFiltering: true },
@@ -809,6 +809,14 @@
 
             }
         }
-
+         $(function () {
+                 $("#SalesPersonMasters").dxTextBox({
+                    text: formatMessage("Sales Person Master"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textcolor-heading");
+                }
+                });
+            });
 </script>
 

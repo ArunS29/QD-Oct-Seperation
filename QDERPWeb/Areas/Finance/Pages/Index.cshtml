@@ -5,250 +5,238 @@
     ViewData["Title"] = "Outstanding Details";
 }
 
-<!-- Page Loader (full overlay) -->
-<div id="dashboardPageLoader" style="position:fixed;top:0;left:0;z-index:9999;background:rgba(255,255,255,0.8);width:100vw;height:100vh;display:flex;align-items:center;justify-content:center;">
-    <img src="/images/dicerol.gif" alt="Loading..." style="height:150px;">
+<link rel="stylesheet" href="/css/dashboard.css?v=1" />
+
+<div class="dashboard-scroll-container">
+    <!-- Modern Dashboard Header -->
+    <div class="dashboard-header">
+        <span class="user-name">Hey @Model.UserName</span> - <span class="subtext">here’s what’s happening till this date</span>
+        <label class="live-data-checkbox">
+            <input type="checkbox" id="getLiveData"> Get live data
+        </label>
+    </div>
+
+    <!-- Summary Cards Row -->
+    <div class="summary-cards-row">
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">TOTAL CLIENT OUTSTANDING</span>
+                <span id="clientOutstandingTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="totalClientOutstandingValue">0</div>
+            <span id="loaderClientOutstanding" style="display:none;">Loading...</span>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">TOTAL SUPPLIER OUTSTANDING</span>
+                <span id="supplierOutstandingTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="totalSupplierOutstandingValue">0</div>
+            <span id="loaderBillsOutstanding" style="display:none;">Loading...</span>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">TOTAL BANK BALANCE</span>
+                <span id="bankBalanceTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="totalBankBalanceValue">0</div>
+            <span id="loaderBankBalance" style="display:none;">Loading...</span>
+        </div>
+        <div class="summary-card">
+            <div class="summary-card-header">
+                <span class="summary-label">CASH BALANCE</span>
+                <span id="cashBalanceTrend" class="summary-trend-pill"></span>
+            </div>
+            <div class="summary-value" id="cashBalanceValue">0</div>
+            <span id="loaderCashBalance" style="display:none;">Loading...</span>
+        </div>
+    </div>
+
+    <!-- Outstanding Summary Section -->
+    <div class="outstanding-summary-section">
+        <div class="outstanding-summary-left">
+            <div class="section-header">
+                <span class="section-title">Top 5 Outstanding Summary</span>
+            </div>
+            <div class="tabs">
+                <div class="tab dashboard-tab active" id="tabClientOutstanding">Client Outstanding</div>
+                <div class="tab dashboard-tab" id="tabSupplierOutstanding">Supplier Outstanding</div>
+                <div class="tab dashboard-tab" id="tabCashBalance">Net Amount Summary</div>
+            </div>
+            <div class="tab-content active" id="tab-client">
+                <table class="summary-table">
+                    <thead>
+                        <tr>
+                            <th>Account Head</th>
+                            <th>Balance Amount</th>
+                            <th>Over Due Days</th>
+                            <th>Account Group</th>
+                            <th>Account Head No</th>
+                        </tr>
+                    </thead>
+                    <tbody id="topOutstandingTableBody">
+                        <!-- Data will be loaded here by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="outstanding-summary-right">
+            <div class="section-header">
+                <span class="section-title">Outstanding Summary</span>
+            </div>
+            <canvas id="outstandingDonutChart" width="320" height="150"></canvas>
+            <div class="donut-legend">
+                <span class="legend-item cash">Cash IN Hand</span>
+                <span class="legend-item bank">Bank Balance</span>
+            </div>
+        </div>
+    </div>
 </div>
 
-<!-- JS/CSS Dependencies -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
-<script src="https://www.gstatic.com/charts/loader.js"></script>
-<link rel="stylesheet" href="https://cdn3.devexpress.com/jslib/latest/css/dx.light.css">
-<script src="https://cdn3.devexpress.com/jslib/latest/js/dx.all.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/exceljs/4.3.0/exceljs.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
-<div class="dashboard-card-header">
-    Outstanding Dashboard Summary
-</div>
-<div class="dx-card-container">
-    <div class="Popupcard" id="clientcard">
-        <div class="dx-card-header">
-            <div id="TotalClientOutstanding" class="no-border-input"></div>
-        </div>
-        <div class="dx-card-content">
-            <span id="loaderClientOutstanding" style="display:none;">
-                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
-            </span>
-            <div id="totalClientOutstandingValue" class="total-value"></div>
-        </div>
+<!-- Global Loader Overlay -->
+<div id="globalLoader" aria-hidden="true" aria-busy="true">
+    <div class="gl-backdrop"></div>
+    <div class="gl-container">
+        <div class="gl-spinner"></div>
+        <div class="gl-text">Loading…</div>
     </div>
-    <div class="Popupcard" id="DashboardBankAccount">
-        <div class="dx-card-header">
-            <div id="TotalCashBalance" class="no-border-input"></div>
-        </div>
-        <div class="dx-card-content">
-            <span id="loaderCashBalance" style="display:none;">
-                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
-            </span>
-            <div id="cashBalanceValue" class="total-value"></div>
-        </div>
-    </div>
-    <div class="Popupcard" id="SupplierCard">
-        <div class="dx-card-header">
-            <div id="TotalSupplierOutstanding" class="no-border-input"></div>
-        </div>
-        <div class="dx-card-content">
-            <span id="loaderBillsOutstanding" style="display:none;">
-                <img src="/images/dicerol.gif" alt="Loading..." style="height:16px;">
-            </span>
-            <div id="totalBillsOutstandingValue" class="total-value"></div>
-        </div>
-    </div>
-</div>
-<div class="dashboard-card-header">
-   Top 5 Outstanding Summary
-</div>
-<div class="grid-container">
-    <div class="grid-section">
-        <div id="ClientOutstanding" class="no-border-title"></div>
-        <div id="clientOutstandingGrid"></div>
-    </div>
-    <div class="grid-section">
-        <div id="SupplierOutstanding" class="no-border-title"></div>
-        <div id="billsPayableGrid"></div>
-    </div>
-    <div class="grid-section">
-        <div id="BankAccountDetails" class="no-border-title"></div>
-        <div id="accountSummaryGrid"></div>
-    </div>
-</div>
-
-<div class="chart-row1">
-    <canvas id="outstandingChart" style="width:100%;max-width:700px"></canvas>
-    <div id="myChart2" style="width: 70%; height: 350px;"></div>
 </div>
 
 <script>
-const dashboardRoutes = {
-    clientcard: "DashboardClient",
-    SupplierCard: "DashboardSupplier",
-    DashboardBankAccount: "DashboardBankAccount"
-};
-Object.keys(dashboardRoutes).forEach(cardId => {
-    $(`#${cardId}`).on("click", function () {
-        window.location.href = `/${tenantName}/Finance/${dashboardRoutes[cardId]}`;
-    });
+/* ===== Global Loader ===== */
+(function () {
+    const loader = document.getElementById('globalLoader');
+    let hideTimer = null, locks = 0;
+
+    function showLoader(forceImmediate = false) {
+        locks++;
+        if (hideTimer) { clearTimeout(hideTimer); hideTimer = null; }
+        loader.classList.add('show');
+        document.body.classList.add('gl-lock');
+        if (forceImmediate) loader.offsetHeight;
+    }
+
+    function hideLoader() {
+        hideTimer = setTimeout(() => {
+            locks = Math.max(0, locks - 1);
+            if (locks === 0) {
+                loader.classList.remove('show');
+                document.body.classList.remove('gl-lock');
+            }
+        }, 150);
+    }
+
+    window.__globalLoader = { show: showLoader, hide: hideLoader };
+})();
+
+/* ===== Animate number changes ===== */
+function animateValue(id, start, end, duration) {
+    const obj = document.querySelector(id);
+    if (!obj) return;
+    let startTimestamp = null;
+    const step = (timestamp) => {
+        if (!startTimestamp) startTimestamp = timestamp;
+        const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+        obj.textContent = Math.floor(progress * (end - start) + start).toLocaleString('en-US');
+        if (progress < 1) window.requestAnimationFrame(step);
+    };
+    window.requestAnimationFrame(step);
+}
+
+/* ===== Live Data Refresh ===== */
+document.getElementById("getLiveData").addEventListener("change", function () {
+    if (this.checked) {
+        window.__globalLoader.show(true);
+        fetch("/api/dashboard/RunAllOutstandingProcedures", { method: "POST" })
+        .then(r => {
+            if (!r.ok) throw new Error("API failed");
+            return r.json();
+        })
+        .then(() => { alert("Live data refresh started!"); location.reload(); })
+        .catch(() => { alert("Failed to run live data process."); })
+        .finally(() => window.__globalLoader.hide());
+    }
 });
 
+/* ===== Dashboard Data Load ===== */
 $(document).ready(function () {
-    // Show page loader immediately
-    $("#dashboardPageLoader").show();
-    let loadTasks = [];
-
-    // Top card AJAX
     const apiEndpoints = [
-        { url: "/api/Dashboard/supplieroutstanding", target: "#totalBillsOutstandingValue", loader: "#loaderBillsOutstanding", key: "balance" },
         { url: "/api/Dashboard/GetTotalClientOutstanding", target: "#totalClientOutstandingValue", loader: "#loaderClientOutstanding", key: "balance" },
-        { url: "/api/Dashboard/GetCashBalance", target: "#cashBalanceValue", loader: "#loaderCashBalance", key: "balance" }
+        { url: "/api/Dashboard/supplieroutstanding",       target: "#totalSupplierOutstandingValue", loader: "#loaderBillsOutstanding",  key: "balance" },
+        { url: "/api/Dashboard/GetBankAccounts",           target: "#totalBankBalanceValue",        loader: "#loaderBankBalance",       key: "balance" },
+        { url: "/api/Dashboard/GetCashBalance",            target: "#cashBalanceValue",             loader: "#loaderCashBalance",       key: "balance" },
+        { url: "/api/Dashboard/GetCashBalance1",           target: null,                            loader: null,                       key: "balance" } // only for chart
     ];
-    apiEndpoints.forEach(endpoint => {
-        $(endpoint.loader).show();
-        let promise = $.getJSON(endpoint.url)
+
+    let cashVal = 0, bankVal = 0;
+
+    const requests = apiEndpoints.map(ep => {
+        if (ep.loader) $(ep.loader).show();
+        return $.getJSON(ep.url)
             .done(response => {
-                if (response.success) {
-                    $(endpoint.target).text(response[endpoint.key].toLocaleString('en-US'));
-                }
+                const raw = (response && (response.success === undefined || response.success) && response[ep.key] != null)
+                    ? Number(response[ep.key]) : 0;
+                if (ep.target) animateValue(ep.target, 0, raw, 900);
+
+                const urlLower = ep.url.toLowerCase();
+                if (urlLower.includes("getcashbalance1")) cashVal = raw;
+                if (urlLower.includes("getbankaccounts")) bankVal = raw;
             })
-            .always(() => {
-                $(endpoint.loader).hide();
-            });
-        loadTasks.push(promise);
+            .fail(() => { if (ep.target) $(ep.target).text('0'); })
+            .always(() => { if (ep.loader) $(ep.loader).hide(); });
     });
 
-    // Helper for grids (returns a promise)
-    function fetchDataAndInitializeGrid(url, gridSelector, columns, summaryItems) {
-        return $.ajax({
-            url: url,
-            type: "GET",
-            dataType: "json"
-        }).done(function (response) {
-            if (response && response.data) {
-                $(gridSelector).dxDataGrid({
-                    dataSource: response.data,
-                    columns: columns,
-                    columnAutoWidth: true,
-                    showBorders: true,
-                    wordWrapEnabled: true,
-                    filterRow: { visible: false },
-                    paging: { enabled: false },
-                    height: 400,
-                    scrolling: { mode: "standard" },
-                    searchPanel: { visible: false },
-                    allowColumnReordering: true,
-                    allowColumnResizing: true,
-                    columnChooser: { enabled: true, mode: "select" },
-                    loadPanel: { enabled: true },
-                    summary: { totalItems: summaryItems }
-                });
+    Promise.allSettled(requests).then(() => {
+        const ctx = document.getElementById('outstandingDonutChart').getContext('2d');
+        new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Cash IN Hand', 'Bank Balance'],
+                datasets: [{ data: [cashVal, bankVal], backgroundColor: ['#A48CFA', '#7BC0FE'], borderWidth: 2 }]
+            },
+            options: { cutout: '70%', plugins: { legend: { display: false } } }
+        });
+    });
+
+    /* ===== Outstanding Table Loader ===== */
+    function loadOutstandingTable(apiUrl) {
+        const $body = $("#topOutstandingTableBody");
+        $body.html('<tr><td colspan="5" style="text-align:center;color:#b9b9b9;">Loading...</td></tr>');
+        $.getJSON(apiUrl, data => {
+            if (data && Array.isArray(data.data) && data.data.length > 0) {
+                $body.html(data.data.map(row => `
+                    <tr>
+                        <td>${row.AccountHead || row.accountHead || ''}</td>
+                        <td>${(row.Balance ?? row.balance ?? 0).toLocaleString('en-US')}</td>
+                        <td>${row.OverdueDays ?? row.overdueDays ?? ''}</td>
+                        <td>${row.AccountGroup || row.accountGroup || ''}</td>
+                        <td>${row.AccountHeadNo || row.accountHeadNo || ''}</td>
+                    </tr>
+                `).join(''));
+            } else {
+                $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">No data found</td></tr>');
             }
+        }).fail(() => {
+            $body.html('<tr><td colspan="5" style="text-align:center;color:#e66a6a;">Failed to load data</td></tr>');
         });
     }
 
-    loadTasks.push(
-        fetchDataAndInitializeGrid(
-            "/api/Dashboard/GetClientOutstanding",
-            "#clientOutstandingGrid",
-            [
-                { dataField: "AccountHead", caption: formatMessage("Account Head"), width: 200, allowReordering: true,
-                    headerCellTemplate: function (header, info) { $("<div>").text(info.column.caption).css({ "text-align": "center", "font-weight": "bold" }).appendTo(header); }
-                },
-                { dataField: "Balance", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true,
-                    headerCellTemplate: function (header, info) { $("<div>").text(info.column.caption).css({ "text-align": "center", "font-weight": "bold" }).appendTo(header); }
-                },
-                { dataField: "OverdueDays", caption: formatMessage("Overdue Days"), visible: false, allowHiding: true },
-                { dataField: "AccountGroupId", caption: formatMessage("Account Group"), visible: false, allowHiding: true },
-                { dataField: "AccountHeadNo", caption: formatMessage("Account Head No"), visible: false, allowHiding: true }
-            ],
-            [
-                { column: "Balance", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: formatMessage("Total : {0}") },
-                { column: "AccountHead", summaryType: "count", displayFormat: formatMessage("Count : {0}") }
-            ]
-        )
-    );
-    loadTasks.push(
-        fetchDataAndInitializeGrid(
-            "/api/Dashboard/GetBillsPayableOutstanding",
-            "#billsPayableGrid",
-            [
-                { dataField: "AccountHead", caption: formatMessage("Account Head"), width: 200,
-                    headerCellTemplate: function (header, info) { $("<div>").text(info.column.caption).css({ "text-align": "center", "font-weight": "bold" }).appendTo(header); }
-                },
-                { dataField: "Balance", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 },
-                    headerCellTemplate: function (header, info) { $("<div>").text(info.column.caption).css({ "text-align": "center", "font-weight": "bold" }).appendTo(header); }
-                },
-                { dataField: "OverdueDays", caption: formatMessage("Overdue Days"), visible: false, allowHiding: true },
-                { dataField: "AccountHeadNo", caption: formatMessage("Account Head No"), visible: false, allowHiding: true }
-            ],
-            [
-                { column: "Balance", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: formatMessage("Total : {0}") },
-                { column: "AccountHead", summaryType: "count", displayFormat: formatMessage("Count : {0}") }
-            ]
-        )
-    );
-    loadTasks.push(
-        fetchDataAndInitializeGrid(
-            "/api/Dashboard/GetBankCashSummary",
-            "#accountSummaryGrid",
-            [
-                { dataField: "AccountGroup", caption: formatMessage("Account Group"), width: 200, allowReordering: true },
-                { dataField: "Balance", caption: formatMessage("Balance Amount"), format: { type: "fixedPoint", precision: 2 }, allowReordering: true },
-                { dataField: "AccountGroup", caption: formatMessage("Account Group"), visible: false, allowHiding: true }
-            ],
-            [
-                { column: "Balance", summaryType: "sum", valueFormat: { type: "fixedPoint", precision: 2 }, displayFormat: formatMessage("Total : {0}") },
-                { column: "AccountGroup", summaryType: "count", displayFormat: formatMessage("Count : {0}") }
-            ]
-        )
-    );
+    /* Default tab load */
+    loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
 
-    // Hide page loader after ALL loads
-    $.when.apply($, loadTasks).always(function () {
-        setTimeout(function () {
-            $("#dashboardPageLoader").fadeOut(200);
-        }, 150);
-    });
-});
+    /* Tab click handler */
+    $(".dashboard-tab").click(function () {
+        $(".dashboard-tab").removeClass("active");
+        $(this).addClass("active");
 
-// Textbox section titles
-$(function () {
-    const textBoxConfigs = [
-        { id: "OutstandingDetails", text: "Outstanding Details", class: "dx-textbox-heading" },
-        { id: "TotalClientOutstanding", text: "Total Client Outstanding", class: "dx-textbox-heading10" },
-        { id: "TotalCashBalance", text: "Total Cash Balance", class: "dx-textbox-heading10" },
-        { id: "TotalSupplierOutstanding", text: "Total Supplier Outstanding", class: "dx-textbox-heading10" },
-        { id: "ClientOutstanding", text: "Client Outstanding", class: "dx-textbox-heading10" },
-        { id: "SupplierOutstanding", text: "Supplier Outstanding", class: "dx-textbox-heading10" },
-        { id: "BankAccountDetails", text: "Bank Account Details", class: "dx-textbox-heading10" },
-        { id: "ClientOutstandingAgingChart", text: "Client Outstanding Aging Chart", class: "dx-textbox-heading10" },
-        { id: "SupplierOutstandingAgingChart", text: "Supplier Outstanding Aging Chart", class: "dx-textbox-heading10" },
-        { id: "BankAccountsChart", text: "Bank Accounts Chart", class: "dx-textbox-heading10" }
-    ];
-    textBoxConfigs.forEach(config => {
-        $(`#${config.id}`).dxTextBox({
-            text: formatMessage(config.text),
-            readOnly: true,
-            onContentReady: function (e) {
-                $(e.element).addClass(config.class);
-            }
-        });
+        if (this.id === "tabClientOutstanding") {
+            loadOutstandingTable("/api/Dashboard/GetClientOutstanding");
+        } else if (this.id === "tabSupplierOutstanding") {
+            loadOutstandingTable("/api/Dashboard/GetBillsPayableOutstanding");
+        } else if (this.id === "tabCashBalance") {
+            loadOutstandingTable("/api/Dashboard/GetBankCashSummary");
+        }
     });
 });
 </script>
-
-<style>
-.chart-row1 { display: flex; justify-content: center; align-items: center; }
-.chart-row1 rect { fill: transparent; }
-.grid-section div { text-align: center; }
-.dx-card-container { display: flex; justify-content: center; gap: 20px; padding: 1em; }
-.Popupcard:hover { box-shadow: 0px 0px 10px 2px var(--title-background-color); transform: translateY(-5px); cursor: pointer; background-color: #f9fbff; }
-.Popupcard { display: inline-block; padding: 20px; background: var(--background-color); border-radius: 10px; box-shadow: 5px 5px 5px 5px var(--title-background-color); text-align: center; transition: transform 0.2s ease, box-shadow 0.3s ease; cursor: pointer; }
-.dx-card-header { font-size: 24px; font-weight: bold; margin-bottom: 10px; text-align: center; }
-.dx-card-content .total-value { font-size: 24px; font-weight: bold; color: #007acc; }
-.grid-container { display: flex; padding: 15px; justify-content: space-between; }
-.grid-section { width: 32%; text-align: center; }
-
-.dashboard-card-header {
-    text-align: center;    font-size: 1.6rem;    font-weight: bold;    color: #004080;    letter-spacing: 0.5px;    padding: 14px 0 8px 0;    margin-top: 10px;    margin-bottom: 0;    background: #f7fbff;    border-radius: 10px 10px 0 0;
-}
-
-</style>

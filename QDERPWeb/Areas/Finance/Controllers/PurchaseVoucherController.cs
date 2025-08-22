@@ -9,6 +9,8 @@ using QD.ERP.Web.Service;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using QDERPWeb.Models;
+
 
 namespace QD.ERP.Web.Areas.Finance.Controllers
 {
@@ -18,11 +20,13 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<PurchaseVoucherController> _logger;
+         private readonly FcmService _fcmService;
 
-        public PurchaseVoucherController(ILogger<PurchaseVoucherController> logger, TenantDbContextHelper tenantDbContextHelper)
+        public PurchaseVoucherController(ILogger<PurchaseVoucherController> logger, TenantDbContextHelper tenantDbContextHelper, FcmService fcmService)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _fcmService = fcmService;
         }
 
         [HttpGet]
@@ -459,6 +463,20 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     dbContext.Tbl201VoucherMasters.Add(VM);
                     await dbContext.SaveChangesAsync();
+
+                     var UserId = HttpContext.Session.GetString("UserId");
+                    var TenantName = HttpContext.Session.GetString("TenantName");
+
+                    var notifyRequest = new NotificationRequest
+                        {
+                             UserId = UserId, // or fetch from session/DB
+                             VoucherName = "Purchase Voucher",
+                             ActionType = "You have one Purchase Voucher to verify",
+                             TenantName = TenantName 
+                    };
+
+                await _fcmService.SendNotificationAsync(notifyRequest);
+
                     return Ok(new { success = true, message = "Data inserted successfully!" });
                 }
                 catch (Exception ex)

@@ -366,7 +366,7 @@
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
                 .ElementAttr(new { @class = "dx-button-custom btn-save" })
-                                                             // .OnClick("saveInvoiceDetails") // Calls the JavaScript function
+                .OnClick("SaveInvoiceDetails") // Calls the JavaScript function
                 )
 
     </div>
@@ -379,8 +379,8 @@
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
-
                 .ElementAttr(new { @class = "dx-button-custom btn-save-close" })
+                .OnClick("SaveandCloseInvoiceDetails") // Calls the JavaScript function
 
                 )
     </div>
@@ -397,39 +397,14 @@
                 )
     </div>
     <div class="btn-containers">
-        @(Html.DevExtreme().DropDownButton()
-                .ID("btnAttach")
-                .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
-                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
-                .DropDownOptions(options => options.Width(230))
-                .Items(i =>
-                {
-                    i.Add()
-                    .Text(new JS("formatMessage('Attachments')"))
-                    .Icon("attach")
-                    .Option("color", "#4285F4") // Blue
-                    .OnClick("onAttachmentsClick");
-
-                    i.Add()
-                    .Text(new JS("formatMessage('Attach Multiple Files')"))
-                    .Icon("attach")
-                    .Option("color", "#34A853") // Green
-                    .OnClick("onAttachMultipleFilesClick");
-                })
-                .ItemTemplate(@<text>
-                    <div class="custom-dropdown-item">
-                        <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
-                        <div class="item-content">
-                            <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
-                            <div>
-                                <div class="item-title"><%- text %></div>
-                            </div>
-                        </div>
-                    </div>
-                </text>)
-                )
-
+        @(Html.DevExtreme().Button()
+            .ID("btnAttach")
+            .Text(new JS("formatMessage('Attach')"))
+            .Icon("attach")
+            .Hint("Click to attach")
+            .OnClick("onVatAttachmentButtonClick")
+            .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+            )
     </div>
 
     <div class="btn-containers">
@@ -457,12 +432,15 @@
                 items.Add()
                     .Text("Edit Voucher")
                     .Icon("folder")
-                    .Option("color", "#AB47BC"); // Purple
+                    .Option("color", "#AB47BC") // Purple
+                    .OnClick("showPurchaseVoucherEditPopup");
+
 
                 items.Add()
                     .Text("UploadItems Form Excel")
                     .Icon("edit")
-                    .Option("color", "#FBBC05"); // Yellow
+                    .Option("color", "#FBBC05")
+                    .OnClick("PurchaseUpload");
             })
             .ItemTemplate(@<text>
                 <div class="custom-dropdown-item">
@@ -864,7 +842,7 @@
                             dataGrid.state(layout);
                         } catch (error) {
                             console.error("Error parsing JSON:", error);
-                            alert("Failed to load layout. Please ensure the JSON is valid.");
+                            
                         }
                     }
                 },
@@ -1814,4 +1792,84 @@
         window.location.href = url;
     }
 
+    // Attachment
+    function onVatAttachmentButtonClick(e) {
+
+        const grid = $("#B2BdataGrid").dxDataGrid("instance");
+        const data = grid.getDataSource().items();
+        const hasValidAmounts = data.some(row => {
+            return (row.CalcLineAmount && row.CalcLineAmount > 0);
+        });
+
+        if (!hasValidAmounts) {
+            DevExpress.ui.dialog.alert("Data Not found in the Amount Cell within the Grid", "Can't Enable Attachment");
+            return;
+        }
+        // Get Voucher No safely
+        const purchaseNoBox = $("#InvoiceNo").dxTextBox("instance");
+        const purchaseNo = purchaseNoBox ? purchaseNoBox.option("value") : null;
+        var formType ="VATPurchase Bill";
+        var menuType = "vat"
+        // Log and build URL
+        console.log("Voucher No:", purchaseNo);
+        console.log("Voucher Type:", formType);
+
+        const isMaster = false;
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(purchaseNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
+             async function showPurchaseVoucherEditPopup() {
+        try {
+            
+            const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+
+            // Use value from TextBox if available
+            purchaseVoucherId = invoiceNoBox?.option("value");
+
+            if (!purchaseVoucherId) {
+                DevExpress.ui.notify("Invoice No is missing.", "Error");
+                return;
+            }
+
+            const response = await $.ajax({
+                url: `/api/VATModule/GetPurchaseApprovalStatus/${encodeURIComponent(purchaseVoucherId)}`,
+                method: 'GET',
+                dataType: 'json',
+            });
+
+            if (!response || typeof response.isPosted === "undefined") {
+                console.log("Error: Invalid response from server.");
+                DevExpress.ui.dialog.alert("Failed to retrieve invoice status.", "Error");
+                return;
+            }
+
+            console.log('Invoice Approval Status:', response.isPosted);
+            isPosted = response.isPosted;
+
+            if (!isPosted) {
+                DevExpress.ui.notify(
+                    "This VAT Purchase Invoice is not yet posted to your ledgers.\nPlease post the voucher before editing.","error",3000
+                
+                );
+                return;
+            }
+
+            let url = `/${tenantName}/Finance/PurchaseVoucher?argsledno=${encodeURIComponent(purchaseVoucherId)}`; // Example add page
+            let title = "Purchase Voucher";
+            openModal(url, title);
+
+
+        } catch (error) {
+            console.error("Exception while opening sales voucher popup:", error);
+            DevExpress.ui.dialog.alert("An unexpected error occurred.", "Error");
+        }
+    }
+    function PurchaseUpload() {
+        var invoiceNo = $("#InvoiceNo").dxTextBox("instance").option("value");
+        var url = `/${tenantName}/VAT/PurchaseUpload?PurchaseInvoiceNo=${invoiceNo}`;
+        window.location.href = url;
+    }
 </script>

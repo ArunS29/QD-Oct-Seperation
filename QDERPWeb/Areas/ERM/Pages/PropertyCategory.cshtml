@@ -3,7 +3,6 @@
 @{
 }
 
-
 <style type="text/css">
 
 
@@ -28,7 +27,10 @@
 	}
 
 	/* Ensure text in grid headers is always centered */
-	
+	.dx-datagrid .dx-header-row .dx-datagrid-text-content {
+		white-space: normal !important;
+		text-align: center !important;
+	}
 
 	/* Ensure column headers text aligns to center */
 	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
@@ -64,10 +66,6 @@
 		font-size: 30px;
 		cursor: pointer;
 	}
-
-
-
-
 	/* Toolbar Styling */
 	.custom-toolbar {
 		display: flex;
@@ -114,6 +112,17 @@
 			border-color: #508ae1 !important;
 		}
 
+	#dataGrid .dx-header-row .dx-datagrid-text-content {
+		font-weight: bold;
+		color: black;
+	}
+
+
+	.dx-datagrid-header-panel {
+		background-color: #909ead00;
+		/* display:none; */
+	}
+
 	.no-border-input {
 		border: none !important;
 		outline: none !important;
@@ -132,6 +141,7 @@
 	.dx-button-mode-contained.dx-button-success {
 		color: black;
 	}
+
 	.container {
 		display: none !important;
 	}
@@ -162,47 +172,37 @@
 		display: none;
 	}
 </style>
-
-<div class="title"> 
- 	<div class="header-container"> 
-		<div id="ItemClassification" class="no-border-input"></div> 
- 	</div> 
- </div>
-<!-- Filter/Info Section -->
-
-
-<div class="dx-fieldset" style="padding: 20px;">
+<div style="padding: 5px;">
 	<div class="store-master-container">
-		<!-- Store Name Input -->
 		<div>
-				<div>
-				<label id="TypenewStockClassification" class="form-label"></label>
+			<div>
 				<div style="display:flex; align-items:end;">
 					@(Html.DevExtreme().TextBox()
-						.ID("stockClassificationInput")
-						.Width("70%")
-						.Placeholder("Type new Stock Classification")
-						)
+										.ID("PropertyCategoryInput")
+										.Width("70%")
+										.Label(new JS("formatMassage('Type new Property Category & Add to the Existing List:')"))
+										.Placeholder("Type new Property Catergory")
+										)
 					<div class="add-button-wrap" style="margin-left:50%; margin-top:10px;">
 						@(Html.DevExtreme().Button()
-							.ID("addStockClassBtn")
-							.Text(new JS("formatMessage('Add')"))
-							.Type(ButtonType.Success)
-							.Icon("plus")
-							.Width("100%")
-							)
-						</div>
+												.ID("addPropertCategoryBtn")
+												.Text(new JS("formatMessage('Add')"))
+												.Type(ButtonType.Success)
+												.Icon("plus")
+												.Width("100%")
+												)
 					</div>
 				</div>
 			</div>
 		</div>
+	</div>
 
-		<!-- Data Grid -->
-		<br />
-		<div>
+	<!-- Data Grid -->
+	<br />
+	<div>
 		@(Html.DevExtreme().DataGrid()
 				.ID("storeGrid")
-				.Height(400)
+				.Height("75vh")
 				.Width("100%")
 				.ShowBorders(true)
 				.ColumnAutoWidth(true)
@@ -210,13 +210,13 @@
 				.ShowRowLines(true)
 				.RowAlternationEnabled(true)
 				.DataSource(d => d.WebApi()
-				.Controller("ERStockInventory")
-				.LoadAction("GetAll")
-				.UpdateAction("UpdateStockClassification")
+				.Controller("PropertyCategory")
+				.LoadAction("GetAllProperty")
+				.UpdateAction("UpdatePropertCategory")
 				.UpdateMethod("PUT")
-				.DeleteAction("DeleteStockClassification")
+				.DeleteAction("DeletePropertyCategory")
 				.DeleteMethod("DELETE")
-				.Key("StockClassId")
+				.Key("PropertyCategoryId")
 				)
 				.Editing(editing => editing
 				.Mode(GridEditMode.Row)
@@ -226,14 +226,13 @@
 				)
 				.Columns(columns =>
 				{
-					columns.Add().DataField("StockClassId")
-					.Caption("ID")
+					columns.Add().DataField("PropertyCategoryId")
+					.Caption("Category Code")
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(false);
-
-					columns.Add().DataField("StockClassification")
-					.Caption("Stock Classification")
+					columns.Add().DataField("PropertyCategoryName")
+					.Caption("Property Category")
 					.Width(300)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(true);
@@ -243,10 +242,11 @@
 					.Width(150)
 					.Buttons(buttons =>
 					{
-						buttons.Add().Name("edit"); 
+						buttons.Add().Name("edit");
 						buttons.Add().Name("save");
-						buttons.Add().Name("cancel"); 
-						buttons.Add().Name("customDelete")
+						buttons.Add().Name("cancel");
+						buttons.Add()
+					.Name("customDelete")
 					.Icon("trash")
 					.Hint("Delete")
 					.OnClick("onCustomDeleteClick");
@@ -258,61 +258,48 @@
 				.GroupPanel(g => g.Visible(false))
 				.ShowColumnHeaders(true)
 				)
+	</div>
+	<br />
+	<!-- Buttons -->
+	<div style="display:flex; gap:1%;">
 
-
-
-		</div>
-		<br />
-		<!-- Buttons -->
-		<div style="display:flex; gap:1%;">
-			
-			<div class="action-buttons">
-				@(Html.DevExtreme().Button()
+		<div class="action-buttons">
+			@(Html.DevExtreme().Button()
 						.Text(new JS("formatMessage('Back')"))
 						.Icon("arrowleft")
 						.OnClick("Goback")
 						.Width(120)
 						.Type(ButtonType.Default))
-			</div>
 		</div>
 	</div>
+</div>
 <script>
 		function Goback() {
 		window.parent.closeModal();
 	}
-
-	 $(function () {
-	$("#ItemClassification").dxTextBox({
-	text: formatMessage("Item Classification"),
-		readOnly: true,
-		onContentReady: function (e) {
-		$(e.element).addClass("dx-textbox-heading");
-		}
-		});
-	});
 	$(function () {
 		$("#TypenewStockClassification").text(
-			 formatMessage("Type new Stock Classification By & Add to the Existing List"));
+			 formatMessage("Type new Property Category & Add to the Existing List:"));
 	});
 		$(function () {
-			$("#addStockClassBtn").dxButton({
+			$("#addPropertCategoryBtn").dxButton({
 				onClick: function () {
-					var newStockClass = $("#stockClassificationInput").dxTextBox("instance").option("value");
+					var newPropertycategory = $("#PropertyCategoryInput").dxTextBox("instance").option("value");
 
-					if (!newStockClass || newStockClass.trim() === "") {
+					if (!newPropertycategory || newPropertycategory.trim() === "") {
 						DevExpress.ui.notify("Please enter a Stock Classification.", "error", 2000);
 						return;
 					}
 
 					$.ajax({
-					url: '/api/ERStockInventory/AddStockClassification',
+					url: '/api/PropertyCategory/AddPropertyCategory',
 						type: 'POST',
 						contentType: 'application/json',
-						data: JSON.stringify({ StockClassification: newStockClass }),
+						data: JSON.stringify({ PropertyCategoryName: newPropertycategory }),
 						success: function (res) {
 							DevExpress.ui.notify("Stock Classification added successfully!", "success", 2000);
 							// Clear input box
-							$("#stockClassificationInput").dxTextBox("instance").option("value", "");
+							$("#PropertyCategoryInput").dxTextBox("instance").option("value", "");
 							// Optionally reload any grid or list showing the data
 							 $("#storeGrid").dxDataGrid("instance").refresh();
 						},
@@ -332,7 +319,7 @@
 		}
 	});
 		function onCustomDeleteClick(e) {
-		if (!e || !e.row || !e.row.data || !e.row.data.StockClassId) {
+		if (!e || !e.row || !e.row.data || !e.row.data.PropertyCategoryId) {
 			DevExpress.ui.notify("Invalid record selected.", "error", 2000);
 			return;
 		}
@@ -341,7 +328,7 @@
 			.done(function (dialogResult) {
 				if (dialogResult) {
 					$.ajax({
-						url: '/api/ERStockInventory/DeleteStockClassification?key=' + e.row.data.StockClassId,
+						url: '/api/PropertyCategory/DeletePropertyCategory?key=' + e.row.data.PropertyCategoryId,
 						type: 'DELETE',
 						success: function () {
 							DevExpress.ui.notify("Stock Classification deleted successfully!", "success", 2000);

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
+using System.Xml.Linq;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -12,9 +14,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AddNewQuotationStatusController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public AddNewQuotationStatusController(ILogger<AddNewQuotationStatusController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public AddNewQuotationStatusController(ILogger<AddNewQuotationStatusController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -86,6 +91,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Save Or Update Status",
+                      actionDetail: $":Saved Status {model.QuoteStatusId}",
+                      documentNo: $"{model.QuoteStatusId}"
+                    );
                     return Ok(new { success = true, message = "Saved successfully", id = model.QuoteStatusId });
                 }
                 catch (Exception ex)
@@ -115,6 +125,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl60107quotationStatuses.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Delete Quotation Status",
+                      actionDetail: $"Deleted Quotation {id}",
+                      documentNo: $"{id}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }

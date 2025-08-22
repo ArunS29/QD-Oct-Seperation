@@ -1,10 +1,12 @@
-﻿using DevExtreme.AspNet.Data;
+﻿using DevExpress.PivotGrid.PivotTable;
+using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Mvc;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 
 namespace QD.ERP.Web.Areas.IMS.Controllers
 {
@@ -14,9 +16,13 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<SupplierMasterController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public SupplierMasterController(ILogger<SupplierMasterController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public SupplierMasterController(ILogger<SupplierMasterController> logger, TenantDbContextHelper tenantDbContextHelper , IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
+
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -169,6 +175,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl30199SupplierMasters.Update(existingClient);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                         actionDetail: $":Inserted {supplierMaster.SupplierCode}",
+                         documentNo: $"{supplierMaster.SupplierCode}"
+                        );
 
                         return Ok(new { success = true, message = "Supplier updated successfully." });
                     }
@@ -201,6 +211,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                         dbContext.Tbl30199SupplierMasters.Add(newSupplier);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Insert Or Update",
+                          actionDetail: $":Inserted {supplierMaster.SupplierCode}",
+                          documentNo: $"{supplierMaster.SupplierCode}"
+                         );
 
                         return Ok(new { success = true, message = "Supplier saved successfully." });
                     }
@@ -260,6 +274,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                     dbContext.Tbl30199SupplierMasters.Remove(entity);
                     dbContext.SaveChanges();
+                    _userActionLogger.LogAsync(module: "IMS > Delete Supplier LeadMaster",
+                         actionDetail: $":Inserted {SupplierCode}",
+                       documentNo: $"{SupplierCode}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully." });
                 }
@@ -309,6 +327,10 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     {
                         dbContext.Tbl3019902SupplierContactLists.Remove(contact);
                         dbContext.SaveChanges();
+                        _userActionLogger.LogAsync(module: "IMS > Delete Contact",
+                         actionDetail: $"Deleted Contact {SupplierContactSlNo}",
+                         documentNo: $"{SupplierContactSlNo}"
+                        );
                         return Ok(new { success = true, message = "Contact deleted successfully." });
                     }
 

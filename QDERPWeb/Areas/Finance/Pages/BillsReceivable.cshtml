@@ -37,7 +37,7 @@
     }
 
 </style>
-
+<input id="formId" value="BillsReceivable" type="hidden" />
 <div class="container-fluid"></div>
 
     @* <div class="col-md-6" style="padding-bottom: 10px; display: flex; align-items: center;"> *@
@@ -128,8 +128,8 @@
                     .Height(30)
                     .Width(400)
                     .Icon("checklist")
-                    .OnClick("function() { switchButtons('btnBillsWithBalance'); }")
-                    )
+                    .Visible(false)
+                   .OnClick("loadBillsWithBalance"))
             </div>
 
             <div>
@@ -139,9 +139,9 @@
                     .Height(30)
                     .Width(400)
                     .Icon("checklist")
-                    .Visible(false)//Initially hidden
-                    .OnClick("function() { switchButtons('btnBillsFullyReceived'); }")
-                    )
+                    .Visible(true)//Initially hidden
+                     .OnClick("loadAllBills"))
+                    
             </div>
            
         </div>
@@ -211,7 +211,7 @@
                     // Grid Band: Amount
                     columns.Add().Caption(new JS("formatMessage('Amount')")).Columns(band =>
             {
-                // Receivable Amount column
+                @* // Receivable Amount column
                     band.AddFor(m => m.ReceivableAmount)
                 .Caption(new JS("formatMessage('Trans Invoice Amount')"))
                 .Alignment(HorizontalAlignment.Right)
@@ -233,9 +233,9 @@
                                            <%- data.Received != null ? data.ReceivableAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>) .Visible(false)
-                .Width(140); // Fixed width, change to auto for dynamic sizing
+                .Width(140); // Fixed width, change to auto for dynamic sizing *@
 
-                        band.AddFor(m => m.ConvertedReceivableAmount)
+                        band.AddFor(m => m.ReceivableAmount)
                     .Caption(new JS("formatMessage('Invoice Amount')"))
                     .Alignment(HorizontalAlignment.Right)
                     @* .CustomizeText(@"
@@ -257,7 +257,7 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedReceivableAmount;
+                                       var val = data.ReceivableAmount;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
                                        let formatted = positive.toLocaleString(undefined, {
@@ -272,7 +272,7 @@
                                    </text>)
                     .Width(160); // Fixed width, change to auto for dynamic sizing
 
-                // Paid Amount column
+               @*  // Paid Amount column
                     band.AddFor(m => m.Received)
                 .Caption(new JS("formatMessage('Trans Received')"))
                 .Alignment(HorizontalAlignment.Right)
@@ -295,10 +295,10 @@
                                            <%- data.Received != null ? data.Received.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>) .Visible(false)
-                .Width(140); // Fixed width, change to auto for dynamic sizing
+                .Width(140); // Fixed width, change to auto for dynamic sizing *@
 
 
-                        band.AddFor(m => m.ConvertedReceived)
+                        band.AddFor(m => m.Received)
                     .Caption(new JS("formatMessage('Received')"))
                     .Alignment(HorizontalAlignment.Right)
                    @*  .CustomizeText(@"
@@ -321,7 +321,7 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedReceived;
+                                       var val = data.Received;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
                                        let formatted = positive.toLocaleString(undefined, {
@@ -336,7 +336,7 @@
                                    </text>)
                     .Width(140); // Fixed width, change to auto for dynamic sizing
 
-                // Balance Amount column
+                @* // Balance Amount column
                     band.AddFor(m => m.Balance)
                 .Caption(new JS("formatMessage('Trans Balance')"))
                 .Alignment(HorizontalAlignment.Right)
@@ -358,9 +358,9 @@
                                            <%- data.Received != null ? data.Balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : "0.00" %>
                                        </div>
                                    </text>) .Visible(false)
-                .Width(160); // Fixed width, change to auto for dynamic sizing
+                .Width(160); // Fixed width, change to auto for dynamic sizing *@
 
-                        band.AddFor(m => m.ConvertedBalance)
+                        band.AddFor(m => m.Balance)
                     .Caption(new JS("formatMessage('Balance')"))
                     .Alignment(HorizontalAlignment.Right)
                  @*    .CustomizeText(@"
@@ -382,7 +382,7 @@
                                          </text>)
                     .CellTemplate(@<text>
                                        <%
-                                       var val = data.ConvertedBalance;
+                                       var val = data.Balance;
                                        if (val !== null && val !== undefined) {
                                        let positive = Math.abs(val);
                                        let formatted = positive.toLocaleString(undefined, {
@@ -537,7 +537,7 @@
             .OnInitialized("dataGridInitialized")
             .OnContextMenuPreparing("onContextMenuPreparing")
                 .OnOptionChanged("handleGridOptionChanged")
-
+                .OnContentReady("function(e) { handleGridContentReady(e); }")
             )
 
 </div>
@@ -564,39 +564,39 @@
         dataGrid = e.component;
     }
 
-    function switchButtons(buttonId) {
+    // function switchButtons(buttonId) {
         
-        let hideBtn, showBtn, filterType;
+    //     let hideBtn, showBtn, filterType;
 
-        // Determine which buttons to toggle and set the filter type
-        if (buttonId === "btnBillsWithBalance") {
-            showBtn = "btnBillsFullyReceived";
-            hideBtn = "btnBillsWithBalance";
-            filterType = "WithBalance"; // Filter: Balance > 0
-        } else if (buttonId === "btnBillsFullyReceived") {
-            showBtn = "btnBillsWithBalance";
-            hideBtn = "btnBillsFullyReceived";
-            filterType = "FullyReceived"; // Filter: Balance = 0
-        }
+    //     // Determine which buttons to toggle and set the filter type
+    //     if (buttonId === "btnBillsWithBalance") {
+    //         showBtn = "btnBillsFullyReceived";
+    //         hideBtn = "btnBillsWithBalance";
+    //         filterType = "WithBalance"; // Filter: Balance > 0
+    //     } else if (buttonId === "btnBillsFullyReceived") {
+    //         showBtn = "btnBillsWithBalance";
+    //         hideBtn = "btnBillsFullyReceived";
+    //         filterType = "FullyReceived"; // Filter: Balance = 0
+    //     }
 
-        // Use DevExtreme APIs to toggle button visibility
-        const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
-        const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
+    //     // Use DevExtreme APIs to toggle button visibility
+    //     const hideButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(hideBtn));
+    //     const showButtonInstance = DevExpress.ui.dxButton.getInstance(document.getElementById(showBtn));
 
-        hideButtonInstance.option("visible", false);
-        showButtonInstance.option("visible", true);
+    //     hideButtonInstance.option("visible", false);
+    //     showButtonInstance.option("visible", true);
 
-        // Reload the DataGrid with the appropriate filter based on the button clicked
-        if (dataGrid) {
-            dataGrid.option("dataSource", {
-                load: function () {
-                    return $.getJSON(`/api/BillsReceivable/Get`, { filterType: filterType });
+    //     // Reload the DataGrid with the appropriate filter based on the button clicked
+    //     if (dataGrid) {
+    //         dataGrid.option("dataSource", {
+    //             load: function () {
+    //                 return $.getJSON(`/api/BillsReceivable/Get`, { filterType: filterType });
 
-                }
-            });
-            dataGrid.refresh();
-        }
-    }
+    //             }
+    //         });
+    //         dataGrid.refresh();
+    //     }
+    // }
 
 
     function onContextMenuPreparing(e) {
@@ -635,68 +635,75 @@
             injectHeaderSVG(); // slight delay to wait for DOM re-render
         }
     }
-    function injectHeaderSVG() {
-         debugger;
-           let gridElement = $('#dataGrid');
-    let dataGrid = gridElement.dxDataGrid("instance");
-    if (!dataGrid) return;
 
-    // Get grouped data (with .items containing groups)
-    let groupedData = dataGrid.getDataSource()?.items();
-    if (!groupedData || groupedData.length === 0) return;
+         function injectHeaderSVG() {
+               $.ajax({
+                   url: '/api/AccountingLedgers/GetCurrencyIcon',
+                   type: 'GET',
+                   success: function (response) {
+                       
+                       let svgIcon = response.Icon;
+                       if (!svgIcon) return;
 
-    // Get the first row from the first group
-    let firstGroup = groupedData[0];
-    let firstRowInGroup = firstGroup?.items?.[0];
+                       // Set default width/height for SVG if needed
+                       if (svgIcon.startsWith("<svg")) {
+                           svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+                       } else {
+                           // If symbol is text (e.g., "$" or "SAR"), wrap in styled span
+                           svgIcon = `<span style="font-weight: bold;">${svgIcon}</span>`;
+                       }
 
-    let svgIcon = firstRowInGroup?.CurrencyImage;
-        if (!svgIcon) return;
+                       let $grid = $('#dataGrid');
+                       let gridInstance = $grid.dxDataGrid("instance");
+                       if (!gridInstance) return;
 
-        svgIcon = svgIcon.replace(/<svg\b([^>]*)>/, `<svg width="12" height="12" $1>`);
+                       $grid.find(".dx-header-row td").each(function () {
+                                                       const $cell = $(this);
+                            const dataField = $cell.attr("data-field");  // 👈 This is key
 
-        gridElement.find(".dx-header-row td").each(function () {
-           
-            const $cell = $(this);
-            const dataField = $cell.attr("data-field");  // 👈 This is key
+                                const $debitHeader = $(".invoice-header");
+                                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
+                                $debitHeader.data("original-text", debitText); // Save original once
 
-                const $debitHeader = $(".invoice-header");
-                const debitText = $debitHeader.data("original-text") || $debitHeader.text().trim();
-                $debitHeader.data("original-text", debitText); // Save original once
+                                $debitHeader.html(`
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        ${svgIcon}
+                                        <span style="font-weight: bold;">${debitText}</span>
+                                    </div>
+                                `);
 
-                $debitHeader.html(`
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-                        ${svgIcon}
-                        <span style="font-weight: bold;">${debitText}</span>
-                    </div>
-                `);
-               
-                // 👉 Credit
-                const $creditHeader = $(".received-header");
-                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
-                $creditHeader.data("original-text", creditText);
+                                // 👉 Credit
+                                const $creditHeader = $(".received-header");
+                                const creditText = $creditHeader.data("original-text") || $creditHeader.text().trim();
+                                $creditHeader.data("original-text", creditText);
 
-                $creditHeader.html(`
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-                        ${svgIcon}
-                        <span style="font-weight: bold;">${creditText}</span>
-                    </div>
-                `);
-
-             
-                const $balanceHeader = $(".balance-header");
-                const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
-                $balanceHeader.data("original-text", balanceText);
-
-                $balanceHeader.html(`
-                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
-                        ${svgIcon}
-                        <span style="font-weight: bold;">${balanceText}</span>
-                    </div>
-                `);
+                                $creditHeader.html(`
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        ${svgIcon}
+                                        <span style="font-weight: bold;">${creditText}</span>
+                                    </div>
+                                `);
 
 
-        });
-    }
+                                const $balanceHeader = $(".balance-header");
+                                const balanceText = $balanceHeader.data("original-text") || $balanceHeader.text().trim();
+                                $balanceHeader.data("original-text", balanceText);
+
+                                $balanceHeader.html(`
+                                    <div style="display: flex; align-items: center; justify-content: center; gap: 4px;">
+                                        ${svgIcon}
+                                        <span style="font-weight: bold;">${balanceText}</span>
+                                    </div>
+                                `);
+
+
+                       });
+                   },
+                   error: function (xhr) {
+                       console.error("Failed to load currency icon:", xhr.responseText);
+                   }
+               });
+           }
     function refreshKpiCards() {
         const grid = $("#dataGrid").dxDataGrid("instance");
         if (!grid) return;
@@ -747,18 +754,75 @@
         }
     }
 
+        function handleGridContentReady(e){
 
-       $(function () {
-        const grid = $("#dataGrid").dxDataGrid("instance");
+          injectHeaderSVG();
+           injectCurrencyToCards();
+            e.component.getDataSource().store().load().then(function (fullData) {
+                refreshKpiCards(fullData);
+            });
 
-        grid.option("onContentReady", function () {
-            const data = grid.getDataSource().items();
+    }
 
-            if (data && data.length > 0) {
-                refreshKpiCards(data); // pass data directly
+    function injectCurrencyToCards() {
+        $.ajax({
+            url: "/api/AccountingLedgers/GetCurrencyIcon",
+            method: "GET",
+            success: function (response) {
+                
+                if (!response || !response.Icon) return;
+
+                const icon = response.Icon.trim();
+
+                // Inject into Balance
+                $('#cardBalance .value-slider span').each(function () {
+                    $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                });
+
+                // Inject into Debit
+                $('#cardDebit .value-slider span').each(function () {
+                    $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                });
+
+                // Inject into Credit
+                $('#cardCredit .value-slider span').each(function () {
+                    $(this).html(icon + $(this).text().trim().replace(icon, ''));
+                });
+            },
+            error: function (err) {
+                console.error("Failed to load currency icon:", err);
             }
-
         });
+    }
+      $(function () {
+        // On page load: show FullyReceived, hide WithBalance
+        $("#btnBillsFullyReceived").dxButton("instance").option("visible", true);
+        $("#btnBillsWithBalance").dxButton("instance").option("visible", false);
+
+       
     });
+    function loadBillsWithBalance() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        grid.option("dataSource", DevExpress.data.AspNet.createStore({
+            key: "ReferenceNo", // Replace with actual primary key
+            loadUrl: "/api/BillsReceivable/Get",
+            loadMode: "raw"
+        }));
+        // Show btnBillsFullyReceived, hide btnBillsWithBalance
+        $("#btnBillsWithBalance").dxButton("instance").option("visible", false);
+        $("#btnBillsFullyReceived").dxButton("instance").option("visible", true);
+    }
+
+    function loadAllBills() {
+        const grid = $("#dataGrid").dxDataGrid("instance");
+        grid.option("dataSource", DevExpress.data.AspNet.createStore({
+            key: "ReferenceNo", // Replace with actual primary key
+            loadUrl: "/api/BillsReceivable/GetAll",
+            loadMode: "raw"
+        }));
+          // Show btnBillsWithBalance, hide btnBillsFullyReceived
+        $("#btnBillsWithBalance").dxButton("instance").option("visible", true);
+        $("#btnBillsFullyReceived").dxButton("instance").option("visible", false);
+    }
 </script>
 

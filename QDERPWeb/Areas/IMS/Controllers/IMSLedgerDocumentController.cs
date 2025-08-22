@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
 using System.Globalization;
 
@@ -18,9 +19,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<IMSLedgerDocumentController> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public IMSLedgerDocumentController(ILogger<IMSLedgerDocumentController> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public IMSLedgerDocumentController(ILogger<IMSLedgerDocumentController> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -116,9 +120,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     // Add to DB
                     dbContext.Tbl20116LedgerDocuments.Add(documentDetails);
                 await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Add Documents Entry",
+                      actionDetail: $":Added Documents Entry  {documentDetails.DocumentNo}",
+                      documentNo: $"{documentDetails.DocumentNo}"
+                    );
 
-                // Filter: Only records from current month for the same DocumentRefNo
-                var currentMonth = DateTime.Now.Month;
+                    // Filter: Only records from current month for the same DocumentRefNo
+                    var currentMonth = DateTime.Now.Month;
                 var currentYear = DateTime.Now.Year;
 
                 var qryListOfAccountlists = dbContext.Tbl20116LedgerDocuments
@@ -157,6 +166,9 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         {
             try
             {
+
+
+
                 if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 {
                     foreach (var doc in documents)
@@ -176,6 +188,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                      module: "IMS > Update Document Entries",
+                      actionDetail: $":Updated Document Entries  {documents[0].DocumentNo}",
+                      documentNo: $"{documents[0].DocumentNo}"
+                    );
                     return Ok(new { success = true });
                 }
 

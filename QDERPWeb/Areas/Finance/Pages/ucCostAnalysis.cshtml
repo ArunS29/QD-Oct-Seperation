@@ -101,6 +101,7 @@
         margin-top: -2px!important;
     }
 </style>
+<input id="formId" value="uc20106TrialBalance" type="hidden" />
 <div class="content-container-top">
 <div class="title" id="kpiCarousel">
     <div class="titleCard-cards">
@@ -109,15 +110,15 @@
         <div id="Static" class="titleCard-card vibrant-pink">
             <div class="value-block">
 
-                <h2>Cost Analysis</h2>
-                <h6>Quick Dice ERP Solutions</h6>
+                <h2 id="costanalysis"></h2>
+                    <h6 id="QuickDiceERPSolutions8"></h6>
 
             </div>
         </div>
 
         <!-- BALANCE -->
         <div id="cardBalance" class="titleCard-card cool-blue">
-            <div class="header">Balance</div>
+            <div class="header" id="costanalysisbalance"></div>
             <div class="value-block">
                 <div class="value-slider">
                     <span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span>
@@ -136,7 +137,7 @@
 
         <!-- DEBIT -->
         <div id="cardDebit" class="titleCard-card deep-purple">
-            <div class="header">Total Debit</div>
+            <div class="header" id="costtotaldebit"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -151,7 +152,7 @@
 
         <!-- CREDIT -->
         <div id="cardCredit" class="titleCard-card mint-green">
-            <div class="header">Total Credit</div>
+            <div class="header" id="costtotalcredit"></div>
             <div class="value-block">
                 <div class="value-slider"><span><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39"><path d="M699.62,1113.02h0c-20.06,44.48-33.32,92.75-38.4,143.37l424.51-90.24c20.06-44.47,33.31-92.75,38.4-143.37l-424.51,90.24Z" /><path d="M1085.73,895.8c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.33v-135.2l292.27-62.11c20.06-44.47,33.32-92.75,38.4-143.37l-330.68,70.27V66.13c-50.67,28.45-95.67,66.32-132.25,110.99v403.35l-132.25,28.11V0c-50.67,28.44-95.67,66.32-132.25,110.99v525.69l-295.91,62.88c-20.06,44.47-33.33,92.75-38.42,143.37l334.33-71.05v170.26l-358.3,76.14c-20.06,44.47-33.32,92.75-38.4,143.37l375.04-79.7c30.53-6.35,56.77-24.4,73.83-49.24l68.78-101.97v-.02c7.14-10.55,11.3-23.27,11.3-36.97v-149.98l132.25-28.11v270.4l424.53-90.28Z" /></svg>0.00</span><span>0.00</span><span>0.00</span></div>
             </div>
@@ -188,7 +189,7 @@
             .LoadAction("GetUser")
             .LoadMode(DataSourceLoadMode.Raw))
             .Width(500)
-            .Label("Select a Cost Center")
+            .Label(new JS("formatMessage('Select a Cost Center')"))
             .LabelMode(EditorLabelMode.Floating)
             .ValueExpr("CostAllocationUnit")
             .DisplayExpr("CostAllocationUnit")
@@ -228,16 +229,18 @@
 
     <div id="check">
         <!-- Use Effective Date Checkbox -->
-        @(Html.DevExtreme().CheckBox()
-            .ID("useEffectiveDate")
-            .Text("Use Effective Date")
-            .Value(true)
-            )
+            @(Html.DevExtreme().CheckBox()
+                        .ID("useEffectiveDate")
+                        .Text("Use Effective Date")
+                        .Value(false)
+                        .OnValueChanged("onEffectiveDateChange")
+                        )
+            <input type="hidden" id="hdnUseEffectiveDate" name="UseEffectiveDate" value="false" />
 
         <!-- Dropdown Button to Show Records -->
         @(Html.DevExtreme().DropDownButton()
             .ID("ddBtnShowRecords")
-            .Text("Show Records")
+            .Text(new JS("formatMessage('Show Records')"))
             .Icon("smalliconslayout")
             .Width(180)
             .ElementAttr("class", "button-alignment-down")
@@ -367,10 +370,7 @@
             console.error("The dataSource does not have a store or is not structured as expected:", dataSource);
         }
     }
-
     $(document).ready(function () {
-        // Load all records on page load (ignore default date values)
-        // initializePivotGrid([]);
         loadAllRecords();
     });
 
@@ -378,26 +378,30 @@
         console.log("Loading trial balance records...");
 
         const today = new Date();
+        const firstDay = new Date(today.getFullYear() - 1, 0, 1);
+        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-        // Define date range: Jan 1st of last year to end of current month
-        const firstDay = new Date(today.getFullYear() - 1, 0, 1); // Jan 1 last year
-        const lastDay = new Date(today.getFullYear(), today.getMonth() + 1, 0); // End of current month
         var loadPanel = $("#loadPanel").dxLoadPanel("instance");
         loadPanel.show();
+
         $.ajax({
             url: '/api/TransactionDetails/GetTrialBalance',
             type: 'GET',
             data: {
                 startDate: firstDay.toISOString().split('T')[0],
                 endDate: lastDay.toISOString().split('T')[0],
-                accountGroup: "" // include this if your API expects it
+                accountGroup: ""
             },
             success: function (data) {
-                debugger;
                 if (Array.isArray(data)) {
-                    pivotData = data; // Set global
+                    pivotData = data;
                     initializePivotGrid(data);
-                   console.log("pivotdata",data)
+
+                    // ✅ Apply saved layout AFTER pivot grid is ready and has data
+                    let pivot = $("#pivotGridContainer").dxPivotGrid("instance");
+                    pivot.getDataSource().reload().done(function () {
+                        loadGridState();
+                    });
                 } else {
                     console.error("Unexpected response format", data);
                 }
@@ -406,7 +410,7 @@
                 console.error("Error fetching trial balance records:", xhr.responseText || error);
             },
             complete: function () {
-                $("#loadPanel").dxLoadPanel("instance").hide(); // ✅ Always hide the loader
+                loadPanel.hide();
             }
         });
     }
@@ -751,7 +755,7 @@
             // ✅ Cell rendering here
               onCellPrepared: function (e) {
         if (e.area === "data" && typeof e.cell.value === "number") {
-            debugger;
+            
             const val = Math.abs(e.cell.value);
             const formatted = val.toLocaleString(undefined, {
                 minimumFractionDigits: 2,
@@ -1105,7 +1109,7 @@
         }
     }
     function injectHeaderSVG() {
-         debugger;
+         
            let gridElement = $('#pivotGridContainer');
     let dataGrid = gridElement.dxDataGrid("instance");
     if (!dataGrid) return;
@@ -1166,7 +1170,23 @@
 
         });
     }
-
-
+        function onEffectiveDateChange(e) {
+        $('#hdnUseEffectiveDate').val(e.value);
+    }
+    $(function () {
+        $("#costanalysis").text(formatMessage("Cost Analysis"));
+    });
+    $(function () {
+        $("#QuickDiceERPSolutions8").text(formatMessage("Quick Dice ERP Solutions"));
+    });
+    $(function () {
+        $("#costanalysisbalance").text(formatMessage("Balance"));
+    });
+    $(function () {
+        $("#costtotaldebit").text(formatMessage("Total Debit"));
+    });
+    $(function () {
+        $("#costtotalcredit").text(formatMessage("Total Credit"));
+    });
 </script>
 

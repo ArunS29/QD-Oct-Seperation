@@ -4,6 +4,10 @@
 @{
     ViewData["Title"] = "Asset View";
     ViewContext.RouteData.Values["area"] = "Finance";
+    var sessionID = HttpContext.Session.GetString("currencyID");
+    int baseCurrencyIdnew = 0;
+    if (!string.IsNullOrEmpty(sessionID))
+        int.TryParse(sessionID, out baseCurrencyIdnew);
 }
 
 
@@ -384,7 +388,7 @@ bottom: -13px !important;
                             .ShowClearButton(true)
                             .AcceptCustomValue(false)
                             .OpenOnFieldClick(true)
-                            .Value(1)
+                            .Value(baseCurrencyIdnew)
                             .ValueExpr("CurrencyExchangeId")
                             .DisplayExpr("CurrencyName")
                             .OnInput("dropDownBoxOnInput")
@@ -430,81 +434,10 @@ bottom: -13px !important;
 
                     </div>
 
-                 @*  <div class="form-group col-md-2 col-sm-6"> *@
-                         <div class="form-inline-group">
-                        @(Html.DevExtreme().DropDownBox()
-                            .Label(new JS("formatMessage('Convertion Currency')"))
-                            .DataSource(d => d.WebApi().Controller("Utility").LoadAction("GetCurrencyList").LoadMode(DataSourceLoadMode.Raw).Key("CurrencyExchangeId"))
-                            .ValidationRules(rules => rules.AddRequired().Message("Please select a currency."))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .ID("ddCurrency")
-                            .ShowClearButton(false)
-                            .AcceptCustomValue(false)
-                            .OpenOnFieldClick(true)
-                              .TabIndex(6)
-                            .ValueExpr("CurrencyExchangeId")
-                            .DisplayExpr("CurrencyName")
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            
-                            .DropDownOptions(o => o.Width(700))
-                            .ElementAttr(new { @class = "light-theme-input" })
-                            .ContentTemplate(new TemplateName("CurrencyContentTemplate"))
-                            .OnInitialized("onBaseCurrencyInit")
-                            )
-                        @using (Html.DevExtreme().NamedTemplate("CurrencyContentTemplate"))
-                        {
-                            @(Html.DevExtreme().DataGrid()
-                                                    .ID("currency-datagrid")
-                                                    .DataSource(d => d.WebApi()
-                                                    .Controller("Utility")
-                                                    .LoadAction("GetCurrencyList")
-                                                    .LoadMode(DataSourceLoadMode.Raw)
-                                                    .Key("CurrencyExchangeId")
-                                                    )
-                                                    .WordWrapEnabled(true)
-                                                    .ShowBorders(true)
-                                                    .Selection(sl => sl.Mode(SelectionMode.Single))
-                                                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-                                                    .SearchPanel(sp => sp.HighlightSearchText(true).Visible(true))
-                                                    .OnSelectionChanged("onCurrencySelectionChanged")
-                                                    .Paging(p => p.PageSize(10))
-                                                    .Height(300)
-                                                    .Columns(columns =>
-                                                    {
-                                                        columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
-                                                        columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
-                                                        columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
-                                                        columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('code')")).DataType(GridColumnDataType.Boolean);
-                                                        columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
-
-                                                    })
-                                                    )
-                         }
-
-
-                    </div>
+                
 
                   @* <div class="form-group col-md-1 col-sm-6"> *@
-                          <div class="form-inline-group">
-                        @(Html.DevExtreme().NumberBox()
-                            .Label("CVR")
-                            .LabelMode(EditorLabelMode.Floating)
-                            .ID("txtCurrencyRate")
-                            .Value(1)
-                            .Min(0)
-                             .TabIndex(7)
-                            .Format("#,##0.00")
-                            .InputAttr(new
-                            {
-                                style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
-                                type = "number",
-                                step = "0.01"
-                            })
-                            .ElementAttr(new { @class = "white-box" })
-                            )
-                    </div>
+                    
 
 
         </div>
@@ -832,6 +765,7 @@ bottom: -13px !important;
                         Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201206depreciationChild>()
                         .ID("dataGrid")
                         .RemoteOperations(false)
+                       
                         .Columns(columns =>
                         {
                     columns.AddFor(m => m.DepreciationDocNo) .Caption(new JS("formatMessage('Depreciation Doc No')")) .Visible(true);
@@ -1030,11 +964,11 @@ bottom: -13px !important;
                     .DisplayExpr("AssetMaintenanceType")
                     );
 
-                        columns.AddFor(m => m.MaintenanceReading).Caption(new JS("formatMessage('Maintenance Reading')"));
-                        columns.AddFor(m => m.MaintenanceDate).Caption(new JS("formatMessage('Maintenance Scheduled On')")).Format("dd-MMM-yyyy");
-                        columns.AddFor(m => m.ReminderDate).Caption(new JS("formatMessage('Reminder Date')")).Format("dd-MMM-yyyy"); 
-                        columns.AddFor(m => m.IsMaintenanceDone).Caption(new JS("formatMessage('Maintenance Done?')"));
-                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption(new JS("formatMessage('ActualMaintenanceDoneOn')")).Format("dd-MMM-yyyy"); 
+                        columns.AddFor(m => m.MaintenanceReading).Caption(new JS("formatMessage('Maintenance Reading')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.MaintenanceDate).Caption(new JS("formatMessage('Maintenance Scheduled On')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ReminderDate).Caption(new JS("formatMessage('Reminder Date')")).Format("dd-MMM-yyyy").CellTemplate(new JS("reminderDateCellTemplate")).Alignment(HorizontalAlignment.Center); 
+                        columns.AddFor(m => m.IsMaintenanceDone).Caption(new JS("formatMessage('Maintenance Done?')")).Alignment(HorizontalAlignment.Center);
+                        columns.AddFor(m => m.ActualMaintenanceDoneOn).Caption(new JS("formatMessage('ActualMaintenanceDoneOn')")).Format("dd-MMM-yyyy").Alignment(HorizontalAlignment.Center);
                         columns.AddFor(m => m.MaintenanceRemarks).Caption(new JS("formatMessage('Remarks')"));
                       
                         })
@@ -1071,16 +1005,17 @@ bottom: -13px !important;
                     </div>
                 @section Scripts {
                 <script>
-                    const maintenanceDataSource = new DevExpress.data.CustomStore({
+                   const maintenanceDataSource = new DevExpress.data.CustomStore({
                         key: "MaintenanceRefNo",
-                        load: () => $.getJSON("/api/AssetView/GetMaintenance"),
+                        load: () => {
+                            const assetLedgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+
+                            return $.getJSON("/api/AssetView/GetMaintenance", { assetLedgerNo: assetLedgerNo });
+                        },
                         update: (key, values) => {
-                            // If you want to send full row, fetch original first (optional)
                             const grid = $("#maintenanceGrid").dxDataGrid("instance");
                             const originalData = grid.getDataSource().items().find(x => x.MaintenanceRefNo === key);
-
-                            const merged = Object.assign({}, originalData, values); // merge
-
+                            const merged = Object.assign({}, originalData, values);
                             merged.MaintenanceRefNo = key;
 
                             return $.ajax({
@@ -1090,7 +1025,8 @@ bottom: -13px !important;
                                 data: JSON.stringify(merged)
                             });
                         }
-                    });
+                   });
+
                 </script>
                 }
 
@@ -1101,7 +1037,9 @@ bottom: -13px !important;
 
         </text>);
                 })
-            )
+                 .OnSelectionChanged("onTabSelectionChanged")
+)
+           
 
     </div>
 
@@ -1234,7 +1172,7 @@ bottom: -13px !important;
                     selection: { mode: "single" },
                     selectedRowKeys: [e.component.option("value")],
                     onSelectionChanged: function (selectedItems) {
-                        debugger;
+                        
                         e.component.option("value", selectedItems.selectedRowKeys[0] || null);
                     },
                     filterRow: { visible: true },
@@ -1759,7 +1697,7 @@ bottom: -13px !important;
                     console.log("userN:", getUN);
                 }
             });
-            debugger;              
+                          
             $("#txtacctledno").dxTextBox("instance").option("value", assetData.AssetLedgerNo || assetLedgerNo);
             $("#ddassetCategory").dxSelectBox("instance").option("value", assetData.AssetCategory);
 
@@ -2029,7 +1967,7 @@ bottom: -13px !important;
             data: JSON.stringify(updatedAsset),
             success: function (response) {
 
-                alert(response.message || "Asset updated successfully!");
+              DevExpress.ui.notify(response.message, "success", 2000);
                      if (window.parent && window.parent.$("#dataGrid").length) {
                                     let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
                                     if (dataGrid) {
@@ -2081,7 +2019,8 @@ function redirectToAssetCategoryView() {
         var sAccountID = $('#txtacctledno').dxTextBox("instance").option("value");
         var module = "Assets";
         var isMaster = false;
-        let url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}`;
+        var menuType = "finance";
+        let url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(sAccountID)}&ModuleType=${encodeURIComponent(module)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}`;
         let title = "";
         openModal(url, title);
     }
@@ -2162,7 +2101,7 @@ function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
     }
 
     function onEditorPreparing(e) {
-        debugger;
+        
         if (e.parentType === "dataRow" && e.dataField === "MaintenanceType") {
             e.editorType = "dxDropDownBox";
             e.editorOptions = {
@@ -2195,7 +2134,7 @@ function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
     }
 
     function onRowUpdated(e) {
-        debugger;
+        
         const merged = Object.assign({}, e.oldData, e.newData);
         e.cancel = true;
 
@@ -2270,4 +2209,44 @@ function onDeleteMaintenanceSchedule(MaintenanceRefNo) {
             DevExpress.ui.notify("Please select a currency", "warning", 2000);
         }
     }
+    function onTabSelectionChanged(e) {
+    const selectedTitle = e.addedItems[0].title || e.addedItems[0].Title;
+    if (selectedTitle === "Depreciation") {
+        onDepreciationTabClick();
+    }
+}
+function onDepreciationTabClick() {
+    const ledgerNo = $("#txtacctledno").dxTextBox("instance").option("value");
+
+    if (!ledgerNo) {
+        DevExpress.ui.notify("Please select an Asset Ledger No", "warning", 3000);
+        return;
+    }
+
+    const grid = $("#dataGrid").dxDataGrid("instance");
+
+    // Dynamically bind data source with assetLedgerNo as parameter
+    grid.option("dataSource", new DevExpress.data.DataSource({
+        load: function(loadOptions) {
+            return $.ajax({
+                url: '/api/AssetView/GetDepreciationByLedger', // Your actual controller and action
+                data: {
+                    assetLedgerNo: ledgerNo
+                },
+                dataType: 'json'
+            });
+        },
+        key: "DepreciationDocNo"
+    }));
+}
+function reminderDateCellTemplate(container, options) {
+        var text = DevExpress.localization.formatDate(new Date(options.value), 'dd-MMM-yyyy');
+        container.css({ 
+            "background-color":  "rgb(192, 255, 192)", 
+            "color": "red",
+            "font-weight": "bold"
+        });
+        container.text(text);
+    }
+
 </script>
