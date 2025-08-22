@@ -36,9 +36,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                 {
                     var company = dbContext.Tbl901CompanyDetails
            .FirstOrDefault();
-                    var ledgerData = dbContext.Qry20149AssetsRegisterViews
-                    .FromSqlRaw("SELECT * FROM qry20149AssetsRegisterView")
-                    .AsQueryable();
+                    var ledgerData = dbContext.Qry20149AssetsRegisterViews.AsNoTracking();
 
                     var result = ledgerData.Select(item => new
                     {

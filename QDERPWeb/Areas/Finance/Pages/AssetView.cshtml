@@ -203,7 +203,7 @@
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20157AssetRegisterViewResult>()
         .ID("dataGrid")
         .KeyExpr("AccountID")
-        .RemoteOperations(false)
+        .RemoteOperations(true)
         .DataSource(ds => ds.Mvc()
         .Controller("AssetView")
 
