@@ -108,7 +108,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Currency Master</h3>
+    <h3 class="card-title-text" id="currencymasters"></h3>
 </div>
         <div id="TypeCurrency" class="no-border-input"></div>
 <div class="dx-fieldset" style="display:flex; align-items: flex-end;">
@@ -314,5 +314,8 @@
             alert("Translation failed. Please try again.");
         }
     }
+        $(function () {
+        $("#currencymasters").text(formatMessage("Database Master Module:Foriegn Currency Master"));
+    });
 </script>
 

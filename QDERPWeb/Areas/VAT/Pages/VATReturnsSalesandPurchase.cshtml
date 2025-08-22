@@ -605,7 +605,7 @@
         justify-content: flex-end;
         height: 100%;
         position: absolute;
-        left: 250px;
+        left: 180px !important;
         bottom: 10px;
     }
 </style>
@@ -618,9 +618,9 @@
     <div class="card blue shine compact with-sidebar">
         <div class="tile-content">
             <div class="title-text">
-                <h2 class="title-slide">VAT Returns</h2>
+                <h2 class="title-slide" id="vatreturnsvat"></h2>
                 <hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-                <h6 class="fade-in">Quick Dice ERP Solutions</h6>
+                <h6 class="fade-in" id="QuickDiceERPSolutions11"></h6>
             </div>
             <div class="tile-icon">
                 <svg width="33" height="31" viewBox="0 0 33 31" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -631,7 +631,7 @@
     </div>
     
     <div class="card green sparkle with-sidebar">
-        <h1 class="title-slide">VAT on Sales</h1>
+        <h1 class="title-slide" id="vatonsalesvat"></h1>
         <h2 id="vatSalesTurnover">0</h2>
         <div class="tile-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="33" height="31" fill="white" viewBox="0 0 24 25">
@@ -645,7 +645,7 @@
     </div>
 
     <div class="card red shine with-sidebar">
-        <h1 class="title-slide">VAT on Purchase</h1>
+        <h1 class="title-slide" id="vatonpurchasevat"></h1>
         <h2 id="vatPurchaseTurnover">0</h2>
         <div class="tile-icon">
             <svg xmlns="http://www.w3.org/2000/svg" width="33" height="31" fill="white" viewBox="0 0 24 24">
@@ -683,21 +683,35 @@
         .Width(180)
         .ElementAttr("class", "button-alignment-up")
         .TabIndex(4)
+        .SplitButton(true)
         .DropDownOptions(options => options.Width(230))
         .Items(items =>
         {
-            items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('range'); }");
-            items.Add().Text(new JS("formatMessage('Today')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('today'); }");
-            items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
-            items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('week'); }");
-            items.Add().Text(new JS("formatMessage('This Month Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
-            items.Add().Text(new JS("formatMessage('This Month (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
-            items.Add().Text(new JS("formatMessage('This Year Till Date')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
-            items.Add().Text(new JS("formatMessage('This Year (Full)')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
-            items.Add().Text(new JS("formatMessage('Last Month')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
-            items.Add().Text(new JS("formatMessage('Last Year')")).Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
+            items.Add().Text(new JS("formatMessage('Show Records')")).Icon("event").Option("color", "#4285F4").OnClick("function() { ddBtnShowRecords_click('range'); }");
+            items.Add().Text(new JS("formatMessage('Today')")).Icon("event").Option("color", "#34A853").OnClick("function() { ddBtnShowRecords_click('today'); }");
+            items.Add().Text(new JS("formatMessage('Yesterday')")).Icon("event").Option("color", "#EA4335").OnClick("function() { ddBtnShowRecords_click('yesterday'); }");
+            items.Add().Text(new JS("formatMessage('This Week')")).Icon("event").Option("color", "#FBBC05").OnClick("function() { ddBtnShowRecords_click('week'); }");
+            items.Add().Text("By Quarter").Option("color", "#FF7043").Icon("event").OnClick("function(e) { onByQuarterClick(e); }");
+            items.Add().Text(new JS("formatMessage('This Month Till Date')")).Option("color", "#AB47BC").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillmonth'); }");
+            items.Add().Text(new JS("formatMessage('This Month (Full)')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullmonth'); }");
+            items.Add().Text(new JS("formatMessage('This Year Till Date')")).Option("color", "#FF7043").Icon("event").OnClick("function() { ddBtnShowRecords_click('tillyear'); }");
+            items.Add().Text(new JS("formatMessage('This Year (Full)')")).Option("color", "#4285F4").Icon("event").OnClick("function() { ddBtnShowRecords_click('fullyear'); }");
+            items.Add().Text(new JS("formatMessage('Last Month')")).Option("color", "#FBBC05").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastmonth'); }");
+            items.Add().Text(new JS("formatMessage('Last Year')")).Option("color", "#00ACC1").Icon("event").OnClick("function() { ddBtnShowRecords_click('lastyear'); }");
         })
+        .ItemTemplate(@<text>
+        <div class="custom-dropdown-item">
+            <div style="background-color:<%- color %>;height:90%" class="side-bar"></div>
+            <div class="item-content">
+                <div class="item-icon dx-icon dx-icon-<%- icon %>"></div>
+                <div>
+                    <div class="item-title"><%- text %></div>
+                </div>
+            </div>
+        </div>
+    </text>)
         )
+    <div id="quarterMenu"></div>
     <div>
 
         @await Html.PartialAsync("/Pages/Shared/VAT/VATReturnsSalesandPurchaseFooter.cshtml")
@@ -728,17 +742,17 @@
                   
                         <thead>
                         <tr style="width: 100%; border-collapse: collapse; background-color: var(--background-color);">
-                                <th>S.No</th>
-                                <th>Description</th>
-                                <th style="width:12%">Purchases</th>
-                            <th style="width: 12%;">Debit Note</th>
-                                <th style="width:20%">Tax After Adjustment</th>
+                                <th id="snovatreturns"></th>
+                                <th id="vatreturnsdescription"></th>
+                                <th style="width:12%" id="purchasereurnsvat"></th>
+                            <th style="width: 12%;" id="vatreturnsdebitnote"></th>
+                                <th style="width:20%" id="vatreturnstaxafteradjustment"></th>
                             </tr>
                         </thead>
                     <tbody>
                         <tr>
             <td>1</td>
-                            <td>Standard rated Sales 5%</td>
+                        <td id="standardratedsalesvatss"></td>
 
                             <td>
                                 @(Html.DevExtreme().NumberBox().ID("DssRevenue").Disabled(true).Format("#,##0.00") // 👈 Formats as 4,216.00
@@ -749,42 +763,42 @@
         </tr>
         <tr>
             <td>1a</td>
-            <td>Standard Rated Sales 15%</td>
+            <td id="standardratedsalesvat"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("Dss15Revenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("Dss15CreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("Dss15SalesTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
         </tr>
         <tr>
             <td>2</td>
-            <td>Sales to customers in VAT Implementing GCC</td>
+            <td id="salestocustomerinvat"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("GccRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("GccCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr>
             <td>3</td>
-            <td>Zero Rated Domestic Sales</td>
+            <td id="zerorateddomesticsales"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DzrRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DzrCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr>
             <td>4</td>
-            <td>Exports</td>
+            <td id="exportssalesreturns"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("ExpRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("ExpCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr>
             <td>5</td>
-            <td>Exempt Sales</td>
+            <td id="salesvatexemptsales"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DexRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DexCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr class="total-row">
             <td>6</td>
-            <td>Total Sales</td>
+            <td id="vatreturnssalestotal"></td>
                             <td>
                                 <div class="numberbox-with-icon">
                                     @(Html.DevExtreme().NumberBox()
@@ -837,74 +851,74 @@
         <div id="vatOnPurchaseForm" style="display: none;padding: 0px 20px;width: 100%;">
                 <table class="vat-table" style="width: 100%; border-collapse: collapse;">
                     <thead>
-                        <tr>
-                            <th>S.No</th>
-                            <th>Description</th>
-                            <th style="width:12%">Purchases</th>
-                            <th style="width: 12%;">Debit Note</th>
-                            <th style="width:20%">Tax After Adjustment</th>
-                        </tr>
+                    <tr style="width: 100%; border-collapse: collapse; background-color: var(--background-color);">
+                        <th id="snovatreturnss"></th>
+                        <th id="vatreturnsdescriptions"></th>
+                        <th style="width:12%" id="purchasereurnsvats"></th>
+                        <th style="width: 12%;" id="vatreturnsdebitnotes"></th>
+                        <th style="width:20%" id="vatreturnstaxafteradjustments"></th>
+                    </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>7</td>
-                            <td>Standard rated Domestic Purchase 5%</td>
+						<td id="standadrrateddomesticpurchase"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DssDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DssPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
                             <td>7a</td>
-                            <td>Standard rated Domestic Purchase 15%</td>
+                            <td id="standardratesdomesticpurchasevatreturns5"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
                             <td>8</td>
-                            <td>Imports subject to VAT Paid at Customer 5%</td>
+                            <td id="importsasubjectvatpaid"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("IPCDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("IPCPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
                             <td>8a</td>
-                            <td>Imports subject to VAT Paid at Customer 15%</td>
+                            <td id="importssubjectpaidcustomer"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
                             <td>9</td>
-                            <td>Imports Subject to VAT - thru RCM 5%</td>
+                            <td id="importssubjecttovathru"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("RCMDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("RCMPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
                             <td>9a</td>
-                            <td>Imports Subject to VAT - thru RCM 15%</td>
+                            <td id="importssubjecttovatrcm"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
                             <td>10</td>
-                            <td>Zero rate Purchases</td>
+                            <td id="zeroratepurchasevat"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DZRPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DZRDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td></td>
                         </tr>
                         <tr>
                             <td>11</td>
-                            <td>Exempt Purchases</td>
+                            <td id="exemptpurchasevat"></td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DEXPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td>@(Html.DevExtreme().NumberBox().ID("DEXDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                             <td></td>
                         </tr>
                         <tr class="total-row">
                             <td>12</td>
-                            <td>Total Purchases</td>
+                            <td id="totalpurchasevatreturnsvat"></td>
 
                             <!-- PurchaseTotal -->
                             <td>
@@ -1042,6 +1056,23 @@
         var toDate = new Date(toDateBox.option("value"));
         var currentDate = new Date();
         switch (duration) {
+
+             case 'q1':
+            frmDate = new Date(currentDate.getFullYear(), 0, 1);   // Jan 1
+            toDate  = new Date(currentDate.getFullYear(), 2, 31);  // Mar 31
+            break;
+            case 'q2':
+                frmDate = new Date(currentDate.getFullYear(), 3, 1);   // Apr 1
+                toDate  = new Date(currentDate.getFullYear(), 5, 30);  // Jun 30
+                break;
+            case 'q3':
+                frmDate = new Date(currentDate.getFullYear(), 6, 1);   // Jul 1
+                toDate  = new Date(currentDate.getFullYear(), 8, 30);  // Sep 30
+                break;
+            case 'q4':
+                frmDate = new Date(currentDate.getFullYear(), 9, 1);   // Oct 1
+                toDate  = new Date(currentDate.getFullYear(), 11, 31); // Dec 31
+                break;
             case 'today':
                 frmDate = toDate = currentDate;
                 break;
@@ -1367,5 +1398,155 @@
                                 });
                                 showColumnChooser();
                                 console.log('End permission handling');
+                            });
+
+
+                            function onByQuarterClick(e) {
+        // Prevent the main dropdown from closing
+        e.event.stopPropagation();
+
+        // Reopen main dropdown in case DevExtreme tried to close it
+        const dd = $("#ddBtnShowRecords").dxDropDownButton("instance");
+        dd.open();
+        // Open the submenu near the "By Quarter" element
+        openQuarterMenu(e.element);
+    }
+
+            function openQuarterMenu(targetElement) {
+        if ($("#quarterMenu").data("dxContextMenu")) {
+            $("#quarterMenu").dxContextMenu("instance").dispose();
+        }
+
+        $("#quarterMenu").dxContextMenu({
+            target: targetElement,
+            showEvent: "",
+            width: 230,
+            position: {
+                at: "right center",
+                my: "left center",
+                of: targetElement,
+                offset: "8 0"
+            },
+            items: [
+                { text: "1st Quarter (Jan - Mar)", value: "q1", color: "#4285F4", icon: "event" },
+                { text: "2nd Quarter (Apr - Jun)", value: "q2", color: "#34A853", icon: "event" },
+                { text: "3rd Quarter (Jul - Sep)", value: "q3", color: "#EA4335", icon: "event" },
+                { text: "4th Quarter (Oct - Dec)", value: "q4", color: "#FBBC05", icon: "event" }
+            ],
+            onItemClick: function(e) {
+                const quarter = e.itemData.value;
+                if (quarter) {
+                    ddBtnShowRecords_click(quarter, 1);
+                    closeMainDropdown();
+                }
+            },
+            itemTemplate: function(itemData) {
+                return $("<div>").addClass("custom-dropdown-item")
+                    .append(
+                        $("<div>").addClass("side-bar").css({
+                            "background-color": itemData.color,
+                            "height": "90%"
+                        })
+                    )
+                    .append(
+                        $("<div>").addClass("item-content").append(
+                            $("<div>").addClass("item-icon dx-icon dx-icon-" + itemData.icon),
+                            $("<div>").append(
+                                $("<div>").addClass("item-title").text(itemData.text)
+                            )
+                        )
+                    );
+            }
+        }).dxContextMenu("instance").show();
+    }
+                            $(function () {
+                                $("#vatreturnsvat").text(formatMessage("VAT Returns"));
+                            });
+                            $(function () {
+                                $("#vatonsalesvat").text(formatMessage("VAT on Sales"));
+                            });
+                            $(function () {
+                                $("#vatonpurchasevat").text(formatMessage("VAT on Purchase"));
+                            });
+                            $(function () {
+                                $("#QuickDiceERPSolutions11").text(formatMessage("Quick Dice ERP Solutions"));
+                            });
+                            $(function () {
+                                $("#snovatreturns").text(formatMessage("S.No"));
+                            });
+                            $(function () {
+                                $("#snovatreturnss").text(formatMessage("S.No"));
+                            });
+                            $(function () {
+                                $("#purchasereurnsvat").text(formatMessage("Purchases"));
+                            });
+                            $(function () {
+                                $("#purchasereurnsvats").text(formatMessage("Purchases"));
+                            });
+                            $(function () {
+                                $("#vatreturnssalestotal").text(formatMessage("Total Sales"));
+                            });
+                            $(function () {
+                                $("#salesvatexemptsales").text(formatMessage("Exempt Sales"));
+                            });
+                            $(function () {
+                                $("#zerorateddomesticsales").text(formatMessage("Zero rated Domestic Sales"));
+                            });
+                            $(function () {
+                                $("#exportssalesreturns").text(formatMessage("Exports"));
+                            });
+                            $(function () {
+                                $("#vatreturnstaxafteradjustment").text(formatMessage("Tax After Adjustment"));
+                            });
+                            $(function () {
+                                $("#vatreturnstaxafteradjustments").text(formatMessage("Tax After Adjustment"));
+                            });
+                            $(function () {
+                                $("#vatreturnsdescription").text(formatMessage("Description"));
+                            });
+                            $(function () {
+                                $("#vatreturnsdescriptions").text(formatMessage("Description"));
+                            });
+                            $(function () {
+                                $("#totalpurchasevatreturnsvat").text(formatMessage("Total Purchase"));
+                            });
+                            $(function () {
+                                $("#exemptpurchasevat").text(formatMessage("Exempt Purchase"));
+                            });
+                            $(function () {
+                                $("#zeroratepurchasevat").text(formatMessage("Zero rate Purchases"));
+                            });
+                            $(function () {
+                                $("#importssubjecttovatrcm").text(formatMessage("Imports Subject to VAT - thru RCM 15%"));
+                            });
+                            $(function () {
+                                $("#importssubjecttovathru").text(formatMessage("Imports Subject to VAT - thru RCM 5%"));
+                            });
+                            $(function () {
+                                $("#importssubjectpaidcustomer").text(formatMessage("Imports subject to VAT Paid at Customer 15%"));
+                            });
+                            $(function () {
+                                $("#importsasubjectvatpaid").text(formatMessage("Imports subject to VAT Paid at Customer 5%"));
+                            });
+                            $(function () {
+                                $("#standardratesdomesticpurchasevatreturns5").text(formatMessage("Standard rated Domestic Purchase 15%"));
+                            });
+                            $(function () {
+                                $("#standadrrateddomesticpurchase").text(formatMessage("Standard rated Domestic Purchase 5%"));
+                            });
+                            $(function () {
+                                $("#vatreturnsdebitnote").text(formatMessage("Debit Note"));
+                            });
+                            $(function () {
+                                $("#vatreturnsdebitnotes").text(formatMessage("Debit Note"));
+                            });
+                            $(function () {
+                                $("#salestocustomerinvat").text(formatMessage("Sales to customers in VAT Implementing GCC"));
+                            });
+                            $(function () {
+                                $("#standardratedsalesvatss").text(formatMessage("Standard rated Sales 5%"));
+                            });
+                            $(function () {
+                                $("#standardratedsalesvat").text(formatMessage("Standard rated Sales 15%"));
                             });
 </script>

@@ -304,7 +304,7 @@
         @(Html.DevExtreme().DropDownButton()
                 .ID("btnPrint23")
                 .Width(132)
-                .Text("Print")
+                .Text(new JS("formatMessage('Print')"))
                 .Icon("print")
                 .ElementAttr(new { @class = "bold-button" })
                 .DropDownOptions(options => options.Width(230))
@@ -312,17 +312,17 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Preview Credit Note")
+                        .Text(new JS("formatMessage('Preview Credit Note')"))
                         .Icon("print")
                         .Option("color", "#FF7043"); // Orange
 
                     items.Add()
-                        .Text("Preview Credit Note(Foreign Currency)")
+                    .Text(new JS("formatMessage('Preview Credit Note (Foreign Currency)')"))
                         .Icon("file")
                         .Option("color", "#00ACC1"); // Cyan
 
                     items.Add()
-                        .Text("Credit Note Posting")
+                    .Text(new JS("formatMessage('Credit Note Posting')"))
                         .Icon("folder")
                         .Option("color", "#AB47BC") // Purple
                         .OnClick("navigateCreditInventoryCost");

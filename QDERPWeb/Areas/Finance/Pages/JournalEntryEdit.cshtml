@@ -123,7 +123,7 @@
                 .Value(DateTime.Now)
                         .LabelMode(EditorLabelMode.Floating)
                         .Label("Voucher Date")
-
+                        .OnValueChanged("onVoucherDateChanged")
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true) // Ensures proper date input handling
                 .ElementAttr("class", "dynamicFormatDateBox"))
@@ -138,6 +138,7 @@
                         .Label("Effective Date")
                 .DisplayFormat("dd-MMM-yyyy") // Example: 31-Aug-2024
                 .UseMaskBehavior(true)
+                .OnValueChanged("onVoucherDateChanged")
                 .ElementAttr("class", "dynamicFormatDateBox"))
         </div>
 
@@ -1282,6 +1283,7 @@
 
                                 // ✅ Initialize popovers
                                 initWorkflowTippyPopovers();
+                                checkVoucherDateLock(entry.JournalEntryDate);
                         getDocumentCount();
                         getchilddatas();
                     } else {
@@ -2436,28 +2438,22 @@
                 }
             }
         }
-
-        
-                //1. Get Document Count from Grid Load in Ledger Documents
-                function setAttachCount(count) {
-                    updateAttachButtonCount("#btnAttach", count);
-                }
-                //2. Get Document Count
-                async function getDocumentCount() {
-                    var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-                    
-                    var voucherType = "journal register entry";
-                    // var response = await fetch(`/api/VoucherMaster/GetPostedNoFromExpenses?voucherNo=${encodeURIComponent(voucherNo)}`);
-                    // var folderNo2 = await response.text(); 
-
-                    var menuType = "finance";
-
-                    const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
-                    const docs = await res.json();
-                    const count = docs.length;
-
-                    updateAttachButtonCount("#btnAttach", count);
-
-                    // No need to return anything if you don't want to
-                }
+         function checkVoucherDateLock(voucherDate) {
+     $.ajax({
+         type: "GET",
+         url: "/api/VoucherMaster/CheckVoucherDateLock",
+         contentType: "application/json",
+         data: { voucherDate: formatDateOnlyLocal(voucherDate) },
+         success: function (res) {
+             if (res && res.isLocked === true) {
+                 DevExpress.ui.dialog.alert(
+                     "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                     "Date Locked"
+                 ).done(function () {
+                     history.back();   // ⬅️ Go back after clicking OK
+                 });
+             }
+         }
+     });
+ }
 </script>

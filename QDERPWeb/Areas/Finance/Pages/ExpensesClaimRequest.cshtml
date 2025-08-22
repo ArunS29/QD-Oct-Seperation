@@ -213,7 +213,7 @@
     <div class="row w-100 align-items-center" style="margin-top: 8px;">
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().TextBox()
-                        .Label("Claim Reference No:")
+                        .Label(new JS("formatMessage('Claim Reference No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("VoucherNo")
                         .Value("")
@@ -223,29 +223,31 @@
         </div>
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().DateBox()
-                        .Label("Claim Date:")
+                        .Label(new JS("formatMessage('Claim Date:')"))
                         .ID("claimerdate")
                         .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
                         .ElementAttr("class", "dynamicFormatDateBox")
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().DateBox()
-                        .Label("Effective Date:")
+                        .Label(new JS("formatMessage('Effective Date:')"))
                         .ID("claimerEffectiveDate")
                         .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
                         .ElementAttr("class", "dynamicFormatDateBox")
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-6 col-sm-6">
             @(Html.DevExtreme().TextArea()
-                        .Label("Claim Remarks:")
+                        .Label(new JS("formatMessage('Claim Remarks:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("txtEntryNarration")
                         .Value("")
@@ -266,7 +268,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("CostAllocationUnitId")
                         )
-                        .Label("Claimed for Project/Jobs:")
+                        .Label(new JS("formatMessage('Claimed for Project/Jobs:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("accountDropDownBox")
                         .ShowClearButton(true)
@@ -290,7 +292,7 @@
         <div class="form-group col-md-2 col-sm-6">
             @(
                         Html.DevExtreme().SelectBox()
-                        .Label("Priority:")
+                        .Label(new JS("formatMessage('Priority:')"))
                         .ID("Priorityclaim")
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Critical", "High", "Medium", "Low" })
@@ -304,10 +306,10 @@
                 .ID("dataGrid")
                 .Columns(columns =>
                 {
-                    columns.AddFor(m => m.ClaimChildNo).Caption("Child No").Visible(false).AllowEditing(false);
-                    columns.AddFor(m => m.ExpenseDescription).Caption("Expense Description").Visible(true);
-                    columns.AddFor(m => m.BillRefNo).Caption("Bill Ref No");
-                    columns.AddFor(m => m.BillDate).Caption("Bill Date").AllowEditing(true).CellTemplate(@<text>
+                    columns.AddFor(m => m.ClaimChildNo).Caption(new JS("formatMessage('Child No')")).Visible(false).AllowEditing(false);
+                    columns.AddFor(m => m.ExpenseDescription).Caption(new JS("formatMessage('Expense Description')")).Visible(true);
+                    columns.AddFor(m => m.BillRefNo).Caption(new JS("formatMessage('Bill Ref No')"));
+                    columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('Bill Date')")).AllowEditing(true).CellTemplate(@<text>
                                                                                                               <span>
                                                                                                                   <%- data.BillDate ? DevExpress.localization.formatDate(new Date(data.BillDate), "dd-MMM-yyyy") : '' %>
                                                                                                               </span>
@@ -322,7 +324,7 @@
                             )
             </text>);
                     columns.AddFor(m => m.ClaimedAmount)
-                    .Caption("Claimed Amount")
+                    .Caption(new JS("formatMessage('Claimed Amount')"))
                     .Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }") // ✅ Fix: Prevent undefined error
                     .AllowEditing(true).EditCellTemplate(@<text>
@@ -337,7 +339,7 @@
                             )
             </text>);
                     columns.AddFor(m => m.ApprovedAmount)
-                    .Caption("Approved Amount")
+                    .Caption(new JS("formatMessage('Approved Amount')"))
                     .AllowEditing(true)
                     .Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }").EditCellTemplate(@<text>
@@ -351,7 +353,7 @@
                             .Format("#,##0.00")
                             )
             </text>);
-                    columns.Add().Caption("Action").Width(120)
+                    columns.Add().Caption(new JS("formatMessage('Action')")).Width(120)
                     .CellTemplate(@<text>
                                        <div class="dropdown-wrapper">
                     @(Html.DevExtreme().Button()
@@ -361,7 +363,7 @@
             </div>
         </text>).Alignment(HorizontalAlignment.Center);
 
-                    columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
+                    columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption(new JS("formatMessage('Account Ledger')")).Width(300)
                     .CellTemplate(@<text>
                                        <span>
                                            <% if (data.AccountHead) { %>
@@ -402,7 +404,7 @@
 
 
 
-                    columns.AddFor(m => m.CostCenterCode).DataField("CostAllocationUnit").Caption("Cost Center Code").Width(300)
+                    columns.AddFor(m => m.CostCenterCode).DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center Code')")).Width(300)
                     .CellTemplate(@<text>
                                        <span>
                                            <% if (data.CostAllocationUnit) { %>
@@ -476,7 +478,7 @@
             <div class="col-3 d-flex justify-content-start align-items-center gap-2">
               <div class="form-group">
                 @(Html.DevExtreme().SelectBox()
-                .Label("Type of Claim:")
+                .Label(new JS("formatMessage('Type of Claim:')"))
                 .ID("ClaimType")
                 .LabelMode(EditorLabelMode.Floating)
                 .DataSource(new[] { "Expenses Claim Request" })
@@ -519,7 +521,7 @@
                                 .ValueChangeEvent("input")
                                 .HoverStateEnabled(true)
                                 .ValueExpr("AccountId")
-                                .Label("Payment Accounts")
+                                .Label(new JS("formatMessage('Payment Accounts')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .DisplayExpr("AccountHead")
                                 .OnInput("dropDownBoxOnInput")
@@ -534,7 +536,7 @@
                             <div class="form-group d-flex align-items-end">
                 @(Html.DevExtreme().Button()
                                 .ID("btnPaytheClaim")
-                                .Text("Pay the Claim")
+                                .Text(new JS("formatMessage('Pay the Claim')"))
                                 .Icon("money")
                                 .ElementAttr(new { @class = "bold-button" })
                                 .Height(100)
@@ -557,7 +559,7 @@
                                 .ID("SubmittedBytext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Submitted By:")
+                                .Label(new JS("formatMessage('Submitted By:')"))
                                 .LabelMode(EditorLabelMode.Floating))
                     </div>
                 </div>
@@ -567,7 +569,7 @@
                                 .ID("SubmittedOnDate")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Submitted On:")
+                                .Label(new JS("formatMessage('Submitted On:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -585,7 +587,7 @@
                                 .ID("VerifiedBytext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Verified By:")
+                                .Label(new JS("formatMessage('Verified By:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -595,7 +597,7 @@
                                 .ID("VerifiedOntext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Verified On:")
+                                .Label(new JS("formatMessage('Verified On:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -613,7 +615,7 @@
                                 .ID("ApprovedBytext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Approved By:")
+                                .Label(new JS("formatMessage('Approved By:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -623,7 +625,7 @@
                                 .ID("ApprovedOntext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Approved On:")
+                                .Label(new JS("formatMessage('Approved On:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -1503,6 +1505,7 @@
                             getDocumentCount();
                             // ✅ Initialize popovers
                             initWorkflowTippyPopovers();
+                             checkVoucherDateLock(entry.ClaimDate);
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
@@ -2630,7 +2633,24 @@
             });
     });
 
-
+        function checkVoucherDateLock(voucherDate) {
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckVoucherDateLock",
+            contentType: "application/json",
+            data: { voucherDate: formatDateOnlyLocal(voucherDate) },
+            success: function (res) {
+                if (res && res.isLocked === true) {
+                    DevExpress.ui.dialog.alert(
+                        "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                        "Date Locked"
+                    ).done(function () {
+                        history.back();   // ⬅️ Go back after clicking OK
+                    });
+                }
+            }
+        });
+    }
       $(function () {
                  $("#ExpensesClaims").dxTextBox({
                     text: formatMessage("Expenses Claims"),

@@ -9,7 +9,6 @@
     document.getElementById("modalContent").style.width = width;
 }
 
-// Function to close modal
 function closeModal() {
     document.getElementById("customModal").style.display = "none";
     document.getElementById("modalIframe").src = ""; // Clear iframe on close

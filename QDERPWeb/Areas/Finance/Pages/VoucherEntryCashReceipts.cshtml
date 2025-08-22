@@ -97,6 +97,7 @@
                                                 .Type(DateBoxType.Date)
                                                 .DisplayFormat("dd-MMM-yyyy")
                                                 .Value(DateTime.Now)
+                                                .OnValueChanged("onVoucherDateChanged")
                                                 .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                                                 .TabIndex(2)
                                                 .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
@@ -505,20 +506,31 @@ buttons.Add()
 
 
 
-                                    columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
-                                    columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false).CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                                    columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false) .CalculateCellValue("function(data) { " +
+                                    "    if (data.DrAmount != null) { " +
+                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        var val = data.DrAmount / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}")
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
+
+                                    columns.AddFor(m => m.CrAmount).Caption(new JS("formatMessage('Credit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false) .CalculateCellValue("function(data) { " +
+                                    "    debugger; " +
+                                    "    if (data.CrAmount != null) { " +
+                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        var val = data.CrAmount / currencyRate; " +
+                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}")
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
+
                                     columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')")).Width(300);
                                     columns.AddFor(m => m.SysRemarks).Caption(new JS("formatMessage('Remarks')")).Width(300);
                                 })
@@ -563,21 +575,13 @@ buttons.Add()
                                     {
 
                                         totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
-                                   .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                                   .CustomizeText("function(e) { " +
+           "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+           "}");
                                         totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
-                                    .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                                   .CustomizeText("function(e) { " +
+           "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+           "}");
                                     });
                                 })
                                 )
@@ -1195,6 +1199,10 @@ function addVoucherEntry() {
             var voucherAmount = $("#Amount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
             var amount = voucherAmount * currencyRate;
+              amount = Math.round(amount * 100) / 100;
+
+    // Format to always have 2 decimals
+    amount = parseFloat(amount).toFixed(2);
              var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
             var accountHead = $("#AccountHeadDropDown").dxDropDownBox("instance").option("value");
 
@@ -2985,8 +2993,7 @@ function addVoucherEntry() {
                     }
 
                     fetchVoucherDetails(voucherNo);
-                    fetchVoucherEntries(voucherNo);
-                        getDocumentCount();
+                   getDocumentCount();
                 }
 
                 // function validateVoucherNo(voucherNo) {
@@ -3076,6 +3083,8 @@ function addVoucherEntry() {
                         }
                                                             syncWorkflowFromFields();
                                 initWorkflowTippyPopovers();
+                                 checkVoucherDateLock(data.VoucherDate);
+                                  fetchVoucherEntries(data.VoucherNo);
                                 getDocumentCount();
                             //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                         }
@@ -3108,6 +3117,7 @@ function addVoucherEntry() {
                             var dataGrid = $("#dataGrid").dxDataGrid("instance");
                             if (dataGrid) {
                                 dataGrid.option("dataSource", response.data);
+                                dataGrid.refresh();
                                 var button = $("#btnSave").dxButton("instance");
                                     button.option("text", "Update");
                                     $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
@@ -3159,41 +3169,7 @@ function addVoucherEntry() {
                     });
                 }
 
-                 function onVoucherDateChanged(e) {
-                    console.log("Selected Date:", e.value);
-                    var voucherDate = $("#VoucherDate").dxDateBox("instance");
-                    var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
-
-                    voucherDate.option("onValueChanged", function (e) {
-                        let voucherDateval = e.value; // Get Date from DevExtreme DateBox
-
-                        // Check if voucherDateval is valid
-                        if (!voucherDateval) return;
-
-                        // Set effectiveDate to the same value as voucherDate
-                        effectiveDate.option("value", voucherDateval);
-
-                        // Convert to 'yyyy-MM-dd' format
-                        let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
-
-                        // Define the cutoff date (2021-12-31)
-                        let cutoffDate = new Date("2021-12-31");
-
-                        // Get the current date to set if the voucher date is blocked
-                        let currentdate = new Date();
-                        let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
-
-                        // Check if the formatted voucher date is before the cutoff date
-                        if (new Date(formattedDate) < cutoffDate) {
-                            // Show alert for blocked entry
-                            DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
-
-                            // Set both voucherDate and effectiveDate to the current date
-                            voucherDate.option("value", formattedCurrentDate);
-                            effectiveDate.option("value", formattedCurrentDate);
-                        }
-                    });
-                }
+                
 
                   function onRowUpdating(e) {
         const updatedData = e.newData;
@@ -3789,4 +3765,23 @@ tippy('#circle-approve', {
 			}
 			});
 		});
+
+         function checkVoucherDateLock(voucherDate) {
+     $.ajax({
+         type: "GET",
+         url: "/api/VoucherMaster/CheckVoucherDateLock",
+         contentType: "application/json",
+         data: { voucherDate: formatDateOnlyLocal(voucherDate) },
+         success: function (res) {
+             if (res && res.isLocked === true) {
+                 DevExpress.ui.dialog.alert(
+                     "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                     "Date Locked"
+                 ).done(function () {
+                     history.back();   // ⬅️ Go back after clicking OK
+                 });
+             }
+         }
+     });
+ }
 </script>

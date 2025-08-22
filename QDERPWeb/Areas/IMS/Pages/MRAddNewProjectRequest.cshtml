@@ -1047,7 +1047,7 @@
 							<div class="col-6">
 								@(Html.DevExtreme().DateBox()
 																.ID("ddBitCls")
-																.Label(new JS("formatMessage('Bit Closing Date:')"))
+																.Label(new JS("formatMessage('Bid Closing Date:')"))
 																.Type(DateBoxType.Date) // Other options: DateTime, Time
 
 																.DisplayFormat("dd/MM/yyyy")
@@ -2026,9 +2026,9 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
@@ -2060,9 +2060,9 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
@@ -2094,9 +2094,9 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Signatory Id')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
@@ -2749,6 +2749,7 @@
 			const mprnos = urlParams.get('Mprno');
 			const mprno = mprnos ? mprnos.split("?")[0] : null;
 			getSalesPersonByUser();
+	      	getDefaultCompany();
 			if (mprno) {
 				// If Mprno is present, load client details
 				loadClientDetails(mprno);
@@ -2894,7 +2895,26 @@
 			}
 		});
 	}
+		function getDefaultCompany() {
+		$.ajax({
+			type: "GET",
+			url: "/api/AddNewClientRequest/GetDefaultCompany",
+			success: function (data) {
+				if (data && data.CompanyId) {
+					console.log("Default Company:", data.CompanyId, data.CompanyName);
 
+					const CompanyDropDown = $("#ddGetCompany").dxDropDownBox("instance");
+					if (CompanyDropDown) {
+						// ✅ Bind CompanyId as value
+						CompanyDropDown.option("value", data.CompanyId);
+					}
+				}
+			},
+			error: function (xhr) {
+				console.error("Company fetch failed:", xhr.responseText);
+			}
+		});
+	}
 
 
 		// Move the DataGrid configuration into a function for cleanliness
@@ -3157,12 +3177,22 @@
 						selection: { mode: "single" },
 						columns: [
 							{ dataField: "GSCode", caption: "Code", width: 80 },
+								{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
 							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
 							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							
+								{
+					dataField: "IsDiscontinued",
+					caption: "Discontinued Item",
+					width: 150,
+					dataType: "boolean",  // ✅ Show checkbox
+					allowEditing: false,  // ✅ Read-only
+
+				},
+
+	{ dataField: "CostPrice", caption: "Cost Price", width: 100,visible:false},
+	{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false },
+	{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -3197,29 +3227,44 @@
 				}
 			});
 			const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
-
-			$("<div>").dxButton({
+				$("<div>").dxButton({
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-
 			$("<div>").dxButton({
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-					openModal(url, "Goods and Services");
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+					const visibleRows = grid.getVisibleRows();
+					const rowIndex = cellInfo.rowIndex;
+					const rowData = grid.cellValue(rowIndex, "GSCode");
+					if (!rowData) {
+						DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+						return;
+					}
+					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+					openModal(url, "", function () {
+					getDropdownData().done(function (newData) {
+					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("dataSource", newData);
+					}
+					dropdownData = newData;
+					grid.refresh();
+						});
+					});
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-		}
-	},
+			}
+			},
 
 
 									{
@@ -3734,13 +3779,23 @@
 						selection: { mode: "single" },
 						columns: [
 							{ dataField: "GSCode", caption: "Code", width: 80 },
+								{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
 							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
 							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-						],
+							
+								{
+											dataField: "IsDiscontinued",
+											caption: "Discontinued Item",
+											width: 150,
+											dataType: "boolean",  // ✅ Show checkbox
+											allowEditing: false,  // ✅ Read-only
+
+										},
+
+							{ dataField: "CostPrice", caption: "Cost Price", width: 100,visible:false},
+							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false },
+							{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
+								],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
 							if (!selectedItem) return;
@@ -3779,7 +3834,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/IMS/VATGoodsandService`, "");
 				},
 				width: 60,
 				height: 30
@@ -3789,8 +3844,8 @@
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-					openModal(url, "Goods and Services");
+					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
+					openModal(url, "");
 				},
 				width: 60,
 				height: 30
@@ -7578,9 +7633,9 @@ function onIMSAttachmentButtonClick() {
 
 	const isMaster = false;
 	const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-	const title = "Transaction Documents";
 
-	openModal(url, title);
+
+	openModal(url, "");
 }
 	 function onBaseCurrencyInitialized(e) {
 				const ddb = e.component;

@@ -63,6 +63,8 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
             public List<UploadItemDto> Items { get; set; }
 
             public int GSGroupID { get; set; }
+            public bool IsExist { get; set; } = false;
+
         }
         public class UploadItemDto
         {
@@ -163,7 +165,22 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 if (item.UnitPrice < 0)
                     return BadRequest(new { success = false, message = "UnitPrice cannot be negative." });
             }
+               int slNoCounter = await dbContext.Tbl60602purchaseRequestChildren.Where(x => x.Mprno == request.RequestNo).CountAsync();
+            if (request.IsExist != true)
+            {
+                var existingChildren = await dbContext.Tbl60602purchaseRequestChildren
+                        .Where(x => x.Mprno == request.RequestNo)
+                        .ToListAsync();
+                slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
 
+
+                var toDelete = existingChildren.ToList();
+
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl60602purchaseRequestChildren.RemoveRange(toDelete);
+                }
+            }
             var executionStrategy = dbContext.Database.CreateExecutionStrategy();
 
             await executionStrategy.ExecuteAsync(async () =>
@@ -171,7 +188,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 using var transaction = await dbContext.Database.BeginTransactionAsync();
                 try
                 {
-                    int slNoCounter = await dbContext.Tbl60005inventoryUploads.MaxAsync(x => (int?)x.SlNo) ?? 0;
+                    
 
                     foreach (var item in request.Items)
                     {
@@ -293,17 +310,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                 });
             }
             
-            var existingChildren = await dbContext.Tbl60602purchaseRequestChildren
-                    .Where(x => x.Mprno == request.Mprno)
-                    .ToListAsync();
-
-
-            var toDelete = existingChildren.ToList();
-
-            if (toDelete.Any())
-            {
-                dbContext.Tbl60602purchaseRequestChildren.RemoveRange(toDelete);
-            }
+            
             await dbContext.SaveChangesAsync();
             return Ok(new
             {

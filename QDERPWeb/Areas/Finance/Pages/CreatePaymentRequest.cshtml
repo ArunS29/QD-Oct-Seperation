@@ -220,6 +220,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-2 col-sm-6">
@@ -230,6 +231,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-4 col-sm-6">
@@ -1480,7 +1482,7 @@
                                 disableclaim();
 
                             }
-
+                            checkVoucherDateLock(entry.ClaimDate);
                             getDocumentCount();
                             getchilddatas();
                         } else {
@@ -2299,24 +2301,22 @@
                 DevExpress.ui.notify("Error checking claim status", "error", 3000);
             });
     });
-
-    //1. Get Document Count from Grid Load in Ledger Documents
-function setAttachCount(count) {
-    updateAttachButtonCount("#btnAttach", count);
-}
-//2. Get Document Count
-async function getDocumentCount() {
-    const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-    const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-    const voucherType = "Supplier PaymentRequest";
-    const menuType = "finance";
-
-    const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
-    const docs = await res.json();
-    const count = docs.length;
-
-    updateAttachButtonCount("#btnAttach", count);
-
-    // No need to return anything if you don't want to
-}
+        function checkVoucherDateLock(voucherDate) {
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckVoucherDateLock",
+            contentType: "application/json",
+            data: { voucherDate: formatDateOnlyLocal(voucherDate) },
+            success: function (res) {
+                if (res && res.isLocked === true) {
+                    DevExpress.ui.dialog.alert(
+                        "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                        "Date Locked"
+                    ).done(function () {
+                        history.back();   // ⬅️ Go back after clicking OK
+                    });
+                }
+            }
+        });
+    }
 </script>

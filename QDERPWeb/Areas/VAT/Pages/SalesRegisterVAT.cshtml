@@ -256,6 +256,15 @@
 		.switch-heading1.fade-out {
 			opacity: 0;
 		}
+	.tile-icon {
+        display: flex;
+        align-items: flex-end;
+        justify-content: flex-end;
+        height: 100%;
+        position: absolute;
+        left: 195px !important;
+        bottom: 10px;
+    }
 </style>
 <div class="content-container-top">
 
@@ -266,9 +275,9 @@
 		<div class="card blue shine compact with-sidebar">
 			<div class="tile-content">
 				<div class="title-text">
-					<h2 class="title-slide">VAT Invoice Register</h2>
+					<h2 class="title-slide" id="VATInvoiceRegisterss"></h2>
 					<hr style="border: 0; border-top: 1px solid rgba(255,255,255,0.3); margin: 6px 0;">
-					<h6 class="fade-in">Quick Dice ERP Solutions</h6>
+					<h6 class="fade-in" id="QuickDiceERPSolutions9"></h6>
 				</div>
 				<div class="tile-icon">
 					<!-- Icon as SVG -->
@@ -284,9 +293,9 @@
 
 		<div id="mainCard" class="card today-bg with-sidebar">
 			<div class="tabs" style="gap:5px;">
-				<div class="tab-text active" onclick="switchTab(0)">Verified</div>
-				<div class="tab-text" onclick="switchTab(1)">Approved</div>
-				<div class="tab-text" onclick="switchTab(2)">Submitted</div>
+				<div class="tab-text active" onclick="switchTab(0)" id="Verifiedvatsalesregister"></div>
+				<div class="tab-text" onclick="switchTab(1)" id="approvedsalesregister"></div>
+				<div class="tab-text" onclick="switchTab(2)" id="submittedsalesregister"></div>
 			</div>
 
 			<div class="tab-content active">
@@ -309,10 +318,10 @@
 			</div>
 		</div>
 		<div class="card sparkle with-sidebar" style="background: linear-gradient(135deg, #6a11cb, #2575fc); padding: 16px; border-radius: 12px; width: 220px; color: white;">
-			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Invoice Details</h2>
+			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="salesinvoicedetails"></h2>
 
 			<!-- Rotating Heading -->		
-			<h5 id="statusHeading" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;">Invoice Amount</h5>
+			<h5 id="statusHeading" class="switch-heading" style="margin: 0 0 10px; text-align: left;letter-spacing:1px;" >Invoice Amount</h5>
 
 			<!-- Value with SVG -->
 			<div id="switchValue" style="font-size: 16px; display: flex; align-items: center; justify-content: flex-start; gap: 5px;">
@@ -336,7 +345,7 @@
 		<div class="card purple sparkle with-sidebar" style="background: linear-gradient(135deg, #00c9a7, #92fe9d) !important; padding: 16px; border-radius: 12px; width: 240px;">
 
 			<!-- Main Heading: Voucher Count -->
-			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;">Voucher Count</h2>
+			<h2 style="color: white; margin: 0 0 12px; font-weight: bold; text-align: left;font-size: 1.6em;" id="vouchercountsales"></h2>
 
 			<!-- Rotating Heading -->
 			<h3 id="statusHeading1" class="switch-heading" style="color: white; margin: 0 0 10px;letter-spacing:1px;">Last 5 Years</h3>
@@ -457,133 +466,98 @@
 		)
 	</div>
 	<div class="dx-field ledgerResult">
-	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
-		.ID("dataGrid")
-		.RemoteOperations(false)
-		.DataSource(new JS("[]"))
-		.OnContentReady("onGridContentReady")
-		.Paging(paging => paging.Enabled(false))
-		.Pager(pager => pager.Visible(false))
-		.Columns(columns =>
-		{
-			columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption(new JS("formatMessage('Invoice Zatca Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceType).Caption(new JS("formatMessage('Invoice Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption(new JS("formatMessage('Invoice Effective Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
-				subColumns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true);
-																																							@* subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).DataField("InvoiceStatus").Alignment(HorizontalAlignment.Center).Visible(true); *@
-				subColumns.AddFor(m => m.InvoiceStatus)
-			.Caption(new JS("formatMessage('Invoice Status')"))
-			.Alignment(HorizontalAlignment.Center)
-			.Visible(true)
-			.CellTemplate(new JS("invoiceStatusCellTemplate"));
+		@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201607vatinvoiceRegisterMainView>()
+				.ID("dataGrid")
+				.RemoteOperations(false)
+				.DataSource(new JS("[]"))
+				.OnContentReady("onGridContentReady")
+				.Paging(paging => paging.Enabled(false))
+				.Pager(pager => pager.Visible(false))
+				.Columns(columns =>
+				{
+					columns.Add().Caption(new JS("formatMessage('Invoice Details')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.InvoiceZatcaStatus).Caption(new JS("formatMessage('Invoice Zatca Status')")).Alignment(HorizontalAlignment.Center).Visible(true);
+						subColumns.AddFor(m => m.InvoiceType).Caption(new JS("formatMessage('Invoice Type')")).Alignment(HorizontalAlignment.Center).Visible(true);
+						subColumns.AddFor(m => m.InvoiceNo).Caption(new JS("formatMessage('Invoice No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+						subColumns.AddFor(m => m.InvoiceDate).Caption(new JS("formatMessage('Invoice Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+						subColumns.AddFor(m => m.InvoiceEffectiveDate).Caption(new JS("formatMessage('Invoice Effective Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+						subColumns.AddFor(m => m.AccountHead).Caption(new JS("formatMessage('Account Head')")).Alignment(HorizontalAlignment.Center).Visible(true);
+																																									@* subColumns.AddFor(m => m.InvoiceStatus).Caption(new JS("formatMessage('Invoice Status')")).DataField("InvoiceStatus").Alignment(HorizontalAlignment.Center).Visible(true); *@
+						subColumns.AddFor(m => m.InvoiceStatus)
+					.Caption(new JS("formatMessage('Invoice Status')"))
+					.Alignment(HorizontalAlignment.Center)
+					.Visible(true)
+					.CellTemplate(new JS("invoiceStatusCellTemplate"));
 
-			});
-
-
-			columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.CalcLineAmount)
-			.Caption(new JS("formatMessage('Amount Before Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.AllowEditing(true)
-			.EncodeHtml(false) // 🔹 Required for HTML formatting
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="RevenueAmt-header" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
+					});
+					columns.Add().Caption(new JS("formatMessage('Revenue & Tax Amount')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.CalcLineAmount)
+					.Caption(new JS("formatMessage('Amount Before Tax')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="RevenueAmt-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="revenue-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.CalcLineAmount?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
 
 
 					subColumns.AddFor(m => m.ConvertedCalcLineAmount)
 					.Caption(new JS("formatMessage('Amount Before Tax')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.AllowEditing(true)
-					.EncodeHtml(false) // 🔹 Required for HTML formatting
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="RevenueAmt-header" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+					.HeaderCellTemplate(@<text>
+								 			<div class="RevenueAmt-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="revenue-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedCalcLineAmount?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
 
 
 
 
-			subColumns.AddFor(m => m.CalcTaxAmount)
-			.Caption(new JS("formatMessage('Total VAT Amount')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false) // required for rendering HTML
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display: inline-block; background-color: #ffe6e6; color: #ff4d4d; font-weight: bold; padding: 4px 10px; border-radius: 20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="TotalVATAmt-header" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
+					subColumns.AddFor(m => m.CalcTaxAmount)
+					.Caption(new JS("formatMessage('Total VAT Amount')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="TotalVATAmt-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#ff4d4d; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.CalcTaxAmount?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
+
 
 
 					subColumns.AddFor(m => m.ConvertedCalcTaxAmount)
 					.Caption(new JS("formatMessage('Total VAT Amount')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false) // required for rendering HTML
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display: inline-block; background-color: #ffe6e6; color: #ff4d4d; font-weight: bold; padding: 4px 10px; border-radius: 20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="TotalVATAmt-header" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+					.HeaderCellTemplate(@<text>
+								 			<div class="TotalVATAmt-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill" style="display:inline-block; background-color:#ffe6e6; color:#ff4d4d; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedCalcTaxAmount?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
 
 
 			subColumns.AddFor(m => m.TotalInvoiceAmount)
-			.Caption("Invoiced Amount")
+			.Caption(new JS("formatMessage('Invoiced Amount')"))
 			.EncodeHtml(false) // Required to render HTML content
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText(@"
@@ -602,381 +576,265 @@
 								 			<div class="Invoice-header" style="font-weight: bold;">
 								 				<%= column.caption %>
 								 			</div>
-								 		</text>).Visible(false);
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="invoice-pill" style="display:inline-block; background-color:#fff9cc; color:#b58900; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.TotalInvoiceAmount?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
 
 					subColumns.AddFor(m => m.ConvertedTotalInvoiceAmount)
-					.Caption("Invoiced Amount")
+					.Caption(new JS("formatMessage('Invoiced Amount')"))
 					.EncodeHtml(false) // Required to render HTML content
 					.Alignment(HorizontalAlignment.Right)
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#fff9cc; color:#b58900; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				")
 					.HeaderCellTemplate(@<text>
-			<div class="Invoice-header" style="font-weight: bold;">
-				<%= column.caption %>
+								 			<div class="Invoice-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+			<div class="invoice-pill" style="display:inline-block; background-color:#fff9cc; color:#b58900; font-weight:bold; padding:4px 10px; border-radius:20px;">
+				<%- data.ConvertedTotalInvoiceAmount?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
 			</div>
 		</text>);
-		
-			});
+
+					});
 
 
 
-			columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
-			{
-				revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
-			.Caption(new JS("formatMessage('Domestic Revenue @5%')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header1" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
+					columns.Add().Caption(new JS("formatMessage('Revenue Classified')")).Columns(revenueColumns =>
+					{
+						revenueColumns.Add().Caption(new JS("formatMessage('Domestic')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.DomesticStandartRatedRevenue)
+					.Caption(new JS("formatMessage('Domestic Revenue @5%')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header1" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.DomesticStandartRatedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
 
 					subColumns.AddFor(m => m.ConvertedDomesticStandartRatedRevenue)
 					.Caption(new JS("formatMessage('Domestic Revenue @5%')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false)
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header1" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header1" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedDomesticStandartRatedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals}) %>
+						   			</div>
+						   		</text>);
 
-			subColumns.AddFor(m => m.TotalRevenueOf10Perc)
-			.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header2" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
+					subColumns.AddFor(m => m.TotalRevenueOf10Perc)
+					.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header2" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.TotalRevenueOf10Perc?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
 
 
 					subColumns.AddFor(m => m.ConvertedTotalRevenueOf10Perc)
 					.Caption(new JS("formatMessage('Domestic Revenue @10%')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false)
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header2" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header2" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedTotalRevenueOf10Perc?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
 
-				subColumns.AddFor(m => m.TotalRevenueOf15Perc)
-			.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header3" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
+					subColumns.AddFor(m => m.TotalRevenueOf15Perc)
+					.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header3" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.TotalRevenueOf15Perc?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
 
 
 					subColumns.AddFor(m => m.ConvertedTotalRevenueOf15Perc)
 					.Caption(new JS("formatMessage('Domestic Revenue @15%')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false)
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header3" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
-
-				subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
-			.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header4" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header3" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedTotalRevenueOf15Perc?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
+						subColumns.AddFor(m => m.DomesticZeroRatedRevenue)
+					.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header4" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.DomesticZeroRatedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
 
 					subColumns.AddFor(m => m.ConvertedDomesticZeroRatedRevenue)
 					.Caption(new JS("formatMessage('Domestic Zero Rated Revenue')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false)
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticRevenue-header4" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header4" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedDomesticZeroRatedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
 
-			subColumns.AddFor(m => m.DomesticExemptedRevenue)
-			.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-			<div class="DomesticRevenue-header5" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>).Visible(false);
+					subColumns.AddFor(m => m.DomesticExemptedRevenue)
+					.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header5" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.DomesticExemptedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
 
 
 					subColumns.AddFor(m => m.ConvertedDomesticExemptedRevenue)
 					.Caption(new JS("formatMessage('Domestic Exempted Revenue')"))
 					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticRevenue-header5" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+			<div class="domestic-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+				<%- data.ConvertedDomesticExemptedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+			</div>
+		</text>);
+
+
+					});
+
+						revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.GccstandardRatedRevenue)
+					.Caption(new JS("formatMessage('GCC Revenue')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="GGCRevenue-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="gcc-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.GccstandardRatedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
+
+					subColumns.AddFor(m => m.ConvertedGCCStandardRatedRevenue)
+					.Caption(new JS("formatMessage('GCC Revenue')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="GGCRevenue-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="gcc-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedGCCStandardRatedRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
+					});
+
+						revenueColumns.Add().Caption(new JS("formatMessage('Other Countries')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.ExportsRevenue)
+					.Caption(new JS("formatMessage('Exports Revenue')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="ExportRevenue-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="exports-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ExportsRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
+
+					subColumns.AddFor(m => m.ConvertedExportsRevenue)
+					.Caption(new JS("formatMessage('Exports Revenue')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="ExportRevenue-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+			<div class="exports-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
+				<%- data.ConvertedExportsRevenue?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+			</div>
+		</text>);
+
+					});
+					});
+
+					columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
+					{
+						vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.DomesticStandartRatedTax)
+					.Caption(new JS("formatMessage('Domestic VAT @5%')"))
+					.Alignment(HorizontalAlignment.Right)
 					.Visible(true)
 					.EncodeHtml(false)
 					.CustomizeText(@"
 				function(e) {
 				if (e.value != null) {
 				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
 				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 				}
 				return '';
 				}
-				").HeaderCellTemplate(@<text>
-			<div class="DomesticRevenue-header5" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>);
-
-
-			});
-
-				revenueColumns.Add().Caption(new JS("formatMessage('GCC Countries')")).Columns(subColumns =>
-			{
-			subColumns.AddFor(m => m.GccstandardRatedRevenue)
-			.Caption(new JS("formatMessage('GCC Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false) // Required to render styled HTML
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-			<div class="GGCRevenue-header" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>).Visible(false);
-
-
-					subColumns.AddFor(m => m.ConvertedGCCStandardRatedRevenue)
-					.Caption(new JS("formatMessage('GCC Revenue')"))
-					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false) // Required to render styled HTML
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="GGCRevenue-header" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
-			});
-
-				revenueColumns.Add().Caption(new JS("formatMessage('Other Countries')")).Columns(subColumns =>
-			{
-			subColumns.AddFor(m => m.ExportsRevenue)
-			.Caption(new JS("formatMessage('Exports Revenue')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false) // Allows HTML rendering for the styled span
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-			<div class="ExportRevenue-header" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>).Visible(false);
-
-					subColumns.AddFor(m => m.ConvertedExportsRevenue)
-					.Caption(new JS("formatMessage('Exports Revenue')"))
-					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false) // Allows HTML rendering for the styled span
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-			<div class="ExportRevenue-header" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>);
-
-			});
-			});
-
-			columns.Add().Caption(new JS("formatMessage('VAT Amount Classified')")).Columns(vatColumns =>
-			{
-				vatColumns.Add().Caption(new JS("formatMessage('Domestic VAT')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.DomesticStandartRatedTax)
-			.Caption(new JS("formatMessage('Domestic VAT @5%')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
 				").HeaderCellTemplate(@<text>
 							   			<div class="DomesticVAT-header" style="font-weight: bold;">
 							   				<%= column.caption %>
@@ -987,49 +845,47 @@
 					subColumns.AddFor(m => m.ConvertedDomesticStandartRatedTax)
 					.Caption(new JS("formatMessage('Domestic VAT @5%')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false)
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticVAT-header" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
-
-				subColumns.AddFor(m => m.TotalTaxOf10Perc)
-			.Caption(new JS("formatMessage('Domestic VAT @10%')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticVAT-header1" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticVAT-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill domestic-pill" style="display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedDomesticStandartRatedTax?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
 
 					subColumns.AddFor(m => m.TotalTaxOf10Perc)
 					.Caption(new JS("formatMessage('Domestic VAT @10%')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticVAT-header1" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill domestic-pill" style="display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.TotalTaxOf10Perc?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>).Visible(false);
+
+					subColumns.AddFor(m => m.TotalTaxOf10Perc)
+					.Caption(new JS("formatMessage('Domestic VAT @10%')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticVAT-header1" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill domestic-pill" style="display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.TotalTaxOf10Perc?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
+
+					subColumns.AddFor(m => m.TotalTaxOf15Perc)
+					.Caption(new JS("formatMessage('Domestic VAT @15%')"))
 					.Alignment(HorizontalAlignment.Right)
 					.Visible(true)
 					.EncodeHtml(false)
@@ -1037,35 +893,13 @@
 				function(e) {
 				if (e.value != null) {
 				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
 				});
 				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 				}
 				return '';
 				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticVAT-header1" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
-
-				subColumns.AddFor(m => m.TotalTaxOf15Perc)
-			.Caption(new JS("formatMessage('Domestic VAT @15%')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
 				").HeaderCellTemplate(@<text>
 							   			<div class="DomesticVAT-header2" style="font-weight: bold;">
 							   				<%= column.caption %>
@@ -1075,49 +909,18 @@
 					subColumns.AddFor(m => m.ConvertedTotalTaxOf15Perc)
 					.Caption(new JS("formatMessage('Domestic VAT @15%')"))
 					.Alignment(HorizontalAlignment.Right)
-					.Visible(true)
-					.EncodeHtml(false)
-					.CustomizeText(@"
-				function(e) {
-				if (e.value != null) {
-				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-				});
-				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-				}
-				return '';
-				}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticVAT-header2" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>);
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticVAT-header2" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill domestic-pill" style="display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedTotalTaxOf15Perc?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
 
-			subColumns.AddFor(m => m.DomesticZeroRatedTax)
-			.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-							   			<div class="DomesticVAT-header3" style="font-weight: bold;">
-							   				<%= column.caption %>
-							   			</div>
-							   		</text>).Visible(false);
-
-
-					subColumns.AddFor(m => m.ConvertedDomesticZeroRatedTax)
+					subColumns.AddFor(m => m.DomesticZeroRatedTax)
 					.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
 					.Alignment(HorizontalAlignment.Right)
 					.Visible(true)
@@ -1126,8 +929,8 @@
 				function(e) {
 				if (e.value != null) {
 				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
 				});
 				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 				}
@@ -1137,31 +940,25 @@
 							   			<div class="DomesticVAT-header3" style="font-weight: bold;">
 							   				<%= column.caption %>
 							   			</div>
-							   		</text>);
+							   		</text>).Visible(false);
 
-				subColumns.AddFor(m => m.DomesticExemptedTax)
-			.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false)
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-		minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-			<div class="DomesticExemptedVAT-header" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>).Visible(false);
 
-					subColumns.AddFor(m => m.ConvertedDomesticExemptedTax)
+
+					subColumns.AddFor(m => m.ConvertedDomesticZeroRatedTax)
+					.Caption(new JS("formatMessage('Domestic Zero Rated VAT')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticVAT-header3" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill domestic-pill" style="display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedDomesticZeroRatedTax?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
+
+					subColumns.AddFor(m => m.DomesticExemptedTax)
 					.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
 					.Alignment(HorizontalAlignment.Right)
 					.Visible(true)
@@ -1170,47 +967,38 @@
 				function(e) {
 				if (e.value != null) {
 				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
 				});
 				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 				}
 				return '';
 				}
 				").HeaderCellTemplate(@<text>
-			<div class="DomesticExemptedVAT-header" style="font-weight: bold;">
-				<%= column.caption %>
+							   			<div class="DomesticExemptedVAT-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>).Visible(false);
+
+					subColumns.AddFor(m => m.ConvertedDomesticExemptedTax)
+					.Caption(new JS("formatMessage('Domestic Exempted VAT')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="DomesticExemptedVAT-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+			<div class="vat-pill domestic-pill" style="display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;">
+				<%- data.ConvertedDomesticExemptedTax?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
 			</div>
 		</text>);
 
-			});
+					});
 
-				vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.GccstandardRatedTax)
-			.Caption(new JS("formatMessage('GCC Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false) // Enables HTML rendering
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
-				").HeaderCellTemplate(@<text>
-			<div class="GGCTax-header" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>).Visible(false);
-
-
-					subColumns.AddFor(m => m.ConvertedGCCStandardRatedTax)
+						vatColumns.Add().Caption(new JS("formatMessage('GCC VAT')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.GccstandardRatedTax)
 					.Caption(new JS("formatMessage('GCC Tax')"))
 					.Alignment(HorizontalAlignment.Right)
 					.Visible(true)
@@ -1219,8 +1007,8 @@
 				function(e) {
 				if (e.value != null) {
 				const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
 				});
 				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
 				}
@@ -1230,32 +1018,47 @@
 							   			<div class="GGCTax-header" style="font-weight: bold;">
 							   				<%= column.caption %>
 							   			</div>
-							   		</text>);
-			});
+							   		</text>).Visible(false);
 
-				vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.ExportsTax)
-			.Caption(new JS("formatMessage('Exports Tax')"))
-			.Alignment(HorizontalAlignment.Right)
-			.Visible(true)
-			.EncodeHtml(false) // Required to allow styled HTML rendering
-			.CustomizeText(@"
-		function(e) {
-		if (e.value != null) {
-		const formatted = e.value.toLocaleString(undefined, {
-				minimumFractionDigits: currencyDecimals,
-				maximumFractionDigits: currencyDecimals
-		});
-		return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
-		}
-		return '';
-		}
+
+					subColumns.AddFor(m => m.ConvertedGCCStandardRatedTax)
+					.Caption(new JS("formatMessage('GCC Tax')"))
+					.Alignment(HorizontalAlignment.Right)
+					.HeaderCellTemplate(@<text>
+								 			<div class="GGCTax-header" style="font-weight: bold;">
+								 				<%= column.caption %>
+								 			</div>
+								 		</text>)
+					.CellTemplate(@<text>
+						   			<div class="vat-pill gcc-pill" style="display:inline-block; background-color:#e6f0ff; color:#1a4f8f; font-weight:bold; padding:4px 10px; border-radius:20px;">
+						   				<%- data.ConvertedGCCStandardRatedTax?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
+						   			</div>
+						   		</text>);
+					});
+
+						vatColumns.Add().Caption(new JS("formatMessage('Exports VAT')")).Columns(subColumns =>
+					{
+						subColumns.AddFor(m => m.ExportsTax)
+					.Caption(new JS("formatMessage('Exports Tax')"))
+					.Alignment(HorizontalAlignment.Right)
+					.Visible(true)
+					.EncodeHtml(false) // Required to allow styled HTML rendering
+					.CustomizeText(@"
+				function(e) {
+				if (e.value != null) {
+				const formatted = e.value.toLocaleString(undefined, {
+				minimumFractionDigits: 2,
+				maximumFractionDigits: 2
+				});
+				return '<span style=""display:inline-block; background-color:#ffe6e6; color:#d93025; font-weight:bold; padding:4px 10px; border-radius:20px;"">' + formatted + '</span>';
+				}
+				return '';
+				}
 				").HeaderCellTemplate(@<text>
-			<div class="ExportsTax-header" style="font-weight: bold;">
-				<%= column.caption %>
-			</div>
-		</text>).Visible(false);
+							   			<div class="ExportsTax-header" style="font-weight: bold;">
+							   				<%= column.caption %>
+							   			</div>
+							   		</text>).Visible(false);
 
 					subColumns.AddFor(m => m.ExportsTax)
 					.Caption(new JS("formatMessage('Exports Tax')"))
@@ -1267,12 +1070,13 @@
 								 		</text>)
 					.CellTemplate(@<text>
 			<div class="vat-pill export-pill" style="display:inline-block; background-color:#e6ffe6; color:#1a8f1a; font-weight:bold; padding:4px 10px; border-radius:20px;">
-				<%- data.ExportsTax?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals, maximumFractionDigits: currencyDecimals }) %>
+				<%- data.ExportsTax?.toLocaleString(undefined, { minimumFractionDigits: currencyDecimals,minimumFractionDigits: currencyDecimals }) %>
 			</div>
 		</text>);
 
-			});
-			});
+					});
+					});
+
 						// Add hidden columns for remaining model fields
 					columns.AddFor(m => m.InvoiceNo).Caption("Invoice No").Visible(false);
 					columns.AddFor(m => m.ClientCode).Caption("Client Code").Visible(false);
@@ -1500,7 +1304,7 @@
 		const headingEl = document.getElementById("statusHeading");
 		const valueEl = document.getElementById("switchValue");
 
-		headingEl.textContent = headings[currentIndex];
+		headingEl.textContent = formatMessage(headings[currentIndex]);
 		valueEl.innerHTML = `
 			
 	<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1124.14 1256.39" width="16" height="16" fill="white" style="vertical-align: middle; margin-right: 5px;">
@@ -1549,30 +1353,36 @@
 		}, 30);
 	}
 
-		let isLast5Years = true; // Initial state
+			let isLast5Years = true; // Initial state
 
 	function switchData() {
 		const heading = document.getElementById("statusHeading1");
 		const value = document.getElementById("valueDisplay1");
 
 		if (isLast5Years) {
-			heading.textContent = "New Voucher Today";
+			heading.textContent = formatMessage("New Voucher Today");
 
 			const todayTarget = parseInt(document.getElementById("todayCount")?.textContent || "0", 10);
 			animateTodayVoucherCount(todayTarget); // Animate count-up
 		} else {
-			heading.textContent = "Last 5 Years";
+			heading.textContent = formatMessage("Last 5 Years");
 			value.textContent = document.getElementById("fiveYearCount")?.textContent || "0";
 		}
 
 		isLast5Years = !isLast5Years;
 	}
 
+	// Dummy formatMessage (replace with your i18n one)
+	function formatMessage(key) {
+		return key;
+	}
+
 	// Call once on page load
 	switchData();
 
-	// Automatically switch every 5 seconds
-	setInterval(switchData, 2000); // 5000 ms = 5 seconds
+	// Automatically switch every 2 seconds
+	setInterval(switchData, 2000);
+
 
 	const card = document.getElementById('mainCard');
 	const counts = [0, 0, 0]; // [Verified, Approved, Submitted]
@@ -2337,26 +2147,26 @@
 	}
 	
 
-	$(function () {
-		$("#VATInvoiceRegister").dxTextBox({
-			text: formatMessage("VAT Invoice Register"),
-			readOnly: true,
-			onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+	// $(function () {
+	// 	$("#VATInvoiceRegister").dxTextBox({
+	// 		text: formatMessage("VAT Invoice Register"),
+	// 		readOnly: true,
+	// 		onContentReady: function(e) {
+	// 					$(e.element).addClass("dx-textbox-heading");
+	// 			}
 
-		});
-	});
-	$(function () {
-		$("#QuickDiceERPSolutions").dxTextBox({
-			text: formatMessage("QuickDice ERP Solutions"),
-			readOnly: true,
-			onContentReady: function(e) {
-						$(e.element).addClass("dx-textbox-heading");
-				}
+	// 	});
+	// });
+	// $(function () {
+	// 	$("#QuickDiceERPSolutions").dxTextBox({
+	// 		text: formatMessage("QuickDice ERP Solutions"),
+	// 		readOnly: true,
+	// 		onContentReady: function(e) {
+	// 					$(e.element).addClass("dx-textbox-heading");
+	// 			}
 
-		});
-	});
+	// 	});
+	// });
 
 
 		
@@ -2633,7 +2443,29 @@
 		}).dxContextMenu("instance").show();
 	}
 
-
+	$(function () {
+		$("#VATInvoiceRegisterss").text(formatMessage("VAT Invoice Register"));
+	});
+	$(function () {
+		$("#QuickDiceERPSolutions9").text(formatMessage("Quick Dice ERP Solutions"));
+	});
+	$(function () {
+		$("#Verifiedvatsalesregister").text(formatMessage("Verified"));
+	});
+	$(function () {
+		$("#approvedsalesregister").text(formatMessage("Approved"));
+	});
+	$(function () {
+		$("#submittedsalesregister").text(formatMessage("Submitted"));
+	});
+	$(function () {
+		$("#salesinvoicedetails").text(formatMessage("Invoice Details"));
+	});
+	
+	$(function () {
+		$("#vouchercountsales").text(formatMessage("Voucher Count"));
+	});
+	
 
 
 	function closeMainDropdown() {

@@ -3000,7 +3000,7 @@
             this.DataMember = "qry201_652ProformaInvoiceReport";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(28F, 28F, 0F, 18.70844F);
+            this.Margins = new DevExpress.Drawing.DXMargins(26F, 28F, 0F, 18.70844F);
             this.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.PageHeight = 1169;
             this.PageWidth = 1000;

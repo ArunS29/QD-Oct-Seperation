@@ -191,17 +191,23 @@
     }
 </style>
 
+@*<div class="dx-card-header minimal-header">
+     <div class="card-title-icon">
+        <i class="fas fa-file-invoice-dollar"></i>
+    </div>
+    <h3 class="card-title-text">Petty Cash Request</h3>
+</div> *@
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Petty Cash Request</h3>
+    <div id="pettycashrequest" class="titleText no-border-title"></div>
 </div>
 <div class="content-container">
     <div class="horizontal-container row w-100 align-items-center" style="margin-top: 8px;">
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().TextBox()
-                        .Label("Claim Reference No:")
+                        .Label(new JS("formatMessage('Claim Reference No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("VoucherNo")
                         .Value("")
@@ -211,27 +217,29 @@
         </div>
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().DateBox()
-                        .Label("Claim Date:")
+                        .Label(new JS("formatMessage('Claim Date:')"))
                         .ID("claimerdate")
                         .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-2 col-sm-6">
             @(Html.DevExtreme().DateBox()
-                        .Label("Effective Date:")
+                        .Label(new JS("formatMessage('Effective Date:')"))
                         .ID("claimerEffectiveDate")
                         .LabelMode(EditorLabelMode.Floating)
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-4 col-sm-6">
             @(Html.DevExtreme().TextArea()
-                        .Label("Claim Remarks:")
+                        .Label(new JS("formatMessage('Claim Remarks:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("txtEntryNarration")
                         .Value("Petty Cash Request for the month of ")
@@ -251,7 +259,7 @@
                         .LoadMode(DataSourceLoadMode.Raw)
                         .Key("CostAllocationUnitId")
                         )
-                        .Label("Claimed for Project/Jobs:")
+                        .Label(new JS("formatMessage('Claimed for Project/Jobs:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("accountDropDownBox")
                         .ShowClearButton(true)
@@ -275,7 +283,7 @@
         <div class="form-group col-md-2 col-sm-6">
             @(
                         Html.DevExtreme().SelectBox()
-                        .Label("Priority:")
+                        .Label(new JS("formatMessage('Priority:')"))
                         .ID("Priorityclaim")
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { "Critical", "High", "Medium", "Low" })
@@ -289,10 +297,10 @@
                 .ID("dataGrid")
                 .Columns(columns =>
                 {
-                    columns.AddFor(m => m.ClaimChildNo).Caption("Child No").Visible(false).AllowEditing(false);
-                    columns.AddFor(m => m.ExpenseDescription).Caption("Expense Description").Visible(true);
-                    columns.AddFor(m => m.BillRefNo).Caption("Bill Ref No");
-                    columns.AddFor(m => m.BillDate).Caption("Bill Date").AllowEditing(true).CellTemplate(@<text>
+                    columns.AddFor(m => m.ClaimChildNo).Caption(new JS("formatMessage('Child No')")).Visible(false).AllowEditing(false);
+                    columns.AddFor(m => m.ExpenseDescription).Caption(new JS("formatMessage('Expense Description')")).Visible(true);
+                    columns.AddFor(m => m.BillRefNo).Caption(new JS("formatMessage('Bill Ref No')"));
+                    columns.AddFor(m => m.BillDate).Caption(new JS("formatMessage('Bill Date')")).AllowEditing(true).CellTemplate(@<text>
                                                                                                               <span>
                                                                                                                   <%- data.BillDate ? DevExpress.localization.formatDate(new Date(data.BillDate), "dd-MMM-yyyy") : '' %>
                                                                                                               </span>
@@ -307,7 +315,7 @@
                             )
             </text>);
                     columns.AddFor(m => m.ClaimedAmount)
-                    .Caption("Claimed Amount")
+                    .Caption(new JS("formatMessage('Claimed Amount')"))
                     .Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }") // ✅ Fix: Prevent undefined error
                     .AllowEditing(true).EditCellTemplate(@<text>
@@ -322,7 +330,7 @@
                             )
             </text>);
                     columns.AddFor(m => m.ApprovedAmount)
-                    .Caption("Approved Amount")
+                            .Caption(new JS("formatMessage('Approved Amount')"))
                     .AllowEditing(true)
                     .Alignment(HorizontalAlignment.Right)
                     .CustomizeText("function(e) { return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; }").EditCellTemplate(@<text>
@@ -346,7 +354,8 @@
             </div>
         </text>).Alignment(HorizontalAlignment.Center);
 
-                    columns.AddFor(m => m.AccountId).DataField("AccountHead").Caption("Account Ledger").Width(300)
+                    columns.AddFor(m => m.AccountId).DataField("AccountHead").Width(300)
+                            .Caption(new JS("formatMessage('Account Ledger')"))
                     .CellTemplate(@<text>
                                        <span>
                                            <% if (data.AccountHead) { %>
@@ -387,7 +396,8 @@
 
 
 
-                    columns.AddFor(m => m.CostCenterCode).DataField("CostAllocationUnit").Caption("Cost Center Code").Width(300)
+                    columns.AddFor(m => m.CostCenterCode).DataField("CostAllocationUnit").Width(300)
+                            .Caption(new JS("formatMessage('Cost Center Code')"))
                     .CellTemplate(@<text>
                                        <span>
                                            <% if (data.CostAllocationUnit) { %>
@@ -460,7 +470,7 @@
             <div class="col-3 d-flex justify-content-start align-items-center gap-2">
                               <div class="form-group">
                     @(Html.DevExtreme().SelectBox()
-                                        .Label("Type of Claim:")
+                                        .Label(new JS("formatMessage('Type of Claim:')"))
                                         .ID("ClaimType")
                                         .LabelMode(EditorLabelMode.Floating)
                                         .DataSource(new[] { "Petty Cash Request" })
@@ -472,7 +482,7 @@
                                         .ID("Voucher")
                                         .Value(null)
                                         .ReadOnly(true)
-                                        .Label("Voucher")
+                                        .Label(new JS("formatMessage('Voucher')"))
                                         .LabelMode(EditorLabelMode.Floating))
                 </div>
             </div>
@@ -518,7 +528,7 @@
                                             <div class="form-group d-flex align-items-end" style="padding-top: 5px;">
                     @(Html.DevExtreme().Button()
                                         .ID("btnPaytheClaim")
-                                        .Text("Pay the Claim")
+                                        .Text(new JS("formatMessage('Pay the Claim')"))
                                         .Icon("money")
                                         .ElementAttr(new { @class = "bold-button" })
                                         .Height(100)
@@ -551,7 +561,7 @@
                                 .ID("SubmittedOnDate")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Submitted On:")
+                                .Label(new JS("formatMessage('Submitted On:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -569,7 +579,7 @@
                                 .ID("VerifiedBytext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Verified By:")
+                                .Label(new JS("formatMessage('Verified By:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -579,7 +589,7 @@
                                 .ID("VerifiedOntext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Verified On:")
+                                .Label(new JS("formatMessage('Verified On:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -597,7 +607,7 @@
                                 .ID("ApprovedBytext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Approved By:")
+                                .Label(new JS("formatMessage('Approved By:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -607,7 +617,7 @@
                                 .ID("ApprovedOntext")
                                 .Value(null)
                                 .Disabled(true)
-                                .Label("Approved On:")
+                                .Label(new JS("formatMessage('Approved On:')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
                 </div>
@@ -1478,7 +1488,7 @@
                                 disableclaim();
 
                             }
-
+                            checkVoucherDateLock(entry.ClaimDate);
                             getDocumentCount();
                             getchilddatas();
                         } else {
@@ -2544,21 +2554,31 @@
                 DevExpress.ui.notify("Error checking claim status", "error", 3000);
             });
     });
-    //1. Get Document Count from Grid Load in Ledger Documents
-function setAttachCount(count) {
-    updateAttachButtonCount("#btnAttach", count);
-}
-//2. Get Document Count
-async function getDocumentCount() {
-    const voucherNoBox = $("#VoucherNo").dxTextBox("instance");
-    const voucherNo = voucherNoBox ? voucherNoBox.option("value") : null;
-    const voucherType = "Petty CashRequest";
-    const menuType = "finance";
-
-    const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}`);
-    const docs = await res.json();
-    const count = docs.length;
-
-    updateAttachButtonCount("#btnAttach", count);
-}
+        function checkVoucherDateLock(voucherDate) {
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckVoucherDateLock",
+            contentType: "application/json",
+            data: { voucherDate: formatDateOnlyLocal(voucherDate) },
+            success: function (res) {
+                if (res && res.isLocked === true) {
+                    DevExpress.ui.dialog.alert(
+                        "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                        "Date Locked"
+                    ).done(function () {
+                        history.back();   // ⬅️ Go back after clicking OK
+                    });
+                }
+            }
+        });
+    }
+              $(function () {
+                         $("#pettycashrequest").dxTextBox({
+                            text: formatMessage("Petty Cash Request"),
+                readOnly: true,
+                onContentReady: function (e) {
+                    $(e.element).addClass("dx-textcolor-heading");
+                }
+                });
+            });
 </script>

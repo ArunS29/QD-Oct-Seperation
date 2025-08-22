@@ -1383,8 +1383,18 @@
 
 
                    case "Preview Invoices in (Foreign Currency)":
-                            reportName = "ForeignCurrencyProforma";
-                            break;
+                            CheckIfProformaInvoiceHasDiscount(invoiceNo).then(function (hasDiscount) {
+                                if (hasDiscount) {
+                                    reportName = "ForeignCurrencyProforma";
+                                } else {
+                                    reportName = "ForeignCurrencyProformaWithoutDiscount";
+                                }
+                                openReport(reportName, invoiceNo, watermarkText, isApproved);
+                            }).catch(function (err) {
+                                console.error("Error checking discount:", err);
+                                alert("Failed to check invoice discount.");
+                            });
+                            return;
                         case "Preview Invoices in Foreign Currency(English)":
                             reportName = "ForeignEnglishProforma";
                             break;
@@ -1392,14 +1402,24 @@
                             reportName = "ProformaInvoiceEnglish";
                             break;
                         case "Preview Invoice":
-                            reportName = "ProformaPreviewInvoice";
-                            break;
+                              CheckIfProformaInvoiceHasDiscount(invoiceNo).then(function (hasDiscount) {
+                                if (hasDiscount) {
+                                    reportName = "Wtdiscountpreviewinvoice";
+                                } else {
+                                    reportName = "ProformaPreviewInvoice";
+                                }
+                                openReport(reportName, invoiceNo, watermarkText, isApproved);
+                            }).catch(function (err) {
+                                console.error("Error checking discount:", err);
+                                alert("Failed to check invoice discount.");
+                            });
+                            return;
                              case "Preview Proforma Invoice(NewFormat)":
                             reportName = "ProformaNewFormat";
                             break;
-                        case "Preview Invoices in -with discount":
-                            reportName = "Wtdiscountpreviewinvoice";
-                            break;
+                        // case "Preview Invoices in -with discount":
+                        //     reportName = "Wtdiscountpreviewinvoice";
+                        //     break;
                         case "Preview Invoices in -withOut discount":
                             reportName = "WithoutDiscountInvoice";
                             break;
@@ -1410,19 +1430,32 @@
                     default:
                         alert("Invalid report format selected.");
                         return;
+
                 }
+                        // Open report for normal cases
+        openReport(reportName, invoiceNo, watermarkText, isApproved);
 
-                window.open(
-                    `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&invoiceNo=${encodeURIComponent(invoiceNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`,
-                    '_blank',
-                    'width=1200,height=800,scrollbars=yes,resizable=yes'
-                );
-
-            }).catch(function (error) {
-                console.error("Error checking invoice approval status:", error);
-                alert("Failed to check invoice approval status.");
-            });
+    }).catch(function (error) {
+        console.error("Error checking invoice approval status:", error);
+        alert("Failed to check invoice approval status.");
+    });
         }
+
+                  function CheckIfProformaInvoiceHasDiscount(invoiceNo) {
+        return $.getJSON(`/api/VoucherMaster/CheckIfProformaInvoiceHasDiscount?invoiceNo=${encodeURIComponent(invoiceNo)}`)
+            .then(function (res) {
+                return res.hasDiscount;
+            });
+    }
+
+    // Helper function to open report
+    function openReport(reportName, invoiceNo, watermarkText, isApproved) {
+        window.open(
+            `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&invoiceNo=${encodeURIComponent(invoiceNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`,
+            '_blank',
+            'width=1200,height=800,scrollbars=yes,resizable=yes'
+        );
+    }
 
         // Fetch approval status from API
         async function checkInvoiceApprovalStatus(invoiceNo) {
