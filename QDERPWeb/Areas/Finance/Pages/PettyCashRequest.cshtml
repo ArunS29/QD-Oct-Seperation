@@ -1380,6 +1380,7 @@
                         voucherNoField.option("value", data);
                         initializeDataGrid(data);
                         savedetailsonload();
+                        getDocumentCount();
                     },
                     error: function () {
                         alert("Error generating voucher number.");
@@ -1488,14 +1489,16 @@
 
                             }
                             checkVoucherDateLock(entry.ClaimDate);
-
+                            getDocumentCount();
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                            getDocumentCount();
                         }
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                        getDocumentCount();
                     }
                 });
             } else {
@@ -2498,7 +2501,7 @@
             }
         }
         }
-
+    
          $("#btnDelete").on("click", function (e) {
            e.preventDefault();
         const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");

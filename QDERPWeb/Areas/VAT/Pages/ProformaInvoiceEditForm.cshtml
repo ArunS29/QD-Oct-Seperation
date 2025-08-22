@@ -3223,6 +3223,7 @@
 
 											 var button = $("#btnSave").dxButton("instance");
 											 button.option("text", "Update");
+											 getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -7272,11 +7273,13 @@
 							SaveAndClosebtn.option("disabled", false);
 								   isVoucherSaved = true; // Mark Updated step as done
 								  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+								  getDocumentCount();
 
 							},
 							error: function (xhr) {
 								DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 								button.option("disabled", false);
+								getDocumentCount();
 								SaveAndClosebtn.option("disabled", false);
 							}
 						});
@@ -8974,6 +8977,41 @@
 	   popover.show();
 	}
 	}
+
+	// Attachment Count
+	//1. Get Document Count from Grid Load in Ledger Documents
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
+		const InvoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+        const invoiceNo = InvoiceNoBox ? InvoiceNoBox.option("value") : null;
+        var menuType = "vat";
+        var formType ="Proforma Invoice";
+		const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromProforma?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+		const invoiceData = await invoiceRes.json();
+
+		let folderId2 = "";
+		if (invoiceData) {
+			folderId2 = [
+					invoiceData.SalesOrderNo,
+					invoiceData.QuotationNo,
+					invoiceData.DeliveryNoteNos,
+					invoiceData.ProformaInvoiceNo
+			]
+			.filter(Boolean)   // remove null/empty
+			.join(",");
+		}
+
+
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const docs = await res.json();
+		const count = docs.length;
+
+		updateAttachButtonCount("#btnAttach", count);
+	}
+
 
 </script>
 

@@ -1438,7 +1438,7 @@ $(function () {
 		// }
 
 		fetchVoucherDetails(voucherNo);
-		
+		getDocumentCount();
 	}
 	function fetchVoucherDetails(voucherNo) {
 
@@ -1750,6 +1750,7 @@ $(function () {
                 continueVoucherEntryWithVoucherNo(voucherNo);
                  isVoucherSaved = true; // Mark Updated step as done
                  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+				getDocumentCount();
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.dialog.alert("Error retrieving voucher number: " + error, "Error");
@@ -1759,6 +1760,7 @@ $(function () {
         // If rows exist, reuse the existing voucher number from the text box
         voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
         continueVoucherEntryWithVoucherNo(voucherNo);
+		getDocumentCount();
     }
 }
 
@@ -4160,8 +4162,9 @@ function showMainFooter() {
 				var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); // or dxTextBox
 				var voucherType = voucherTypeBox.option("value");
 				const isMaster = false;
+				var folderNo2 = voucherNo;
 				console.log(voucherType)
-				const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+				const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderNo2)}&modal=true`;
 				const title = "Transaction Documents";
 				openModal(url, title);
 			}

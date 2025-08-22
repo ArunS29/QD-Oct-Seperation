@@ -3613,7 +3613,7 @@ accountGrid.clearSelection();
 
                             // Retrieve the value from the TextBox
                             var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-
+                                getDocumentCount();
                         },
                         error: function (xhr, status, error) {
                             console.error("Error loading Voucher No:", error);
@@ -3637,7 +3637,7 @@ accountGrid.clearSelection();
             }
 
             fetchVoucherDetails(voucherNo);
-            
+            getDocumentCount();
         }
 
         function validateVoucherNo(voucherNo) {
