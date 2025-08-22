@@ -2846,9 +2846,7 @@ if (gridInstance) {
 					focusedRowEnabled: true,
 					dataSource: rowData,
 					keyExpr: "LineOrderNo",
-					// âœ… your columns, editing, dropdowns, and templates go here, unchanged
-					// Just make sure to close all functions properly
-					// For brevity, I'm skipping repeating all the column config here
+					
 						 selection: {
 						mode: "multiple",
 						showCheckBoxesMode: "always"
@@ -2859,8 +2857,8 @@ if (gridInstance) {
 									dataField: "MprchildSlNo",
 									caption: "MprchildSlNo",
 									width: 100,
-									allowEditing: false, // Prevent manual editing
-									visible: false // Hide the column
+									allowEditing: false, 
+									visible: false 
 								},
 
 								{
@@ -2875,147 +2873,93 @@ if (gridInstance) {
 
 								},
 								{
+    dataField: "QuoteGroupItemSlNo",
+    caption: formatMessage('Sub Group'),
+    width: 200,
 
-								dataField: "QuoteGroupItemSlNo",
+    // Shows text in display mode
+    cellTemplate: function (container, options) {
+        const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+        getUnitRateMethods1(mprNo).done(function (unitRates1) {
+            const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
+            $("<span>").text(selectedItem ? selectedItem.GroupName : "").appendTo(container);
+        });
+    },
 
-								caption: formatMessage('Sub Group'),
+    // Edit mode template
+    editCellTemplate: function (cellElement, cellInfo) {
+        const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value");
 
-								width: 200,
-								cellTemplate: function (container, options) {
-									getUnitRateMethods1().done(function (unitRates1) {
-										const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
-										if (selectedItem) {
-											$("<span>").text(selectedItem.GroupName).appendTo(container);
-										} else {
-											$("<span>").text("").appendTo(container);
-										}
-									});
-								},
-								editCellTemplate: function (cellElement, cellInfo) {
+        getUnitRateMethods1(mprNo).done(function (unitRates1) {
+            let $container = $("<div>").css({
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                width: "100%"
+            }).appendTo(cellElement);
 
-									getUnitRateMethods1().done(function (unitRates1) {
+            // 🔽 DropDownBox
+            $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+                dataSource: unitRates1,
+                valueExpr: "QuoteGroupItemSlNo",
+                displayExpr: "GroupName",
+                value: cellInfo.value || null,
+                placeholder: "Select Sub Group",
+                dropDownOptions: { width: 600 },
+                contentTemplate: function (e) {
+                    return $("<div>").dxDataGrid({
+                        dataSource: unitRates1,
+                        keyExpr: "QuoteGroupItemSlNo",
+                        selection: { mode: "single" },
+                        height: 300,
+                        width: 550,
+                        scrolling: { mode: "virtual" },
+                        searchPanel: {
+                            visible: true,
+                            highlightCaseSensitive: true,
+                            width: 300,
+                            placeholder: "Search..."
+                        },
+                        columns: [
+                            { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
+                            { dataField: "GroupCode", caption: "Group Code", width: 80 },
+                            { dataField: "GroupName", caption: "Group Name", width: 590 }
+                        ],
+                        onSelectionChanged: function (selectedItems) {
+                            let selectedItem = selectedItems.selectedRowsData[0];
+                            if (selectedItem) {
+                                e.component.option("value", selectedItem.QuoteGroupItemSlNo);
+                                cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
 
-										// Create container for dropdown + button
+                                // Update DescriptionDetailsText in row
+                                let grid = $("#B2BdataGrid").dxDataGrid("instance");
+                                let rowIndex = grid.getRowIndexByKey(cellInfo.key);
+                                if (rowIndex !== -1) {
+                                    grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.GroupName);
+                                }
 
-										let $container = $("<div>").css({
+                                e.component.close();
+                            }
+                        }
+                    });
+                }
+            });
 
-											display: "flex",
+            // ➕ Add button
+            $("<div>").dxButton({
+                icon: "plus",
+                hint: "Add new item",
+                onClick: function () {
+                    let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
+                    openModal(url, "Quotation Item Sub Group");
+                },
+                width: 60,
+                height: 30
+            }).appendTo($container);
+        });
+    }
+},
 
-											alignItems: "center",
-
-											gap: "5px",
-
-											width: "100%"
-
-										}).appendTo(cellElement);
-
-										// DropDownBox inside container
-
-										$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-
-											dataSource: unitRates1,
-
-											valueExpr: "QuoteGroupItemSlNo",
-
-											displayExpr: "GroupName",
-
-											value: cellInfo.value || null,
-
-											placeholder: "Select Unit Rate Method",
-
-											dropDownOptions: { width: 600 },
-
-											contentTemplate: function (e) {
-
-												return $("<div>").dxDataGrid({
-
-													dataSource: unitRates1,
-
-													keyExpr: "QuoteGroupItemSlNo",
-
-													selection: { mode: "single" },
-
-													height: 300,
-
-													width : 550,
-
-													scrolling: { mode: "virtual" },
-														searchPanel: {
-													visible: true,
-													highlightCaseSensitive: true,
-													width: 300,
-													placeholder: "Search..."
-													},
-
-														columns: [
-														 { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-															{ dataField: "GroupCode", caption: "Group Code", width: 80 },
-
-														{ dataField: "GroupName", caption: "Group Name", width: 590 }
-
-
-													],
-
-													onSelectionChanged: function (selectedItems) {
-
-														let selectedItem = selectedItems.selectedRowsData[0];
-
-														if (selectedItem) {
-
-															e.component.option("value", selectedItem.QuoteGroupItemSlNo);
-
-															cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
-
-															let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-															let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-
-															if (rowIndex !== -1) {
-
-																grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.GroupName);
-
-															}
-
-															e.component.close();
-
-														}
-
-													}
-
-												});
-
-											}
-
-										});
-
-										// âœ… Add Button
-
-										$("<div>").dxButton({
-
-											icon: "plus",
-
-											hint: "Add new item",
-
-											onClick: function () {
-													 const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value"); 
-
-													let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`; 
-
-											   openModal(url, "Quotation Item Sub Group");
-
-											},
-
-											width: 60,
-
-											height: 30
-
-										}).appendTo($container);
-
-									});
-
-								}
-
-							},
 								{
 									dataField: "GSCode",
 									caption: formatMessage('Item Code'),
@@ -3117,6 +3061,11 @@ if (gridInstance) {
 							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false},
 							{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
 						],
+						 onRowPrepared: function (e) {
+			if (e.rowType === "data" && e.data.IsDiscontinued === true) {
+			   e.rowElement.css("background-color", "#ffcccc");
+			}
+		},
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
 							if (!selectedItem) return;
@@ -3696,74 +3645,64 @@ if (gridInstance) {
 								}
 							});
 						},
-					editCellTemplate: function (cellElement, cellInfo) {
-		getUnitRateMethods1().done(function (unitRates1) {
-			let $container = $("<div>").css({
-				display: "flex",
-				alignItems: "center",
-				gap: "5px",
-				width: "100%"
-			}).appendTo(cellElement);
+	editCellTemplate: function (cellElement, cellInfo) {
+    const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value"); // ✅ get current request no
 
-			// Create the DropDownBox
-			$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-				dataSource: unitRates1,
-				valueExpr: "QuoteGroupItemSlNo", // Value to be passed
-				displayExpr: "GroupName",        // Text to be displayed
-				value: cellInfo.value || null,
-				placeholder: "Select Sub Group",
-				dropDownOptions: { width: 600 },
-				contentTemplate: function (e) {
-					return $("<div>").dxDataGrid({
-						dataSource: unitRates1,
-						keyExpr: "QuoteGroupItemSlNo",
-						selection: { mode: "single" },
-						height: 300,
-						scrolling: { mode: "virtual" },
+    getUnitRateMethods1(mprNo).done(function (unitRates1) {
+        let $container = $("<div>").css({
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            width: "100%"
+        }).appendTo(cellElement);
 
+        // DropDownBox with filtered data
+        $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+            dataSource: unitRates1,
+            valueExpr: "QuoteGroupItemSlNo",
+            displayExpr: "GroupName",
+            value: cellInfo.value || null,
+            placeholder: "Select Sub Group",
+            dropDownOptions: { width: 600 },
+            contentTemplate: function (e) {
+                return $("<div>").dxDataGrid({
+                    dataSource: unitRates1,
+                    keyExpr: "QuoteGroupItemSlNo",
+                    selection: { mode: "single" },
+                    height: 300,
+                    scrolling: { mode: "virtual" },
+                    searchPanel: { visible: true, width: 300, placeholder: "Search..." },
+                    columns: [
+                        { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
+                        { dataField: "GroupCode", caption: "Group Code", width: 110 },
+                        { dataField: "GroupName", caption: "Group Name", width: 550 }
+                    ],
+                    onSelectionChanged: function (selectedItems) {
+                        let selectedItem = selectedItems.selectedRowsData[0];
+                        if (selectedItem) {
+                            e.component.option("value", selectedItem.QuoteGroupItemSlNo);
+                            cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
+                            e.component.close();
+                        }
+                    }
+                });
+            }
+        });
 
-						searchPanel: {
-													visible: true,
-													highlightCaseSensitive: true,
-													width: 300,
-													placeholder: "Search..."
-													},
+        // Add button to create new subgroup
+        $("<div>").dxButton({
+            icon: "plus",
+            hint: "Add new item",
+            onClick: function () {
+                let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
+               openModal(url, "");
+            },
+            width: 60,
+            height: 30
+        }).appendTo($container);
+    });
+}
 
-						columns: [
-							{ dataField: "QuoteGroupItemSlNo",caption: formatMessage("ID"), width: 60 },
-								{ dataField: "GroupCode",caption: formatMessage("Group Code"), width: 110 },
-							{ dataField: "GroupName", caption: formatMessage("Group Name"), width: 550 }
-						],
-						onSelectionChanged: function (selectedItems) {
-							let selectedItem = selectedItems.selectedRowsData[0];
-							if (selectedItem) {
-								// Set the value of the DropDownBox
-								e.component.option("value", selectedItem.QuoteGroupItemSlNo);
-								// Update the cell value in the grid
-								cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
-								// Close the DropDownBox
-								e.component.close();
-							}
-						}
-					});
-				}
-			});
-
-			// Add a button to add new items
-			$("<div>").dxButton({
-				icon: "plus",
-				hint: "Add new item",
-				onClick: function () {
-			    const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value"); 
-
-				let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
-					openModal(url, "Quotation Item Sub Group");
-				},
-				width: 60,
-				height: 30
-			}).appendTo($container);
-		});
-	}
 
 
 					},
@@ -3866,6 +3805,11 @@ if (gridInstance) {
 						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false },
 						{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
 					],
+					 onRowPrepared: function (e) {
+			if (e.rowType === "data" && e.data.IsDiscontinued === true) {
+			   e.rowElement.css("background-color", "#ffcccc");
+			}
+		},
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
 						if (!selectedItem) return;
@@ -4158,11 +4102,7 @@ if (gridInstance) {
 					// allowAdding: false, // We'll add manually
 
 				},
-				 onRowPrepared: function (e) {
-        if (e.rowType === "data" && e.data.IsDiscontinued === true) {
-           e.rowElement.css("background-color", "#ffcccc");
-        }
-    },
+
 				onInitNewRow: function (e) {
 
 					e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
@@ -4460,7 +4400,7 @@ $("#btnAddNew").on("click", function (e) {
 					}));
 				});
 			}
-		function getUnitRateMethods1() {
+		function getUnitRateMethods2() {
 			return $.ajax({
 				url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
 				method: "GET",
@@ -4474,6 +4414,21 @@ $("#btnAddNew").on("click", function (e) {
 				}));
 			});
 		}
+	function getUnitRateMethods1(mprNo) {
+    return $.ajax({
+        url: "/api/addNewQuotationItemSubGroup/GetSubGroup",
+        method: "GET",
+        data: { mprNo: mprNo }, // ✅ pass as query param
+        dataType: "json"
+    }).then(function (response) {
+        console.log("SubGroup Data for MPR:", mprNo, response);
+        return response.map(item => ({
+            GroupCode: item.GroupCode,
+            GroupName: item.GroupName,
+            QuoteGroupItemSlNo: item.QuoteGroupItemSlNo
+        }));
+    });
+}
 
 
 

@@ -3995,6 +3995,7 @@
 		                                    }
 											 var button = $("#btnSave").dxButton("instance");
 											 button.option("text", "Update");
+											 getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -4010,9 +4011,11 @@
 
 									// ✅ Now safely initialize the grid here
 									initializeDataGrid(rowData);
+									getDocumentCount();
 								},
 								error: function (xhr, status, error) {
 									console.error("Error fetching grid data:", error);
+										getDocumentCount();
 								}
 							});
 						} else {
@@ -5872,6 +5875,7 @@ if (popover.option("visible")) {
 					// ✅ If URL has invoiceNo (from GenerateVATInvoice button)
 					if (invoiceBox) {
 						invoiceBox.option("value", invoiceNoFromUrl);
+							getDocumentCount();
 					}
 				} else {
 					// 🔄 Otherwise, get default auto-generated invoice from API
@@ -5884,8 +5888,10 @@ if (popover.option("visible")) {
 
 									InvoiceOPenToSave(data)
 									invoiceBox.option("value", data || "");
+									getDocumentCount();
 								} else {
 									console.warn("Invoice TextBox not initialized.");
+										getDocumentCount();
 								}
 							},
 							error: function (xhr, status, error) {
@@ -6009,7 +6015,7 @@ if (popover.option("visible")) {
 				InvoiceCheckedBy: ChkbySignatoryID || null,
 				InvoiceApprovedBy: ApproedbySignatoryID || null
 			};
-
+				
 			let InvoiceChildren = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource") || [];
 
 			let updatedDataSource = InvoiceChildren.map(item => ({
@@ -6027,9 +6033,11 @@ if (popover.option("visible")) {
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function () {
+
 				}
 
 			});
+				
 		}
 
 
@@ -8064,10 +8072,12 @@ if (popover.option("visible")) {
 
 										// ✅ Now safely initialize the grid here
 										initializeDataGrid(rowData);
+										
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
 										button.option("disabled", false);
+										getDocumentCount();
 										 SaveAndClosebtn.option("disabled", false);
 									}
 								});
@@ -8292,6 +8302,7 @@ SaveAndClosebtn.option("disabled", false);
 
 											// ✅ Now safely initialize the grid here
 											initializeDataGrid(rowData);
+												getDocumentCount();
 										},
 										error: function (xhr, status, error) {
 											console.error("Error fetching grid data:", error);
@@ -10254,7 +10265,7 @@ SaveAndClosebtn.option("disabled", false);
     }
 
 		// Attachment
-		function onVatAttachmentButtonClick(e) {
+		async function onVatAttachmentButtonClick(e) {
 
 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
 			const data = grid.getDataSource().items();
@@ -10270,17 +10281,24 @@ SaveAndClosebtn.option("disabled", false);
 			const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
 			const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
 			var menuType = "vat";
-
-
 			var formType ="Sales Invoice B2C";
-			// Log and build URL
-			console.log("Voucher No:", invoiceNo);
-			console.log("Voucher Type:", formType);
+			const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+			const invoiceData = await invoiceRes.json();
 
+			let folderId2 = "";
+			if (invoiceData) {
+				folderId2 = [
+					invoiceData.SalesOrderNo,
+					invoiceData.QuotationNo,
+					invoiceData.DeliveryNoteNos,
+					invoiceData.ProformaInvoiceNo
+				]
+				.filter(Boolean)   // remove null/empty
+				.join(",");
+			}
 			const isMaster = false;
-			const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+				const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(invoiceNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderId2)}&modal=true`;
 			const title = "Transaction Documents";
-
 			openModal(url, title);
 		}
 

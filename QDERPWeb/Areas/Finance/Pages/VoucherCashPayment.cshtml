@@ -1833,6 +1833,7 @@ function addVoucherEntry() {
                 continueVoucherEntryWithVoucherNo(voucherNo);
                  isVoucherSaved = true; // Mark Updated step as done
                  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+                getDocumentCount();
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
@@ -1842,6 +1843,7 @@ function addVoucherEntry() {
         // If rows exist, reuse the existing voucher number from the text box
         voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
         continueVoucherEntryWithVoucherNo(voucherNo);
+        getDocumentCount();
     }
 }
 
@@ -3643,6 +3645,7 @@ function resetVoucherButton() {
                         },
                         error: function (xhr, status, error) {
                             console.error("Error loading Voucher No:", error);
+                            getDocumentCount();
                         }
                     });
                 });
@@ -3664,7 +3667,7 @@ function resetVoucherButton() {
 
             fetchVoucherDetails(voucherNo);
             
-
+            getDocumentCount();
         }
 
         function validateVoucherNo(voucherNo) {

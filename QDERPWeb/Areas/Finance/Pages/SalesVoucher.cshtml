@@ -1344,7 +1344,7 @@ buttons.Add()
 		}
 
 		fetchVoucherDetails(voucherNo);
-		
+		getDocumentCount();
 	}
 
 	function validateVoucherNo(voucherNo) {
@@ -1426,6 +1426,7 @@ buttons.Add()
 						disableEditing();
 						                                    syncWorkflowFromFields();
                                 initWorkflowTippyPopovers();
+								getDocumentCount();
 					}
 					 checkVoucherDateLock(data.VoucherDate);
 					  fetchVoucherEntries(data.VoucherNo);

@@ -2099,6 +2099,7 @@
 				contentType: "application/json",
 				data: JSON.stringify(InvoiceMaster),
 				success: function () {
+					getDocumentCount();
 				}
 
 			});
@@ -2184,7 +2185,7 @@
 											{
 												btnPostToLedgerdisableEditing();
 											}
-
+											getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -2276,70 +2277,12 @@
 
 									// ✅ Now safely initialize the grid here
 									initializeDataGrid(rowData);
-									// Bind Attachment After Amend
-
-									const invoiceNo = InvNo;
-									var menuType = "vat";
-
-									
-									var formType = "VATPurchase Bill";
-									// 1. Get Documents
-									const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-									const documents = await getDocRes.json();
-									if (!documents.length) {
-													DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-													return;
-									}
-									// 2. Generate DocumentNo to each documents
-									const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-									const newDocNos = await docNoRes.json();
-									if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-													DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-													return;
-									}
-									// 3. Reupload each document to AddDocumentsEntry
-									const generateNo = $("#DebitNoteNo").dxTextBox("instance").option("value");
-
-									const PostVoucherType = "e-Invoice DebitNote";
-									const isMaster = false;
-									const PostMenuType = 'vat';
-									for (let i = 0; i < documents.length; i++) {
-										const doc = documents[i];
-										const newDocNo = newDocNos[i];
-
-										try {
-											const fileResponse = await fetch(doc.FileUrl);
-											const blob = await fileResponse.blob();
-
-											const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-											const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-											const formData = new FormData();
-											formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-											formData.append("DocumentNo", newDocNo);
-											formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-											formData.append("DocumentType", doc.DocumentType ?? "1");
-											formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-											formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-											formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-											formData.append("LedgerNo", generateNo); // new folder id
-
-
-												const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-												method: "POST",
-												body: formData
-											});
-
-											const uploadResult = await uploadRes.json();
-											console.log("Uploaded document:", uploadResult);
-										} catch (uploadError) {
-														console.error("Error re-uploading document:", uploadError);
-										}
-									}
+									getDocumentCount();
 
 								},
 								error: function (xhr, status, error) {
 									console.error("Error fetching grid data:", error);
+										getDocumentCount();
 								}
 							});
 						} else {
@@ -5693,6 +5636,7 @@ function SaveInvoiceDetails() {
 					"Debit Note Details updated Successfully.","success",2000
 				);
 				button.option("disabled", false);
+					getDocumentCount();
 					},
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6316,66 +6260,9 @@ if(clientnameValidation.isValid)
 						
 						if(response.IsDirect == true)
 						{
-								const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");
-								const debitNoteNo = DebitNoteNoBox ? DebitNoteNoBox.option("value") : null;
-								var menuType = "vat";
-
-								var formType ="e-Invoice DebitNote";
-								// 1. Get Documents
-								const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(debitNoteNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-								const documents = await getDocRes.json();
-								if (!documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-												return;
-								}
-								// 2. Generate DocumentNo to each documents
-								const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-								const newDocNos = await docNoRes.json();
-								if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-												return;
-								}
-								// 3. Reupload each document to AddDocumentsEntry
-								const generateNo = debitNoteNo;
-
-								const PostVoucherType = "journal";
-								const isMaster = false;
-								const PostMenuType = 'finance';
-								for (let i = 0; i < documents.length; i++) {
-									const doc = documents[i];
-									const newDocNo = newDocNos[i];
-
-									try {
-										const fileResponse = await fetch(doc.FileUrl);
-										const blob = await fileResponse.blob();
-
-										const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-										const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-										const formData = new FormData();
-										formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-										formData.append("DocumentNo", newDocNo);
-										formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-										formData.append("DocumentType", doc.DocumentType ?? "1");
-										formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-										formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-										formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-										formData.append("LedgerNo", generateNo); // new folder id
-
-
-											const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-											method: "POST",
-											body: formData
-										});
-
-										const uploadResult = await uploadRes.json();
-										console.log("Uploaded document:", uploadResult);
-									} catch (uploadError) {
-													console.error("Error re-uploading document:", uploadError);
-									}
-								}
+								
 							DevExpress.ui.notify(
-								"VAT Invoice has been posted to the Accounting Books With Documents.","success",2000
+								"VAT Invoice has been posted to the Accounting Books.","success",2000
 							
 							);
 						}
@@ -6660,6 +6547,7 @@ if(clientnameValidation.isValid)
 							const invoiceBox = $("#DebitNoteNo").dxTextBox("instance");
 							if (invoiceBox) {
 								invoiceBox.option("value", data || "");
+								getDocumentCount();
 							} else {
 								console.warn("Invoice TextBox not initialized.");
 							}
@@ -7090,5 +6978,39 @@ $(function () {
 		});
 	}
 
+	//1. Get Document Count from Grid Load in Ledger Documents
+	function setAttachCount(count) {
+		updateAttachButtonCount("#btnAttach", count);
+	}
+	//2. Get Document Count
+	async function getDocumentCount() {
+		const DebitNoteNoBox = $("#DebitNoteNo").dxTextBox("instance");
+        const debitNoteNo = DebitNoteNoBox ? DebitNoteNoBox.option("value") : null;
+        var formType ="e-Invoice DebitNote";
+        var menuType = "vat";
+		const response = await fetch(`/api/VATModule/GetInvoiceNoFromDebitNote?debitNoteNo=${encodeURIComponent(debitNoteNo)}`);
+        var invoiceNofromPurchase = await response.text(); // Get Invoice No
+        console.log(invoiceNofromPurchase);
+        var invoiceRes = null, invoiceData = null;
+        let folderId2 = "";
+        if(invoiceNofromPurchase?.trim()) {
+            invoiceRes = await fetch(`/api/VATModule/GetPONosFromPurchaseInvoice?purchaseInvoiceNo=${encodeURIComponent(invoiceNofromPurchase)}`);
+            invoiceData = await invoiceRes.json();
+            if (invoiceData) {
+                folderId2 = [
+                    invoiceData.PurchaseVoucherNo,
+                    invoiceData.MaterialReceiptNo,
+                    invoiceData.PurchaseOrderNo, 
+                ]
+                .filter(Boolean)   //remove null/empty
+                .join(",");
+            }
+        }
+
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(creditNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const docs = await res.json();
+		const count = docs.length;
+		updateAttachButtonCount("#btnAttach", count);
+	}
 
 </script>
