@@ -2682,7 +2682,10 @@
             { selector: "#ReferenceNo", type: "dxTextBox" },
             { selector: "#ClientRefName", type: "dxTextBox" },
             { selector: "#ClientEmail", type: "dxTextBox" },
-            { selector: "#ClientContact", type: "dxTextBox" }
+            { selector: "#ClientContact", type: "dxTextBox" },
+              { selector: "#SalesPerson", type: "dxDropDownBox" },
+               { selector: "#preparedBy", type: "dxDropDownBox" }
+
         ];
 
         // Disable fields
@@ -2709,6 +2712,24 @@
                 $btn.prop("disabled", true).addClass("dx-state-disabled");
             }
         });
+         // Disable DataGrid editing
+    const grid = $("#itemGrid").dxDataGrid("instance");
+    if (grid) {
+        grid.option("editing", {
+            allowUpdating: false,
+            allowDeleting: false,
+            allowAdding: false,
+            mode: "cell"
+        });
+
+        // Disable selection checkboxes
+        grid.option("selection", {
+            mode: "none"
+        });
+
+        // Make grid look disabled (read-only style)
+        $("#itemGrid").addClass("dx-state-disabled");
+    }
     }
 $(document).ready(function () {
 		console.log('Start permission handling AccountingLedgers');
