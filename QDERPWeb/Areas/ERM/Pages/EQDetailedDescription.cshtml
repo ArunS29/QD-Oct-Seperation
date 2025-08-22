@@ -13,6 +13,9 @@
             color: #000;
         }
 
+    .dx-button-text {
+        color: black;
+    }
     /* Two-column layout */
     .form-grid {
         display: grid;
@@ -464,7 +467,8 @@
 
 
 
-                        function savePropertyQuoteChild() {
+        function savePropertyQuoteChild() {
+          debugger;
           // get ?code=... from the current URL
           const params = new URLSearchParams(window.location.search);
           const quotationNo = params.get("code");
@@ -474,35 +478,29 @@
             return;
           }
 
-          // safe getter for DevExtreme widgets
-          const getVal = (id, widget) => {
-            const $el = $(`#${id}`);
-            if (!$el.length) return null;
-            const inst = $el[widget] ? $el[widget]("instance") : null;
-            return inst ? inst.option("value") : null;
-          };
+          
 
           const data = {
             QuoteNo: quotationNo,
-            DetailedDescription: getVal("DetailedDescription", "dxTextArea"),
-            // Operator: getVal("Operator", "dxSelectBox"),
-            QuoteMethod2: getVal("QuoteMethod2", "dxDropDownBox"),
-            Rate2: getVal("Rate2", "dxNumberBox"),
-            QuoteMethod3: getVal("QuoteMethod3", "dxDropDownBox"),
-            Rate3: getVal("Rate3", "dxNumberBox"),
-            // If AdditionalNotes is a TextArea in your page, switch to dxTextArea here:
-            AdditionalNotes: getVal("AdditionalNotes", "dxTextBox") ?? getVal("AdditionalNotes", "dxTextArea"),
-            MobilizationRate: getVal("MobilizationRate", "dxNumberBox"),
-            DemobRate: getVal("DemobRate", "dxNumberBox"),
-            DeliveryDetails: getVal("DeliveryDetails", "dxTextBox")
+            DetailedDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            //Operator: $("#Operator").dxSelectBox("instance").option("value"),
+             QuoteMethod2: $("#QuoteMethod2").dxDropDownBox("instance").option("value"),
+             Rate2: $("#Rate2").dxNumberBox("instance").option("value"),
+             QuoteMethod3: $("#QuoteMethod3").dxDropDownBox("instance").option("value"),
+             Rate3: $("#Rate3").dxNumberBox("instance").option("value"),
+             AdditionalNotes: $("#AdditionalNotes").dxTextBox("instance").option("value"),
+             MobilizationRate: $("#MobilizationRate").dxNumberBox("instance").option("value"),
+             DemobRate: $("#DemobRate").dxNumberBox("instance").option("value"),
+             DeliveryDetails: $("#DeliveryDetails").dxTextBox("instance").option("value")
+
+
+
+
           };
 
-          // derive tenant (e.g. "Pulse") from current path
-          const tenant = window.location.pathname.split("/").filter(Boolean)[0]; // "Pulse"
-          const apiUrl = `/${tenant}/api/AddNewQuotation1/SaveOrUpdateQuotationChild`;
 
           $.ajax({
-            url: apiUrl,
+            url: `/api/AddNewQuotation1/SaveOrUpdateQuotationChild`,
             method: "POST",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(data),

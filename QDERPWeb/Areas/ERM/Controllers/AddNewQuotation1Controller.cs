@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System.Dynamic;
 
 namespace QD.ERP.Web.Areas.ERM.Controllers
@@ -16,10 +17,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 	{
 		private readonly TenantDbContextHelper _tenantDbContextHelper;
 		private readonly ILogger<AddNewQuotation1Controller> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-		public AddNewQuotation1Controller(ILogger<AddNewQuotation1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public AddNewQuotation1Controller(ILogger<AddNewQuotation1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
 		{
-			_tenantDbContextHelper = tenantDbContextHelper;
+            _userActionLogger = userActionLogger;
+            _tenantDbContextHelper = tenantDbContextHelper;
 			_logger = logger;
 		}
 
@@ -257,6 +261,348 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
 
+
+
+
+
+
+        public class QuotationViewModel
+        {
+            public string QuoteNo { get; set; }
+
+            public DateTime? QuoteDate { get; set; }
+
+            public string ClientRefNo { get; set; }
+
+            public string Attention { get; set; }
+
+            public string SubjectTitle { get; set; }
+
+            public byte? TypeOfQuote { get; set; }
+
+            public string QuoteType { get; set; }
+
+            public decimal? QuoteTransport { get; set; }
+
+            public decimal? QuoteDiscount { get; set; }
+
+            public byte? PaymentTerms { get; set; }
+
+            public byte? DeliveryPeriod { get; set; }
+
+            public byte? DeliveryTerms { get; set; }
+
+            public string QuoteValidity { get; set; }
+
+            public string PreparedBy { get; set; }
+
+            public DateTime? PreparedOn { get; set; }
+
+            public string ApprovedBy { get; set; }
+
+            public DateTime? ApprovedOn { get; set; }
+
+            public string AddedBy { get; set; }
+
+            public DateTime? AddedOn { get; set; }
+
+            public string ModifiedBy { get; set; }
+
+            public DateTime? ModifiedOn { get; set; }
+
+            public string Rfqcode { get; set; }
+
+            public string ClientContactNo { get; set; }
+
+            public string ClientContactEmail { get; set; }
+
+            public string ClientCode { get; set; }
+
+            public string QuotationSummary { get; set; }
+
+            public byte? QuoteSignatory { get; set; }
+
+            public string QuoteIntro { get; set; }
+
+            public byte? TypeOfRequest { get; set; }
+
+            public byte? ModeOfRequest { get; set; }
+
+            public string AdditionsText { get; set; }
+
+            public string DiscountsText { get; set; }
+
+            public DateTime? QuoteDueDate { get; set; }
+
+            public string Project { get; set; }
+
+            public string SalesPersonCode { get; set; }
+
+            public bool? IsVerified { get; set; }
+
+            public bool? IsApproved { get; set; }
+
+            public byte? RevisionNo { get; set; }
+
+            public byte? CompanyBranch { get; set; }
+
+            public string Mprno { get; set; }
+
+            public string QuoteThanksNote { get; set; }
+
+            public string QuoteColumn1 { get; set; }
+
+            public string QuoteColumn2 { get; set; }
+
+            public string QuoteColumn3 { get; set; }
+
+            public string QuoteLabel1 { get; set; }
+
+            public string QuoteLabel2 { get; set; }
+
+            public string QuoteLabel3 { get; set; }
+
+            public DateTime? QuoteSubmittedOn { get; set; }
+
+            public string QuoteSubmittedBy { get; set; }
+
+            public byte? QuoteStatus { get; set; }
+
+            public byte? InventoryMasterGroupId { get; set; }
+
+            public byte? VerifiedSignatory { get; set; }
+
+            public byte? ApprovedSignatory { get; set; }
+
+            public bool? IsSubmitted { get; set; }
+
+            public string SubmittedBy { get; set; }
+
+            public DateTime? SubmittedOn { get; set; }
+
+            public string VerifiedBy { get; set; }
+
+            public DateTime? VerifiedOn { get; set; }
+
+            public string ProjectMasterCode { get; set; }
+
+            public DateTime? BidClosingDate { get; set; }
+
+            public string TransportationScope { get; set; }
+
+            public decimal? CurrencyRate { get; set; }
+            public int? BaseCurrencyId { get; set; }
+            public int? CurrencyId { get; set; }
+            public List<Tbl40104PropertyQuoteChild> QuotationDetailses { get; set; }
+
+
+        }
+
+
+
+
+
+
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdateQuotation([FromBody] QuotationViewModel VM)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            if (VM == null || string.IsNullOrEmpty(VM.QuoteNo))
+            {
+                return BadRequest(new { success = false, message = "Quote No. is required." });
+            }
+
+            try
+            {
+                // Check if the master record exists
+                var existingMaster = await dbContext.Tbl40103PropertyQuoteMasters
+                    .FirstOrDefaultAsync(x => x.QuoteNo == VM.QuoteNo);
+
+                if (existingMaster != null)
+                {
+                    //Update existing master with manual property mapping
+
+
+                    existingMaster.QuoteDate = VM.QuoteDate;
+                    existingMaster.ClientCode = VM.ClientCode;
+                    existingMaster.SalesPersonCode = VM.SalesPersonCode;
+                    //existingMaster.Mprno = VM.Mprno;
+                    existingMaster.Attention = VM.Attention;
+                    existingMaster.ClientContactEmail = VM.ClientContactEmail;
+                    existingMaster.ClientContactNo = VM.ClientContactNo;
+                    existingMaster.ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte?)VM.ModeOfRequest.Value : null;
+                    existingMaster.TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte?)VM.TypeOfRequest.Value : null;
+                    // existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
+                    existingMaster.Project = VM.Project;
+                    existingMaster.SubjectTitle = VM.SubjectTitle;
+                    existingMaster.QuotationSummary = VM.QuotationSummary;
+                    existingMaster.QuoteIntro = VM.QuoteIntro;
+                    existingMaster.QuoteThanksNote = VM.QuoteThanksNote;
+                    existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
+                    // existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
+                    existingMaster.ClientRefNo = VM.ClientRefNo;
+                    existingMaster.AddedBy = VM.QuoteSubmittedBy;
+                    existingMaster.AddedOn = VM.QuoteSubmittedOn;
+                    existingMaster.QuoteDate = VM.BidClosingDate;
+                    // existingMaster.QuoteStatus = VM.QuoteStatus.HasValue ? (byte?)VM.QuoteStatus.Value : null;
+                    existingMaster.TransportationScope = VM.TransportationScope;
+                    existingMaster.AdditionsText = VM.AdditionsText;
+                    existingMaster.QuoteTransport = VM.QuoteTransport;
+                    existingMaster.DiscountsText = VM.DiscountsText;
+                    existingMaster.QuoteDiscount = VM.QuoteDiscount;
+                    existingMaster.QuoteSignatory = VM.QuoteSignatory.HasValue ? (byte?)VM.QuoteSignatory.Value : null;
+                    existingMaster.VerifiedSignatory = VM.VerifiedSignatory.HasValue ? (byte?)VM.VerifiedSignatory.Value : null;
+                    existingMaster.ApprovedSignatory = VM.ApprovedSignatory.HasValue ? (byte?)VM.ApprovedSignatory.Value : null;
+                    existingMaster.RevisionNo = VM.RevisionNo;
+                    existingMaster.QuoteValidity = VM.QuoteValidity;
+                    //existingMaster.CurrencyId = VM.CurrencyId ?? 1;
+                    //existingMaster.CurrencyRate = VM.CurrencyRate ?? 1;
+                    //existingMaster.BaseCurrencyId = VM.BaseCurrencyId ?? 1;
+
+                }
+                else
+                {
+                    // Insert new master
+                    var newMaster = new Tbl40103PropertyQuoteMaster
+                    {
+
+                        QuoteNo = VM.QuoteNo,
+                        QuoteDate = VM.QuoteDate,
+                        ClientCode = VM.ClientCode,
+                        SalesPersonCode = VM.SalesPersonCode,
+                        //  Mprno = VM.Mprno,
+                        Attention = VM.Attention,
+                        ClientContactEmail = VM.ClientContactEmail,
+                        ClientContactNo = VM.ClientContactNo,
+                        ModeOfRequest = Convert.ToByte(VM.ModeOfRequest),
+                        TypeOfRequest = Convert.ToByte(VM.TypeOfRequest),
+                        // ProjectMasterCode = VM.ProjectMasterCode,
+                        Project = VM.Project,
+                        SubjectTitle = VM.SubjectTitle,
+                        QuotationSummary = VM.QuotationSummary,
+                        QuoteIntro = VM.QuoteIntro,
+                        QuoteThanksNote = VM.QuoteThanksNote,
+                        CompanyBranch = Convert.ToByte(VM.CompanyBranch),
+                        // InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
+                        ClientRefNo = VM.ClientRefNo,
+                        AddedBy = VM.QuoteSubmittedBy,
+                        AddedOn = VM.QuoteSubmittedOn,
+                        QuoteDueDate = VM.BidClosingDate,
+                        // QuoteStatus = Convert.ToByte(VM.QuoteStatus),
+                        TransportationScope = VM.TransportationScope,
+                        AdditionsText = VM.AdditionsText,
+                        QuoteTransport = VM.QuoteTransport,
+                        DiscountsText = VM.DiscountsText,
+                        QuoteDiscount = VM.QuoteDiscount,
+                        QuoteSignatory = Convert.ToByte(VM.QuoteSignatory),
+                        VerifiedSignatory = Convert.ToByte(VM.VerifiedSignatory),
+                        ApprovedSignatory = Convert.ToByte(VM.ApprovedSignatory),
+                        RevisionNo = VM.RevisionNo,
+                        QuoteValidity = VM.QuoteValidity
+                        //CurrencyId = VM.CurrencyId ?? 1,
+                        //CurrencyRate = VM.CurrencyRate ?? 1,
+                        //BaseCurrencyId = VM.BaseCurrencyId ?? 1,
+
+                    };
+
+                    await dbContext.Tbl40103PropertyQuoteMasters.AddAsync(newMaster);
+                }
+
+                // Handle child entries
+                var existingChildren = await dbContext.Tbl40104PropertyQuoteChildren
+                    .Where(x => x.QuoteNo == VM.QuoteNo)
+                    .ToListAsync();
+
+
+
+                //var currencyRate = await dbContext.Tbl60101quotationMasters
+                //            .Where(x => x.QuoteNo == VM.QuoteNo)
+                //            .Select(x => x.CurrencyRate)
+                //            .FirstOrDefaultAsync();
+
+
+
+                // Track QuoteChildId from client
+                var incomingIds = VM.QuotationDetailses
+                    .Where(x => x.QuoteChildId > 0)
+                    .Select(x => x.QuoteChildId)
+                    .ToList();
+
+                // Delete missing children
+                var toDelete = existingChildren
+                    .Where(x => !incomingIds.Contains(x.QuoteChildId))
+                    .ToList();
+
+                if (toDelete.Any())
+                {
+                    dbContext.Tbl40104PropertyQuoteChildren.RemoveRange(toDelete);
+                }
+
+
+                foreach (var child in VM.QuotationDetailses)
+                {
+                    if (child.QuoteChildId == 0)
+                    {
+                        // New child entry
+                        child.QuoteNo = VM.QuoteNo; // Ensure foreign key is set
+
+                        //child.CostPrice = child.CostPrice * currencyRate;
+                        //child.QuotedUnitPrice = child.QuotedUnitPrice * currencyRate;
+                        //child.QuotedDiscount = child.QuotedDiscount * currencyRate;
+
+                        await dbContext.Tbl40104PropertyQuoteChildren.AddAsync(child);
+                    }
+                    else
+                    {
+                        // Existing child entry
+                        var existingChild = existingChildren
+                            .FirstOrDefault(x => x.QuoteChildId == child.QuoteChildId);
+
+                        if (existingChild != null)
+                        {
+                            dbContext.Entry(existingChild).CurrentValues.SetValues(child);
+                        }
+                    }
+                }
+
+                // await dbContext.SaveChangesAsync();
+
+                var rows = await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Save Quotation",
+                   actionDetail: $"Saved Quotation: {VM.QuoteNo}",
+                    documentNo: $"{VM.QuoteNo}"
+                );
+
+                return Ok(new { success = true, message = "Quotation Details saved/updated successfully.", quoteno = VM.QuoteNo });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         public class QuotationDetailsRequest
         {
             public string QuoteNo { get; set; }
@@ -338,7 +684,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                 await dbContext.SaveChangesAsync();
 
-                return Ok(new { success = true, message = "Quotation details saved/updated successfully." });
+                return Ok(new { success = true, message = "Detailed Description saved successfully." });
             }
             catch (Exception ex)
             {
@@ -351,7 +697,43 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
 
+        [HttpGet]
+        public async Task<ActionResult> GetQuoteChildDetails(string QuoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    var resultWithDetails = new List<ExpandoObject>();
 
+                    // Query Tbl40104PropertyQuoteChild by QuoteNo
+                    var result = await dbContext.Tbl40104PropertyQuoteChildren
+                        .Where(x => x.QuoteNo == QuoteNo)
+                        .ToListAsync();
+
+                    foreach (var gridDetails in result)
+                    {
+                        dynamic item = new ExpandoObject();
+                        var dict = (IDictionary<string, object>)item;
+
+                        // Map only required fields
+                        dict["DetailedDescription"] = gridDetails.PropertyAddlDescription;
+                        dict["MobRate"] = gridDetails.MobRate;
+                        dict["DemobRate"] = gridDetails.DemobRate;
+
+                        resultWithDetails.Add(item);
+                    }
+
+                    return Json(resultWithDetails);
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
 
 
 
