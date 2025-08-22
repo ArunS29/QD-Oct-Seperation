@@ -449,6 +449,7 @@
                             @(Html.DevExtreme().TextBox()
                             .ID("SupplierContactNo")
                             .Label(new JS("formatMessage('Supplier Contact No:')"))
+                            .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                             .LabelMode(EditorLabelMode.Floating)
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
@@ -459,6 +460,7 @@
                             .Label(new JS("formatMessage('Supplier Email:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Mode(TextBoxMode.Email)
+                            .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                             .StylingMode(EditorStylingMode.Outlined)
                             .Width("100%"))
                         </td>
@@ -495,6 +497,8 @@
                                 .SearchEnabled(true)
                                      .Buttons(buttons =>
                                         {
+                                             buttons.Add()
+                                             .Name("dropDown");
                                             buttons.Add()
                                                 .Name("AddProject")
                                                 .Location(TextEditorButtonLocation.After)
@@ -3080,4 +3084,30 @@ setDxFieldValue("approvedBy2", data.approvedBy);
             e.component.focus();
         });
     }
+     $(function () {
+			const dateBox = $("#PoDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#PoDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#PoDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
+		 $(function () {
+			const dateBox = $("#SupplierQuoteDate").dxDateBox("instance");
+
+			// When focus/typing starts, change to dd-MM-yyyy
+			$("#SupplierQuoteDate").on("focusin", function () {
+				dateBox.option("displayFormat", "dd-MM-yyyy");
+			});
+
+			// When focus/typing ends, change back to dd-MMM-yyyy
+			$("#SupplierQuoteDate").on("focusout", function () {
+				dateBox.option("displayFormat", "dd-MMM-yyyy");
+			});
+		});
 </script>
