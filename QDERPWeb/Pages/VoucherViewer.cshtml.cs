@@ -149,6 +149,7 @@ namespace QD.ERP.Web.Pages
                   reportName == "PrintRegularInvoiceFormat02" ||
                   reportName == "PrintRegularInvoiceFormat02WithDiscount" ||
                   reportName == "ForeignCurrencyProforma" ||
+                  reportName == "ForeignCurrencyProformaWithoutDiscount" ||
                   reportName == "ForeignEnglishProforma" ||
                   reportName == "ProformaInvoiceEnglish" ||
                   reportName == "ProformaPreviewInvoice" ||
@@ -261,6 +262,11 @@ namespace QD.ERP.Web.Pages
                             invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
+                    "ForeignCurrencyProformaWithoutDiscount" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProformaWithoutDiscount(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
 
                     "ForeignEnglishProforma" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignEnglishProforma(
@@ -366,7 +372,7 @@ namespace QD.ERP.Web.Pages
 
 
 
-            if (reportName == "CreditForeignCurrency" || reportName == "creditnote")
+            if (reportName == "CreditForeignCurrency" || reportName == "creditnote"|| reportName == "PreviewCreditNoteForeignCurrency" || reportName == "PreviewCreditNoteEnglishOnly")
             {
                 if (string.IsNullOrEmpty(CreditNoteNo))
                 {
@@ -384,10 +390,22 @@ namespace QD.ERP.Web.Pages
                   
           
                 }
-                else if (reportName == "creditnote")
+                 else if (reportName == "creditnote")
 
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
+                }
+                 else if (reportName == "PreviewCreditNoteEnglishOnly")
+
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteEnglishOnly(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
+                }
+               else  if (reportName == "PreviewCreditNoteForeignCurrency")
+
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteForeignCurrency(
                         CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
                 }
                 //else if (reportName == "creditnote")

@@ -4637,6 +4637,38 @@ documentNo: InvoiceNo
 
             return Unauthorized("Unable to fetch tenant information.");
         }
+
+        [HttpGet("{invoiceNo}")]
+        public async Task<ActionResult> GetInvoiceApprovalStatusProforma(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    // Query the invoice approval status from tbl20161VATInvoiceMaster
+                    var invoice = await dbContext.Tbl20181ProformaInvoiceMasters
+                        .Where(i => i.ProformaInvoiceNo == InvoiceNo)
+                        .FirstOrDefaultAsync();
+
+                    if (invoice == null)
+                    {
+                        return Ok(new { isApproved = invoice.IsApproved ?? false });
+                    }
+
+                    // Return the approval status
+                    return Ok(new { isApproved = invoice.IsApproved, isPosted = invoice.IsPosted });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error fetching approval status for invoice {InvoiceNo}: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized("Unable to fetch tenant information.");
+        }
+
         [HttpGet("{CreditNoteNo}")]
         public async Task<ActionResult> GetCreditNoteApprovalStatus(string CreditNoteNo)
         {
