@@ -16,6 +16,7 @@
     .dx-button-text {
         color: black;
     }
+
     /* Two-column layout */
     .form-grid {
         display: grid;
@@ -466,7 +467,6 @@
         }
 
 
-
         function savePropertyQuoteChild() {
           debugger;
           // get ?code=... from the current URL
@@ -478,7 +478,7 @@
             return;
           }
 
-          
+
 
           const data = {
             QuoteNo: quotationNo,
@@ -501,6 +501,35 @@
 
           $.ajax({
             url: `/api/AddNewQuotation1/SaveOrUpdateQuotationChild`,
+          // safe getter for DevExtreme widgets
+          const getVal = (id, widget) => {
+            const $el = $(`#${id}`);
+            if (!$el.length) return null;
+            const inst = $el[widget] ? $el[widget]("instance") : null;
+            return inst ? inst.option("value") : null;
+          };
+
+          const data = {
+            QuoteNo: quotationNo,
+            DetailedDescription: getVal("DetailedDescription", "dxTextArea"),
+            // Operator: getVal("Operator", "dxSelectBox"),
+            QuoteMethod2: getVal("QuoteMethod2", "dxDropDownBox"),
+            Rate2: getVal("Rate2", "dxNumberBox"),
+            QuoteMethod3: getVal("QuoteMethod3", "dxDropDownBox"),
+            Rate3: getVal("Rate3", "dxNumberBox"),
+            // If AdditionalNotes is a TextArea in your page, switch to dxTextArea here:
+            AdditionalNotes: getVal("AdditionalNotes", "dxTextBox") ?? getVal("AdditionalNotes", "dxTextArea"),
+            MobilizationRate: getVal("MobilizationRate", "dxNumberBox"),
+            DemobRate: getVal("DemobRate", "dxNumberBox"),
+            DeliveryDetails: getVal("DeliveryDetails", "dxTextBox")
+          };
+
+          // derive tenant (e.g. "Pulse") from current path
+          const tenant = window.location.pathname.split("/").filter(Boolean)[0]; // "Pulse"
+          const apiUrl = `/${tenant}/api/AddNewQuotation1/SaveOrUpdateQuotationChild`;
+
+          $.ajax({
+            url: apiUrl,
             method: "POST",
             contentType: "application/json; charset=utf-8",
             data: JSON.stringify(data),
@@ -517,15 +546,6 @@
             }
           });
         }
-
-
-
-
-
-
-
-
-
 
 
 

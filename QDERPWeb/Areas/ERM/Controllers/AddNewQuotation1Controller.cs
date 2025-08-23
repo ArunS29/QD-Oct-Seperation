@@ -256,16 +256,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
 
-
-
-
-
-
-
-
-
-
-
         public class QuotationViewModel
         {
             public string QuoteNo { get; set; }
@@ -616,7 +606,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public decimal? MobilizationRate { get; set; }
             public decimal? DemobRate { get; set; }
             public string DeliveryDetails { get; set; }
-
         }
 
 
@@ -696,7 +685,6 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
 
-
         [HttpGet]
         public async Task<ActionResult> GetQuoteChildDetails(string QuoteNo)
         {
@@ -734,6 +722,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+ 
 
 
 
