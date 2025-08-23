@@ -5178,7 +5178,7 @@ if (dropDownInstance.option("opened")) {
         // Set module based on asset group or opening balance
         if (isAssetGroupMatch) {
             isMaster = true;
-            module = "Fixed Assets";
+            module = formatMessage("Fixed Assets");
         } else if (openingBalance > 0 && !isAssetGroupMatch) {
             isMaster = false;
             module = "Ledger Account";
