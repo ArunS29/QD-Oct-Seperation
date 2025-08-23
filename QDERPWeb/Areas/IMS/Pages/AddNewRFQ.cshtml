@@ -5936,7 +5936,7 @@ $("#btnCreatePo").on("click", function () {
 		var selectedValue = dropDownBox.option('value'); // clientCode
 
 		if (!selectedValue) {
-			DevExpress.ui.notify('Please select a client.', 'warning', 2000);
+			DevExpress.ui.notify('Please select a supplier.', 'warning', 2000);
 			return;
 		}
 
@@ -5947,7 +5947,7 @@ $("#btnCreatePo").on("click", function () {
 			var selectedItem = data.find(x => x.SupplierCode === selectedValue);
 
 			if (!selectedItem || !selectedItem.SupplierName) {
-				DevExpress.ui.notify('Client details not found.', 'error', 2000);
+				DevExpress.ui.notify('supplier details not found.', 'error', 2000);
 				return;
 			}
 
