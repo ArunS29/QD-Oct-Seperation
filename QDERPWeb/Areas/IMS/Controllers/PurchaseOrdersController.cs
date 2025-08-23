@@ -1003,6 +1003,7 @@ public async Task<IActionResult> GetByPoNo(string poNo, byte? revisionId)
                 PochildNo = x.PochildNo,
                 Pono = x.Pono,
                 Gscode = x.Gscode,
+                //GSCode=x.Gscode,
                 AddlDescription = x.AddlDescription,
         //    AddlDescription = !string.IsNullOrWhiteSpace(x.AddlDescription)
         //? x.AddlDescription
