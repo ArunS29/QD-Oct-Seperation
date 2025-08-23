@@ -59,8 +59,8 @@
         <div id="Static" class="titleCard-card vibrant-pink">
             <div class="value-block">
 
-                <h2>Bills Receivable</h2>
-                <h6>Quick Dice ERP Solutions</h6>
+                    <h2 id="billsreceivablefinance">Bills Receivable</h2>
+                    <h6 id="QuickDiceERPSolutionsbills">Quick Dice ERP Solutions</h6>
 
             </div>
         </div>
@@ -863,5 +863,12 @@
         $("#btnBillsWithBalance").dxButton("instance").option("visible", true);
         $("#btnBillsFullyReceived").dxButton("instance").option("visible", false);
     }
+         $(function () {
+        $("#billsreceivablefinance").text(formatMessage("Bills Receivable"));
+    });
+        $(function () {
+        $("#QuickDiceERPSolutionsbills").text(formatMessage("Quick Dice ERP Solutions"));
+    });
+
 </script>
 
