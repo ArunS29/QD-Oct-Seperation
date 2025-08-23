@@ -2317,66 +2317,121 @@ END
 
 
 
-    Alter view Aicon.qry201_607VATInvoiceRegisterMainView as 
-SELECT Aicon.qry201_606VATInvoiceRegisterMain.InvoiceNo, DATEADD(dd, DATEDIFF(dd, 0, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceDate), 0) AS InvoiceDate, DATEADD(dd, DATEDIFF(dd, 0, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceEffectiveDate), 0) AS InvoiceEffectiveDate, 
-             Aicon.qry201_606VATInvoiceRegisterMain.InvoiceDateAr, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceDeliveryDate, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceDeliveryDateAr, Aicon.qry201_606VATInvoiceRegisterMain.AccountHead, 
-             Aicon.qry201_606VATInvoiceRegisterMain.QuotationNo, Aicon.qry201_606VATInvoiceRegisterMain.DeliveryNoteNos, Aicon.qry201_606VATInvoiceRegisterMain.ReferenceNo, Aicon.qry201_606VATInvoiceRegisterMain.SOSReferenceNo, Aicon.qry201_606VATInvoiceRegisterMain.PONo, 
-             Aicon.qry201_606VATInvoiceRegisterMain.PODate, Aicon.qry201_606VATInvoiceRegisterMain.PODateAr, Aicon.qry201_606VATInvoiceRegisterMain.SalesPerson, Aicon.qry201_606VATInvoiceRegisterMain.ClientReferenceName, Aicon.qry201_606VATInvoiceRegisterMain.ClientContactNo, 
-             Aicon.qry201_606VATInvoiceRegisterMain.ClientEmail, Aicon.qry201_606VATInvoiceRegisterMain.RemarksInEn, Aicon.qry201_606VATInvoiceRegisterMain.Discount, Aicon.qry201_606VATInvoiceRegisterMain.RemarksInAr, Aicon.qry201_606VATInvoiceRegisterMain.IsSubmitted, 
-             Aicon.qry201_606VATInvoiceRegisterMain.SubmittedBy, Aicon.qry201_606VATInvoiceRegisterMain.SubmittedByAr, Aicon.qry201_606VATInvoiceRegisterMain.SubmittedOn, Aicon.qry201_606VATInvoiceRegisterMain.IsVerified, Aicon.qry201_606VATInvoiceRegisterMain.VerifiedBy, 
-             Aicon.qry201_606VATInvoiceRegisterMain.VerifiedByAr, Aicon.qry201_606VATInvoiceRegisterMain.VerifiedOn, Aicon.qry201_606VATInvoiceRegisterMain.IsApproved, Aicon.qry201_606VATInvoiceRegisterMain.ApprovedBy, Aicon.qry201_606VATInvoiceRegisterMain.ApprovedByAr, 
-             Aicon.qry201_606VATInvoiceRegisterMain.ApprovedOn, Aicon.qry201_606VATInvoiceRegisterMain.AddedBy, Aicon.qry201_606VATInvoiceRegisterMain.AddedByAr, Aicon.qry201_606VATInvoiceRegisterMain.AddedOn, Aicon.qry201_606VATInvoiceRegisterMain.ModifiedBy, 
-             Aicon.qry201_606VATInvoiceRegisterMain.ModifiedByAr, Aicon.qry201_606VATInvoiceRegisterMain.ModifiedOn, Aicon.qry201_606VATInvoiceRegisterMain.TaxCategoryID, Aicon.qry201_606VATInvoiceRegisterMain.calcLineAmount, Aicon.qry201_606VATInvoiceRegisterMain.calcTaxAmount, 
-             Aicon.qry201_606VATInvoiceRegisterMain.DomesticStandartRatedRevenue, Aicon.qry201_606VATInvoiceRegisterMain.DomesticZeroRatedRevenue, Aicon.qry201_606VATInvoiceRegisterMain.DomesticExemptedRevenue, 
-             Aicon.qry201_606VATInvoiceRegisterMain.GCCStandardRatedRevenue, Aicon.qry201_606VATInvoiceRegisterMain.GCCZeroRatedRevenue, Aicon.qry201_606VATInvoiceRegisterMain.GCCExpemptedRevenue, Aicon.qry201_606VATInvoiceRegisterMain.ExportsRevenue, 
-             Aicon.qry201_606VATInvoiceRegisterMain.DomesticStandartRatedTax, Aicon.qry201_606VATInvoiceRegisterMain.DomesticZeroRatedTax, Aicon.qry201_606VATInvoiceRegisterMain.DomesticExemptedTax, Aicon.qry201_606VATInvoiceRegisterMain.GCCStandardRatedTax, 
-             Aicon.qry201_606VATInvoiceRegisterMain.GCCZeroRatedTax, Aicon.qry201_606VATInvoiceRegisterMain.GCCExpemptedTax, Aicon.qry201_606VATInvoiceRegisterMain.ExportsTax, Aicon.qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount, 
-             Aicon.qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount * ISNULL(Aicon.tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalInvoiceAmount, Aicon.tbl20169CurrencyExchange.CurrencyImage, Aicon.tbl20169CurrencyExchange.CurrencySymbole, 
-             Aicon.qry201_606VATInvoiceRegisterMain.IsPosted, Aicon.qry201_606VATInvoiceRegisterMain.PostedBy, Aicon.qry201_606VATInvoiceRegisterMain.PostedOn, 
-             CASE WHEN IsPosted = 1 THEN 'Posted' ELSE (CASE WHEN IsApproved = 1 THEN 'Approved' ELSE (CASE WHEN IsVerified = 1 THEN 'Verified' ELSE 'Not Processed' END) END) END AS InvoiceStatus, Aicon.qry201_606VATInvoiceRegisterMain.TotalDiscount, 
-             Aicon.qry201_606VATInvoiceRegisterMain.TotalInvoiceAmountBeforeDiscount, Aicon.qry201_606VATInvoiceRegisterMain.AdvanceAmount, Aicon.qry201_606VATInvoiceRegisterMain.RetentionAmount, Aicon.qry201_606VATInvoiceRegisterMain.AccountID, 
-             CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCash ELSE Aicon.qry201_606VATInvoiceRegisterMain.BillingName END AS BillingName, Aicon.qry201_606VATInvoiceRegisterMain.BillingAddress, Aicon.qry201_606VATInvoiceRegisterMain.BillingNameAr, 
-             Aicon.qry201_606VATInvoiceRegisterMain.BillingAddressAr, Aicon.qry201_606VATInvoiceRegisterMain.VATRegistrationNo, Aicon.qry201_606VATInvoiceRegisterMain.CompanyBranch, Aicon.qry201_606VATInvoiceRegisterMain.CRNo, 
-             Aicon.qry201_606VATInvoiceRegisterMain.CostAllocationMasterGroup, Aicon.qry201_606VATInvoiceRegisterMain.CostAllocationGroup, Aicon.qry201_606VATInvoiceRegisterMain.CostAllocationUnit, Aicon.qry201_606VATInvoiceRegisterMain.SalesPersonName, 
-             Aicon.udf_GetArabicNumbers(Aicon.qry201_606VATInvoiceRegisterMain.VATRegistrationNo) AS VATRegistrationNoAr, Aicon.qry201_606VATInvoiceRegisterMain.InvoicePeriod, Aicon.qry201_606VATInvoiceRegisterMain.ClientCode, 
-             Aicon.qry201_606VATInvoiceRegisterMain.CashOrClientGroupID, Aicon.qry201_606VATInvoiceRegisterMain.CashOrClientGroupName, Aicon.qry201_606VATInvoiceRegisterMain.ClientNameInCash, Aicon.qry201_606VATInvoiceRegisterMain.ClientVATInCash, 
-             Aicon.qry201_606VATInvoiceRegisterMain.ClientNameInCashAr, CASE WHEN Isnull(BuyerName, '') = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCash ELSE Aicon.qry201_606VATInvoiceRegisterMain.BillingName END) 
-             ELSE BuyerName END AS ClientNameOrCashClient, CASE WHEN Isnull(BuyerVATNumber, '') = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientVATInCash ELSE Aicon.qry201_606VATInvoiceRegisterMain.VATRegistrationNo END) 
-             ELSE BuyerVATNumber END AS ClientVATOrCashClientVAT, CASE WHEN Isnull(BuyerNameAr, '') = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCashAr ELSE Aicon.qry201_606VATInvoiceRegisterMain.BillingNameAr END) 
-             ELSE BuyerNameAr END AS ClientNameArOrCashClientAr, Aicon.qry201_606VATInvoiceRegisterMain.RevenueAccount AS RevenueLedgerNo, Aicon.tbl201ChartOfAccounts.AccountHead AS RevenueLedgerName, Aicon.qry201_606VATInvoiceRegisterMain.TotalQtyInvoiced, 
-             Aicon.tbl201ChartOfAccounts.AccountHeadArabic AS RevenueLedgerNameAr, Aicon.qry201_606VATInvoiceRegisterMain.CostAllocationUnitID, Aicon.qry201_606VATInvoiceRegisterMain.TotalRevenueOf15Perc, Aicon.qry201_606VATInvoiceRegisterMain.TotalTaxOf15Perc, 
-             Aicon.qry201_606VATInvoiceRegisterMain.BranchCode, Aicon.qry201_606VATInvoiceRegisterMain.BranchName, Aicon.qry201_606VATInvoiceRegisterMain.PaymentTerms, Aicon.qry201_606VATInvoiceRegisterMain.CostCenterCode, 
-             Aicon.qry201_606VATInvoiceRegisterMain.InvoiceStartDate, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceEndDate, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceDueDate, Aicon.qry201_606VATInvoiceRegisterMain.SalesOrderNo, 
-             Aicon.qry201_606VATInvoiceRegisterMain.TypeOfInvoice, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceUUID, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceTypeCode, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceTransactionCode, 
-             Aicon.qry201_606VATInvoiceRegisterMain.InvoiceTypeCodeSubType, Aicon.qry201_606VATInvoiceRegisterMain.IsThirdParty, Aicon.qry201_606VATInvoiceRegisterMain.IsNominal, Aicon.qry201_606VATInvoiceRegisterMain.IsExport, Aicon.qry201_606VATInvoiceRegisterMain.IsSummary, 
-             Aicon.qry201_606VATInvoiceRegisterMain.IsSelfBilled, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceCounterValue, ISNULL(Aicon.qry201_606VATInvoiceRegisterMain.InvoiceCurrencyCode, '1') AS InvoiceCurrencyCode, 
-             ISNULL(Aicon.qry201_606VATInvoiceRegisterMain.TaxCurrencyCode, '1') AS TaxCurrencyCode, Aicon.qry201_606VATInvoiceRegisterMain.SellerGroupVATNumber, Aicon.qry201_606VATInvoiceRegisterMain.SellerOtherIDType, Aicon.qry201_606VATInvoiceRegisterMain.SellerOtherSellerID, 
-             Aicon.qry201_606VATInvoiceRegisterMain.SellerAddressStreet, Aicon.qry201_606VATInvoiceRegisterMain.SellerAddressStreetAr, Aicon.qry201_606VATInvoiceRegisterMain.SellerAdditionalStreet, Aicon.qry201_606VATInvoiceRegisterMain.SellerAdditionalStreetAr, 
-             Aicon.qry201_606VATInvoiceRegisterMain.SellerBuildingNumber, Aicon.qry201_606VATInvoiceRegisterMain.SellerAdditionalNumber, Aicon.qry201_606VATInvoiceRegisterMain.SellerCity, Aicon.qry201_606VATInvoiceRegisterMain.SellerCityAr, 
-             Aicon.qry201_606VATInvoiceRegisterMain.SellerPostalCode, Aicon.qry201_606VATInvoiceRegisterMain.SellerProvince, Aicon.qry201_606VATInvoiceRegisterMain.SellerProvinceAr, Aicon.qry201_606VATInvoiceRegisterMain.SellerNeighborhood, 
-             Aicon.qry201_606VATInvoiceRegisterMain.SellerNeighborhoodAr, Aicon.qry201_606VATInvoiceRegisterMain.SellerCountryCode, Aicon.qry201_606VATInvoiceRegisterMain.SellerVATNumber, Aicon.qry201_606VATInvoiceRegisterMain.SellerName, 
-             Aicon.qry201_606VATInvoiceRegisterMain.SellerNameAr, Aicon.qry201_606VATInvoiceRegisterMain.BuyerGroupVATNumber, Aicon.qry201_606VATInvoiceRegisterMain.BuyerOtherIDType, Aicon.qry201_606VATInvoiceRegisterMain.BuyerOtherID, 
-             Aicon.qry201_606VATInvoiceRegisterMain.BuyerAddressStreet, Aicon.qry201_606VATInvoiceRegisterMain.BuyerAddressStreetAr, Aicon.qry201_606VATInvoiceRegisterMain.BuyerAdditionalStreet, Aicon.qry201_606VATInvoiceRegisterMain.BuyerAdditionalStreetAr, 
-             Aicon.qry201_606VATInvoiceRegisterMain.BuyerBuildingNumber, Aicon.qry201_606VATInvoiceRegisterMain.BuyerAdditionalNumber, Aicon.qry201_606VATInvoiceRegisterMain.BuyerCity, Aicon.qry201_606VATInvoiceRegisterMain.BuyerCityAr, 
-             Aicon.qry201_606VATInvoiceRegisterMain.BuyerPostalCode, Aicon.qry201_606VATInvoiceRegisterMain.BuyerProvince, Aicon.qry201_606VATInvoiceRegisterMain.BuyerProvinceAr, Aicon.qry201_606VATInvoiceRegisterMain.BuyerNeighborhood, 
-             Aicon.qry201_606VATInvoiceRegisterMain.BuyerNeighborhoodAr, Aicon.qry201_606VATInvoiceRegisterMain.BuyerCountryCode, Aicon.qry201_606VATInvoiceRegisterMain.BuyerVATNumber, Aicon.qry201_606VATInvoiceRegisterMain.BuyerName, 
-             Aicon.qry201_606VATInvoiceRegisterMain.BuyerNameAr, Aicon.qry201_606VATInvoiceRegisterMain.PaymentMeansTypeCode, Aicon.qry201_606VATInvoiceRegisterMain.PaymentTerms1, Aicon.qry201_606VATInvoiceRegisterMain.PaymentTermsAr, 
-             Aicon.qry201_606VATInvoiceRegisterMain.InvoiceDateWtTime, Aicon.qry201_606VATInvoiceRegisterMain.IsCogsPosted, Aicon.qry201_606VATInvoiceRegisterMain.IsCogsPostedBy, Aicon.qry201_606VATInvoiceRegisterMain.IsCogsPostedOn, 
-             Aicon.qry201_606VATInvoiceRegisterMain.ProjectMasterCode, ISNULL(Aicon.qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0) AS OtherDeductionAmount, ISNULL(Aicon.qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount, 0) 
-             - ISNULL(Aicon.qry201_606VATInvoiceRegisterMain.AdvanceAmount, 0) - ISNULL(Aicon.qry201_606VATInvoiceRegisterMain.RetentionAmount, 0) - ISNULL(Aicon.qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0) AS NetAmountAfterAllDeductions, 
-             Aicon.qry90134eInvoice_LatestICVwtDetails.LastICV, ISNULL(Aicon.qry90134eInvoice_LatestICVwtDetails.InvoiceStatus, 'NOT SUBMITTED') AS InvoiceZatcaStatus, Aicon.qry90134eInvoice_LatestICVwtDetails.SubmittedBy AS eInvoiceSubmittedToZatcaBy, 
-             Aicon.qry90134eInvoice_LatestICVwtDetails.SubmittedOn AS eInvoiceSubmittedToZatcaOn, Aicon.qry201_606VATInvoiceRegisterMain.Currency, Aicon.qry201_606VATInvoiceRegisterMain.CompanyID, Aicon.qry201_606VATInvoiceRegisterMain.TotalRevenueOf10Perc, 
-             Aicon.qry201_606VATInvoiceRegisterMain.TotalTaxOf10Perc, Aicon.qry90134eInvoice_LatestICVwtDetails.InvoiceUUID AS SubmittedInvoiceUUID, Aicon.qry201_606VATInvoiceRegisterMain.ExchangeRate, Aicon.qry201_606VATInvoiceRegisterMain.InvoiceTypeName, 
-             Aicon.qry201_606VATInvoiceRegisterMain.InvoiceSubType, CASE WHEN InvoiceTypeName = 'Prepayment Invoice' AND InvoiceSubType = 'Tax Invoice' THEN 'Prepayment Tax Invoice' ELSE (CASE WHEN InvoiceTypeName = 'Prepayment Invoice' AND 
-             InvoiceSubType = 'Simplified Tax Invoice' THEN 'Prepayment Simplified Tax Invoice' ELSE InvoiceSubType END) END AS InvoiceType, Aicon.tbl20169CurrencyExchange.CurrencyMasterCode
-FROM   Aicon.qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
-             Aicon.tbl20169CurrencyExchange ON Aicon.qry201_606VATInvoiceRegisterMain.Currency = Aicon.tbl20169CurrencyExchange.CurrencyExchangeID LEFT OUTER JOIN
-             Aicon.qry90134eInvoice_LatestICVwtDetails ON Aicon.qry201_606VATInvoiceRegisterMain.InvoiceNo = Aicon.qry90134eInvoice_LatestICVwtDetails.eInvoiceNo LEFT OUTER JOIN
-             Aicon.tbl201ChartOfAccounts ON Aicon.qry201_606VATInvoiceRegisterMain.RevenueAccount = Aicon.tbl201ChartOfAccounts.AccountID
-
-
-
-
+   ALTER VIEW [Aicon].qry201_607VATInvoiceRegisterMainView
+AS
+SELECT     [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceNo, DATEADD(dd, DATEDIFF(dd, 0, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDate), 0) AS InvoiceDate, DATEADD(dd, DATEDIFF(dd, 0, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceEffectiveDate), 0) AS InvoiceEffectiveDate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDateAr, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDeliveryDate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDeliveryDateAr, [Aicon].qry201_606VATInvoiceRegisterMain.AccountHead, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.QuotationNo, [Aicon].qry201_606VATInvoiceRegisterMain.DeliveryNoteNos, [Aicon].qry201_606VATInvoiceRegisterMain.ReferenceNo, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SOSReferenceNo, [Aicon].qry201_606VATInvoiceRegisterMain.PONo, [Aicon].qry201_606VATInvoiceRegisterMain.PODate, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.PODateAr, [Aicon].qry201_606VATInvoiceRegisterMain.SalesPerson, [Aicon].qry201_606VATInvoiceRegisterMain.ClientReferenceName, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.ClientContactNo, [Aicon].qry201_606VATInvoiceRegisterMain.ClientEmail, [Aicon].qry201_606VATInvoiceRegisterMain.RemarksInEn, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.Discount, [Aicon].qry201_606VATInvoiceRegisterMain.RemarksInAr, [Aicon].qry201_606VATInvoiceRegisterMain.IsSubmitted, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SubmittedBy, [Aicon].qry201_606VATInvoiceRegisterMain.SubmittedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.SubmittedOn, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.IsVerified, [Aicon].qry201_606VATInvoiceRegisterMain.VerifiedBy, [Aicon].qry201_606VATInvoiceRegisterMain.VerifiedByAr, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.VerifiedOn, [Aicon].qry201_606VATInvoiceRegisterMain.IsApproved, [Aicon].qry201_606VATInvoiceRegisterMain.ApprovedBy, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.ApprovedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.ApprovedOn, [Aicon].qry201_606VATInvoiceRegisterMain.AddedBy, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.AddedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.AddedOn, [Aicon].qry201_606VATInvoiceRegisterMain.ModifiedBy, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.ModifiedByAr, [Aicon].qry201_606VATInvoiceRegisterMain.ModifiedOn, [Aicon].qry201_606VATInvoiceRegisterMain.TaxCategoryID, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.calcLineAmount, [Aicon].qry201_606VATInvoiceRegisterMain.calcTaxAmount, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticStandartRatedRevenue, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.DomesticZeroRatedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticExemptedRevenue, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.GCCStandardRatedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.GCCZeroRatedRevenue, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.GCCExpemptedRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.ExportsRevenue, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticStandartRatedTax, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.DomesticZeroRatedTax, [Aicon].qry201_606VATInvoiceRegisterMain.DomesticExemptedTax, [Aicon].qry201_606VATInvoiceRegisterMain.GCCStandardRatedTax, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.GCCZeroRatedTax, [Aicon].qry201_606VATInvoiceRegisterMain.GCCExpemptedTax, [Aicon].qry201_606VATInvoiceRegisterMain.ExportsTax, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount, [Aicon].qry201_606VATInvoiceRegisterMain.IsPosted, [Aicon].qry201_606VATInvoiceRegisterMain.PostedBy, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.PostedOn, 
+                      CASE WHEN IsPosted = 1 THEN 'Posted' ELSE (CASE WHEN IsApproved = 1 THEN 'Approved' ELSE (CASE WHEN IsVerified = 1 THEN 'Verified' ELSE 'Not Processed' END) END) 
+                      END AS InvoiceStatus, [Aicon].qry201_606VATInvoiceRegisterMain.TotalDiscount, [Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmountBeforeDiscount, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.AdvanceAmount, [Aicon].qry201_606VATInvoiceRegisterMain.RetentionAmount, [Aicon].qry201_606VATInvoiceRegisterMain.AccountID, 
+                      CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCash ELSE [Aicon].qry201_606VATInvoiceRegisterMain.BillingName END AS BillingName, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BillingAddress, [Aicon].qry201_606VATInvoiceRegisterMain.BillingNameAr, [Aicon].qry201_606VATInvoiceRegisterMain.BillingAddressAr, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.VATRegistrationNo, [Aicon].qry201_606VATInvoiceRegisterMain.CompanyBranch, [Aicon].qry201_606VATInvoiceRegisterMain.CRNo, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationMasterGroup, [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationGroup, [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationUnit, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SalesPersonName, [Aicon].udf_GetArabicNumbers([Aicon].qry201_606VATInvoiceRegisterMain.VATRegistrationNo) AS VATRegistrationNoAr, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.InvoicePeriod, [Aicon].qry201_606VATInvoiceRegisterMain.ClientCode, [Aicon].qry201_606VATInvoiceRegisterMain.CashOrClientGroupID, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.CashOrClientGroupName, [Aicon].qry201_606VATInvoiceRegisterMain.ClientNameInCash, [Aicon].qry201_606VATInvoiceRegisterMain.ClientVATInCash, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.ClientNameInCashAr, CASE WHEN Isnull(BuyerName, '') 
+                      = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCash ELSE [Aicon].qry201_606VATInvoiceRegisterMain.BillingName END) ELSE BuyerName END AS ClientNameOrCashClient, 
+                      CASE WHEN Isnull(BuyerVATNumber, '') = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientVATInCash ELSE [Aicon].qry201_606VATInvoiceRegisterMain.VATRegistrationNo END) 
+                      ELSE BuyerVATNumber END AS ClientVATOrCashClientVAT, CASE WHEN Isnull(BuyerNameAr, '') 
+                      = '' THEN (CASE WHEN CashOrClientGroupID = 'M4' THEN ClientNameInCashAr ELSE [Aicon].qry201_606VATInvoiceRegisterMain.BillingNameAr END) 
+                      ELSE BuyerNameAr END AS ClientNameArOrCashClientAr, [Aicon].qry201_606VATInvoiceRegisterMain.RevenueAccount AS RevenueLedgerNo, 
+                      [Aicon].tbl201ChartOfAccounts.AccountHead AS RevenueLedgerName, [Aicon].qry201_606VATInvoiceRegisterMain.TotalQtyInvoiced, 
+                      [Aicon].tbl201ChartOfAccounts.AccountHeadArabic AS RevenueLedgerNameAr, [Aicon].qry201_606VATInvoiceRegisterMain.CostAllocationUnitID, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.TotalRevenueOf15Perc, [Aicon].qry201_606VATInvoiceRegisterMain.TotalTaxOf15Perc, [Aicon].qry201_606VATInvoiceRegisterMain.BranchCode, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BranchName, [Aicon].qry201_606VATInvoiceRegisterMain.PaymentTerms, [Aicon].qry201_606VATInvoiceRegisterMain.CostCenterCode, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceStartDate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceEndDate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDueDate, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SalesOrderNo, [Aicon].qry201_606VATInvoiceRegisterMain.TypeOfInvoice, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceUUID, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTypeCode, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTransactionCode, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTypeCodeSubType, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.IsThirdParty, [Aicon].qry201_606VATInvoiceRegisterMain.IsNominal, [Aicon].qry201_606VATInvoiceRegisterMain.IsExport, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.IsSummary, [Aicon].qry201_606VATInvoiceRegisterMain.IsSelfBilled, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceCounterValue, 
+                      ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.InvoiceCurrencyCode, '1') AS InvoiceCurrencyCode, ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.TaxCurrencyCode, '1') AS TaxCurrencyCode, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SellerGroupVATNumber, [Aicon].qry201_606VATInvoiceRegisterMain.SellerOtherIDType, [Aicon].qry201_606VATInvoiceRegisterMain.SellerOtherSellerID, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SellerAddressStreet, [Aicon].qry201_606VATInvoiceRegisterMain.SellerAddressStreetAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerAdditionalStreet, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SellerAdditionalStreetAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerBuildingNumber, [Aicon].qry201_606VATInvoiceRegisterMain.SellerAdditionalNumber, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SellerCity, [Aicon].qry201_606VATInvoiceRegisterMain.SellerCityAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerPostalCode, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SellerProvince, [Aicon].qry201_606VATInvoiceRegisterMain.SellerProvinceAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerNeighborhood, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SellerNeighborhoodAr, [Aicon].qry201_606VATInvoiceRegisterMain.SellerCountryCode, [Aicon].qry201_606VATInvoiceRegisterMain.SellerVATNumber, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.SellerName, [Aicon].qry201_606VATInvoiceRegisterMain.SellerNameAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerGroupVATNumber, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BuyerOtherIDType, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerOtherID, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAddressStreet, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAddressStreetAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAdditionalStreet, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAdditionalStreetAr, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BuyerBuildingNumber, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerAdditionalNumber, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerCity, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BuyerCityAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerPostalCode, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerProvince, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BuyerProvinceAr, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerNeighborhood, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerNeighborhoodAr, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BuyerCountryCode, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerVATNumber, [Aicon].qry201_606VATInvoiceRegisterMain.BuyerName, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.BuyerNameAr, [Aicon].qry201_606VATInvoiceRegisterMain.PaymentMeansTypeCode, [Aicon].qry201_606VATInvoiceRegisterMain.PaymentTerms1, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.PaymentTermsAr, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceDateWtTime, [Aicon].qry201_606VATInvoiceRegisterMain.IsCogsPosted, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.IsCogsPostedBy, [Aicon].qry201_606VATInvoiceRegisterMain.IsCogsPostedOn, [Aicon].qry201_606VATInvoiceRegisterMain.ProjectMasterCode, 
+                      ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0) AS OtherDeductionAmount, ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount, 0) 
+                      - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.AdvanceAmount, 0) - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.RetentionAmount, 0) 
+                      - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0) AS NetAmountAfterAllDeductions, [Aicon].qry90134eInvoice_LatestICVwtDetails.LastICV, 
+                      ISNULL([Aicon].qry90134eInvoice_LatestICVwtDetails.InvoiceStatus, 'NOT SUBMITTED') AS InvoiceZatcaStatus, 
+                      [Aicon].qry90134eInvoice_LatestICVwtDetails.SubmittedBy AS eInvoiceSubmittedToZatcaBy, [Aicon].qry90134eInvoice_LatestICVwtDetails.SubmittedOn AS eInvoiceSubmittedToZatcaOn, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.Currency, [Aicon].qry201_606VATInvoiceRegisterMain.CompanyID, [Aicon].qry201_606VATInvoiceRegisterMain.TotalRevenueOf10Perc, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.TotalTaxOf10Perc, [Aicon].qry90134eInvoice_LatestICVwtDetails.InvoiceUUID AS SubmittedInvoiceUUID, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.ExchangeRate, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceTypeName, [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceSubType, 
+                      CASE WHEN InvoiceTypeName = 'Prepayment Invoice' AND InvoiceSubType = 'Tax Invoice' THEN 'Prepayment Tax Invoice' ELSE (CASE WHEN InvoiceTypeName = 'Prepayment Invoice' AND 
+                      InvoiceSubType = 'Simplified Tax Invoice' THEN 'Prepayment Simplified Tax Invoice' ELSE InvoiceSubType END) END AS InvoiceType, [Aicon].tbl20169CurrencyExchange.CurrencyMasterCode, 
+                      [Aicon].qry201_606VATInvoiceRegisterMain.DebitNoteReferenceNo, [Aicon].qry201_606VATInvoiceRegisterMain.DebitNoteReason, [Aicon].qry201_606VATInvoiceRegisterMain.StoreIssuedFrom, 
+                      [Aicon].qry201_628InvoiceCostAndProfit.TotalCostOfGoodsSold, [Aicon].qry201_628InvoiceCostAndProfit.TotalProfitOnSales
+					   , [Aicon].qry201_606VATInvoiceRegisterMain.DomesticStandartRatedRevenue * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedDomesticStandartRatedRevenue
+            , [Aicon].qry201_606VATInvoiceRegisterMain.DomesticZeroRatedRevenue * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedDomesticZeroRatedRevenue
+            , [Aicon].qry201_606VATInvoiceRegisterMain.DomesticExemptedRevenue * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedDomesticExemptedRevenue
+            , [Aicon].qry201_606VATInvoiceRegisterMain.GCCStandardRatedRevenue * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedGCCStandardRatedRevenue
+            , [Aicon].qry201_606VATInvoiceRegisterMain.GCCZeroRatedRevenue * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedGCCZeroRatedRevenue
+            , [Aicon].qry201_606VATInvoiceRegisterMain.GCCExpemptedRevenue * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedGCCExpemptedRevenue
+            , [Aicon].qry201_606VATInvoiceRegisterMain.ExportsRevenue * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedExportsRevenue
+            , [Aicon].qry201_606VATInvoiceRegisterMain.DomesticStandartRatedTax * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedDomesticStandartRatedTax
+            , [Aicon].qry201_606VATInvoiceRegisterMain.DomesticZeroRatedTax * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedDomesticZeroRatedTax
+            , [Aicon].qry201_606VATInvoiceRegisterMain.DomesticExemptedTax * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedDomesticExemptedTax
+            , [Aicon].qry201_606VATInvoiceRegisterMain.GCCStandardRatedTax * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedGCCStandardRatedTax
+            , [Aicon].qry201_606VATInvoiceRegisterMain.GCCZeroRatedTax * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedGCCZeroRatedTax
+            , [Aicon].qry201_606VATInvoiceRegisterMain.GCCExpemptedTax * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedGCCExpemptedTax
+            , [Aicon].qry201_606VATInvoiceRegisterMain.ExportsTax * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedExportsTax,
+			 [Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalInvoiceAmount
+             , [Aicon].qry201_606VATInvoiceRegisterMain.TotalDiscount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalDiscount
+             , [Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmountBeforeDiscount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalInvoiceAmountBeforeDiscount
+             , [Aicon].qry201_606VATInvoiceRegisterMain.AdvanceAmount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedAdvanceAmount
+             , [Aicon].qry201_606VATInvoiceRegisterMain.RetentionAmount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedRetentionAmount
+             , ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0) * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedOtherDeductionAmount
+             , (ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.TotalInvoiceAmount, 0) 
+                 - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.AdvanceAmount, 0)
+                 - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.RetentionAmount, 0)
+                 - ISNULL([Aicon].qry201_606VATInvoiceRegisterMain.OtherDeductionAmount, 0)
+               ) * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedNetAmountAfterAllDeductions
+             , [Aicon].qry201_606VATInvoiceRegisterMain.calcLineAmount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedCalcLineAmount
+             , [Aicon].qry201_606VATInvoiceRegisterMain.calcTaxAmount * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedCalcTaxAmount
+             , [Aicon].qry201_606VATInvoiceRegisterMain.TotalRevenueOf15Perc * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalRevenueOf15Perc
+             , [Aicon].qry201_606VATInvoiceRegisterMain.TotalTaxOf15Perc * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalTaxOf15Perc
+             , [Aicon].qry201_606VATInvoiceRegisterMain.TotalRevenueOf10Perc * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalRevenueOf10Perc
+             , [Aicon].qry201_606VATInvoiceRegisterMain.TotalTaxOf10Perc * ISNULL([Aicon].tbl20169CurrencyExchange.ExchangeRate, 1) AS ConvertedTotalTaxOf10Perc,
+			 [Aicon].tbl20169CurrencyExchange.CurrencyImage, [Aicon].tbl20169CurrencyExchange.CurrencySymbole
+FROM         [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
+                      [Aicon].qry201_628InvoiceCostAndProfit ON [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceNo = [Aicon].qry201_628InvoiceCostAndProfit.InvoiceNo LEFT OUTER JOIN
+                      [Aicon].tbl20169CurrencyExchange ON [Aicon].qry201_606VATInvoiceRegisterMain.Currency = [Aicon].tbl20169CurrencyExchange.CurrencyExchangeID LEFT OUTER JOIN
+                      [Aicon].qry90134eInvoice_LatestICVwtDetails ON [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceNo = [Aicon].qry90134eInvoice_LatestICVwtDetails.eInvoiceNo LEFT OUTER JOIN
+                      [Aicon].tbl201ChartOfAccounts ON [Aicon].qry201_606VATInvoiceRegisterMain.RevenueAccount = [Aicon].tbl201ChartOfAccounts.AccountID
 
  
 CREATE TABLE Aicon.FinancialSummaryReport (
@@ -3293,6 +3348,7 @@ FROM   [Aicon].qry201_606VATInvoiceRegisterMain LEFT OUTER JOIN
              [Aicon].tbl20169CurrencyExchange ON [Aicon].qry201_606VATInvoiceRegisterMain.Currency = [Aicon].tbl20169CurrencyExchange.CurrencyExchangeID LEFT OUTER JOIN
              [Aicon].qry90134eInvoice_LatestICVwtDetails ON [Aicon].qry201_606VATInvoiceRegisterMain.InvoiceNo = [Aicon].qry90134eInvoice_LatestICVwtDetails.eInvoiceNo LEFT OUTER JOIN
              [Aicon].tbl201ChartOfAccounts ON [Aicon].qry201_606VATInvoiceRegisterMain.RevenueAccount = [Aicon].tbl201ChartOfAccounts.AccountID
+
 
 
 

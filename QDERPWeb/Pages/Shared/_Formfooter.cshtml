@@ -310,6 +310,14 @@
     .dx-button{
         height:35px!important;
     }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 
 
@@ -598,105 +606,105 @@
             reader.readAsText(file);
         }
     });
-    function saveLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
-        //console.log(layoutJson);
-        // Create a Blob from the JSON string
-        const blob = new Blob([layoutJson], { type: "application/json" });
-        // Create a URL for the Blob
-        const url = URL.createObjectURL(blob);
-        // Create a link element
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = "grid-layout.json"; // Set the file name for download
-        // Append the link to the body (needed for Firefox)
-        document.body.appendChild(a);
-        // Programmatically click the link to trigger the download
-        a.click();
-        // Clean up by removing the link and revoking the Object URL
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-        //DevExpress.ui.notify("Layout", "success", 600);
-    }
-    function openLayoutClick(e) {
-        $("#loadLayoutInput").click();
-    }
+    // function saveLayoutClick(e) {
+    //     var grid = $("#dataGrid").dxDataGrid("instance");
+    //     var layout = grid.state();
+    //     const layoutJson = JSON.stringify(layout, null, 2); // Pretty-print JSON
+    //     //console.log(layoutJson);
+    //     // Create a Blob from the JSON string
+    //     const blob = new Blob([layoutJson], { type: "application/json" });
+    //     // Create a URL for the Blob
+    //     const url = URL.createObjectURL(blob);
+    //     // Create a link element
+    //     const a = document.createElement("a");
+    //     a.href = url;
+    //     a.download = "grid-layout.json"; // Set the file name for download
+    //     // Append the link to the body (needed for Firefox)
+    //     document.body.appendChild(a);
+    //     // Programmatically click the link to trigger the download
+    //     a.click();
+    //     // Clean up by removing the link and revoking the Object URL
+    //     document.body.removeChild(a);
+    //     URL.revokeObjectURL(url);
+    //     //DevExpress.ui.notify("Layout", "success", 600);
+    // }
+    // function openLayoutClick(e) {
+    //     $("#loadLayoutInput").click();
+    // }
 
-    function loadGridState() {
-        var form = $('#formId').val();
-        // Call the API to get the grid state
-        $.ajax({
-            url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
-            method: 'GET',
-            data: {
-                form: form
-            },
-            success: function (response) {
-                // Get the DataGrid instance
-                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+    // function loadGridState() {
+    //     var form = $('#formId').val();
+    //     // Call the API to get the grid state
+    //     $.ajax({
+    //         url: `/api/Utility/LoadLayout`, // Adjust to your actual API endpoint
+    //         method: 'GET',
+    //         data: {
+    //             form: form
+    //         },
+    //         success: function (response) {
+    //             // Get the DataGrid instance
+    //             var dataGrid = $("#dataGrid").dxDataGrid("instance");
 
-                // Load the state into the DataGrid
-                if (response) {
-                    try {
-                        // Parse the JSON string from the file
-                        const layout = JSON.parse(response);
+    //             // Load the state into the DataGrid
+    //             if (response) {
+    //                 try {
+    //                     // Parse the JSON string from the file
+    //                     const layout = JSON.parse(response);
 
-                        // Restore the grid state
-                        dataGrid.state(layout);
-                    } catch (error) {
-                        console.error("Error parsing JSON:", error);
-                        alert("Failed to load layout. Please ensure the JSON is valid.");
-                    }
-                }
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading grid state:", error);
-            }
-        });
-    }
-    function setDefaultLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        var layout = grid.state();
-        const layoutJson = JSON.stringify(layout, null, 2);
-        console.log(layoutJson);
+    //                     // Restore the grid state
+    //                     dataGrid.state(layout);
+    //                 } catch (error) {
+    //                     console.error("Error parsing JSON:", error);
+    //                     alert("Failed to load layout. Please ensure the JSON is valid.");
+    //                 }
+    //             }
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("Error loading grid state:", error);
+    //         }
+    //     });
+    // }
+    // function setDefaultLayoutClick(e) {
+    //     var grid = $("#dataGrid").dxDataGrid("instance");
+    //     var form = $('#formId').val();
+    //     var layout = grid.state();
+    //     const layoutJson = JSON.stringify(layout, null, 2);
+    //     console.log(layoutJson);
 
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: layoutJson,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout saved successfully", "success", 2000);
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
-    function resetLayoutClick(e) {
-        var grid = $("#dataGrid").dxDataGrid("instance");
-        var form = $('#formId').val();
-        $.ajax({
-            url: '/api/Utility/SaveLayout',  // API endpoint
-            type: 'POST',
-            data: {
-                layout: null,
-                form: form
-            },
-            success: function (data) {
-                DevExpress.ui.notify("Layout reset successfull", "success", 2000);
-                grid.state({});
-            },
-            error: function () {
-                DevExpress.ui.notify("Error while saving data", "error", 2000);
-            }
-        });
-    }
+    //     $.ajax({
+    //         url: '/api/Utility/SaveLayout',  // API endpoint
+    //         type: 'POST',
+    //         data: {
+    //             layout: layoutJson,
+    //             form: form
+    //         },
+    //         success: function (data) {
+    //             DevExpress.ui.notify("Layout saved successfully", "success", 2000);
+    //         },
+    //         error: function () {
+    //             DevExpress.ui.notify("Error while saving data", "error", 2000);
+    //         }
+    //     });
+    // }
+    // function resetLayoutClick(e) {
+    //     var grid = $("#dataGrid").dxDataGrid("instance");
+    //     var form = $('#formId').val();
+    //     $.ajax({
+    //         url: '/api/Utility/SaveLayout',  // API endpoint
+    //         type: 'POST',
+    //         data: {
+    //             layout: null,
+    //             form: form
+    //         },
+    //         success: function (data) {
+    //             DevExpress.ui.notify("Layout reset successfull", "success", 2000);
+    //             grid.state({});
+    //         },
+    //         error: function () {
+    //             DevExpress.ui.notify("Error while saving data", "error", 2000);
+    //         }
+    //     });
+    // }
     // Footer Group Pannel button click event
     function toggleGroupPanel() {
         var dataGrid = $("#dataGrid").dxDataGrid("instance");
@@ -740,31 +748,31 @@
         var $submenu = $('#submenuContainer');
         $submenu.hide(); // Hide the submenu popup
     }
-    // Handle the file selection
-    $("#loadLayoutInput").on("change", function (event) {
-        const dataGrid = $("#dataGrid").dxDataGrid("instance");
-        const file = event.target.files[0];
+    // // Handle the file selection
+    // $("#loadLayoutInput").on("change", function (event) {
+    //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+    //     const file = event.target.files[0];
 
-        if (file) {
-            const reader = new FileReader();
+    //     if (file) {
+    //         const reader = new FileReader();
 
-            reader.onload = function (e) {
-                try {
-                    // Parse the JSON string from the file
-                    const layout = JSON.parse(e.target.result);
+    //         reader.onload = function (e) {
+    //             try {
+    //                 // Parse the JSON string from the file
+    //                 const layout = JSON.parse(e.target.result);
 
-                    // Restore the grid state
-                    dataGrid.state(layout);
-                } catch (error) {
-                    console.error("Error parsing JSON:", error);
-                    alert("Failed to load layout. Please ensure the file is valid JSON.");
-                }
-            };
+    //                 // Restore the grid state
+    //                 dataGrid.state(layout);
+    //             } catch (error) {
+    //                 console.error("Error parsing JSON:", error);
+    //                 alert("Failed to load layout. Please ensure the file is valid JSON.");
+    //             }
+    //         };
 
-            // Read the file as text
-            reader.readAsText(file);
-        }
-    });
+    //         // Read the file as text
+    //         reader.readAsText(file);
+    //     }
+    // });
 
 
     function onDeleteButtonClick() {
@@ -1369,7 +1377,7 @@
         }, 2000);
     }
 
-        function onAttachmentButtonClick() {
+        async function onAttachmentButtonClick() {
 
             var dataGrid = $("#dataGrid").dxDataGrid("instance");
             var rowCount = dataGrid.getVisibleRows().length;
@@ -1387,12 +1395,14 @@
                 var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                 var voucherTypeBox = $("#VoucherType").dxSelectBox("instance"); 
                 var voucherType = voucherTypeBox.option("value");
-                var folderNo2 = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null;
+                var response = await fetch(`/api/VoucherMaster/GetPostedNoFromExpenses?voucherNo=${encodeURIComponent(voucherNo)}`);
+                var folderNo2 = await response.text();
+                console.log(folderNo2);
                 var menuType = "finance";
                 const isMaster = false;
                 console.log(voucherType)
                 const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(voucherNo)}&ModuleType=${encodeURIComponent(voucherType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderNo2)}&modal=true`;
-                const title = "Transaction Documents";
+                const title = ""; //"Transaction Documents";
                 openModal(url, title);
             }
         }
@@ -1443,30 +1453,26 @@
                 }
             });
         }
-
             //1. Get Document Count from Grid Load in Ledger Documents
-        function setAttachCount(count) {
-            updateAttachButtonCount("#btnAttach", count);
-        }
-        //2. Get Document Count
-        async function getDocumentCount() {
-            var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-            var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
-            var voucherType = voucherTypeBox.option("value");
-            var folderNo2 = $("#ChequeNoReferenceNo").dxTextBox("instance").option("value") || null;
-            var menuType = "finance";
-            
-            const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
-            const docs = await res.json();
-            const count = docs.length;
+            function setAttachCount(count) {
+                updateAttachButtonCount("#btnAttach", count);
+            }
+            //2. Get Document Count
+            async function getDocumentCount() {
+                var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+                var voucherTypeBox = $("#VoucherType").dxSelectBox("instance");
+                var voucherType = voucherTypeBox.option("value");
+                var response = await fetch(`/api/VoucherMaster/GetPostedNoFromExpenses?voucherNo=${encodeURIComponent(voucherNo)}`);
+                var folderNo2 = await response.text(); // <-- parse as text
 
-            updateAttachButtonCount("#btnAttach", count);
+                var menuType = "finance";
 
-            // No need to return anything if you don't want to
-        }
+                const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(voucherNo)}&module=${encodeURIComponent(voucherType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderNo2)}`);
+                const docs = await res.json();
+                const count = docs.length;
 
-   
-    
+                updateAttachButtonCount("#btnAttach", count);
 
- 
+                // No need to return anything if you don't want to
+            }
 </script>

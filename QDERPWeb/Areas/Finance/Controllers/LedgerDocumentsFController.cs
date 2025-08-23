@@ -59,7 +59,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         [HttpGet]
         public async Task<IActionResult> GetNewDocumentNos(int count)
         {
-            if (count <= 0 || count > 10)
+            if (count <= 0)
                 return BadRequest(new { message = "Invalid count requested." });
 
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -376,48 +376,93 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                     var normalizedFolderId = Clean(folderId);
                     var normalizedTenant = Clean(tenantName);
                     var normalizedMenu = Clean(menuType);
-                    var normalizedFolderId2 = string.IsNullOrWhiteSpace(folderId2) ? Clean(folderId) : Clean(folderId2);
-                    // Build partial Azure path prefix
-                    var azurePathPrefix = $"{normalizedTenant}/"; // Tenant root
+                // var normalizedFolderIds = string.IsNullOrWhiteSpace(folderId2) ? Clean(folderId) :// Clean(folderId2);
+                    var folderIdsList = string.IsNullOrWhiteSpace(folderId2)
+                     ? new List<string>()
+                     : folderId2.Split(',', StringSplitOptions.RemoveEmptyEntries)
+                                .Select(f => f.Trim())
+                                .Where(f => !string.IsNullOrEmpty(f))
+                                .Distinct()
+                                .ToList();
+                // Build partial Azure path prefix
+                var azurePathPrefix = $"{normalizedTenant}/"; // Tenant root
 
                     // Optional: further narrow down to expected subfolder
                     // e.g., transaction_documents/module/folderId
                     // You can append further filtering here if your structure is consistent
 
-                    var allBlobsInTenant = await blobHelper.ListBlobsAsync(azurePathPrefix);
+                var allBlobsInTenant = await blobHelper.ListBlobsAsync(azurePathPrefix);
 
-                var dbDocs = await dbContext.Tbl20116LedgerDocuments
+                var structuredDocs = await dbContext.Tbl20116LedgerDocuments
                     .Where(d =>
                         !string.IsNullOrEmpty(d.AzurePath) &&
-                        (
-                            (d.AzurePath.Contains(normalizedMenu) &&
-                             d.AzurePath.Contains(normalizedModule) &&
-                             d.AzurePath.Contains(normalizedFolderId))
-                            || d.AzurePath.Contains(normalizedFolderId2)
-                        )
+                        d.AzurePath.Contains(normalizedMenu) &&
+                        d.AzurePath.Contains(normalizedModule) &&
+                        d.AzurePath.Contains(normalizedFolderId)
                     )
                     .ToListAsync();
+                // Initialize collection
+                List<Tbl20116LedgerDocument> folderDocs = new List<Tbl20116LedgerDocument>();
+
+                if (folderIdsList != null && folderIdsList.Any())
+                {
+                    foreach (var fId in folderIdsList)
+                    {
+                        var cleanedFid = fId.Trim().ToUpper();
+
+                        var docsForFolder = await dbContext.Tbl20116LedgerDocuments
+                            .Where(d => !string.IsNullOrEmpty(d.AzurePath) &&
+                                        EF.Functions.Like(d.AzurePath, $"%{cleanedFid}%"))
+                            .ToListAsync();
+
+                        folderDocs.AddRange(docsForFolder);
+                    }
+
+                    folderDocs = folderDocs.Distinct().ToList();
+                }
+
+                // Optionally convert to array
+                var folderDocsArray = folderDocs.ToArray();
+
+
+
+                var dbDocs = structuredDocs
+                    .Concat(folderDocs)
+                    .GroupBy(d => d.DocumentNo)  // avoid duplicates
+                    .Select(g => g.First())
+                    .ToList();
+                //var dbDocs = (await dbContext.Tbl20116LedgerDocuments
+                //    .Where(d =>
+                //        !string.IsNullOrEmpty(d.AzurePath) &&
+                //        d.AzurePath.Contains(normalizedMenu) &&
+                //        d.AzurePath.Contains(normalizedModule) &&
+                //        d.AzurePath.Contains(normalizedFolderId)
+                //    )
+                //    .ToListAsync())
+                //    .Where(d => folderIdsList.Any(f => d.AzurePath.Contains(f) || d.AzurePath.Contains(normalizedFolderId)))
+                //    .ToList();
 
                 var matchingDocs = dbDocs
-                        .Where(d => allBlobsInTenant.Contains(d.AzurePath))
-                        .Select((d, index) => new
-                        {
-                            SerialNo = index + 1,
-                            d.DocumentNo,
-                            d.DocumentType,
-                            d.DocumentRefNo,
-                            d.DocumentRemarks,
-                            d.DocumentExpDate,
-                            d.DocumentExpDateAr,
-                            d.DocumentNotificationDate,
-                            d.DocumentStatus,
-                            d.DocumentStatusRemarks,
-                            FileUrl = blobHelper.GetBlobSasUrl(d.AzurePath)
-                        });
+                    .Select((d, index) => new
+                    {
+                        SerialNo = index + 1,
+                        d.DocumentNo,
+                        d.DocumentType,
+                        d.DocumentRefNo,
+                        d.DocumentRemarks,
+                        d.DocumentExpDate,
+                        d.DocumentExpDateAr,
+                        d.DocumentNotificationDate,
+                        d.DocumentStatus,
+                        d.DocumentStatusRemarks,
+                        FileUrl = blobHelper.GetBlobSasUrl(d.AzurePath)
+                    })
+                    .ToList();
 
-                    return Ok(matchingDocs);
-                }
-                catch (Exception ex)
+                return Ok(matchingDocs);
+
+            }
+            catch (Exception ex)
                 {
                     _logger.LogError($"Error in GetDocuments: {ex}");
                     return StatusCode(500, $"An error occurred: {ex.Message}");

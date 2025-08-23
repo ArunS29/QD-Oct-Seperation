@@ -24,24 +24,42 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetSubGroup()
+        public async Task<IActionResult> GetSubGroup(string mprNo)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(
+                out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var SubGroup = await dbContext.Tbl60107quotationChildItemGroups.ToListAsync();
-                    return Ok(SubGroup);
+                    var query = dbContext.Tbl60107quotationChildItemGroups.AsQueryable();
+
+                    if (!string.IsNullOrEmpty(mprNo))
+                    {
+                        query = query.Where(x => x.Mprno == mprNo); // ✅ filter by Mprno column
+                    }
+
+                    var subGroups = await query
+                        .Select(x => new
+                        {
+                            x.QuoteGroupItemSlNo,
+                            x.GroupCode,
+                            x.GroupName,
+                            x.Mprno
+                        })
+                        .ToListAsync();
+
+                    return Ok(subGroups);
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetDocumentTypes: {ex.Message}");
-                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                    _logger.LogError($"Error in GetSubGroup: {ex.Message}");
+                    return StatusCode(500, new { message = "Internal server error", error = ex.Message });
                 }
             }
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpPost]
         public async Task<IActionResult> AddSubGroup([FromBody] Tbl60107quotationChildItemGroup documentType)
         {

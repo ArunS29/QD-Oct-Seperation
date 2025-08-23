@@ -326,13 +326,25 @@ function preparePayload(items) {
 }
 
 function uploadItemsToMaterialRequests() {
+	const subGroupValidator = $("#StockGroup").dxValidator("instance");
+	const subGroupValidation = subGroupValidator.validate();
+
+	if (!subGroupValidation.isValid) {
+		DevExpress.ui.dialog.alert(
+			"Cannot continue saving with errors, please clear the errors and continue.",
+			"Clear Errors"
+		);
+		return;
+	}
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
     const items = dataSource?.items() ?? [];
 	const selectedGSGroupId = $("#StockGroup").dxDropDownBox("instance").option("value");
     const preparedItems = preparePayload(items);
-
+	const params1 = new URLSearchParams(window.location.search);
+	const exist = params1.get("exist");
     const requestBody = {
+		IsExist: exist === "true",
         GSGroupCode: "",
         RequestNo: $("#txtRequestNo").dxTextBox("instance").option("value"),
         Items: preparedItems,
@@ -472,34 +484,6 @@ function uploadItemsToMaterialRequests() {
     window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(requestNo)}`;
 }
 
-	function validateGridData() {
-    const grid = $("#Datagrid").dxDataGrid("instance");
-    const dataSource = grid?.getDataSource();
-    const items = dataSource?.items() ?? [];
-
-    const stockGroupCode = $("#StockGroup").dxDropDownBox("instance").option("value");
-    const lastNoInStockGroup = 1000; // Replace with the actual value from the server
-    const lastNoInUnit = 10; // Replace with the actual value from the server
-
-    return items.map((item, index) => {
-        // Generate GSCode if missing
-        if (!item.GSCode) {
-            item.GSCode = `${stockGroupCode}-${String(lastNoInStockGroup + index + 1).padStart(5, "0")}`;
-        }
-
-        // Generate UnitCode if missing
-        if (!item.UnitCode) {
-            item.UnitCode = `UNIT-${lastNoInUnit + index + 1}`;
-        }
-
-        // Ensure ItemSize is a string
-        if (item.ItemSize && typeof item.ItemSize !== "string") {
-            item.ItemSize = String(item.ItemSize);
-        }
-
-        return item; // Include all rows without validation
-    });
-}
 
 </script>
 <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>

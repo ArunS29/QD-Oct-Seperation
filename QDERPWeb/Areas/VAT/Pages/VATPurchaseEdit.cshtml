@@ -387,7 +387,33 @@
 		background-color: #f5f5f5;
 		box-shadow: 2px 2px 5px rgba(0,0,0,0.1);
 	}
+	.dx-datagrid .dx-data-row td[aria-colindex="3"] {
 
+    text-align: center !important;
+
+}
+
+    .header-wrap {
+
+        white-space: normal !important; /* Enable word wrap */
+
+        text-align: center !important; /* Center align text */
+
+        display: flex;
+
+        justify-content: center;
+
+        align-items: center;
+
+        font-weight: bold;
+
+    }
+
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+
+        text-align: center !important;
+
+    }
 		.deduction-card h5 {
 			margin-top: 0;
 			font-weight: 600;
@@ -659,7 +685,7 @@
 														.ID("ledgerAccountPopup")
 														.Width("80%")
 														.Height("85%")
-														.Title("Add Ledger Account")
+														.Title(new JS("formatMessage('Add Ledger Account')"))
 														.ShowTitle(true)
 														.CloseOnOutsideClick(true)
 														.Visible(false)
@@ -1227,7 +1253,7 @@
 
 
 
-						<h5>Deductions:Advance / Retention</h5>
+						<h5 id="deductionadvancepurchase"></h5>
 						<table width="100%" style="font-size:14px; margin:10px 0;" cellpadding="5">
 							<tr>
 
@@ -1588,7 +1614,7 @@
 										.Caption(new JS("formatMessage('Voucher Entry No')"))
 										.Visible(false);
 
-											columns.Add().DataField("SNo").Caption("SNo").Width(200);
+											columns.Add().DataField("SNo").Caption(new JS("formatMessage('SNo')")).Width(200);
 
 											columns.Add().DataField("ItemCode")
 										.Caption(new JS("formatMessage('Item Code')"))
@@ -1843,7 +1869,10 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("PurchaseBillNo").Caption("Purchase Bill No").Alignment(HorizontalAlignment.Left);
+					columns.Add().DataField("PurchaseBillNo")
+					.Caption(new JS("formatMessage('Purchase Bill No')"))
+					.Alignment(HorizontalAlignment.Left);
+
 					})
 					)
 		}
@@ -1926,11 +1955,26 @@
 						.Height(400)
 						.Columns(columns =>
 						{
-						columns.Add().DataField("AccountId").Caption("Supplier Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHead").Caption("AccountHead").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("AccountHeadArabic").Caption("AccountHeadArabic").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("SupplierVatno").Caption("SupplierVatno").Alignment(HorizontalAlignment.Center);
-							columns.Add().DataField("RecordStatus").Caption("RecordStatus").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("AccountId")
+						.Caption(new JS("formatMessage('Supplier Code')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("AccountHead")
+						.Caption(new JS("formatMessage('Account Head')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("AccountHeadArabic")
+						.Caption(new JS("formatMessage('Account Head Arabic')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("SupplierVatno")
+						.Caption(new JS("formatMessage('Supplier VAT No')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("RecordStatus")
+						.Caption(new JS("formatMessage('Record Status')"))
+						.Alignment(HorizontalAlignment.Center);
+
 							columns.Add().DataField("IsLedgerObselete")
 						.Caption(new JS("formatMessage('Is Ledger Obselete')"))
 						.Alignment(HorizontalAlignment.Center)
@@ -1986,7 +2030,7 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SupplierName").Caption("VAT No");
+						columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('VAT No')"));
 
 					})
 					)
@@ -2059,8 +2103,14 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("BuyerIdtypeName").Caption("Branch Code").Alignment(HorizontalAlignment.Center);
-						columns.Add().DataField("BuyerOtherIdtype").Caption("Other ID Type").Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("BuyerIdtypeName")
+						.Caption(new JS("formatMessage('Branch Code')"))
+						.Alignment(HorizontalAlignment.Center);
+
+					columns.Add().DataField("BuyerOtherIdtype")
+						.Caption(new JS("formatMessage('Other ID Type')"))
+						.Alignment(HorizontalAlignment.Center);
+
 					})
 					.OnSelectionChanged("dataGridSelectionChanged")
 					.OnInitialized("dataGridInitialized")
@@ -2220,8 +2270,12 @@
 	   )
 				.Columns(columns =>
 				{
-					columns.Add().DataField("CompanyId").Visible(false); // ✅ Hide key field
-					columns.Add().DataField("CompanyName").Caption("Company Name");
+					columns.Add().DataField("CompanyId")
+                    .Visible(false); // ✅ Hide key field
+
+                    columns.Add().DataField("CompanyName")
+                     .Caption(new JS("formatMessage('Company Name')"));
+
 				})
 				.OnSelectionChanged(@<text>
 	function(e) {
@@ -2382,7 +2436,7 @@
 											.Columns(columns =>
 											{
 												columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')")).Alignment(HorizontalAlignment.Center);
-												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')")).Alignment(HorizontalAlignment.Center);
+												columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')")).Alignment(HorizontalAlignment.Center);
 												columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')")).Alignment(HorizontalAlignment.Center);
 												columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
 												columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')")).Alignment(HorizontalAlignment.Center);
@@ -3110,6 +3164,7 @@
 						InvoiceOPenToSave(data);
 					if (invoiceBox) {
 						invoiceBox.option("value", data || "");
+						getDocumentCount();
 					}
 				},
 				error: function (xhr, status, error) {
@@ -3273,7 +3328,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 	                                        {
 	                                        	btnPostToLedgerdisableEditing();
 	                                        }
-
+											getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
 								type: "GET",
@@ -3294,9 +3349,11 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 									// ✅ Now safely initialize the grid here
 									initializeDataGrid(rowData);
+									getDocumentCount();
 								},
 								error: function (xhr, status, error) {
 									console.error("Error fetching grid data:", error);
+									getDocumentCount();
 								}
 							});
 						} else {
@@ -3320,7 +3377,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			keyExpr: "SNo",
 			columns: [
 						{ dataField: "PurchaseChildSlNo", caption: "PurchaseChildSlNo", width: 100, allowEditing: false, visible: false },
-				{ dataField: "PurchaseChildSlNo", caption: "SNo", width: 100, allowEditing: false },
+				{ dataField: "PurchaseChildSlNo", caption: formatMessage('SNo'), width: 100, allowEditing: false },
 				{ dataField: "ItemCode", caption: formatMessage('Item Code'), width: 200,allowEditing: false },
 				{
 					dataField: "DetailedDescription",
@@ -3755,7 +3812,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 
 					   dataField: "SNo",
 
-					   caption: "SNo",
+					   caption: formatMessage('SNo'),
 					
 					   width: 100,
 
@@ -6379,6 +6436,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						"Purchase Invoice Details updated Successfully.","success",2000
 					);
 					button.option("disabled", false);
+					getDocumentCount();
 						}
 						// error: function (xhr) {
 						// 	DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
@@ -6388,6 +6446,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 					button.option("disabled", false);
+						getDocumentCount();
 				}
 			});
 			}
@@ -6542,6 +6601,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							
 						);
 button.option("disabled", false);
+						getDocumentCount();
 						//history.back();
 
                           const url = `/${tenantName}/VAT/VATPurchaseMasterView`;
@@ -6557,6 +6617,7 @@ button.option("disabled", false);
 					error: function (xhr) {
 						DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
 						button.option("disabled", false);
+						getDocumentCount();
 					}
 				});
 				}
@@ -7039,67 +7100,9 @@ if(clientnameValidation.isValid)
 							if(response.IsDirect == true)
 							{
 								
-								// attachment bind to sales in finance with posting
-
-								const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
-								const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
-								var menuType = "vat";
-								var formType ="VATPurchase Bill";
-								// 1. Get Documents
-								const getDocRes = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
-								const documents = await getDocRes.json();
-								if (!documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid without Attachments.", "success", 2500);
-												return;
-								}
-								// 2. Generate DocumentNo to each documents
-								const docNoRes = await fetch(`/api/LedgerDocumentsF/GetNewDocumentNos?count=${documents.length}`);
-								const newDocNos = await docNoRes.json();
-								if (!Array.isArray(newDocNos) || newDocNos.length !== documents.length) {
-												DevExpress.ui.notify("Voucher saved and claim marked as paid, Can't Generate Document Nos", "error", 3000);
-												return;
-								}
-								// 3. Reupload each document to AddDocumentsEntry
-								const generateNo = $("#InvoiceNo").dxTextBox("instance").option("value");
-
-								const PostVoucherType = "purchase";
-								const isMaster = false;
-								const PostMenuType = 'finance';
-								for (let i = 0; i < documents.length; i++) {
-									const doc = documents[i];
-									const newDocNo = newDocNos[i];
-
-									try {
-										const fileResponse = await fetch(doc.FileUrl);
-										const blob = await fileResponse.blob();
-
-										const originalFileName = doc.FileUrl.split('/').pop().split('?')[0];
-										const safeFileName = originalFileName.replace(/[^a-zA-Z0-9_.-]/g, "_");
-
-										const formData = new FormData();
-										formData.append("file", new File([blob], safeFileName)); // no docNo prefix
-										formData.append("DocumentNo", newDocNo);
-										formData.append("DocumentRefNo", doc.DocumentRefNo || "");
-										formData.append("DocumentType", doc.DocumentType ?? "1");
-										formData.append("DocumentRemarks", doc.DocumentRemarks || "");
-										formData.append("DocumentExpDate", doc.DocumentExpDate || "");
-										formData.append("NotificationDate", doc.DocumentNotificationDate || "");
-										formData.append("LedgerNo", generateNo); // new folder id
-
-
-											const uploadRes = await fetch(`/api/LedgerDocumentsF/AddDocumentsEntry?folderId=${encodeURIComponent(generateNo)}&moduleType=${encodeURIComponent(PostVoucherType)}&isMaster=${isMaster}&menuType=${encodeURIComponent(PostMenuType)}`, {
-											method: "POST",
-											body: formData
-										});
-
-										const uploadResult = await uploadRes.json();
-										console.log("Uploaded document:", uploadResult);
-									} catch (uploadError) {
-													console.error("Error re-uploading document:", uploadError);
-									}
-	}
+								
 								DevExpress.ui.dialog.alert(
-									"VAT Invoice has been posted to the Accounting Books With Attachments.",
+									"VAT Invoice has been posted to the Accounting Books.",
 									"Invoice Posted Successfully."
 								)
 							}
@@ -8279,13 +8282,13 @@ if(clientnameValidation.isValid)
 			function CurrencyClick() {
 
 				let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-				let title = "Currency Master";
+				let title = " ";
 				openModal(url, title);
 	    }
 		function CurrencySClick() {
 
 				let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-					let title = "Currency Master";
+					let title = " ";
 				openModal(url, title);
 		}
 
@@ -8325,7 +8328,39 @@ function formatSummaryValue(value) {
     });
 }
 
+$(function () {
+		$("#deductionadvancepurchase").text(formatMessage("Deductions:Advance / Retention"));
+	});
+// Attachment Count
+//1. Get Document Count from Grid Load in Ledger Documents
+function setAttachCount(count) {
+	updateAttachButtonCount("#btnAttach", count);
+}
+//2. Get Document Count
+async function getDocumentCount() {
 
+	const purchaseNoBox = $("#InvoiceNo").dxTextBox("instance");
+    const purchaseNo = purchaseNoBox ? purchaseNoBox.option("value") : null;
+    var formType ="VATPurchase Bill";
+    var menuType = "vat";
+	let folderId2 = "";
+	const invoiceRes = await fetch(`/api/VATModule/GetPONosFromPurchaseInvoice?purchaseInvoiceNo=${encodeURIComponent(invoiceNofromPurchase)}`);
+	const invoiceData = await invoiceRes.json();
+	if (invoiceData) {
+		folderId2 = [
+			invoiceData.PurchaseVoucherNo,
+			invoiceData.MaterialReceiptNo,
+			invoiceData.PurchaseOrderNo,
+		]
+		.filter(Boolean)   //remove null/empty
+		.join(",");
+	}
+	const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+	const docs = await res.json();
+	const count = docs.length;
+
+	updateAttachButtonCount("#btnAttach", count);
+}
 
 </script>
 
