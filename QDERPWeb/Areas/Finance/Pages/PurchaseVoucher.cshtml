@@ -1770,11 +1770,12 @@ $(function () {
 	var ClientName = $("#accountDropDownBox").dxDropDownBox("instance");
 	 var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value") || 0;
  var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
- var amount = voucherAmount * currencyRate;
-   amount = Math.round(amount * 100) / 100;
+  currencyRate = Math.round(currencyRate * 100) / 100;
 
     // Format to always have 2 decimals
-    amount = parseFloat(amount).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(2);
+ var amount = voucherAmount * currencyRate;
+  
 
 	var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
 

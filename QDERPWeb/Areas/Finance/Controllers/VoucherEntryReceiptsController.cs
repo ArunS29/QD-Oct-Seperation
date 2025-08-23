@@ -1629,6 +1629,7 @@ namespace Form.Areas.Finance.Controllers
         //        }
         //    }
         //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+
         //}
 
         [HttpPost]
@@ -1647,7 +1648,7 @@ namespace Form.Areas.Finance.Controllers
 
                     Tbl201VoucherMaster voucherMaster = new();
                     int aEntryAmount = 0;
-                    int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
+                    decimal Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
 
@@ -1720,7 +1721,7 @@ namespace Form.Areas.Finance.Controllers
                         matchingEntries = resultList.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
                         if (matchingEntries.Count != 0)
                         {
-                            ExistingCrMinusAmt = (int)matchingEntries[0].CrAmount;
+                            ExistingCrMinusAmt = (decimal)matchingEntries[0].CrAmount;
                             ExistingAccHeadID = matchingEntries[0].AccountHead;
                             IsMatchingEntry = true;
                         }
@@ -1745,7 +1746,7 @@ namespace Form.Areas.Finance.Controllers
                     foreach (var petty in newlist)
                     {
                         NewId = petty.AccountHead;
-                        NewCrMinusAmt = (int)petty.CrAmount;
+                        NewCrMinusAmt = (decimal)petty.CrAmount;
                     }
 
                     foreach (var entry in resultList)

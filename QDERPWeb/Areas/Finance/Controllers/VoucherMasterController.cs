@@ -342,7 +342,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     var resultList = await qryListOfAccountlists.ToListAsync();
 
-                    int debitamt = 0; // Initialize debit amount
+                    decimal debitamt = 0; // Initialize debit amount
 
                     int crCount = resultList.Count(i => i.DrCr == "Cr");
 
@@ -381,7 +381,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                             {
                                 // Calculate Debit Amount (DrAmount)
 
-                                debitamt = (int)(debitamt + entry.DrAmount);
+                                debitamt = (decimal)(debitamt + entry.DrAmount);
 
                                 // If Dr/Cr is Credit ("Cr"), perform specific logic
                                 if (entry.DrCr == "Cr" && crCount == 1)
@@ -3666,7 +3666,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                bool exists = dbContext.Tbl201VoucherMasters.Any(v => v.VoucherNo == voucherNo);
+                bool exists = dbContext.Tbl201VoucherEntries.Any(v => v.VoucherNo == voucherNo);
                 return Json(exists);
             }
             return Unauthorized();
