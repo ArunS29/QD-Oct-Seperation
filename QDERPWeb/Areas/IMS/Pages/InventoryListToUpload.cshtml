@@ -79,7 +79,9 @@
 	}
 	
 </style>
-
+<div id="loadingSpinner" class="spinner-overlay">
+    <div id="loader" class="loader"></div>
+</div>
 <div class="dx-card-container">
 	<div class="dx-card-header minimal-header">
 		<div class="card-title-icon">
@@ -336,6 +338,8 @@ function uploadItemsToMaterialRequests() {
 		);
 		return;
 	}
+	document.getElementById('loadingSpinner').style.display = 'block';
+	document.getElementById('loader').style.display = 'block';
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
     const items = dataSource?.items() ?? [];
@@ -359,6 +363,8 @@ function uploadItemsToMaterialRequests() {
         contentType: "application/json",
         data: JSON.stringify(requestBody),
         success: function (result) {
+			document.getElementById('loader').style.display = 'none';
+			document.getElementById('loadingSpinner').style.display = 'none';
             DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
 			onUploadButtonClick();
         },
