@@ -813,7 +813,7 @@
 
                         <div class="col-md-4">
                             @(Html.DevExtreme().TextBox()
-                                                        .Label("Mobile No")
+                                                        .Label(new JS("formatMessage('Mobile No:')"))
                                                         .LabelMode(EditorLabelMode.Floating)
                                                         .ID("txtPersonMobile")
                                                         .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
@@ -2699,11 +2699,11 @@ function syncSupVATNumbers(e) {
 
         if (e.value) {
             // When switched ON, update text and apply red color
-            textBoxInstance.option("value", "Ledger is set as obsolete:");
+            textBoxInstance.option("value", formatMessage("Ledger is set as obsolete:"));
             $("#LedgerActive .dx-texteditor-input").css("color", "red");
         } else {
             // When switched OFF, update text and reset color
-            textBoxInstance.option("value", "Ledger is Currently Active:");
+            textBoxInstance.option("value", formatMessage("Ledger is Currently Active:"));
             $("#LedgerActive .dx-texteditor-input").css("color", "black");
         }
     });
@@ -5178,7 +5178,7 @@ if (dropDownInstance.option("opened")) {
         // Set module based on asset group or opening balance
         if (isAssetGroupMatch) {
             isMaster = true;
-            module = "Fixed Assets";
+            module = formatMessage("Fixed Assets");
         } else if (openingBalance > 0 && !isAssetGroupMatch) {
             isMaster = false;
             module = "Ledger Account";

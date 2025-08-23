@@ -201,27 +201,9 @@
 			border-bottom-right-radius: 12px;
 		}
 
-	.tile-icon {
-		display: flex;
-		align-items: flex-end;
-		justify-content: flex-end;
-		height: 100%;
-		position: absolute;
-		left: 330px;
-		bottom: 10px;
-	}
 
-	.tile-icon {
-		display: flex;
-		align-items: flex-end;
-		justify-content: flex-end;
-		height: 100%;
-		position: absolute;
-		left: 350px;
-		bottom: 10px;
-	}
 </style>
-<div class="title">
+<div class="title" id="kpiCarousel">
 	<input id="formId" value="frm60103SalesOrderEdit" type="hidden" />
 
 	<div class="card blue shine compact with-sidebar">
@@ -1092,22 +1074,24 @@ subColumns.Add().DataField("cost")
 			icon: "box",
 			onItemClick: function () {
 				const salesOrderNo = e.row.data.SalesOrderNo;
-				const clientCode = e.row.data.ClientCode; // Make sure this is available in your grid data
+				const clientname = e.row.data.ClientName; // Make sure this is available in your grid data
 				let tenantName = window.tenantName || "defaultTenant";
 				checkIfApprovedAndProceed(salesOrderNo, function () {
-					$.get("/api/SalesOrders/HasLedger", { clientCode: clientCode })
-					.done(function (hasLedger) {
-						if (!hasLedger) {
+					$.get("/api/SalesOrders/HasLedger", { clientName: clientname })
+						.done(function (clientCode) {
+							if (!clientCode) {
 							DevExpress.ui.dialog.alert(
 								"Client does not have a Ledger Account.", // Message
 								"Can't Generate Invoice" // Title
 							).done(function () {
 								
 							});
-							return;
+							
+						}else {
+								let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
+								window.location.href = url;
 						}
-				let url = `/${tenantName}/IMS/GenerateInvoiceSalesOrder?salesOrderNo=${encodeURIComponent(salesOrderNo)}&clientCode=${encodeURIComponent(clientCode)}`;
-				window.location.href = url;
+				
 	})
 					.fail(function () {
 						DevExpress.ui.notify("Error checking client ledger.", "error", 3000);

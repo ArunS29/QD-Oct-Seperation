@@ -325,6 +325,58 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
+        public async Task<IActionResult> GetDefaultCompany()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    // 1. Read session
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0;
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                    }
+
+                    byte companyId = defaultCompanyByte;
+
+                    // 2. Get company record
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .Where(c => c.CompanyId == companyId)
+                        .Select(c => new
+                        {
+                            c.CompanyId,
+                            c.CompanyName
+                        })
+                        .FirstOrDefaultAsync();
+
+                    if (company == null)
+                    {
+                        return NotFound(new { success = false, message = "Default company not found." });
+                    }
+
+                    // 3. Return in PascalCase (CompanyId, CompanyName)
+                    return Ok(new
+                    {
+                        success = true,
+                        CompanyId = company.CompanyId,
+                        CompanyName = company.CompanyName
+                    });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error in GetDefaultCompany: {ex.Message}");
+                    return StatusCode(500, new { success = false, message = "Error fetching default company.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { success = false, message = "Invalid tenant." });
+        }
+
+
+        [HttpGet]
         public async Task<IActionResult> GetEnquiry(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

@@ -103,6 +103,7 @@
                             .Type(DateBoxType.Date)
                             .DisplayFormat("dd-MMM-yyyy")
                             .Value(DateTime.Now)
+                            .OnValueChanged("onVoucherDateChanged")
                             .ElementAttr(new { @class = "light-theme-input dynamicFormatDateBox" })
                             .TabIndex(2)
                             .ApplyValueMode(EditorApplyValueMode.UseButtons) // shows Today/OK/Cancel
@@ -478,13 +479,19 @@ buttons.Add()
                             columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).CustomizeText(
                         "function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }"
 
-                        ).AllowEditing(false) .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                        ).AllowEditing(false) .CalculateCellValue("function(data) { " +
+                                    "    if (data.DrAmount != null) { " +
+                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        var val = data.DrAmount / currencyRate; " +
+                                    "        var rounded = Math.round(val); " + // round to nearest integer
+                                    "        return rounded.toFixed(2); " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}")
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
+
 
 
                             columns.AddFor(m => m.CrAmount)
@@ -493,13 +500,20 @@ buttons.Add()
                         .Alignment(HorizontalAlignment.Right)
                         .AllowEditing(false)
                     @* .EditCellTemplate(@<input dx-number-box data-bind="value: $data.CrAmount" />) *@
-                   .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                   .CalculateCellValue("function(data) { " +
+                                    "    debugger; " +
+                                    "    if (data.CrAmount != null) { " +
+                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        var val = data.CrAmount / currencyRate; " +
+                                    "        var rounded = Math.round(val); " + // round to nearest integer
+                                    "        return rounded.toFixed(2); " + // keep 2 decimals as number
+                                    "    } " +
+                                    "    return null; " +
+                                    "}")
+                                    .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
+
 
                             columns.AddFor(m => m.EntryNarration)
                         .Caption(new JS("formatMessage('Entry Narration')"))
@@ -575,22 +589,14 @@ buttons.Add()
 
                             totalItems.Add().Column("DrAmount").SummaryType(SummaryType.Sum)
 
-                        .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                         .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
                             totalItems.Add().Column("CrAmount").SummaryType(SummaryType.Sum)
 
-                         .CustomizeText(@"
-                                function(e) {
-                                var rate = $('#txtCurrencyRate').dxNumberBox('instance').option('value') || 1;
-                                var value = e.value / rate;
-                                return value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-                                }
-                                ");
+                          .CustomizeText("function(e) { " +
+                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+                                    "}");
                         });
 
                     })
@@ -1262,6 +1268,18 @@ buttons.Add()
             });
 
 
+          $(function () {
+    var txtCurrencyRate = $("#txtCurrencyRate").dxNumberBox("instance");
+    if (txtCurrencyRate) {
+        txtCurrencyRate.on("valueChanged", function () {
+            var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            if (dataGrid) {
+                dataGrid.refresh(true);
+            }
+        });
+    }
+});
+
 
 
 
@@ -1782,6 +1800,14 @@ buttons.Add()
             }
 
 function addVoucherEntry() {
+     var btn = $("#btnVoucherEntry").dxButton("instance");
+
+    // Disable button + show loading
+    btn.option({
+        disabled: true,
+        icon: "spinner", // built-in spinner icon
+        text: "Loading..."
+    });
    
     var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
     var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
@@ -1807,6 +1833,7 @@ function addVoucherEntry() {
                 continueVoucherEntryWithVoucherNo(voucherNo);
                  isVoucherSaved = true; // Mark Updated step as done
                  updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+                getDocumentCount();
             },
             error: function (xhr, status, error) {
                 DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
@@ -1816,6 +1843,7 @@ function addVoucherEntry() {
         // If rows exist, reuse the existing voucher number from the text box
         voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
         continueVoucherEntryWithVoucherNo(voucherNo);
+        getDocumentCount();
     }
 }
 
@@ -1825,6 +1853,10 @@ function addVoucherEntry() {
         var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
             var amount = voucherAmount * currencyRate;
+              amount = Math.round(amount * 100) / 100;
+
+    // Format to always have 2 decimals
+    amount = parseFloat(amount).toFixed(2);
              var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
         var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
         var sbDrCr = $("#sbDrCr").dxSelectBox("instance").option("value");
@@ -2011,6 +2043,7 @@ accountGrid.clearSelection();
                         checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
 
                         checkAllocation(`/api/VoucherMaster/CheckIsMaintainSalary`, openSalaryPopup);
+                         resetVoucherButton();
                    }
     
                    $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
@@ -2035,7 +2068,7 @@ accountGrid.clearSelection();
                 dataType: "json",
                 success: function (response) {
                     $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
-
+                     resetVoucherButton();
                      $("#txtEntryNarration").dxTextArea("instance").option("value", "");
                      var accountHeadValidator = $("#ddAccountHead").dxValidator("instance");
                      accountHeadValidator.reset();
@@ -2128,7 +2161,15 @@ accountGrid.clearSelection();
     
     }
 
-
+    // ✅ Helper function to reset button after AJAX success/error
+function resetVoucherButton() {
+    var btn = $("#btnVoucherEntry").dxButton("instance");
+    btn.option({
+        disabled: false,
+        icon: "plus",
+        text: formatMessage("ADD")
+    });
+}
 
 
             $(function () {
@@ -3604,6 +3645,7 @@ accountGrid.clearSelection();
                         },
                         error: function (xhr, status, error) {
                             console.error("Error loading Voucher No:", error);
+                            getDocumentCount();
                         }
                     });
                 });
@@ -3624,7 +3666,8 @@ accountGrid.clearSelection();
             }
 
             fetchVoucherDetails(voucherNo);
-            fetchVoucherEntries(voucherNo);
+            
+            getDocumentCount();
         }
 
         function validateVoucherNo(voucherNo) {
@@ -3672,6 +3715,7 @@ accountGrid.clearSelection();
                     var dataGrid = $("#dataGrid").dxDataGrid("instance");
                     if (dataGrid) {
                         dataGrid.option("dataSource", response.data);
+                        dataGrid.refresh(true);
                         var button = $("#btnSave").dxButton("instance");
                                 button.option("text", "Update");
                                 $("#ddCurrency").dxDropDownBox("instance").option("readOnly", true);
@@ -3722,41 +3766,7 @@ accountGrid.clearSelection();
             });
         }
 
-         function onVoucherDateChanged(e) {
-            console.log("Selected Date:", e.value);
-            var voucherDate = $("#VoucherDate").dxDateBox("instance");
-            var effectiveDate = $("#VoucherEffectiveDate").dxDateBox("instance");
 
-            voucherDate.option("onValueChanged", function (e) {
-                let voucherDateval = e.value; // Get Date from DevExtreme DateBox
-
-                // Check if voucherDateval is valid
-                if (!voucherDateval) return;
-
-                // Set effectiveDate to the same value as voucherDate
-                effectiveDate.option("value", voucherDateval);
-
-                // Convert to 'yyyy-MM-dd' format
-                let formattedDate = new Date(voucherDateval).toISOString().split("T")[0];
-
-                // Define the cutoff date (2021-12-31)
-                let cutoffDate = new Date("2021-12-31");
-
-                // Get the current date to set if the voucher date is blocked
-                let currentdate = new Date();
-                let formattedCurrentDate = currentdate.toISOString().split("T")[0]; // Format it as 'yyyy-MM-dd'
-
-                // Check if the formatted voucher date is before the cutoff date
-                if (new Date(formattedDate) < cutoffDate) {
-                    // Show alert for blocked entry
-                    DevExpress.ui.notify("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
-
-                    // Set both voucherDate and effectiveDate to the current date
-                    voucherDate.option("value", formattedCurrentDate);
-                    effectiveDate.option("value", formattedCurrentDate);
-                }
-            });
-        }
 
                         function onRowUpdating(e) { 
     const updatedData = e.newData;
@@ -4124,6 +4134,8 @@ function fetchUpdatedData(voucherEntryNo) {
                     
                                                         syncWorkflowFromFields();
                                 initWorkflowTippyPopovers();
+                                 checkVoucherDateLock(data.VoucherDate);
+                                  fetchVoucherEntries(data.VoucherNo);
                                 getDocumentCount();
                     //  DevExpress.ui.notify("Voucher details fetched successfully.", "success", 2000);
                     }
@@ -4532,5 +4544,22 @@ tippy('#circle-approve', {
 			}
 			});
 		});
-
+    function checkVoucherDateLock(voucherDate) {
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckVoucherDateLock",
+            contentType: "application/json",
+            data: { voucherDate: formatDateOnlyLocal(voucherDate) },
+            success: function (res) {
+                if (res && res.isLocked === true) {
+                    DevExpress.ui.dialog.alert(
+                        "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                        "Date Locked"
+                    ).done(function () {
+                        history.back();   // ⬅️ Go back after clicking OK
+                    });
+                }
+            }
+        });
+    }
 </script>

@@ -203,7 +203,7 @@
     @(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.sp20157AssetRegisterViewResult>()
         .ID("dataGrid")
         .KeyExpr("AccountID")
-        .RemoteOperations(false)
+        .RemoteOperations(true)
         .DataSource(ds => ds.Mvc()
         .Controller("AssetView")
 
@@ -1014,40 +1014,44 @@
 
         });
              // === Card Voucher: Total/Month/Year Asset Count by PurchaseDate ===
-     let totalAssets = 0;
-     let thisMonthCount = 0;
-     let thisYearCount = 0;
+        // === Card Voucher: Total / This Month / This Year / This Week Asset Count ===
+    let totalAssets = 0;
+    let thisMonthCount = 0;
+    let thisYearCount = 0;
+    let thisWeekCount = 0;
 
-     data.forEach(item => {
-         const accountId = item.AccountId;
-         const purchaseDate = new Date(item.PurchaseDate);
+    data.forEach(item => {
+        const accountId = item.AccountId;
+        if (!accountId || !item.PurchaseDate) return; // skip invalid rows
 
-         if (accountId) {
-             totalAssets++;
+        const purchaseDate = new Date(item.PurchaseDate);
 
-             if (purchaseDate.getFullYear() === now.getFullYear()) {
-                 thisYearCount++;
+        if (!isNaN(purchaseDate)) {
+            totalAssets++;
 
-                 if (purchaseDate.getMonth() === now.getMonth()) {
-                     thisMonthCount++;
-                 }
-             }
-         }
-     });
+            if (purchaseDate.getFullYear() === now.getFullYear()) {
+                thisYearCount++;
 
-     // Update cardVoucher value-slider spans
-     const voucherSlider = $("#cardVoucher .value-slider span");
-      voucherSlider.eq(0).html(`<i class="fa-solid fa-truck"></i> ${totalAssets}`);
-     voucherSlider.eq(1).html(`<i class="fa-solid fa-truck"></i> ${thisMonthCount}`);
-     voucherSlider.eq(2).html(`<i class="fa-solid fa-truck"></i> ${thisYearCount}`);
+                if (purchaseDate.getMonth() === now.getMonth()) {
+                    thisMonthCount++;
+                }
 
-     // Update cardVoucher overlay details
-     const voucherOverlay = $("#cardVoucher .overlay .detail");
-      voucherOverlay.eq(0).html(`<i class="fa-solid fa-truck"></i> Total: ${totalAssets}`);
-     voucherOverlay.eq(1).html(`<i class="fa-solid fa-truck"></i> This Month: ${thisMonthCount}`);
-      voucherOverlay.eq(2).html(`<i class="fa-solid fa-truck"></i> This Year: ${thisYearCount}`);
+                // check if purchaseDate is inside this week
+                if (purchaseDate >= thisWeekStart && purchaseDate <= today) {
+                    thisWeekCount++;
+                }
+            }
+        }
+    });
 
+    // Update cardVoucher value-slider spans
+     voucherSlider.eq(0).html(`<i class="fa-solid fa-truck"></i> ${totalAssets}`);
+    voucherSlider.eq(1).html(`<i class="fa-solid fa-truck"></i> ${thisMonthCount}`);
+    voucherSlider.eq(2).html(`<i class="fa-solid fa-truck"></i> ${thisYearCount}`);
 
+    voucherOverlay.eq(0).html(`<i class="fa-solid fa-truck"></i> ${t("total")}: ${totalAssets}`);
+    voucherOverlay.eq(1).html(`<i class="fa-solid fa-truck"></i> ${t("thisMonth")}: ${thisMonthCount}`);
+    voucherOverlay.eq(2).html(`<i class="fa-solid fa-truck"></i> ${t("thisYear")}: ${thisYearCount}`);
        injectCurrencyToCards();
 
    }
@@ -1069,7 +1073,7 @@
                    d1.getDate() === d2.getDate();
         }
             $(function () {
-                 $("#Assetview").text(formatMessage("Journal Register"));
+                 $("#Assetview").text(formatMessage("Asset View"));
     });
     $(function () {
         $("#QuickDiceERPSolutions6").text(formatMessage("Quick Dice ERP Solutions"));

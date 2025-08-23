@@ -214,6 +214,14 @@
         z-index: 9999;
         white-space: nowrap;
     }
+
+    .icon-green.dx-icon-attach::before {
+        color: green !important;
+    }
+
+    .icon-red.dx-icon-attach::before {
+        color: red !important;
+    }
 </style>
 <div class="WorkFlow">
     <div class="workflow-container">
@@ -296,7 +304,7 @@
         @(Html.DevExtreme().DropDownButton()
                 .ID("btnPrint23")
                 .Width(132)
-                .Text("Print")
+                .Text(new JS("formatMessage('Print')"))
                 .Icon("print")
                 .ElementAttr(new { @class = "bold-button" })
                 .DropDownOptions(options => options.Width(230))
@@ -304,17 +312,17 @@
                 .Items(items =>
                 {
                     items.Add()
-                        .Text("Preview Credit Note")
+                        .Text(new JS("formatMessage('Preview Credit Note')"))
                         .Icon("print")
                         .Option("color", "#FF7043"); // Orange
 
                     items.Add()
-                        .Text("Preview Credit Note(Foreign Currency)")
+                    .Text(new JS("formatMessage('Preview Credit Note (Foreign Currency)')"))
                         .Icon("file")
                         .Option("color", "#00ACC1"); // Cyan
 
                     items.Add()
-                        .Text("Credit Note Posting")
+                    .Text(new JS("formatMessage('Credit Note Posting')"))
                         .Icon("folder")
                         .Option("color", "#AB47BC") // Purple
                         .OnClick("navigateCreditInventoryCost");
@@ -1487,7 +1495,7 @@
                 }
             }
 
-    function onVatAttachmentButtonClick(e) {
+    async function onVatAttachmentButtonClick(e) {
 
         const grid = $("#B2BdataGrid").dxDataGrid("instance");
         const data = grid.getDataSource().items();
@@ -1503,18 +1511,82 @@
         const creditNoBox = $("#CreditNoteNo").dxTextBox("instance");
         const creditNo = creditNoBox ? creditNoBox.option("value") : null;
         var menuType = "vat";
-
-
         var formType ="e-Invoice CreditNote";
+        const response = await fetch(`/api/VATModule/GetInvoiceNoFromCreditNote?creditNoteNo=${encodeURIComponent(creditNo)}`);
+        var invoiceNofromSales = await response.text(); // Get Invoice No
+        console.log(invoiceNofromSales);
+        var invoiceRes = null, invoiceData = null;
+        let folderId2 = "";
+        if(invoiceNofromSales?.trim()) {
+            invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNofromSales)}`);
+            invoiceData = await invoiceRes.json();
+            if (invoiceData) {
+                folderId2 = [
+                    invoiceNofromSales,
+                    invoiceData.SalesOrderNo,
+                    invoiceData.QuotationNo,
+                    invoiceData.DeliveryNoteNos,
+                    invoiceData.ProformaInvoiceNo
+                ]
+                .filter(Boolean)   //remove null/empty
+                .join(",");
+            }
+        }
+
         // Log and build URL
         console.log("Voucher No:", creditNo);
         console.log("Voucher Type:", formType);
 
         const isMaster = false;
-        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(creditNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-        const title = "Transaction Documents";
-
+        const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(creditNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&FolderNo2=${encodeURIComponent(folderId2)}&modal=true`;
+        const title = ""; //"Transaction Documents";
         openModal(url, title);
     }
 
+    // Attachment Count
+    //1. Button Modify in btn-attach
+    //2. Get Update the count of button for Attachment
+
+    function updateAttachButtonCount(buttonSelector, count) {
+        var btn = $(buttonSelector);
+        var btnInstance = btn.dxButton("instance");
+        if (!btnInstance) return;
+
+        var originalText = btnInstance.option("text");
+        var color = count > 0 ? "green" : "red";
+
+        btnInstance.option({
+            template: function() {
+                // Icon element
+                var iconElement = $("<span>")
+                .addClass("dx-icon dx-icon-attach")
+                .addClass(count > 0 ? "icon-green" : "icon-red")
+                .css({
+                    "font-size": "15px",
+                    "vertical-align": "middle",
+                    "margin-right": "4px"
+                })[0];
+
+                // Create fragment
+                var fragment = document.createDocumentFragment();
+                fragment.appendChild(iconElement);
+
+                // Append count only if > 0
+                if (count > 0) {
+                    var countSpan = document.createElement("span");
+                    countSpan.style.color = color;
+                    countSpan.style.fontWeight = "bold";
+                    countSpan.style.fontSize = "15px";
+                    countSpan.style.marginRight = "2px";
+                    countSpan.textContent = count;
+                    fragment.appendChild(countSpan);
+                }
+
+                // Append original text
+                fragment.appendChild(document.createTextNode(originalText));
+
+                return fragment;
+            }
+        });
+    }
 </script>

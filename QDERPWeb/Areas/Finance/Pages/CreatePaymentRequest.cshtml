@@ -220,6 +220,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-2 col-sm-6">
@@ -230,6 +231,7 @@
                         .Type(DateBoxType.Date)
                         .DisplayFormat("dd-MMM-yyyy")
                         .Value(DateTime.Now)
+                        .OnValueChanged("onVoucherDateChanged")
                         )
         </div>
         <div class="form-group col-md-4 col-sm-6">
@@ -1372,6 +1374,7 @@
                     success: function (data) {
                         voucherNoField.option("value", data);
                         initializeDataGrid(data);
+                        getDocumentCount();
                     },
                     error: function () {
                         alert("Error generating voucher number.");
@@ -1479,15 +1482,17 @@
                                 disableclaim();
 
                             }
-
-
+                            checkVoucherDateLock(entry.ClaimDate);
+                            getDocumentCount();
                             getchilddatas();
                         } else {
                             DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                            getDocumentCount();
                         }
                     },
                     error: function () {
                         DevExpress.ui.notify("Failed to load journal entry from URL.", "error", 3000);
+                        getDocumentCount();
                     }
                 });
             } else {
@@ -2296,4 +2301,22 @@
                 DevExpress.ui.notify("Error checking claim status", "error", 3000);
             });
     });
+        function checkVoucherDateLock(voucherDate) {
+        $.ajax({
+            type: "GET",
+            url: "/api/VoucherMaster/CheckVoucherDateLock",
+            contentType: "application/json",
+            data: { voucherDate: formatDateOnlyLocal(voucherDate) },
+            success: function (res) {
+                if (res && res.isLocked === true) {
+                    DevExpress.ui.dialog.alert(
+                        "This Voucher Date has been locked.</br>Please review your Voucher Date.",
+                        "Date Locked"
+                    ).done(function () {
+                        history.back();   // ⬅️ Go back after clicking OK
+                    });
+                }
+            }
+        });
+    }
 </script>

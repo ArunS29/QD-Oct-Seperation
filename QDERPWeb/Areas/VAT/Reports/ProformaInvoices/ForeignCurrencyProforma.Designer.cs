@@ -498,7 +498,7 @@
             // 
             // TopMargin
             // 
-            this.TopMargin.HeightF = 0F;
+            this.TopMargin.HeightF = 15F;
             this.TopMargin.Name = "TopMargin";
             // 
             // BottomMargin
@@ -4331,7 +4331,7 @@
             this.DataMember = "qry201_652ProformaInvoiceReport";
             this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(30F, 25F, 0F, 0.441759F);
+            this.Margins = new DevExpress.Drawing.DXMargins(30F, 25F, 15F, 0.441759F);
             this.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.PageHeight = 1169;
             this.PageWidth = 1000;
