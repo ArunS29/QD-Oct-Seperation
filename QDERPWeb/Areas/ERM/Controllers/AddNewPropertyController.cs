@@ -79,10 +79,34 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     x.OffHireNoteNo
                 })
                 .ToListAsync();
-
+                 data = data != null ? data : [];
             return Ok(data);   // already empty list [] if no rows found
         }
+        [HttpGet]
+        public async Task<IActionResult> GetByCostSummary(string PropertyNo)
+        {
+            if (string.IsNullOrEmpty(PropertyNo))
+                return Ok(null);
 
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant");
+
+            var data = await dbContext.Qry20184PropertyAllocationWtLedgers
+                .Where(x => x.PropertyNo == PropertyNo)
+                .Select(x => new {
+                    x.VoucherNo,
+                    x.VoucherNarration,
+                    x.VoucherDate,
+                    x.PropertyDescription,
+                    x.AccountHeadName,
+                    x.RevenueAmount,
+                    x.ExpenseAmount,
+                    x.PropertyNo
+                })
+                .ToListAsync();
+              data = data != null ? data : [];
+            return Ok(data);   // already empty list [] if no rows found
+        }
         [HttpGet("GetAllPropertyTypes")]
         public IActionResult GetAllPropertyTypes()
         {
@@ -496,6 +520,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdatePropertyMaster([FromBody] PropertyMasterViewModel VM)
         {

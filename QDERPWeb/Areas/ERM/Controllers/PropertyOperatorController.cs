@@ -100,11 +100,73 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             public DateTime? WorkEndDate { get; set; }
             public string OperatorRemarks { get; set; }
             public string WorkingShift { get; set; }
+            public string EmployeeId { get; set; }
+            public byte? PropertyOperatorTypeId { get; set; }
+            public long PropertyOperatorCode { get; set; }
         }
 
 
+        //[HttpPost]
+        //public async Task<IActionResult> SaveOrUpdate([FromBody] PropertyOperatorModel model)
+        //{
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        return Unauthorized(new { success = false, message = "Invalid tenant context." });
+        //    }
+
+        //    if (model == null || string.IsNullOrEmpty(model.EquipmentNo))
+        //    {
+        //        return BadRequest(new { success = false, message = "Equipment No. is required." });
+        //    }
+
+        //    try
+        //    {
+        //        // Check if record already exists (update case)
+        //        var existing = await dbContext.Tbl40107PropertyOperators
+        //            .FirstOrDefaultAsync(x => x.EquipmentNo == model.EquipmentNo);
+
+        //        if (existing != null)
+        //        {
+        //            existing.OperatorName = model.OperatorName;
+        //            existing.OperatorRegHourlyRate = model.OperatorRegHourlyRate;
+        //            existing.OperatorOthourlyRate = model.OperatorOthourlyRate;
+        //            existing.WorkStartDate = model.WorkStartDate;
+        //            existing.WorkEndDate = model.WorkEndDate;
+        //            existing.OperatorRemarks = model.OperatorRemarks;
+        //            existing.WorkingShift = model.WorkingShift;
+
+        //            dbContext.Tbl40107PropertyOperators.Update(existing);
+        //            await dbContext.SaveChangesAsync();
+
+        //            return Ok(new { message = "Updated successfully!", success = true });
+        //        }
+        //        else
+        //        {
+        //            var entity = new Tbl40107PropertyOperator
+        //            {
+        //                EquipmentNo = model.EquipmentNo,
+        //                OperatorName = model.OperatorName,
+        //                OperatorRegHourlyRate = model.OperatorRegHourlyRate,
+        //                OperatorOthourlyRate = model.OperatorOthourlyRate,
+        //                WorkStartDate = model.WorkStartDate,
+        //                WorkEndDate = model.WorkEndDate,
+        //                OperatorRemarks = model.OperatorRemarks,
+        //                WorkingShift = model.WorkingShift
+        //            };
+        //            dbContext.Tbl40107PropertyOperators.Add(entity);
+        //            await dbContext.SaveChangesAsync();
+
+        //            return Ok(new { message = "Saved successfully!", success = true });
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
+        //    }
+        //}
+
         [HttpPost]
-        public async Task<IActionResult> SaveOrUpdate([FromBody] PropertyOperatorModel model)
+        public IActionResult SaveOrUpdate([FromBody] PropertyOperatorModel model)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -113,53 +175,79 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             if (model == null || string.IsNullOrEmpty(model.EquipmentNo))
             {
-                return BadRequest(new { success = false, message = "MPR No. is required." });
+                return BadRequest(new { success = false, message = "Equipment No. is required." });
             }
 
             try
             {
-                // Check if record already exists (update case)
-                var existing = await dbContext.Tbl40107PropertyOperators
-                    .FirstOrDefaultAsync(x => x.EquipmentNo == model.EquipmentNo);
-
-                if (existing != null)
+                if (model.PropertyOperatorCode > 0) // Use Primary Key for update
                 {
-                    // 🔹 Update existing record
-                    existing.OperatorName = model.OperatorName;
-                    existing.OperatorRegHourlyRate = model.OperatorRegHourlyRate;
-                    existing.OperatorOthourlyRate = model.OperatorOthourlyRate;
-                    existing.WorkStartDate = model.WorkStartDate;
-                    existing.WorkEndDate = model.WorkEndDate;
-                    existing.OperatorRemarks = model.OperatorRemarks;
-                    existing.WorkingShift = model.WorkingShift;
+                    // Update existing record+
+                    var existing = dbContext.Tbl40107PropertyOperators
+                        .FirstOrDefault(o => o.PropertyOperatorCode == model.PropertyOperatorCode);
 
-                    dbContext.Tbl40107PropertyOperators.Update(existing);
-                    await dbContext.SaveChangesAsync();
+                    if (existing != null)
+                    {
+                        existing.EquipmentNo = model.EquipmentNo;
+                        existing.PropertyOperatorTypeId = model.PropertyOperatorTypeId;
+                        existing.OperatorName = model.OperatorName;
+                        existing.OperatorRegHourlyRate = model.OperatorRegHourlyRate;
+                        existing.OperatorOthourlyRate = model.OperatorOthourlyRate;
+                        existing.WorkStartDate = model.WorkStartDate;
+                        existing.WorkEndDate = model.WorkEndDate;
+                        existing.OperatorRemarks = model.OperatorRemarks;
+                        existing.WorkingShift = model.WorkingShift;
+                        existing.EmployeeId = model.EmployeeId;
 
-                    return Ok(new { message = "Updated successfully!", success = true });
+                        dbContext.SaveChanges();
+
+                        return Ok(new
+                        {
+                            success = true,
+                            message = "Property Operator updated successfully",
+                            propertyOperatorTypeId = existing.PropertyOperatorTypeId
+                        });
+                    }
+                    else
+                    {
+                        return NotFound(new { success = false, message = "Record not found." });
+                    }
                 }
                 else
                 {
                     var entity = new Tbl40107PropertyOperator
                     {
                         EquipmentNo = model.EquipmentNo,
+                        PropertyOperatorTypeId = model.PropertyOperatorTypeId,
                         OperatorName = model.OperatorName,
                         OperatorRegHourlyRate = model.OperatorRegHourlyRate,
                         OperatorOthourlyRate = model.OperatorOthourlyRate,
                         WorkStartDate = model.WorkStartDate,
                         WorkEndDate = model.WorkEndDate,
                         OperatorRemarks = model.OperatorRemarks,
-                        WorkingShift = model.WorkingShift
+                        WorkingShift = model.WorkingShift,
+                        EmployeeId = model.EmployeeId
                     };
-                    dbContext.Tbl40107PropertyOperators.Add(entity);
-                    await dbContext.SaveChangesAsync();
 
-                    return Ok(new { message = "Saved successfully!", success = true });
+                    dbContext.Tbl40107PropertyOperators.Add(entity);
+
+                    // ✅ Get number of rows affected
+                    int rowsAffected = dbContext.SaveChanges();
+
+                    return Ok(new
+                    {
+                        success = true,
+                        message = $"Property Operator saved successfully. Rows affected: {rowsAffected}",
+                        rowsAffected = rowsAffected,
+                        propertyOperatorTypeId = entity.PropertyOperatorTypeId
+                    });
+
                 }
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { success = false, message = "Error: " + ex.Message });
+                _logger.LogError($"Error in SaveOrUpdate PropertyOperator: {ex.Message}");
+                return StatusCode(500, new { success = false, message = "Error saving data: " + ex.Message });
             }
         }
 
@@ -181,21 +269,237 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     x.WorkEndDate,
                     x.OperatorRegHourlyRate,
                     x.OperatorOthourlyRate,
-                    x.WorkingShift
+                    x.WorkingShift,
+                    x.PropertyOperatorTypeId,
+                    x.EquipmentNo
                 })
                 .ToListAsync();
             data = data != null ? data : [];
             return Ok(data);
         }
 
-        [HttpGet("GetAllOperatorTypes")]
-        public IActionResult GetAllOperatorTypes()
+     
+        [HttpGet("{code}")]
+        public async Task<IActionResult> GetByOffHire(string code)
+            {
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    return BadRequest(new { success = false, message = "Failed to establish database connection." });
+                }
+
+                if (string.IsNullOrEmpty(code))
+                {
+                    return BadRequest(new { success = false, message = "Invalid property code." });
+                }
+
+                var property = await dbContext.Tbl40117PropertyIssuesChilds
+                    .FirstOrDefaultAsync(p => p.PropertyNo == code);
+
+                if (property == null)
+                {
+                    return NotFound(new { success = false, message = "Property not found." });
+                }
+
+                return Ok(new
+                {
+                    property.PropertyIssueNo,
+                    property.PropertyNo,
+                    property.QuantityIssued,
+                    property.Operator,
+                    property.MeterReading,
+                    property.MeterReadingHours,
+                    property.IssueNotes,
+                    property.PropertyDetailedDescription,
+                    property.UnitRateMethod,
+                    property.UnitRate,
+                    property.UoM,
+                    property.ClientRatePerHour,
+                    property.ClientOvertimeRatePerHour,
+                    property.OffHireNoteRefNo,
+                    property.ReasonOffHire,
+                    property.IsReturnOfHire,
+                    property.ReasonofReturnOfHire,
+                    property.DemobilizationCharges,
+                    property.DemobilizationRemarks,
+                    property.ReplacementPropertyNo,
+                    property.ReplacementDeliveryNoteNo,
+                    property.ReplacementCharges,
+                    property.ReplacementRemarks,
+                    property.EquipmentDamageCharges,
+                    property.EquipmentDamageRemarks,
+                    property.TransportingBackVehicleNo,
+                    property.TransportingBackVehicleDriverName,
+                    property.TransportingBackVehicleDriverId,
+                    property.OffhireMeterReading,
+                    property.OffhireMeterReadingHours,
+                    property.ReasonOfReplacement,
+                    property.OffHireNoteNo,
+                    property.TransportationBackBy,
+                    property.HiringRateBasis,
+                    property.DeliveryNoteMobilizationRate,
+                    property.DeliveryNoteDemobilizationRate
+                });
+            }
+
+        [HttpGet("{equipmentNo}")]
+        public IActionResult GetOperatorsByEquipment(string equipmentNo)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return BadRequest(new { success = false, message = "Failed to establish database connection." });
+            }
+
+            if (string.IsNullOrEmpty(equipmentNo))
+            {
+                return BadRequest(new { success = false, message = "Equipment number is required." });
+            }
+            var operators = dbContext.Tbl40107PropertyOperators
+            .Where(o => o.EquipmentNo == equipmentNo)  
+            .Select(o => new
+            {
+                o.PropertyOperatorCode,
+                o.EmployeeId,
+                o.OperatorName,
+                o.WorkStartDate,
+                o.WorkEndDate,
+                o.OperatorRegHourlyRate,
+                o.OperatorOthourlyRate,
+                o.WorkingShift,
+                o.PropertyOperatorTypeId,
+                o.EquipmentNo
+            })
+            .ToList();
+            //var operators = dbContext.Tbl40107PropertyOperators
+            //    .Where(o => o.EquipmentNo == equipmentNo)
+            //    .ToList();
+            return Ok(operators);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrSave([FromBody] Tbl40117PropertyIssuesChild model)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(
+                out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return BadRequest(new { success = false, message = "Failed to establish database connection." });
+            }
+
+            if (model == null)
+                return BadRequest(new { success = false, message = "Invalid data." });
+
+            // Insert (new record if PK = 0)
+            if (model.PropertyIssueChildSlNo == 0)
+            {
+                var entity = new Tbl40117PropertyIssuesChild
+                {
+                    PropertyIssueNo = model.PropertyIssueNo,
+                    PropertyNo = model.PropertyNo,
+                    QuantityIssued = model.QuantityIssued,
+                    Operator = model.Operator,
+                    MeterReading = model.MeterReading,
+                    MeterReadingHours = model.MeterReadingHours,
+                    IssueNotes = model.IssueNotes,
+                    PropertyDetailedDescription = model.PropertyDetailedDescription,
+                    UnitRateMethod = model.UnitRateMethod,
+                    UnitRate = model.UnitRate,
+                    UoM = model.UoM,
+                    ClientRatePerHour = model.ClientRatePerHour,
+                    ClientOvertimeRatePerHour = model.ClientOvertimeRatePerHour,
+                    OffHireNoteRefNo = model.OffHireNoteRefNo,
+                    ReasonOffHire = model.ReasonOffHire,
+                    IsReturnOfHire = model.IsReturnOfHire,
+                    ReasonofReturnOfHire = model.ReasonofReturnOfHire,
+                    DemobilizationCharges = model.DemobilizationCharges,
+                    DemobilizationRemarks = model.DemobilizationRemarks,
+                    ReplacementPropertyNo = model.ReplacementPropertyNo,
+                    ReplacementDeliveryNoteNo = model.ReplacementDeliveryNoteNo,
+                    ReplacementCharges = model.ReplacementCharges,
+                    ReplacementRemarks = model.ReplacementRemarks,
+                    EquipmentDamageCharges = model.EquipmentDamageCharges,
+                    EquipmentDamageRemarks = model.EquipmentDamageRemarks,
+                    TransportingBackVehicleNo = model.TransportingBackVehicleNo,
+                    TransportingBackVehicleDriverName = model.TransportingBackVehicleDriverName,
+                    TransportingBackVehicleDriverId = model.TransportingBackVehicleDriverId,
+                    OffhireMeterReading = model.OffhireMeterReading,
+                    OffhireMeterReadingHours = model.OffhireMeterReadingHours,
+                    ReasonOfReplacement = model.ReasonOfReplacement,
+                    OffHireNoteNo = model.OffHireNoteNo,
+                    TransportationBackBy = model.TransportationBackBy,
+                    OffhireDetailsAddedOn = model.OffhireDetailsAddedOn,
+                    HiringRateBasis = model.HiringRateBasis,
+                    DeliveryNoteMobilizationRate = model.DeliveryNoteMobilizationRate,
+                    DeliveryNoteDemobilizationRate = model.DeliveryNoteDemobilizationRate,
+                    AddedBy = "system", // 🔹 replace with user from context
+                    AddedOn = DateTime.Now
+                };
+
+                dbContext.Tbl40117PropertyIssuesChilds.Add(entity);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Record created successfully.", id = entity.PropertyIssueChildSlNo });
+            }
+            else
+            {
+                // Update
+                var entity = await dbContext.Tbl40117PropertyIssuesChilds
+                    .FirstOrDefaultAsync(p => p.PropertyIssueChildSlNo == model.PropertyIssueChildSlNo);
+
+                if (entity == null)
+                    return NotFound(new { success = false, message = "Record not found." });
+
+                // Update fields
+                entity.PropertyIssueNo = model.PropertyIssueNo;
+                entity.PropertyNo = model.PropertyNo;
+                entity.QuantityIssued = model.QuantityIssued;
+                entity.Operator = model.Operator;
+                entity.MeterReading = model.MeterReading;
+                entity.MeterReadingHours = model.MeterReadingHours;
+                entity.IssueNotes = model.IssueNotes;
+                entity.PropertyDetailedDescription = model.PropertyDetailedDescription;
+                entity.UnitRateMethod = model.UnitRateMethod;
+                entity.UnitRate = model.UnitRate;
+                entity.UoM = model.UoM;
+                entity.ClientRatePerHour = model.ClientRatePerHour;
+                entity.ClientOvertimeRatePerHour = model.ClientOvertimeRatePerHour;
+                entity.OffHireNoteRefNo = model.OffHireNoteRefNo;
+                entity.ReasonOffHire = model.ReasonOffHire;
+                entity.IsReturnOfHire = model.IsReturnOfHire;
+                entity.ReasonofReturnOfHire = model.ReasonofReturnOfHire;
+                entity.DemobilizationCharges = model.DemobilizationCharges;
+                entity.DemobilizationRemarks = model.DemobilizationRemarks;
+                entity.ReplacementPropertyNo = model.ReplacementPropertyNo;
+                entity.ReplacementDeliveryNoteNo = model.ReplacementDeliveryNoteNo;
+                entity.ReplacementCharges = model.ReplacementCharges;
+                entity.ReplacementRemarks = model.ReplacementRemarks;
+                entity.EquipmentDamageCharges = model.EquipmentDamageCharges;
+                entity.EquipmentDamageRemarks = model.EquipmentDamageRemarks;
+                entity.TransportingBackVehicleNo = model.TransportingBackVehicleNo;
+                entity.TransportingBackVehicleDriverName = model.TransportingBackVehicleDriverName;
+                entity.TransportingBackVehicleDriverId = model.TransportingBackVehicleDriverId;
+                entity.OffhireMeterReading = model.OffhireMeterReading;
+                entity.OffhireMeterReadingHours = model.OffhireMeterReadingHours;
+                entity.ReasonOfReplacement = model.ReasonOfReplacement;
+                entity.OffHireNoteNo = model.OffHireNoteNo;
+                entity.TransportationBackBy = model.TransportationBackBy;
+                entity.HiringRateBasis = model.HiringRateBasis;
+                entity.DeliveryNoteMobilizationRate = model.DeliveryNoteMobilizationRate;
+                entity.DeliveryNoteDemobilizationRate = model.DeliveryNoteDemobilizationRate;
+                entity.ModifiedBy = "system"; // 🔹 replace with user from context
+                entity.ModifiedOn = DateTime.Now;
+
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = "Record updated successfully.", id = entity.PropertyIssueChildSlNo });
+            }
+        }
+        [HttpGet("GetAllPropertyTypes")]
+        public IActionResult GetAllPropertyTypes()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var OperatorType = dbContext.Tbl40138PropertyOperatorTypes
+                    var OperatorTypes = dbContext.Tbl40138PropertyOperatorTypes
                         .Select(s => new
                         {
                             s.PropertyOperatorTypeId,
@@ -203,7 +507,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                         })
                         .ToList();
 
-                    return Ok(OperatorType);
+                    return Ok(OperatorTypes);
                 }
                 catch (Exception ex)
                 {
@@ -211,138 +515,34 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     return StatusCode(500, new { message = "Failed to load Property Types.", error = ex.Message });
                 }
             }
+
             return Unauthorized(new { message = "Invalid tenant." });
         }
-        [HttpGet("GetByOffHire")]
-        public async Task<IActionResult> GetByOffHire(string code)
+
+        [HttpDelete]
+        public IActionResult Delete(string EmployeeId, string EquipmentNo)
         {
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-                if (string.IsNullOrEmpty(code))
-                return BadRequest(new { success = false, message = "Invalid property code" });
-
-            var property = await dbContext.Tbl40117PropertyIssuesChilds
-                .FirstOrDefaultAsync(p => p.PropertyNo == code);
-
-            if (property == null)
-                return NotFound(new { success = false, message = "Property not found" });
-
-            return Ok(new
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                property.PropertyIssueNo,
-                property.PropertyNo,
-                property.QuantityIssued,
-                property.Operator,
-                property.MeterReading,
-                property.MeterReadingHours,
-                property.IssueNotes,
-                property.PropertyDetailedDescription,
-                property.UnitRateMethod,
-                property.UnitRate,
-                property.UoM,
-                property.ClientRatePerHour,
-                property.ClientOvertimeRatePerHour,
-                property.OffHireNoteRefNo,
-                property.ReasonOffHire,
-                property.IsReturnOfHire,
-                property.ReasonofReturnOfHire,
-                property.DemobilizationCharges,
-                property.DemobilizationRemarks,
-                property.ReplacementPropertyNo,
-                property.ReplacementDeliveryNoteNo,
-                property.ReplacementCharges,
-                property.ReplacementRemarks,
-                property.EquipmentDamageCharges,
-                property.EquipmentDamageRemarks,
-                property.TransportingBackVehicleNo,
-                property.TransportingBackVehicleDriverName,
-                property.TransportingBackVehicleDriverId,
-                property.OffhireMeterReading,
-                property.OffhireMeterReadingHours,
-                property.ReasonOfReplacement,
-                property.OffHireNoteNo,
-                property.TransportationBackBy,
-                property.HiringRateBasis,
-                property.DeliveryNoteMobilizationRate,
-                property.DeliveryNoteDemobilizationRate
-            });
-        }
-            [HttpPost]
-            public async Task<IActionResult> SaveOrUpdate([FromBody] Tbl40117PropertyIssuesChild property)
-            {
-
-            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-
-                if (property == null)
-                    return BadRequest(new { success = false, message = "Invalid data" });
-
-                try
-                {
-
-                Tbl40117PropertyIssuesChild entity;
-
-                if (!string.IsNullOrEmpty(property.PropertyNo))
-                {
-                        entity = await dbContext.Tbl40117PropertyIssuesChilds
-                                               .FirstOrDefaultAsync(x => x.PropertyNo == property.PropertyNo);
-
-                        if (entity == null)
-                            return NotFound(new { success = false, message = "Record not found" });
-                    }
-                    else // Insert
-                    {
-                        entity = new Tbl40117PropertyIssuesChild();
-                    dbContext.Tbl40117PropertyIssuesChilds.Add(entity);
-                    }
-
-                    // 🔗 Map fields
-                    entity.PropertyIssueNo = property.PropertyIssueNo;
-                    entity.PropertyNo = property.PropertyNo;
-                    entity.QuantityIssued = property.QuantityIssued;
-                    entity.Operator = property.Operator;
-                    entity.MeterReading = property.MeterReading;
-                    entity.MeterReadingHours = property.MeterReadingHours;
-                    entity.IssueNotes = property.IssueNotes;
-                    entity.PropertyDetailedDescription = property.PropertyDetailedDescription;
-                    entity.UnitRateMethod = property.UnitRateMethod;
-                    entity.UnitRate = property.UnitRate;
-                    entity.UoM = property.UoM;
-                    entity.ClientRatePerHour = property.ClientRatePerHour;
-                    entity.ClientOvertimeRatePerHour = property.ClientOvertimeRatePerHour;
-                    entity.OffHireNoteRefNo = property.OffHireNoteRefNo;
-                    entity.ReasonOffHire = property.ReasonOffHire;
-                    entity.IsReturnOfHire = property.IsReturnOfHire;
-                    entity.ReasonofReturnOfHire = property.ReasonofReturnOfHire;
-                    entity.DemobilizationCharges = property.DemobilizationCharges;
-                    entity.DemobilizationRemarks = property.DemobilizationRemarks;
-                    entity.ReplacementPropertyNo = property.ReplacementPropertyNo;
-                    entity.ReplacementDeliveryNoteNo = property.ReplacementDeliveryNoteNo;
-                    entity.ReplacementCharges = property.ReplacementCharges;
-                    entity.ReplacementRemarks = property.ReplacementRemarks;
-                    entity.EquipmentDamageCharges = property.EquipmentDamageCharges;
-                    entity.EquipmentDamageRemarks = property.EquipmentDamageRemarks;
-                    entity.TransportingBackVehicleNo = property.TransportingBackVehicleNo;
-                    entity.TransportingBackVehicleDriverName = property.TransportingBackVehicleDriverName;
-                    entity.TransportingBackVehicleDriverId = property.TransportingBackVehicleDriverId;
-                    entity.OffhireMeterReading = property.OffhireMeterReading;
-                    entity.OffhireMeterReadingHours = property.OffhireMeterReadingHours;
-                    entity.ReasonOfReplacement = property.ReasonOfReplacement;
-                    entity.OffHireNoteNo = property.OffHireNoteNo;
-                    entity.TransportationBackBy = property.TransportationBackBy;
-                    entity.HiringRateBasis = property.HiringRateBasis;
-                    entity.DeliveryNoteMobilizationRate = property.DeliveryNoteMobilizationRate;
-                    entity.DeliveryNoteDemobilizationRate = property.DeliveryNoteDemobilizationRate;
-
-                    await dbContext.SaveChangesAsync();
-
-                    return Ok(new { success = true, message = "Saved successfully", data = entity });
-                }
-                catch (Exception ex)
-                {
-                    return StatusCode(500, new { success = false, message = ex.Message });
-                }
+                return Json(new { success = false, message = "Invalid tenant context" });
             }
+
+            if (string.IsNullOrEmpty(EmployeeId) || string.IsNullOrEmpty(EquipmentNo))
+            {
+                return Json(new { success = false, message = "EmployeeId and EquipmentNo are required" });
+            }
+
+            // Find the specific record with BOTH EquipmentNo and EmployeeId
+            var entity = dbContext.Tbl40107PropertyOperators
+                .FirstOrDefault(x => x.EquipmentNo == EquipmentNo && x.EmployeeId == EmployeeId);
+
+            if (entity == null)
+                return Json(new { success = false, message = "Record not found" });
+
+            dbContext.Tbl40107PropertyOperators.Remove(entity);
+            dbContext.SaveChanges();
+
+            return Json(new { success = true, message = "Record deleted successfully" });
         }
-
     }
-
-    
+}
