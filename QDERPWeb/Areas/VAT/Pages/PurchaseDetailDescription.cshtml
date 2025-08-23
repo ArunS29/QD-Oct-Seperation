@@ -126,11 +126,13 @@
                         .ID("btnUseDetailedDesc")
                         .Text("Use Detailed Description")
                         .Type(ButtonType.Default)
+                        .OnClick("onUseDetailedDescriptionClick") // 🔹 JS handler
                         )
             @(Html.DevExtreme().Button()
                         .ID("btnUseItemDesc")
                         .Text("Use Item Description")
                         .Type(ButtonType.Default)
+                        .OnClick("onUseItemDescriptionClick") // 🔹 JS handler
                         )
         </div>
     </div>
@@ -264,6 +266,58 @@
             "Voucher-1001", "Voucher-1002", "Voucher-1003"
         ]);
     });
+        // ✅ Fetch Detailed Description from Item Description
+    function onUseDetailedDescriptionClick() {
+        const descValue = $("#DetailedDescription").dxTextBox("instance").option("value");
 
+        if (!descValue) {
+            DevExpress.ui.notify("Please enter an Item Description first", "warning", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: `/api/VATModule/GetDetailedDescription`,
+            type: "GET",
+            data: { description: descValue },
+            success: function (res) {
+                if (res.success) {
+                    $("#DetailedDescription").dxTextBox("instance").option("value", res.detailedDesc);
+                    DevExpress.ui.notify("Detailed Description loaded", "success", 2000);
+                } else {
+                    DevExpress.ui.notify("Detailed Description not found", "error", 2000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("API call failed", "error", 2000);
+            }
+        });
+    }
+
+    // ✅ Fetch Item Description from Detailed Description
+    function onUseItemDescriptionClick() {
+        const descValue = $("#DetailedDescription").dxTextBox("instance").option("value");
+
+        if (!descValue) {
+            DevExpress.ui.notify("Please enter a Detailed Description first", "warning", 2000);
+            return;
+        }
+
+        $.ajax({
+            url: `/api/VATModule/GetDescription`,
+            type: "GET",
+            data: { description: descValue },
+            success: function (res) {
+                if (res.success) {
+                    $("#DetailedDescription").dxTextBox("instance").option("value", res.detailedDesc);
+                    DevExpress.ui.notify("Item Description loaded", "success", 2000);
+                } else {
+                    DevExpress.ui.notify("Item Description not found", "error", 2000);
+                }
+            },
+            error: function () {
+                DevExpress.ui.notify("API call failed", "error", 2000);
+            }
+        });
+    }
 
 </script>

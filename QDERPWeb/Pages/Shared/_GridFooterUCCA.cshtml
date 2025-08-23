@@ -221,61 +221,62 @@
             .Text(new JS("formatMessage('Differences')"))
             .Icon("preferences")
             .Width("100%")
+                .ElementAttr(new { style = "display: none;" })
             .DropDownOptions(options => options.Width(300))
             .Items(items =>
             {
-                items.Add().Text("Print Cost Differences");
-                items.Add().Text("Cost on BalanceSheet Items");
-                items.Add().Text("Clear All wrong Allocation of Cost");
+                    items.Add().Text(new JS("formatMessage('Print Cost Differences')"));
+                    items.Add().Text(new JS("formatMessage('Cost on BalanceSheet Items')"));
+                    items.Add().Text(new JS("formatMessage('Clear All wrong Allocation of Cost')"));
             })
+
             .ShowArrowIcon(true)
             .OnItemClick("onDifferencesItemClick") // Bind to JS function
             )
     </div>
 
 
-<div class="btn-container menuBtn">
-    @(Html.DevExtreme().Menu()
-        .ID("menuReports")
-        .DataSource(new[] {
-    new {
-    text = "Reports",
-    icon = "doc",
-    items = new[] {
-    new {
-    text = "Cost Center Summary Reports",
-    icon = "search",
-    items = new[] {
-    new { text = "Summary Report", icon = "chart-line" },
-    new { text = "Summary Report (By Date)", icon = "chart-line" },
-    new { text = "Cost Center Report", icon = "chart-line" },
-    new { text = "Cost Center Report (By Date)", icon = "chart-line" },
-    new { text = "Cost Center Group Report", icon = "chart-line" },
-    new { text = "Cost Center Group Report (By Date)", icon = "chart-line" }
-    }
-    },
-    new {
-    text = "Cost Center Detailed Reports",
-    icon = "search",
-    items = new[] {
-        new { text = "Detailed Report", icon = "chart-line" },
-        new { text = "Detailed Report (By Date)", icon = "chart-line" },
-        new { text = "Detailed Group Report", icon = "chart-line" },
-        new { text = "Detailed Group Report (By Date)", icon = "chart-line" },
-        new { text = "Cost Center Master Report", icon = "chart-line" },
-        new { text = "Cost Center Master Report (By Date)", icon = "chart-line" }
-    }
-    }
-    }
-    }
-    })
-        .DisplayExpr("text")
-        .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
-        .OnItemClick("handleReportsClick") // JavaScript function to handle clicks
-        )
+    <div class="btn-container menuBtn">
+        @(Html.DevExtreme().Menu()
+                .ID("menuReports")
+                .DataSource(new[] {
+                new {
+                text = new JS("formatMessage('Report')"),
+                icon = "doc",
+                items = new[] {
+                new {
+                text = new JS("formatMessage('Cost Center Summary Reports')"),
+                icon = "search",
+                items = new[] {
+                new { text = new JS("formatMessage('Summary Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Summary Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Group Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Group Report (By Date)')"), icon = "chart-line" }
+                }
+                },
+                new {
+                text = new JS("formatMessage('Cost Center Detailed Reports')"),
+                icon = "search",
+                items = new[] {
+                new { text = new JS("formatMessage('Detailed Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Detailed Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Detailed Group Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Detailed Group Report (By Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Master Report')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Cost Center Master Report (By Date)')"), icon = "chart-line" }
+                }
+                }
+                }
+                }
+                })
+                .DisplayExpr("text")
+                .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
+                .OnItemClick("handleReportsClick") // JavaScript function to handle clicks
+                )
+    </div>
 
-
-</div>
 
 
 </div>

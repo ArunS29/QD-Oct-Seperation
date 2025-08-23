@@ -1060,6 +1060,7 @@
                         .ShowColumnLines(true)
                         .ColumnAutoWidth(true)
                         .OnInitialized("OnmobilzationInitialize")
+                        .OnContextMenuPreparing("onDeliveryContextMenu")
                         .RowAlternationEnabled(true)
                         .Height(300)
                         .DataSource(d => d.WebApi()
@@ -1312,8 +1313,8 @@
 <script>
         let ItemReceivedGridInstance = null;
 
+
     function onItemReceivedGridInitialized(e) {
-        debugger;
         ItemReceivedGridInstance = e.component;
         console.log("ItemReceivedGrid initialized", ItemReceivedGridInstance);
 
@@ -1326,7 +1327,6 @@
     }
 
     async function loadItemReceivedGrid(equipmentNo) {
-        debugger;
         try {
             console.log("Fetching data for equipmentNo:", equipmentNo);
 
@@ -1395,7 +1395,6 @@
 
 
     // function OnmobilzationInitialize(e) {
-    //            debugger;
     //     const grid = e.component;
     //     const urlParams = new URLSearchParams(window.location.search);
     //     const propertyNo = urlParams.get("code");
@@ -1820,7 +1819,6 @@
         });
 
     $(document).ready(function () {
-        debugger;
         const urlParams = new URLSearchParams(window.location.search);
         const code = urlParams.get("code");
         const mode = urlParams.get("mode");
@@ -2048,7 +2046,6 @@
     });
 
         function onClientsGridContextMenu1(e) {
-            debugger;
      if (e.target === "content" && e.row) {
            const equipmentNo = e.row.data.equipmentNo;
           e.items = [
@@ -2091,4 +2088,37 @@
             ];
         }
     }
+
+        function onDeliveryContextMenu(e) {
+          if (e.target === "content" && e.row) {
+            const PropertyNo = $("#PropertyNo").dxTextBox("instance").option("value");
+             e.items = [
+             {
+                 text: "View / Edit Offhire Note",
+                 onItemClick: function () {
+                    const url = `/${tenantName}/ERM/EquipmentOffHire?code=${PropertyNo}&mode=edit`;
+                    const title = "Property Operator";
+                    openModal(url, title);
+                 }
+             },
+                {
+                    text: "View / Edit Delivery Note",
+                    onItemClick: function () {
+                        const url = `/${tenantName}/ERM/DeliveryNote?code=${encodeURIComponent(propertyNo)}&mode=edit`;
+                        const title = `Delivery Note`;
+                        openModal(url, title);
+                    }
+                },
+                {
+                    text: "View Timesheets",
+                    onItemClick: function () {
+                        const url = `/${tenantName}/ERM/Timesheet?code=${encodeURIComponent(equipmentNo)}`;
+                        const title = `Timesheets`;
+                        openModal(url, title);
+                    }
+                }
+            ];
+        }
+    }
+
 </script>

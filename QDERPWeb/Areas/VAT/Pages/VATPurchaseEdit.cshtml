@@ -3422,6 +3422,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 							dataGrid.cellValue(rowIndex, "Qty", 1);
 							dataGrid.cellValue(rowIndex, "VAT%", "15%");
 							dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+							UnitCode=selectedItem.UnitCode;
 
 							ItemNo = selectedItem.GSCode;
 							Gsdescrpition = selectedItem.GSDescrpition;
@@ -3878,6 +3879,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 						dataGrid.cellValue(rowIndex, "Qty", 1);
 						dataGrid.cellValue(rowIndex, "VAT%", "15%");
 						dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.UnitDescription);
+						UnitCode=selectedItem.UnitCode;
 
 					    ItemNo = selectedItem.GSCode;
 	                    Gsdescrpition = selectedItem.GSDescrpition;
@@ -6323,7 +6325,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 		let updatedDataSource = InvoiceChildren.map(item => ({
 			...item,
 			PurchaseVoucherNo: PurchaseVoucherNo,
-				UnitRateMethod:UnitCode,
+			UnitRateMethod:UnitCode,
 			TaxAmount:amt
 		}));
 
@@ -6487,7 +6489,7 @@ $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
 			let updatedDataSource = InvoiceChildren.map(item => ({
 				...item,
 				PurchaseVoucherNo: PurchaseVoucherNo,
-					UnitRateMethod:UnitCode,
+				UnitRateMethod:UnitCode,
 				TaxAmount:amt
 			}));
 
