@@ -86,6 +86,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     }
                     else
                     {
+                        // 🔍 Check duplicate ProjectSubUnitName (case-insensitive)
+                        bool isDuplicate = await dbContext.Tbl70006projectGroups
+                            .AnyAsync(x => x.ProjectGroup.ToLower() == model.ProjectGroup.ToLower());
+
+                        if (isDuplicate)
+                        {
+                            return BadRequest(new { success = false, message = "This Project Group is already exists in the database. Please check again." });
+                        }
                         // Insert new record
                         var lastId = await dbContext.Tbl70006projectGroups
                             .OrderByDescending(x => x.ProjectGroupId)
@@ -109,7 +117,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 catch (Exception ex)
                 {
                     _logger.LogError($"Error in SaveOrUpdateProjectGroup: {ex}");
-                    return StatusCode(500, new { success = false, message = ex.Message });
+                    return StatusCode(500, new { success = false, message = "An error occurred while saving Project Group." });
                 }
             }
 

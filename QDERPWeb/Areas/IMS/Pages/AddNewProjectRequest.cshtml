@@ -1618,29 +1618,44 @@
 				}
 			});
 			const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
-
-			$("<div>").dxButton({
+				$("<div>").dxButton({
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-
 			$("<div>").dxButton({
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-					openModal(url, "Goods and Services");
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+					const visibleRows = grid.getVisibleRows();
+					const rowIndex = cellInfo.rowIndex;
+					const rowData = grid.cellValue(rowIndex, "GSCode");
+					if (!rowData) {
+						DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+						return;
+					}
+					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+					openModal(url, "", function () {
+					getDropdownData().done(function (newData) {
+					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("dataSource", newData);
+					}
+					dropdownData = newData;
+					grid.refresh();
+						});
+					});
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-		}
-	},
+			}
+			},
                        {
                     dataField: "Descriptions",
                     caption: "...",

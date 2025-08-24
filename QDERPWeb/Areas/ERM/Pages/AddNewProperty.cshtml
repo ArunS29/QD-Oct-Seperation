@@ -1004,7 +1004,6 @@
                         .Text(new JS("formatMessage('Save Separate Files')"))
                         .Width("97%")
                         )
-
         </div>
 
         <!-- Document DataGrid -->
@@ -1015,9 +1014,6 @@
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height(300)
-                .Selection(s => s
-                .Mode(SelectionMode.Multiple)
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                 .Columns(columns =>
                 {
                     columns.Add().Caption(new JS("formatMessage('Doc No')")).DataField("DocumentNo");
@@ -1094,9 +1090,6 @@
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height(300)
-                .Selection(s => s
-                .Mode(SelectionMode.Multiple)
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
                 .Columns(columns =>
                 {
                     columns.Add().Caption(new JS("formatMessage('Service Sheet No')")).DataField("DocNo");
@@ -1118,30 +1111,64 @@
                         )
             @(Html.DevExtreme().Button()
                         .ID("Checkclick")
-                        .Icon("layout")
+                        .Icon("smalliconslayout")
                         .Text(new JS("formatMessage('Details Report By Date')"))
                         )
         </div>
 
         <!-- Document DataGrid -->
         @(Html.DevExtreme().DataGrid()
-                .ID("SeviceGrid")
+                .ID("Costsummary")
                 .ShowBorders(true)
                 .ShowColumnLines(true)
+                .OnInitialized("OnCostSummary")
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height(300)
-                .Selection(s => s
-                .Mode(SelectionMode.Multiple)
-                .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always))
+                .DataSource(d => d.WebApi()
+                .Controller("AddNewProperty")
+                .LoadAction("GetByCostSummary")
+                .LoadMode(DataSourceLoadMode.Raw)
+                )
                 .Columns(columns =>
                 {
-                    columns.Add().Caption(new JS("formatMessage('Service Sheet No')")).DataField("DocNo");
-                    columns.Add().Caption(new JS("formatMessage('Service Date')")).DataField("DocumentType").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('Service Order Type')")).DataField("DocumentRefNo");
-                    columns.Add().Caption(new JS("formatMessage('Complaint')")).DataField("DocumentRemarks");
-                    columns.Add().Caption(new JS("formatMessage('Service Status')")).DataField("ExpiryOn");
-                    columns.Add().Caption(new JS("formatMessage('Service Cost')")).DataField("ExpiryArabic");
+                    columns.Add().Caption(new JS("formatMessage('Property No')")).DataField("PropertyNo").GroupIndex(0); 
+                    columns.Add().Caption(new JS("formatMessage('Voucher No')")).DataField("VoucherNo");
+                    columns.Add().Caption(new JS("formatMessage('Voucher Date')")).DataField("VoucherDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Account Ledger')")).DataField("AccountHeadName");
+                    columns.Add().Caption(new JS("formatMessage('Property Description')")).DataField("PropertyDescription");
+                    columns.Add().Caption(new JS("formatMessage('Revenue Amount')")).DataField("RevenueAmount");
+                    columns.Add().Caption(new JS("formatMessage('Expense Amount')")).DataField("ExpenseAmount");
+                    columns.Add().Caption(new JS("formatMessage('Entry Narration')")).DataField("VoucherNarration");
+                })
+                .Summary(summary =>
+                {
+                    summary.GroupItems(items =>
+                    {
+                        items.Add()
+                    .Column("RevenueAmount")
+                    .SummaryType(SummaryType.Sum)
+                    .DisplayFormat("Total Revenue: {0}")
+                    .ShowInGroupFooter(true);
+
+                        items.Add()
+                    .Column("ExpenseAmount")
+                    .SummaryType(SummaryType.Sum)
+                    .DisplayFormat("Total Expense: {0}")
+                    .ShowInGroupFooter(true);
+                    });
+                    summary.TotalItems(items =>
+                    {
+                        items.Add()
+                    .Column("RevenueAmount")
+                    .SummaryType(SummaryType.Sum)
+                    .DisplayFormat("{0}");
+
+                        items.Add()
+                    .Column("ExpenseAmount")
+                    .SummaryType(SummaryType.Sum)
+                    .DisplayFormat("{0}");
+                    });
                 })
                 )
     </div>
@@ -1166,8 +1193,10 @@
                 .OnContextMenuPreparing("onClientsGridContextMenu1")
                 .OnInitialized("onItemReceivedGridInitialized")
                 .DataSource(d => d.WebApi()
-                .Controller("PropertyOperator")
+                .Controller("PropertyOperator") 
                 .LoadAction("GetByEquipmentNo")
+                .DeleteAction("Delete")
+                .Key("EquipmentNo")
                 .LoadMode(DataSourceLoadMode.Raw)
                 )
                 .Columns(columns =>
@@ -1180,6 +1209,7 @@
                     columns.Add().Caption("Hourly Rate").DataField("OperatorRegHourlyRate");
                     columns.Add().Caption("Overtime Rate").DataField("OperatorOthourlyRate");
                     columns.Add().Caption("Working Shift").DataField("WorkingShift");
+                    columns.Add().Caption("EquipmentNo").DataField("EquipmentNo").Visible(false);
                 })
                 )
     </div> 
@@ -1187,7 +1217,7 @@
 <div class = "footer-fixed" style="display:flex; gap:10px;">
         @await Html.PartialAsync("/Pages/Shared/ERM/StockEditFooter.cshtml")
 </div>
-<!-- JavaScript -->
+<!-- JavaScript --> 
 @using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertytypeContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1267,7 +1297,7 @@
                     .ShowBorders(true)
                     .HoverStateEnabled(true)
                     .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(false))//
+                    .FilterRow(f => f.Visible(false))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(345)
                     .Selection(s => s.Mode(SelectionMode.Single))
@@ -1326,7 +1356,7 @@
         }
     }
 
-    async function loadItemReceivedGrid(equipmentNo) {
+        async function loadItemReceivedGrid(equipmentNo) {
         try {
             console.log("Fetching data for equipmentNo:", equipmentNo);
 
@@ -1346,6 +1376,7 @@
             const result = await response.json();
             console.log("Parsed JSON result:", result);
 
+            // ✅ Extract data safely
             const data = Array.isArray(result) ? result : result.data || result.items || [];
 
             if (!Array.isArray(data)) {
@@ -1356,14 +1387,20 @@
 
             console.log("Final data bound to grid:", data);
 
-            if (ItemReceivedGridInstance) {
-                ItemReceivedGridInstance.option("dataSource", data);
+            // ✅ Get grid instance safely
+            const grid = $("#OperatorGrid").dxDataGrid("instance");
+            if (grid) {
+                grid.option("dataSource", data);
+                grid.refresh();
+            } else {
+                console.warn("OperatorGrid instance not found!");
             }
         } catch (error) {
             console.error("Error fetching ItemReceived data:", error);
             DevExpress.ui.notify("Failed to load item receipt data", "error", 3000);
         }
     }
+
 
 
 
@@ -1393,7 +1430,28 @@
         });
     }
 
+          function OnCostSummary(e) {
+         const grid = e.component;
+         const urlParams = new URLSearchParams(window.location.search);
+         const propertyNo = urlParams.get("code");
 
+         console.log("PropertyNo from query:", propertyNo);
+
+         $.ajax({
+              url: `/api/AddNewProperty/GetByCostSummary`,
+             type: "GET",
+             data: { PropertyNo: propertyNo },
+             success: function (data) {
+                 console.log("API Data:", data);
+
+                 grid.option("dataSource", data);
+                 grid.refresh();
+             },
+             error: function (xhr, status, error) {
+                 console.error("Error fetching mobilization data:", error);
+             }
+         });
+     }
     // function OnmobilzationInitialize(e) {
     //     const grid = e.component;
     //     const urlParams = new URLSearchParams(window.location.search);
@@ -1836,6 +1894,7 @@
             // ================== Core Info ==================
             $("#PropertyType").dxDropDownBox("instance").option("value", data.PropertyType);
             $("#PropertyNo").dxTextBox("instance").option("value", data.PropertyNo);
+            $("#PropertyNo").dxTextBox("instance").option("readOnly", true);
             $("#PropertyDescription").dxTextBox("instance").option("value", data.PropertyDescription);
             $("#PropertyCategory").dxDropDownBox("instance").option("value", data.PropertyCategory);
             $("#PropertySpecification").dxTextArea("instance").option("value", data.Specifications);
@@ -2046,48 +2105,69 @@
     });
 
         function onClientsGridContextMenu1(e) {
-     if (e.target === "content" && e.row) {
-           const equipmentNo = e.row.data.equipmentNo;
-          e.items = [
+            
+       if (e.target === "content" && e.row) {
+         const PropertyDescription = e.row.data.PropertyDescription;
+         const EquipmentNo = e.row.data.EquipmentNo;
+         const EmployeeId = e.row.data.EmployeeId;
+
+         console.log("Selected Row Data:", e.row.data);  
+
+         e.items = [
              {
                  text: "Operator Edit",
-                 onItemClick: function () {
-                     const tenantName = window.tenantName || "defaultTenant";
-                         const url = `/${tenantName}/ERM/PropertyOperator?code=${encodeURIComponent(PropertyNo)}&mode=edit`;
-                       const title = `Property Operator`;
-                     openModal(url, title);
-                    }
-            },
+            onItemClick: function () {
+            const grid = $("#OperatorGrid").dxDataGrid("instance");
+            const selectedRowData = e.row?.data;
 
+            if (!selectedRowData) {
+                DevExpress.ui.notify("Please select a row first", "error", 3000);
+                return;
+            }
+
+            const tenantName = window.tenantName || "defaultTenant";
+            const EquipmentNo = selectedRowData.EquipmentNo; 
+            const PropertyNo = $("#PropertyNo").dxTextBox("instance").option("value");
+            const PropertyDescription = $("#PropertyDescription").dxTextBox("instance").option("value");
+
+            const modalUrl = `/${tenantName}/ERM/PropertyOperator?EquipmentNo=${encodeURIComponent(EquipmentNo)}&PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+            openModal(modalUrl, "Property Operator");
+                 }
+             },
                 {
-                    text: "Delete",
+                    text: "Delete Operator",
                     onItemClick: function () {
-                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this status update?", "Confirm Delete")
+                        
+                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this operator?", "Confirm Delete")
                             .done(function (dialogResult) {
                                 if (dialogResult) {
                                     $.ajax({
-                                        url: `/api/ClientLeadMaster1/DeleteStatuss?clientStatusNo=${ClientStatusNo}`,
+                                        url: `/api/PropertyOperator/Delete?EquipmentNo=${encodeURIComponent(EquipmentNo)}&EmployeeId=${encodeURIComponent(EmployeeId)}`,
                                         type: 'DELETE',
                                         success: function (res) {
                                             if (res.success) {
                                                 DevExpress.ui.notify(res.message, "success", 2000);
-                                                   // ✅ Reload updated data
-                                           loadClientStatusGrid(clientCode);
+                                                const grid = $("#OperatorGrid").dxDataGrid("instance");
+                                                if (grid) {
+                                                    grid.refresh();
+                                                }
                                             } else {
-                                                DevExpress.ui.notify(res.message, "error", 3000);
+                                                DevExpress.ui.notify(res.message || "Delete failed", "error", 3000);
                                             }
                                         },
                                         error: function (err) {
-                                            DevExpress.ui.notify("Delete failed: " + err.responseText, "error", 3000);
+                                            DevExpress.ui.notify("Delete failed: " + (err.responseText || err.statusText), "error", 3000);
                                         }
                                     });
                                 }
-                          });
+                            });
                     }
                 }
             ];
         }
     }
+
+
 
         function onDeliveryContextMenu(e) {
           if (e.target === "content" && e.row) {
@@ -2096,8 +2176,9 @@
              {
                  text: "View / Edit Offhire Note",
                  onItemClick: function () {
-                    const url = `/${tenantName}/ERM/EquipmentOffHire?code=${PropertyNo}&mode=edit`;
-                    const title = "Property Operator";
+                 //   const url = `/${tenantName}/ERM/EquipmentOffHire?code=${PropertyNo}&mode=edit`;
+                    const url = `/${tenantName}/ERM/PropertyOperator?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+                    const title = "Equipment OFF Hire";
                     openModal(url, title);
                  }
              },

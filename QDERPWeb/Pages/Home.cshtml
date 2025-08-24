@@ -110,7 +110,6 @@
             padding: 3px 0;
             position: relative;
             overflow: hidden;
-            
         }
 
             .hero-section::before {
@@ -120,7 +119,6 @@
                 left: 0;
                 right: 0;
                 bottom: 0;
-                
                 opacity: 0.05;
             }
 
@@ -166,16 +164,17 @@
             }
 
         /* .container{
-            width:100%!important;
-            padding:0px!important;
-            max-width: 100%!important;
-        } */
-        .container{
-            width:fit-content;
+                    width:100%!important;
+                    padding:0px!important;
+                    max-width: 100%!important;
+                } */
+        .container {
+            width: fit-content;
             padding: 0px !important;
         }
-        .titleCard-toggle1{
-            display:none!important;
+
+        .titleCard-toggle1 {
+            display: none !important;
         }
 
         .card-hover {
@@ -220,20 +219,17 @@
             }
 
         @@keyframes pulse {
-            0%
+            0% {
+                transform: scale(1);
+            }
 
-        {
-            transform: scale(1);
-        }
+            50% {
+                transform: scale(1.15);
+            }
 
-        50% {
-            transform: scale(1.15);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-
+            100% {
+                transform: scale(1);
+            }
         }
 
 
@@ -242,8 +238,8 @@
             overflow-y: auto;
         }
 
-        .mainContainer{
-        height:125vh!important;
+        .mainContainer {
+            height: 125vh !important;
         }
 
         .card-hover:hover i {
@@ -251,26 +247,23 @@
         }
 
         @@keyframes pulse {
-            0%
+            0% {
+                transform: scale(1);
+            }
 
-        {
-            transform: scale(1);
-        }
+            50% {
+                transform: scale(1.15);
+            }
 
-        50% {
-            transform: scale(1.15);
-        }
-
-        100% {
-            transform: scale(1);
-        }
-
+            100% {
+                transform: scale(1);
+            }
         }
     </style>
 </head>
 <body>
 
-    <!-- ✅ 1. HERO SECTION -->
+    <!-- ✅ HERO SECTION -->
     <section class="hero-section text-center">
         <div class="container position-relative">
             <div class="row justify-content-center">
@@ -281,141 +274,156 @@
                     </p>
                     <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
                         <button class="btn btn-gradient btn-lg">Start Your Journey <i class="fas fa-arrow-right ms-2"></i></button>
-                        <button class="btn btn-outline-primary btn-lg">Watch Demo</button>
+                        <a href="https://quickdiceerp.com/" target="_blank" class="btn btn-outline-primary btn-lg">
+                            Watch Demo
+                        </a>
                     </div>
                 </div>
             </div>
         </div>
     </section>
 
-    <!-- ✅ 2. FEATURES ROW: Security, Real-time, Multi-location -->
-    <section class="py-5 ">
-       
-            <div class="row text-center mb-5">
-                <div class="col-lg-12">
-                    <h2 class="fw-bold mb-3">Complete ERP Modules</h2>
-                    <p class="text-muted">Integrated modules designed to work seamlessly together for maximum efficiency</p>
+    <!-- ✅ FEATURES SECTION -->
+    <section class="py-5">
+        <div class="row text-center mb-5">
+            <div class="col-lg-12">
+                <h2 class="fw-bold mb-3">Complete ERP Modules</h2>
+                <p class="text-muted">Integrated modules designed to work seamlessly together for maximum efficiency</p>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5">
+            <!-- Enterprise Security -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
+                    <div class="icon-container bg-dark-subtle mx-auto">
+                        <i class="fas fa-shield-alt text-dark fs-4"></i>
+                    </div>
+                    <h6 class="fw-bold">Enterprise Security</h6>
+                    <p class="text-muted small">
+                        Module/user level security for enhanced data protection, regulatory compliance & better accountability
+                    </p>
                 </div>
             </div>
 
-            <!-- Features Row -->
-            <div class="row g-4 mb-5">
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
-                        <div class="icon-container bg-dark-subtle mx-auto">
-                            <i class="fas fa-shield-alt text-dark fs-4"></i>
-                        </div>
-                        <h6 class="fw-bold">Enterprise Security</h6>
-                        <p class="text-muted small">Bank-level security with role-based access control</p>
+            <!-- Real-time Updates -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
+                    <div class="icon-container bg-dark-subtle mx-auto">
+                        <i class="fas fa-clock text-dark fs-4"></i>
                     </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
-                        <div class="icon-container bg-dark-subtle mx-auto">
-                            <i class="fas fa-clock text-dark fs-4"></i>
-                        </div>
-                        <h6 class="fw-bold">Real-time Updates</h6>
-                        <p class="text-muted small">Live data synchronization across all modules</p>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
-                        <div class="icon-container bg-dark-subtle mx-auto">
-                            <i class="fas fa-globe text-dark fs-4"></i>
-                        </div>
-                        <h6 class="fw-bold">Multi-location Support</h6>
-                        <p class="text-muted small">Manage operations across multiple locations seamlessly</p>
-                    </div>
+                    <h6 class="fw-bold">Real-time Updates</h6>
+                    <p class="text-muted small">
+                        Cross-platform data access enabling seamless operations across Desktop ERP, Web, and Mobile.
+                    </p>
                 </div>
             </div>
 
-            <!-- ✅ 3. ERP MODULE CARDS -->
-            <div class="row g-4">
-                <!-- Finance -->
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-container bg-light me-3">
-                                <i class="fas fa-calculator text-dark fs-5"></i>
-                            </div>
-                            <h6 class="mb-0">Finance & Accounting</h6>
-                        </div>
-                        <p class="text-muted small">Complete financial management with advanced reporting and budgeting tools</p>
-                        <a href="#" class="text-warning small">Learn More <i class="fas fa-arrow-right"></i></a>
+            <!-- Multi-currency & Languages -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover text-center h-100">
+                    <div class="icon-container bg-dark-subtle mx-auto">
+                        <i class="fas fa-globe text-dark fs-4"></i>
                     </div>
+                    <h6 class="fw-bold">Global Reach</h6>
+                    <p class="text-muted small">
+                        Support for multiple currencies and languages – expanded global reach, enhanced customer experience & operational efficiency
+                    </p>
                 </div>
+            </div>
+        </div>
 
-                <!-- VAT -->
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-container bg-light me-3">
-                                <i class="fas fa-receipt text-warning fs-5"></i>
-                            </div>
-                            <h6 class="mb-0">VAT Management</h6>
+        <!-- ✅ ERP MODULE CARDS -->
+        <div class="row g-4">
+            <!-- Finance -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-calculator text-dark fs-5"></i>
                         </div>
-                        <p class="text-muted small">Automated VAT calculations, returns, and compliance management</p>
-                        <a href="#" class="text-warning small">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <h6 class="mb-0">Finance & Accounting</h6>
                     </div>
+                    <p class="text-muted small">
+                        Comprehensive system to manage, track, and optimize all financial and accounting operations.
+                    </p>
                 </div>
+            </div>
 
-                <!-- HR -->
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-container bg-light me-3">
-                                <i class="fas fa-user-friends text-success fs-5"></i>
-                            </div>
-                            <h6 class="mb-0">Human Resources</h6>
+            <!-- VAT -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-receipt text-warning fs-5"></i>
                         </div>
-                        <p class="text-muted small">Employee lifecycle management, payroll, and performance tracking</p>
-                        <a href="#" class="text-warning small">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <h6 class="mb-0">VAT Management</h6>
                     </div>
+                    <p class="text-muted small">
+                        VAT management system integrated with ZATCA for seamless compliance, e-invoicing, and tax reporting.
+                    </p>
                 </div>
+            </div>
 
-                <!-- Inventory -->
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-container bg-light me-3">
-                                <i class="fas fa-boxes text-warning fs-5"></i>
-                            </div>
-                            <h6 class="mb-0">Inventory Control</h6>
+            <!-- HR -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-user-friends text-success fs-5"></i>
                         </div>
-                        <p class="text-muted small">Real-time inventory tracking with automated reorder points</p>
-                        <a href="#" class="text-warning small">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <h6 class="mb-0">Human Resources</h6>
                     </div>
+                    <p class="text-muted small">
+                        Integrated HR solution for employee management, payroll processing, and seamless finance connectivity.
+                    </p>
                 </div>
+            </div>
 
-                <!-- CRM -->
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-container bg-light me-3">
-                                <i class="fas fa-handshake text-primary fs-5"></i>
-                            </div>
-                            <h6 class="mb-0">Sales & CRM</h6>
+            <!-- Inventory -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-boxes text-warning fs-5"></i>
                         </div>
-                        <p class="text-muted small">Customer relationship management with sales pipeline tracking</p>
-                        <a href="#" class="text-warning small">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <h6 class="mb-0">Inventory (IMS)</h6>
                     </div>
+                    <p class="text-muted small">
+                        Efficient system to track, control, and optimize inventory across the supply chain in real time.
+                    </p>
                 </div>
+            </div>
 
-                <!-- Procurement -->
-                <div class="col-md-4">
-                    <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
-                        <div class="d-flex align-items-center mb-3">
-                            <div class="icon-container bg-light me-3">
-                                <i class="fas fa-shopping-cart text-danger fs-5"></i>
-                            </div>
-                            <h6 class="mb-0">Procurement</h6>
+            <!-- Camp Module -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-hotel text-primary fs-5"></i>
                         </div>
-                        <p class="text-muted small">Streamlined purchasing process with vendor management</p>
-                        <a href="#" class="text-warning small">Learn More <i class="fas fa-arrow-right"></i></a>
+                        <h6 class="mb-0">Camp Management</h6>
                     </div>
+                    <p class="text-muted small">
+                        Comprehensive camp management solution for organizing accommodation, resources, and personnel with ease.
+                    </p>
                 </div>
-       
+            </div>
 
+            <!-- Project Control -->
+            <div class="col-md-4">
+                <div class="bg-white rounded-4 p-4 shadow-soft card-hover h-100">
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="icon-container bg-light me-3">
+                            <i class="fas fa-project-diagram text-danger fs-5"></i>
+                        </div>
+                        <h6 class="mb-0">Project Control</h6>
+                    </div>
+                    <p class="text-muted small">
+                        Centralized solution to plan, monitor, and control projects for on-time and within-budget delivery.
+                    </p>
+                </div>
+            </div>
         </div>
     </section>
 
