@@ -13,6 +13,10 @@
             color: #000;
         }
 
+    .dx-button-text {
+        color: black;
+    }
+
     /* Two-column layout */
     .form-grid {
         display: grid;
@@ -463,8 +467,8 @@
         }
 
 
-
-                        function savePropertyQuoteChild() {
+        function savePropertyQuoteChild() {
+          debugger;
           // get ?code=... from the current URL
           const params = new URLSearchParams(window.location.search);
           const quotationNo = params.get("code");
@@ -474,6 +478,29 @@
             return;
           }
 
+
+
+          const data = {
+            QuoteNo: quotationNo,
+            DetailedDescription: $("#DetailedDescription").dxTextArea("instance").option("value"),
+            //Operator: $("#Operator").dxSelectBox("instance").option("value"),
+             QuoteMethod2: $("#QuoteMethod2").dxDropDownBox("instance").option("value"),
+             Rate2: $("#Rate2").dxNumberBox("instance").option("value"),
+             QuoteMethod3: $("#QuoteMethod3").dxDropDownBox("instance").option("value"),
+             Rate3: $("#Rate3").dxNumberBox("instance").option("value"),
+             AdditionalNotes: $("#AdditionalNotes").dxTextBox("instance").option("value"),
+             MobilizationRate: $("#MobilizationRate").dxNumberBox("instance").option("value"),
+             DemobRate: $("#DemobRate").dxNumberBox("instance").option("value"),
+             DeliveryDetails: $("#DeliveryDetails").dxTextBox("instance").option("value")
+
+
+
+
+          };
+
+
+          $.ajax({
+            url: `/api/AddNewQuotation1/SaveOrUpdateQuotationChild`,
           // safe getter for DevExtreme widgets
           const getVal = (id, widget) => {
             const $el = $(`#${id}`);
@@ -519,15 +546,6 @@
             }
           });
         }
-
-
-
-
-
-
-
-
-
 
 
 

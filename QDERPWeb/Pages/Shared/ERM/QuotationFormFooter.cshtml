@@ -161,24 +161,7 @@
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnAddNew")
-                .Text(new JS("formatMessage('Add New Item')"))
-                .Icon("plus")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-    </div>
- 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnTerms")
-                .Text(new JS("formatMessage('Terms')"))
-                .Icon("file")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
-                )
-    </div>
     <div class="btn-container">
 
         @(Html.DevExtreme().Button()
@@ -190,44 +173,36 @@
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
+                .ID("btnTerms")
+                .Text(new JS("formatMessage('Terms')"))
+                .Icon("file")
+                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+
+                )
+    </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnproposal")
+                .Text(new JS("formatMessage('Proposal')"))
+                .Icon("attach")
+                .OnClick("onIMSAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
                 .ID("btnAttach")
                 .Text(new JS("formatMessage('Attach')"))
-                .Icon("link")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
+                .Icon("attach")
+                .OnClick("onIMSAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnSubmit")
-                .Text(new JS("formatMessage('Submit')"))
-                .Icon("check")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-                )
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnVerify")
-                .Text(new JS("formatMessage('Verify')"))
-                .Icon("check")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-
-                )
-
-    </div>
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnApprove")
-                .Text(new JS("formatMessage('Approve')"))
-                .Icon("exportselected")
-                .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
-                )
-
-    </div>
-
    
-
-
 </div>
 
 <script>

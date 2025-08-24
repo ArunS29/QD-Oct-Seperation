@@ -1,4 +1,4 @@
-﻿
+
 var dictionary = {
 
     "en": {
