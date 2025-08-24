@@ -10,7 +10,7 @@
 <script src="~/node_modules/devextreme-dist/js/dx.all.js"></script>
 <script src="~/node_modules/devexpress-richedit/dist/dx.richedit.js"></script>
 
-@(Html.DevExpress().RichEdit("richEdit")
+@* @(Html.DevExpress().RichEdit("richEdit")
     .Width("100%")
     .Height(800)
     .ExportUrl(Url.Action("Export"))
@@ -32,9 +32,22 @@
     .Ribbon(ribbon => ribbon
         .ActiveTabIndex(0)
     )
+
+    .Open("Documents/Example.docx")
+) *@
+@(Html.DevExpress().RichEdit("DemoRichEdit")
+    .Height(740)
+    .ConfirmOnLosingChanges(c => c.Enabled(false))
     .Open("Documents/Example.docx")
 )
 <style>
+    .dxreRow {
+        white-space: nowrap;
+        overflow: visible!important;
+        position: absolute;
+        font-size: 0;
+        user-select: none;
+    }
         .container, .frame, .footerContainer, .playIcon {
         display: none !important;
     }
