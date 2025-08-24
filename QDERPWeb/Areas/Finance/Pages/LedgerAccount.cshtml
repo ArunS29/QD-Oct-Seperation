@@ -3924,7 +3924,7 @@ function syncSupVATNumbers(e) {
 
 
         // Check if the parameter IsCharOfAccounts is 'true'
-          if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true' && IsDebitEdit !=='true' && IsClientAdd=='true') {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
+          if (!isedit && IsCharOfAccounts !== 'true' && IsPurchaseEdit !== 'true' && IsB2CEdit!=='true' && IsDebitEdit !=='true' && (IsClientAdd === 'true' || IsClientAdd === '') ) {  // Ensure 'IsCharOfAccounts' is not 'true' before calling API
             // Reset validator if it exists
             var AccountHeadNameValidator = $("#txtAccountHead").dxValidator("instance");
             if (AccountHeadNameValidator) {
