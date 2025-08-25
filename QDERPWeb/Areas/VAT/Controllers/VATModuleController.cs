@@ -4637,6 +4637,38 @@ documentNo: InvoiceNo
 
             return Unauthorized("Unable to fetch tenant information.");
         }
+
+        [HttpGet("{invoiceNo}")]
+        public async Task<ActionResult> GetInvoiceApprovalStatusProforma(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    // Query the invoice approval status from tbl20161VATInvoiceMaster
+                    var invoice = await dbContext.Tbl20181ProformaInvoiceMasters
+                        .Where(i => i.ProformaInvoiceNo == InvoiceNo)
+                        .FirstOrDefaultAsync();
+
+                    if (invoice == null)
+                    {
+                        return Ok(new { isApproved = invoice.IsApproved ?? false });
+                    }
+
+                    // Return the approval status
+                    return Ok(new { isApproved = invoice.IsApproved, isPosted = invoice.IsPosted });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error fetching approval status for invoice {InvoiceNo}: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized("Unable to fetch tenant information.");
+        }
+
         [HttpGet("{CreditNoteNo}")]
         public async Task<ActionResult> GetCreditNoteApprovalStatus(string CreditNoteNo)
         {
@@ -5265,9 +5297,9 @@ documentNo: invoiceNo
             return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml", Description); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
         [HttpGet]
-        public IActionResult VATSalesTaxExemption()
+        public IActionResult VATSalesTaxExemption(int TaxSlabCode)
         {
-
+            ViewBag.TaxSlabCode = TaxSlabCode;
             return PartialView("~/Areas/VAT/Pages/VATSalesTaxExemption.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
 
@@ -7111,6 +7143,33 @@ documentNo: InvChildSlNo
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByTaxSlabCode(int taxSlabCode)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var reasons = await dbContext.Tbl00110TaxExemptionReasons
+                        .Where(r => r.TaxSlabCode == taxSlabCode)
+                        .ToListAsync();
+
+                    if (reasons == null || !reasons.Any())
+                        return NotFound(new { message = $"No records found for TaxSlabCode = {taxSlabCode}", success = false });
+
+                    return Ok(new { data = reasons, success = true });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                // log ex here if needed
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message, success = false });
+            }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetInvoiceNoFromCreditNote(string creditNoteNo)

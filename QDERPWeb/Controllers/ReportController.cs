@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using QD.ERP.Web.Areas.Finance.Reports.ExpensesClaims;
 using QD.ERP.Web.Areas.Finance.Reports.test;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Models.DAL;
@@ -103,7 +104,12 @@ namespace QD.ERP.Web.Controllers
                     report = new cashPayments(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr, username, tenantHelper);
                     break;
                 // Add other report types if needed
-
+                case "PreviewClaimRequestForm":
+                    report = new PreviewClaimRequestForm(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,tenantHelper,username);
+                    break;  
+                case "ClaimDetailed":
+                    report = new ClaimDetailed(voucherNo, tenantName, companyName, companyAddress, logoImage, companyNameAr, companyAddressAr,tenantHelper,username);
+                    break;  
                 default:
                     throw new ArgumentException("Invalid report name.");
             }

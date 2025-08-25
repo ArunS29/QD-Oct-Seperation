@@ -3754,21 +3754,58 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-public async Task<IActionResult> GetDefaultCurrencyDecimals()
-{
-    if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-    {
-        try
+        [HttpGet]
+        public async Task<IActionResult> GetDefaultCurrencyDecimals()
         {
-            // Adjust this logic if you use session or another way to get the default company
-            string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
-            int defaultCompanyId = 0;
-            int.TryParse(defaultCompanyString, out defaultCompanyId);
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    int.TryParse(defaultCompanyString, out int defaultCompanyId);
 
-            var company = await dbContext.Tbl901CompanyDetails
-                .Where(c => c.CompanyId == defaultCompanyId)
-                .Select(c => c.DefaultCurrencyDecimals)
-                .FirstOrDefaultAsync();
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .Where(c => c.CompanyId == defaultCompanyId)
+                        .Select(c => new { c.DefaultCurrencyDecimals, c.CurrencyType })
+                        .FirstOrDefaultAsync();
+
+                    if (company == null)
+                        return NotFound(new { message = "Company not found" });
+
+                    bool showVatButtons = (company.DefaultCurrencyDecimals == 3
+                                           || company.CurrencyType == "AED"
+                                           || company.CurrencyType == "USD"
+                                           || company.CurrencyType == "QAR");
+
+                    return Ok(new
+                    {
+                        company.DefaultCurrencyDecimals,
+                        company.CurrencyType,
+                        ShowVatButtons = showVatButtons
+                    });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { message = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetDefaultCurrencyDecimalsCredit()
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    int.TryParse(defaultCompanyString, out int defaultCompanyId);
+
+                    var company = await dbContext.Tbl901CompanyDetails
+                        .Where(c => c.CompanyId == defaultCompanyId)
+                        .Select(c => new { c.DefaultCurrencyDecimals, c.CurrencyType })
+                        .FirstOrDefaultAsync();
 
             return Ok(new { DefaultCurrencyDecimals = company });
         }
@@ -3822,6 +3859,8 @@ public async Task<IActionResult> GetDefaultCurrencyDecimals()
             }
             return Unauthorized(new { message = "Invalid tenant" });
         }
+                   
+
     }
 
 }
