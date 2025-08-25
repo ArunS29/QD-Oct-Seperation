@@ -253,7 +253,7 @@
 	<div class="form-container">
 		<!-- Tab Menu -->
 		@(
-					Html.DevExtreme().TabPanel().DeferRendering(false).ID("MaterialReciptsdetails").Width("100%")
+					Html.DevExtreme().TabPanel().DeferRendering(false).ID("MaterialReciptsdetails").Width("100%").Height(210)
 					.Items(item =>
 					{
 						item.Add()
@@ -263,7 +263,7 @@
 					.Template(@<text>
 			<div style="padding: 20px;">
 				<!-- Row 1 -->
-				<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+				<div style="display: flex; gap: 10px;">
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("txtMaterialReceiptNo")
@@ -317,20 +317,26 @@
 						rules.AddRequired()
 						.Message(new JS("formatMessage('Supplier Name should be entered')"));
 						})
-						)
-
-						 @(Html.DevExtreme().Button()
-                        .ID("AddSupplier")
-                        .Icon("plus")
-                        .Hint("Add Supplier")
-                        .Width(35)
-                        .ElementAttr("style", "margin-left: 5px;")
-						.OnClick("AddNewSupplier"))
-							@(Html.DevExtreme().Button()
-													.ID("btnEditSupplier")
-													.Icon("edit")
-													.ElementAttr("class", "button-alignment-up button-group")
-													.OnClick(@"function() {
+						.Buttons(buttons => {
+							buttons.Add()
+								.Name("clear");
+							buttons.Add()
+								.Name("AddSupplier")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+									.Type(ButtonType.Default)
+									.Icon("plus")
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									.OnClick("AddNewSupplier")
+								);
+							buttons.Add()
+								.Name("btnEditClient")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+									.Type(ButtonType.Default)
+									.Icon("edit")
+									.ElementAttr(new { @class = "custom-hover-button edit-hover" })
+										.OnClick(@"function() {
 												var dropDownBox = $('#GetProjectDropDown').dxDropDownBox('instance');
 												var selectedValue = dropDownBox.option('value');
 												if (!selectedValue) {
@@ -338,13 +344,17 @@
 												return;
 												}
 												var url = '/' + tenantName + '/IMS/SupplierLeadMaster?supplierCode=' + encodeURIComponent(selectedValue);
-												openModal(url, '');
+												openModal(url, 'Supplier Master');
 												}")
-													)
+								);
+									buttons.Add()
+									.Name("dropDown");
+						})
+						)
 					</div>
 				</div>
 				<!-- Row 2 -->
-				<div style="display: flex; gap: 10px; margin-bottom: 10px;">
+				<div style="display: flex; gap: 10px;">
 					<div style="flex: 1;">
 						@(Html.DevExtreme().TextBox()
 						.ID("MaterialRequestNo")
@@ -558,8 +568,7 @@
 
 		</text>);
 						item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
-			<div style="padding: 15px;">
-				<div>
+			<div style="padding: 15px;display:flex;gap:10px;">
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Company Branch/Division')"))
 					.DataSource(d => d.WebApi()
@@ -584,8 +593,7 @@
 					//.OnValueChanged("dropDownBoxValueChanged")
 					.ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
 					)
-				</div>
-				<div>
+				
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Inventory Group Master:*')"))
 					.DataSource(d => d.WebApi()
@@ -610,8 +618,7 @@
 					//.OnValueChanged("dropDownBoxValueChanged")
 					.ContentTemplate(new TemplateName("GetInventoryContentTemplate"))
 					)
-				</div>
-				<div>
+				
 					@(Html.DevExtreme().DropDownBox()
 					.Label(new JS("formatMessage('Material Recieved Type')"))
 					.DataSource(d => d.WebApi()
@@ -638,7 +645,6 @@
 					//.OnValueChanged("dropDownBoxValueChanged")
 					.ContentTemplate(new TemplateName("GetRecivedTypeContentTemplate"))
 					)
-				</div>
 			</div>
 
 		</text>);
@@ -749,6 +755,7 @@
 				)
 
 	</div>
+	<div style="padding:10px;">
 	@(
 			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
 			.ID("B2BdataGrid")
@@ -936,7 +943,7 @@
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
-		.Height("65vh")
+		.Height("45vh")
 		.ColumnAutoWidth(true)
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -949,6 +956,7 @@
 		)
 		//.OnEditorPreparing("onEditorPreparing")
 		)
+</div>
 </div>
 
 @using (Html.DevExtreme().NamedTemplate("TaxCurrencyTemplate"))
@@ -1419,7 +1427,7 @@
 	}
 	 function AddNewSupplier(){
 				const url = `/${tenantName}/IMS/SupplierLeadMaster`;
-			   const title = "";
+			   const title = "Supplier Master";
 				  openModal(url, title);
 			}
 	function AddQuoteStatus() {
