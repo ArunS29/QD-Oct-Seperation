@@ -134,13 +134,13 @@
     <div class="header-container">
         <div id="DatabaseSignatories1" class="no-border-title"></div>
     </div>
-</div> *@
+</div> 
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Signatories</h3>
-</div>
+</div>*@
 <div class="signatory-form-container">
         <table style="width: 100%;">
             <tr>
@@ -558,11 +558,14 @@ columns.Add().DataField("SignatoryEmail")
 
                $("#SignatoryName").dxTextBox("instance").option("value",""),
          $("#SignatoryNameArabic").dxTextBox("instance").option("value",""),
-           $("#SignatoryPosition").dxTextBox("instance").option("value"),
-             $("#SignatoryPositionArabic").dxTextBox("instance").option("value"),
-            $("#SignatoryContact").dxTextBox("instance").option("value"),
-            $("#SignatoryEmail").dxTextBox("instance").option("value"),
-           $("#SignatoryUserId").dxDropDownBox("instance").option("value"),
+           $("#SignatoryPosition").dxTextBox("instance").option("value",""),
+             $("#SignatoryPositionArabic").dxTextBox("instance").option("value",""),
+            $("#SignatoryContact").dxTextBox("instance").option("value",""),
+            $("#SignatoryEmail").dxTextBox("instance").option("value",""),
+           $("#SignatoryUserId").dxDropDownBox("instance").option("value","")
+
+            $("#SignatoryPosition").dxValidator("instance").reset();
+                   $("#SignatoryName").dxValidator("instance").reset();
 
 
             },

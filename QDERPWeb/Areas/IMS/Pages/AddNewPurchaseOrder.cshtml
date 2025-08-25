@@ -225,51 +225,14 @@
         font-weight: bold;
     }
 
-    /* .containers { */
-    /*     display: flex; */
-    /* } */
+ 
 
     .dx-card {
         background: var(--background-color);
     }
 
 
-    /*  .container {   */
-    /*     display: none !important; */
-    /* } */
-
-    /* .frame { */
-    /*     display: none !important; */
-    /* } */
-
-    /* .footer-fixed .btn-container:not(:has(
-    #btnSave,
-    #btnSaveAndClose, 
-    #btnBack,
-    #btnAttach,
-    #btnPrint4,
-    #btnDelete,
-    #btnVerify, 
-    #btnApprove ,
-    #btnSubmit,
-    #btnAddNew,
-    #ddButtonLayout )) {
-        display: none !important 
-     }  */
-
-    /* .bodyContainer { */
-    /*     display: flex; */
-    /*     justify-content: center; */
-    /* } */
-
-    /* .mainContainer { */
-    /*     margin-top: 1em; */
-    /*     width: 100%; */
-    /* } */
-
-     /* .playIcon {  */
-     /*    display: none;  */
-     /* }  */
+   
 
      #goToTopBtn { 
        z-index: 100; 
@@ -1142,7 +1105,7 @@
                                                             .OnOpened("onOpened")
                                                             .TabIndex(1)
                                                             .Disabled(true) // Entire DropDownBox is disabled
-                                                            .DropDownOptions(o => o.Width(470))
+                                                            .DropDownOptions(o => o.Width(430))
                                                             .ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
                                                             .Width("100%")
                                                             .Buttons(buttons =>
@@ -1182,7 +1145,7 @@
                                                             .OnInput("dropDownBoxOnInput")
                                                             .OnOpened("onOpened")
                                                             .TabIndex(1)
-                                                            .DropDownOptions(o => o.Width(470))
+                                                            .DropDownOptions(o => o.Width(430))
                                                             .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
                                                             .Width("100%")
                                                             .Buttons(buttons =>
@@ -1564,6 +1527,10 @@
                            dataSource: [],
 
                     keyExpr: "PochildNo",
+                    selection: {
+						mode: "multiple",
+						showCheckBoxesMode: "always"
+					},
 
                 columns: [
 
@@ -2393,7 +2360,28 @@
                         data: JSON.stringify({ Pono: pono }),
                         success: function (response) {
                             if (response.success) {
-                                DevExpress.ui.notify("Approved successfully.", "success", 3000);
+                                 DevExpress.ui.notify("Approved successfully.", "success", 3000);
+
+        // ✅ Disable grid (keep visible)
+        const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+        itemGridInstance.option({
+            editing: {
+                allowUpdating: false,
+                allowAdding: false,
+                allowDeleting: false
+            },
+            selection: { mode: "none" },
+            hoverStateEnabled: false,
+            focusedRowEnabled: false
+        });
+
+        // ✅ Hide buttons except these
+        hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
+
+        // ✅ Make fields readonly
+        disableSpecificControls();
+
+                                	
                             } else {
                                 DevExpress.ui.notify(response.message, "warning", 3000);
                             }
@@ -2406,6 +2394,55 @@
             });
         }
     });
+    				function hideAllButtonsExcept(exceptions) {
+	const allButtonIds = [
+    "ddButtonLayout",
+    "btnAddNew",
+    "btnSubmit",
+    "btnApprove",
+    "btnVerify",
+    "btnDelete",
+    "btnPrint4",
+    "btnAttach",
+    "btnBack",
+    "btnSaveAndClose",
+    "btnSave"
+];
+
+
+	allButtonIds.forEach(id => {
+		const keepEnabled = exceptions.includes(id);
+		const $el = $("#" + id);
+
+		if ($el.length) {
+			let instance = DevExpress.ui.dxButton.getInstance($el[0]);
+			if (!instance) {
+				instance = DevExpress.ui.dxDropDownButton.getInstance($el[0]);
+			}
+
+			if (instance) {
+				instance.option("disabled", !keepEnabled);
+			} else {
+				console.warn("Instance not found for:", id);
+			}
+		}
+	});
+}
+function disableSpecificControls() {
+    // Disable SelectBox by ID
+    $("#SupplierName").dxSelectBox("instance")?.option("disabled", true);
+    $("#approvedBy2").dxSelectBox("instance")?.option("disabled", true);
+      $("#verifiedBy2").dxSelectBox("instance")?.option("disabled", true);
+      $("#preparedBy2").dxSelectBox("instance")?.option("disabled", true);
+        $("#Project").dxSelectBox("instance")?.option("disabled", true);
+     $("#POCategory").dxSelectBox("instance")?.option("disabled", true);
+
+    // Disable TextArea by ID
+    $("#Subject").dxTextArea("instance")?.option("readOnly", true);
+    $("#PoSummary").dxTextArea("instance")?.option("readOnly", true);
+    $("#PoIntro").dxTextArea("instance")?.option("readOnly", true);
+     $("#Thanks").dxTextArea("instance")?.option("readOnly", true);
+}
 
     function deletePoChild(poChildNos) {
         if (!Array.isArray(poChildNos)) poChildNos = [poChildNos];
@@ -3013,7 +3050,7 @@ function makeAllWidgetsReadOnly() {
             break;
         }
     }
-}
+}            	let isApproved=null;
                       document.addEventListener("DOMContentLoaded", function () {
         const urlParams = new URLSearchParams(window.location.search);
         const Pono = urlParams.get("Pono");
@@ -3031,6 +3068,9 @@ function makeAllWidgetsReadOnly() {
                     })
                     .then(data => {
                         if (data) {
+                              console.log("data:", data);
+                            console.log("Is Approved:", data.IsApproved);
+
 setDxFieldValue("PurchaseOrderNo", data.pono);
 setDxFieldValue("PoDate", data.podate);
 setDxFieldValue("SupplierName", data.supplierCode);
@@ -3085,26 +3125,53 @@ setDxFieldValue("approvedBy2", data.approvedBy);
                                             data: data.items || []
                                         }));                         
                                     // Approval logic
-                                const isApproved = data.IsApproved === true || data.IsApproved === 1;
+                                 isApproved = data.isApproved;
                                 console.log("Is Approved:", isApproved);
 
-                            if (isViewMode || isApproved) {
-                                setReadOnlyMode();
-                                itemGridInstance.option("editing", {
+  if (isViewMode) {
+                               const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+        itemGridInstance.option({
+            editing: {
+                allowUpdating: false,
+                allowAdding: false,
+                allowDeleting: false
+            },
+            selection: { mode: "none" },
+            hoverStateEnabled: false,
+            focusedRowEnabled: false
+        });
+          hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
+          disableSpecificControls();
 
-                                    allowUpdating: false,
-                                    allowAdding: false,
-                                    allowDeleting: false
-                                });
+                                DevExpress.ui.notify("This Purchase Order is in view mode. Fields are read-only.", "info", 4000);
+ }else if (isEditMode && isApproved) {
+    const itemGridInstance = $("#itemGrid").dxDataGrid("instance");
+    itemGridInstance.option({
+        editing: {
+            allowUpdating: false,
+            allowAdding: false,
+            allowDeleting: false
+        },
+        selection: { mode: "none" },
+        hoverStateEnabled: false,
+        focusedRowEnabled: false
+    });
 
-                                DevExpress.ui.notify(
-                                    isApproved
-                                        ? "This Purchase Order is approved. You are not allowed to edit it."
-                                        : "This Purchase Order is in view mode. Fields are read-only.",
-                                    "info",
-                                    4000
-                                );
-                            } else if (isEditMode) {
+    // 🔹 Hide / disable buttons except the allowed ones
+    hideAllButtonsExcept(["btnPrint4", "ddButtonLayout", "btnBack", "btnAttach"]);
+
+    // 🔹 Call your central function to disable fields
+    disableSpecificControls();
+
+    DevExpress.ui.notify(
+        "This Purchase Order is approved. You are not allowed to edit it.",
+        "info",
+        4000
+    );
+}
+
+                            
+ else if (isEditMode) {
                                 // Enable grid editing
                                 itemGridInstance.option("editing", {
                                         mode: "cell",
@@ -3396,7 +3463,7 @@ function selectContact(name, email, mobile, phone) {
               selectBox.close();
 
         const url = `/${tenantName}/IMS/Signatories`;
-        const title = "";
+        const title = "Signatories";
             openModal(url, title);
     }
     function AddPOCategory(){
