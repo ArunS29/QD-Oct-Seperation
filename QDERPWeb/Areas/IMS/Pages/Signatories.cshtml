@@ -558,11 +558,14 @@ columns.Add().DataField("SignatoryEmail")
 
                $("#SignatoryName").dxTextBox("instance").option("value",""),
          $("#SignatoryNameArabic").dxTextBox("instance").option("value",""),
-           $("#SignatoryPosition").dxTextBox("instance").option("value"),
-             $("#SignatoryPositionArabic").dxTextBox("instance").option("value"),
-            $("#SignatoryContact").dxTextBox("instance").option("value"),
-            $("#SignatoryEmail").dxTextBox("instance").option("value"),
-           $("#SignatoryUserId").dxDropDownBox("instance").option("value"),
+           $("#SignatoryPosition").dxTextBox("instance").option("value",""),
+             $("#SignatoryPositionArabic").dxTextBox("instance").option("value",""),
+            $("#SignatoryContact").dxTextBox("instance").option("value",""),
+            $("#SignatoryEmail").dxTextBox("instance").option("value",""),
+           $("#SignatoryUserId").dxDropDownBox("instance").option("value","")
+
+            $("#SignatoryPosition").dxValidator("instance").reset();
+                   $("#SignatoryName").dxValidator("instance").reset();
 
 
             },

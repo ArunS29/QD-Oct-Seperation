@@ -3115,5 +3115,15 @@ $(document).ready(function () {
             dataGrid.option("searchPanel.text", text);
         }
     }
+     $("#btnSoreStock").on("click", function () {
+        const salesOrderNo = $("#SalesOrderNO").dxTextBox("instance").option("value")?.trim();
+
+        if (!salesOrderNo) {
+            DevExpress.ui.notify("Enter Sales Order No first.", "error", 2000);
+            return;
+        }
+         let url = `/${tenantName}/IMS/StoreStockAvalibilitys?salesOrderNo=${encodeURIComponent(salesOrderNo)}`;
+          window.location.href=url;
+    });
 
 </script>
