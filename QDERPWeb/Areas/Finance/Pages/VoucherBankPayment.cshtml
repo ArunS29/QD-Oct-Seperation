@@ -331,7 +331,7 @@
                                                         columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
                                                         columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')")).Visible(false);
                                                         columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
-                                                        columns.Add().DataField("CurrencyMasterCode").Caption("Code");
+                                columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('Code')"));
                                                        
                                                     })
                                                     )
@@ -615,7 +615,7 @@
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                     .ID("CostAllocationPopup")
-                    .Title("Cost Allocation")
+                    .Title(new JS("formatMessage('Cost Allocation')"))
                     .Width("100%")
                     .Height(500)
                     
@@ -631,7 +631,7 @@
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                     .ID("PropertyAllocationPopup")
-                    .Title("Property Allocation")
+                    .Title(new JS("formatMessage('Property Allocation')"))
                     .Width("90%")
                     .Height(500)
                     .Visible(false)
@@ -661,7 +661,7 @@
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                     .ID("EmployeeAllocationPopup")
-                    .Title("Employee Allocation")
+                    .Title(new JS("formatMessage('Employee Allocation')"))
                     .Width("90%")
                     .Height(500)
                     .Visible(false)
@@ -691,7 +691,7 @@
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                     .ID("BillsReceivablePopup")
-                    .Title("Finance Module: Receivables / Payables")
+                    .Title(new JS("formatMessage('Finance Module: Receivables / Payables')"))
                     .Width("90%")
                     .Height(600)
                     .Visible(false)
@@ -722,7 +722,7 @@
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                     .ID("SalaryPaidEntryPopup")
-                    .Title("Finance Module: Receivables / Payables")
+                        .Title(new JS("formatMessage('Finance Module: Receivables / Payables')"))
                     .Width("90%")
                     .Height(500)
                     .Visible(false)
@@ -963,30 +963,36 @@
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS("getSelectedRowKeys()"))
 
-                        .Columns(columns =>
-                        {
-                        columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-                        columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-                        columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-                        columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-                        columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-                            columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
-                        .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>);
+                    .Columns(columns =>
+                    {
+                        columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group Id')")).Visible(false);
+                        columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+                        columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+                        columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+                        columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+
+                        columns.Add()
+                    .DataField("IsLedgerObselete")
+                    .Caption(new JS("formatMessage('Is Ledger Obselete')"))
+                    .Alignment(HorizontalAlignment.Center)
+                    .CellTemplate(@<text>
+                                       <div class="dx-icon">
+                                           <%= data.IsLedgerObselete ? "<i style='color:red' class='fa fa-toggle-on'></i>" : "<i style='color:green' class='fa fa-toggle-off'></i>" %>
+                                       </div>
+                                   </text>);
+                    
+
 
                         })
                         .OnRowPrepared("onAccountHeadRowPrepared")
@@ -1019,30 +1025,35 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("MasterGroupId").Caption("Master Group Id").Visible(false);
-                        columns.Add().DataField("MasterGroup").Caption("Master Group").Visible(false);
-                        columns.Add().DataField("AccountGroupId").Caption("Account Group Id").Visible(false);
-                        columns.Add().DataField("AccountGroup").Caption("Account Group").Visible(false);
-                        columns.Add().DataField("AccountId").Caption("Account Id").Visible(true);
-                        columns.Add().DataField("AccountHead").Caption("Account Head").Visible(true);
-                        columns.Add().DataField("AccountHeadArabic").Caption("Account Head Arabic").Visible(true);
-                        columns.Add().DataField("IsRestricted").Caption("Is Restricted").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInSales").Caption("Use In Sales").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUsedInPurchase").Caption("Used In Purchase").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsProfitLossAccount").Caption("Profit/Loss Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsBalanceSheetAccount").Caption("Balance Sheet Account").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsMaintainBillByBill").Caption("Maintain Bill By Bill").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsUseInReconciliation").Caption("Use In Reconciliation").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("IsSalaryPayable").Caption("Salary Payable").DataType(GridColumnDataType.Boolean).Visible(false);
-                        columns.Add().DataField("ReferenceNo").Caption("Reference No").Visible(false);
-                        columns.Add().DataField("IsLedgerObselete").Visible(true).Caption("Ledger Obselete")
+                        columns.Add().DataField("MasterGroupId").Caption(new JS("formatMessage('Master Group Id')")).Visible(false);
+                        columns.Add().DataField("MasterGroup").Caption(new JS("formatMessage('Master Group')")).Visible(false);
+                        columns.Add().DataField("AccountGroupId").Caption(new JS("formatMessage('Account Group Id')")).Visible(false);
+                        columns.Add().DataField("AccountGroup").Caption(new JS("formatMessage('Account Group')")).Visible(false);
+                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account Id')")).Visible(true);
+                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')")).Visible(true);
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')")).Visible(true);
+                        columns.Add().DataField("IsRestricted").Caption(new JS("formatMessage('Is Restricted')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUseInSales").Caption(new JS("formatMessage('Use In Sales')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUsedInPurchase").Caption(new JS("formatMessage('Used In Purchase')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsProfitLossAccount").Caption(new JS("formatMessage('Profit/Loss Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsBalanceSheetAccount").Caption(new JS("formatMessage('Balance Sheet Account')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsMaintainBillByBill").Caption(new JS("formatMessage('Maintain Bill By Bill')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsUseInReconciliation").Caption(new JS("formatMessage('Use In Reconciliation')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("IsSalaryPayable").Caption(new JS("formatMessage('Salary Payable')")).DataType(GridColumnDataType.Boolean).Visible(false);
+                        columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')")).Visible(false);
+
+                        columns.Add()
+                    .DataField("IsLedgerObselete")
+                    .Visible(true)
+                    .Caption(new JS("formatMessage('Ledger Obselete')"))
                     .Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
-            <div class="dx-icon">
-                <%= data.IsLedgerObselete ? '<i style="color:red" class="fa fa-toggle-on"></i>' : '<i style="color:green" class="fa fa-toggle-off"></i>' %>
-            </div>
-        </text>);
+                                       <div class="dx-icon">
+                                           <%= data.IsLedgerObselete ? "<i style='color:red' class='fa fa-toggle-on'></i>" : "<i style='color:green' class='fa fa-toggle-off'></i>" %>
+                                       </div>
+                                   </text>);
                     })
+
                 .OnRowPrepared("onAccountHeadRowPrepared")
                 )
         }
@@ -1087,7 +1098,7 @@
                     {
                         columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
                         columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
-                        columns.Add().Caption(new JS("formatMessage('AccountHead Arabic')")).DataField("AccountHeadArabic");
+                        columns.Add().Caption(new JS("formatMessage('Account Head Arabic')")).DataField("AccountHeadArabic");
 
                     })
                     )
@@ -1139,61 +1150,7 @@
 
 
 <script>
-    $(function () {
-        setTimeout(function () {
-            $('.minimal-header').addClass('visible');
-        }, 100);
-    });
-
-            $(function () {
-                                            $("#EditCostAllocation").dxTextBox({
-                                                        text:formatMessage("Edit Cost Allocation"),
-                                                    readOnly: true
-
-                                    });
-                            });
-            $(function () {
-                                            $("#DeleteAllLineEntries").dxTextBox({
-                                                        text:formatMessage("Delete All Line Entries"),
-                                                readOnly: true
-
-                                });
-                        });
-            $(function () {
-                                            $("#EditBillReceivable").dxTextBox({
-                                                    text:formatMessage("Edit Bills Payable"),
-                                                readOnly: true
-
-                                });
-                        });
-            $(function () {
-                                                $("#EditSalaryPayable").dxTextBox({
-                                                        text:formatMessage("Edit Salary Payable"),
-                                                    readOnly: true
-
-                                    });
-                            });
-            $(function () {
-                                                $("#EditEmployeeAllocation").dxTextBox({
-                                                            text:formatMessage("Edit Employee Allocation"),
-                                                    readOnly: true
-
-                                    });
-                            });
-            $(function () {
-                                                $("#EditPropertyAllocation").dxTextBox({
-                                                        text:formatMessage("Edit Property Allocation"),
-                                                    readOnly: true
-
-                                    });
-                            });
-            $(function () {
-                                                $("#DeleteLineEntry").dxTextBox({
-                                                            text:formatMessage("Delete Line Entry"),
-                                                    readOnly: true
-
-                                    });
-                            });
+  
 
             let acchead, spentry, accheadid, accheadname, vno, paymentaccheadname, paymentaccheadId, isUpdatingCell = false, verifiedby, griddatacount, employeeval, empName,refno,accgroup,IsEdit = false,accgroupid,accheadar,
             IsNotification=false,storedAccountHead,IsObeselete=false,IsDrCr=false;
@@ -4612,5 +4569,59 @@ function showMainFooter() {
                 }
             });
         }
+              $(function () {
+            setTimeout(function () {
+                $('.minimal-header').addClass('visible');
+            }, 100);
+        });
 
+                $(function () {
+                                                $("#EditCostAllocation").dxTextBox({
+                                                            text:formatMessage("Edit Cost Allocation"),
+                                                        readOnly: true
+
+                                        });
+                                });
+                $(function () {
+                                                $("#DeleteAllLineEntries").dxTextBox({
+                                                            text:formatMessage("Delete All Line Entries"),
+                                                    readOnly: true
+
+                                    });
+                            });
+                $(function () {
+                                                $("#EditBillReceivable").dxTextBox({
+                                                        text:formatMessage("Edit Bills Payable"),
+                                                    readOnly: true
+
+                                    });
+                            });
+                $(function () {
+                                                    $("#EditSalaryPayable").dxTextBox({
+                                                            text:formatMessage("Edit Salary Payable"),
+                                                        readOnly: true
+
+                                        });
+                                });
+                $(function () {
+                                                    $("#EditEmployeeAllocation").dxTextBox({
+                                                                text:formatMessage("Edit Employee Allocation"),
+                                                        readOnly: true
+
+                                        });
+                                });
+                $(function () {
+                                                    $("#EditPropertyAllocation").dxTextBox({
+                                                            text:formatMessage("Edit Property Allocation"),
+                                                        readOnly: true
+
+                                        });
+                                });
+                $(function () {
+                                                    $("#DeleteLineEntry").dxTextBox({
+                                                                text:formatMessage("Delete Line Entry"),
+                                                        readOnly: true
+
+                                        });
+                                });
 </script>
