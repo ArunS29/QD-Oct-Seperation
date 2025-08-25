@@ -957,7 +957,6 @@
                         <div class="col-md-3">
                             @(Html.DevExtreme().TextBox()
                                 .ID("txtSwiftCode")
-                                .Label("SWIFT Code")
                                 .Label(new JS("formatMessage('Swift Code:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .InputAttr("aria-label", "Text")
@@ -2478,8 +2477,8 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BuyerOtherIdtype").Caption("Code");
-                columns.Add().DataField("BuyerIdtypeName").Caption("Buyer ID Type");
+                columns.Add().DataField("BuyerOtherIdtype").Caption(new JS("formatMessage('Code')"));
+                columns.Add().DataField("BuyerIdtypeName").Caption(new JS("formatMessage('Buyer ID Type')"));
             })
             )
     }
@@ -2509,8 +2508,8 @@
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
             .Columns(columns =>
             {
-                columns.Add().DataField("BuyerOtherIdtype").Caption("Code");
-                columns.Add().DataField("BuyerIdtypeName").Caption("Buyer ID Type");
+                columns.Add().DataField("BuyerOtherIdtype").Caption(new JS("formatMessage('Code')"));
+                columns.Add().DataField("BuyerIdtypeName").Caption(new JS("formatMessage('Buyer ID Type')"));
             })
             )
     }

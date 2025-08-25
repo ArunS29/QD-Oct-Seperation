@@ -101,9 +101,9 @@
 
     <!-- Modern Dashboard Header -->
     <div class="dashboard-header">
-        <span class="user-name">Hey @Model.UserName</span> - <span class="subtext">here’s what’s happening till this date</span>
+        <span class="user-name">Hey @Model.UserName</span> - <span class="subtext" id="heres"></span>
         <label class="live-data-checkbox">
-            <input type="checkbox" id="getLiveData"> Get live data
+            <input type="checkbox" id="getLiveData"> 
         </label>
     </div>
 
@@ -111,7 +111,7 @@
     <div class="summary-cards-row">
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label">TOTAL CLIENT OUTSTANDING</span>
+                <span class="summary-label" id="totalclient"></span>
                 <span id="clientOutstandingTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="totalClientOutstandingValue">0</div>
@@ -119,7 +119,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label">TOTAL SUPPLIER OUTSTANDING</span>
+                <span class="summary-label" id="totalsupplier"></span>
                 <span id="supplierOutstandingTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="totalSupplierOutstandingValue">0</div>
@@ -127,7 +127,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label">TOTAL BANK BALANCE</span>
+                <span class="summary-label" id="totalbank"></span>
                 <span id="bankBalanceTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="totalBankBalanceValue">0</div>
@@ -135,7 +135,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label">CASH & BANK BALANCE</span>
+                <span class="summary-label" id="cashbank"></span>
                 <span id="cashBalanceTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="cashBalanceValue">0</div>
@@ -147,21 +147,21 @@
     <div class="outstanding-summary-section">
         <div class="outstanding-summary-left">
             <div class="section-header">
-                <span class="section-title">Outstanding Summary</span>
+                <span class="section-title" id="outstandingsummary"></span>
             </div>
             <div class="tabs">
-                <div class="tab dashboard-tab active" id="tabClientOutstanding">Client Outstanding</div>
-                <div class="tab dashboard-tab" id="tabSupplierOutstanding">Supplier Outstanding</div>
-                <div class="tab dashboard-tab" id="tabCashBalance">Net Amount Summary</div>
+                <div class="tab dashboard-tab active" id="tabClientOutstanding"></div>
+                <div class="tab dashboard-tab" id="tabSupplierOutstanding"></div>
+                <div class="tab dashboard-tab" id="tabCashBalance"></div>
             </div>
             <div class="tab-content active" id="tab-client">
                 <table class="summary-table">
                     <thead>
                         <tr>
-                            <th>Account Head</th>
-                            <th>Balance Amount</th>
-                            <th>% of Total</th>
-                            <th>Account Head No</th>
+                            <th id="accountheadsdash"></th>
+                            <th id="balanceamountdash"></th>
+                            <th id="totaldashboa"></th>
+                            <th id="accountheadnodash"></th>
                         </tr>
                     </thead>
                     <tbody id="topOutstandingTableBody"></tbody>
@@ -171,12 +171,12 @@
 
         <div class="outstanding-summary-right">
             <div class="section-header">
-                <span class="section-title">Cash vs Bank</span>
+                <span class="section-title" id="cashvsbankdash"></span>
             </div>
             <canvas id="outstandingDonutChart" width="320" height="150"></canvas>
             <div class="donut-legend">
-                <span class="legend-item cash">Cash IN Hand</span>
-                <span class="legend-item bank">Bank Balance</span>
+                <span class="legend-item cash" id="cashinhanddash"></span>
+                <span class="legend-item bank" id="banlbalancesdashboard"></span>
             </div>
         </div>
     </div>
@@ -184,14 +184,14 @@
 
 <div class="revenue-reporting-section">
     <div class="section-header">
-        <span class="section-title">Revenue Reporting</span>
+        <span class="section-title" id="revenuereportingdash"></span>
     </div>
     <div id="revenueReportingChart" style="height:400px;"></div>
 </div>
 
 <div class="summary-card">
     <div class="summary-card-header">
-        <span class="summary-label">TOTAL SALES</span>
+        <span class="summary-label" id="dashboardtotalsales"></span>
         <span id="salesTrend" class="summary-trend-pill"></span>
     </div>
     <div class="summary-value" id="totalSalesValue">0</div>
@@ -378,6 +378,13 @@
         }
 
         /* Tab click handler */
+            $(function () {
+        // Set tab texts with localization
+        $("#tabClientOutstanding").text(formatMessage("Client Outstanding"));
+        $("#tabSupplierOutstanding").text(formatMessage("Supplier Outstanding"));
+        $("#tabCashBalance").text(formatMessage("Net Amount Summary"));
+
+        // Handle tab clicks
         $(".dashboard-tab").click(function () {
             $(".dashboard-tab").removeClass("active");
             $(this).addClass("active");
@@ -391,6 +398,7 @@
             }
         });
     });
+
 
         /* ===== Global Loader ===== */
     (function () {
@@ -452,6 +460,50 @@
             }
         }
     });
-
+    $(function () {
+            $("#heres").text(formatMessage("here’s what’s happening till this date"));
+        });
+    $(function () {
+            $("#getLiveData").text(formatMessage("Get live data"));
+        });
+    $(function () {
+            $("#totalbank").text(formatMessage("TOTAL BANK BALANCE"));
+        });
+    $(function () {
+            $("#totalsupplier").text(formatMessage("TOTAL SUPPLIER OUTSTANDING"));
+        });
+    $(function () {
+            $("#totalclient").text(formatMessage("TOTAL CLIENT OUTSTANDING"));
+        });
+    $(function () {
+            $("#cashbank").text(formatMessage("CASH & BANK BALANCE"));
+        });
+    $(function () {
+            $("#outstandingsummary").text(formatMessage("Outstanding Summary"));
+        });
+    $(function () {
+            $("#accountheadsdash").text(formatMessage("Account Head"));
+        });
+    $(function () {
+            $("#balanceamountdash").text(formatMessage("Balance Amount"));
+        });
+    $(function () {
+            $("#accountheadnodash").text(formatMessage("Account Head No"));
+        });
+    $(function () {
+            $("#cashvsbankdash").text(formatMessage("Cash vs Bank"));
+        });
+    $(function () {
+            $("#cashinhanddash").text(formatMessage("Cash IN Hand"));
+        });
+    $(function () {
+            $("#banlbalancesdashboard").text(formatMessage("Bank Balance"));
+        });
+    $(function () {
+            $("#revenuereportingdash").text(formatMessage("Revenue Reporting"));
+        });
+    $(function () {
+            $("#dashboardtotalsales").text(formatMessage("TOTAL SALES"));
+        });
 </script>
 
