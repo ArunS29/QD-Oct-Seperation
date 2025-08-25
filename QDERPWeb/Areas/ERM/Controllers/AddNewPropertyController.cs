@@ -101,11 +101,111 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     x.AccountHeadName,
                     x.RevenueAmount,
                     x.ExpenseAmount,
-                    x.PropertyNo
+                    x.PropertyNo,
+                    x.CostAndRevenueClubbed
                 })
                 .ToListAsync();
               data = data != null ? data : [];
             return Ok(data);   // already empty list [] if no rows found
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetByMaintenance(string PropertyNo)
+        {
+            if (string.IsNullOrEmpty(PropertyNo))
+                return Ok(null);
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant");
+
+            var data = await dbContext.Qry40002propertyMaintenances
+                .Where(x => x.PropertyNo == PropertyNo)
+                .Select(x => new {
+                    x.ServiceSheetNo,
+                    x.ServiceDate,
+                    x.ServicedBy,
+                    x.ServiceStatus,
+                    x.ServiceOrderType,
+                    x.Complaint,
+                    x.PropertyNo
+                })
+                .ToListAsync();
+            data = data != null ? data : [];
+            return Ok(data);   // already empty list [] if no rows found
+        }
+        public async Task<IActionResult> GetDocumentExpiry()
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                {
+                    var result = await dbContext.Qry40136PropertyDocumentExpiries
+                        .Select(d => new
+                        {
+                            d.DocumentExpDate,
+                            d.DocumentExpDateAr,
+                            d.DocumentRefNo,
+                            d.DocumentRemarks,
+                            d.DocumentStatus,
+                            d.DocumentStatusName,
+                            d.PropertyNo,
+                            d.PropertyType,
+                            d.DocumentNotificationDate,
+                            d.PropertyCategoryName,
+                            d.DocumentNo
+
+                        })
+                        .ToListAsync();
+
+                    return Ok(result);
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server error: {ex.Message}");
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetCostDetails(DateTime? fromDate, DateTime? toDate)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var query = dbContext.Qry20184PropertyAllocationWtLedgers.AsQueryable();
+
+
+                // Default dates if not provided
+                if (!fromDate.HasValue)
+                {
+                    fromDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1); // Start of the current month
+                }
+
+                if (!toDate.HasValue)
+                {
+                    toDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month)); // End of the current month
+                }
+
+                // Filtering by date range
+                query = query.Where(i => i.VoucherDate >= fromDate && i.VoucherDate <= toDate);
+
+                // Fetching the data
+                var data = await query.Select(i => new
+                {
+                    i.VoucherNo,
+                    i.VoucherNarration,
+                    i.VoucherDate,
+                    i.PropertyDescription,
+                    i.AccountHeadName,
+                    i.RevenueAmount,
+                    i.ExpenseAmount,
+                    i.PropertyNo,
+                    i.CostAndRevenueClubbed
+                }).ToListAsync();
+
+                return Json(data);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant." });
         }
         [HttpGet("GetAllPropertyTypes")]
         public IActionResult GetAllPropertyTypes()
