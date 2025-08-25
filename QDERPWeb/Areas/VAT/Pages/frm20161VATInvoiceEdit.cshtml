@@ -10576,6 +10576,44 @@ function getExemptionCode(rowIndex, callback) {
 }
 
 
+// Attachment Count
+//1. Get Document Count from Grid Load in Ledger Documents
+function setAttachCount(count) {
+	updateAttachButtonCount("#btnAttach", count);
+}
+//2. Get Document Count
+async function getDocumentCount() {
+	const invoiceNoBox = $("#InvoiceNo").dxTextBox("instance");
+	const invoiceNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+	var menuType = "vat";
+	var formType = "Sales Invoice B2B";
+	const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+	const invoiceData = await invoiceRes.json();
+ 
+	let folderId2 = "";
+	if (invoiceData) {
+		folderId2 = [
+				invoiceData.SalesOrderNo,
+				invoiceData.QuotationNo,
+				invoiceData.DeliveryNoteNos,
+				invoiceData.ProformaInvoiceNo
+		]
+		.filter(Boolean)   // remove null/empty
+		.join(",");
+	}
+	// Log and build URL
+	console.log("Voucher No:", invoiceNo);
+	console.log("Voucher Type:", formType);
+ 
+ 
+	const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(invoiceNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+	const docs = await res.json();
+	const count = docs.length;
+ 
+	updateAttachButtonCount("#btnAttach", count);
+}
+
+
 	
 </script>
 
