@@ -7359,23 +7359,23 @@ if(clientnameValidation.isValid)
 			{
 		const newDate = new Date(e.value);
 		if (!newDate) return;
-
-		const formattedNewDate = newDate.toISOString().split("T")[0];
-		const cutoffDate = new Date("2021-12-31");
-		const currentDate = new Date();
-		const formattedCurrentDate = currentDate.toISOString().split("T")[0];
-
-		const oldDateString = $("#OldVoucherDate").val();
-		const oldDate = new Date(oldDateString);
 		debugger;
-		// Step 1: Check cutoff date
-		if (newDate < cutoffDate) {
-			DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+		const formattedNewDate = newDate.toISOString().split("T")[0];
+		// const cutoffDate = new Date("2021-12-31");
+		// const currentDate = new Date();
+		// const formattedCurrentDate = currentDate.toISOString().split("T")[0];
 
-			// Reset to current date
-			$("#InvoiceDate").dxDateBox("instance").option("value", currentDate);
-			return;
-		}
+		const oldDateString = $("#InvoiceDate").val();
+		const oldDate = new Date(oldDateString);
+		// debugger;
+		// // Step 1: Check cutoff date
+		// if (newDate < cutoffDate) {
+		// 	DevExpress.ui.dialog.alert("This Voucher Entry date has been blocked. Please review your entry date.", "Blocked Entry");
+
+		// 	// Reset to current date
+		// 	$("#InvoiceDate").dxDateBox("instance").option("value", currentDate);
+		// 	return;
+		// }
 
 		// Step 2: Check if year has changed
 		if (newDate.getFullYear() !== oldDate.getFullYear()) {
@@ -7384,12 +7384,12 @@ if(clientnameValidation.isValid)
 				if (dialogResult) {
 					// Yes: Call backend to get new Voucher No
 					$.ajax({
-						url: '/Voucher/GetNewVoucherNumber', // Controller endpoint
+						url: 'api/VATModule/GetNewVoucherNumber', // Controller endpoint
 						type: 'POST',
 						data: { date: formattedNewDate },
 						success: function (newVoucherNo) {
 							$("#VoucherNo").val(newVoucherNo); // Update voucher number
-							$("#OldVoucherDate").val(formattedNewDate); // Update stored old date
+							$("#InvoiceDate").val(formattedNewDate); // Update stored old date
 							DevExpress.ui.notify("Voucher Number has been updated.", "success", 2000);
 						},
 						error: function () {

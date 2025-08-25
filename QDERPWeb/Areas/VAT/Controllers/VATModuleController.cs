@@ -5297,9 +5297,9 @@ documentNo: invoiceNo
             return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml", Description); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
         [HttpGet]
-        public IActionResult VATSalesTaxExemption()
+        public IActionResult VATSalesTaxExemption(int TaxSlabCode)
         {
-
+            ViewBag.TaxSlabCode = TaxSlabCode;
             return PartialView("~/Areas/VAT/Pages/VATSalesTaxExemption.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
 
@@ -7143,6 +7143,33 @@ documentNo: InvChildSlNo
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByTaxSlabCode(int taxSlabCode)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var reasons = await dbContext.Tbl00110TaxExemptionReasons
+                        .Where(r => r.TaxSlabCode == taxSlabCode)
+                        .ToListAsync();
+
+                    if (reasons == null || !reasons.Any())
+                        return NotFound(new { message = $"No records found for TaxSlabCode = {taxSlabCode}", success = false });
+
+                    return Ok(new { data = reasons, success = true });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                // log ex here if needed
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message, success = false });
+            }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetInvoiceNoFromCreditNote(string creditNoteNo)

@@ -538,6 +538,56 @@
 	{
 		bottom:35px!important;
 	}
+	  /* body {
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f4f4f4;
+    } */
+
+    .tax-container {
+        background-color: #33b9b9;
+        border-radius: 8px;
+        padding: 25px;
+        width: 500px;
+        margin: 40px auto;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        color: #fff;
+    }
+
+    .title {
+        font-size: 16px;
+        margin-bottom: 15px;
+        
+    }
+
+    .radio-section {
+        background-color: #fff;
+        padding: 10px;
+        border-radius: 4px;
+        color: #000;
+        max-height: 200px; /* Set a max height */
+        overflow-y: auto; /* Enable vertical scroll */
+    }
+
+
+    .button-group {
+        display: flex;
+        justify-content: flex-end;
+        gap: 10px;
+        margin-top: 20px;
+    }
+
+    .radio-section::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .radio-section::-webkit-scrollbar-thumb {
+        background-color: #aaa;
+        border-radius: 4px;
+    }
+
+    .radio-section::-webkit-scrollbar-track {
+        background-color: #eee;
+    }
 </style>
 
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
@@ -3787,8 +3837,8 @@
 
 				  let ItemNo=null,amt=0, accheadid =null,paymentmeanstypecode=null,revaccheadid=null,InvoiceCurrencyExchangeId="1",TaxCurrencyExchangeId=null,branchcode=null,salespersoncode=null,companyid=null,SellerOtherIdtype=null,
 					  SignatoryID=null,ChkbySignatoryID=null,ApproedbySignatoryID=null,IsCurrent="false",ExchangeRate=null,Gsdescrpition=null,GsdescriptionAr=null,ItemPartNo=null,CostPrice=null,GssellingRate=null,ReorderQty=null,IsDirectApproval=true,IsDirectVerify=true,IsClientCode=false
-					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null,UnitCode=null,UnitOfMeasure=null,currentAmount=null,IsClienCodeEdit="false";
-			   
+					  ClientPostalCode=null,ClientCity=null,ClientAddressSt=null,Desc=null,rowIx=null, IsEdit = false,InvNo=null,transcode=null,UnitCode=null,UnitOfMeasure=null,currentAmount=null,IsClienCodeEdit="false",TaxSlabCode=null;
+			   let reasons = []; // start with empty array
 			  let dropDownInstance;
 			  let vatListInstance;
 
@@ -4456,7 +4506,7 @@
                     let selectedItem = dropdownData.find(item => item.TaxSlabCode === e.value);
                     if (selectedItem) {
                         cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-                        
+                        TaxSlabCode = selectedItem.TaxSlabCode;
                         let grid = $("#B2BdataGrid").dxDataGrid("instance");
                         let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                         if (rowIndex !== -1) {
@@ -4507,7 +4557,7 @@
                             if (selectedItem) {
                                 e.component.option("value", selectedItem.TaxSlabCode);
                                 cellInfo.setValue(selectedItem.TaxCodeToDisplay);
-
+								TaxSlabCode = selectedItem.TaxSlabCode; 
                                 let grid = $("#B2BdataGrid").dxDataGrid("instance");
                                 let rowIndex = grid.getRowIndexByKey(cellInfo.key);
                                 if (rowIndex !== -1) {
@@ -4542,9 +4592,121 @@
         });
     }
 },
-            { dataField: "ExcemptionCode", caption: formatMessage('Excemption Code'), width: 150 },
-				{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,allowEditing: false, format: getDecimalFormat(currencyDecimals),alignment: "right" },
-				{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150,allowEditing: false, format: getDecimalFormat(currencyDecimals),alignment: "right"},
+	// 		{
+	//   dataField: 'ExcemptionCode',
+	//   caption: formatMessage('Excemption Code'),
+	//   cssClass: "center-header",
+	//   width: 150,
+	//   allowEditing: false,
+	//   cellTemplate: function (container, options) {
+	// 	const buttonId = "ExcemptionCodeBtn_" + options.rowIndex;
+
+	// 	// Create div and append first
+	// 	const $btn = $("<div>").attr("id", buttonId).appendTo(container);
+
+	// 	// Then initialize dxButton
+	// 	$btn.dxButton({
+	// 	  icon: "fa fa-percentage",
+	// 	  hint: "Sales Exemption",
+	// 	  stylingMode: "text",
+	// 	  width: 60,
+	// 	  onClick: function (e) {
+	// 		//onexemptionCodeClick(e.element[0]);
+	// 		 showExemptionPopover(options.rowIndex, e.element);
+	// 	  }
+	// 	});
+	//   }
+	// },
+{
+  dataField: 'ExcemptionCode',
+  caption: formatMessage('Excemption Code'),
+  cssClass: "center-header",
+  width: 150,
+  allowEditing: false,
+  cellTemplate: function (container, options) {
+    const buttonId = "ExcemptionCodeBtn_" + options.rowIndex;
+    const popoverId = "ExcemptionPopover_" + options.rowIndex;
+
+    // Create button
+    $("<div>").attr("id", buttonId).appendTo(container).dxButton({
+      icon: "fa fa-percentage",
+      hint: "Sales Exemption",
+      stylingMode: "text",
+      width: 60,
+      onClick: function () {
+        // Fetch reasons first
+        getExemptionCode(options.rowIndex, function (reasons) {
+          // Initialize popover dynamically
+          if (!$("#"+popoverId).length) {
+            $("<div>").attr("id", popoverId).appendTo("body");
+          }
+
+          $("#"+popoverId).dxPopover({
+            target: "#"+buttonId,
+            showTitle: false,
+            shading: true,
+            shadingColor: "rgba(0,0,0,0.3)",
+            position: "bottom",
+            width: 350,
+            contentTemplate: function (contentElement) {
+              // Build template fresh
+              contentElement.append(`
+                <h4 class="title">Select the Tax Exemption Reason:</h4>
+                <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
+                <div class="button-group mt-2">
+                  <div id="okButton_${options.rowIndex}"></div>
+                  <div id="closeButton_${options.rowIndex}"></div>
+                </div>
+              `);
+
+              // Radio group
+              $("#radioGroup_"+options.rowIndex).dxRadioGroup({
+                items: reasons,
+                layout: "vertical",
+                value: reasons.length > 0 ? reasons[0] : null,
+                stylingMode: "outlined"
+              });
+
+              // OK button
+              $("#okButton_"+options.rowIndex).dxButton({
+                text: "OK",
+                type: "success",
+                icon: "check",
+                onClick: function () {
+                  const selected = $("#radioGroup_"+options.rowIndex).dxRadioGroup("instance").option("value");
+                  DevExpress.ui.notify("Selected: " + selected, "success", 2000);
+
+                  // update grid cell
+                  const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                  grid.cellValue(options.rowIndex, "ExcemptionCode", selected);
+
+                  $("#"+popoverId).dxPopover("instance").hide();
+                }
+              });
+
+              // Close button
+              $("#closeButton_"+options.rowIndex).dxButton({
+                text: "Close",
+                type: "normal",
+                icon: "close",
+                onClick: function () {
+                  $("#"+popoverId).dxPopover("instance").hide();
+                }
+              });
+            }
+          });
+
+          // Show popover after init
+          $("#"+popoverId).dxPopover("instance").show();
+        });
+      }
+    });
+  }
+},
+
+
+			{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), width: 150,allowEditing: false, format: getDecimalFormat(currencyDecimals),alignment: "right" },
+			{ dataField: "LineTotal", caption: formatMessage('Total'), width: 150,allowEditing: false, format: getDecimalFormat(currencyDecimals),alignment: "right"},
             { dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
         ],
         editing: {
@@ -5258,7 +5420,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 										cellInfo.setValue(selectedItem.TaxCodeToDisplay);
 										let dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 										let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
-										let TaxSlabCode = selectedItem.TaxSlabCode;
+									    TaxSlabCode = selectedItem.TaxSlabCode;
 
 										VATPercentage(selectedItem.TaxRate, rowIndex, TaxSlabCode)
 										 dataGrid.saveEditData();	
@@ -5280,6 +5442,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 											let selectedItem = selectedItems.selectedRowsData[0];
 											if (selectedItem) {
 												e.component.option("value", selectedItem.TaxSlabCode);
+                                                TaxSlabCode = selectedItem.TaxSlabCode;
 												cellInfo.setValue(selectedItem.TaxCodeToDisplay);
 
 												e.component.close();
@@ -5292,37 +5455,120 @@ editCellTemplate: function (cellElement, cellInfo) {
 					}
 				},
 
-						{
-	  dataField: formatMessage('ExcemptionCode'),
-	  caption: formatMessage('Excemption Code'),
-	  cssClass: "center-header",
-	  width: 150,
-	  allowEditing: false,
-	  cellTemplate: function (container, options) {
-		const buttonId = "ExcemptionCodeBtn_" + options.rowIndex;
+	// 					{
+	//   dataField: 'ExcemptionCode',
+	//   caption: formatMessage('Excemption Code'),
+	//   cssClass: "center-header",
+	//   width: 150,
+	//   allowEditing: false,
+	//   cellTemplate: function (container, options) {
+	// 	const buttonId = "ExcemptionCodeBtn_" + options.rowIndex;
 
-		// Create div and append first
-		const $btn = $("<div>").attr("id", buttonId).appendTo(container);
+	// 	// Create div and append first
+	// 	const $btn = $("<div>").attr("id", buttonId).appendTo(container);
 
-		// Then initialize dxButton
-		$btn.dxButton({
-		  icon: "fa fa-percentage",
-		  hint: "Sales Exemption",
-		  stylingMode: "text",
-		  width: 60,
-		  onClick: function (e) {
-			onexemptionCodeClick(e.element[0]);
-		  }
-		});
-	  }
-	},
+	// 	// Then initialize dxButton
+	// 	$btn.dxButton({
+	// 	  icon: "fa fa-percentage",
+	// 	  hint: "Sales Exemption",
+	// 	  stylingMode: "text",
+	// 	  width: 60,
+	// 	  onClick: function (e) {
+	// 		//onexemptionCodeClick(e.element[0]);
+	// 		 showExemptionPopover(options.rowIndex, e.element);
+	// 	  }
+	// 	});
+	//   }
+	// },
+{
+  dataField: 'ExcemptionCode',
+  caption: formatMessage('Excemption Code'),
+  cssClass: "center-header",
+  width: 150,
+  allowEditing: false,
+  cellTemplate: function (container, options) {
+    const buttonId = "ExcemptionCodeBtn_" + options.rowIndex;
+    const popoverId = "ExcemptionPopover_" + options.rowIndex;
 
+    // Create button
+    $("<div>").attr("id", buttonId).appendTo(container).dxButton({
+      icon: "fa fa-percentage",
+      hint: "Sales Exemption",
+      stylingMode: "text",
+      width: 60,
+      onClick: function () {
+        // Fetch reasons first
+        getExemptionCode(options.rowIndex, function (reasons) {
+          // Initialize popover dynamically
+          if (!$("#"+popoverId).length) {
+            $("<div>").attr("id", popoverId).appendTo("body");
+          }
 
+          $("#"+popoverId).dxPopover({
+            target: "#"+buttonId,
+            showTitle: false,
+            shading: true,
+            shadingColor: "rgba(0,0,0,0.3)",
+            position: "bottom",
+            width: 350,
+            contentTemplate: function (contentElement) {
+              // Build template fresh
+              contentElement.append(`
+                <h4 class="title">Select the Tax Exemption Reason:</h4>
+                <div id="radioGroup_${options.rowIndex}" class="radio-section"></div>
+                <div class="button-group mt-2">
+                  <div id="okButton_${options.rowIndex}"></div>
+                  <div id="closeButton_${options.rowIndex}"></div>
+                </div>
+              `);
 
+              // Radio group
+              $("#radioGroup_"+options.rowIndex).dxRadioGroup({
+                items: reasons,
+                layout: "vertical",
+                value: reasons.length > 0 ? reasons[0] : null,
+                stylingMode: "outlined"
+              });
 
-						{ dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150,allowEditing: false,alignment: "right" },
+              // OK button
+              $("#okButton_"+options.rowIndex).dxButton({
+                text: "OK",
+                type: "success",
+                icon: "check",
+                onClick: function () {
+                  const selected = $("#radioGroup_"+options.rowIndex).dxRadioGroup("instance").option("value");
+                  DevExpress.ui.notify("Selected: " + selected, "success", 2000);
 
-						{ dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 },allowEditing: false,alignment: "right", },
+                  // update grid cell
+                  const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                  grid.cellValue(options.rowIndex, "ExcemptionCode", selected);
+
+                  $("#"+popoverId).dxPopover("instance").hide();
+                }
+              });
+
+              // Close button
+              $("#closeButton_"+options.rowIndex).dxButton({
+                text: "Close",
+                type: "normal",
+                icon: "close",
+                onClick: function () {
+                  $("#"+popoverId).dxPopover("instance").hide();
+                }
+              });
+            }
+          });
+
+          // Show popover after init
+          $("#"+popoverId).dxPopover("instance").show();
+        });
+      }
+    });
+  }
+},
+				    { dataField: "CalcTaxAmount", caption: formatMessage('VAT'), cssClass: "center-header",width: 150,allowEditing: false,alignment: "right" },
+
+				    { dataField: "LineTotal", caption: formatMessage('Total'), cssClass: "center-header",width: 150, format: { type: "fixedPoint", precision: 2 },allowEditing: false,alignment: "right", },
 
 					{ dataField: "TaxSlabCode", caption: formatMessage('TaxSlabCode'), width: 150, allowEditing: false, visible: false }
 
@@ -5445,41 +5691,54 @@ $("#btnAddNew").on("click", function (e) {
 				}
 			}
 
-			// 	function onCalCardClick(cellElement) {
-			// 		const popover = $("#CalcardPopover").dxPopover("instance");
 
-			// 	// Set the new target element for the popover
-			// 	popover.option("target", cellElement);
+			
+		$(function () {
+            $("#ExcemptioncodePopover").dxPopover({
+                width: 550,
+				visible: false,
+                position: "bottom",
+                showEvent: "",
+                hideEvent: "",
+                hideOnOutsideClick: false,
 
-			// 	if (popover.option("visible")) {
-			// 		popover.hide();
-			// 	} else {
-			// 		popover.show();
-			// 	}
-			// }
-				function onexemptionCodeClick(cellElement) {
-		const $popover = $("#ExcemptioncodePopover");
+            });
+        });
 
-		if (!$popover.length || !$popover.hasClass("dx-popover")) {
-			console.error("Popover not initialized or not rendered yet.");
-			return;
-		}
+			function showExemptionPopover(rowIndex, targetElement) {
+		debugger;
+    const grid = $("#B2BdataGrid").dxDataGrid("instance");
+    const TaxSlabCode = grid.cellValue(rowIndex, "TaxSlabCode") || 0;
+ 
 
-		const popover = $popover.dxPopover("instance");
+		const popover = $("#ExcemptioncodePopover").dxPopover("instance");
+		 popover.option("target", targetElement);
 
-		if (!popover) {
-			console.error("Popover instance not found.");
-			return;
-		}
+// Dynamically update the popover contentTemplate with row-specific URL
+popover.option("contentTemplate", function (contentElement) {
+    contentElement.empty();
 
-		popover.option("target", cellElement);
+    $.ajax({
+      	url: `/api/VATModule/VATSalesTaxExemption?TaxSlabCode=${encodeURIComponent(TaxSlabCode)}`,
+        type: 'GET',
+        success: function (data) {
+            contentElement.html(data);
+        },
+        error: function () {
+            contentElement.html("<div style='color:red;'>Failed to load content.</div>");
+        }
+    });
+});
 
-		if (popover.option("visible")) {
-			popover.hide();
-		} else {
-			popover.show();
-		}
-	}
+// Show the popover
+if (popover.option("visible")) {
+    popover.hide();
+	 
+} else {
+   popover.show();
+}
+}
+			
 
 
 			$(function () {
@@ -5519,44 +5778,8 @@ $(function () {
                 hideOnOutsideClick: false,
 
             });
-
-
         });
-			
-	// 		$(function () {
-	// 	$("#CalcardPopover").dxPopover({
-	// 		width: 550,
-	// 		position: "bottom",
-	// 		showEvent: "", // Manual control
-	// 		hideEvent: "", // Manual control
-	// 		hideOnOutsideClick: true,
-	// 		contentTemplate: function (contentElement) {
-	// 			contentElement.empty();
-	// 					   debugger;
-	// 			const grid = $("#B2BdataGrid").dxDataGrid("instance");
 
-	// 	// Get required values from grid for the specific row
-	// 	const qty = grid.cellValue(rowIx, "QuantityInvoiced") || 0;
-	// 	const unitPrice = grid.cellValue(rowIx, "UnitRate") || 0;
-
-
-	// 	// Calculate the raw amount
-	// 	let amount = qty * unitPrice;
-
-
-	// 			$.ajax({
-	// 				url: `/api/VATModule/VATPercentageCal?amount=${encodeURIComponent(amount)}`,
-	// 				type: 'GET',
-	// 				success: function (data) {
-	// 					contentElement.html(data);
-	// 				},
-	// 				error: function () {
-	// 					contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-	// 				}
-	// 			});
-	// 		}
-	// 	});
-	// });
 
 	function showCalcPopover(rowIndex, targetElement) {
 		debugger;
@@ -5593,37 +5816,6 @@ if (popover.option("visible")) {
    popover.show();
 }
 }
-
-
-
-				$(function () {
-		if ($("#ExcemptioncodePopover").length && !$("#ExcemptioncodePopover").hasClass("dx-popover")) {
-			$("#ExcemptioncodePopover").dxPopover({
-				
-				width: 550,
-				position: "bottom",
-				showEvent: "", // manual control
-				hideEvent: "", // manual control
-				hideOnOutsideClick: true,
-				contentTemplate: function (contentElement) {
-					contentElement.empty();
-						debugger
-					$.ajax({
-						url: "/api/VATModule/VATSalesTaxExemption", // ✅ Make sure this exists
-						type: "GET",
-						success: function (data) {
-							contentElement.html(data);
-						},
-						error: function () {
-							contentElement.html("<div style='color:red;'>Failed to load content.</div>");
-						}
-					});
-				}
-			});
-		}
-	});
-
-
 
 			// Fetch dropdown data (same API can be used if needed)
 				function getDropdownData() {
@@ -8073,7 +8265,7 @@ if (popover.option("visible")) {
 
 
 				function VATPercentage(newValue, rowIndex, TaxSlabCode) {
-
+					debugger;
 					let grid = $("#B2BdataGrid").dxDataGrid("instance");
 					
 
@@ -8099,7 +8291,6 @@ if (popover.option("visible")) {
 					grid.cellValue(rowIndex, "VAT", formatAmount(vatValue));
                     grid.cellValue(rowIndex, "Total", formatAmount(totalValue));
                     grid.cellValue(rowIndex, "Unit Price", formatAmount(unitPrice));
-                    grid.cellValue(rowIndex, "Total Before Discount", formatAmount(TotalAmtBeforeDiscount));
                     grid.cellValue(rowIndex, "Amount", formatAmount(amount));
                     grid.cellValue(rowIndex, "Discount", formatAmount(discount));
                     grid.cellValue(rowIndex, "Qty", formatAmount(qty));
@@ -10355,5 +10546,36 @@ $(function () {
         $("#QuotationDeliveryDetails").text(formatMessage("Quotation / Delivery Details"));
     });
 
+
+function getExemptionCode(rowIndex, callback) { 
+  const grid = $("#B2BdataGrid").dxDataGrid("instance");
+  const TaxSlabCode = grid.cellValue(rowIndex, "TaxSlabCode") || 0;
+
+  $.ajax({
+    url: `/api/VATModule/GetByTaxSlabCode?TaxSlabCode=${encodeURIComponent(TaxSlabCode)}`,
+    type: "GET",
+    dataType: "json",
+    success: function (response) {
+      if (response && response.data) { 
+        const reasons = response.data.map(item => item.TaxExemptionReason);
+        console.log("Reasons from API:", reasons);
+		//alert("2")
+
+
+		alert("hi")
+        callback(reasons);
+      } else {
+        callback([]);
+      }
+    },
+    error: function (xhr, status, error) {
+      console.error("Error fetching reasons:", error);
+      callback([]);
+    }
+  });
+}
+
+
+	
 </script>
 
