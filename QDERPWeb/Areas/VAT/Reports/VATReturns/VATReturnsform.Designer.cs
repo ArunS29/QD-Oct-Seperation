@@ -1292,7 +1292,7 @@
             this.xrLabel103.StylePriority.UseBorders = false;
             this.xrLabel103.StylePriority.UseFont = false;
             this.xrLabel103.StylePriority.UseTextAlignment = false;
-            this.xrLabel103.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel103.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel103.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel102
@@ -2401,7 +2401,7 @@
             this.xrLabel5.StylePriority.UseBorders = false;
             this.xrLabel5.StylePriority.UseFont = false;
             this.xrLabel5.StylePriority.UseTextAlignment = false;
-            this.xrLabel5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel5.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel5.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel4
@@ -2422,7 +2422,7 @@
             this.xrLabel4.StylePriority.UseBorders = false;
             this.xrLabel4.StylePriority.UseFont = false;
             this.xrLabel4.StylePriority.UseTextAlignment = false;
-            this.xrLabel4.TextAlignment = DevExpress.XtraPrinting.TextAlignment.TopRight;
+            this.xrLabel4.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel4.TextFormatString = "{0:#,##0.00}";
             // 
             // xrLabel47
