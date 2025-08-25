@@ -404,7 +404,7 @@
                         .TabIndex(1)
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
-						.DropDownOptions(d => d.Width(700))
+						.DropDownOptions(d => d.Width(230))
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
 						.Buttons(buttons =>
@@ -493,7 +493,7 @@
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
-							.DropDownOptions(d => d.Width(500))
+							.DropDownOptions(d => d.Width(230))
                         .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
 						.Buttons(buttons =>
 							{
@@ -533,7 +533,7 @@
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
-						.DropDownOptions(d => d.Width(500))
+						.DropDownOptions(d => d.Width(350))
                         .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
 						.Buttons(buttons =>
 							{
@@ -572,7 +572,7 @@
                         .TabIndex(1)
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
-						.DropDownOptions(d => d.Width(800))
+						.DropDownOptions(d => d.Width(350))
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetProjectdataContentTemplate"))
                         )
@@ -721,7 +721,7 @@
             <div class="dx-card p-3">
                 <div class="row g-2">
                     <div class="col-md-4">
-                        <div>
+                        <div style="display: flex;flex-direction: column;gap: 7px;margin-top: 1px;">
                             @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Company Branch/Division:')"))
                             .DataSource(d => d.WebApi()
@@ -849,9 +849,8 @@
                         </div>
                     </div>
 
-                    <!-- Column 3 -->
-                    <div class="col-md-3">
-                        <div>
+                    <div class="col-md-3" >
+                        <div style="display: flex;flex-direction: column;gap: 3px;margin-top: 7px;">
                             <div class="row mb-2">
                                 <div class="col-6">
                                     @(Html.DevExtreme().TextBox()
@@ -1116,7 +1115,7 @@
 						.OnOpened("onOpened")
 						.TabIndex(1)
 						.Disabled(true) // Entire DropDownBox is disabled
-						.DropDownOptions(o => o.Width(470))
+						.DropDownOptions(o => o.Width(430))
 						.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
 						.Width("100%")
 						.Buttons(buttons =>
@@ -1156,7 +1155,7 @@
 					    .OnInput("dropDownBoxOnInput")
 					    .OnOpened("onOpened")
 					    .TabIndex(1)
-					    .DropDownOptions(o => o.Width(470))
+					    .DropDownOptions(o => o.Width(425))
 					    .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
 					    .Width("100%")
 					    .Buttons(buttons =>
@@ -1829,7 +1828,7 @@
                         .OnInitialized("dataGridInitialized10")
                         .HeaderFilter(p => p.Visible(true))
                         .ShowBorders(true)
-						.Width(450)
+						.Width(500)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(false))//
@@ -1864,7 +1863,7 @@
                         .OnInitialized("dataGridInitialized11")
                         .HeaderFilter(p => p.Visible(true))
                         .ShowBorders(true)
-						.Width(450)
+						.Width(429)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
                         .FilterRow(f => f.Visible(false))//
@@ -1904,7 +1903,7 @@
                         .FilterRow(f => f.Visible(false))//
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
-						.Width(540)
+						.Width(482)
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
@@ -2009,7 +2008,7 @@
 	}
 	function AddTypeReq() {
 		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = " ";
+		const title = "Quotation Type Of Request";
 		openModal(url, title);
 	}
 	function AddQuoteStatus() {
@@ -6926,7 +6925,7 @@ AddlDescription: null,
 
 	function AddPreparedBy() {
 		const url = `/${tenantName}/IMS/Signatories`;
-		const title = " ";
+		const title = "Signatories";
 		openModal(url, title,"","75%");
 	}
 
@@ -6940,11 +6939,7 @@ AddlDescription: null,
 		const title = " ";
 		openModal(url, title);
 	}
-	function AddTypeReq() {
-		const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-		const title = " ";
-		openModal(url, title);
-	}
+	
 	 function AddNewClient(){
 				const url = `/${tenantName}/IMS/ClientLeadMaster`;
   const title = " ";

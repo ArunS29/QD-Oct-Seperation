@@ -790,7 +790,7 @@
                                                             .OnOpened("onOpened")
                                                             .TabIndex(1)
                                                             .Disabled(true) // Entire DropDownBox is disabled
-                                                            .DropDownOptions(o => o.Width(470))
+                                                            .DropDownOptions(o => o.Width(430))
                                                             .ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
                                                             .Width("100%")
                                                             .Buttons(buttons =>
@@ -830,7 +830,7 @@
                                                             .OnInput("dropDownBoxOnInput")
                                                             .OnOpened("onOpened")
                                                             .TabIndex(1)
-                                                            .DropDownOptions(o => o.Width(470))
+                                                            .DropDownOptions(o => o.Width(430))
                                                             .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
                                                             .Width("100%")
                                                             .Buttons(buttons =>
@@ -1321,7 +1321,7 @@
     }
     function AddTypeReq(){
         const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-        const title = "";
+        const title = "Quotation Type Of Request";
             openModal(url, title);
     }
     function AddQuoteStatus(){
@@ -1383,7 +1383,7 @@
     }
     function AddPreparedBy(){
             const url = `/${tenantName}/IMS/Signatories`;
-            const title = "";
+            const title = "Signatories";
             openModal(url, title);
           }
           function dataGridPreparedByHeadInitialized(e) {

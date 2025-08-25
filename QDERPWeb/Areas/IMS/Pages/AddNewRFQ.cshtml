@@ -658,7 +658,7 @@
                                                 .OnOpened("onOpened")
                                                 .TabIndex(1)
                                                 .Disabled(true) // Entire DropDownBox is disabled
-                                                .DropDownOptions(o => o.Width(470))
+                                                .DropDownOptions(o => o.Width(430))
                                                 .ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
                                                 .Width("100%")
                                                 .Buttons(buttons =>
@@ -698,7 +698,7 @@
                                                 .OnInput("dropDownBoxOnInput")
                                                 .OnOpened("onOpened")
                                                 .TabIndex(1)
-                                                .DropDownOptions(o => o.Width(470))
+                                                .DropDownOptions(o => o.Width(430))
                                                 .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
                                                 .Width("100%")
                                                 .Buttons(buttons =>
@@ -926,7 +926,7 @@
 									.AllowColumnReordering(true)
 									.AllowColumnResizing(true)
 									.ColumnFixing(fixing => fixing.Enabled(true))
-									.Height("45vh")
+									.Height("35vh")
 									.ColumnAutoWidth(true)
 									.FilterRow(filterRow => filterRow.Visible(false))
 									.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -5705,7 +5705,7 @@ $("#btnCreatePo").on("click", function () {
 
 		 function AddPreparedBy(){
 				const url = `/${tenantName}/IMS/Signatories`;
-			  const title = "";
+			  const title = "Signatories";
 				  openModal(url, title);
 		  }
 
