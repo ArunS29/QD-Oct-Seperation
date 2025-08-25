@@ -535,7 +535,7 @@
                                 {
                                     columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(80);
                                     columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
-                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center).Width(300);
+                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center);
                                 })
                                 )
         }
@@ -1119,7 +1119,7 @@
 
         function redirectToSupplierContact() {
             let url = `/${tenantName}/IMS/SupplierContactList`;
-            let title = "";
+            let title = "Supplier Contact List";
             openModal(url, title);
         }
         //Imageupload
