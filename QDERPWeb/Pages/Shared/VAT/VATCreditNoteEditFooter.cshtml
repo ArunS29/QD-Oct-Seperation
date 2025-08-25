@@ -468,7 +468,31 @@
 
 <script type="text/javascript">
 
-        function navigateCreditInventoryCost() {
+               $.get("/api/VoucherMaster/GetDefaultCurrencyDecimalsCredit", function (res) {
+        if (res && res.ShowVatButtons) { // <-- Fix property name
+            var dropdown = $("#btnPrint23").dxDropDownButton("instance");
+            var items = dropdown.option("items");
+
+            // Insert after the first two buttons
+            items.splice(2, 0,
+                {
+                    text: "Preview Credit Note (English Only)",
+                    icon: "print",
+                    color: "#009688" // Teal
+                },
+                {
+                    text: "Preview Credit Note Eng (Foreign Currency)",
+                    icon: "money",
+                    color: "#3F51B5" // Indigo
+                }
+            );
+
+            dropdown.option("items", items);
+        }
+    });
+
+
+            function navigateCreditInventoryCost() {
         // Replace with the actual tenant name dynamically
         var url = `/${tenantName}/VAT/CreditInventorycost`;
         window.location.href = url; // Navigate to the page
@@ -1330,6 +1354,12 @@
                         break;
                     case "Preview Credit Note(Foreign Currency)":
                         reportName = "CreditForeignCurrency";
+                        break;
+                    case "Preview Credit Note (English Only)":
+                        reportName = "PreviewCreditNoteEnglishOnly";
+                        break;
+                    case "Preview Credit Note Eng (Foreign Currency)":
+                        reportName = "PreviewCreditNoteForeignCurrency";
                         break;
 
                     default:

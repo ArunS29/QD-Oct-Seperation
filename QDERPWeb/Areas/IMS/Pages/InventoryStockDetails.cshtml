@@ -16,7 +16,6 @@
     .form-tablee {
         width: 100%;
         border-collapse: separate;
-        border-spacing: 6px;
     }
 
     .inline-icon {
@@ -183,6 +182,14 @@
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
 <input id="formId" value="frm60001InventoryStockEdit" type="hidden" />
+<div class="dx-card-container">
+	<div class="dx-card-header minimal-header">
+		<div class="card-title-icon">
+			<i class="fas fa-file-invoice-dollar"></i>
+		</div>
+		<div id="InventoryStockDetails" class="titleText no-border-title"></div>
+	</div>
+</div>
 <div class="containerInventoryStock">
 
         <div class="dx-fieldset horizontal-container">
@@ -866,7 +873,7 @@
                         </tr>
 
                         <!-- Item Code & Attributes -->
-                        <tr class="flex-row" style="margin-top: 6px;">
+                        <tr class="flex-row" style="margin-top: 35px;">
                             <td>
                             @(Html.DevExtreme().TextBox()
                                 .ID("ItemPartNo")
@@ -901,7 +908,7 @@
                                 .LabelMode(EditorLabelMode.Floating))
                             </td>
                         </tr>
-                        <tr class="flex-row">
+                        <tr class="flex-row" style="margin-top: 40px;">
                            
                             <td>
                                 @(Html.DevExtreme().SelectBox()
@@ -923,7 +930,7 @@
 
                         
                         </tr>
-                    <tr class="flex-row" style="margin-top: 6px;">
+                    <tr class="flex-row">
                         <td>
                             @(Html.DevExtreme().TextBox()
                                 .ID("AvgCostPrice")
@@ -1183,7 +1190,7 @@
                 <!-- Filter/Info Section -->
                 <div class="dx-fieldset horizontal-container ">
 
-                    <table style="margin-bottom: 15px;">
+                    <table>
                         <tr>
                             <td>
                             <td>
@@ -1236,7 +1243,7 @@
 
                     </table>
                 </div>
-                <table style="margin-left: 13px;">
+                <table style="margin-left: 6px;">
                    
                     <tr>
 
@@ -1267,14 +1274,14 @@
                     </tr>
                 </table>
                 <!-- Spacer (optional) -->
-                    <table style="width:100%; margin-top: 15px;">
+                    <table style="width:100%;">
                    
                         <tr>
                             <td>
                             @(Html.DevExtreme().DataGrid()
                                 .ID("stockCardGrid")
                                 .OnInitialized("onStockGridInitialized")
-                                .Height(310)
+                                .Height(290)
                                 .Columns(columns =>
                                 {
                                     columns.Add().DataField("ReceiptNo").Caption(new JS("formatMessage('Document No')")).Alignment(HorizontalAlignment.Center);
@@ -1389,12 +1396,6 @@
                       });
 
                       stockGridInstance.option("dataSource", dataStore);
-                    }
-
-
-
-                    function printReport() {
-                        alert("Print report clicked");
                     }
                    function ViewStockMovementNavigation(){
                       window.location.href =`/${tenantName}/IMS/StockMovementReport`;
@@ -1542,7 +1543,7 @@
 
             <div id="tab-content-4" class="tab-content">
                 <div>
-                <div>
+                <div style="padding:10px;">
 
                     @using DevExtreme.AspNet.Mvc
                     @using DevExtreme.AspNet.Mvc.Builders
@@ -1558,12 +1559,12 @@
                     .ElementAttr(new { @class = "bold-button" }) 
                     )
 
-                    <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                    <div class="dx-card " style="border:none;">
                        
 
                     @(Html.DevExtreme().DataGrid()
                         .ID("invoiceGrid")
-                        .Height(390)
+                        .Height(350)
                         .OnInitialized("onInvoiceGridInitialized")
                         .ShowBorders(true)
                         .ShowColumnLines(true)
@@ -1664,7 +1665,7 @@
                 </div>
             </div>
             <div id="tab-content-5" class="tab-content">
-                <div>
+                <div style="padding:10px;">
 
                 
             @{
@@ -1681,12 +1682,12 @@
             )
 
 
-                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                <div class="dx-card " style="border:none;">
 
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("quotationGrid")
-                    .Height(390)
+                    .Height(350)
                     .ShowBorders(true)
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -1766,7 +1767,7 @@
            
 
             <div id="tab-content-6" class="tab-content">
-                <div>
+                <div style="padding:10px;">
 
 
             @{
@@ -1783,12 +1784,12 @@
             .ElementAttr(new { @class = "bold-button" }) 
             )
 
-                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                <div class="dx-card " style="border:none;">
                     
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("PurchaseOrderGrid")
-                    .Height(390)
+                    .Height(350)
                     .DataSource(Enumerable.Empty<object>())  // initially empty, or dummyData if you want placeholder
                     .ShowBorders(true)
                     .ShowColumnLines(true)
@@ -1866,7 +1867,7 @@
                 </div>
             </div>
         <div id="tab-content-7" class="tab-content">
-            <div>
+            <div style="padding:10px;">
 
 
             @{
@@ -1882,12 +1883,12 @@
             .ElementAttr(new { @class = "bold-button" }) 
             )
 
-                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                <div class="dx-card " style="border:none;">
 
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("ItemDeliversGrid")
-                    .Height(390)
+                    .Height(350)
                     .ShowBorders(true)
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -1981,7 +1982,7 @@
         </div>
 
             <div id="tab-content-8" class="tab-content">
-                <div>
+                <div style="padding:10px;">
 
                 @{
                 ViewBag.Title = "Item Received Grid";
@@ -2000,12 +2001,12 @@
             )
 
 
-                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                <div class="dx-card " style="border:none;">
 
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("ItemReceivedGrid")
-                    .Height(390)
+                    .Height(350)
                     .DataSource(Enumerable.Empty<object>()) // Initially empty
                     .ShowBorders(true)
                     .ShowColumnLines(true)
@@ -2088,7 +2089,7 @@
                 </div>
             </div>
         <div id="tab-content-9" class="tab-content">
-            <div>
+            <div style="padding:10px;">
 
 
             @{
@@ -2110,11 +2111,11 @@
 
 
 
-                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                <div class="dx-card " style="border:none;">
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("UnitConversionGrid")
-                    .Height(390)
+                    .Height(350)
                     .ShowBorders(true)
                     .ShowColumnLines(true)
                     .ShowRowLines(true)
@@ -2399,11 +2400,11 @@
                     .toolbar-container {
                         display: flex;
                         gap: 10px;
-                        padding: 1% 1% 1% 1%;
                     }
 
                 </style>
                 <!-- Filter/Info Section -->
+                <div style="padding:10px;">
                 <div class="toolbar-container">
                   
                     @(Html.DevExtreme().Button()
@@ -2429,11 +2430,9 @@
                         )
                     </div>
 
-                    <br />
-                    <div>
                     @(Html.DevExtreme().DataGrid()
                         .ID("documentGrid")
-                        .Height(360)
+                        .Height(340)
                         .Width("100%")
                         .ShowBorders(true)
                         .ShowColumnLines(true)
@@ -2570,7 +2569,7 @@
             </div>
         </div>
         <div id="tab-content-11" class="tab-content">
-            <div>
+            <div style="padding:10px;">
 
 
             @{
@@ -2590,12 +2589,12 @@
                     .ElementAttr(new { @class = "bold-button" }) 
                 )
 
-                <div class="dx-card " style="background-color:transparent; border:none;padding:10px;">
+                <div class="dx-card " style="border:none;">
 
 
                 @(Html.DevExtreme().DataGrid()
                     .ID("PurchaseGrid")
-                    .Height(390)
+                    .Height(350)
                     .DataSource(Enumerable.Empty<object>()) 
                     .ShowBorders(true)
                     .ShowColumnLines(true)
@@ -2985,20 +2984,15 @@
           // Show the corresponding content
           $("#tab-content-" + (selectedTabIndex + 1)).show();
       });
-
-        
-         $(function () {
-            $("#InventoryStockDetails").dxTextBox({
-                text: formatMessage("Inventory Stock Details"),
-              readOnly: true,
-              onContentReady: function(e) {
-                          $(e.element).addClass("dx-textbox-heading");
-                  }
-
-          });
-      });
-
-      //////
+    $(function () {
+		$("#InventoryStockDetails").dxTextBox({
+		text: formatMessage("Inventory Stock Details"),
+			readOnly: true,
+			onContentReady: function (e) {
+				$(e.element).addClass("dx-textcolor-heading");
+			}
+			});
+		});
     let isEditMode = false;
     let isViewMode = false;
 

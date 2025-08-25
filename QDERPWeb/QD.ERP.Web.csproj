@@ -50,6 +50,7 @@
 		<PackageReference Include="Azure.Communication.Email" Version="1.0.1" />
 		<PackageReference Include="BuildBundlerMinifier" Version="3.2.449" />
 		<PackageReference Include="DevExpress.AspNetCore.Reporting" Version="24.1.6" />
+		<PackageReference Include="DevExpress.AspNetCore.RichEdit" Version="24.1.6" />
 		<PackageReference Include="DevExpress.Document.Processor" Version="24.1.6" />
 		<PackageReference Include="DevExpress.Drawing.Skia" Version="24.1.6" />
 		<PackageReference Include="DevExpress.Office.Core" Version="24.1.6" />
