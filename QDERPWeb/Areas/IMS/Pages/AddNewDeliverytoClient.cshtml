@@ -1693,13 +1693,13 @@
         dataField: "MinQty",
         caption: formatMessage('MinQty'),
         width: 200,
-        visible: false // Correct way to hide the column
+        visible: true // Correct way to hide the column
     },
                                        {
         dataField: "MaxQty",
             caption: formatMessage('MaxQty'),
         width: 200,
-        visible: false // Correct way to hide the column
+        visible: true // Correct way to hide the column
     },
     {
         dataField: "Qty",
@@ -2168,5 +2168,33 @@
             openModal(url, 'Client Contact List');
         });
     }
+             $(function () {
+          const dateBox = $("#deliveryNoteDate").dxDateBox("instance");
 
+        // When focus/typing starts, change to dd-MM-yyyy
+          $("#deliveryNoteDate").on("focusin", function () {
+            dateBox.option("displayFormat", "dd-MM-yyyy");
+        });
+
+        // When focus/typing ends, change back to dd-MMM-yyyy
+          $("#deliveryNoteDate").on("focusout", function () {
+            dateBox.option("displayFormat", "dd-MMM-yyyy");
+        });
+    });
+     $(function () {
+          const dateBox = $("#ClientPODate").dxDateBox("instance");
+
+        // When focus/typing starts, change to dd-MM-yyyy
+          $("#ClientPODate").on("focusin", function () {
+            dateBox.option("displayFormat", "dd-MM-yyyy");
+        });
+
+        // When focus/typing ends, change back to dd-MMM-yyyy
+          $("#ClientPODate").on("focusout", function () {
+            dateBox.option("displayFormat", "dd-MMM-yyyy");
+        });
+    });
+       $("#btnBack").on("click", function (e) {
+                  history.back();
+                      });
    </script>

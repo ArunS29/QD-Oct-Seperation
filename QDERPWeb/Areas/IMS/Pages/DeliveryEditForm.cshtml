@@ -384,6 +384,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientContactNo")
                         .Label("Client Contact No:")
+                                                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -466,6 +467,7 @@
                         .Mode(TextBoxMode.Email)
                         .Label("Client Email:")
                         .LabelMode(EditorLabelMode.Floating)
+                                                    .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%")
                         )
                     </div>
@@ -2306,4 +2308,33 @@
                 }
             }
         }
+           $(function () {
+            const dateBox = $("#deliveryNoteDate").dxDateBox("instance");
+
+          // When focus/typing starts, change to dd-MM-yyyy
+            $("#deliveryNoteDate").on("focusin", function () {
+              dateBox.option("displayFormat", "dd-MM-yyyy");
+          });
+
+          // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#deliveryNoteDate").on("focusout", function () {
+              dateBox.option("displayFormat", "dd-MMM-yyyy");
+          });
+      });
+       $(function () {
+            const dateBox = $("#ClientPODate").dxDateBox("instance");
+
+          // When focus/typing starts, change to dd-MM-yyyy
+            $("#ClientPODate").on("focusin", function () {
+              dateBox.option("displayFormat", "dd-MM-yyyy");
+          });
+
+          // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#ClientPODate").on("focusout", function () {
+              dateBox.option("displayFormat", "dd-MMM-yyyy");
+          });
+      });
+         $("#btnBack").on("click", function (e) {
+                  history.back();
+                      });
    </script>
