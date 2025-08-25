@@ -32,7 +32,7 @@
                 .Hint("Click to go back")
                 .Width(150)
                 .ElementAttr(new { @class = "dx-button-custom btn-back" })
-                .OnClick("onBackButtonClick")
+               
                 )
     </div>
     <div class="btn-container">
@@ -571,10 +571,7 @@
    
 
 
-    
-    function onBackButtonClick(e) {
-        window.history.back();
-    }
+ 
 
         function onDeleteClick() {
         const gscode = $("#StockNoItemCode").dxTextBox("instance").option("value");
