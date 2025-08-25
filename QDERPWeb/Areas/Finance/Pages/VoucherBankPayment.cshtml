@@ -1773,8 +1773,8 @@
             }
 
 
-        function addVoucherEntry() {
-         var btn = $("#btnVoucherEntry").dxButton("instance");
+         function addVoucherEntry() {
+        var btn = $("#btnVoucherEntry").dxButton("instance");
 
         // Disable button + show loading
         btn.option({
@@ -1782,44 +1782,52 @@
             icon: "spinner", // built-in spinner icon
             text: "Loading..."
         });
-        debugger;
-        var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
-        var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
-        var griddatacount = rowCount;
-        var voucherNo = ""; // Declare with var (or let), and initialize properly
-            const urlParams = new URLSearchParams(window.location.search);
-                const argsledno = urlParams.get("argsledno");
 
-        if (griddatacount === 0 && !argsledno) {
-            // Fetch new voucher number via AJAX
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var griddatacount = rowCount;
+
+        // Get VoucherNo TextBox value
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const argsledno = urlParams.get("argsledno");
+
+        // ✅ Case 1: If VoucherNo is already set → directly continue
+        if (voucherNo && voucherNo.trim() !== "") {
+            continueVoucherEntryWithVoucherNo(voucherNo);
+            return;
+        }
+
+        // ✅ Case 2: If VoucherNo not set, and grid empty, and no argsledno → fetch new one
+        if (!voucherNo && griddatacount === 0 && !argsledno) {
             $.ajax({
                 type: "GET",
-                url: "/api/VoucherMaster/GetNewBPVoucherNo", // Replace with your actual controller route
+                url: "/api/VoucherMaster/GetNewBPVoucherNo",
                 success: function (response) {
                     if (!response || response.success === false) {
                         DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
                         return;
                     }
 
-                    // Assuming response is the voucher number as a raw string
+                    // response is the voucher number
                     voucherNo = response;
                     $("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
 
-                    // Call the remaining logic using the retrieved voucher number
                     continueVoucherEntryWithVoucherNo(voucherNo);
-                     isVoucherSaved = true; // Mark Updated step as done
-                     updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
+                    isVoucherSaved = true;
+                    updateWorkflowVisual(getWorkflowStatusFromFields());
                 },
                 error: function (xhr, status, error) {
                     DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
                 }
             });
         } else {
-            // If rows exist, reuse the existing voucher number from the text box
-            voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+            // ✅ Case 3: If VoucherNo is null but grid has rows or argsledno is present → reuse textbox (might still be empty)
             continueVoucherEntryWithVoucherNo(voucherNo);
         }
     }
+
 
 
     function continueVoucherEntryWithVoucherNo(voucherNo) {
@@ -2030,6 +2038,7 @@ accountGrid.clearSelection();
                     }, 500);
                 },
                 error: function (xhr, status, error) {
+                         resetVoucherButton();
                     alert("Error occurred while updating data: " + error);
                 }
             });
@@ -2089,6 +2098,7 @@ accountGrid.clearSelection();
                     
                 },
                 error: function (xhr, status, error) {
+                         resetVoucherButton();
                     alert("Error occurred while updating data: " + error);
                 }
             });
@@ -2097,6 +2107,7 @@ accountGrid.clearSelection();
 
         } else {
             IsNotification=true;
+                 resetVoucherButton();
                          // Append the stored value back when the user clicks Add again
     if (storedAccountHead) {
 
@@ -2128,9 +2139,9 @@ accountGrid.clearSelection();
 
      //   }
 
-    
-    
-    
+
+
+         resetVoucherButton();
     
     
     
@@ -3315,25 +3326,25 @@ accountGrid.clearSelection();
             }
             else if(argsledno==null)
             {
-                $(function () {
+                // $(function () {
                     
-                    debugger;
-                    $.ajax({
-                        url: "/api/VoucherMaster/GetNewBPVoucherNo",
-                        type: 'GET',
-                        success: function (data) {
-                            // Set the value in the VoucherNo TextBox
-                            $("#VoucherNo").dxTextBox("instance").option("value", data);
+                //     debugger;
+                //     $.ajax({
+                //         url: "/api/VoucherMaster/GetNewBPVoucherNo",
+                //         type: 'GET',
+                //         success: function (data) {
+                //             // Set the value in the VoucherNo TextBox
+                //             $("#VoucherNo").dxTextBox("instance").option("value", data);
 
-                            // Retrieve the value from the TextBox
-                            var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-                                getDocumentCount();
-                        },
-                        error: function (xhr, status, error) {
-                            console.error("Error loading Voucher No:", error);
-                        }
-                    });
-                });
+                //             // Retrieve the value from the TextBox
+                //             var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+                //                 getDocumentCount();
+                //         },
+                //         error: function (xhr, status, error) {
+                //             console.error("Error loading Voucher No:", error);
+                //         }
+                //     });
+                // });
             }
 
         });

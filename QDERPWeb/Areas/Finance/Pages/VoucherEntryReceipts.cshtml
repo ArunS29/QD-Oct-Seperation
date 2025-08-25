@@ -372,7 +372,7 @@ buttons.Add()
                                                         columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                                                         columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
                                                         columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                                         columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
                                                         columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
                                                     })
@@ -467,7 +467,7 @@ buttons.Add()
                     <div class="form-group plusBtn col-1 mt-0 h-100">
                    
                         @(Html.DevExtreme().Button()
-                                                .ID("btnaddCostAllocation")
+                                                .ID("btnaddReceipt")
                                                 .Text(new JS("formatMessage('ADD')"))
                                                 .Height(40)
                                                 .TabIndex(11)
@@ -1172,43 +1172,62 @@ buttons.Add()
 
 
         
-function addVoucherEntry() {
-    
-    var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
-    var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
-    var griddatacount = rowCount;
-    var voucherNo = ""; // Declare with var (or let), and initialize properly
 
-    if (griddatacount === 0) {
-        // Fetch new voucher number via AJAX
-        $.ajax({
-            type: "GET",
-            url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
-            success: function (response) {
-                if (!response || response.success === false) {
-                    DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
-                    return;
-                }
+         function addVoucherEntry() {
+        var btn = $("#btnaddReceipt").dxButton("instance");
 
-                // Assuming response is the voucher number as a raw string
-                voucherNo = response;
-                $("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
-
-                // Call the remaining logic using the retrieved voucher number
-                continueVoucherEntryWithVoucherNo(voucherNo);
-
-            },
-            error: function (xhr, status, error) {
-                DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
-            }
+        // Disable button + show loading
+        btn.option({
+            disabled: true,
+            icon: "spinner", // built-in spinner icon
+            text: "Loading..."
         });
-    } else {
-        // If rows exist, reuse the existing voucher number from the text box
-        voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        continueVoucherEntryWithVoucherNo(voucherNo);
-    }
-}
 
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var griddatacount = rowCount;
+
+        // Get VoucherNo TextBox value
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const argsledno = urlParams.get("argsledno");
+
+        // ✅ Case 1: If VoucherNo is already set → directly continue
+        if (voucherNo && voucherNo.trim() !== "") {
+            continueVoucherEntryWithVoucherNo(voucherNo);
+            return;
+        }
+
+        // ✅ Case 2: If VoucherNo not set, and grid empty, and no argsledno → fetch new one
+        if (!voucherNo && griddatacount === 0 && !argsledno) {
+            $.ajax({
+                type: "GET",
+                url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+                success: function (response) {
+                    if (!response || response.success === false) {
+                        DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
+                        return;
+                    }
+
+                    // response is the voucher number
+                    voucherNo = response;
+                    $("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
+
+                    continueVoucherEntryWithVoucherNo(voucherNo);
+                    isVoucherSaved = true;
+                    updateWorkflowVisual(getWorkflowStatusFromFields());
+                },
+                error: function (xhr, status, error) {
+                    DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
+                }
+            });
+        } else {
+            // ✅ Case 3: If VoucherNo is null but grid has rows or argsledno is present → reuse textbox (might still be empty)
+            continueVoucherEntryWithVoucherNo(voucherNo);
+            
+        }
+    }
       function continueVoucherEntryWithVoucherNo(voucherNo) {
             var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
@@ -1400,7 +1419,7 @@ function addVoucherEntry() {
                     ];
 
                 }
-
+                debugger;
                    if(IsDrCr==false)
                 {
                    
@@ -1495,12 +1514,14 @@ function addVoucherEntry() {
                             checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
                             checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                            resetVoucherButton();
+
                         }
 
                     },
 
                     error: function (xhr, status, error) {
-
+                        resetVoucherButton();
                         alert("Error occurred while updating data: " + error);
 
                     }
@@ -1518,6 +1539,7 @@ function addVoucherEntry() {
                     data: JSON.stringify(VE),
                     dataType: "json",
                     success: function (response) {
+                        resetVoucherButton();
                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
                         $("#Narration").dxTextArea("instance").option("value", "");
@@ -1576,12 +1598,14 @@ function addVoucherEntry() {
                          checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
                          checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                         resetVoucherButton();
                      }
 
                                             var button = $("#btnSave").dxButton("instance");
                                             button.option("text", "Update");
                     },
                                         error: function (xhr, status, error) {
+                                            resetVoucherButton();
                                             alert("Error occurred while updating data: " + error);
                                         }
                 });
@@ -1593,6 +1617,7 @@ function addVoucherEntry() {
             
             else {
                 IsNotification=true;
+                resetVoucherButton();
                              // Append the stored value back when the user clicks Add again
         if (storedAccountHead) {
 
@@ -1604,6 +1629,7 @@ function addVoucherEntry() {
 
                 accountHeadInstance.option("value", storedAccountHead);
             }
+            resetVoucherButton();
         }
 
                  DevExpress.ui.notify(
@@ -1647,44 +1673,45 @@ function addVoucherEntry() {
         }
 
 
-    $(function () {
-        $.ajax({
-            url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
-            type: 'GET',
-            success: function (data) {
-                // Set the value in the TextBox
-                $("#VoucherNo").dxTextBox("instance").option("value", data);
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading Voucher No:", error);
-            }
-        });
+    // $(function () {
+    //     $.ajax({
+    //         url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+    //         type: 'GET',
+    //         success: function (data) {
+    //             // Set the value in the TextBox
+    //             $("#VoucherNo").dxTextBox("instance").option("value", data);
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("Error loading Voucher No:", error);
+    //         }
+    //     });
 
-        // Attach validation to the add button or desired event
-        $("#btnaddCostAllocation").on("click", function () {
-            //  validateInputsAndAddCostAllocation();
-        });
-    });
+    //     // Attach validation to the add button or desired event
+    //     $("#btnaddCostAllocation").on("click", function () {
+
+    //         //  validateInputsAndAddCostAllocation();
+    //     });
+    // });
 
 
-    $(document).ready(function () {
-        // Attach an event listener to the 'TransactionTypeComboBox' SelectBox
-        $("#TransactionTypeComboBox").dxSelectBox({
-            onValueChanged: function (e) {
-                // Get the selected value from the 'TransactionTypeComboBox'
-                var selectedValue = e.value;
+    // $(document).ready(function () {
+    //     // Attach an event listener to the 'TransactionTypeComboBox' SelectBox
+    //     $("#TransactionTypeComboBox").dxSelectBox({
+    //         onValueChanged: function (e) {
+    //             // Get the selected value from the 'TransactionTypeComboBox'
+    //             var selectedValue = e.value;
 
-                // Update the 'DrCr' SelectBox based on the selected value
-                var drCrSelectBox = $("#DrCr").dxSelectBox("instance");
+    //             // Update the 'DrCr' SelectBox based on the selected value
+    //             var drCrSelectBox = $("#DrCr").dxSelectBox("instance");
 
-                // Update the 'DrCr' SelectBox items based on the selection
-                drCrSelectBox.option("items", [selectedValue]);
+    //             // Update the 'DrCr' SelectBox items based on the selection
+    //             drCrSelectBox.option("items", [selectedValue]);
 
-                // Optionally, reset the value of 'DrCr' to match the selected value
-                drCrSelectBox.option("value", selectedValue);
-            }
-        });
-    });
+    //             // Optionally, reset the value of 'DrCr' to match the selected value
+    //             drCrSelectBox.option("value", selectedValue);
+    //         }
+    //     });
+    // });
 
    
     $(document).ready(function () {
@@ -2911,26 +2938,26 @@ function addVoucherEntry() {
                 }
                 else if(argsledno==null)
                 {
-                    $(function () {
-                             const tenantName = sessionStorage.getItem("tenantName");
+                    // $(function () {
+                    //          const tenantName = sessionStorage.getItem("tenantName");
 
-                         $.ajax({
-                             url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
-                             type: 'GET',
+                    //      $.ajax({
+                    //          url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+                    //          type: 'GET',
                            
-                             success: function (data) {
-                                 // Set the value in the VoucherNo TextBox
-                                 $("#VoucherNo").dxTextBox("instance").option("value", data);
+                    //          success: function (data) {
+                    //              // Set the value in the VoucherNo TextBox
+                    //              $("#VoucherNo").dxTextBox("instance").option("value", data);
 
-                                 // Retrieve the value from the TextBox
-                                 var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-                                getDocumentCount();
-                             },
-                             error: function (xhr, status, error) {
-                                 console.error("Error loading Voucher No:", error);
-                             }
-                         });
-                    });
+                    //              // Retrieve the value from the TextBox
+                    //              var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+                    //             getDocumentCount();
+                    //          },
+                    //          error: function (xhr, status, error) {
+                    //              console.error("Error loading Voucher No:", error);
+                    //          }
+                    //      });
+                    // });
                 }
             });
 
@@ -2942,11 +2969,7 @@ function addVoucherEntry() {
                 const argsledno = urlParams.get("argsledno");
 
 
-                // If the voucher is from the URL, skip validation
-                if (!argsledno || argsledno !== voucherNo) {
-                    validateVoucherNo(voucherNo);
-                }
-
+              
                 fetchVoucherDetails(voucherNo);
                 getDocumentCount();
             }
@@ -3387,7 +3410,7 @@ function showMainFooter() {
         function onVoucherDrCrValueChanged(e) {
     // Retrieve the new selected value from the event argument.
     var selectedValue = e.value;
-    
+    debugger;
 
     // Log the selected value for debugging purposes.
     console.log("Transaction type selected: " + selectedValue);
@@ -3905,4 +3928,12 @@ tippy('#circle-approve', {
 
 
  renderContextMenu();
+ function resetVoucherButton() {
+    var btn = $("#btnaddReceipt").dxButton("instance");
+    btn.option({
+        disabled: false,
+        icon: "plus",
+        text: formatMessage("ADD")
+    });
+}
 </script>
