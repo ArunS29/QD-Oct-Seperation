@@ -17,6 +17,56 @@
 <!-- SweetAlert2 JavaScript -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <style>
+#contextMenu {
+     position: absolute;
+     display: none;
+     background: #fff;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+     /* 👇 Control size */
+     width: 200px; /* adjust as needed */
+     max-height: 300px; /* set a limit */
+     overflow-y: auto; /* scroll if items overflow */
+     /* 👇 Control appearance */
+     font-size: 10px;
+     padding: 6px 0;
+     z-index: 9999;
+ }
+
+     #contextMenu:focus {
+         outline: none; /* removes black border */
+     }
+
+     #contextMenu ul {
+         list-style: none;
+         margin: 0;
+         padding: 0;
+     }
+
+     #contextMenu li {
+         padding: 4px 10px;
+         cursor: pointer;
+         white-space: nowrap;
+     }
+
+         #contextMenu li.active .custom-dropdown-item {
+             background-color: var(--title-background-color) !important;
+         }
+
+         #contextMenu li:hover {
+             background: #f0f0f0;
+         }
+
+ /* Make focused row look like hover row */
+ #accounthead-datagrid .dx-datagrid-rowsview .dx-row.dx-row-focused {
+     background-color: var(--title-background-color) !important; /* same as hover */
+     color: inherit; /* keep text readable */
+ }
+ #clientname-datagrid .dx-datagrid-rowsview .dx-row.dx-row-focused {
+     background-color: var(--title-background-color) !important; /* same as hover */
+     color: inherit; /* keep text readable */
+ }
     .titleCard-toggle1 {
         display: none;
     }
@@ -421,7 +471,7 @@ buttons.Add()
 										columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
 										columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
 										columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-										columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+										columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
 										columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
 										columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
 
@@ -614,11 +664,20 @@ buttons.Add()
 				.OnEditorPreparing("onEditorPreparing")
 				.OnRowUpdating("onRowUpdating")
 				.OnRowRemoving("onRowRemoving")
-				.OnRowPrepared(@"function(e) {
-				if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
-				$(e.rowElement).css('background-color', 'lightgray');
-				}
-				}")
+				 .OnRowPrepared(@"
+            function(e) {
+                               
+                                if (e.rowType === 'data' && e.data.DrCr === 'Cr') {
+                                $(e.rowElement).css('background-color', 'var(--header-color) !important');
+                                
+                                }
+                                if (e.rowType === 'data' && e.data.DrCr === 'Dr') {
+                                $(e.rowElement).css('background-color', 'var(--title-background-color) !important');
+                                $(e.rowElement).find('td').css('color', 'white');
+                                
+                                }
+            }
+            ")
 				.Editing(editing => editing
 				.Mode(GridEditMode.Cell)
 				.AllowUpdating(true)
@@ -643,21 +702,7 @@ buttons.Add()
 				)
 	</div>
 
-<!-- Context Menu for Actions -->
-<ul id="contextMenu" class="context-menu" style="display: none;">
-	<li onclick="editCostAllocation()">
-		<i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocation" class="no-border-input"></div>
-	</li>
-	<li onclick="editBillsReceivable()">
-		<i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivable" class="no-border-input"></div>
-	</li>
-	<li onclick="editPropertyAllocation()">
-		<i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
-	</li>
-	<li onclick="onAllRowRemoving()">
-		<i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete All Line Entries
-	</li>
-</ul>
+ <ul id="contextMenu" class="context-menu" style="display:none; position:absolute;"></ul>
 <div id="popupContainer">
 	@(Html.DevExtreme().Popup()
 		.ID("CostAllocationPopup")
@@ -964,6 +1009,7 @@ buttons.Add()
 				/// .Key("AccountHead") //salary paid entry
 				.Key("AccountId")
 				)
+				 .FocusedRowEnabled(true)
 				.WordWrapEnabled(true)
 				.ShowBorders(true)
 				.SearchPanel(sp => sp.Visible(true))
@@ -1026,6 +1072,7 @@ buttons.Add()
 				.LoadMode(DataSourceLoadMode.Raw)
 				.Key("AccountId")
 				)
+				 .FocusedRowEnabled(true)
 				.WordWrapEnabled(true)
 				.ShowBorders(true)
 				.SearchPanel(sp => sp.HighlightSearchText(true))
@@ -1532,11 +1579,12 @@ buttons.Add()
 		 var ClientName = $("#accountDropDownBox").dxDropDownBox("instance");
 		 var voucherAmount = $("#txtVoucherAmount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
-            var amount = voucherAmount * currencyRate;
-			  amount = Math.round(amount * 100) / 100;
+			 currencyRate = Math.round(currencyRate * 100) / 100;
 
     // Format to always have 2 decimals
-    amount = parseFloat(amount).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(2);
+            var amount = voucherAmount * currencyRate;
+			
 		 var accountHead = $("#ddAccountHead").dxDropDownBox("instance").option("value");
 
 		 var sbDrCr = $("#sbDrCr").dxSelectBox("instance").option("value");
@@ -1921,55 +1969,7 @@ buttons.Add()
                                 });
                             }
 
-                            else if (accheadname && accheadname.startsWith("Cost")) {
-
-                                const params = {
-                                    VoucherNo: encodeURIComponent(voucherNo),
-                                    VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                                    AccountHead: encodeURIComponent(accheadname),
-                                    VoucherAmount: encodeURIComponent(amount),
-                                    DrCr: encodeURIComponent(sbDrCr)
-                                };
-                                openCostAllocationPopup(params); // Open DevExtreme Popup with dynamic content
-                            }
-                            else if (accheadname) {
-                                // Function to check allocation
-                                function checkAllocation(url, successCallback) {
-                                    $.ajax({
-                                        type: "GET",
-                                        url: url,
-                                        data: {
-                                            AccountHead: accheadname,
-                                            AccountID: accheadid
-                                        },
-                                        success: function (response) {
-                                            if (response.isAllocated) {
-                                                const params = {
-                                                    VoucherNo: encodeURIComponent(voucherNo),
-                                                    VoucherEntryNo: encodeURIComponent(latestEntry.VoucherEntryNo),
-                                                    AccountHead: encodeURIComponent(accheadname),
-                                                    VoucherAmount: encodeURIComponent(amount),
-                                                    DrCr: encodeURIComponent(sbDrCr),
-                                                    AccountID: encodeURIComponent(accheadid),
-													CurrencyRate: encodeURIComponent(currencyRate)
-                                                };
-                                                successCallback(params);
-                                            }
-                                        },
-                                        error: function (xhr, status, error) {
-                                            console.error(`Error checking allocation: ${error}`);
-                                        }
-                                    });
-                                }
-
-                                // Check Property Allocation
-                                checkAllocation(`/api/VoucherEntryReceipts/CheckPropertyAllocation`, openPropertyAllocationPopup);
-
-                                // Check Employee Allocation
-                                checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
-
-                                checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
-                            }
+                           
                         }
 
                         var button = $("#btnSave").dxButton("instance");
@@ -3907,6 +3907,156 @@ function initWorkflowTippyPopovers() {
 			}
 			});
 		});
+
+		const menuItems = [
+    { id: "editCostAllocation", text: "Edit Cost Allocation", icon: "edit", color: "#4CAF50" },
+    { id: "editBillsReceivable", text: "Edit Bills Receivable", icon: "file", color: "#2196F3" },
+   
+    { id: "editPropertyAllocation", text: "Edit Property Allocation", icon: "preferences", color: "#795548" },
+    { id: "onAllRowRemoving", text: "Delete All Line Entries", icon: "trash", color: "#F44336" }
+];
+     // ---- state ----
+ let currentIndex = 0;
+
+ // ---- helpers ----
+ function isMenuOpen() {
+     const m = document.getElementById("contextMenu");
+     return m && m.classList.contains("open") && m.style.display === "block";
+ }
+
+ function highlightItem(item) {
+     document.querySelectorAll("#contextMenu li").forEach(li => li.classList.remove("active"));
+     if (item) item.classList.add("active");
+ }
+
+ function hideContextMenu() {
+     const menu = document.getElementById("contextMenu");
+     if (!menu) return;
+     menu.classList.remove("open");
+     menu.style.display = "none";
+ }
+
+ // Build menu once (or call again if items change)
+ function renderContextMenu() {
+     const contextMenu = document.getElementById("contextMenu");
+     contextMenu.innerHTML = "";
+
+     menuItems.forEach((item, index) => {
+         const li = document.createElement("li");
+         li.dataset.id = item.id;
+         li.tabIndex = -1;
+         li.innerHTML = `
+             <div class="custom-dropdown-item">
+                 <div class="side-bar" style="background-color:${item.color};"></div>
+                 <div class="item-content">
+                     <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
+                     <div class="item-title">${item.text}</div>
+                 </div>
+             </div>
+         `;
+
+         li.addEventListener("click", () => {
+             if (typeof window[item.id] === "function") window[item.id]();
+             hideContextMenu();
+         });
+
+         // keep mouse & keyboard highlight in sync
+         li.addEventListener("mouseenter", () => {
+             currentIndex = index;
+             highlightItem(li);
+         });
+
+         contextMenu.appendChild(li);
+     });
+ }
+
+ // Show menu at x,y with edge-flip and focus
+ function showContextMenu(x, y) {
+     const menu = document.getElementById("contextMenu");
+     if (!menu.children.length) renderContextMenu();
+
+     // prepare to measure
+     menu.style.visibility = "hidden";
+     menu.style.display = "block";
+
+     const menuWidth = menu.offsetWidth;
+     const menuHeight = menu.offsetHeight;
+     const vw = window.innerWidth;
+     const vh = window.innerHeight;
+
+     // flip to keep inside viewport
+     let left = (x + menuWidth > vw) ? vw - menuWidth - 10 : x;
+     let top  = (y + menuHeight > vh) ? vh - menuHeight - 10 : y;
+
+     // apply final position and show
+     menu.style.left = `${Math.max(0, left)}px`;
+     menu.style.top  = `${Math.max(0, top)}px`;
+     menu.style.visibility = "visible";
+     menu.classList.add("open");
+
+     // highlight first item & focus menu
+     currentIndex = 0;
+     const items = menu.querySelectorAll("li");
+     if (items.length) highlightItem(items[currentIndex]);
+
+     // ensure menu can receive focus
+     menu.setAttribute("tabindex", "-1");
+     setTimeout(() => menu.focus(), 0);
+ }
+
+ // ---- global listeners ----
+
+ // 1) Right-click on grid
+ document.getElementById("dataGrid").addEventListener("contextmenu", function (e) {
+     e.preventDefault();
+     e.stopPropagation(); // stop grid from handling keys afterwards
+
+     const rowElement = e.target.closest(".dx-data-row");
+     if (rowElement) {
+         const menu = document.getElementById("contextMenu");
+         const rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
+         menu.dataset.rowIndex = rowIndex;
+
+         showContextMenu(e.clientX, e.clientY);
+     }
+ });
+
+ // 2) Click outside closes
+ document.addEventListener("mousedown", function (e) {
+     const menu = document.getElementById("contextMenu");
+     if (!menu) return;
+     if (isMenuOpen() && !menu.contains(e.target)) hideContextMenu();
+ });
+
+ // 3) One global keydown (capture) that only acts if menu is open
+ document.addEventListener("keydown", function (e) {
+     if (!isMenuOpen()) return;
+
+     const menu = document.getElementById("contextMenu");
+     const items = menu.querySelectorAll("li");
+     if (!items.length) return;
+
+     // prevent grid from swallowing keys
+     e.preventDefault();
+     e.stopPropagation();
+
+     if (e.key === "ArrowDown") {
+         currentIndex = (currentIndex + 1) % items.length;
+         highlightItem(items[currentIndex]);
+     } else if (e.key === "ArrowUp") {
+         currentIndex = (currentIndex - 1 + items.length) % items.length;
+         highlightItem(items[currentIndex]);
+     } else if (e.key === "Enter" || e.key === " ") {
+         items[currentIndex].click();
+     } else if (e.key === "Escape") {
+         hideContextMenu();
+     }
+ }, true); // <- capture mode so we intercept before DataGrid
+
+
+
+
+ renderContextMenu();
 
 </script>
 

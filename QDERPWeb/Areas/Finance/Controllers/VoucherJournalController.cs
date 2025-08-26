@@ -670,14 +670,25 @@ namespace QDWEB.Areas.Finance.Controllers
                     var records = await dbContext.Tbl201VoucherEntries
                                                 .Where(v => v.VoucherNo == VoucherNo)
                                                 .ToListAsync();
+                    // Find all records matching the given VoucherNo
+                    var record = await dbContext.Tbl201VoucherEntryTemps
+                                                .Where(v => v.VoucherNo == VoucherNo)
+                                                .ToListAsync();
 
                     if (records == null || !records.Any())
                     {
                         return NotFound(new { message = "No records found for the provided VoucherNo!" });
                     }
-
+                    if (records != null)
+                    {
+                        dbContext.Tbl201VoucherEntries.RemoveRange(records);
+                    }
+                    if (record != null)
+                    {
+                        dbContext.Tbl201VoucherEntryTemps.RemoveRange(record);
+                    }
                     // Remove all matching records
-                    dbContext.Tbl201VoucherEntries.RemoveRange(records);
+
                     await dbContext.SaveChangesAsync();
 
                     // Fetch updated voucher list

@@ -780,7 +780,7 @@
 
 			columns.AddFor(m => m.TransactionCurrencyName)
 			.Caption("Conversion Currency")
-			.GroupIndex(0)
+			
 			.Visible(false);
 			columns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Narration')")).Alignment(HorizontalAlignment.Left).Visible(true);
 			columns.AddFor(m => m.VoucherRefNo).Caption(new JS("formatMessage('VoucherRefNo')")).Alignment(HorizontalAlignment.Left).Visible(false);
