@@ -117,10 +117,9 @@
             .Items(items =>
             {
                 items.Add().Text(new JS("formatMessage('Add New Client Request')")).Icon("user");
-                items.Add().Text(new JS("formatMessage('Add New Store Request')")).Icon("cart");
                 items.Add().Text(new JS("formatMessage('Add New Project Request')")).Icon("event");
             })
-            .ItemTemplate(@<text>
+            @* .ItemTemplate(@<text>
                 <div class="custom-dropdown-item">
                     <div style="background-color:<%- color || '#808080' %>; height:90%" class="side-bar"></div>
                     <div class="item-content">
@@ -130,7 +129,7 @@
                         </div>
                     </div>
                 </div>
-            </text>)
+            </text>) *@
             .OnItemClick("addNewMaterialRequest")
             .ShowArrowIcon(false)
             )
@@ -165,13 +164,10 @@
             let url = ''; // Declare once
             switch (e.itemData.text) {
                 case formatMessage('Add New Client Request'):
-                    url = `/${tenantName}/ERM/AddNewClientRequest`;
-                    break;
-                case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/ERM/MRAddNewStoreRequest`;
+                url = `/${tenantName}/ERM/AddNewClientRequest`;
                     break;
                 case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/ERM/MRAddNewProjectRequest`;
+                url = `/${tenantName}/ERM/MRAddNewProjectRequest`;
                     break;
                 default:
                     console.log("Clicked item: ", e.itemData.text);
