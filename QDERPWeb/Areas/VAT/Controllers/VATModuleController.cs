@@ -672,7 +672,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     var query = from g in dbContext.Tbl20164GoodsAndServicesMasters
                                 join u in dbContext.Tbl40111PropertyUnitCodes
-                                    on g.GsgroupId equals u.UnitCode into gj
+                                    on g.GspackingUnit equals u.UnitCode into gj
                                 from unit in gj.DefaultIfEmpty()
                                 orderby g.Gscode
                                 select new
@@ -1918,7 +1918,7 @@ documentNo: unitType
 
 
         [HttpPost]
-        [RequirePermission("frm20161VATInvoiceEdit_btnVerify")]
+        //[RequirePermission("frm20161VATInvoiceEdit_btnVerify")]
         public async Task<ActionResult> VerifyVoucher(string InvoiceNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1980,7 +1980,7 @@ documentNo: unitType
         }
 
         [HttpPost]
-        [RequirePermission("frm20161VATInvoiceEdit_btnApprove")]
+        //[RequirePermission("frm20161VATInvoiceEdit_btnApprove")]
         public async Task<ActionResult> ApproveVoucher(string InvoiceNo, bool IsDirectApproval)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
