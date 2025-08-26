@@ -134,13 +134,13 @@
     <div class="header-container">
         <div id="DatabaseSignatories1" class="no-border-title"></div>
     </div>
-</div> *@
+</div> 
 <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
     <h3 class="card-title-text">Signatories</h3>
-</div>
+</div>*@
 <div class="signatory-form-container">
         <table style="width: 100%;">
             <tr>
@@ -221,7 +221,9 @@
                                                 onSelectionChanged: function (e) {
                                                     var selected = e.selectedRowsData[0];
                                                     if (selected) {
-                                                        $("#SignatoryUserId").dxDropDownBox("instance").option("value", selected.SignatoryID);
+                                                                                    var dropDown = $("#SignatoryUserId").dxDropDownBox("instance");
+                                    dropDown.option("value", selected.SignatoryID);
+                                    dropDown.option("opened", false); // 🔒 close after selection
                                                     }
                                                 }
                                             });
@@ -381,15 +383,15 @@ columns.Add().DataField("SignatoryEmail")
             // Image columns with cell template
             columns.Add().DataField("DecodedBusinessCard1")
             .Caption(new JS("formatMessage('Signature Image')"))
-            .CellTemplate(new JS(@"
-    function(cellElement, cellInfo) {
-    if (cellInfo.value) {
-    $('<img>')
+                    .CellTemplate(new JS(@"
+                function(cellElement, cellInfo) {
+                if (cellInfo.value) {
+                $('<img>')
     .attr('src', cellInfo.value)
-    .css({ width: '100px', height: 'auto' })
-    .appendTo(cellElement);
-    }
-    }
+                .css({ width: '100px', height: 'auto' })
+                .appendTo(cellElement);
+                }
+                }
     ")).Width(150);
                 // Add delete button column
                 columns.Add()
@@ -552,6 +554,20 @@ columns.Add().DataField("SignatoryEmail")
             success: function () {
                 DevExpress.ui.notify("Signatory saved successfully!", "success", 2000);
                 $("#SignatoryGrid").dxDataGrid("instance").refresh();
+
+
+               $("#SignatoryName").dxTextBox("instance").option("value",""),
+         $("#SignatoryNameArabic").dxTextBox("instance").option("value",""),
+           $("#SignatoryPosition").dxTextBox("instance").option("value",""),
+             $("#SignatoryPositionArabic").dxTextBox("instance").option("value",""),
+            $("#SignatoryContact").dxTextBox("instance").option("value",""),
+            $("#SignatoryEmail").dxTextBox("instance").option("value",""),
+           $("#SignatoryUserId").dxDropDownBox("instance").option("value","")
+
+            $("#SignatoryPosition").dxValidator("instance").reset();
+                   $("#SignatoryName").dxValidator("instance").reset();
+
+
             },
             error: function () {
                 DevExpress.ui.notify("Failed to save signatory.", "error", 2000);

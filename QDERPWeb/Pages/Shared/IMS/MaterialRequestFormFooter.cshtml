@@ -288,10 +288,15 @@
                 )
     </div>
   
-    
-    
-    
-    
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnUpload")
+                .Text(new JS("formatMessage('Upload')"))
+                .Icon("upload")
+                .ElementAttr(new { @class = "bold-button" })
+                .OnClick("onUploadButtonClick")
+              )
+    </div>
     
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -388,15 +393,6 @@
                 )
     </div>
 
-    <div class="btn-container">
-        @(Html.DevExtreme().Button()
-                .ID("btnUpload")
-                .Text(new JS("formatMessage('Upload')"))
-                .Icon("upload")
-                .ElementAttr(new { @class = "bold-button" })
-                .OnClick("onUploadButtonClick")
-              )
-    </div>
 
 </div>
 

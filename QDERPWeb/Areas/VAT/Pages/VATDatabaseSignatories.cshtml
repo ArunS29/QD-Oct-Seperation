@@ -128,7 +128,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Database Signatory</h3>
+    <h3 class="card-title-text" id="databasesignatoryss"></h3>
 </div>
 <div class="signatory-form-container">
    
@@ -174,7 +174,7 @@
                         <div style="flex: 1;">
                             @(Html.DevExtreme().DropDownBox()
                                 .ID("SignatoryUserId")
-                                .Label("Signatory User ID:")
+                                  .Label(new JS("formatMessage('Signatory User ID:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .ShowClearButton(true)
                                 .OpenOnFieldClick(true)
@@ -222,7 +222,7 @@
                         <div>
                             @(Html.DevExtreme().Button()
                                 .ID("btnAddSalesPerson")
-                                .Text("ADD")
+                                .Text(new JS("formatMessage('ADD')"))
                                 .Icon("plus")
                                 .OnClick("function() { addSignatoryToGrid(); }")
                                 .ElementAttr(new { @class = "dx-button-add" })
@@ -284,7 +284,7 @@
                 <div class="form-group">
                     <div class="dx-fieldset" style="width: 375px;">
                         <div class="imagecontainer" id="imgBox1" style="width: 142%; height: 100px; background-color: white;">
-                            <span>Upload Signature</span>
+                            <div id="uploadsignature"></div>
                         </div>
                         <input type="file" id="imageInput" accept="image/*" style="display:none;" />
                     </div>
@@ -329,11 +329,11 @@
                 .OnRowUpdating("onSignatoryUpdating")
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("SignatoryID").Caption("ID").Width(80).AllowEditing(false);
-                    columns.Add().DataField("SignatoryName").Caption("Name").Width(200);
-                    columns.Add().DataField("SignatoryPosition").Caption("Position").Width(200);
-                    columns.Add().DataField("SignatoryContact").Caption("Contact").Width(150);
-                    columns.Add().DataField("SignatoryEmail").Caption("Email").Width(250);
+                    columns.Add().DataField("SignatoryID").Caption(new JS("formatMessage('ID')")).Width(80).AllowEditing(false);
+                    columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Width(200);
+                    columns.Add().DataField("SignatoryPosition").Caption(new JS("formatMessage('Position')")).Width(200);
+                    columns.Add().DataField("SignatoryContact").Caption(new JS("formatMessage('Contact')")).Width(150);
+                    columns.Add().DataField("SignatoryEmail").Caption(new JS("formatMessage('Email')")).Width(250);
                     columns.Add().DataField("DecodedBusinessCard1")
                     .Caption(new JS("formatMessage('Signature Image')"))
                     .CellTemplate(new JS(@"
@@ -553,6 +553,11 @@
         });
     });
 
-
+        $(function () {
+        $("#databasesignatoryss").text(formatMessage("Database Signatory"));
+    });
+        $(function () {
+        $("#uploadsignature").text(formatMessage("Upload Signature"));
+    });
 
 </script>

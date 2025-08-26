@@ -139,11 +139,17 @@ namespace QD.ERP.Web.Pages
 
             if (
                   reportName == "TAXINVOICEWTDOCUMENTALLEVELDISCOUNTSS" ||
+                  reportName == "PrintRegularTaxInvoiceWithOutDiscounts" ||
+                  reportName == "PrintVATInvoiceEnglishOnly" ||
+                  reportName == "PrintVATInvoiceForeignCurrency" ||
                   reportName == "PrintsimplifiedTaxInvoices" ||
+                  reportName == "PrintSimplifiedTaxInvoiceWithOutDiscount" ||
                   reportName == "RegulartaxinvoicewithoutSignatoriesFormat05" ||
                   reportName == "Foreigncurrency1" ||
                   reportName == "PrintRegularInvoiceFormat02" ||
+                  reportName == "PrintRegularInvoiceFormat02WithDiscount" ||
                   reportName == "ForeignCurrencyProforma" ||
+                  reportName == "ForeignCurrencyProformaWithoutDiscount" ||
                   reportName == "ForeignEnglishProforma" ||
                   reportName == "ProformaInvoiceEnglish" ||
                   reportName == "ProformaPreviewInvoice" ||
@@ -176,7 +182,40 @@ namespace QD.ERP.Web.Pages
 
                             companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
 
+                    "PrintRegularTaxInvoiceWithOutDiscounts" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularTaxInvoiceWithOutDiscounts(
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
+                            companyNameAr, companyAddressAr, isApproved, _tenantDbContextHelper),
+
                     "PrintsimplifiedTaxInvoices" => new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintsimplifiedTaxInvoices(
+                              invoiceNo, tenantName, companyName, companyAddress, logoImage,
+                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                              isApproved, _tenantDbContextHelper),
+                    "PrintVATInvoiceForeignCurrency" =>
+            new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintVATInvoiceForeignCurrency(
+
+
+
+                invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
+
+                companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                isApproved, _tenantDbContextHelper),
+
+                    "PrintVATInvoiceEnglishOnly" =>
+                          new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintVATInvoiceEnglishOnly(
+
+
+
+                              invoiceNo, tenantName, companyName, companyAddress, logoImage, sealImage,
+
+                              companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                              isApproved, _tenantDbContextHelper),
+
+
+                    "PrintSimplifiedTaxInvoiceWithOutDiscount" => new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintSimplifiedTaxInvoiceWithOutDiscount(
                               invoiceNo, tenantName, companyName, companyAddress, logoImage,
                               companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                               isApproved, _tenantDbContextHelper),
@@ -184,6 +223,16 @@ namespace QD.ERP.Web.Pages
 
                     "PrintRegularInvoiceFormat02" =>
                         new QD.ERP.Web.Areas.VAT.Reports.B2B_INVOICE.PrintRegularInvoiceFormat02(
+
+
+
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+
+                    "PrintRegularInvoiceFormat02WithDiscount" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.B2B.PrintRegularInvoiceFormat02WithDiscount(
 
 
 
@@ -210,6 +259,11 @@ namespace QD.ERP.Web.Pages
 
                     "ForeignCurrencyProforma" =>
                         new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProforma(
+                            invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
+                            companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
+                            isApproved, _tenantDbContextHelper),
+                    "ForeignCurrencyProformaWithoutDiscount" =>
+                        new QD.ERP.Web.Areas.VAT.Reports.ProformaInvoices.ForeignCurrencyProformaWithoutDiscount(
                             invoiceNo, tenantName, companyName, companyAddress, logoImage, companySealImage,
                             companyNameAr, companyAddressAr, companyPhone, website, emailAddress,
                             isApproved, _tenantDbContextHelper),
@@ -318,7 +372,7 @@ namespace QD.ERP.Web.Pages
 
 
 
-            if (reportName == "CreditForeignCurrency" || reportName == "creditnote")
+            if (reportName == "CreditForeignCurrency" || reportName == "creditnote"|| reportName == "PreviewCreditNoteForeignCurrency" || reportName == "PreviewCreditNoteEnglishOnly")
             {
                 if (string.IsNullOrEmpty(CreditNoteNo))
                 {
@@ -336,10 +390,22 @@ namespace QD.ERP.Web.Pages
                   
           
                 }
-                else if (reportName == "creditnote")
+                 else if (reportName == "creditnote")
 
                 {
                     Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.creditnote(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
+                }
+                 else if (reportName == "PreviewCreditNoteEnglishOnly")
+
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteEnglishOnly(
+                        CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
+                }
+               else  if (reportName == "PreviewCreditNoteForeignCurrency")
+
+                {
+                    Report = new QD.ERP.Web.Areas.VAT.Reports.VATCreditNote.PreviewCreditNoteForeignCurrency(
                         CreditNoteNo, tenantName, companyName, companyAddress, companyNameAr, companyAddressAr, isApproved, userName, _tenantDbContextHelper);
                 }
                 //else if (reportName == "creditnote")

@@ -127,7 +127,7 @@
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Financial Reports</h3>
+    <h3 class="card-title-text" id="finacialreportss"></h3>
 </div>
 <div class="container-fluid d-flex flex-column vh-100 px-3 py-2">
 
@@ -145,7 +145,7 @@
                     .DataSource(d => d.Mvc().Controller("TrialBalance").LoadAction("GetUser").LoadMode(DataSourceLoadMode.Raw))
                     .Width("100%")
                     .ElementAttr("class", "w-100")
-                    .Label("Select Cost Allocation Group")
+                    .Label(new JS("formatMessage('Select Cost Allocation Group')"))
                     .LabelMode(EditorLabelMode.Floating)
                     .SearchEnabled(true)
                     .DisplayExpr("AccountGroup")
@@ -159,7 +159,7 @@
         <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
             @(Html.DevExtreme().DateBox()
                 .ID("frmdateBox")
-                .Label("Start Date")
+                .Label(new JS("formatMessage('Start Date')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .Value(DateTime.Now.Date.AddDays(1 - DateTime.Now.Day))
@@ -171,7 +171,7 @@
         <div class="col-xl-2 col-lg-2 col-md-4 col-sm-6">
             @(Html.DevExtreme().DateBox()
                 .ID("todateBox")
-                .Label("End Date")
+                .Label(new JS("formatMessage('End Date')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .Type(DateBoxType.Date)
                 .Value(DateTime.Now.Date)
@@ -183,7 +183,7 @@
         <div class="col-md-3">
             @(Html.DevExtreme().DropDownButton()
                 .ID("ddBtnShowRecords")
-                .Text("Show Records")
+                .Text(new JS("formatMessage('Show Records')"))
                 .Icon("smalliconslayout")
                 .SplitButton(true)
                 .OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }")
@@ -216,7 +216,7 @@
             @(
                 Html.DevExtreme().CheckBox()
                     .ID("useEffectiveDate")
-                    .Text("Use Effective Date")
+                    .Text(new JS("formatMessage('Use Effective Date')"))
                     .Value(true)
             )
             <button id="toggleChartBtn" class="btn btn-primary">Show Chart</button>
@@ -911,7 +911,9 @@ function showDataModePopup(callback) {
     });
 }
 
-
+$(function () {
+        $("#finacialreportss").text(formatMessage("Financial Reports"));
+    });
 
 
 </script>

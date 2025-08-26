@@ -682,6 +682,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                                     g.GsgroupId,
                                     GsdescriptionAr = g.GsdescriptionAr,
                                     g.ItemPartNo,
+                                    g.IsDiscontinued,
                                     g.CostPrice,
                                     GSSellingRate = g.GssellingRate,
                                     g.ReorderQty,
@@ -4636,6 +4637,38 @@ documentNo: InvoiceNo
 
             return Unauthorized("Unable to fetch tenant information.");
         }
+
+        [HttpGet("{invoiceNo}")]
+        public async Task<ActionResult> GetInvoiceApprovalStatusProforma(string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+                    // Query the invoice approval status from tbl20161VATInvoiceMaster
+                    var invoice = await dbContext.Tbl20181ProformaInvoiceMasters
+                        .Where(i => i.ProformaInvoiceNo == InvoiceNo)
+                        .FirstOrDefaultAsync();
+
+                    if (invoice == null)
+                    {
+                        return Ok(new { isApproved = invoice.IsApproved ?? false });
+                    }
+
+                    // Return the approval status
+                    return Ok(new { isApproved = invoice.IsApproved, isPosted = invoice.IsPosted });
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError($"Error fetching approval status for invoice {InvoiceNo}: {ex.Message}");
+                    return StatusCode(500, $"Internal server error: {ex.Message}");
+                }
+            }
+
+            return Unauthorized("Unable to fetch tenant information.");
+        }
+
         [HttpGet("{CreditNoteNo}")]
         public async Task<ActionResult> GetCreditNoteApprovalStatus(string CreditNoteNo)
         {
@@ -7111,7 +7144,117 @@ documentNo: InvChildSlNo
 
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceNoFromCreditNote(string creditNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var invoiceNo = await (
+                    from c in dbContext.Tbl20170VatcreditNoteMasters
+                    where c.CreditNoteNo == creditNoteNo
+                    select c.InvoiceNo
+                ).FirstOrDefaultAsync();
 
+                if (invoiceNo != null)
+                    return Ok(invoiceNo);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetInvoiceNoFromDebitNote(string debitNoteNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var purchaseVoucherNo = await (
+                    from c in dbContext.Tbl20172VatdebitNoteMasters
+                    where c.DebitNoteNo == debitNoteNo
+                    select c.PurchaseVoucherNo
+                ).FirstOrDefaultAsync();
+
+                if (purchaseVoucherNo != null)
+                    return Ok(purchaseVoucherNo);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSONoDNoteNoFromInvoice(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var invoiceDetails = await (
+                    from i in dbContext.Tbl20161VatinvoiceMasters
+                    where i.InvoiceNo == invoiceNo
+                    select new
+                    {
+                        i.SalesOrderNo,
+                        i.QuotationNo,
+                        i.DeliveryNoteNos,
+                        i.ProformaInvoiceNo
+                    }
+                ).FirstOrDefaultAsync();
+
+                if (invoiceDetails != null)
+                    return Ok(invoiceDetails);
+
+                return Ok(null); // No data found
+            }   
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetPONosFromPurchaseInvoice(string purchaseInvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var invoiceDetails = await (
+                    from i in dbContext.Tbl20166VatpurchaseMasters
+                    where i.PurchaseVoucherNo == purchaseInvoiceNo
+                    select new
+                    {
+                        i.PurchaseVoucherNo,
+                        i.PurchaseOrderNo,
+                        i.MaterialReceiptNo,
+                    }
+                ).FirstOrDefaultAsync();
+
+                if (invoiceDetails != null)
+                    return Ok(invoiceDetails);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetSONoDNoteNoFromProforma(string invoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var invoiceDetails = await (
+                    from i in dbContext.Tbl20181ProformaInvoiceMasters
+                    where i.ProformaInvoiceNo == invoiceNo
+                    select new
+                    {
+                        i.SalesOrderNo,
+                        i.QuotationNo,
+                        i.DeliveryNoteNos,
+                        
+                    }
+                ).FirstOrDefaultAsync();
+
+                if (invoiceDetails != null)
+                    return Ok(invoiceDetails);
+
+                return Ok(null); // No data found
+            }
+            return Unauthorized(new { message = "Invalid tenant" });
+        }
 
     }
 }

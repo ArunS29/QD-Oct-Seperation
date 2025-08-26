@@ -79,7 +79,9 @@
 	}
 	
 </style>
-
+<div id="loadingSpinner" class="spinner-overlay">
+    <div id="loader" class="loader"></div>
+</div>
 <div class="dx-card-container">
 	<div class="dx-card-header minimal-header">
 		<div class="card-title-icon">
@@ -326,13 +328,24 @@ function preparePayload(items) {
 }
 
 function uploadItemsToMaterialRequests() {
+	const subGroupValidator = $("#StockGroup").dxValidator("instance");
+	const subGroupValidation = subGroupValidator.validate();
+
+	if (!subGroupValidation.isValid) {
+		DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "error", 5000);
+		return;
+	}
+	document.getElementById('loadingSpinner').style.display = 'block';
+	document.getElementById('loader').style.display = 'block';
     const grid = $("#Datagrid").dxDataGrid("instance");
     const dataSource = grid?.getDataSource();
     const items = dataSource?.items() ?? [];
 	const selectedGSGroupId = $("#StockGroup").dxDropDownBox("instance").option("value");
     const preparedItems = preparePayload(items);
-
+	const params1 = new URLSearchParams(window.location.search);
+	const exist = params1.get("exist");
     const requestBody = {
+		IsExist: exist === "true",
         GSGroupCode: "",
         RequestNo: $("#txtRequestNo").dxTextBox("instance").option("value"),
         Items: preparedItems,
@@ -347,6 +360,8 @@ function uploadItemsToMaterialRequests() {
         contentType: "application/json",
         data: JSON.stringify(requestBody),
         success: function (result) {
+			document.getElementById('loader').style.display = 'none';
+			document.getElementById('loadingSpinner').style.display = 'none';
             DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
 			onUploadButtonClick();
         },
@@ -417,7 +432,7 @@ function uploadItemsToMaterialRequests() {
             const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
             const jsonData = XLSX.utils.sheet_to_json(firstSheet, { defval: '' });
 
-            // Validate the data
+            let allErrors = [];
             const validatedData = jsonData.filter((row, index) => {
                 const errors = [];
 
@@ -439,15 +454,21 @@ function uploadItemsToMaterialRequests() {
                 // Log errors if any
                 if (errors.length > 0) {
                     console.error(errors.join("\n"));
-                    DevExpress.ui.notify(errors.join("<br>"), "error", 5000);
-                    return false; // Exclude invalid rows
+					allErrors.push(...errors);
+                    return false;
                 }
-
-                return true; // Include valid rows
+                return true;
             });
-
+			var errordesc = "";
+			if (allErrors.length > 0) {
+				allErrors.forEach(err => {
+					errordesc += err + "\n";
+				});
+				DevExpress.ui.notify(errordesc, "error", 10000);
+				return false;
+			}
             if (validatedData.length === 0) {
-                DevExpress.ui.notify("No valid data found in the uploaded file.", "error", 3000);
+                DevExpress.ui.notify("No valid data found in the uploaded file.", "error", 2000);
                 return;
             }
 
@@ -472,34 +493,6 @@ function uploadItemsToMaterialRequests() {
     window.location.href = `/${tenantName}/IMS/AddNewClientRequest?Mprno=${encodeURIComponent(requestNo)}`;
 }
 
-	function validateGridData() {
-    const grid = $("#Datagrid").dxDataGrid("instance");
-    const dataSource = grid?.getDataSource();
-    const items = dataSource?.items() ?? [];
-
-    const stockGroupCode = $("#StockGroup").dxDropDownBox("instance").option("value");
-    const lastNoInStockGroup = 1000; // Replace with the actual value from the server
-    const lastNoInUnit = 10; // Replace with the actual value from the server
-
-    return items.map((item, index) => {
-        // Generate GSCode if missing
-        if (!item.GSCode) {
-            item.GSCode = `${stockGroupCode}-${String(lastNoInStockGroup + index + 1).padStart(5, "0")}`;
-        }
-
-        // Generate UnitCode if missing
-        if (!item.UnitCode) {
-            item.UnitCode = `UNIT-${lastNoInUnit + index + 1}`;
-        }
-
-        // Ensure ItemSize is a string
-        if (item.ItemSize && typeof item.ItemSize !== "string") {
-            item.ItemSize = String(item.ItemSize);
-        }
-
-        return item; // Include all rows without validation
-    });
-}
 
 </script>
 <script src="https://cdn3.devexpress.com/jslib/23.2.4/js/dx.all.js"></script>

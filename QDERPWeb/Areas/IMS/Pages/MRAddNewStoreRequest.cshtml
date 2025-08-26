@@ -1318,7 +1318,7 @@
 									.OnOpened("onOpened")
 									.TabIndex(1)
 									.Disabled(true) // Entire DropDownBox is disabled
-									.DropDownOptions(o => o.Width(470))
+									.DropDownOptions(o => o.Width(430))
 									.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
 									.Width("100%")
 									.Buttons(buttons =>
@@ -1357,7 +1357,7 @@
 									.OnInput("dropDownBoxOnInput")
 									.OnOpened("onOpened")
 									.TabIndex(1)
-									.DropDownOptions(o => o.Width(470))
+									.DropDownOptions(o => o.Width(430))
 									.ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
 									.Width("100%")
 									.Buttons(buttons =>
@@ -1584,7 +1584,7 @@
 						.AllowColumnReordering(true)
 						.AllowColumnResizing(true)
 						.ColumnFixing(fixing => fixing.Enabled(true))
-						.Height("45vh")
+						.Height("35vh")
 						.ColumnAutoWidth(true)
 						.FilterRow(filterRow => filterRow.Visible(false))
 						.GroupPanel(groupPanel => groupPanel.Visible(false))
@@ -2050,9 +2050,9 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center).Width(300);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
@@ -2084,9 +2084,9 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center).Width(100);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
@@ -2118,9 +2118,9 @@
 					.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 					.Columns(columns =>
 					{
-						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('Id')")).Alignment(HorizontalAlignment.Center).Width(100);
+						columns.Add().DataField("SignatoryId").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(150);
 
-						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Name')")).Alignment(HorizontalAlignment.Center).Width(200);
+						columns.Add().DataField("SignatoryName").Caption(new JS("formatMessage('Signatory Name')")).Alignment(HorizontalAlignment.Center);
 
 					})
 					)
@@ -2747,6 +2747,7 @@
 		const mprnos = urlParams.get('Mprno');
 		const mprno = mprnos ? mprnos.split("?")[0] : null;
 		getSalesPersonByUser();
+			getDefaultCompany();
 		if (mprno) {
 			// If Mprno is present, load client details
 			loadClientDetails(mprno);
@@ -2887,19 +2888,38 @@ if (gridInstance) {
 		}
 	});
 }
+	function getDefaultCompany() {
+    $.ajax({
+        type: "GET",
+        url: "/api/AddNewClientRequest/GetDefaultCompany",
+        success: function (data) {
+            if (data && data.CompanyId) {
+                console.log("Default Company:", data.CompanyId, data.CompanyName);
 
+                const CompanyDropDown = $("#ddGetCompany").dxDropDownBox("instance");
+                if (CompanyDropDown) {
+                    // ✅ Bind CompanyId as value
+                    CompanyDropDown.option("value", data.CompanyId);
+                }
+            }
+        },
+        error: function (xhr) {
+            console.error("Company fetch failed:", xhr.responseText);
+        }
+    });
+}
 
 	// Move the DataGrid configuration into a function for cleanliness
 	function initializeDataGrid(rowData) {
 
 		let grid = $("#B2BdataGrid").dxDataGrid({
 			focusedRowEnabled: true,
-
 			dataSource: rowData,
 			keyExpr: "LineOrderNo",
-			// âœ… your columns, editing, dropdowns, and templates go here, unchanged
-			// Just make sure to close all functions properly
-			// For brevity, I'm skipping repeating all the column config here
+			 selection: {
+						mode: "multiple",
+						showCheckBoxesMode: "always"
+					},
 			columns: [
 				{
 
@@ -2921,144 +2941,92 @@ if (gridInstance) {
 
 				},
 				{
+    dataField: "QuoteGroupItemSlNo",
+    caption: formatMessage('Sub Group'),
+    width: 200,
 
-					dataField: "QuoteGroupItemSlNo",
+    // Shows text in display mode
+    cellTemplate: function (container, options) {
+        const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+        getUnitRateMethods1(mprNo).done(function (unitRates1) {
+            const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
+            $("<span>").text(selectedItem ? selectedItem.GroupName : "").appendTo(container);
+        });
+    },
 
-					caption: formatMessage('Sub Group'),
+    // Edit mode template
+    editCellTemplate: function (cellElement, cellInfo) {
+        const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value");
 
-					width: 200,
-					cellTemplate: function (container, options) {
-						getUnitRateMethods1().done(function (unitRates1) {
-							const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
-							if (selectedItem) {
-								$("<span>").text(selectedItem.GroupName).appendTo(container);
-							} else {
-								$("<span>").text("").appendTo(container);
-							}
-						});
-					},
-					editCellTemplate: function (cellElement, cellInfo) {
+        getUnitRateMethods1(mprNo).done(function (unitRates1) {
+            let $container = $("<div>").css({
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
+                width: "100%"
+            }).appendTo(cellElement);
 
-						getUnitRateMethods1().done(function (unitRates1) {
+            // 🔽 DropDownBox
+            $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+                dataSource: unitRates1,
+                valueExpr: "QuoteGroupItemSlNo",
+                displayExpr: "GroupName",
+                value: cellInfo.value || null,
+                placeholder: "Select Sub Group",
+                dropDownOptions: { width: 600 },
+                contentTemplate: function (e) {
+                    return $("<div>").dxDataGrid({
+                        dataSource: unitRates1,
+                        keyExpr: "QuoteGroupItemSlNo",
+                        selection: { mode: "single" },
+                        height: 300,
+                        width: 550,
+                        scrolling: { mode: "virtual" },
+                        searchPanel: {
+                            visible: true,
+                            highlightCaseSensitive: true,
+                            width: 300,
+                            placeholder: "Search..."
+                        },
+                        columns: [
+                            { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
+                            { dataField: "GroupCode", caption: "Group Code", width: 80 },
+                            { dataField: "GroupName", caption: "Group Name", width: 590 }
+                        ],
+                        onSelectionChanged: function (selectedItems) {
+                            let selectedItem = selectedItems.selectedRowsData[0];
+                            if (selectedItem) {
+                                e.component.option("value", selectedItem.QuoteGroupItemSlNo);
+                                cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
 
-							// Create container for dropdown + button
+                                // Update DescriptionDetailsText in row
+                                let grid = $("#B2BdataGrid").dxDataGrid("instance");
+                                let rowIndex = grid.getRowIndexByKey(cellInfo.key);
+                                if (rowIndex !== -1) {
+                                    grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.GroupName);
+                                }
 
-							let $container = $("<div>").css({
+                                e.component.close();
+                            }
+                        }
+                    });
+                }
+            });
 
-								display: "flex",
-
-								alignItems: "center",
-
-								gap: "5px",
-
-								width: "100%"
-
-							}).appendTo(cellElement);
-
-							// DropDownBox inside container
-
-							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-
-								dataSource: unitRates1,
-
-								valueExpr: "QuoteGroupItemSlNo",
-
-								displayExpr: "GroupName",
-
-								value: cellInfo.value || null,
-
-								placeholder: "Select Unit Rate Method",
-
-								dropDownOptions: { width: 600 },
-
-								contentTemplate: function (e) {
-
-									return $("<div>").dxDataGrid({
-
-										dataSource: unitRates1,
-
-										keyExpr: "QuoteGroupItemSlNo",
-
-										selection: { mode: "single" },
-
-										height: 300,
-
-										scrolling: { mode: "virtual" },
-										searchPanel: {
-													visible: true,
-													highlightCaseSensitive: true,
-													width: 300,
-													placeholder: "Search..."
-													},
-
-										columns: [
-											{ dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-											{ dataField: "GroupCode", caption: "Group Code", width: 80 },
-
-											{ dataField: "GroupName", caption: "Group Name", width: 200 }
-
-
-										],
-
-										onSelectionChanged: function (selectedItems) {
-
-											let selectedItem = selectedItems.selectedRowsData[0];
-
-											if (selectedItem) {
-
-												e.component.option("value", selectedItem.QuoteGroupItemSlNo);
-
-												cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
-
-												let grid = $("#B2BdataGrid").dxDataGrid("instance");
-
-												let rowIndex = grid.getRowIndexByKey(cellInfo.key);
-
-												if (rowIndex !== -1) {
-
-													grid.cellValue(rowIndex, "DescriptionDetailsText", selectedItem.GroupName);
-
-												}
-
-												e.component.close();
-
-											}
-
-										}
-
-									});
-
-								}
-
-							});
-
-							// âœ… Add Button
-
-							$("<div>").dxButton({
-
-								icon: "plus",
-
-								hint: "Add new item",
-
-								onClick: function () {
-
-									let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup`; // Update this route if needed
-
-									openModal(url, "");
-
-								},
-
-								width: 60,
-
-								height: 30
-
-							}).appendTo($container);
-
-						});
-
-					}
-
-				},
+            // ➕ Add button
+            $("<div>").dxButton({
+                icon: "plus",
+                hint: "Add new item",
+                onClick: function () {
+                    let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
+                    openModal(url, "Quotation Item Sub Group");
+                },
+                width: 60,
+                height: 30
+            }).appendTo($container);
+        });
+    }
+},
 				{
 
 					dataField: "GSCode",
@@ -3150,13 +3118,28 @@ if (gridInstance) {
 						selection: { mode: "single" },
 						columns: [
 							{ dataField: "GSCode", caption: "Code", width: 80 },
+							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
 							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
 							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							
+							{
+                dataField: "IsDiscontinued",
+                caption: "Discontinued Item",
+                width: 150,
+                dataType: "boolean",  // ✅ Show checkbox
+                allowEditing: false,  // ✅ Read-only
+               
+            },
+
+{ dataField: "CostPrice", caption: "Cost Price", width: 100,visible:false},
+{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false },
+{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
 						],
+						onRowPrepared: function (e) {
+			if (e.rowType === "data" && e.data.IsDiscontinued === true) {
+			   e.rowElement.css("background-color", "#ffcccc");
+			}
+		},
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
 							if (!selectedItem) return;
@@ -3190,29 +3173,44 @@ if (gridInstance) {
 				}
 			});
 			const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
-
-			$("<div>").dxButton({
+				$("<div>").dxButton({
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndServices`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-
 			$("<div>").dxButton({
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`; // Example add page
-					openModal(url, "Goods and Services");
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+					const visibleRows = grid.getVisibleRows();
+					const rowIndex = cellInfo.rowIndex;
+					const rowData = grid.cellValue(rowIndex, "GSCode");
+					if (!rowData) {
+						DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+						return;
+					}
+					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+					openModal(url, "", function () {
+					getDropdownData().done(function (newData) {
+					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("dataSource", newData);
+					}
+					dropdownData = newData;
+					grid.refresh();
+						});
+					});
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-		}
-	},
+			}
+			},
 
 					{
 				dataField: "Descriptions",
@@ -3473,7 +3471,153 @@ if (gridInstance) {
 				e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 			},
+			onContextMenuPreparing: function (e) {
+			if (e.target === "content") {
+				e.items = [
+						{
+			text: "Delete Line Item",
+			icon: "trash",
+			onItemClick: function () {
+				const rowIndex = e.row?.rowIndex;
+				if (rowIndex >= 0) {
+					DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+						if (!result) return;
 
+						const childId = e.row?.data?.MprchildSlNo;
+
+						if (childId) {
+							// ✅ Delete from database
+							$.ajax({
+								url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+								type: "DELETE",
+								success: function (res) {
+									if (res.success) {
+										// ✅ Remove from rowData by ID
+										const index = rowData.findIndex(r => r.MprchildSlNo === childId);
+										if (index !== -1) rowData.splice(index, 1);
+
+										// ✅ Resequence LineOrderNo
+										rowData.forEach((row, idx) => {
+											row.LineOrderNo = idx + 1;
+										});
+
+										dataGridInstance.option("dataSource", rowData);
+										dataGridInstance.refresh();
+
+										DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+									} else {
+										DevExpress.ui.notify(res.message, "error", 2000);
+									}
+								},
+								error: function () {
+									DevExpress.ui.notify("Failed to delete row", "error", 2000);
+								}
+							});
+						} else {
+							// ✅ Unsaved row deletion
+							rowData.splice(rowIndex, 1);
+
+							// ✅ Resequence LineOrderNo
+							rowData.forEach((row, idx) => {
+								row.LineOrderNo = idx + 1;
+							});
+
+							dataGridInstance.option("dataSource", rowData);
+							dataGridInstance.refresh();
+
+							DevExpress.ui.notify("Row removed", "success", 1500);
+						}
+					});
+				}
+			}
+		},
+
+							{
+			text: "Delete Selected Rows",
+			icon: "trash",
+			onItemClick: function () {
+				const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+				const selectedKeys = dataGridInstance.getSelectedRowKeys();
+
+				if (selectedKeys.length === 0) {
+					DevExpress.ui.notify("No rows selected", "warning", 2000);
+					return;
+				}
+
+				// Collect MprchildSlNo values (used for DB deletion)
+				const selectedChildIds = selectedKeys
+					.map(key => {
+						const rowIndex = dataGridInstance.getRowIndexByKey(key);
+						return dataGridInstance.cellValue(rowIndex, "MprchildSlNo");
+					})
+					.filter(id => id); // Only valid saved rows
+
+				DevExpress.ui.dialog.confirm(`Delete ${selectedKeys.length} selected row(s)?`, "Confirm").done(function (result) {
+					if (!result) return;
+
+					// If there are DB rows to delete
+					if (selectedChildIds.length > 0) {
+						$.ajax({
+							url: "/api/AddNewClientRequest/DeleteMultipleChildren",
+							type: "DELETE",
+							contentType: "application/json",
+							data: JSON.stringify(selectedChildIds),
+							success: function (res) {
+								if (res.success) {
+									// ✅ Remove deleted rows from rowData
+									rowData = rowData.filter(row => !selectedChildIds.includes(row.MprchildSlNo));
+
+									// ✅ Re-sequence LineOrderNo
+									rowData.forEach((row, index) => {
+										row.LineOrderNo = index + 1;
+									});
+
+									// ✅ Rebind and refresh the grid
+									dataGridInstance.option("dataSource", rowData);
+									dataGridInstance.refresh();
+
+									DevExpress.ui.notify("Rows deleted successfully", "success", 2000);
+								} else {
+									DevExpress.ui.notify(res.message, "error", 2000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to delete rows", "error", 3000);
+							}
+						});
+					} else {
+						// Only unsaved rows — delete from UI
+						selectedKeys.forEach(key => {
+							const rowIndex = dataGridInstance.getRowIndexByKey(key);
+							if (rowIndex >= 0) dataGridInstance.deleteRow(rowIndex);
+						});
+
+						// ✅ Re-sequence and rebind rowData
+						rowData = dataGridInstance.option("dataSource");
+						rowData.forEach((row, index) => {
+							row.LineOrderNo = index + 1;
+						});
+
+						dataGridInstance.option("dataSource", rowData);
+						dataGridInstance.refresh();
+
+						DevExpress.ui.notify("Unsaved rows removed", "success", 1500);
+					}
+				});
+			}
+		},
+
+
+					{
+						text: "Add New Line",
+							icon: "plus",
+						onItemClick: function () {
+								addNewLineToB2BGrid();
+						}
+					}
+				];
+			}
+		},
 			columnAutoWidth: true,
 
 			showBorders: true,
@@ -3537,6 +3681,10 @@ if (gridInstance) {
 			dataSource: rowData,
 
 			keyExpr: "LineOrderNo",
+			selection: {
+			mode: "multiple",
+			showCheckBoxesMode: "always"
+		},
 
 			columns: [
 
@@ -3554,87 +3702,82 @@ if (gridInstance) {
 
 				{
 
-					dataField: "QuoteGroupItemSlNo",
+						dataField: "QuoteGroupItemSlNo",
 
-					caption: formatMessage('Sub Group'),
+						caption: formatMessage('Sub Group'),
 
-					width: 200,
-					cellTemplate: function (container, options) {
-						getUnitRateMethods1().done(function (unitRates1) {
-							const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
-							if (selectedItem) {
-								$("<span>").text(selectedItem.GroupName).appendTo(container);
-							} else {
-								$("<span>").text("").appendTo(container);
-							}
-						});
-					},
-					editCellTemplate: function (cellElement, cellInfo) {
-						getUnitRateMethods1().done(function (unitRates1) {
-							let $container = $("<div>").css({
-								display: "flex",
-								alignItems: "center",
-								gap: "5px",
-								width: "100%"
-							}).appendTo(cellElement);
-
-							// Create the DropDownBox
-							$("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
-								dataSource: unitRates1,
-								valueExpr: "QuoteGroupItemSlNo", // Value to be passed
-								displayExpr: "GroupName",        // Text to be displayed
-								value: cellInfo.value || null,
-								placeholder: "Select Sub Group",
-								dropDownOptions: { width: 600 },
-								contentTemplate: function (e) {
-									return $("<div>").dxDataGrid({
-										dataSource: unitRates1,
-										keyExpr: "QuoteGroupItemSlNo",
-										selection: { mode: "single" },
-										height: 300,
-										scrolling: { mode: "virtual" },
-										searchPanel: {
-													visible: true,
-													highlightCaseSensitive: true,
-													width: 300,
-													placeholder: "Search..."
-													},
-											columns: [
-											{ dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
-											{ dataField: "GroupCode", caption: "Group Code", width: 80 },
-											{ dataField: "GroupName", caption: "Group Name", width: 200 }
-										],
-										onSelectionChanged: function (selectedItems) {
-											let selectedItem = selectedItems.selectedRowsData[0];
-											if (selectedItem) {
-												// Set the value of the DropDownBox
-												e.component.option("value", selectedItem.QuoteGroupItemSlNo);
-												// Update the cell value in the grid
-												cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
-												// Close the DropDownBox
-												e.component.close();
-											}
-										}
-									});
+						width: 200,
+						cellTemplate: function (container, options) {
+							getUnitRateMethods1().done(function (unitRates1) {
+								const selectedItem = unitRates1.find(item => item.QuoteGroupItemSlNo === options.value);
+								if (selectedItem) {
+									$("<span>").text(selectedItem.GroupName).appendTo(container);
+								} else {
+									$("<span>").text("").appendTo(container);
 								}
 							});
+						},
+	editCellTemplate: function (cellElement, cellInfo) {
+    const mprNo = $("#txtRequestNo").dxTextBox("instance").option("value"); // ✅ get current request no
 
-							// Add a button to add new items
-							$("<div>").dxButton({
-								icon: "plus",
-								hint: "Add new item",
-								onClick: function () {
-									let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup`;
-									openModal(url, "");
-								},
-								width: 60,
-								height: 30
-							}).appendTo($container);
-						});
-					}
+    getUnitRateMethods1(mprNo).done(function (unitRates1) {
+        let $container = $("<div>").css({
+            display: "flex",
+            alignItems: "center",
+            gap: "5px",
+            width: "100%"
+        }).appendTo(cellElement);
+
+        // DropDownBox with filtered data
+        $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+            dataSource: unitRates1,
+            valueExpr: "QuoteGroupItemSlNo",
+            displayExpr: "GroupName",
+            value: cellInfo.value || null,
+            placeholder: "Select Sub Group",
+            dropDownOptions: { width: 600 },
+            contentTemplate: function (e) {
+                return $("<div>").dxDataGrid({
+                    dataSource: unitRates1,
+                    keyExpr: "QuoteGroupItemSlNo",
+                    selection: { mode: "single" },
+                    height: 300,
+                    scrolling: { mode: "virtual" },
+                    searchPanel: { visible: true, width: 300, placeholder: "Search..." },
+                    columns: [
+                        { dataField: "QuoteGroupItemSlNo", caption: "ID", width: 60 },
+                        { dataField: "GroupCode", caption: "Group Code", width: 110 },
+                        { dataField: "GroupName", caption: "Group Name", width: 550 }
+                    ],
+                    onSelectionChanged: function (selectedItems) {
+                        let selectedItem = selectedItems.selectedRowsData[0];
+                        if (selectedItem) {
+                            e.component.option("value", selectedItem.QuoteGroupItemSlNo);
+                            cellInfo.setValue(selectedItem.QuoteGroupItemSlNo);
+                            e.component.close();
+                        }
+                    }
+                });
+            }
+        });
+
+        // Add button to create new subgroup
+        $("<div>").dxButton({
+            icon: "plus",
+            hint: "Add new item",
+            onClick: function () {
+                let url = `/${tenantName}/IMS/addNewQuotationItemSubGroup?Mprno=${encodeURIComponent(mprNo)}`;
+               openModal(url, "");
+            },
+            width: 60,
+            height: 30
+        }).appendTo($container);
+    });
+}
 
 
-				},
+
+					},
 				{
 
 					dataField: "GSCode",
@@ -3725,13 +3868,28 @@ if (gridInstance) {
 						selection: { mode: "single" },
 						columns: [
 							{ dataField: "GSCode", caption: "Code", width: 80 },
+								{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
 							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
 							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+						
+							{
+                dataField: "IsDiscontinued",
+                caption: "Discontinued Item",
+                width: 150,
+                dataType: "boolean",  // ✅ Show checkbox
+                allowEditing: false,  // ✅ Read-only
+               
+            },
+
+{ dataField: "CostPrice", caption: "Cost Price", width: 100,visible:false},
+{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100,visible:false },
+{ dataField: "ReorderQty", caption: "Current Qty", width: 100,visible:false }
 						],
+						onRowPrepared: function (e) {
+			if (e.rowType === "data" && e.data.IsDiscontinued === true) {
+			   e.rowElement.css("background-color", "#ffcccc");
+			}
+		},
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
 							if (!selectedItem) return;
@@ -3770,7 +3928,7 @@ if (gridInstance) {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/IMS/VATGoodsandService`, "");
 				},
 				width: 60,
 				height: 30
@@ -3780,8 +3938,8 @@ if (gridInstance) {
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-					openModal(url, "Goods and Services");
+					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
+					openModal(url, "");
 				},
 				width: 60,
 				height: 30
@@ -4032,7 +4190,153 @@ if (gridInstance) {
 				e.data.LineOrderNo = rowData.length + 1; // Auto-generate SNo
 
 			},
+			onContextMenuPreparing: function (e) {
+		if (e.target === "content") {
+			e.items = [
+					{
+		text: "Delete Line Item",
+		icon: "trash",
+		onItemClick: function () {
+			const rowIndex = e.row?.rowIndex;
+			if (rowIndex >= 0) {
+				DevExpress.ui.dialog.confirm("Do you want to delete this row?", "Confirm").done(function (result) {
+					if (!result) return;
 
+					const childId = e.row?.data?.MprchildSlNo;
+
+					if (childId) {
+						// ✅ Delete from database
+						$.ajax({
+							url: `/api/AddNewClientRequest/DeleteChildById?childId=${encodeURIComponent(childId)}`,
+							type: "DELETE",
+							success: function (res) {
+								if (res.success) {
+									// ✅ Remove from rowData by ID
+									const index = rowData.findIndex(r => r.MprchildSlNo === childId);
+									if (index !== -1) rowData.splice(index, 1);
+
+									// ✅ Resequence LineOrderNo
+									rowData.forEach((row, idx) => {
+										row.LineOrderNo = idx + 1;
+									});
+
+									dataGridInstance.option("dataSource", rowData);
+									dataGridInstance.refresh();
+
+									DevExpress.ui.notify("Row deleted successfully", "success", 2000);
+								} else {
+									DevExpress.ui.notify(res.message, "error", 2000);
+								}
+							},
+							error: function () {
+								DevExpress.ui.notify("Failed to delete row", "error", 2000);
+							}
+						});
+					} else {
+						// ✅ Unsaved row deletion
+						rowData.splice(rowIndex, 1);
+
+						// ✅ Resequence LineOrderNo
+						rowData.forEach((row, idx) => {
+							row.LineOrderNo = idx + 1;
+						});
+
+						dataGridInstance.option("dataSource", rowData);
+						dataGridInstance.refresh();
+
+						DevExpress.ui.notify("Row removed", "success", 1500);
+					}
+				});
+			}
+		}
+	},
+
+						{
+		text: "Delete Selected Rows",
+		icon: "trash",
+		onItemClick: function () {
+			const dataGridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+			const selectedKeys = dataGridInstance.getSelectedRowKeys();
+
+			if (selectedKeys.length === 0) {
+				DevExpress.ui.notify("No rows selected", "warning", 2000);
+				return;
+			}
+
+			// Collect MprchildSlNo values (used for DB deletion)
+			const selectedChildIds = selectedKeys
+				.map(key => {
+					const rowIndex = dataGridInstance.getRowIndexByKey(key);
+					return dataGridInstance.cellValue(rowIndex, "MprchildSlNo");
+				})
+				.filter(id => id); // Only valid saved rows
+
+			DevExpress.ui.dialog.confirm(`Delete ${selectedKeys.length} selected row(s)?`, "Confirm").done(function (result) {
+				if (!result) return;
+
+				// If there are DB rows to delete
+				if (selectedChildIds.length > 0) {
+					$.ajax({
+						url: "/api/AddNewClientRequest/DeleteMultipleChildren",
+						type: "DELETE",
+						contentType: "application/json",
+						data: JSON.stringify(selectedChildIds),
+						success: function (res) {
+							if (res.success) {
+								// ✅ Remove deleted rows from rowData
+								rowData = rowData.filter(row => !selectedChildIds.includes(row.MprchildSlNo));
+
+								// ✅ Re-sequence LineOrderNo
+								rowData.forEach((row, index) => {
+									row.LineOrderNo = index + 1;
+								});
+
+								// ✅ Rebind and refresh the grid
+								dataGridInstance.option("dataSource", rowData);
+								dataGridInstance.refresh();
+
+								DevExpress.ui.notify("Rows deleted successfully", "success", 2000);
+							} else {
+								DevExpress.ui.notify(res.message, "error", 2000);
+							}
+						},
+						error: function () {
+							DevExpress.ui.notify("Failed to delete rows", "error", 3000);
+						}
+					});
+				} else {
+					// Only unsaved rows — delete from UI
+					selectedKeys.forEach(key => {
+						const rowIndex = dataGridInstance.getRowIndexByKey(key);
+						if (rowIndex >= 0) dataGridInstance.deleteRow(rowIndex);
+					});
+
+					// ✅ Re-sequence and rebind rowData
+					rowData = dataGridInstance.option("dataSource");
+					rowData.forEach((row, index) => {
+						row.LineOrderNo = index + 1;
+					});
+
+					dataGridInstance.option("dataSource", rowData);
+					dataGridInstance.refresh();
+
+					DevExpress.ui.notify("Unsaved rows removed", "success", 1500);
+				}
+			});
+		}
+	},
+
+
+				{
+					text: "Add New Line",
+						icon: "plus",
+					onItemClick: function () {
+							addNewLineToB2BGrid();
+					}
+				}
+			];
+		}
+	},
 			columnAutoWidth: true,
 
 			showBorders: true,
@@ -4089,7 +4393,47 @@ AddlDescription: null,
 			});
 	});
 
+	function addNewLineToB2BGrid() {
+		const $btn = $("#btnSave");
+		$btn.dxButton("instance").option("disabled", false);
 
+		const grid = $("#B2BdataGrid").dxDataGrid("instance");
+		const store = grid.getDataSource().store();
+		const currentData = grid.getDataSource().items();
+
+		const nextLineOrderNo = currentData.length > 0
+			? Math.max(...currentData.map(row => row.LineOrderNo || 0)) + 1
+			: 1;
+
+		const newRow = {
+			LineOrderNo: nextLineOrderNo,
+			QuoteGroupItemSlNo: null,
+			GSCode: null,
+			Description: null,
+			UnitRateMethod: null,
+			QtyRequested: 0,
+			ExpectedUnitRate: 0,
+			LineTotal: 0,
+// ✅ Optional fields used only in modal - must be initialized too
+					AddlDescription: null,
+					ItemReqPurpose: null,
+					ItemReqPriority: null,
+					ItemReqExpectedDate: null,
+					ItemRemarks: null,
+					DeliveryPeriod: null,
+					PlanNo: null
+		};
+
+		store.insert(newRow)
+			.then(() => {
+				grid.refresh();
+				const button = $("#btnSave").dxButton("instance");
+				button.option("text", "Update");
+			})
+			.catch(error => {
+				DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+			});
+	}
 
 	// Fetch dropdown data (same API can be used if needed)
 		function getDropdownData() {
@@ -4134,20 +4478,21 @@ AddlDescription: null,
 			}));
 		});
 	}
-	function getUnitRateMethods1() {
-		return $.ajax({
-			url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
-			method: "GET",
-			dataType: "json"
-		}).then(function (response) {
-			console.log("Unit Rate Data", response);
-			return response.map(item => ({
-				GroupCode: item.GroupCode,
-				GroupName: item.GroupName,
-				QuoteGroupItemSlNo: item.QuoteGroupItemSlNo
-			}));
-		});
-	}
+	function getUnitRateMethods1(mprNo) {
+    return $.ajax({
+        url: "/api/addNewQuotationItemSubGroup/GetSubGroup",
+        method: "GET",
+        data: { mprNo: mprNo }, // ✅ pass as query param
+        dataType: "json"
+    }).then(function (response) {
+        console.log("SubGroup Data for MPR:", mprNo, response);
+        return response.map(item => ({
+            GroupCode: item.GroupCode,
+            GroupName: item.GroupName,
+            QuoteGroupItemSlNo: item.QuoteGroupItemSlNo
+        }));
+    });
+}
 
 
 
@@ -7546,7 +7891,7 @@ function onIMSAttachmentButtonClick(e) {
 
 	const isMaster = false;
 	const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(requestNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
-	const title = "Transaction Documents";
+	const title = "";
 
 	openModal(url, title);
 }

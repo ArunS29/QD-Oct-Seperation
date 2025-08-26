@@ -384,6 +384,7 @@
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientContactNo")
                         .Label("Client Contact No:")
+                                                    .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -466,6 +467,7 @@
                         .Mode(TextBoxMode.Email)
                         .Label("Client Email:")
                         .LabelMode(EditorLabelMode.Floating)
+                                                    .ValidationRules(value => value.AddEmail().Message(new JS("formatMessage('Please Enter the Valid Email Address')")))
                         .Width("100%")
                         )
                     </div>
@@ -745,7 +747,7 @@
                                                             .OnOpened("onOpened")
                                                             .TabIndex(1)
                                                             .Disabled(true) // Entire DropDownBox is disabled
-                                                            .DropDownOptions(o => o.Width(470))
+                                                            .DropDownOptions(o => o.Width(430))
                                                             .ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
                                                             .Width("100%")
                                                             .Buttons(buttons =>
@@ -785,7 +787,7 @@
                                                             .OnInput("dropDownBoxOnInput")
                                                             .OnOpened("onOpened")
                                                             .TabIndex(1)
-                                                            .DropDownOptions(o => o.Width(470))
+                                                            .DropDownOptions(o => o.Width(430))
                                                             .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
                                                             .Width("100%")
                                                             .Buttons(buttons =>
@@ -1270,7 +1272,7 @@
     }
     function AddTypeReq(){
         const url = `/${tenantName}/IMS/QuotationTypeOfRequest`;
-        const title = "";
+        const title = "Quotation Type Of Request";
             openModal(url, title);
     }
     function AddQuoteStatus(){
@@ -1348,7 +1350,7 @@
     }
     function AddPreparedBy(){
             const url = `/${tenantName}/IMS/Signatories`;
-            const title = "";
+            const title = "Signatories";
             openModal(url, title);
           }
           function dataGridPreparedByHeadInitialized(e) {
@@ -1618,29 +1620,44 @@
 				}
 			});
 			const $actionButtonWrapper = $("<div>").addClass("action-buttons-container").appendTo($container);
-
-			$("<div>").dxButton({
+				$("<div>").dxButton({
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-
 			$("<div>").dxButton({
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
-					openModal(url, "Goods and Services");
+					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+					const visibleRows = grid.getVisibleRows();
+					const rowIndex = cellInfo.rowIndex;
+					const rowData = grid.cellValue(rowIndex, "GSCode");
+					if (!rowData) {
+						DevExpress.ui.notify("Item Code (GScode) is missing", "warning", 2000);
+						return;
+					}
+					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
+					openModal(url, "", function () {
+					getDropdownData().done(function (newData) {
+					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
+					if (dropDownBox) {
+						dropDownBox.option("dataSource", newData);
+					}
+					dropdownData = newData;
+					grid.refresh();
+						});
+					});
 				},
 				width: 60,
 				height: 30
 			}).appendTo($actionButtonWrapper);
-		}
-	},
+			}
+			},
         {
                         dataField: "Descriptions",
                         caption: "...",
@@ -2291,4 +2308,33 @@
                 }
             }
         }
+           $(function () {
+            const dateBox = $("#deliveryNoteDate").dxDateBox("instance");
+
+          // When focus/typing starts, change to dd-MM-yyyy
+            $("#deliveryNoteDate").on("focusin", function () {
+              dateBox.option("displayFormat", "dd-MM-yyyy");
+          });
+
+          // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#deliveryNoteDate").on("focusout", function () {
+              dateBox.option("displayFormat", "dd-MMM-yyyy");
+          });
+      });
+       $(function () {
+            const dateBox = $("#ClientPODate").dxDateBox("instance");
+
+          // When focus/typing starts, change to dd-MM-yyyy
+            $("#ClientPODate").on("focusin", function () {
+              dateBox.option("displayFormat", "dd-MM-yyyy");
+          });
+
+          // When focus/typing ends, change back to dd-MMM-yyyy
+            $("#ClientPODate").on("focusout", function () {
+              dateBox.option("displayFormat", "dd-MMM-yyyy");
+          });
+      });
+         $("#btnBack").on("click", function (e) {
+                  history.back();
+                      });
    </script>

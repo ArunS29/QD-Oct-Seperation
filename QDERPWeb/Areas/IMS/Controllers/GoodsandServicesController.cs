@@ -244,5 +244,97 @@ public IActionResult GetByGscode(string gscode)
 
     return Unauthorized(new { success = false, message = "Invalid tenant." });
 }
+
+        //Description Child grid 
+        [HttpGet]
+        public async Task<IActionResult> GetGoodsAndServiceByCode(string code)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                var item = await (from g in dbContext.Tbl20164GoodsAndServicesMasters
+                                  join u in dbContext.Tbl40111PropertyUnitCodes
+                                      on g.GsgroupId equals u.UnitCode into gj
+                                  from unit in gj.DefaultIfEmpty()
+                                  where g.Gscode == code
+                                  select new
+                                  {
+                                      GSCode = g.Gscode,
+                                      GSDescrpition = g.Gsdescrpition,
+                                      GsdescriptionAr = g.GsdescriptionAr,
+                                      g.ItemPartNo,
+                                      g.CostPrice,
+                                      GSSellingRate = g.GssellingRate,
+                                      g.ReorderQty,
+                                      g.GsuoM,
+                                      UnitDescription = unit.UnitDesc
+                                  }).FirstOrDefaultAsync();
+
+                if (item == null)
+                    return NotFound();
+
+                return Ok(item);
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetGoodsAndServices(int pageNumber = 1, int pageSize = 10)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var query = from g in dbContext.Tbl20164GoodsAndServicesMasters
+                                join u in dbContext.Tbl40111PropertyUnitCodes
+                                    on g.GsgroupId equals u.UnitCode into gj
+                                from unit in gj.DefaultIfEmpty()
+                                orderby g.Gscode
+                                select new
+                                {
+                                    GSCode = g.Gscode,
+                                    GSDescrpition = g.Gsdescrpition,
+                                    g.GsgroupId,
+                                    GsdescriptionAr = g.GsdescriptionAr,
+                                    g.ItemPartNo,
+                                    g.IsDiscontinued,
+                                    g.CostPrice,
+                                    GSSellingRate = g.GssellingRate,
+                                    g.ReorderQty,
+                                    g.StoreCode,
+                                    g.MaxQty,
+                                    g.MinQty,
+                                    g.GsuoM,
+                                    g.GspackingUnit,
+                                    UnitDescription = unit != null ? unit.UnitDesc : null,
+                                    UnitCode = unit != null ? unit.UnitCode : (int?)null
+                                };
+
+                    var sql = query.ToQueryString();
+                    Console.WriteLine(sql);
+
+
+                    // Get total count for pager
+                    var totalCount = await query.CountAsync();
+
+                    // Apply pagination
+                    var pagedData = await query
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToListAsync();
+
+                    return Ok(new
+                    {
+                        data = pagedData,
+                        totalCount = totalCount
+                    });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred.", details = ex.Message });
+            }
+        }
     }
 }
