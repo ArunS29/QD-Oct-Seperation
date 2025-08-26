@@ -271,7 +271,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     x.OperatorOthourlyRate,
                     x.WorkingShift,
                     x.PropertyOperatorTypeId,
-                    x.EquipmentNo
+                    x.EquipmentNo,
+                    x.PropertyOperatorCode
                 })
                 .ToListAsync();
             data = data != null ? data : [];
@@ -341,8 +342,41 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 });
             }
 
-        [HttpGet("{equipmentNo}")]
-        public IActionResult GetOperatorsByEquipment(string equipmentNo)
+        //[HttpGet("{equipmentNo}")]
+        //public IActionResult GetOperatorsByEquipment(string equipmentNo)
+        //{
+        //    if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+        //    {
+        //        return BadRequest(new { success = false, message = "Failed to establish database connection." });
+        //    }
+
+        //    if (string.IsNullOrEmpty(equipmentNo))
+        //    {
+        //        return BadRequest(new { success = false, message = "Equipment number is required." });
+        //    }
+        //    var operators = dbContext.Tbl40107PropertyOperators
+        //    .Where(o => o.EquipmentNo == equipmentNo)  
+        //    .Select(o => new
+        //    {
+        //        o.PropertyOperatorCode,
+        //        o.EmployeeId,
+        //        o.OperatorName,
+        //        o.WorkStartDate,
+        //        o.WorkEndDate,
+        //        o.OperatorRegHourlyRate,
+        //        o.OperatorOthourlyRate,
+        //        o.WorkingShift,
+        //        o.PropertyOperatorTypeId,
+        //        o.EquipmentNo
+        //    })
+        //    .ToList();
+        //    //var operators = dbContext.Tbl40107PropertyOperators
+        //    //    .Where(o => o.EquipmentNo == equipmentNo)
+        //    //    .ToList();
+        //    return Ok(operators);
+        //}
+        [HttpGet]
+        public async Task<IActionResult> GetOperators([FromQuery] string equipmentNo, [FromQuery] long propertyOperatorCode)
         {
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
@@ -353,25 +387,26 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             {
                 return BadRequest(new { success = false, message = "Equipment number is required." });
             }
+
             var operators = dbContext.Tbl40107PropertyOperators
-            .Where(o => o.EquipmentNo == equipmentNo)  
-            .Select(o => new
-            {
-                o.PropertyOperatorCode,
-                o.EmployeeId,
-                o.OperatorName,
-                o.WorkStartDate,
-                o.WorkEndDate,
-                o.OperatorRegHourlyRate,
-                o.OperatorOthourlyRate,
-                o.WorkingShift,
-                o.PropertyOperatorTypeId,
-                o.EquipmentNo
-            })
-            .ToList();
-            //var operators = dbContext.Tbl40107PropertyOperators
-            //    .Where(o => o.EquipmentNo == equipmentNo)
-            //    .ToList();
+                .Where(o => o.EquipmentNo == equipmentNo && o.PropertyOperatorCode == propertyOperatorCode)
+                .Select(o => new
+                {
+                    o.EmployeeId,
+                    o.OperatorName,
+                    o.WorkStartDate,
+                    o.WorkEndDate,
+                    o.OperatorRegHourlyRate,
+                    o.OperatorOthourlyRate,
+                    o.WorkingShift,
+                    o.PropertyOperatorTypeId,
+                    o.EquipmentNo,
+                    o.PropertyOperatorCode,
+                    o.OperatorRemarks
+                })
+        .ToList();
+
+
             return Ok(operators);
         }
 

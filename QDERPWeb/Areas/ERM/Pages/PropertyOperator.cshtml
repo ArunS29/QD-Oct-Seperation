@@ -75,7 +75,12 @@
                                 .OnOpened("onOpened")
                                 .TabIndex(1)
                                 .OnKeyDown("onKeyDown")
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Operator Type is required");
+                                })
                                 .ContentTemplate(new TemplateName("GetOperatorTypeContentTemplate"))
+
                 )
             </td>
         </tr>
@@ -112,7 +117,12 @@
                                 .Label("Operator Name:")
                                 .Disabled(true)
                                 .LabelMode(EditorLabelMode.Floating)
-                                .Width("100%"))
+                                .Width("100%")
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Operator Name is required");
+                                })
+                )
             </td>
         </tr>
 
@@ -370,11 +380,24 @@
   //    $(document).on("click", "#btnSave", btnSaveClick);
 
     function btnSaveClick() {
-        debugger;
+               const OperatorName = $("#OperatorName").dxTextBox("instance").option("value");
+           const PropertyOperatorTypeID = $("#OperatorType").dxDropDownBox("instance").option("value");
+
+       // ===== Validation Start =====
+           if (!OperatorName || OperatorName.trim() === "") {
+             DevExpress.ui.notify("Operator Name is required!", "error", 3000);
+             $("#OperatorName").dxTextBox("instance").focus();
+           return; // Stop function
+       }
+
+           if (!PropertyOperatorTypeID || PropertyOperatorTypeID.length === 0) {
+             DevExpress.ui.notify("OperatorType is required!", "error", 3000);
+             $("#OperatorType").dxDropDownBox("instance").focus();
+           return; // Stop function
+       }
+
         try {
-             // Get the primary key (hidden or from a control)
-             //  const PropertyOperatorTypeId = $("#PropertyOperatorTypeId").dxTextBox("instance")?.option("value") || "";
-            // Collect data from form controls
+            
             const data = {
                // PropertyOperatorTypeId: PropertyOperatorTypeId ? parseInt(PropertyOperatorTypeId) : 0, // Fixed here
                 EquipmentNo: $("#PropertyNo").dxTextBox("instance")?.option("value") || "",
@@ -444,63 +467,13 @@
         });
     }
 
-
-    // $(document).ready(function () {
-    // debugger;
-    //     const urlParams = new URLSearchParams(window.location.search);
-
-    //     const PropertyNo = urlParams.get("PropertyNo") || "";
-    //     const PropertyDescription = urlParams.get("PropertyDescription") || "";
-
-    //     Wait until DevExtreme controls are initialized
-    //     setTimeout(() => {
-    //         if ($("#PropertyNo").data("dxTextBox")) {
-    //             $("#PropertyNo").dxTextBox("instance").option("value", PropertyNo);
-    //         }
-    //         if ($("#PropertyDescription").data("dxTextBox")) {
-    //             $("#PropertyDescription").dxTextBox("instance").option("value", PropertyDescription);
-    //         }
-    //     }, 300);
-
-    // if (mode === "edit" && code) {
-    //     console.log("Fetching operator details for equipmentNo:", code);
-
-    //     $.ajax({
-    //         url: '/api/PropertyOperator/GetOperatorsByEquipment/' + code,
-    //         type: 'GET',
-    //         success: function (data) {
-    //             console.log("Operator details:", data);
-    //                $("#EquipmentNo").dxTextBox("instance").option("value", data.EquipmentNo);
-    //                  $("#OperatorName").dxTextBox("instance").option("value", data.OperatorName);
-    //                 $("#OperatorRegHourlyRate").dxNumberBox("instance").option("value", data.OperatorRegHourlyRate);
-    //                  $("#OperatorOthourlyRate").dxNumberBox("instance").option("value", data.OperatorOthourlyRate);
-    //                  $("#WorkStartDate").dxDateBox("instance").option("value", data.WorkStartDate);
-    //                  $("#EmployeeNo").dxDropDownBox("instance").option("value", data.EmployeeNo);
-    //                  $("#OperatorType").dxDropDownBox("instance").option("value", data.OperatorType);
-    //                  $("#WorkEndDate").dxDateBox("instance").option("value", data.WorkEndDate);
-    //                  $("#OperatorRemarks").dxTextArea("instance").option("value", data.OperatorRemarks);
-    //                  $("#WorkingShift").dxSelectBox("instance").option("value", data.WorkingShift);
-    //                 $("HiddenID").dxTextBox("instance").option("value", data.PropertyOperatorTypeId);
-    //                   isEditMode = true;   $("#btnSave").text("Update");
-    //         },
-    //         error: function (xhr) {
-    //             console.error(xhr);
-    //             DevExpress.ui.notify("Failed to load operators", "error", 2000);
-    //                 }
-    //         });
-    //     }
-    // });
-
     $(document).ready(function () {
-        debugger;
-
         const urlParams = new URLSearchParams(window.location.search);
-
+        const propertyOperatorCode = urlParams.get("PropertyOperatorCode") || "";
         const PropertyNo = urlParams.get("PropertyNo") || "";
         const PropertyDescription = urlParams.get("PropertyDescription") || "";
         const code = urlParams.get("code") || urlParams.get("PropertyNo") || urlParams.get("PropertyNo") || "";
         const mode = urlParams.get("mode") || (code ? "edit" : "add");
-
         // Set initial values for textboxes
         setTimeout(() => {
             if ($("#PropertyNo").data("dxTextBox")) {
@@ -516,33 +489,32 @@
                 $("#btnSave").data("is-update", true);
             }
 
-        // Edit mode logic
         if (mode === "edit" && code) {
             console.log("Fetching operator details for EquipmentNo:", code);
-
-          
             $.ajax({
-                url: '/api/PropertyOperator/GetOperatorsByEquipment/' + encodeURIComponent(code),
+               url: `/api/PropertyOperator/GetOperators?equipmentNo=${encodeURIComponent(code)}&propertyOperatorCode=${encodeURIComponent(propertyOperatorCode)}`,
                 type: 'GET',
                 success: function (data) {
-                    console.log("Operator details:", data);
-                    // ✅ Ensure keys match your API response
-                      $("#PropertyType").dxDropDownBox("instance").option("value", data.PropertyType);
-                    $("#HiddenID").dxTextBox("instance").option("value", data.PropertyOperatorCode);
-                    $("#OperatorName").dxTextBox("instance").option("value", data.operatorName);
-                    $("#HourlyRate").dxNumberBox("instance").option("value", data.operatorRegHourlyRate || 0);
-                    $("#OvertimeRate").dxNumberBox("instance").option("value", data.operatorOthourlyRate || 0);
-                    $("#WorkStartDate").dxDateBox("instance").option("value", data.workStartDate || null);
-                    $("#DemobilizedOn").dxDateBox("instance").option("value", data.workEndDate || null);
-                    $("#EmployeeNo").dxDropDownBox("instance").option("value", data.EmployeeId);
-                    $("#OperatorType").dxDropDownBox("instance").option("value", data.propertyOperatorTypeId);
-                    $("#Remarks").dxTextArea("instance").option("value", data.operatorRemarks || "");
-                    $("#Shift").dxSelectBox("instance").option("value", data.workingShift);
 
+                    if (data && data.length > 0) {
+                          data.forEach(function (item) {
+                              //var data = data[0]; // Access first object in array
 
-                    // ✅ Store primary key for update
-                      $("#HiddenID").val(data.PropertyOperatorCode || data.PropertyOperatorCode || 0);
-                },
+                              $("#HiddenID").dxTextBox("instance").option("value", item.PropertyOperatorCode);
+                              $("#OperatorName").dxTextBox("instance").option("value", item.OperatorName);
+                              $("#HourlyRate").dxNumberBox("instance").option("value", item.OperatorRegHourlyRate || 0);
+                              $("#OvertimeRate").dxNumberBox("instance").option("value", item.OperatorOthourlyRate || 0);
+                              $("#WorkStartDate").dxDateBox("instance").option("value", item.WorkStartDate || null);
+                              $("#DemobilizedOn").dxDateBox("instance").option("value", item.WorkEndDate || null);
+                              $("#EmployeeNo").dxDropDownBox("instance").option("value", item.EmployeeId);
+                              $("#OperatorType").dxDropDownBox("instance").option("value", item.PropertyOperatorTypeId);
+                              $("#Remarks").dxTextArea("instance").option("value", item.OperatorRemarks || "");
+                              $("#Shift").dxSelectBox("instance").option("value", item.WorkingShift);
+                           });
+                        } else {
+                            console.warn("No operator data found.");
+                        }
+                    },
                 error: function (xhr) {
                     console.error("API error:", xhr);
                     DevExpress.ui.notify("Failed to load operator details", "error", 3000);

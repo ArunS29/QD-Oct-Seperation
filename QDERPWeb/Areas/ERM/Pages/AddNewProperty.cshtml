@@ -265,7 +265,12 @@
                         .Label(new JS("formatMessage('Property No:*')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("PropertyNo")
-                        .Width("100%"))
+                        .Width("100%")
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Property No is required");
+                        })
+                        )
         </div>
 
         <div class="form-group">
@@ -312,6 +317,10 @@
                             .OnClick("Propertycategory")); 
                             buttons.Add()
                             .Name("dropDown");
+                        })
+                        .ValidationRules(rules =>
+                        {
+                            rules.AddRequired().Message("Property Category is required");
                         })
             )
           
@@ -648,10 +657,11 @@
                                                 .Width("97%"))
                     </td>
                     <td>
-                        @(Html.DevExtreme().TextBox()
+                        @(Html.DevExtreme().SelectBox()
                                                 .ID("PurchasedAs")
                                                 .Label(new JS("formatMessage('Purchased as:')"))
                                                 .LabelMode(EditorLabelMode.Floating)
+                                                .DataSource(new[] { "As New", "Second Hand", "Under Repair"})
                                                 .Width("97%"))
                     </td>
                     <td>
@@ -659,7 +669,7 @@
                                                 .ID("CurrentCondition")
                                                 .Label(new JS("formatMessage('Current Condition:')"))
                                                 .LabelMode(EditorLabelMode.Floating)
-                                                .DataSource(new[] { "New", "Used", "Refurbished" })
+                                                .DataSource(new[] { "Excellent Condition", "Good Condition", "Under Repair", "Ready to Scrap", "Not Used anymore", "To be repaired", "Breakdown", "In Yard"})
                                                 .Width("97%"))
                     </td>
                 </tr>
@@ -822,7 +832,7 @@
                         @(Html.DevExtreme().SelectBox()
                                                 .ID("HiredMode")
                                                 .Label(new JS("formatMessage('Hired Mode:')"))
-                                                .DataSource(new[] { "Hourly", "Daily", "Weekly", "Monthly" })
+                                                .DataSource(new[] { "Hourly", "Daily", "Weekly", "Monthly", "Quarterly", "Half Yearly", "Yearly", "Per Trip", "Per Item" })
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .Width("97%"))
                     </td>
@@ -1087,16 +1097,22 @@
                 .ID("MaintenanceGrid")
                 .ShowBorders(true)
                 .ShowColumnLines(true)
+                .OnInitialized("OnMaintenance")
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
                 .Height(300)
+                .DataSource(d => d.WebApi()
+                .Controller("AddNewProperty")
+                .LoadAction("GetByMaintenance")
+                .LoadMode(DataSourceLoadMode.Raw)
+                )
                 .Columns(columns =>
                 {
-                    columns.Add().Caption(new JS("formatMessage('Service Sheet No')")).DataField("DocNo");
-                    columns.Add().Caption(new JS("formatMessage('Service Date')")).DataField("DocumentType").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption(new JS("formatMessage('Service Order Type')")).DataField("DocumentRefNo");
-                    columns.Add().Caption(new JS("formatMessage('Complaint')")).DataField("DocumentRemarks");
-                    columns.Add().Caption(new JS("formatMessage('Service Status')")).DataField("ExpiryOn");
+                    columns.Add().Caption(new JS("formatMessage('Service Sheet No')")).DataField("ServiceSheetNo");
+                    columns.Add().Caption(new JS("formatMessage('Service Date')")).DataField("ServiceDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Service Order Type')")).DataField("ServiceOrderType");
+                    columns.Add().Caption(new JS("formatMessage('Complaint')")).DataField("Complaint");
+                    columns.Add().Caption(new JS("formatMessage('Service Status')")).DataField("ServiceStatus");
                     columns.Add().Caption(new JS("formatMessage('Service Cost')")).DataField("ExpiryArabic");
                 })
                 )
@@ -1113,6 +1129,7 @@
                         .ID("Checkclick")
                         .Icon("smalliconslayout")
                         .Text(new JS("formatMessage('Details Report By Date')"))
+                        .OnClick("ShowDatePopup"))
                         )
         </div>
 
@@ -1210,6 +1227,7 @@
                     columns.Add().Caption("Overtime Rate").DataField("OperatorOthourlyRate");
                     columns.Add().Caption("Working Shift").DataField("WorkingShift");
                     columns.Add().Caption("EquipmentNo").DataField("EquipmentNo").Visible(false);
+                    columns.Add().Caption("PropertyOperatorCode").DataField("PropertyOperatorCode").Visible(false);
                 })
                 )
     </div> 
@@ -1430,7 +1448,7 @@
         });
     }
 
-          function OnCostSummary(e) {
+         function OnCostSummary(e) {
          const grid = e.component;
          const urlParams = new URLSearchParams(window.location.search);
          const propertyNo = urlParams.get("code");
@@ -1452,6 +1470,28 @@
              }
          });
      }
+        function OnMaintenance(e) {
+          const grid = e.component;
+          const urlParams = new URLSearchParams(window.location.search);
+          const propertyNo = urlParams.get("code");
+
+          console.log("PropertyNo from query:", propertyNo);
+
+          $.ajax({
+                url: `/api/AddNewProperty/GetByMaintenance`,
+              type: "GET",
+              data: { PropertyNo: propertyNo },
+              success: function (data) {
+                  console.log("API Data:", data);
+
+                  grid.option("dataSource", data);
+                  grid.refresh();
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error fetching mobilization data:", error);
+              }
+          });
+      }
     // function OnmobilzationInitialize(e) {
     //     const grid = e.component;
     //     const urlParams = new URLSearchParams(window.location.search);
@@ -1570,11 +1610,32 @@
     function onSaveClicked(e) {
         var isUpdate = $("#btnSave").data("is-update");
         // Build data object
+
+            const propertyNo = $("#PropertyNo").dxTextBox("instance").option("value");
+     const propertyCategory = $("#PropertyCategory").dxDropDownBox("instance").option("value");
+
+     // ===== Validation Start =====
+     if (!propertyNo || propertyNo.trim() === "") {
+         DevExpress.ui.notify("Property No is required!", "error", 3000);
+         $("#PropertyNo").dxTextBox("instance").focus();
+         return; // Stop function
+     }
+
+     if (!propertyCategory || propertyCategory.length === 0) {
+         DevExpress.ui.notify("Property Category is required!", "error", 3000);
+         $("#PropertyCategory").dxDropDownBox("instance").focus();
+         return; // Stop function
+     }
+     // ===== Validation End =====
+
+
         const data = {
     PropertyType: $("#PropertyType").dxDropDownBox("instance").option("value"),
     PropertyNo: $("#PropertyNo").dxTextBox("instance").option("value"),
+    PropertyNo: propertyNo,
     PropertyDescription: $("#PropertyDescription").dxTextBox("instance").option("value"),
     PropertyCategory: $("#PropertyCategory").dxDropDownBox("instance").option("value"),
+    PropertyCategory: propertyCategory,
     Specifications: $("#PropertySpecification").dxTextArea("instance").option("value"),
     PropertyGroupId: $("#PropertyGroup").dxDropDownBox("instance").option("value"),
     // ================== Asset Details ==================
@@ -1612,8 +1673,8 @@
     // ================== Purchase Info ==================
     PurchaseDate: $("#PurchasedDate").dxDateBox("instance").option("value"),  
     PurchasedFrom: $("#PurchasedFrom").dxTextBox("instance").option("value"),
-    PurchasedAs2: $("#PurchasedAs").dxTextBox("instance").option("value"),    
-    PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
+     PurchasedAs2: $("#PurchasedAs").dxSelectBox("instance").option("value"),
+     PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
 
     // ================== Finance Info ==================
     IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"), 
@@ -1721,8 +1782,8 @@
     // ================== Purchase Info ==================
     PurchaseDate: $("#PurchasedDate").dxDateBox("instance").option("value"),  
     PurchasedFrom: $("#PurchasedFrom").dxTextBox("instance").option("value"),
-    PurchasedAs2: $("#PurchasedAs").dxTextBox("instance").option("value"),    
-    PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
+     PurchasedAs2: $("#PurchasedAs").dxSelectBox("instance").option("value"),
+     PropertyCondition2: $("#CurrentCondition").dxSelectBox("instance").option("value"), 
 
     // ================== Finance Info ==================
     IsFinanced: $("#IsPropertyFinanced").dxCheckBox("instance").option("value"), 
@@ -1851,7 +1912,12 @@
                                     var modalUrl = `/${tenantName}/ERM/PropertyOperator?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
                                   openModal(modalUrl, "Property Operators", "70%", "70%");
                                 }
-
+                              function ShowDatePopup() {
+                               var PropertyNo = $('#PropertyNo').dxTextBox("instance").option("value");
+                               var PropertyDescription = $('#PropertyDescription').dxTextBox("instance").option("value");
+                                 var url =  `/${tenantName}/ERM/DetailsCostSummary?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+                               window.location.href = url;
+                                 }
         function Progroup(){
                   const url = `/${tenantName}/ERM/PropertyGroup`;
                 const title = "Property Group";
@@ -1935,7 +2001,7 @@
             // ================== Purchase Info ==================
             $("#PurchasedDate").dxDateBox("instance").option("value", data.PurchaseDate);
             $("#PurchasedFrom").dxTextBox("instance").option("value", data.PurchasedFrom);
-            $("#PurchasedAs").dxTextBox("instance").option("value", data.PurchasedAs2);
+            $("#PurchasedAs").dxSelectBox("instance").option("value", data.PurchasedAs2);
             $("#CurrentCondition").dxSelectBox("instance").option("value", data.PropertyCondition2);
 
             // ================== Finance Info ==================
@@ -2110,6 +2176,7 @@
          const PropertyDescription = e.row.data.PropertyDescription;
          const EquipmentNo = e.row.data.EquipmentNo;
          const EmployeeId = e.row.data.EmployeeId;
+            const PropertyOperatorCode = e.row.data.PropertyOperatorCode;
 
          console.log("Selected Row Data:", e.row.data);  
 
@@ -2126,11 +2193,12 @@
             }
 
             const tenantName = window.tenantName || "defaultTenant";
-            const EquipmentNo = selectedRowData.EquipmentNo; 
+            const EquipmentNo = selectedRowData.EquipmentNo;
+            const PropertyOperatorCode =selectedRowData.PropertyOperatorCode;
             const PropertyNo = $("#PropertyNo").dxTextBox("instance").option("value");
             const PropertyDescription = $("#PropertyDescription").dxTextBox("instance").option("value");
 
-            const modalUrl = `/${tenantName}/ERM/PropertyOperator?EquipmentNo=${encodeURIComponent(EquipmentNo)}&PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+            const modalUrl = `/${tenantName}/ERM/PropertyOperator?EquipmentNo=${encodeURIComponent(EquipmentNo)}&PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}&PropertyOperatorCode=${encodeURIComponent(PropertyOperatorCode)}`;
             openModal(modalUrl, "Property Operator");
                  }
              },
@@ -2171,13 +2239,16 @@
 
         function onDeliveryContextMenu(e) {
           if (e.target === "content" && e.row) {
+            const PropertyDescription = e.row.data.PropertyDescription;
             const PropertyNo = $("#PropertyNo").dxTextBox("instance").option("value");
              e.items = [
              {
                  text: "View / Edit Offhire Note",
                  onItemClick: function () {
                  //   const url = `/${tenantName}/ERM/EquipmentOffHire?code=${PropertyNo}&mode=edit`;
-                    const url = `/${tenantName}/ERM/PropertyOperator?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
+                    const PropertyNo = $("#PropertyNo").dxTextBox("instance").option("value");
+                    const PropertyDescription = $("#PropertyDescription").dxTextBox("instance").option("value");
+                    const url = `/${tenantName}/ERM/EquipmentOffHire?PropertyNo=${encodeURIComponent(PropertyNo)}&PropertyDescription=${encodeURIComponent(PropertyDescription)}`;
                     const title = "Equipment OFF Hire";
                     openModal(url, title);
                  }
@@ -2193,7 +2264,7 @@
                 {
                     text: "View Timesheets",
                     onItemClick: function () {
-                        const url = `/${tenantName}/ERM/Timesheet?code=${encodeURIComponent(equipmentNo)}`;
+                         const url = `/${tenantName}/ERM/EquipmentOffHire?code=${encodeURIComponent(equipmentNo)}`;
                         const title = `Timesheets`;
                         openModal(url, title);
                     }
