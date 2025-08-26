@@ -460,47 +460,52 @@ buttons.Add()
                             columns.Add()
                             .Caption(new JS("formatMessage('Debit')"))
                             .Alignment(HorizontalAlignment.Right)
-                            .CalculateCellValue(@"
-                        function(data) {
-                        return data.DrCr === 'Dr' ? data.VoucherAmount : 0;
-                        }")
-                            .CalculateCellValue("function(data) { " +
-                                    "    if (data.DrAmount != null) { " +
-                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
-                                    "        var val = data.DrAmount / currencyRate; " +
-                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
-                                    "    } " +
-                                    "    return null; " +
-                                    "}")
-                                    .CustomizeText("function(e) { " +
-                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
-                                    "}");
+                             .CalculateCellValue(@"
+function(data) {
+    // derive aDrAmount
+    var DrAmount = data.DrCr === 'Dr' ? data.VoucherAmount : 0;
+
+    if (DrAmount != null) {
+        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value');
+        currencyRate = Math.round(currencyRate * 100) / 100;
+
+        var val = DrAmount / currencyRate;
+        return Math.round(val * 100) / 100; // keep 2 decimals
+    }
+    return null;
+}")
+    .CustomizeText("function(e) { " +
+        "return e.value !== undefined && e.value !== null ? " +
+        "e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+    "}");
 
 
                             columns.Add()
                             .Caption(new JS("formatMessage('Credit')"))
                             .Alignment(HorizontalAlignment.Right)
-                            .CalculateCellValue(@"
-                        function(data) {
-                        return data.DrCr === 'Cr' ? data.VoucherAmount : 0;
-                        }")
-                            .CalculateCellValue("function(data) { " +
-                                    "    debugger; " +
-                                    "    if (data.CrAmount != null) { " +
-                                    "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
-                                    "        var val = data.CrAmount / currencyRate; " +
-                                    "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
-                                    "    } " +
-                                    "    return null; " +
-                                    "}")
-                                    .CustomizeText("function(e) { " +
-                                    "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
-                                    "}");
+                             .CalculateCellValue(@"
+function(data) {
+    // derive CrAmount
+    var CrAmount = data.DrCr === 'Cr' ? data.VoucherAmount : 0;
+
+    if (CrAmount != null) {
+        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value');
+        currencyRate = Math.round(currencyRate * 100) / 100;
+
+        var val = CrAmount / currencyRate;
+        return Math.round(val * 100) / 100; // keep 2 decimals
+    }
+    return null;
+}")
+    .CustomizeText("function(e) { " +
+        "return e.value !== undefined && e.value !== null ? " +
+        "e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
+    "}");
 
 
                             columns.AddFor(m => m.EntryNarration).Caption(new JS("formatMessage('Entry Narration')"));
 
-                            columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('DeleteLine')")).Visible(false);
+                          
 
 
                             columns.AddFor(m => m.AddedBy).Caption(new JS("formatMessage('Added By')")).Alignment(HorizontalAlignment.Left).Visible(false);
@@ -1172,11 +1177,12 @@ buttons.Add()
             }
          var amount = $("#txtVoucherAmount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
-            var voucherAmount = amount * currencyRate;
-              voucherAmount = Math.round(amount * 100) / 100;
+             currencyRate = Math.round(currencyRate * 100) / 100;
 
     // Format to always have 2 decimals
-    voucherAmount = parseFloat(amount).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(2);
+            var voucherAmount = amount * currencyRate;
+              
         var drCr = $("#sbDrCr").dxSelectBox("instance").option("value");; // Set DrCr based on the previous entry
         var entryNarration = $("#txtEntryNarration").dxTextArea("instance").option("value");
 
@@ -1346,6 +1352,7 @@ buttons.Add()
     });
 
     function saveVoucher() {
+        debugger;
         
         var button = $("#btnSave").dxButton("instance");
         var finalVoucherNo = globalVoucherNo || argsledno || "";
@@ -1373,8 +1380,12 @@ buttons.Add()
             }
             if (row.DrCr === "Cr" && row.VoucherAmount && row.VoucherAmount > 0) {
                 totalCrAmount += row.VoucherAmount;
+
             }
         });
+        // keep them as numbers with 2 decimals
+        totalDrAmount = Math.round(totalDrAmount * 100) / 100;
+        totalCrAmount = Math.round(totalCrAmount * 100) / 100;
 
         if (totalDrAmount !== totalCrAmount) {
             DevExpress.ui.notify("Voucher Entry is not tallying, please check the Debit / Credit Totals.", "error", 2000);

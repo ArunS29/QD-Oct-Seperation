@@ -26,6 +26,54 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
+ #contextMenu {
+     position: absolute;
+     display: none;
+     background: #fff;
+     border: 1px solid #ccc;
+     border-radius: 4px;
+     box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+     /* 👇 Control size */
+     width: 200px; /* adjust as needed */
+     max-height: 300px; /* set a limit */
+     overflow-y: auto; /* scroll if items overflow */
+     /* 👇 Control appearance */
+     font-size: 10px;
+     padding: 6px 0;
+     z-index: 9999;
+ }
+
+     #contextMenu:focus {
+         outline: none; /* removes black border */
+     }
+
+     #contextMenu ul {
+         list-style: none;
+         margin: 0;
+         padding: 0;
+     }
+
+     #contextMenu li {
+         padding: 4px 10px;
+         cursor: pointer;
+         white-space: nowrap;
+     }
+
+         #contextMenu li.active .custom-dropdown-item {
+             background-color: var(--title-background-color) !important;
+         }
+
+         #contextMenu li:hover {
+             background: #f0f0f0;
+         }
+
+ /* Make focused row look like hover row */
+ #accounthead-datagrid .dx-datagrid-rowsview .dx-row.dx-row-focused {
+     background-color: var(--title-background-color) !important; /* same as hover */
+     color: inherit; /* keep text readable */
+ }
+
+
     .titleCard-toggle1{
         display:none;
     }
@@ -324,7 +372,7 @@ buttons.Add()
                                                         columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                                                         columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
                                                         columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')"));
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
                                                         columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
                                                         columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
                                                     })
@@ -419,7 +467,7 @@ buttons.Add()
                     <div class="form-group plusBtn col-1 mt-0 h-100">
                    
                         @(Html.DevExtreme().Button()
-                                                .ID("btnaddCostAllocation")
+                                                .ID("btnaddReceipt")
                                                 .Text(new JS("formatMessage('ADD')"))
                                                 .Height(40)
                                                 .TabIndex(11)
@@ -586,6 +634,7 @@ buttons.Add()
 
         <div id="chequePopupContainer"></div>
 
+
         <!-- Context Menu for Actions -->
         <ul id="contextMenu" class="context-menu" style="display: none;">
             <li onclick="editCostAllocation()">
@@ -606,6 +655,9 @@ buttons.Add()
                 <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> <div id="DeleteAllLineEntriesreceipt"></div>
             </li>
         </ul>
+
+        <ul id="contextMenu" class="context-menu" style="display:none; position:absolute;"></ul>
+
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                         .ID("CostAllocationPopup")
@@ -1143,53 +1195,73 @@ buttons.Add()
 
 
         
-function addVoucherEntry() {
-    
-    var dataGrid = $("#dataGrid").dxDataGrid("instance"); // Get the DataGrid instance
-    var rowCount = dataGrid.getVisibleRows().length; // Get the number of rows in the grid
-    var griddatacount = rowCount;
-    var voucherNo = ""; // Declare with var (or let), and initialize properly
 
-    if (griddatacount === 0) {
-        // Fetch new voucher number via AJAX
-        $.ajax({
-            type: "GET",
-            url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
-            success: function (response) {
-                if (!response || response.success === false) {
-                    DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
-                    return;
-                }
+         function addVoucherEntry() {
+        var btn = $("#btnaddReceipt").dxButton("instance");
 
-                // Assuming response is the voucher number as a raw string
-                voucherNo = response;
-                $("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
-
-                // Call the remaining logic using the retrieved voucher number
-                continueVoucherEntryWithVoucherNo(voucherNo);
-
-            },
-            error: function (xhr, status, error) {
-                DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
-            }
+        // Disable button + show loading
+        btn.option({
+            disabled: true,
+            icon: "spinner", // built-in spinner icon
+            text: "Loading..."
         });
-    } else {
-        // If rows exist, reuse the existing voucher number from the text box
-        voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
-        continueVoucherEntryWithVoucherNo(voucherNo);
-    }
-}
 
+        var dataGrid = $("#dataGrid").dxDataGrid("instance");
+        var rowCount = dataGrid.getVisibleRows().length;
+        var griddatacount = rowCount;
+
+        // Get VoucherNo TextBox value
+        var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const argsledno = urlParams.get("argsledno");
+
+        // ✅ Case 1: If VoucherNo is already set → directly continue
+        if (voucherNo && voucherNo.trim() !== "") {
+            continueVoucherEntryWithVoucherNo(voucherNo);
+            return;
+        }
+
+        // ✅ Case 2: If VoucherNo not set, and grid empty, and no argsledno → fetch new one
+        if (!voucherNo && griddatacount === 0 && !argsledno) {
+            $.ajax({
+                type: "GET",
+                url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+                success: function (response) {
+                    if (!response || response.success === false) {
+                        DevExpress.ui.notify("Failed to fetch Voucher Number: " + (response.message || "Unknown error"), "Error");
+                        return;
+                    }
+
+                    // response is the voucher number
+                    voucherNo = response;
+                    $("#VoucherNo").dxTextBox("instance").option("value", voucherNo);
+
+                    continueVoucherEntryWithVoucherNo(voucherNo);
+                    isVoucherSaved = true;
+                    updateWorkflowVisual(getWorkflowStatusFromFields());
+                },
+                error: function (xhr, status, error) {
+                    DevExpress.ui.notify("Error retrieving voucher number: " + error, "Error");
+                }
+            });
+        } else {
+            // ✅ Case 3: If VoucherNo is null but grid has rows or argsledno is present → reuse textbox (might still be empty)
+            continueVoucherEntryWithVoucherNo(voucherNo);
+            
+        }
+    }
       function continueVoucherEntryWithVoucherNo(voucherNo) {
             var voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
              var voucherAmount = $("#Amount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
-            var amount = voucherAmount * currencyRate;
-              amount = Math.round(amount * 100) / 100;
+             currencyRate = Math.round(currencyRate * 100) / 100;
 
     // Format to always have 2 decimals
-    amount = parseFloat(amount).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(2);
+            var amount = voucherAmount * currencyRate;
+              
              var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
             var accountHead = $("#AccountHeadDropDown").dxDropDownBox("instance").option("value");
 
@@ -1370,7 +1442,7 @@ function addVoucherEntry() {
                     ];
 
                 }
-
+                debugger;
                    if(IsDrCr==false)
                 {
                    
@@ -1465,12 +1537,14 @@ function addVoucherEntry() {
                             checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
                             checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                            resetVoucherButton();
+
                         }
 
                     },
 
                     error: function (xhr, status, error) {
-
+                        resetVoucherButton();
                         alert("Error occurred while updating data: " + error);
 
                     }
@@ -1488,6 +1562,7 @@ function addVoucherEntry() {
                     data: JSON.stringify(VE),
                     dataType: "json",
                     success: function (response) {
+                        resetVoucherButton();
                         $("#dataGrid").dxDataGrid("instance").option("dataSource", response.data);
 
                         $("#Narration").dxTextArea("instance").option("value", "");
@@ -1546,12 +1621,14 @@ function addVoucherEntry() {
                          checkAllocation(`/api/VoucherEntryReceipts/CheckEmployeeAllocation`, openEmployeeAllocationPopup);
 
                          checkAllocation(`/api/VoucherEntryReceipts/CheckIsMaintainBillByBill`, openBillsReceivablePopup);
+                         resetVoucherButton();
                      }
 
                                             var button = $("#btnSave").dxButton("instance");
                                             button.option("text", "Update");
                     },
                                         error: function (xhr, status, error) {
+                                            resetVoucherButton();
                                             alert("Error occurred while updating data: " + error);
                                         }
                 });
@@ -1563,6 +1640,7 @@ function addVoucherEntry() {
             
             else {
                 IsNotification=true;
+                resetVoucherButton();
                              // Append the stored value back when the user clicks Add again
         if (storedAccountHead) {
 
@@ -1574,6 +1652,7 @@ function addVoucherEntry() {
 
                 accountHeadInstance.option("value", storedAccountHead);
             }
+            resetVoucherButton();
         }
 
                  DevExpress.ui.notify(
@@ -1617,44 +1696,45 @@ function addVoucherEntry() {
         }
 
 
-    $(function () {
-        $.ajax({
-            url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
-            type: 'GET',
-            success: function (data) {
-                // Set the value in the TextBox
-                $("#VoucherNo").dxTextBox("instance").option("value", data);
-            },
-            error: function (xhr, status, error) {
-                console.error("Error loading Voucher No:", error);
-            }
-        });
+    // $(function () {
+    //     $.ajax({
+    //         url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+    //         type: 'GET',
+    //         success: function (data) {
+    //             // Set the value in the TextBox
+    //             $("#VoucherNo").dxTextBox("instance").option("value", data);
+    //         },
+    //         error: function (xhr, status, error) {
+    //             console.error("Error loading Voucher No:", error);
+    //         }
+    //     });
 
-        // Attach validation to the add button or desired event
-        $("#btnaddCostAllocation").on("click", function () {
-            //  validateInputsAndAddCostAllocation();
-        });
-    });
+    //     // Attach validation to the add button or desired event
+    //     $("#btnaddCostAllocation").on("click", function () {
+
+    //         //  validateInputsAndAddCostAllocation();
+    //     });
+    // });
 
 
-    $(document).ready(function () {
-        // Attach an event listener to the 'TransactionTypeComboBox' SelectBox
-        $("#TransactionTypeComboBox").dxSelectBox({
-            onValueChanged: function (e) {
-                // Get the selected value from the 'TransactionTypeComboBox'
-                var selectedValue = e.value;
+    // $(document).ready(function () {
+    //     // Attach an event listener to the 'TransactionTypeComboBox' SelectBox
+    //     $("#TransactionTypeComboBox").dxSelectBox({
+    //         onValueChanged: function (e) {
+    //             // Get the selected value from the 'TransactionTypeComboBox'
+    //             var selectedValue = e.value;
 
-                // Update the 'DrCr' SelectBox based on the selected value
-                var drCrSelectBox = $("#DrCr").dxSelectBox("instance");
+    //             // Update the 'DrCr' SelectBox based on the selected value
+    //             var drCrSelectBox = $("#DrCr").dxSelectBox("instance");
 
-                // Update the 'DrCr' SelectBox items based on the selection
-                drCrSelectBox.option("items", [selectedValue]);
+    //             // Update the 'DrCr' SelectBox items based on the selection
+    //             drCrSelectBox.option("items", [selectedValue]);
 
-                // Optionally, reset the value of 'DrCr' to match the selected value
-                drCrSelectBox.option("value", selectedValue);
-            }
-        });
-    });
+    //             // Optionally, reset the value of 'DrCr' to match the selected value
+    //             drCrSelectBox.option("value", selectedValue);
+    //         }
+    //     });
+    // });
 
    
     $(document).ready(function () {
@@ -2351,37 +2431,37 @@ function addVoucherEntry() {
             const contextMenu = document.getElementById("contextMenu");
             const contentContainer = document.getElementById("contentContainer"); // Div to load pages
 
-            grid.addEventListener("contextmenu", function (e) {
-                e.preventDefault();
+           grid.addEventListener("contextmenu", function (e) {
+                       e.preventDefault();
 
-                // Find the closest row element
-                const rowElement = e.target.closest(".dx-data-row");
+                       const rowElement = e.target.closest(".dx-data-row");
+                       if (rowElement) {
+                           let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
+                           contextMenu.dataset.rowIndex = rowIndex; // ✅ use outer contextMenu
 
-                if (rowElement) {
-                        let rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
-                    contextMenu.dataset.rowIndex = rowIndex;
+                          const menuWidth = contextMenu.offsetWidth;
+                           const menuHeight = contextMenu.offsetHeight;
+                           let mouseX = e.clientX;
+                           let mouseY = e.clientY;
 
-                    let mouseX = e.clientX;
-                    const windowWidth = window.innerWidth;
-                    const windowHeight = window.innerHeight;
-                    const menuWidth = contextMenu.offsetWidth;
-                    const menuHeight = contextMenu.offsetHeight;
+                           // Prevent overflow on the right
+                           if (mouseX + menuWidth > window.innerWidth) {
+                               mouseX = window.innerWidth - menuWidth - 10;
+                           }
+
+                           // Prevent overflow on the bottom (flip upwards if needed)
+                           if (mouseY + menuHeight > window.innerHeight) {
+                               mouseY = window.innerHeight - menuHeight - 10;
+                           }
+
+                           contextMenu.style.left = `${mouseX}px`;
+                           contextMenu.style.top = `${mouseY}px`;
+                           contextMenu.style.display = "block";
+
+                       }
+             });
 
 
-                        // Always position at the bottom
-                    let menuX = mouseX;
-                    let menuY = windowHeight - menuHeight - 10; // 10px padding from bottom
-
-                    // Prevent overflow on the right
-                    if (menuX + menuWidth > windowWidth) {
-                        menuX = windowWidth - menuWidth - 10; // Adjust to fit
-                    }
-
-                    contextMenu.style.display = "block";
-                    contextMenu.style.left = `${mouseX}px`;
-                        contextMenu.style.top = "500px";
-                }
-            });
 
         // Hide context menu when clicking elsewhere
         document.addEventListener("click", function () {
@@ -2881,26 +2961,26 @@ function addVoucherEntry() {
                 }
                 else if(argsledno==null)
                 {
-                    $(function () {
-                             const tenantName = sessionStorage.getItem("tenantName");
+                    // $(function () {
+                    //          const tenantName = sessionStorage.getItem("tenantName");
 
-                         $.ajax({
-                             url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
-                             type: 'GET',
+                    //      $.ajax({
+                    //          url: "/api/VoucherEntryReceipts/GetNewBRVoucherNo",
+                    //          type: 'GET',
                            
-                             success: function (data) {
-                                 // Set the value in the VoucherNo TextBox
-                                 $("#VoucherNo").dxTextBox("instance").option("value", data);
+                    //          success: function (data) {
+                    //              // Set the value in the VoucherNo TextBox
+                    //              $("#VoucherNo").dxTextBox("instance").option("value", data);
 
-                                 // Retrieve the value from the TextBox
-                                 var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
-                                getDocumentCount();
-                             },
-                             error: function (xhr, status, error) {
-                                 console.error("Error loading Voucher No:", error);
-                             }
-                         });
-                    });
+                    //              // Retrieve the value from the TextBox
+                    //              var popvno = $("#VoucherNo").dxTextBox("instance").option("value");
+                    //             getDocumentCount();
+                    //          },
+                    //          error: function (xhr, status, error) {
+                    //              console.error("Error loading Voucher No:", error);
+                    //          }
+                    //      });
+                    // });
                 }
             });
 
@@ -2912,11 +2992,7 @@ function addVoucherEntry() {
                 const argsledno = urlParams.get("argsledno");
 
 
-                // If the voucher is from the URL, skip validation
-                if (!argsledno || argsledno !== voucherNo) {
-                    validateVoucherNo(voucherNo);
-                }
-
+              
                 fetchVoucherDetails(voucherNo);
                 getDocumentCount();
             }
@@ -3357,7 +3433,7 @@ function showMainFooter() {
         function onVoucherDrCrValueChanged(e) {
     // Retrieve the new selected value from the event argument.
     var selectedValue = e.value;
-    
+    debugger;
 
     // Log the selected value for debugging purposes.
     console.log("Transaction type selected: " + selectedValue);
@@ -3726,6 +3802,7 @@ tippy('#circle-approve', {
          }
      });
  }
+
      $(function () {
                                                 $("#EditCostAllocationreceipt").dxTextBox({
                                                             text:formatMessage("Edit Cost Allocation"),
@@ -3769,4 +3846,163 @@ tippy('#circle-approve', {
                                         });
                                 });
                
+
+  const menuItems = [
+    { id: "editCostAllocation", text: "Edit Cost Allocation", icon: "edit", color: "#4CAF50" },
+    { id: "editBillsReceivable", text: "Edit Bills Receivable", icon: "file", color: "#2196F3" },
+    { id: "editEmployeeAllocation", text: "Edit Employee Allocation", icon: "user", color: "#9C27B0" },
+    { id: "editPropertyAllocation", text: "Edit Property Allocation", icon: "preferences", color: "#795548" },
+    { id: "onAllRowRemoving", text: "Delete All Line Entries", icon: "trash", color: "#F44336" }
+];
+     // ---- state ----
+ let currentIndex = 0;
+
+ // ---- helpers ----
+ function isMenuOpen() {
+     const m = document.getElementById("contextMenu");
+     return m && m.classList.contains("open") && m.style.display === "block";
+ }
+
+ function highlightItem(item) {
+     document.querySelectorAll("#contextMenu li").forEach(li => li.classList.remove("active"));
+     if (item) item.classList.add("active");
+ }
+
+ function hideContextMenu() {
+     const menu = document.getElementById("contextMenu");
+     if (!menu) return;
+     menu.classList.remove("open");
+     menu.style.display = "none";
+ }
+
+ // Build menu once (or call again if items change)
+ function renderContextMenu() {
+     const contextMenu = document.getElementById("contextMenu");
+     contextMenu.innerHTML = "";
+
+     menuItems.forEach((item, index) => {
+         const li = document.createElement("li");
+         li.dataset.id = item.id;
+         li.tabIndex = -1;
+         li.innerHTML = `
+             <div class="custom-dropdown-item">
+                 <div class="side-bar" style="background-color:${item.color};"></div>
+                 <div class="item-content">
+                     <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
+                     <div class="item-title">${item.text}</div>
+                 </div>
+             </div>
+         `;
+
+         li.addEventListener("click", () => {
+             if (typeof window[item.id] === "function") window[item.id]();
+             hideContextMenu();
+         });
+
+         // keep mouse & keyboard highlight in sync
+         li.addEventListener("mouseenter", () => {
+             currentIndex = index;
+             highlightItem(li);
+         });
+
+         contextMenu.appendChild(li);
+     });
+ }
+
+ // Show menu at x,y with edge-flip and focus
+ function showContextMenu(x, y) {
+     const menu = document.getElementById("contextMenu");
+     if (!menu.children.length) renderContextMenu();
+
+     // prepare to measure
+     menu.style.visibility = "hidden";
+     menu.style.display = "block";
+
+     const menuWidth = menu.offsetWidth;
+     const menuHeight = menu.offsetHeight;
+     const vw = window.innerWidth;
+     const vh = window.innerHeight;
+
+     // flip to keep inside viewport
+     let left = (x + menuWidth > vw) ? vw - menuWidth - 10 : x;
+     let top  = (y + menuHeight > vh) ? vh - menuHeight - 10 : y;
+
+     // apply final position and show
+     menu.style.left = `${Math.max(0, left)}px`;
+     menu.style.top  = `${Math.max(0, top)}px`;
+     menu.style.visibility = "visible";
+     menu.classList.add("open");
+
+     // highlight first item & focus menu
+     currentIndex = 0;
+     const items = menu.querySelectorAll("li");
+     if (items.length) highlightItem(items[currentIndex]);
+
+     // ensure menu can receive focus
+     menu.setAttribute("tabindex", "-1");
+     setTimeout(() => menu.focus(), 0);
+ }
+
+ // ---- global listeners ----
+
+ // 1) Right-click on grid
+ document.getElementById("dataGrid").addEventListener("contextmenu", function (e) {
+     e.preventDefault();
+     e.stopPropagation(); // stop grid from handling keys afterwards
+
+     const rowElement = e.target.closest(".dx-data-row");
+     if (rowElement) {
+         const menu = document.getElementById("contextMenu");
+         const rowIndex = parseInt(rowElement.getAttribute("aria-rowindex"), 10) - 1;
+         menu.dataset.rowIndex = rowIndex;
+
+         showContextMenu(e.clientX, e.clientY);
+     }
+ });
+
+ // 2) Click outside closes
+ document.addEventListener("mousedown", function (e) {
+     const menu = document.getElementById("contextMenu");
+     if (!menu) return;
+     if (isMenuOpen() && !menu.contains(e.target)) hideContextMenu();
+ });
+
+ // 3) One global keydown (capture) that only acts if menu is open
+ document.addEventListener("keydown", function (e) {
+     if (!isMenuOpen()) return;
+
+     const menu = document.getElementById("contextMenu");
+     const items = menu.querySelectorAll("li");
+     if (!items.length) return;
+
+     // prevent grid from swallowing keys
+     e.preventDefault();
+     e.stopPropagation();
+
+     if (e.key === "ArrowDown") {
+         currentIndex = (currentIndex + 1) % items.length;
+         highlightItem(items[currentIndex]);
+     } else if (e.key === "ArrowUp") {
+         currentIndex = (currentIndex - 1 + items.length) % items.length;
+         highlightItem(items[currentIndex]);
+     } else if (e.key === "Enter" || e.key === " ") {
+         items[currentIndex].click();
+     } else if (e.key === "Escape") {
+         hideContextMenu();
+     }
+ }, true); // <- capture mode so we intercept before DataGrid
+
+
+
+
+ renderContextMenu();
+ function resetVoucherButton() {
+    var btn = $("#btnaddReceipt").dxButton("instance");
+    btn.option({
+        disabled: false,
+        icon: "plus",
+        text: formatMessage("ADD")
+    });
+}
+
 </script>

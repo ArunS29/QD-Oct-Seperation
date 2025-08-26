@@ -238,8 +238,8 @@ namespace Form.Areas.Finance.Controllers
             try
             {
                 Tbl201VoucherMaster voucherMaster = new();
-                int aEntryAmount = 0;
-                int Amt = 0;
+                decimal aEntryAmount = 0;
+                decimal Amt = 0;
                 var Remarks = "";
                 bool IsMatchingEntry = false;
                 //var matchingEntries;
@@ -308,7 +308,7 @@ namespace Form.Areas.Finance.Controllers
 
                 var resultList = await qryListOfAccountlists.ToListAsync();
 
-                int debitamt = 0; // Initialize debit amount
+                decimal debitamt = 0; // Initialize debit amount
 
                 int crCount = resultList.Count(i => i.DrCr == "Dr");
 
@@ -347,7 +347,7 @@ namespace Form.Areas.Finance.Controllers
                         {
                             // Calculate Debit Amount (DrAmount)
 
-                            debitamt = (int)(debitamt + entry.CrAmount);
+                            debitamt = (decimal)(debitamt + entry.CrAmount);
 
                             // If Dr/Cr is Credit ("Cr"), perform specific logic
                             if (entry.DrCr == "Dr" && crCount == 1)
@@ -393,13 +393,13 @@ namespace Form.Areas.Finance.Controllers
                                         // Accumulate `aEntryAmount` correctly
                                         foreach (var mEntry in matchingEntries)
                                         {
-                                            aEntryAmount += (int)mEntry.DrAmount; // Accumulate CrAmount correctly
+                                            aEntryAmount += (decimal)mEntry.DrAmount; // Accumulate CrAmount correctly
                                         }
 
                                         // Process voucherEntries
                                         foreach (var mVoucherEntry in voucherEntries)
                                         {
-                                            int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                            decimal eAmount = (decimal)mVoucherEntry.VoucherAmount;
                                             Amt = aEntryAmount + eAmount;
 
                                             // Do something with Amt if required
@@ -1629,6 +1629,7 @@ namespace Form.Areas.Finance.Controllers
         //        }
         //    }
         //    return Unauthorized(new { message = "Invalid tenant.", success = false });
+
         //}
 
         [HttpPost]
@@ -1647,7 +1648,7 @@ namespace Form.Areas.Finance.Controllers
 
                     Tbl201VoucherMaster voucherMaster = new();
                     int aEntryAmount = 0;
-                    int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
+                    decimal Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
 
@@ -1720,7 +1721,7 @@ namespace Form.Areas.Finance.Controllers
                         matchingEntries = resultList.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
                         if (matchingEntries.Count != 0)
                         {
-                            ExistingCrMinusAmt = (int)matchingEntries[0].CrAmount;
+                            ExistingCrMinusAmt = (decimal)matchingEntries[0].CrAmount;
                             ExistingAccHeadID = matchingEntries[0].AccountHead;
                             IsMatchingEntry = true;
                         }
@@ -1745,7 +1746,7 @@ namespace Form.Areas.Finance.Controllers
                     foreach (var petty in newlist)
                     {
                         NewId = petty.AccountHead;
-                        NewCrMinusAmt = (int)petty.CrAmount;
+                        NewCrMinusAmt = (decimal)petty.CrAmount;
                     }
 
                     foreach (var entry in resultList)
@@ -1852,8 +1853,8 @@ namespace Form.Areas.Finance.Controllers
 
 
                     Tbl201VoucherMaster voucherMaster = new();
-                    int aEntryAmount = 0;
-                    int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
+                  
+                    decimal  CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
 
@@ -1926,13 +1927,13 @@ namespace Form.Areas.Finance.Controllers
                         matchingEntries = resultList.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
                         if (matchingEntries.Count != 0)
                         {
-                            ExistingCrMinusAmt = (int)matchingEntries[0].DrAmount;
+                            ExistingCrMinusAmt = (decimal)matchingEntries[0].DrAmount;
                             ExistingAccHeadID = matchingEntries[0].AccountHead;
                             IsMatchingEntry = true;
                         }
                     }
 
-                    int debitamt = 0; // Initialize debit amount
+                 
 
                     int DrCount = resultList.Count(i => i.DrCr == "Cr");
 
@@ -1951,7 +1952,7 @@ namespace Form.Areas.Finance.Controllers
                     foreach (var petty in newlist)
                     {
                         NewId = petty.AccountHead;
-                        NewCrMinusAmt = (int)petty.DrAmount;
+                        NewCrMinusAmt = (decimal)petty.DrAmount;
                     }
 
                     foreach (var entry in resultList)
@@ -1969,7 +1970,7 @@ namespace Form.Areas.Finance.Controllers
                                                             && v.VoucherNo == entry.VoucherNo);
                                 if (EntriesDrCount1 == 2)
                                 {
-                                    CrMinusAmt = (int)entry.VoucherAmountFormatted;
+                                    CrMinusAmt = (decimal)entry.VoucherAmountFormatted;
                                     entry.DrAmount = CrMinusAmt;
                                     existingEntry.VoucherAmount = CrMinusAmt;
                                 }
@@ -2051,8 +2052,8 @@ namespace Form.Areas.Finance.Controllers
                 try
                 {
                     Tbl201VoucherMaster voucherMaster = new();
-                    int aEntryAmount = 0;
-                    int Amt = 0; decimal? mCrAmt = 0;
+                    decimal aEntryAmount = 0;
+                    decimal Amt = 0; decimal? mCrAmt = 0;
                     var Remarks = "";
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
@@ -2067,7 +2068,7 @@ namespace Form.Areas.Finance.Controllers
                                                   .ToList();
 
                     var voucherNos1 = voucherEntries1.Select(ve => ve.VoucherNo).Distinct();
-                    int ExistingCrAmt = 0;
+                   
 
                     var qryListOfAccountlists1 = dbContext.Qry201VoucherEntryScreenDisplays
                         .Where(p => voucherNos1.Contains(p.VoucherNo))
@@ -2189,7 +2190,7 @@ namespace Form.Areas.Finance.Controllers
 
                     var resultList = await qryListOfAccountlists.ToListAsync();
 
-                    int debitamt = 0; // Initialize debit amount
+                    decimal debitamt = 0; // Initialize debit amount
 
                     int crCount = resultList.Count(i => i.DrCr == "Dr");
                     int drCount = resultList.Count(i => i.DrCr == "Cr");
@@ -2229,7 +2230,7 @@ namespace Form.Areas.Finance.Controllers
                             {
                                 // Calculate Debit Amount (DrAmount)
 
-                                debitamt = (int)(debitamt + entry.CrAmount);
+                                debitamt = (decimal)(debitamt + entry.CrAmount);
 
                                 // If Dr/Cr is Credit ("Cr"), perform specific logic
                                 if (entry.DrCr == "Dr" && crCount == 1)
@@ -2272,14 +2273,14 @@ namespace Form.Areas.Finance.Controllers
                                             // Accumulate `aEntryAmount` correctly
                                             foreach (var mEntry in matchingEntries)
                                             {
-                                                aEntryAmount += (int)mEntry.DrAmount; // Accumulate CrAmount correctly //Matching entries  - Delete entry
+                                                aEntryAmount += (decimal)mEntry.DrAmount; // Accumulate CrAmount correctly //Matching entries  - Delete entry
                                                 mCrAmt = aEntryAmount - rAmt;
                                             }
 
                                             // Process voucherEntries
                                             foreach (var mVoucherEntry in voucherEntries)
                                             {
-                                                int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                                decimal eAmount = (decimal)mVoucherEntry.VoucherAmount;
                                                 if (aEntryAmount == 0)
                                                 {
                                                     Amt = Amt - eAmount;
@@ -2372,8 +2373,8 @@ namespace Form.Areas.Finance.Controllers
             {
                 Tbl201VoucherMaster voucherMaster = new();
                 Tbl201SubLedgerMaster subLedgerMaster = new();
-                int aEntryAmount = 0;
-                int Amt = 0;
+                decimal aEntryAmount = 0;
+                decimal Amt = 0;
                 var Remarks = "";
                 bool IsMatchingEntry = false;
                 var UserName = HttpContext.Session.GetString("UserName");
@@ -2443,7 +2444,7 @@ namespace Form.Areas.Finance.Controllers
 
                 var resultList = await qryListOfAccountlists.ToListAsync();
 
-                int debitamt = 0; // Initialize debit amount
+                decimal debitamt = 0; // Initialize debit amount
 
                 int crCount = resultList.Count(i => i.DrCr == "Dr");
 
@@ -2504,7 +2505,7 @@ namespace Form.Areas.Finance.Controllers
                         {
                             // Calculate Debit Amount (DrAmount)
 
-                            debitamt = (int)(debitamt + entry.CrAmount);
+                            debitamt = (decimal)(debitamt + entry.CrAmount);
 
                             // If Dr/Cr is Credit ("Cr"), perform specific logic
                             if (entry.DrCr == "Dr" && crCount == 1)
@@ -2550,13 +2551,13 @@ namespace Form.Areas.Finance.Controllers
                                         // Accumulate `aEntryAmount` correctly
                                         foreach (var mEntry in matchingEntries)
                                         {
-                                            aEntryAmount += (int)mEntry.DrAmount; // Accumulate CrAmount correctly
+                                            aEntryAmount += (decimal)mEntry.DrAmount; // Accumulate CrAmount correctly
                                         }
 
                                         // Process voucherEntries
                                         foreach (var mVoucherEntry in voucherEntries)
                                         {
-                                            int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                            decimal eAmount = (decimal)mVoucherEntry.VoucherAmount;
                                             Amt = aEntryAmount + eAmount;
 
                                             // Do something with Amt if required
@@ -2636,8 +2637,8 @@ namespace Form.Areas.Finance.Controllers
                     Tbl201VoucherMaster voucherMaster = new();
                     Tbl201SubLedgerMaster subLedgerMaster = new();
                     var UserName = HttpContext.Session.GetString("UserName");
-                    int aEntryAmount = 0;
-                    int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
+                    
+                    decimal CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
 
@@ -2710,13 +2711,13 @@ namespace Form.Areas.Finance.Controllers
                         matchingEntries = resultList.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
                         if (matchingEntries.Count != 0)
                         {
-                            ExistingCrMinusAmt = (int)matchingEntries[0].DrAmount;
+                            ExistingCrMinusAmt = (decimal)matchingEntries[0].DrAmount;
                             ExistingAccHeadID = matchingEntries[0].AccountHead;
                             IsMatchingEntry = true;
                         }
                     }
 
-                    int debitamt = 0; // Initialize debit amount
+                   
 
                     int DrCount = resultList.Count(i => i.DrCr == "Cr");
 
@@ -2777,7 +2778,7 @@ namespace Form.Areas.Finance.Controllers
                                                             && v.VoucherNo == entry.VoucherNo);
                                 if (EntriesDrCount1 == 2)
                                 {
-                                    CrMinusAmt = (int)entry.VoucherAmountFormatted;
+                                    CrMinusAmt = (decimal)entry.VoucherAmountFormatted;
                                     entry.DrAmount = CrMinusAmt;
                                     existingEntry.VoucherAmount = CrMinusAmt;
                                 }
@@ -2865,8 +2866,8 @@ namespace Form.Areas.Finance.Controllers
                     Tbl201VoucherMaster voucherMaster = new();
                     Tbl201SubLedgerMaster subLedgerMaster = new();
                     var UserName = HttpContext.Session.GetString("UserName");
-                    int aEntryAmount = 0;
-                    int Amt = 0;
+                    decimal aEntryAmount = 0;
+                    decimal Amt = 0;
                     var Remarks = "";
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
@@ -2936,7 +2937,7 @@ namespace Form.Areas.Finance.Controllers
 
                     var resultList = await qryListOfAccountlists.ToListAsync();
 
-                    int debitamt = 0; // Initialize debit amount
+                    decimal debitamt = 0; // Initialize debit amount
 
                     int crCount = resultList.Count(i => i.DrCr == "Cr");
 
@@ -3010,7 +3011,7 @@ namespace Form.Areas.Finance.Controllers
                             {
                                 // Calculate Debit Amount (DrAmount)
 
-                                debitamt = (int)(debitamt + entry.DrAmount);
+                                debitamt = (decimal)(debitamt + entry.DrAmount);
 
                                 // If Dr/Cr is Credit ("Cr"), perform specific logic
                                 if (entry.DrCr == "Cr" && crCount == 1)
@@ -3057,7 +3058,7 @@ namespace Form.Areas.Finance.Controllers
                                             // Process voucherEntries
                                             foreach (var mVoucherEntry in voucherEntries)
                                             {
-                                                int eAmount = (int)mVoucherEntry.VoucherAmount;
+                                                decimal eAmount = (decimal)mVoucherEntry.VoucherAmount;
                                                 Amt = aEntryAmount + eAmount;
 
                                             }
@@ -3132,8 +3133,8 @@ namespace Form.Areas.Finance.Controllers
                     Tbl201VoucherMaster voucherMaster = new();
                     Tbl201SubLedgerMaster subLedgerMaster = new();
                     var UserName = HttpContext.Session.GetString("UserName");
-                    int aEntryAmount = 0;
-                    int Amt = 0, Crmt = 0, CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
+                   
+                    decimal  CrMinusAmt = 0, NewCrMinusAmt = 0, ExistingCrMinusAmt = 0;
                     bool IsMatchingEntry = false;
                     var ExistingAccHeadID = "";
 
@@ -3206,13 +3207,13 @@ namespace Form.Areas.Finance.Controllers
                         matchingEntries = resultList.Where(x => x.AccountHead == PaymentAccoutHeadName).ToList();
                         if (matchingEntries.Count != 0)
                         {
-                            ExistingCrMinusAmt = (int)matchingEntries[0].CrAmount;
+                            ExistingCrMinusAmt = (decimal)matchingEntries[0].CrAmount;
                             ExistingAccHeadID = matchingEntries[0].AccountHead;
                             IsMatchingEntry = true;
                         }
                     }
 
-                    int debitamt = 0; // Initialize debit amount
+                    
 
                     int crCount = resultList.Count(i => i.DrCr == "Dr");
 
@@ -3231,7 +3232,7 @@ namespace Form.Areas.Finance.Controllers
                     foreach (var petty in newlist)
                     {
                         NewId = petty.AccountHead;
-                        NewCrMinusAmt = (int)petty.CrAmount;
+                        NewCrMinusAmt = (decimal)petty.CrAmount;
 
                         // Check if petty.AccountHead is in Tbl201ChartsofAccounts with AccountGroupId 'A003'
                         bool isValidAccountHead = dbContext.Tbl201ChartOfAccounts
@@ -3284,7 +3285,7 @@ namespace Form.Areas.Finance.Controllers
                                                             && v.VoucherNo == entry.VoucherNo);
                                 if (EntriesCrCount1 == 2)
                                 {
-                                    CrMinusAmt = (int)entry.VoucherAmountFormatted;
+                                    CrMinusAmt = (decimal)entry.VoucherAmountFormatted;
                                     entry.CrAmount = CrMinusAmt;
                                     existingEntry.VoucherAmount = CrMinusAmt;
                                 }

@@ -159,12 +159,6 @@
         <div id="SupplierMaster" class="no-border-title"></div>
     </div>
 </div> *@
-<div class="dx-card-header minimal-header">
-    <div class="card-title-icon">
-        <i class="fas fa-file-invoice-dollar"></i>
-    </div>
-    <h3 class="card-title-text">Supplier Master</h3>
-</div>
 <div class="form-container1">
 
     <div class="col-md-12">
@@ -541,7 +535,7 @@
                                 {
                                     columns.Add().DataField("SupplierCategoryCode").Caption(new JS("formatMessage('ID')")).Alignment(HorizontalAlignment.Center).Width(80);
                                     columns.Add().DataField("CategoryCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
-                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center).Width(300);
+                                    columns.Add().DataField("SupplierCategory").Caption(new JS("formatMessage('Category')")).Alignment(HorizontalAlignment.Center);
                                 })
                                 )
         }
@@ -1125,7 +1119,7 @@
 
         function redirectToSupplierContact() {
             let url = `/${tenantName}/IMS/SupplierContactList`;
-            let title = "";
+            let title = "Supplier Contact List";
             openModal(url, title);
         }
         //Imageupload
