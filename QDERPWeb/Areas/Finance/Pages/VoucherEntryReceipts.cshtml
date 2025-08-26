@@ -495,7 +495,7 @@ buttons.Add()
                                 {
                                     columns.AddFor(m => m.VoucherEntryNo)
                                     .Caption("VoucherEntryNo")
-                                    .Caption(new JS("formatMessage('VoucherEntryNo')"))
+                                    .Caption(new JS("formatMessage('Voucher Entry No')"))
                                     .Visible(false);
 
                                     columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataType(GridColumnDataType.String).Lookup(lookup => lookup
@@ -634,11 +634,34 @@ buttons.Add()
 
         <div id="chequePopupContainer"></div>
 
+
+        <!-- Context Menu for Actions -->
+        <ul id="contextMenu" class="context-menu" style="display: none;">
+            <li onclick="editCostAllocation()">
+                <i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocationreceipt"></div>
+            </li>
+            <li onclick="editBillsReceivable()">
+                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivablereceipt"></div>
+            </li>
+
+            <li onclick="editEmployeeAllocation()">
+                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> <div id="EditEmployeeAllocationreceipt"></div>
+            </li>
+            <li onclick="editPropertyAllocation()">
+                <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocationreceipt"></div>
+            </li>
+
+            <li onclick="onAllRowRemoving()">
+                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> <div id="DeleteAllLineEntriesreceipt"></div>
+            </li>
+        </ul>
+
         <ul id="contextMenu" class="context-menu" style="display:none; position:absolute;"></ul>
+
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                         .ID("CostAllocationPopup")
-                        .Title("Cost Allocation")
+                          .Title(new JS("formatMessage('Cost Allocation')"))
                         .Width("90%")
                         .Height(500)
                         .Visible(false)
@@ -668,7 +691,7 @@ buttons.Add()
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                         .ID("PropertyAllocationPopup")
-                        .Title("Property Allocation")
+                        .Title(new JS("formatMessage('Property Allocation')"))
                         .Width("90%")
                         .Height(500)
                         .Visible(false)
@@ -728,7 +751,7 @@ buttons.Add()
         <div id="popupContainer">
             @(Html.DevExtreme().Popup()
                         .ID("BillsReceivablePopup")
-                        .Title("Finance Module: Receivables / Payables")
+                         .Title(new JS("formatMessage('Finance Module: Receivables / Payables')"))
                         .Width("90%")
                         .Height(500)
                         .Visible(false)
@@ -3779,6 +3802,51 @@ tippy('#circle-approve', {
          }
      });
  }
+
+     $(function () {
+                                                $("#EditCostAllocationreceipt").dxTextBox({
+                                                            text:formatMessage("Edit Cost Allocation"),
+                                                        readOnly: true
+
+                                        });
+                                });
+                $(function () {
+                                                $("#DeleteAllLineEntriesreceipt").dxTextBox({
+                                                            text:formatMessage("Delete All Line Entries"),
+                                                    readOnly: true
+
+                                    });
+                            });
+                $(function () {
+                                                $("#EditBillReceivablereceipt").dxTextBox({
+                                                        text:formatMessage("Edit Bills Payable"),
+                                                    readOnly: true
+
+                                    });
+                            });
+                $(function () {
+                                                    $("#EditSalaryPayablereceipt").dxTextBox({
+                                                            text:formatMessage("Edit Salary Payable"),
+                                                        readOnly: true
+
+                                        });
+                                });
+                $(function () {
+                                                    $("#EditEmployeeAllocationreceipt").dxTextBox({
+                                                                text:formatMessage("Edit Employee Allocation"),
+                                                        readOnly: true
+
+                                        });
+                                });
+                $(function () {
+                                                    $("#EditPropertyAllocationreceipt").dxTextBox({
+                                                            text:formatMessage("Edit Property Allocation"),
+                                                        readOnly: true
+
+                                        });
+                                });
+               
+
   const menuItems = [
     { id: "editCostAllocation", text: "Edit Cost Allocation", icon: "edit", color: "#4CAF50" },
     { id: "editBillsReceivable", text: "Edit Bills Receivable", icon: "file", color: "#2196F3" },
@@ -3936,4 +4004,5 @@ tippy('#circle-approve', {
         text: formatMessage("ADD")
     });
 }
+
 </script>

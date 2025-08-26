@@ -229,86 +229,84 @@
             .OnClick("toggleMenuReports")
             )
     </div> *@
-
     <div class="btn-container menuBtn report-menu-button">
-        @(Html.DevExtreme().Menu() 
-             .ID("menuReports1") 
-             .DataSource(new[] { 
-        new {
-         text = "Financial Reports", 
-         icon = "doc", 
-         items = new[] { 
-         new {
-       text = "Account Group Report", 
-        icon = "home",
-         items = new[] { 
-        new { text = "Account Group", icon = "chart-line" }, 
-         new { text = "Account Group Report(with subGroups)", icon = "chart-line" }, 
-         } 
-     }, 
-      new { 
-      text = "Trial Balance Report", 
-      icon = "chart", 
-       items = new[] {
-      new { text = "Trial Balance", icon = "chart-line" }, 
-      new { text = "Trial Balance (Export Format)", icon = "chart-line" }, 
-      new { text = "Trial Balance (Dr/ Cr Format)", icon = "chart-line" },
-@*       new { text = "Trial Balance (Customizable Format)", icon = "chart-line" }, 
- *@       } 
-       }, 
-         new { 
-      text = "Income Statements", 
-        icon = "cart", 
-    items = new[] { 
-       new { text = "Income Statements", icon = "chart-line" }, 
-     new { text = "Income Statements(By Month)", icon = "chart-line" }, 
-@*        new { text = "Income Statements(Customizable Format)", icon = "chart-line" }, 
- *@      } 
-    }, 
-     new {
-       text = "Balance Sheet", 
-      icon = "chart",
-       items = new[] { 
-     new { text = "Balance Sheet", icon = "chart-line" }, 
-      new { text = "Balance Sheet(Horizondal Format)", icon = "chart-line" }, 
-       } 
-      }, 
-        new { 
-         text = "Cash Inflow & Outflow Reports", 
-         icon = "money", 
-         items = new[] {
-     new { text = "Cash Flow Statements", icon = "chart-line" }, 
-    } 
-    }, 
-      new { 
-    text = "Ageing Report", 
-    icon = "product", 
-  items = new[] { 
-       new { text = "Bills Receivable- Ageing (By End Date)", icon = "chart-line" },
-     new { text = "Bills Receivable- Ageing as per Ledger Balance(By End Date)", icon = "chart-line" }, 
-       new { text = "Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)", icon = "chart-line" },
-        new { text = "Bills Receivable Report(By End Date)", icon = "chart-line" }, 
-        new { text = "Bills Payable- Ageing (By End Date)", icon = "chart-line" },
-        new { text = "Bills Payable- Ageing as per Ledger Balance(By End Date)", icon = "chart-line" }, 
-     new { text = "Bills Payable Summary- Ageing as per Ledger Balance (By End Date)", icon = "chart-line" },
-      new { text = "Bills Payable Report (By End Date)", icon = "chart-line" }, 
-        }
-         },
-        new {
-      text = "Cost Reports",
-        icon = "monney", 
-       items = new[] { 
-        new { text = "Property Allocation Report", icon = "chart-line" }, 
-        } 
-         }, 
-       } 
-        } 
-       }) 
-           .DisplayExpr("text") 
-            .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
-            .OnItemClick("handleReportsClick")
-            )
-     </div>
+        @(Html.DevExtreme().Menu()
+                .ID("menuReports1")
+                .DataSource(new[] {
+                new {
+                text = new JS("formatMessage('Financial Reports')"),
+                icon = "doc",
+                items = new[] {
+                new {
+                text = new JS("formatMessage('Account Group Report')"),
+                icon = "home",
+                items = new[] {
+                new { text = new JS("formatMessage('Account Group')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Account Group Report(with subGroups)')"), icon = "chart-line" },
+                }
+                },
+                new {
+                text = new JS("formatMessage('Trial Balance Report')"),
+                icon = "chart",
+                items = new[] {
+                new { text = new JS("formatMessage('Trial Balance')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Trial Balance (Export Format)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Trial Balance (Dr/ Cr Format)')"), icon = "chart-line" },
+                }
+                },
+                new {
+                text = new JS("formatMessage('Income Statements')"),
+                icon = "cart",
+                items = new[] {
+                new { text = new JS("formatMessage('Income Statements')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Income Statements(By Month)')"), icon = "chart-line" },
+                }
+                },
+                new {
+                text = new JS("formatMessage('Balance Sheet')"),
+                icon = "chart",
+                items = new[] {
+                new { text = new JS("formatMessage('Balance Sheet')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Balance Sheet(Horizondal Format)')"), icon = "chart-line" },
+                }
+                },
+                new {
+                text = new JS("formatMessage('Cash Inflow & Outflow Reports')"),
+                icon = "money",
+                items = new[] {
+                new { text = new JS("formatMessage('Cash Flow Statements')"), icon = "chart-line" },
+                }
+                },
+                new {
+                text = new JS("formatMessage('Ageing Report')"),
+                icon = "product",
+                items = new[] {
+                new { text = new JS("formatMessage('Bills Receivable- Ageing (By End Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Bills Receivable- Ageing as per Ledger Balance(By End Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Bills Receivable Summary- Ageing as per Ledger Balance (By End Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Bills Receivable Report(By End Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Bills Payable- Ageing (By End Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Bills Payable- Ageing as per Ledger Balance(By End Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Bills Payable Summary- Ageing as per Ledger Balance (By End Date)')"), icon = "chart-line" },
+                new { text = new JS("formatMessage('Bills Payable Report (By End Date)')"), icon = "chart-line" },
+                }
+                },
+                new {
+                text = new JS("formatMessage('Cost Reports')"),
+                icon = "monney",
+                items = new[] {
+                new { text = new JS("formatMessage('Property Allocation Report')"), icon = "chart-line" },
+                }
+                },
+                }
+                }
+                })
+                .DisplayExpr("text")
+                .ShowSubmenuMode(mode => mode.Name(ShowSubmenuMode.OnHover))
+                .OnItemClick("handleReportsClick")
+                )
+    </div>
+
 
 @* 
     <div class="btn-container">
