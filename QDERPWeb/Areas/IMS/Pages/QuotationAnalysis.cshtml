@@ -39,12 +39,13 @@
 </style>
         <input id="formId" value="frm60115QuotationAnalysis" type="hidden" />
         @await Html.PartialAsync("/Pages/Shared/IMS/QuotationAnalysisFooter.cshtml")
-<div style="padding: 10px; background-color: #c7cfdd;">
+<div style="padding: 10px; background-color:white;">
     <div style="display: flex; align-items: center; gap: 10px;">
-        <label id="SelectRequest" style="font-weight: bold;"></label>
 
         @(Html.DevExtreme().DropDownBox()
             .ID("requestSelectBox")
+            .Label(new JS("formatMessage('Select a Request / Enquiry:')"))
+            .LabelMode(EditorLabelMode.Floating)
             .DataSource(d => d.WebApi()
             .Controller("QuotationAnalysis")
             .LoadAction("GetQuotationAnalysis")
@@ -520,7 +521,7 @@ function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
 
 
 $("#btnCreateQuotations").dxButton({
-    text: "Create Quotation",
+    text: formatMessage('Create New Quotations'),
     type: "success",
     onClick: function () {
 
