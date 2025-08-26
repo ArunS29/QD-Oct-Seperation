@@ -127,7 +127,7 @@
                     .AcceptCustomValue(true)
                     .OpenOnFieldClick(false)
                     .ValueChangeEvent("input")
-                    .OnValueChanged("onGoodsGroupChanged")
+                   // .OnValueChanged("onGoodsGroupChanged")
                     .HoverStateEnabled(true)
                     .ValueExpr("GsgroupId")
                     .DisplayExpr("GsgroupName")
@@ -429,46 +429,51 @@
     }
 
       
-                     $("#txtGoodsCode7").dxTextBox("instance").option("value",ItemNo);
-                     let gCode = $("#txtGoodsCode7").dxTextBox("instance").option("value");
-                     if(gCode!="")
-                     {
-                     $("#txtItemPartNo4").dxTextBox("instance").option("value",ItemPartNo);
-                     $("#txtDescription8").dxTextArea("instance").option("value",Gsdescrpition);
-                     $("#txtDescriptionArabic").dxTextArea("instance").option("value",GsdescriptionAr);
+                     // $("#txtGoodsCode7").dxTextBox("instance").option("value",ItemNo);
+                     // let gCode = $("#txtGoodsCode7").dxTextBox("instance").option("value");
+                     // if(gCode!="")
+                     // {
+                     // $("#txtItemPartNo4").dxTextBox("instance").option("value",ItemPartNo);
+                     // $("#txtDescription8").dxTextArea("instance").option("value",Gsdescrpition);
+                     // $("#txtDescriptionArabic").dxTextArea("instance").option("value",GsdescriptionAr);
 
-                     $("#packingUnit").dxNumberBox("instance").option("value", ReorderQty ?? 1);
-                     $("#sellingRate").dxNumberBox("instance").option("value", GssellingRate ?? 1);
-                     $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
-                     $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
-                     $("#ddlUnitMeasure9").dxDropDownBox("instance").option("value", UnitOfMeasure);
+                     // $("#packingUnit").dxNumberBox("instance").option("value", ReorderQty ?? 1);
+                     // $("#sellingRate").dxNumberBox("instance").option("value", GssellingRate ?? 1);
+                     // $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
+                     // $("#txtCostPrice3").dxNumberBox("instance").option("value", CostPrice ?? 1);
+                     // $("#ddlUnitMeasure9").dxDropDownBox("instance").option("value", UnitOfMeasure);
                      
-                     }
-                     else{
+                     // }
+                     // else{
                                  $.ajax({
                                            url: "/api/VATModule/GetGoodsAndServicesDetails", // Your API endpoint
                                            type: "GET",
-                                           data: { gsCode: gCode }, // 👈 This sends ?gsCode=value in the query string
+                                           data: { gsCode: ItemNo }, // 👈 This sends ?gsCode=value in the query string
                                            dataType: "json",
                                            success: function (data) {
+                                               debugger;
                                                console.log("Filtered Goods & Services:", data);
                                            
-                                               $("#txtGoodsCode7").dxTextBox("instance").option("value",data.Gscode);
-                                               $("#txtItemPartNo4").dxTextBox("instance").option("value",data.ItemPartNo);
-                                               $("#txtDescription8").dxTextArea("instance").option("value",data.Gsdescrpition);
-                                               $("#txtDescriptionArabic").dxTextArea("instance").option("value",data.GsdescriptionAr);
+                                               $("#txtGoodsCode7").dxTextBox("instance").option("value",data[0].Gscode);
+                                               $("#txtItemPartNo4").dxTextBox("instance").option("value",data[0].ItemPartNo);
+                                               $("#txtDescription8").dxTextArea("instance").option("value",data[0].Gsdescrpition);
+                                               $("#txtDescriptionArabic").dxTextArea("instance").option("value",data[0].GsdescriptionAr);
+                                               $("#txtDetailedDescription").dxTextArea("instance").option("value",data[0].GsdetailedDesc);
+                                               $("#txtDetailedDescriptionArabic").dxTextArea("instance").option("value",data[0].GsdetailedDescAr);
                                                
-                                               $("#packingUnit").dxNumberBox("instance").option("value", data.ReorderQty ?? 1);
-                                               $("#sellingRate").dxNumberBox("instance").option("value", data.GssellingRate ?? 1);
-                                               $("#txtCostPrice3").dxNumberBox("instance").option("value", data.CostPrice ?? 1);
-                                               $("#ddlUnitMeasure9").dxDropDownBox("instance").option("value", data.UnitRateMethod);
+                                               
+                                               
+                                               $("#packingUnit").dxNumberBox("instance").option("value", data[0].ReorderQty ?? 1);
+                                               $("#sellingRate").dxNumberBox("instance").option("value", data[0].GssellingRate ?? 1);
+                                               $("#txtCostPrice3").dxNumberBox("instance").option("value", data[0].CostPrice ?? 1);
+                                               $("#ddlUnitMeasure9").dxDropDownBox("instance").option("value", data[0].GspackingUnit);
                          
                                            },
                                            error: function (xhr, status, error) {
                                                console.error("API call failed:", error);
                                            }
                                       });
-                     }
+                    // }
 
         });
 
@@ -611,23 +616,23 @@
 
 
 
-    function onGoodsGroupChanged(e) {
-        const selectedValue = e.value; 
-        const dropDownBoxInstance = e.component;
+    // function onGoodsGroupChanged(e) {
+    //     const selectedValue = e.value; 
+    //     const dropDownBoxInstance = e.component;
 
        
-        const dataSource = dropDownBoxInstance.getDataSource();
+    //     const dataSource = dropDownBoxInstance.getDataSource();
 
-        dataSource.load().done(function (items) {
-            const selectedItem = items.find(item => item.GsgroupId === selectedValue);
+    //     dataSource.load().done(function (items) {
+    //         const selectedItem = items.find(item => item.GsgroupId === selectedValue);
 
-            if (selectedItem && selectedItem.GsgroupCode) {
-                $("#txtGoodsCode7").dxTextBox("instance").option("value", selectedItem.GsgroupCode);
-            } else {
-                $("#txtGoodsCode7").dxTextBox("instance").option("value", "");
-            }
-        });
-    }
+    //         if (selectedItem && selectedItem.GsgroupCode) {
+    //             $("#txtGoodsCode7").dxTextBox("instance").option("value", selectedItem.GsgroupCode);
+    //         } else {
+    //             $("#txtGoodsCode7").dxTextBox("instance").option("value", "");
+    //         }
+    //     });
+    // }
     $(function () {
     $("#goodsandServices").dxTextBox({
     text: formatMessage("Goods and Services"),

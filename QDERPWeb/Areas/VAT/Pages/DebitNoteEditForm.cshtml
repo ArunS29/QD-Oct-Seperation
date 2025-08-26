@@ -1517,7 +1517,7 @@
 											.ShowBorders(true)
 											.SearchPanel(sp => sp.HighlightSearchText(true))
 											.Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-											.OnSelectionChanged("dataGridSupplierNameSelectionChanged")
+											.OnSelectionChanged("dataGridSupplierNameSelectionChangedAr")
 											.OnInitialized("dataGridSupplierNameInitialized")
 											// .HeaderFilter(p => p.Visible(true))
 											.ShowBorders(true)
@@ -4126,6 +4126,35 @@
 						supplierid=selectedRowData[0].AccountId;
 
 
+
+				} else {
+						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
+						return;
+				}
+			}
+
+		}
+		}
+
+		
+		function dataGridSupplierNameSelectionChangedAr(e) {
+			const selectedKey = e.selectedRowKeys[0];
+			const ddbInstance = $("#ddlSupplierNameArabic").dxDropDownBox("instance");
+			supplierid = selectedKey;
+
+			if (selectedKey) {
+				ddbInstance.option("value", selectedKey);
+				if (ddbInstance.option("opened")) {
+					ddbInstance.close();
+				}
+				if(IsCurrent!="true" && IsAmend !="true") {
+
+					var selectedRowData = $("#ddlSupplierNameArabic-datagrid").dxDataGrid("instance").getSelectedRowsData();
+					// Get ReferenceNo from selected row
+					if (selectedRowData.length > 0) {
+
+						@* accheadid=selectedRowData[0].AccountHead;
+						supplierid=selectedRowData[0].AccountId; *@
 
 				} else {
 						DevExpress.ui.notify("Please select a row from the grid!", "error", 2000);
@@ -6950,7 +6979,7 @@ $(function () {
 	$.get("/api/VATModule/GetCurrencyDecimals")
 		.done(function (decimals) {
 			currencyDecimals = decimals || 2;
-			 applyDynamicFormat(currencyDecimals);
+			// applyDynamicFormat(currencyDecimals);
 		})
 		.fail(function () {
 			DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
