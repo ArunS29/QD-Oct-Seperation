@@ -93,7 +93,7 @@ public partial class Tbl40103PropertyQuoteMaster
 
     public string QuoteThanksNote { get; set; }
 
-    public byte? VatapplicableRate { get; set; }
+    public string VatapplicableRate { get; set; }
 
     public byte? RevisionNo { get; set; }
 
@@ -103,9 +103,9 @@ public partial class Tbl40103PropertyQuoteMaster
 
     public bool? IsVerified { get; set; }
 
-    public byte? VerifiedSignatory { get; set; }
+    public string VerifiedSignatory { get; set; }
 
-    public byte? ApprovedSignatory { get; set; }
+    public string ApprovedSignatory { get; set; }
 
     public short? CoordinatorIncharge { get; set; }
 

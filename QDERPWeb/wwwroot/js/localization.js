@@ -4051,7 +4051,11 @@ var dictionary = {
         "Accounts Payables": "Accounts Payables",
         "Accounts Receivables": "Accounts Receivables",
         "Fund Requests": "Fund Requests",
-        "Manpower Requests":"Manpower Requests"
+        "Manpower Requests": "Manpower Requests",
+        "Subject Details": "Subject Details",
+        "Shipment & Discount": "Shipment & Discount",
+        "Request No:": "Request No:",
+        "VAT Applicable % :": "VAT Applicable % :"
     },
                 //Arabic Language Translations
 
@@ -7236,7 +7240,11 @@ var dictionary = {
         "Use 2 Digits in Total Before Tax in Line Item": "استخدم رقمين في الإجمالي قبل الضريبة في البند",
         "Type new Job Order Status Master && Add to the Existing List:": ":أدخل حالة أمر العمل الجديدة وأضفها إلى القائمة الحالية",
         "Postal Amount": "مبلغ البريد",
-        "Total Purchase Amount": "إجمالي مبلغ الشراء"
+        "Total Purchase Amount": "إجمالي مبلغ الشراء",
+        "Subject Details": "تفاصيل الموضوع",
+        "Shipment & Discount": "الشحنة والخصم",
+        "Request No:": "رقم الطلب:",
+        "VAT Applicable % :": "نسبة الضريبة على القيمة المضافة :"
     },
              
                 // Mandrian Chinese Languange Translations

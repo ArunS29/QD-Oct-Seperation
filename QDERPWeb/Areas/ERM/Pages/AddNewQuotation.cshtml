@@ -5,9 +5,6 @@
 <style>
     
 
-	.dx-button-text{
-      color:black;
-  }
 
 
     .ledgerResult {
@@ -437,7 +434,7 @@
                          <div class="col-md-2">
                         @(Html.DevExtreme().TextBox()
                         .ID("MprNumber")
-						.Label(new JS("formatMessage('MPR / Enquiry No:')"))
+						.Label(new JS("formatMessage('Reference No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
@@ -445,7 +442,7 @@
                          <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("ClientRefName")
-						.Label(new JS("formatMessage('Client Ref. Name / Attention To:')"))
+						.Label(new JS("formatMessage('Attention To:')"))
                         .LabelMode(EditorLabelMode.Floating) 
                         .Width("100%")
                         )
@@ -593,78 +590,268 @@
 
         </text>);
 
-						item.Add().Title(new JS("formatMessage('Quote Text')")).Icon("detailslayout").Text("Quote Text").Template(@<text>
-            <div class="dx-card layout-container">
-                <!-- Subject -->
-                <div class="form-row">
+						item.Add().Title(new JS("formatMessage('Subject Details')")).Icon("detailslayout").Text("Subject Details").Template(@<text>
+             <div class="form-row">
                     <div class="form-column">
-                        <div class="field-header">
-							<label id="Subject1"  class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
-                        @(Html.DevExtreme().TextBox()
-                        .ID("Subject")
-                        .LabelMode(EditorLabelMode.Hidden)
-                        .Width("100%")
-                        )
+                          @(Html.DevExtreme().TextBox()
+							.ID("Subject")
+							.Label(new JS("formatMessage('Subject:')"))
+							.LabelMode(EditorLabelMode.Floating)
+							.Width("100%")
+							.Buttons(buttons =>
+							{
+							
+								buttons.Add().Name("clear");
+								
+								buttons.Add()
+									.Name("setDefault")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("upload")
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										.OnClick("function() { saveField('ReportSubject', 'Subject' ,'Subject'); }")
+									);
+
+								// Font button with icon
+								buttons.Add()
+									.Name("fontButton")
+									.Location(TextEditorButtonLocation.After)
+									.Widget(w => w.Button()
+										.Type(ButtonType.Default)
+										.Icon("fa fa-font") // FontAwesome class
+										.ElementAttr(new { @class = "custom-hover-button add-hover" })
+										@* .OnClick("function() { /* your font button logic */ }") *@
+									);
+							})
+						)                    
+
                     </div>
 
                     <!-- Po Summary -->
                     <div class="form-column">
-                        <div class="field-header">
-							<label for="QuoteSummary" id="QuoteSummary1" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                        <div style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextArea()
                         .ID("QuoteSummary")
-                        .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
+						.Label(new JS("formatMessage('Quote Summary:')"))
+						.LabelMode(EditorLabelMode.Floating)
+                       .ElementAttr("style", "height: 80% !important;")
                         .Width("100%")
-                        )
+						) 
+						 @(Html.DevExtreme().Button()
+                        .ID("AddSupplier")
+                        .Icon("upload")
+                        .OnClick("function() { saveField('ReportSummary', 'QuoteSummary','Quote summary'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("EditSupplier")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
+					 </div>
                     </div>
                 </div>
 
                 <!-- Po Introduction -->
                 <div class="form-row">
                     <div class="form-column">
-                        <div class="field-header">
-							<label for="QuoteIntro" id="QuoteIntro1" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                       
                         @(Html.DevExtreme().TextBox()
                         .ID("QuoteIntro")
-                        .LabelMode(EditorLabelMode.Hidden)
+						.Label(new JS("formatMessage('Quote Introduction:')"))
+						.LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
+                        .Buttons(buttons =>
+						{
+						
+							buttons.Add().Name("clear");
+							
+							buttons.Add()
+								.Name("setDefault")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+									.Type(ButtonType.Default)
+									.Icon("upload")
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									.OnClick("function() { saveField('ReportIntroduction', 'QuoteIntro','Quote Introduction'); }")
+								);
+
+							// Font button with icon
+							buttons.Add()
+								.Name("fontButton")
+								.Location(TextEditorButtonLocation.After)
+								.Widget(w => w.Button()
+									.Type(ButtonType.Default)
+									.Icon("fa fa-font") // FontAwesome class
+									.ElementAttr(new { @class = "custom-hover-button add-hover" })
+									@* .OnClick("function() { /* your font button logic */ }") *@
+								);
+						})
+
                         )
                     </div>
 
                     <!-- Po Summary -->
                     <div class="form-column">
-                        <div class="field-header">
-                            <label for="QuoteThanks" id="QuoteThanks1" class="field-label"></label>
-                            <div class="field-buttons">
-                                <button class="btn-solid">Set Default</button>
-                                <button class="btn-outline"><i class="fa fa-font"></i></button>
-                            </div>
-                        </div>
+                        <div style="display:flex; align-items:end;">
                         @(Html.DevExtreme().TextArea()
                         .ID("QuoteThanks")
+						.Label(new JS("formatMessage('Quote Thanks:')"))
+						.LabelMode(EditorLabelMode.Floating)
                         .Height(80)
-                        .LabelMode(EditorLabelMode.Hidden)
                         .Width("100%")
-                        )
+						) 
+						 @(Html.DevExtreme().Button()
+                        .ID("Addreset")
+                        .Icon("upload")
+                        .OnClick("function() { saveField('ReportThanksNote','QuoteThanks','Quote Thanks'); }")
+                        .Hint("Set Default")) 
+                        @(Html.DevExtreme().Button()
+                        .ID("tnxreset")
+                        .Icon("fa fa-font")
+                      //.OnClick("editSelectedSupplier") 
+                        .Hint("Reset"))
+					 </div>
                     </div>
                 </div>
         </text>);
+
+								item.Add().Text("Shipment & Discount").Icon("home").Title(new JS("formatMessage('Shipment & Discount')")).Template(@<text>
+         <div class="dx-card p-3">
+                <div class="row g-2">
+                    
+
+                    <!-- Column 2 -->
+                    <div class="col-md-4 me-5">
+                        <div>
+                            @(Html.DevExtreme().TextBox()
+                            .ID("SubmittedBy")
+                            .Value("Administrator")
+							.Label(new JS("formatMessage('Quote Submitted By:')"))
+                            .LabelMode(EditorLabelMode.Floating)
+                            .Width("100%")
+                            )
+
+
+                            <div class="row mt-3">
+                                <div class="col-md-6">
+                                    @(Html.DevExtreme().DateBox()
+                                    .ID("SubmittedOn")
+                                    .Value(DateTime.Now)
+									.DisplayFormat("dd-MMM-yyyy")
+									.Label(new JS("formatMessage('Quote Submitted On:')"))
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .Width("100%")
+                                    )
+                                </div>
+                                <div class="col-md-6">
+                                    @(Html.DevExtreme().DateBox()
+                                    .ID("BidClosingDate")
+									.DisplayFormat("dd-MMM-yyyy")
+									.Label(new JS("formatMessage('Bid Closing Date:')"))
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .Width("100%")
+                                    )
+                                </div>
+								<div class="col-10">
+                                   @(Html.DevExtreme().DropDownBox()
+									.ID("ddGetQuoteStatus")
+									.Label(new JS("formatMessage('Quotation Status:')"))
+									.LabelMode(EditorLabelMode.Floating)
+									.DataSource(d => d.WebApi()
+										.Controller("AddNewQuotation1")
+										.LoadAction("GetQuotationStatus")
+										.LoadMode(DataSourceLoadMode.Raw)
+										.Key("QuoteStatus")
+									)
+										.ValueExpr("QuoteStatus")
+										.DisplayExpr("QuoteStatus")
+										.Width("100%")
+										.OnOpened("onOpened")
+										.OnInput("dropDownBoxOnInput")
+										.DropDownOptions(o => o.Width(800))
+										.ContentTemplate(new TemplateName("GetQuotationStatusContentTemplate"))
+										.Buttons(buttons =>
+										{
+											buttons.Add()
+												.Name("AddQuoteStatus")
+												.Location(TextEditorButtonLocation.After)
+												.Widget(w => w.Button()
+													.Type(ButtonType.Default)
+													.Icon("plus")
+													.ElementAttr(new { @class = "custom-hover-button add-hover" })
+													.OnClick("AddQuoteStatus") 
+												);
+											buttons.Add().Name("dropDown"); 
+										})
+									)
+
+                                    
+                                </div>
+
+
+
+                            </div>
+                            
+                        </div>
+                    </div>
+
+                    <!-- Column 3 -->
+                    <div class="col-md-4">
+                        <div>
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    @(Html.DevExtreme().TextBox()
+									.ID("txtAdditions")
+                                    .Width("100%")
+                                    )
+                                </div>
+                                <div class="col-6">
+									 @(Html.DevExtreme().NumberBox()
+															.ID("QuoteTransport")															
+															.LabelMode(EditorLabelMode.Floating)
+															.Format("#,##0.00")
+															.Value(0.00)              
+															.ShowSpinButtons(true)    
+															.Step(1)                  
+															.Min(0)                   
+															.Width("100%"))		
+                                </div>
+                            </div>
+
+                            <div class="row mb-2">
+                                <div class="col-6">
+                                    @(Html.DevExtreme().TextBox()
+									.ID("txtDeductions")
+                                    .Width("100%")
+                                    )
+                                </div>
+                                <div class="col-6">
+									@(Html.DevExtreme().NumberBox()
+									.ID("QuoteDiscount")															 
+									.LabelMode(EditorLabelMode.Floating)
+									.Format("#,##0.00")
+									.Value(0.00)              
+									.ShowSpinButtons(true)    
+									.Step(1)                  
+									.Min(0)                   
+									.Width("100%"))
+													
+
+                                </div>
+                            </div>                          
+                        </div>
+                    </div>
+
+
+
+         </div>
+		 </div>
+
+
+        </text>);
+
+
 						item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
             <div class="dx-card p-3">
                 <div class="row g-2">
@@ -697,185 +884,44 @@
                             .ContentTemplate(new TemplateName("GetCompanyContentTemplate"))
                             )
 
-                            @(Html.DevExtreme().DropDownBox()
-                            .Label(new JS("formatMessage('Inventory Group Master:')"))
-                            .DataSource(d => d.WebApi()
-                            .Controller("AddNewClientRequest1")
-                            .LoadAction("GetInventoryGroup")
-                            .LoadMode(DataSourceLoadMode.Raw)
-                            .Key("InventoryMasterGroupId")
-                            )
-                            .LabelMode(EditorLabelMode.Floating)
-                            .ID("ddGetInventoryGroup")
-                            .Width(900)
-                            @*  .ShowClearButton(true)
-                            .AcceptCustomValue(true) *@
-                            .OpenOnFieldClick(false)//
-                            .ValueChangeEvent("input")
-                            .HoverStateEnabled(true)
-                            .ValueExpr("InventoryMasterGroupId")
-                            .DisplayExpr("InventoryMasterGroup")
-							.Value(1)
-                            .OnInput("dropDownBoxOnInput")
-                            .OnOpened("onOpened")
-                            .TabIndex(1)
-                            .Width("100%")
-                            .OnKeyDown("onKeyDown")
-                            //.OnValueChanged("dropDownBoxValueChanged")
-                            .ContentTemplate(new TemplateName("GetInventoryGroupContentTemplate"))
-                            )
 
+
+
+
+
+							
                             @(Html.DevExtreme().TextBox()
                             .ID("ReferenceNo")
-							.Label(new JS("formatMessage('Reference No:')"))
+							.Label(new JS("formatMessage('Request No:')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
+
+
+
+
+
+										 @(Html.DevExtreme().DropDownBox()
+										.Label(new JS("formatMessage('VAT Applicable % :')"))
+										.ID("ddGetInventoryGroup")
+										.LabelMode(EditorLabelMode.Floating)
+										.Width("100%")
+										.DataSource(new[] {
+											"15% Domestic Standard Sales",
+											"5% Domestic Standard Sales",
+											"0% Domestic Zero Tax Sales",
+											"0% Domestic Exempted Tax Sales",
+											"0% GCC Sales",
+											"0% Exports Sales"
+										})
+										.Value("15% Domestic Standard Sales") 
+)
+
+
+                           
                         </div>
                     </div>
 
-                    <!-- Column 2 -->
-                    <div class="col-md-5">
-                        <div>
-                            @(Html.DevExtreme().TextBox()
-                            .ID("SubmittedBy")
-                            .Value("Administrator")
-							.Label(new JS("formatMessage('Quote Submitted By:')"))
-                            .LabelMode(EditorLabelMode.Floating)
-                            .Width("100%")
-                            .Disabled(true)
-                            )
-
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-                                    @(Html.DevExtreme().DateBox()
-                                    .ID("SubmittedOn")
-                                    .Value(DateTime.Now)
-									.Label(new JS("formatMessage('Quote Submitted On:')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("100%")
-                                    )
-                                </div>
-                                <div class="col-md-6">
-                                    @(Html.DevExtreme().DateBox()
-                                    .ID("BidClosingDate")
-									.Label(new JS("formatMessage('Bid Closing Date:')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("100%")
-                                    )
-                                </div>
-                            </div>
-
-                            <div class="row mt-3">
-                                <div class="col-md-6">
-									@(Html.DevExtreme().TextBox()
-									.ID("txtTransportationScope")
-									.Label(new JS("formatMessage('Transportation Scope:')"))
-									.LabelMode(EditorLabelMode.Floating)
-									.Width("100%")
-									.Disabled(true)
-									)
-                                </div>
-                               
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Column 3 -->
-                    <div class="col-md-3">
-                        <div>
-                            <div class="row mb-2">
-                                <div class="col-6">
-                                    @(Html.DevExtreme().TextBox()
-									.ID("txtAdditions")
-                                    .Width("100%")
-                                    )
-                                </div>
-                                <div class="col-6">
-									@(Html.DevExtreme().NumberBox()
-									.ID("QuoteTransport")
-									.Min(0)
-									.Max(100)
-									.ShowSpinButtons(true)
-									.ShowClearButton(true)
-									)
-
-                                </div>
-                            </div>
-
-                            <div class="row mb-2">
-                                <div class="col-6">
-                                    @(Html.DevExtreme().TextBox()
-									.ID("txtDeductions")
-                                    .Width("100%")
-                                    )
-                                </div>
-                                <div class="col-6">
-									@(Html.DevExtreme().NumberBox()
-									.ID("QuoteDiscount")
-									.Min(0)
-									.Max(100)
-									.ShowSpinButtons(true)
-									.ShowClearButton(true)
-																	)
-
-                                </div>
-                            </div>
-
-                            <!-- Quotation Status with add button -->
-                            <div class="row mb-2 align-items-end">
-                                <div class="col-10">
-                                    @(Html.DevExtreme().DropDownBox()
-                                    .Label(new JS("formatMessage('Quotation Status:')"))
-                                    .DataSource(d => d.WebApi()
-									.Controller("AddNewQuotation1")
-                                    .LoadAction("GetQuotationStatus")
-                                    .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("QuoteStatusId")
-                                    )
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .ID("ddGetQuoteStatus")
-                                    .Width(900)
-                                    .OpenOnFieldClick(false)//
-                                    .ValueChangeEvent("input")
-                                    .HoverStateEnabled(true)
-                                    .ValueExpr("QuoteStatusId")
-                                    .DisplayExpr("QuoteStatus")
-                                    .OnInput("dropDownBoxOnInput")
-                                    .OnOpened("onOpened")
-                                    .TabIndex(1)
-                                    .Width("100%")
-                                    .OnKeyDown("onKeyDown")
-                                    //.OnValueChanged("dropDownBoxValueChanged")
-                                    .ContentTemplate(new TemplateName("GetQuotationStatusContentTemplate"))
-                                    )
-                                </div>
-                                <div class="col-2 d-flex justify-content-start">
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddQuoteStatus")
-                                    .Icon("plus")
-                                    .Hint("Add Description")
-                                    .Width(40)
-                                    .ElementAttr("style", "margin-top:18px;")
-                                    .OnClick("AddQuoteStatus")
-                                    )
-                                </div>
-                            </div>
-
-                            <!-- Remarks TextArea -->
-                            <div class="row">
-                                <div class="col-12">
-                                    @(Html.DevExtreme().TextArea()
-                                    .ID("Remarks")
-									.Label(new JS("formatMessage('Remarks:')"))
-                                    .LabelMode(EditorLabelMode.Floating)
-                                    .Width("100%")
-                                    .Height(80)
-                                    )
-                                </div>
-                            </div>
-                        </div>
-                    </div>
                 </div>
 
 
@@ -897,7 +943,7 @@
                                     .Controller("AddNewClientRequest1")
                                     .LoadAction("GetSignatory")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("SignatoryId")
+                                    .Key("SignatoryName")
                                     )
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddPreparedby")
@@ -907,7 +953,7 @@
                                     .OpenOnFieldClick(false)//
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("SignatoryId")
+                                    .ValueExpr("SignatoryName")
                                     .DisplayExpr("SignatoryName")
                                     .OnInput("dropDownBoxOnInput")
                                     .OnOpened("onOpened")
@@ -927,7 +973,7 @@
                                     .Controller("AddNewClientRequest1")
                                     .LoadAction("GetSignatory")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("SignatoryId")
+                                    .Key("SignatoryName")
                                     )
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddVerifiedby")
@@ -937,7 +983,7 @@
                                     .OpenOnFieldClick(false)//
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("SignatoryId")
+                                    .ValueExpr("SignatoryName")
                                     .DisplayExpr("SignatoryName")
                                     .OnInput("dropDownBoxOnInput")
                                     .OnOpened("onOpened")
@@ -957,7 +1003,7 @@
                                     .Controller("AddNewClientRequest1")
                                     .LoadAction("GetSignatory")
                                     .LoadMode(DataSourceLoadMode.Raw)
-                                    .Key("SignatoryId")
+                                    .Key("SignatoryName")
                                     )
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddApprovedby")
@@ -967,7 +1013,7 @@
                                     .OpenOnFieldClick(false)//
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
-                                    .ValueExpr("SignatoryId")
+                                    .ValueExpr("SignatoryName")
                                     .DisplayExpr("SignatoryName")
                                     .OnInput("dropDownBoxOnInput")
                                     .OnOpened("onOpened")
@@ -1018,325 +1064,6 @@
             )
 
     </div>
-<div class="input-row">
-
-    @(Html.DevExtreme().DropDownBox()
-        .ID("EquipmentQuotedFor")
-		.AcceptCustomValue(true)
-        .Label("Equipment Quoted for:")
-        .LabelMode(EditorLabelMode.Floating)
-        .Width(250)
-		 .DataSource(d => d.WebApi()
-        .Controller("AddNewProperty")
-        .LoadAction("GetAllPropertyTypes")
-        .LoadMode(DataSourceLoadMode.Raw)
-            .Key("PropertyType")
-        )
-
-        .Option("dataGridId", "GetItemStore-datagrid")
-        .OpenOnFieldClick(false)
-        .ValueChangeEvent("input")
-        .HoverStateEnabled(true)
-        .ValueExpr("PropertyTypeId")
-        .DisplayExpr("PropertyType")
-        .OnInput("dropDownBoxOnInput")
-        .OnOpened("onOpened")
-        .TabIndex(1)
-        .OnKeyDown("onKeyDown")
-        .ContentTemplate(new TemplateName("GetTypeOfPropertytypeContentTemplate"))
-		 .Buttons(buttons =>
-    {
-        // Keep the dropdown arrow
-        buttons.Add()
-            .Name("dropDown");
-
-        // Add Sales Person button
-        buttons.Add()
-            .Name("btnAddEquipment")
-            .Location(TextEditorButtonLocation.After)
-            .Widget(w => w.Button()
-                .Type(ButtonType.Default)
-                .Icon("plus")
-                .Hint("Add Equipment")
-				 .OnClick("Protype")
-            );
-    })
-)
-    
-
-    @* Quote Method (with label) *@
-   @(Html.DevExtreme().DropDownBox()
-    .ID("QuoteMethod")
-	.AcceptCustomValue(true)
-    .Label("Quote Method:")
-    .LabelMode(EditorLabelMode.Floating)
-    .Width("100%")
-
-    .DataSource(d => d.WebApi()
-        .Controller("StockInventory")
-        .LoadAction("GetUnitCodes")
-        .LoadMode(DataSourceLoadMode.Raw)
-        .Key("UnitCode")
-    )
-
-    .Option("dataGridId", "GetUOM-datagrid")
-    .OpenOnFieldClick(false)
-    .ValueChangeEvent("input")
-    .HoverStateEnabled(true)
-    .ValueExpr("UnitCode")
-    .DisplayExpr("UnitType")
-	.OnInput("dropDownBoxOnInput")
-    .OnOpened("onOpened")
-    .TabIndex(1)
-    .OnKeyDown("onKeyDown")
-    .ContentTemplate(new TemplateName("GetTypeOfQuoteMethodContentTemplate"))
-
-
-.Buttons(buttons =>
-    {
-        // Keep the dropdown arrow
-        buttons.Add()
-            .Name("dropDown");
-
-        // Add Sales Person button
-        buttons.Add()
-            .Name("btnAddQuoteMethod")
-            .Location(TextEditorButtonLocation.After)
-            .Widget(w => w.Button()
-                .Type(ButtonType.Default)
-                .Icon("plus")
-                .Hint("Add Quote")
-                .OnClick("UnitOfMeasure")
-            );
-    })
-    )
-
- 
-
-    @* UOM (no label) *@
-    @(Html.DevExtreme().TextBox()
-        .ID("UOM")
-        .Label("UOM")
-        .LabelMode(EditorLabelMode.Floating)
-        .Width(100)
-    )
-
-   @(Html.DevExtreme().NumberBox()
-    .ID("Quantity")
-    .Label("Quantity:")
-    .LabelMode(EditorLabelMode.Floating)
-    .Width(120)
-    .ShowSpinButtons(true)     
-    .Value(0)                  
-    .Min(0)                    
-    .Step(1)                   
-)
-
-
-  @(Html.DevExtreme().NumberBox()
-    .ID("UnitRate")
-    .Label("Unit Rate:")
-    .LabelMode(EditorLabelMode.Floating)
-    .Format("#,##0.00")        
-    .Width(120)
-    .ShowSpinButtons(true)     
-    .Value(0)                  
-    .Step(0.10)                
-    .Min(0) )                   
- 
-
-
-
-@(Html.DevExtreme().DropDownBox()
-    .ID("Detlz")
-    .LabelMode(EditorLabelMode.Floating)
-    .Width(150)
-    .OnOpened("EquipmentDetails") 
-)
-
-
-
-
-
-
-
-
-    @* Final Add button *@
-    @(Html.DevExtreme().Button()
-        .ID("btnFinalAdd")
-        .Type(ButtonType.Success)
-        .Icon("plus")
-        .Text("Add")
-    )
-
-
-	
-
-</div>
-
-@(
-			Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry201VoucherEntryScreenDisplay>()
-			.ID("B2BdataGrid")
-			.RemoteOperations(false)
-
-			.Columns(columns =>
-			{
-				columns.AddFor(m => m.VoucherEntryNo)
-			.Caption(new JS("formatMessage('Voucher Entry No')"))
-			.Visible(false);
-
-				columns.Add().DataField("SNo").Caption("#").Width(200);
-
-				columns.Add().DataField("ItemCode")
-			.Caption(new JS("formatMessage('Item Code')"))
-			.Width(200)
-			.AllowEditing(false);
-				columns.Add()
-			.DataField("Description")
-			.Caption("Description")
-			.Width(500)
-			.AllowEditing(true)
-			//.EditorOptions(new { placeholder = "Enter item code" })
-			.CellTemplate(@<text>
-		<div style="display: flex; justify-content: space-between; align-items: center;">
-			<span>
-				<%- data.Gsdescrpition ? data.Gsdescrpition : "No Selection" %>
-			</span>
-			<div style="display: flex; gap: 5px;">
-				@(Html.DevExtreme().Button()
-				.ID($"AddDesc_<%- data.Gscode %>")
-				.Icon("plus")
-				.Hint("Add Description")
-				.Width(50)
-				)
-				@(Html.DevExtreme().Button()
-				.ID($"EditDesc_<%- data.Gscode %>")
-				.Icon("edit")
-				.Hint("Edit Description")
-				.Width(50)
-				)
-			</div>
-		</div>
-	</text>)
-		.EditCellTemplate(@<text>
-		<div style="display: flex; justify-content: space-between; align-items:end;">
-			@(Html.DevExtreme().DropDownBox()
-			.DataSource(d => d.WebApi()
-			.Controller("VATModule")
-			.LoadAction("GetGoodsAndServices")
-			.LoadMode(DataSourceLoadMode.Raw)
-			.Key("Gscode"))
-			.LabelMode(EditorLabelMode.Floating)
-			.ID("accountDropDownBoxEdit")
-			.ShowClearButton(false)
-			.AcceptCustomValue(true)
-			.OpenOnFieldClick(false)
-			.HoverStateEnabled(true)
-			.ValueExpr("Gscode")
-			.DisplayExpr("Gsdescrpition")
-			.OnOpened("onOpened")
-			.OnKeyDown("onKeyDown")
-			.Width(400)
-			.DropDownOptions(o => o.Width(800))
-			.ContentTemplate(new TemplateName("DescriptionDropdownContentTemplate"))
-			)
-			<div style="display: flex; gap: 5px;">
-				@(Html.DevExtreme().Button()
-				.ID($"AddDesc_Edit_<%- data.Gscode %>")
-				.Icon("plus")
-				.Hint("Add Description")
-				.Width(50)
-				)
-				@(Html.DevExtreme().Button()
-				.ID($"EditDesc_Edit_<%- data.Gscode %>")
-				.Icon("edit")
-				.Hint("Edit Description")
-				.Width(50)
-				)
-			</div>
-		</div>
-	</text>);
-				columns.Add().DataField("DescriptionDetails")
-			.Caption(new JS("formatMessage('Unit Rate Method')"))
-			.Width(200)
-			.AllowEditing(true)
-			.EditCellTemplate(@<text>
-		@(Html.DevExtreme().DropDownBox()
-		.ID("unitRateDropDownBoxEdit")
-		.DataSource(d => d.WebApi()
-		.Controller("VATModule")
-		.LoadAction("GetAccountGroups")
-		.LoadMode(DataSourceLoadMode.Raw)
-		.Key("UnitCode"))
-		.ValueExpr("UnitDesc")
-
-		.DisplayExpr("UnitDesc")
-		.Value(new JS("cellInfo.value"))
-		.LabelMode(EditorLabelMode.Floating)
-		.OpenOnFieldClick(true)
-		.ShowClearButton(true)
-		.Width(200)
-		.DropDownOptions(o => o.Width(800))
-		.ContentTemplate(new TemplateName("UnitRateMethodContentTemplate"))
-		)
-	</text>)
-		.CellTemplate(@<text>
-		<%- data.DescriptionDetailsText ? data.DescriptionDetailsText : "No Selection" %>
-	</text>);
-
-
-				columns.Add().DataField("Qty")
-	.Caption(new JS("formatMessage('Qty')"))
-	.Width(200);
-
-				columns.Add().DataField("UnitPrice")
-	.Caption(new JS("formatMessage('Unit Price')"))
-	.Width(200);
-
-				columns.Add().DataField("TotalBeforeDiscount")
-	.Caption(new JS("formatMessage('Total Before Discount')"))
-	.Width(200);
-
-				columns.Add().DataField("Discount")
-	.Caption(new JS("formatMessage('Discount')"))
-	.Width(200);
-
-				columns.Add().DataField("Amount")
-	.Caption(new JS("formatMessage('Amount')"))
-	.Width(200);
-
-				columns.Add().DataField("VATPercentage")
-	.Caption("VAT%")
-	.Width(150)
-	@* .CellTemplate(@<text>
-	<select class="form-select" style="width: 100%;" onchange="function(e){ var newVal = this.value; /* set value to datasource here */ }">
-	<option value="15%">15%</option>
-	<option value="5%">5%</option>
-	<option value="0%">0%</option>
-	</select>
-	</text>); *@
-	.EditCellTemplate(@<text>
-		<div style="display: flex; justify-content: space-between; align-items:end;">
-			@(Html.DevExtreme().DropDownBox()
-			.DataSource(d => d.WebApi()
-			.Controller("VATModule")
-			.LoadAction("GetVatTaxSlabs")
-			.LoadMode(DataSourceLoadMode.Raw)
-			.Key("TaxSlabCode"))
-			.LabelMode(EditorLabelMode.Floating)
-			.ID("TaxSlabDropDownBoxEdit")
-			.ShowClearButton(false)
-			.AcceptCustomValue(true)
-			.OpenOnFieldClick(false)
-			.HoverStateEnabled(true)
-			.ValueExpr("TaxSlabCode")
-			.DisplayExpr("TaxSlab")
-			.OnOpened("onOpened")
-			.OnKeyDown("onKeyDown")
-			.Width(400)
-			.DropDownOptions(o => o.Width(800))
-			.ContentTemplate(new TemplateName("TaxSlabDropdownContentTemplate"))
-			)
 
 
 <div class="input-row">
@@ -1575,7 +1302,7 @@
                                     .ShowBorders(true)
                                     @* .SearchPanel(sp => sp.HighlightSearchText(true)) *@
                                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
-                                    .OnSelectionChanged("dataGridSelectionChanged2")
+                                    .OnSelectionChanged("dataGridSelectionChangedMOR")
                                     .OnInitialized("dataGridInitialized2")
                                     .HeaderFilter(p => p.Visible(true))
                                     .ShowBorders(true)
@@ -1729,12 +1456,12 @@
 @using (Html.DevExtreme().NamedTemplate("GetQuotationStatusContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
-                        .ID("GetProject-datagrid")
+                        .ID("GetProjectQStatus-datagrid")
                         .DataSource(d => d.WebApi()
-							.Controller("AddNewQuotation1")
+						.Controller("AddNewQuotation")
                         .LoadAction("GetQuotationStatus")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("QuoteStatusId")
+                        .Key("QuoteStatus")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
@@ -1871,7 +1598,7 @@
                         .Controller("AddNewClientRequest1")
                         .LoadAction("GetSignatory")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("SignatoryId")
+                        .Key("SignatoryName")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
@@ -1905,7 +1632,7 @@
                         .Controller("AddNewClientRequest1")
                         .LoadAction("GetSignatory")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("SignatoryId")
+                        .Key("SignatoryName")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
@@ -1939,7 +1666,7 @@
                         .Controller("AddNewClientRequest1")
                         .LoadAction("GetSignatory")
                         .LoadMode(DataSourceLoadMode.Raw)
-                        .Key("SignatoryId")
+                        .Key("SignatoryName")
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
@@ -2075,6 +1802,20 @@ const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
 			}
 		}
 	}
+
+	function dataGridSelectionChanged5(e) {
+    const selectedKey = e.selectedRowKeys[0];
+    const ddbInstance = $("#ddGetQuoteStatus").dxDropDownBox("instance");
+
+    if (selectedKey) {
+        ddbInstance.option("value", selectedKey);
+        if (ddbInstance.option("opened")) {
+            ddbInstance.close();
+        }
+    }
+}
+
+
 	function dataGridInitialized1(e) {
 		dataGrid = e.component;
 	}
@@ -2089,6 +1830,18 @@ const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
 	function dataGridSelectionChanged2(e) {
 		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
 		const ddbInstance = $("#EquipmentQuotedFor").dxDropDownBox("instance");
+
+		if (selectedKey) {
+			ddbInstance.option("value", selectedKey);
+			if (ddbInstance.option("opened")) {
+				ddbInstance.close();
+			}
+		}
+	}
+
+	function dataGridSelectionChangedMOR(e) {
+		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+		const ddbInstance = $("#ddGetModeOfRequest").dxDropDownBox("instance");
 
 		if (selectedKey) {
 			ddbInstance.option("value", selectedKey);
@@ -2170,17 +1923,17 @@ function quoteMethodSelectionChanged(e) {
 	function dataGridInitialized4(e) {
 		dataGrid = e.component;
 	}
-	function dataGridSelectionChanged5(e) {
-		const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-		const ddbInstance = $("#ddGetSalesPerson").dxDropDownBox("instance");
+	// function dataGridSelectionChanged5(e) {
+	// 	const selectedKey = e.selectedRowKeys[0]; Get the first selected key, if any
+	// 	const ddbInstance = $("#ddGetSalesPerson").dxDropDownBox("instance");
 
-		if (selectedKey) {
-			ddbInstance.option("value", selectedKey);
-			if (ddbInstance.option("opened")) {
-				ddbInstance.close();
-			}
-		}
-	}
+	// 	if (selectedKey) {
+	// 		ddbInstance.option("value", selectedKey);
+	// 		if (ddbInstance.option("opened")) {
+	// 			ddbInstance.close();
+	// 		}
+	// 	}
+	// }
 	function dataGridInitialized5(e) {
 		dataGrid = e.component;
 	}
@@ -2308,12 +2061,13 @@ function quoteMethodSelectionChanged(e) {
 	//View e-Invoice
 
 	$(document).ready(function () {
+		debugger;
 
 		const urlParams = new URLSearchParams(window.location.search);
 		const QuoteNos = urlParams.get('QuoteNo');
 		const QuoteNo = QuoteNos ? QuoteNos.split("?")[0] : null;
 		
-		loadClientDetails(QuoteNo);
+		//loadClientDetails(QuoteNo);
 
 		if (QuoteNo) {
 			// If Mprno is present, load client details
@@ -2343,58 +2097,66 @@ function quoteMethodSelectionChanged(e) {
 
 
 	function loadClientDetails(QuoteNo) {
+		debugger;
+
+
 		$.ajax({
-			url: `/api/AddNewQuotation1/GetQuotationdataByCode?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-			type: 'GET',
-			dataType: 'json',
-			success: function (response) {
+              url: '/api/AddNewQuotation1/GetQuotationdataByCode?QuoteNo=' + encodeURIComponent(QuoteNo),
+              type: "GET",
+            success: function (response) {
 
 
+	
 				if (response) {
 					console.log("res", response);
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
 
-					$('#txtQuotationNo').dxTextBox("instance").option("value", response.QuoteNo);
+									  // --- Tab 1: Quotation Details ---
+					$("#txtQuotationNo").dxTextBox("instance").option("value", response.QuoteNo);
 					$("#txtRevisionNo").dxTextBox("instance").option("value", response.RevisionNo);
 					$("#QuotationDate").dxDateBox("instance").option("value", response.QuoteDate);
-					$('#GetProjectDropDown').dxDropDownBox("instance").option("value", response.ClientCode);
-					$('#ddGetSalesPerson').dxDropDownBox("instance").option("value", response.SalesPersonCode);
 
-					$('#MprNumber').dxTextBox("instance").option("value", response.MPRNo);
-					$('#ClientRefName').dxTextBox("instance").option("value", response.Attention);
-					$('#ClientEmail').dxTextBox("instance").option("value", response.ClientContactEmail);
-					$('#ClientContactNo').dxTextBox("instance").option("value", response.ClientContactNo);
-					$('#ddGetModeOfRequest').dxDropDownBox("instance").option("value", response.ModeOfRequest);
+					$("#GetProjectDropDown").dxDropDownBox("instance").option("value", response.ClientCode);
+					$("#ddGetSalesPerson").dxDropDownBox("instance").option("value", response.SalesPersonCode);
+					$("#MprNumber").dxTextBox("instance").option("value", response.ClientRefNo);
+					$("#ClientRefName").dxTextBox("instance").option("value", response.Attention);
+					$("#ClientEmail").dxTextBox("instance").option("value", response.ClientContactEmail);
+					$("#ClientContactNo").dxTextBox("instance").option("value", response.ClientContactNo);
+					$("#ddGetModeOfRequest").dxDropDownBox("instance").option("value", response.ModeOfRequest);
 					$("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value", response.TypeOfRequest);
-					$('#GetProjectDataDropDown').dxDropDownBox("instance").option("value", response.ProjectMasterCode);
-					$('#ClientProjectRef').dxTextBox("instance").option("value", response.Project);
-					$('#Subject').dxTextBox("instance").option("value", response.SubjectTitle);
+					$("#Project").dxTextBox("instance").option("value", response.Project);
+					$("#Jobsite").dxTextBox("instance").option("value", response.JobSite);
+					$("#TrnScope").dxTextBox("instance").option("value", response.TransportationScope);
+
+					// --- Tab 2: Subject Details ---
+					$("#Subject").dxTextBox("instance").option("value", response.SubjectTitle);
 					$("#QuoteSummary").dxTextArea("instance").option("value", response.QuotationSummary);
-					$('#QuoteIntro').dxTextBox("instance").option("value", response.QuoteIntro);
+					$("#QuoteIntro").dxTextBox("instance").option("value", response.QuoteIntro);
 					$("#QuoteThanks").dxTextArea("instance").option("value", response.QuoteThanksNote);
-					$("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
 
-
-					$("#ddGetInventoryGroup").dxDropDownBox("instance").option("value", response.InventoryMasterGroupId);
-					$("#ReferenceNo").dxTextBox("instance").option("value", response.ClientRefNo);
-					$("#SubmittedBy").dxTextBox("instance").option("value", response.QuoteSubmittedBy);
-
-					$("#SubmittedOn").dxDateBox("instance").option("value", response.QuoteSubmittedOn);
-					$("#BidClosingDate").dxDateBox("instance").option("value", response.BidClosingDate);
-
-					$("#ddGetQuoteStatus").dxDropDownBox("instance").option("value", response.QuoteStatus);
-
-					$("#txtTransportationScope").dxTextBox("instance").option("value", response.TransportationScope);
-
-					$('#txtAdditions').dxTextBox("instance").option("value", response.AdditionsText);
+					// --- Tab 3: Shipment & Discount ---
+		
+					$("#SubmittedBy").dxTextBox("instance").option("value", response.AddedBy);
+					$("#SubmittedOn").dxDateBox("instance").option("value", response.AddedOn);
+					$("#BidClosingDate").dxDateBox("instance").option("value", response.QuoteDueDate);
+					$("#ddGetQuoteStatus").dxDropDownBox("instance").option("value", response.QuoteStatusId);
 					$("#QuoteTransport").dxNumberBox("instance").option("value", response.QuoteTransport);
-					$("#txtDeductions").dxTextBox("instance").option("value", response.DiscountsText);
 					$("#QuoteDiscount").dxNumberBox("instance").option("value", response.QuoteDiscount);
+					$("#txtAdditions").dxTextBox("instance").option("value", response.AdditionsText);
+					$("#txtDeductions").dxTextBox("instance").option("value", response.DiscountsText);
 
-			        $("#ddPreparedby").dxDropDownBox("instance").option("value", response.QuoteSignatory);
+
+					// --- Tab 4: Branch / Division ---
+					$("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
+					$("#ReferenceNo").dxTextBox("instance").option("value", response.ReferenceNo);
+					$("#ddGetInventoryGroup").dxDropDownBox("instance").option("value", response.VatapplicableRate);
+
+					// --- Tab 5: Signatories ---
+					$("#ddPreparedby").dxDropDownBox("instance").option("value", response.PreparedBy);
 					$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.VerifiedSignatory);
 					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.ApprovedSignatory);
+					$("#ddGetQuoteStatus").dxDropDownBox("instance").option("value", response.QuoteType);
 
 
 
@@ -5433,8 +5195,7 @@ function onFinalAddClick(e) {
 	}
 
 
-
-
+//===============================================================
 	$("#btnSave").on("click", function (e) {
 		var clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
 		var clientnameValidation = clientnameValidator.validate();
@@ -5445,41 +5206,35 @@ function onFinalAddClick(e) {
 				QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
 				ClientCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
 				SalesPersonCode: $('#ddGetSalesPerson').dxDropDownBox("instance").option("value") || null,
-
-				MPRNo: $('#MprNumber').dxTextBox("instance").option("value") || null,
+				ClientRefNo: $('#MprNumber').dxTextBox("instance").option("value") || null,
 				Attention: $('#ClientRefName').dxTextBox("instance").option("value") || null,
 				ClientContactEmail: $('#ClientEmail').dxTextBox("instance").option("value") || null,
 				ClientContactNo: $('#ClientContactNo').dxTextBox("instance").option("value") || null,
 				ModeOfRequest: $('#ddGetModeOfRequest').dxDropDownBox("instance").option("value") || null,
 				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-				//ProjectMasterCode: $('#GetProjectDataDropDown').dxDropDownBox("instance").option("value") || null,
-				//Project: $('#ClientProjectRef').dxTextBox("instance").option("value") || null,
+				Project: $('#Project').dxTextBox("instance").option("value") || null,
+				JobSite: $('#Jobsite').dxTextBox("instance").option("value") || null,
+				TransportationScope: $("#TrnScope").dxTextBox("instance").option("value") || null,
 				SubjectTitle: $('#Subject').dxTextBox("instance").option("value") || null,
 				QuotationSummary: $("#QuoteSummary").dxTextArea("instance").option("value") || null,
 				QuoteIntro: $('#QuoteIntro').dxTextBox("instance").option("value") || null,
 				QuoteThanksNote: $("#QuoteThanks").dxTextArea("instance").option("value") || null,
-				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-
-
-				InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-				ClientRefNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-				QuoteSubmittedBy: $("#SubmittedBy").dxTextBox("instance").option("value") || null,
-
-				QuoteSubmittedOn: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
-				BidClosingDate: $("#BidClosingDate").dxDateBox("instance").option("value") || null,
-
-				QuoteStatus: $("#ddGetQuoteStatus").dxDropDownBox("instance").option("value") || null,
-
-				TransportationScope: $("#txtTransportationScope").dxTextBox("instance").option("value") || null,
-
+				AddedBy: $("#SubmittedBy").dxTextBox("instance").option("value") || null,
+				AddedOn: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
+				QuoteDueDate: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
+				QuoteType: $("#ddGetQuoteStatus").dxDropDownBox("instance").option("value") || null,
 				AdditionsText: $('#txtAdditions').dxTextBox("instance").option("value") || null,
 				QuoteTransport: $("#QuoteTransport").dxNumberBox("instance").option("value") || null,
 				DiscountsText: $("#txtDeductions").dxTextBox("instance").option("value") || null,
 				QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
-
-				QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+				ReferenceNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
+				VATApplicableRate: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+				PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null
+
+				
 			};
 
             let grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -5584,6 +5339,8 @@ function onFinalAddClick(e) {
 				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
 				ProjectMasterCode: $('#GetProjectDataDropDown').dxDropDownBox("instance").option("value") || null,
 				Project: $('#ClientProjectRef').dxTextBox("instance").option("value") || null,
+				JobSite: $('#Jobsite').dxTextBox("instance").option("value") || null,
+
 				SubjectTitle: $('#Subject').dxTextBox("instance").option("value") || null,
 				QuotationSummary: $("#QuoteSummary").dxTextArea("instance").option("value") || null,
 				QuoteIntro: $('#QuoteIntro').dxTextBox("instance").option("value") || null,
@@ -6759,4 +6516,59 @@ $(document).ready(function () {
         const title = "Property Type";
         openModal(url, title);
         }
+ $(function () {
+    $.ajax({
+        url: "/api/PurchaseOrders/GetReportAttributes?reportNo=EQP-QTN-01", // ✅ fixed missing quote
+        type: "GET",
+        success: function (data) {
+            console.log("Loaded:", data);
+
+            $("#Subject").dxTextBox("instance")?.option("value", data.ReportSubject || "");
+            $("#QuoteSummary").dxTextArea("instance")?.option("value", data.ReportSummary || "");
+            $("#QuoteIntro").dxTextBox("instance")?.option("value", data.ReportIntroduction || "");
+            $("#QuoteThanks").dxTextArea("instance")?.option("value", data.ReportThanksNote || "");
+        },
+        error: function (xhr, status, error) {
+            console.error("Error loading report data:", error);
+        }
+    });
+});
+function saveField(fieldName, dxId,name) {
+    let instance = null;
+
+    try {
+        instance = $("#" + dxId).dxTextBox("instance");
+    } catch (e) {
+        // Not a TextBox, try TextArea next
+    }
+
+    if (!instance) {
+        try {
+            instance = $("#" + dxId).dxTextArea("instance");
+        } catch (e) {
+            console.error(`Neither dxTextBox nor dxTextArea initialized for: ${dxId}`);
+            DevExpress.ui.dialog.alert("Component not initialized: " + dxId, "Error");
+            return;
+        }
+    }
+    const value = instance.option("value");
+
+    $.ajax({
+        url: "/api/Quotation/SaveReportAttribute",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            reportNo: "IMS-QTN-01",
+            field: fieldName,
+            value: value
+        }),
+        success: function () {
+            DevExpress.ui.notify(`Quotation ${name} has been set as default.`, "success", 2000);
+        },
+        error: function (xhr) {
+            DevExpress.ui.dialog.alert("Failed to save data", "Error");
+            console.error("Save error:", xhr.responseText);
+        }
+    });
+}
 </script>
