@@ -2547,7 +2547,7 @@ function checkDateLocking() {
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
 				},
 				width: 60,
 				height: 30
@@ -2565,7 +2565,7 @@ function checkDateLocking() {
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "", function () {
+					openModal(url, "Goods and Services", function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -3253,7 +3253,7 @@ placeholder: "Search..."
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/VATGoodsandService`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
 				},
 				width: 60,
 				height: 30
@@ -3264,7 +3264,7 @@ placeholder: "Search..."
 				hint: "Edit item",
 				onClick: function () {
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-					openModal(url, "");
+					openModal(url, "Goods and Services");
 				},
 				width: 60,
 				height: 30
