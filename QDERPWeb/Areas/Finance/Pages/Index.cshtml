@@ -81,12 +81,9 @@
     }
 
     @@keyframes spin {
-        to
-
-    {
-        transform: rotate(360deg);
-    }
-
+        to {
+            transform: rotate(360deg);
+        }
     }
 </style>
 
@@ -101,9 +98,10 @@
 
     <!-- Modern Dashboard Header -->
     <div class="dashboard-header">
-        <span class="user-name">Hey @Model.UserName</span> - <span class="subtext" id="heres"></span>
+        <span class="user-name">Hey @Model.UserName</span> -
+        <span class="subtext" id="dashboardSubtext">here’s what’s happening till this date</span>
         <label class="live-data-checkbox">
-            <input type="checkbox" id="getLiveData"> 
+            <input type="checkbox" id="getLiveData"> <span id="getLiveDataLabel">Get live data</span>
         </label>
     </div>
 
@@ -111,7 +109,7 @@
     <div class="summary-cards-row">
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label" id="totalclient"></span>
+                <span class="summary-label" id="dashboardTotalClientOutstanding">TOTAL CLIENT OUTSTANDING</span>
                 <span id="clientOutstandingTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="totalClientOutstandingValue">0</div>
@@ -119,7 +117,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label" id="totalsupplier"></span>
+                <span class="summary-label" id="dashboardTotalSupplierOutstanding">TOTAL SUPPLIER OUTSTANDING</span>
                 <span id="supplierOutstandingTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="totalSupplierOutstandingValue">0</div>
@@ -127,7 +125,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label" id="totalbank"></span>
+                <span class="summary-label" id="dashboardTotalBankBalance">TOTAL BANK BALANCE</span>
                 <span id="bankBalanceTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="totalBankBalanceValue">0</div>
@@ -135,7 +133,7 @@
         </div>
         <div class="summary-card">
             <div class="summary-card-header">
-                <span class="summary-label" id="cashbank"></span>
+                <span class="summary-label" id="dashboardCashBankBalance">CASH & BANK BALANCE</span>
                 <span id="cashBalanceTrend" class="summary-trend-pill"></span>
             </div>
             <div class="summary-value" id="cashBalanceValue">0</div>
@@ -147,21 +145,21 @@
     <div class="outstanding-summary-section">
         <div class="outstanding-summary-left">
             <div class="section-header">
-                <span class="section-title" id="outstandingsummary"></span>
+                <span class="section-title" id="dashboardOutstandingSummary">Outstanding Summary</span>
             </div>
             <div class="tabs">
-                <div class="tab dashboard-tab active" id="tabClientOutstanding"></div>
-                <div class="tab dashboard-tab" id="tabSupplierOutstanding"></div>
-                <div class="tab dashboard-tab" id="tabCashBalance"></div>
+                <div class="tab dashboard-tab active" id="tabClientOutstanding">Client Outstanding</div>
+                <div class="tab dashboard-tab" id="tabSupplierOutstanding">Supplier Outstanding</div>
+                <div class="tab dashboard-tab" id="tabCashBalance">Net Amount Summary</div>
             </div>
             <div class="tab-content active" id="tab-client">
                 <table class="summary-table">
                     <thead>
                         <tr>
-                            <th id="accountheadsdash"></th>
-                            <th id="balanceamountdash"></th>
-                            <th id="totaldashboa"></th>
-                            <th id="accountheadnodash"></th>
+                            <th id="accountheadsdash">Account Head</th>
+                            <th id="balanceamountdash">Balance Amount</th>
+                            <th id="totaldashboa">% of Total</th>
+                            <th id="accountheadnodash">Account Head No</th>
                         </tr>
                     </thead>
                     <tbody id="topOutstandingTableBody"></tbody>
@@ -171,40 +169,31 @@
 
         <div class="outstanding-summary-right">
             <div class="section-header">
-                <span class="section-title" id="cashvsbankdash"></span>
+                <span class="section-title" id="dashboardCashVsBank">Cash vs Bank</span>
             </div>
             <canvas id="outstandingDonutChart" width="320" height="150"></canvas>
             <div class="donut-legend">
-                <span class="legend-item cash" id="cashinhanddash"></span>
-                <span class="legend-item bank" id="banlbalancesdashboard"></span>
+                <span class="legend-item cash" id="legendCash">Cash IN Hand</span>
+                <span class="legend-item bank" id="legendBank">Bank Balance</span>
             </div>
         </div>
     </div>
-</div>
 
-<div class="revenue-reporting-section">
-    <div class="section-header">
-        <span class="section-title" id="revenuereportingdash"></span>
+    <div class="revenue-reporting-section">
+        <div class="section-header">
+            <span class="section-title" id="dashboardRevenueReporting">Revenue Reporting</span>
+        </div>
+        <div id="revenueReportingChart" style="height:400px;"></div>
     </div>
-    <div id="revenueReportingChart" style="height:400px;"></div>
-</div>
 
-<div class="summary-card">
-    <div class="summary-card-header">
-        <span class="summary-label" id="dashboardtotalsales"></span>
-        <span id="salesTrend" class="summary-trend-pill"></span>
+    <div class="summary-card">
+        <div class="summary-card-header">
+            <span class="summary-label" id="dashboardTotalSales">TOTAL SALES</span>
+            <span id="salesTrend" class="summary-trend-pill"></span>
+        </div>
+        <div class="summary-value" id="totalSalesValue">0</div>
     </div>
-    <div class="summary-value" id="totalSalesValue">0</div>
-</div>
 
-<!-- Global Loader Overlay -->
-<div id="globalLoader" aria-hidden="true" aria-busy="true">
-    <div class="gl-backdrop"></div>
-    <div class="gl-container">
-        <div class="gl-spinner"></div>
-        <div class="gl-text">Loading…</div>
-    </div>
-</div>
 
 <!-- Chart.js -->
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -225,7 +214,7 @@
         };
         window.requestAnimationFrame(step);
     }
-     
+
     $(document).ready(function () {
         let cashVal = 0, bankVal = 0, clientTotalOutstanding = 0, supplierTotalOutstanding = 0;
 
@@ -378,13 +367,6 @@
         }
 
         /* Tab click handler */
-            $(function () {
-        // Set tab texts with localization
-        $("#tabClientOutstanding").text(formatMessage("Client Outstanding"));
-        $("#tabSupplierOutstanding").text(formatMessage("Supplier Outstanding"));
-        $("#tabCashBalance").text(formatMessage("Net Amount Summary"));
-
-        // Handle tab clicks
         $(".dashboard-tab").click(function () {
             $(".dashboard-tab").removeClass("active");
             $(this).addClass("active");
@@ -398,7 +380,6 @@
             }
         });
     });
-
 
         /* ===== Global Loader ===== */
     (function () {
@@ -460,50 +441,27 @@
             }
         }
     });
-    $(function () {
-            $("#heres").text(formatMessage("here’s what’s happening till this date"));
-        });
-    $(function () {
-            $("#getLiveData").text(formatMessage("Get live data"));
-        });
-    $(function () {
-            $("#totalbank").text(formatMessage("TOTAL BANK BALANCE"));
-        });
-    $(function () {
-            $("#totalsupplier").text(formatMessage("TOTAL SUPPLIER OUTSTANDING"));
-        });
-    $(function () {
-            $("#totalclient").text(formatMessage("TOTAL CLIENT OUTSTANDING"));
-        });
-    $(function () {
-            $("#cashbank").text(formatMessage("CASH & BANK BALANCE"));
-        });
-    $(function () {
-            $("#outstandingsummary").text(formatMessage("Outstanding Summary"));
-        });
-    $(function () {
+            $(function () {
+            $("#dashboardTotalClientOutstanding").text(formatMessage("TOTAL CLIENT OUTSTANDING"));
+            $("#dashboardTotalSupplierOutstanding").text(formatMessage("TOTAL SUPPLIER OUTSTANDING"));
+            $("#dashboardTotalBankBalance").text(formatMessage("TOTAL BANK BALANCE"));
+            $("#dashboardCashBankBalance").text(formatMessage("CASH & BANK BALANCE"));
+            $("#dashboardOutstandingSummary").text(formatMessage("Outstanding Summary"));
+            $("#tabClientOutstanding").text(formatMessage("Client Outstanding"));
+            $("#tabSupplierOutstanding").text(formatMessage("Supplier Outstanding"));
+            $("#tabCashBalance").text(formatMessage("Net Amount Summary"));
             $("#accountheadsdash").text(formatMessage("Account Head"));
-        });
-    $(function () {
             $("#balanceamountdash").text(formatMessage("Balance Amount"));
-        });
-    $(function () {
+            $("#totaldashboa").text(formatMessage("% of Total"));
             $("#accountheadnodash").text(formatMessage("Account Head No"));
+            $("#dashboardCashVsBank").text(formatMessage("Cash vs Bank"));
+            $("#legendCash").text(formatMessage("Cash IN Hand"));
+            $("#legendBank").text(formatMessage("Bank Balance"));
+            $("#dashboardRevenueReporting").text(formatMessage("Revenue Reporting"));
+            $("#dashboardTotalSales").text(formatMessage("TOTAL SALES"));
+            $("#dashboardSubtext").text(formatMessage("here’s what’s happening till this date"));
+            $("#getLiveDataLabel").text(formatMessage("Get live data"));
         });
-    $(function () {
-            $("#cashvsbankdash").text(formatMessage("Cash vs Bank"));
-        });
-    $(function () {
-            $("#cashinhanddash").text(formatMessage("Cash IN Hand"));
-        });
-    $(function () {
-            $("#banlbalancesdashboard").text(formatMessage("Bank Balance"));
-        });
-    $(function () {
-            $("#revenuereportingdash").text(formatMessage("Revenue Reporting"));
-        });
-    $(function () {
-            $("#dashboardtotalsales").text(formatMessage("TOTAL SALES"));
-        });
+
 </script>
 
