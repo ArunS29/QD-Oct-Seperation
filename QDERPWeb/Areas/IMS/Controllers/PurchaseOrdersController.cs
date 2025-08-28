@@ -352,33 +352,32 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return BadRequest("Unable to resolve tenant or database context.");
         }
+        
         [HttpGet]
-        public async Task<IActionResult> GetTypeOfRequests()
+        public async Task<IActionResult> GetTypeOfRequests(DataSourceLoadOptions loadOptions)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
                 try
                 {
-                    var requestTypes = await dbContext.Tbl60601purchaseRequestMasters // Replace with your actual DbSet name
-                        .Select(x => new
-                        {
-                            TypeOfRequestID = x.Mprno,
-                            TypeOfRequest = x.TypeOfRequest
-                        })
-                        .ToListAsync();
+                    var ClientCategory = dbContext.Tbl30104TypeOfRequestMasters.Select(i => new
+                    {
+                        i.TypeOfRequestId,
+                        i.TypeOfRequest
 
-                    return Json(requestTypes);
+                    });
+
+                    return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error loading Type of Requests: {ex.Message}");
-                    return StatusCode(500, "Failed to load Type of Requests");
+                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
                 }
             }
 
-            return BadRequest("Unable to resolve tenant or database context.");
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-
         [HttpGet]
         public async Task<IActionResult> GetPOCategories()
         {

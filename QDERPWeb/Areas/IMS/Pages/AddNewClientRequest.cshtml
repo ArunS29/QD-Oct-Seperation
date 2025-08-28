@@ -2971,7 +2971,7 @@ if (gridInstance) {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+		
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -3720,7 +3720,7 @@ if (gridInstance) {
 			caption: formatMessage('Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+			
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
@@ -4284,7 +4284,7 @@ $("#btnAddNew").on("click", function (e) {
 		const newRow = {
 			LineOrderNo: nextLineOrderNo,
 			//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
-			QuoteGroupItemSlNo:null,
+		QuoteGroupItemSlNo:null,
 			GSCode: null,
 			Description:null,
 			UnitRateMethod:null,
@@ -4401,20 +4401,20 @@ $("#btnAddNew").on("click", function (e) {
 					}));
 				});
 			}
-		function getUnitRateMethods2() {
-			return $.ajax({
-				url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
-				method: "GET",
-				dataType: "json"
-			}).then(function (response) {
-				console.log("Unit Rate Data", response);
-				return response.map(item => ({
-					GroupCode: item.GroupCode,
-					GroupName: item.GroupName,
-					QuoteGroupItemSlNo:item.QuoteGroupItemSlNo
-				}));
-			});
-		}
+		// function getUnitRateMethods2() {
+		// 	return $.ajax({
+		// 		url: "/api/addNewQuotationItemSubGroup/GetSubGroup", // This should match your actual backend endpoint
+		// 		method: "GET",
+		// 		dataType: "json"
+		// 	}).then(function (response) {
+		// 		console.log("Unit Rate Data", response);
+		// 		return response.map(item => ({
+		// 			GroupCode: item.GroupCode,
+		// 			GroupName: item.GroupName,
+		// 			QuoteGroupItemSlNo:item.QuoteGroupItemSlNo
+		// 		}));
+		// 	});
+		// }
 	function getUnitRateMethods1(mprNo) {
     return $.ajax({
         url: "/api/addNewQuotationItemSubGroup/GetSubGroup",

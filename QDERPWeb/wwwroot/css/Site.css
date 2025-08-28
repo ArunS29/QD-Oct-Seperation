@@ -223,6 +223,7 @@ body {
     font-weight: bold;
     font-size: 20px !important;
     color: white;
+    width: 340px;
     pointer-events: none; /* Prevents hover and click effects */
 }
 
