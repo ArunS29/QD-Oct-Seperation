@@ -448,6 +448,22 @@
 		cursor: pointer;
 	}
 
+	.dx-datagrid .dx-data-row td[aria-colindex="3"] {
+		text-align: center !important;
+	}
+
+	.header-wrap {
+		white-space: normal !important; /* Enable word wrap */
+		text-align: center !important; /* Center align text */
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-weight: bold;
+	}
+
+	.dx-datagrid-headers .dx-datagrid-table .dx-row > td {
+		text-align: center !important;
+	}
 </style>
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -467,13 +483,13 @@
 </div>
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
-		<i class="dx-icon-plus"></i> Add Line Item
+		<i class="dx-icon-plus" id="addlineitemproforma"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="delete">
-		<i class="dx-icon-close"></i> Delete Line Item
+		<i class="dx-icon-close" id="deletelineitemproforma"></i>
 	</div>
 	<div class="context-menu-itemInvoice" data-action="deleteAll">
-		<i class="dx-icon-trash"></i> Delete All Line Items
+		<i class="dx-icon-trash" id="deletealllineitemsproforma"></i>
 	</div>
 </div>
 
@@ -571,7 +587,7 @@
 																.ID("ledgerAccountPopup")
 																.Width("80%")
 																.Height("85%")
-																.Title("Add Ledger Account")
+																.Title(new JS("formatMessage('Add Ledger Account')"))
 																.ShowTitle(true)
 																.CloseOnOutsideClick(true)
 																.Visible(false)
@@ -3101,7 +3117,7 @@
 		}
 	function navigateToLedgerAccountForm() {
 		const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-		const title = "Add Signatory";
+		const title = formatMessage("Add Signatory");
 		openModal(url, title, function () {
 			["ddlGoodsGroup9", "ddlGoodsGroup10", "ddlGoodsGroup11"].forEach(id => {
 				const dropDown = $("#" + id).dxDropDownBox("instance");
@@ -3987,15 +4003,15 @@
 						placeholder: "Search..."
 					},
 					selection: { mode: "single" },
-					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
-					],
+						columns: [
+		{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+		{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+		{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+		{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+		{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+		{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+		{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
+	],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
 						if (!selectedItem) return;
@@ -4038,7 +4054,7 @@
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+				openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4052,7 +4068,7 @@
 				const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 
 				//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-				openModal(url, "Goods and Services");
+				openModal(url, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4261,7 +4277,7 @@
 
 					// Open modal
 					let url = `/${tenantName}/VAT/ProformaDetailDescription`;
-					let title = "VAT Details Description";
+					let title = formatMessage("VAT Details Description");
 					openModal(url, title,"70%","70%");
 				}
 			}).appendTo(container);
@@ -4326,16 +4342,11 @@
 										scrolling: { mode: "virtual" },
 
 										columns: [
-
-											{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-											{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-											{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-											{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
-
-										],
+    { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+    { dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+    { dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+    { dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
+],
 
 										onSelectionChanged: function (selectedItems) {
 
@@ -4381,7 +4392,7 @@
 								onClick: function () {
 
 										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-	 let title = "Unit of Measure";
+	 let title = formatMessage("Unit of Measure");
 	openModal(url, title);
 
 								},
@@ -4493,8 +4504,8 @@
 										height: 300,
 										scrolling: { mode: "virtual" },
 										columns: [
-											{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-											{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+											{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+											{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 										],
 										onSelectionChanged: function (selectedItems) {
 											let selectedItem = selectedItems.selectedRowsData[0];
@@ -8533,9 +8544,10 @@
 		// 	// Correct URL to your LedgerAccount view
 		// 		$("#ledgerAccountFrame").attr("src", `/${tenantName}/Finance/LedgerAccount?IsB2CEdit=${encodeURIComponent(IsB2CEdit)}`);
 		// }
+		
 			function onEditCurrencyClick() {
-		const url = `/${tenantName}/VAT/EditCurrency`; // Replace with your actual route
-		const title = "Edit Currency";
+		const url = `/${tenantName}/VAT/DatabaseMasterModule`; // Replace with your actual route
+		const title = formatMessage("Edit Currency");
 		openModal(url, title, function () {
 			const ddl = $("#ddlGoodsGroup4").dxDropDownBox("instance");
 			if (ddl) {
@@ -8544,8 +8556,8 @@
 		});
 	}
 		function onAddSalesPersonClick() {
-		const url = `/${tenantName}/VAT/AddSalesPerson`; // update to your actual route
-		const title = "Add Sales Person";
+		const url = `/${tenantName}/VAT/SalesPersonMaster`; // update to your actual route
+		const title = formatMessage("Add Sales Person");
 		openModal(url, title, function () {
 			const dropdown = $("#ddlSalesPerson").dxDropDownBox("instance");
 			if (dropdown) {
@@ -8845,7 +8857,7 @@
 		const url = `/${tenantName}/Finance/LedgerAccount?IsClientAdd=true`;
 
 		const popup = $("#ledgerAccountPopup").dxPopup("instance");
-		  popup.option("title", "Add Ledger Account");
+		 
 		popup.show();
 
 		setTimeout(() => {
@@ -9012,6 +9024,14 @@
 		updateAttachButtonCount("#btnAttach", count);
 	}
 
-
+	 $(function () {
+		   $("#deletealllineitemsproforma").text(formatMessage("Delete All Line Items"));
+	   });
+	 $(function () {
+		   $("#deletelineitemproforma").text(formatMessage("Delete Line Item"));
+	   });
+	 $(function () {
+		   $("#addlineitemproforma").text(formatMessage("Add Line Item"));
+	   });
 </script>
 

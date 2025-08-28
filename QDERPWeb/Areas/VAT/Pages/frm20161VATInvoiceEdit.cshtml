@@ -611,13 +611,13 @@
 
 <div class="context-menuInvoice" id="contextMenu" style="display:none; position:absolute; z-index:9999;">
 	<div class="context-menu-itemInvoice" data-action="add">
-		<i class="dx-icon-plus"></i> Add Line Item
+		<i class="dx-icon-plus" id="b2baddlineitem"></i> 
 	</div>
 	<div class="context-menu-itemInvoice" data-action="delete">
-		<i class="dx-icon-close"></i> Delete Line Item
+		<i class="dx-icon-close" id="b2bdeletelineitem"></i> 
 	</div>
 	<div class="context-menu-itemInvoice" data-action="deleteAll">
-		<i class="dx-icon-trash"></i> Delete All Line Items
+		<i class="dx-icon-trash" id="b2bdeletealllineitem"></i> 
 	</div>
 </div>
 
@@ -9966,7 +9966,15 @@ $("#ClientGRNReference").dxTextBox("instance").option("value", data.Attention ||
 				dateBox.option("displayFormat", "dd-MMM-yyyy");
 			});
 		});
-
+		 $(function () {
+		   $("#b2bdeletealllineitem").text(formatMessage("Delete All Line Items"));
+	   });
+	 $(function () {
+		   $("#b2bdeletelineitem").text(formatMessage("Delete Line Item"));
+	   });
+	 $(function () {
+		   $("#b2baddlineitem").text(formatMessage("Add Line Item"));
+	   });
 
 				function btnPostToLedgerdisableEditing() {
 				// Disable all input fields and buttons except for specific ones

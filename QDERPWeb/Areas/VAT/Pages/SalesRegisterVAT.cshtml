@@ -373,23 +373,23 @@
 
 <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice" onclick="viewInvoice()">
-		<i class="dx-icon-search"></i> View e-Invoice
+		<i class="dx-icon-search" id="salesregisterview"></i>
 	</div>
 
 	<div class="context-menu-itemInvoice" onclick="cancelInvoice()">
-		<i class="dx-icon-close"></i> Cancel/Amend this Invoice (Invoice Credit Note)
+		<i class="dx-icon-close" id="salesregistercancel"></i>
 	</div>
 	<div class="context-menu-itemInvoice has-submenu">
-		<i class="dx-icon-file"></i> VAT Invoices (Obselete)
+		<i class="dx-icon-file" id="salesregistervatobselete"></i>
 		<div class="submenu">
 			<div class="context-menu-itemInvoice" onclick="checkIfOldVATInvoice('INV001')">
-				<i class="dx-icon-file"></i> View VAT Invoice
+				<i class="dx-icon-file" id="salesregisterviewvatss"></i> 
 			</div>
 		</div>
 	</div>
 
 	<div class="context-menu-itemInvoice" onclick="cloneEInvoice()">
-		<i class="dx-icon-copy"></i> Clone e-Invoice
+		<i class="dx-icon-copy" id="clonesalesregister"></i>
 	</div>
 </div>
 
@@ -2520,5 +2520,20 @@
 			maximumFractionDigits: currencyDecimals
 		});
 	}
+	 $(function () {
+		   $("#salesregisterviewvatss").text(formatMessage("View VAT Invoice"));
+	   });
+	 $(function () {
+		   $("#salesregistervatobselete").text(formatMessage("VAT Invoices (Obselete)"));
+	   });
+	 $(function () {
+		   $("#salesregistercancel").text(formatMessage("Cancel/Amend this Invoice (Invoice Credit Note)"));
+	   });
+	 $(function () {
+		   $("#salesregisterview").text(formatMessage("View e-Invoice"));
+	   });
+	 $(function () {
+		   $("#clonesalesregister").text(formatMessage("Clone e-Invoice"));
+	   });
 </script>
 

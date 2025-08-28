@@ -1395,6 +1395,7 @@ var dictionary = {
         "SalesGroup": "SalesGroup",
         "Accounting Ledger Groups": "Accounting Ledger Groups",
         "Ledger Sub Group Master": "Ledger Sub Group Master",
+        "Hey":"Hey",
         "Accounting Ledger Groups":"Accounting Ledger Groups",
         "Ledger To SubLedger Mapping": "Ledger To SubLedger Mapping",
         "Enter New Sub Group & Add to the Existing List": "Enter New Sub Group & Add to the Existing List",
