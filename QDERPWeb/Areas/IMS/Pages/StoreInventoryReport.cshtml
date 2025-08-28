@@ -249,6 +249,14 @@
 		.Title(new JS("formatMessage('Show/Hide Column')"))
 		.Mode(GridColumnChooserMode.DragAndDrop)
 		)
+		.Paging(p => p.PageSize(10))  
+		.Pager(pager =>
+		{
+			pager.ShowPageSizeSelector(true);
+			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+			pager.ShowNavigationButtons(true);
+			pager.Visible(true);
+		})
 		.ShowBorders(true)
 		.ShowColumnLines(true)
 		.ShowRowLines(true)
