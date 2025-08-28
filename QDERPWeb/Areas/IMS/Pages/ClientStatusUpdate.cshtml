@@ -333,7 +333,7 @@
         const clientStatusNo = (urlParams.get("clientStatusNo") || "").split(/[?&]/)[0];
         const clientCodes = (urlParams.get("clientCode") || "").split(/[?&]/)[0];
                $("#GetClientDropDown").dxDropDownBox("instance").option("value", clientCodes);
-        getReportedBy();
+    
            if (clientStatusNo) {
               bindClientStatusById(clientStatusNo);
               $("#btnSave").dxButton("instance").option("text", "Update");
@@ -342,13 +342,11 @@
     if (statusBox) {
         statusBox.option("value", clientStatusNo || clientStatusNo);
     }
-       
-
-
-       
-
-
+  
     });
+       $(document).ready(function () {
+                 getReportedBy();
+                 });
     function bindClientStatusById(clientStatusNo) {
      
         $.ajax({
