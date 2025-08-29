@@ -245,7 +245,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(210)
                     .Items(item =>
                     {
                         item.Add()
@@ -1280,7 +1280,7 @@
     }
     function redirecttosalespersonmaster(){
         const url = `/${tenantName}/VAT/SalesPersonMaster`;
-        const title = "";
+        const title = "Sales Person Master";
             openModal(url, title);
     }
     function redirecttoClientLeadmaster1(){

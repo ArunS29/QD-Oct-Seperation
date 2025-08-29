@@ -257,7 +257,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(210)
                     .Items(item =>
                     {
                         item.Add()
@@ -1301,7 +1301,7 @@
     }
     function AddModeReq(){
         const url = `/${tenantName}/IMS/StoreEdit`;
-        const title = "";
+        const title = "Store Edit";
         openModal(url, title);
     }
     function dataGridInitialized2(e) {
@@ -1327,17 +1327,17 @@
     }
     function AddQuoteStatus(){
         const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-        const title = "";
+        const title = "Purchase Order Categories";
             openModal(url, title);
     }
     function redirecttosalespersonmaster(){
         const url = `/${tenantName}/VAT/SalesPersonMaster`;
-        const title = "";
+        const title = "Sales Person Master";
             openModal(url, title);
     }
     function redirecttoClientLeadmaster(){
         const url = `/${tenantName}/IMS/ClientLeadMaster`;
-        const title = "";
+        const title = "Client Master";
             openModal(url, title);
     }
     function dataGridSelectionChanged3(e) {
