@@ -308,7 +308,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 app.UseSerilogRequestLogging();
 app.UseMiddleware<ExceptionHandler>();
-
+app.UseSession();
 // Initialize EmailHelper with the correct configuration
 QD.ERP.Web.Areas.Utility.EmailHelper.Initialize(app.Configuration);
 
