@@ -42,9 +42,35 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             // ✅ Hook BeforePrint event here
             xrSubreport1.BeforePrint += xrSubreport1_BeforePrint;
 
+            xrSubreport2.BeforePrint += xrSubreport2_BeforePrint;
 
         }
 
+        private void xrSubreport2_BeforePrint(object sender, EventArgs e)
+        {
+            string drCr = GetCurrentColumnValue("DrCr")?.ToString(); // assuming main table has a DrCr column
+            string voucherNo = GetCurrentColumnValue("VoucherNo")?.ToString();
+
+            if (string.IsNullOrWhiteSpace(drCr) || string.IsNullOrWhiteSpace(voucherNo))
+            {
+                xrSubreport2.Visible = false;
+                return;
+            }
+
+            if (_drCrWithCostAllocations.Contains(drCr) &&
+                _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
+            {
+                var subReport = new rpt201empReport(); // create another subreport for Dr/Cr based logic
+                subReport.LoadData(voucherNo, drCr, tenant.ConnectionString);
+
+                xrSubreport2.ReportSource = subReport;
+                xrSubreport2.Visible = true;
+            }
+            else
+            {
+                xrSubreport2.Visible = false;
+            }
+        }
 
 
         private void xrSubreport1_BeforePrint(object sender, EventArgs e)
@@ -74,6 +100,7 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             }
         }
 
+        private HashSet<string> _drCrWithCostAllocations = new HashSet<string>();
 
 
         private HashSet<string> _accountHeadsWithCostAllocations = new HashSet<string>();
