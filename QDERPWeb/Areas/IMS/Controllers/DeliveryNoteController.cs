@@ -496,7 +496,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
-       
+
         public class DeliveryNoteItemsRequest
         {
             public string DeliveryNoteNo { get; set; }
@@ -508,7 +508,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
         public class DeliveryNoteItemDto
         {
-            public int SNo { get; set; }
+            public long? DeliveryNoteSlNo { get; set; }   // Nullable for new rows
             public string ItemCode { get; set; }
             public string StockDescription { get; set; }
             public byte? UnitRateMethod { get; set; }
@@ -520,91 +520,92 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             public string EmployeeNo { get; set; }
             public string DeliveryRemarks { get; set; }
             public string PropertyNo { get; set; }
+            public string Gscode { get; set; }
+            public decimal? IssuedQuoteUnitPrice { get; set; }
+            public decimal? IssuedUnitPrice { get; set; }
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateDeliveryNoteItems([FromBody] DeliveryNoteItemsRequest request)
         {
             try
             {
-                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out var dbContext))
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+
+                var deliveryNoteNo = request.DeliveryNoteNo;
+                var items = request.Items ?? new List<DeliveryNoteItemDto>();
+
+                // Load existing items for this delivery note
+                var existingItems = await dbContext.Tbl60302deliveryNoteChildren
+                    .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
+                    .ToListAsync();
+
+                // Track incoming IDs
+                var incomingIds = items
+                    .Where(x => x.DeliveryNoteSlNo.HasValue)
+                    .Select(x => x.DeliveryNoteSlNo.Value)
+                    .ToList();
+
+                // Delete missing rows
+                var toDelete = existingItems
+                    .Where(x => !incomingIds.Contains(x.DeliveryNoteSlNo))
+                    .ToList();
+
+                if (toDelete.Any())
+                    dbContext.Tbl60302deliveryNoteChildren.RemoveRange(toDelete);
+
+                // Insert / Update loop
+                foreach (var dto in items)
                 {
-                    var deliveryNoteNo = request.DeliveryNoteNo;
-                    var items = request.Items;
-
-                    // Get existing records for DeliveryNoteNo
-                    var existingItems = await dbContext.Tbl60302deliveryNoteChildren
-                        .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
-                        .ToListAsync();
-                    var currencyRate = await dbContext.Tbl60301deliveryNoteMasters
-                            .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
-                            .Select(x => x.CurrencyRate)
-                            .FirstOrDefaultAsync();
-                    // Find max DeliveryNoteSlNo across all records (or filter by DeliveryNoteNo if preferred)
-                    long maxSlNo = existingItems.Any() ? existingItems.Max(x => x.DeliveryNoteSlNo) : 0;
-
-                    foreach (var item in items)
+                    if (dto.DeliveryNoteSlNo.HasValue)
                     {
-                        Tbl60302deliveryNoteChild entity = null;
-
-                        if (item.SNo != 0)
-                        {
-                            // Update existing
-                            entity = existingItems.FirstOrDefault(x => x.DeliveryNoteSlNo == item.SNo);
-                        }
-
+                        // Update
+                        var entity = existingItems.FirstOrDefault(x => x.DeliveryNoteSlNo == dto.DeliveryNoteSlNo.Value);
                         if (entity != null)
                         {
-                            // Update existing record
-                            entity.Gscode = item.ItemCode;
-                            entity.UnitRateMethod = item.UnitRateMethod;
-                            entity.IssuedQty = item.Qty;
-                            entity.IssuedUnitPrice = item.UnitCostPrice * currencyRate;
-                            entity.EmployeeNo = item.EmployeeNo;
-                            entity.PropertyNo = item.PropertyNo;
-                            entity.AddlDescription = item.AddlDescription;
-                            entity.DeliveryRemarks = item.DeliveryRemarks;
-                            //entity.EmployeeNo = item.EmployeeNo;
-                            //entity.PropertyNo = item.PropertyNo;
-
-
-
-                        }
-                        else
-                        {
-
-
-                            entity = new Tbl60302deliveryNoteChild
-                            {
-                                DeliveryNoteNo = deliveryNoteNo,
-                                Gscode = item.ItemCode,
-                                UnitRateMethod = item.UnitRateMethod,
-                                IssuedQty = item.Qty,
-                                IssuedUnitPrice = item.UnitCostPrice * currencyRate,
-                                EmployeeNo = item.EmployeeNo,
-                                PropertyNo = item.PropertyNo,
-                                AddlDescription = item.AddlDescription,
-                                DeliveryRemarks = item.DeliveryRemarks,
-                               
-                          
-
-                            };
-
-                            dbContext.Tbl60302deliveryNoteChildren.Add(entity);
+                            entity.Gscode = dto.Gscode;
+                            entity.UnitRateMethod = dto.UnitRateMethod;
+                            entity.IssuedQty = dto.Qty;
+                            entity.IssuedUnitPrice = dto.IssuedUnitPrice;
+                            entity.IssuedQuoteUnitPrice = dto.IssuedQuoteUnitPrice;
+                            entity.EmployeeNo = dto.EmployeeNo;
+                            entity.PropertyNo = dto.PropertyNo;
+                            entity.AddlDescription = dto.AddlDescription;
+                            entity.DeliveryRemarks = dto.DeliveryRemarks;
                         }
                     }
+                    else
+                    {
+                        // Insert
+                        var entity = new Tbl60302deliveryNoteChild
+                        {
+                            DeliveryNoteNo = deliveryNoteNo,
+                            Gscode = dto.Gscode,
+                            UnitRateMethod = dto.UnitRateMethod,
+                            IssuedQty = dto.Qty,
+                            IssuedUnitPrice = dto.IssuedUnitPrice,
+                            IssuedQuoteUnitPrice = dto.IssuedQuoteUnitPrice,
+                            EmployeeNo = dto.EmployeeNo,
+                            PropertyNo = dto.PropertyNo,
+                            AddlDescription = dto.AddlDescription,
+                            DeliveryRemarks = dto.DeliveryRemarks
+                        };
 
-                    await dbContext.SaveChangesAsync();
-                    await _userActionLogger.LogAsync(
-                      module: "IMS > Save Or Update Delivery Note Items",
-                      actionDetail: $"Saved Delivery Note Items  {request.DeliveryNoteNo}",
-                      documentNo: $"{request.DeliveryNoteNo}"
-                    );
-
-                    return Ok(new { success = true, message = "Items saved/updated successfully!" });
+                        dbContext.Tbl60302deliveryNoteChildren.Add(entity);
+                    }
                 }
 
-                return Unauthorized(new { success = false, message = "Invalid tenant." });
+                await dbContext.SaveChangesAsync();
+
+                await _userActionLogger.LogAsync(
+                    module: "IMS > Save Or Update Delivery Note Items",
+                    actionDetail: $"Saved Delivery Note Items {deliveryNoteNo}",
+                    documentNo: deliveryNoteNo
+                );
+
+                return Ok(new { success = true, message = "Items saved/updated successfully!" });
             }
             catch (Exception ex)
             {
@@ -629,7 +630,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 if (master == null)
                     return NotFound(new { message = "Delivery Note not found", success = false });
 
-                var children = await dbContext.Tbl60302deliveryNoteChildren
+                var children = await dbContext.Qry60302deliveryNoteChildren
                     .Where(x => x.DeliveryNoteNo == deliveryNoteNo)
                     .ToListAsync();
 
@@ -666,11 +667,14 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                     BaseCurrencyId = master.BaseCurrencyId ?? 1,
                     items = children.Select(x => new
                     {
-                        SNo = x.DeliveryNoteSlNo,
+                        DeliveryNoteSlNo = x.DeliveryNoteSlNo,
+                        Gscode = x.Gscode,
                         ItemCode = x.Gscode,
                         UnitRateMethod = x.UnitRateMethod,
                         Qty = x.IssuedQty,
-                        UnitCostPrice = x.IssuedUnitPrice / master.CurrencyRate,
+                        // UnitCostPrice = x.IssuedUnitPrice / master.CurrencyRate,
+                        IssuedUnitPrice = x.IssuedUnitPrice,
+                        IssuedQuoteUnitPrice = x.IssuedQuoteUnitPrice,
                         EmployeeNo = x.EmployeeNo,
                         PropertyNo = x.PropertyNo,
                         AddlDescription = x.AddlDescription,

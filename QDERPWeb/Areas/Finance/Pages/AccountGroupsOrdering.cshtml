@@ -91,12 +91,12 @@
         bottom:0px;
     }
 </style>
-@* <div class="dx-card-header minimal-header">
+@*  <div class="dx-card-header minimal-header">
     <div class="card-title-icon">
         <i class="fas fa-file-invoice-dollar"></i>
     </div>
-    <h3 class="card-title-text">Account Groups Ordering</h3>
-</div> *@
+    <h3 class="card-title-text" id="accountgroupsorderings"></h3>
+</div>  *@
 <input id="formId" value="uc20101ChartOfAccounts" type="hidden" />
 <div class="content-container-top">
     
@@ -407,5 +407,7 @@ $(function () {
     //         console.log("No row selected");
     //     }
     // });
-
+        $(function () {
+                    $("#accountgroupsorderings").text(formatMessage("Account Groups Ordering"));
+        });
 </script>

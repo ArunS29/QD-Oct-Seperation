@@ -1125,42 +1125,6 @@
                             background-color: #0056b3;
                         }
 
-                    /* Text Editor Styling */
-                    .dx-texteditor {
-                        background-color: #909ead00 !important; /* Light background */
-                        border: 1px solid #d6e4f0 !important; /* Soft border */
-                        border-radius: 4px !important; /* Smaller rounded corners */
-
-                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
-                        font-size: 14px !important; /* Slightly smaller font */
-                        transition: all 0.2s ease-in-out !important;
-                        height: 39px !important; /* Fixed height */
-                    }
-
-                        /* Hover and Focus States */
-                        .dx-texteditor:hover,
-                        .dx-texteditor.dx-state-hover,
-                        .dx-button:hover {
-                            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-                            border-color: #86b7fe !important; /* Highlight border */
-                        }
-
-                        .dx-texteditor.dx-state-focused {
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
-                            border-color: #508ae1 !important;
-                        }
-
-                    .no-border-input {
-                        border: none !important;
-                        outline: none !important;
-                        box-shadow: none !important;
-                        background: transparent !important;
-                        font-weight: bold;
-                        font-size: 16px;
-                        color: black;
-                        pointer-events: none; /* Prevents hover and click effects */
-                    }
-
                     .context-menu {
                         display: none;
                         position: absolute;
@@ -1199,7 +1163,7 @@
                                     .ID("MinQty")
                                     .Label(new JS("formatMessage('Minimum Quantity')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(300)
+                                    .Width("100%")
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1208,7 +1172,7 @@
                                     .ID("MaxQty")
                                     .Label(new JS("formatMessage('Maximum Quantity')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(300)
+                                    .Width("100%")
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1217,7 +1181,7 @@
                                     .ID("ReorderLevel")
                                     .Label(new JS("formatMessage('Reorder Level')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(300)
+                                    .Width("100%")
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1226,7 +1190,7 @@
                                     .ID("ReorderQty")
                                     .Label(new JS("formatMessage('Reorder Quantity/EOQ')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(300)
+                                    .Width("100%")
                                     .ShowSpinButtons(true))
                             </td>
                             <td>
@@ -1235,7 +1199,7 @@
                                     .ID("ReorderLeadTime")
                                     .Label(new JS("formatMessage('Reorder Lead Time')"))
                                     .LabelMode(EditorLabelMode.Floating)
-                                    .Width(300)
+                                    .Width("100%")
                                     .ShowSpinButtons(true))
                             </td>
 
@@ -2376,43 +2340,6 @@
                         .filter-btn:hover {
                             background-color: #0056b3;
                         }
-
-                    /* Text Editor Styling */
-                    .dx-texteditor {
-                        background-color: #909ead00 !important; /* Light background */
-                        border: 1px solid #d6e4f0 !important; /* Soft border */
-                        border-radius: 4px !important; /* Smaller rounded corners */
-
-                        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08) !important; /* Reduced shadow */
-                        font-size: 14px !important; /* Slightly smaller font */
-                        transition: all 0.2s ease-in-out !important;
-                        height: 39px !important; /* Fixed height */
-                    }
-
-                        /* Hover and Focus States */
-                        .dx-texteditor:hover,
-                        .dx-texteditor.dx-state-hover,
-                        .dx-button:hover {
-                            box-shadow: 0 3px 6px rgba(0, 0, 0, 0.12) !important; /* Slightly reduced hover effect */
-                            border-color: #86b7fe !important; /* Highlight border */
-                        }
-
-                        .dx-texteditor.dx-state-focused {
-                            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15) !important; /* Softer focus effect */
-                            border-color: #508ae1 !important;
-                        }
-
-                    .no-border-input {
-                        border: none !important;
-                        outline: none !important;
-                        box-shadow: none !important;
-                        background: transparent !important;
-                        font-weight: bold;
-                        font-size: 16px;
-                        color: black;
-                        pointer-events: none; /* Prevents hover and click effects */
-                    }
-
                     .dx-button-mode-contained.dx-button-default {
                         color: black;
                     }

@@ -39,12 +39,13 @@
 </style>
         <input id="formId" value="frm60115QuotationAnalysis" type="hidden" />
         @await Html.PartialAsync("/Pages/Shared/IMS/QuotationAnalysisFooter.cshtml")
-<div style="padding: 10px; background-color: #c7cfdd;">
-    <div style="display: flex; align-items: center; gap: 10px;">
-        <label id="SelectRequest" style="font-weight: bold;"></label>
+<div style="padding: 10px; background-color:white;">
+    <div style="display: flex; align-items: end; gap: 10px;">
 
         @(Html.DevExtreme().DropDownBox()
             .ID("requestSelectBox")
+            .Label(new JS("formatMessage('Select a Request / Enquiry:')"))
+            .LabelMode(EditorLabelMode.Floating)
             .DataSource(d => d.WebApi()
             .Controller("QuotationAnalysis")
             .LoadAction("GetQuotationAnalysis")
@@ -131,6 +132,37 @@
     window._lastClickedCheckboxCell = null;
     let currentPivotRawData = [];
 
+        $(document).ready(function () {
+            pivotGridInstance = $("#pivotGridContainerId").dxPivotGrid({
+                allowSortingBySummary: true,
+                allowSorting: true,
+                allowFiltering: true,
+                allowExpandAll: true,
+                showBorders: true,
+                height: 500,
+                fieldChooser: { enabled: true, allowSearch: true },
+                fieldPanel: { visible: true },
+                loadPanel: { enabled: true },
+                dataSource: {
+                    fields: [
+                        { dataField: "Gsdescrpition", area: "row", caption: "Item Description" },
+                        { dataField: "QuotedQuantity", area: "row", caption: "Quantity" },
+                        { dataField: "SupplierName", area: "column", caption: "Supplier Name" },
+                        { dataField: "UnitPrice", area: "data", caption: "Unit Price", summaryType: "avg", format: { type: "fixedPoint", precision: 2 } },
+                        { dataField: "ItemDiscount", area: "data", caption: "Discount", summaryType: "sum", format: "fixedPoint" },
+                        { dataField: "LineTotalBeforeTax", area: "data", caption: "Net Total", summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
+                        { dataField: "IsWonForPo", area: "data", caption: "IsWonForPo", summaryType: "max", dataType: "boolean" },
+                        { dataField: "Mprno", visible: false },
+                        { dataField: "Gscode", visible: false },
+                        { dataField: "RfqchildSlNo", visible: false }
+                    ],
+                    store: [] // ⬅️ EMPTY INIT
+                },
+                onCellPrepared: function (e) {
+                }
+            }).dxPivotGrid("instance");
+        });align-items
+
 
         function loadPivotGridData(mprno) {
         $.ajax({
@@ -151,9 +183,9 @@
                             { dataField: "ItemDiscount", area: "data", caption: formatMessage("Discount"), summaryType: "sum", format: "fixedPoint" },
                             { dataField: "LineTotalBeforeTax", area: "data", caption: formatMessage("Net Total"), summaryType: "sum", format: { type: "fixedPoint", precision: 2 } },
                             { dataField: "IsWonForPo", area: "data", caption: formatMessage("IsWonForPo"), summaryType: "max", dataType: "boolean" },
-                             { dataField: "Mprno", visible: false },
-{ dataField: "Gscode", visible: false },
-{ dataField: "RfqchildSlNo", visible: false }
+                            { dataField: "Mprno", visible: false },
+                            { dataField: "Gscode", visible: false },
+                            { dataField: "RfqchildSlNo", visible: false }
 
 
                         ],
@@ -189,17 +221,15 @@
                     },
                     loadPanel: { enabled: true },
 onCellPrepared: function (e) {
-    // Apply background color condition (optional)
     if (e.area === "data" && e.cell?.dataType !== "boolean") {
         if (e.cell.value > 10000) {
-            $(e.cellElement).css("background-color", "#e6ffe6"); // light green
+            $(e.cellElement).css("background-color", "#e6ffe6");
         }
     }
 
-    // Render checkbox only for boolean field
     if (e.area === "data" && e.cell?.dataType === "boolean") {
         const $cell = $(e.cellElement);
-        $cell.empty(); // clear existing content
+        $cell.empty();
 
         const isChecked = !!e.cell.value;
 
@@ -234,7 +264,7 @@ onCellPrepared: function (e) {
         DevExpress.ui.notify("Required data not found for selection.", "error", 2000);
         console.warn("❌ No match for row/column path", rowPath, columnPath);
     }
-});
+    });
 
 
         $cell.append(checkbox);
@@ -249,15 +279,9 @@ onCellPrepared: function (e) {
             }
         });
     }
-
-
-
-
-
-     $(function () {
-                    $("#SelectRequest").text(
-                         formatMessage("Select a Request / Enquiry:"));
-            });
+    $(function () {
+        $("#SelectRequest").text(formatMessage("Select a Request / Enquiry:"));
+    });
 
     
 
@@ -347,19 +371,10 @@ onCellPrepared: function (e) {
 
 function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
     const tenantName = window.tenantName || "defaultTenant";
-    
-    // Construct the modal URL with query parameters
     const url = `/${tenantName}/IMS/ReasonForQA?mprno=${encodeURIComponent(mprno)}&rfqchildSlNo=${encodeURIComponent(rfqchildSlNo)}&gsCode=${encodeURIComponent(gsCode)}`;
-
-    // Save the cell reference in a global variable if needed for later updates
     window._cellToUpdate = $cellToUpdate;
-
-    // Open the modal using a custom openModal function (you should have this implemented elsewhere)
     openModal(url,"Selection Details", "70%","33%");
 }
-
-//layout for pivot grid
-    // Save as default layout
     function setDefaultLayoutClick() {
         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
         const form = $('#formId').val();
@@ -369,7 +384,6 @@ function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
             return;
         }
 
-        // Include expanded paths in state
         const state = pivotGrid.getDataSource().state();
         state.rowExpandedPaths = pivotGrid.getDataSource()._descriptions.rows.expandedPaths || [];
         state.columnExpandedPaths = pivotGrid.getDataSource()._descriptions.columns.expandedPaths || [];
@@ -394,7 +408,6 @@ function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
         });
     }
 
-    // Reset layout
     function resetLayoutClick() {
         const pivotGrid = $("#pivotGridContainer").dxPivotGrid("instance");
         const form = $('#formId').val();
@@ -520,7 +533,7 @@ function openSelectionDetailsPopup(mprno, rfqchildSlNo, gsCode, $cellToUpdate) {
 
 
 $("#btnCreateQuotations").dxButton({
-    text: "Create Quotation",
+    text: formatMessage('Create New Quotations'),
     type: "success",
     onClick: function () {
 

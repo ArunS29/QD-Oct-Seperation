@@ -128,9 +128,9 @@
         <div class="row" style="padding:5px">
 
             <div class="col-md-1" style="margin-top: 5px;">
-                <label for="DrCr" style="color: maroon;">Dr/Cr</label>
                 @(Html.DevExtreme().SelectBox()
                     .ID("DrCr")
+                    .Label(new JS("formatMessage('Dr/Cr')"))
                     .DataSource(new[] { drCr })
                     .Value(drCr)
                     .ReadOnly(true)
@@ -139,13 +139,12 @@
             <div class="col-md-4">
                 <div class="row">
                     <div class="col-md-8">
-                        <label for="CostAllocationExpense" style="color: maroon;">
-                            Cost Allocation for the Expenses:
-                        </label>
+                        
                     </div>
                     <div class="col-md-4" style="margin-top: -8px;">
                         @(Html.DevExtreme().TextBox()
                             .ID("Textbox")
+                                                .Label(new JS("formatMessage('Cost Allocation for the Expenses:')"))
                             .Value(voucherNo)
                             .ReadOnly(true)
                             )
@@ -163,9 +162,9 @@
                     )
             </div>
             <div class="col-md-2" style="margin-top: 5px;">
-                <label for="Amount" style="color: maroon;">Amount</label>
                 @(Html.DevExtreme().NumberBox()
                     .ID("CostAmount")
+                                .Label(new JS("formatMessage('Amount')"))
                     .Value(voucherAmountParsed)
                     .ShowSpinButtons(true)
                     .ReadOnly(true)
@@ -208,10 +207,10 @@
                         .DataSource(new object[] { })
                         .Columns(columns =>
                         {
-                            columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+                                    columns.Add().Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(100).AllowEditing(false);
                             columns.Add()
                         .DataField("CostAllocationUnit")
-                        .Caption("Cost Allocated (Projects/Jobs)")
+                                    .Caption(new JS("formatMessage('Cost Allocated (Projects/Jobs)')"))
                         .Width(400)
                         .AllowEditing(true)
                         // Normal Grid Mode
@@ -282,7 +281,7 @@
 
                 </text>);
                             columns.Add()
-                        .Caption("Effective Date")
+                                    .Caption(new JS("formatMessage('Effective Date')"))
                         .DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                         .AllowEditing(true)
                         // Normal Grid Mode
@@ -300,8 +299,8 @@
                     .DisplayFormat("dd-MMM-yyyy")
                     )
                 </text>);
-                            columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-                            columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+                                    columns.Add().Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+                                    columns.Add().Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
 
                         })
                     //.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
@@ -363,7 +362,7 @@
 
             @(Html.DevExtreme().Button()
                 .ID("btnSaveAndClose")
-                .Text("Save and Close")
+                .Text(new JS("formatMessage('Save and Close')"))
                 .Type(ButtonType.Normal)
                 .StylingMode(ButtonStylingMode.Outlined)
                 .Icon("save")
@@ -372,26 +371,26 @@
 
             @(Html.DevExtreme().Button()
                 .ID("btnDelete")
-                .Text("Delete")
+                .Text(new JS("formatMessage('Delete')"))
                 .Icon("close")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 )
             @(Html.DevExtreme().Button()
                 .ID("btncostBack")
-                .Text("Back")
+                 .Text(new JS("formatMessage('Back')"))
                 .Icon("arrowleft")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 @* .OnClick("closeParentModal") *@
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnaddcost")
-                .Text("Add New Cost Center")
+                 .Text(new JS("formatMessage('Add New Cost Center')"))
                 .Icon("plus")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 )
             @(Html.DevExtreme().Button()
                 .ID("btnPrint")
-                .Text("Print")
+                 .Text(new JS("formatMessage('Print')"))
                 .Icon("print")
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
                 .OnClick("function() { exportDataGridToPDF('dataGrid'); }")
@@ -433,10 +432,10 @@
                     .Selection(s => s.Mode(SelectionMode.Single))
                     .Columns(columns =>
                     {
-                        columns.Add().Caption("Cost Allocation UnitID").DataField("CostAllocationUnitId");
-                        columns.Add().Caption("Cost Allocation Unit").DataField("CostAllocationUnit");
-                        columns.Add().Caption("Cost Allocation Group").DataField("CostAllocationGroup");
-                        columns.Add().Caption("Is Disabled").DataField("IsDisabled")
+                columns.Add().Caption(new JS("formatMessage('Cost Allocation UnitID')")).DataField("CostAllocationUnitId");
+                columns.Add().Caption(new JS("formatMessage('Cost Allocation Unit')")).DataField("CostAllocationUnit");
+                columns.Add().Caption(new JS("formatMessage('Cost Allocation Group')")).DataField("CostAllocationGroup");
+                        columns.Add().Caption(new JS("formatMessage('Is Disabled')")).DataField("IsDisabled")
                     .CellTemplate(@<text>
             <div class="dx-icon">
                 <%= data.IsDisabled ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>

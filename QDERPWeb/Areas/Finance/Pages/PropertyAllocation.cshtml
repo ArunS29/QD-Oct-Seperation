@@ -347,9 +347,9 @@
 		</text>);
 
 						@* columns.Add().Caption("Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
-						columns.Add().Caption("Amount").DataField(new JS("formatMessage('VoucherAmount')")).DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-						columns.Add().Caption("Dr/Cr").DataField(new JS("formatMessage('DrCr')")).Width(100).AllowEditing(false);
-						columns.Add().Caption("Remarks").DataField(new JS("formatMessage('Remarks')")).AllowEditing(true);
+					columns.Add().Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+						columns.Add().Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(100).AllowEditing(false);
+					columns.Add().Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
 
 					})
 				//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
