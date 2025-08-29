@@ -1,8 +1,7 @@
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
+using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
-using DevExtreme.AspNet.Data.ResponseModel;
-
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
@@ -11,6 +10,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.Finance.Reports.Payable_Statements;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using System;
 using System.Globalization;
 using System.Linq;
@@ -24,8 +24,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<Quotation1Controller> _logger;
-        public Quotation1Controller(ILogger<Quotation1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
-        {
+        private readonly IUserActionLogger _userActionLogger;
+
+        public Quotation1Controller(ILogger<Quotation1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
+        {_userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -274,7 +276,112 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, new { success = false, message = ex.Message });
             }
         }
-       
+
+
+        [HttpPost]
+        public async Task<IActionResult> DuplicateQuotation([FromBody] string originalQuoteNo)
+        {
+            if (string.IsNullOrWhiteSpace(originalQuoteNo))
+                return BadRequest(new { success = false, message = "Quote No is required." });
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized(new { success = false, message = "Tenant context not found." });
+
+            try
+            {
+                // ✅ Get DefaultCompanyId from session
+                string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                byte defaultCompanyByte = 0;
+
+                if (!string.IsNullOrEmpty(defaultCompanyString))
+                {
+                    byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                }
+
+                byte companyId = defaultCompanyByte;
+
+                // ✅ Get company from Tbl901CompanyDetails
+                var company = dbContext.Tbl901CompanyDetails
+                    .FirstOrDefault(c => c.CompanyId == companyId);
+
+                if (company == null)
+                    return NotFound(new { success = false, message = "Company not found." });
+
+
+                // Get digit config
+                int digits = dbContext.Tbl901CompanyDetails02s
+                    .Where(c => c.CompanyId == company.CompanyId)
+                    .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+                    .FirstOrDefault();
+
+                // Generate new QuoteNo
+                string newQuoteNo = GetNewQuoteNo(
+                    company.QuotationAbbrv,
+                    company.InvoiceYearDigits ?? 0,
+                    DateTime.Now,
+                    company.IsResetInvoiceInYear ?? false,
+                    digits,
+                    dbContext
+                );
+
+                string user = HttpContext.Session.GetString("UserName") ?? "System";
+                DateTime quoteDate = dbContext.Tbl60101quotationMasters
+        .Where(q => q.QuoteNo == originalQuoteNo)
+        .Select(q => q.QuoteDate ?? DateTime.Now)
+        .FirstOrDefault();
+
+                // Call SP
+                dbContext.Database.ExecuteSqlRaw(
+                    "EXEC sp600_20InsertDuplicateQuotation @p0, @p1, @p2, @p3, @p4",
+                    originalQuoteNo, newQuoteNo, quoteDate, user, quoteDate
+                );
+
+                await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+                    module: "ERM > Duplicate Quotation View ",
+                    actionDetail: $"Duplicated Quotation View {originalQuoteNo}",
+                    documentNo: $"{originalQuoteNo}"
+                );
+
+                return Ok(new { success = true, message = "Quotation duplicated successfully.", newQuoteNo });
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error duplicating quotation: " + ex.Message);
+                return StatusCode(500, new { success = false, message = "Internal error", detail = ex.Message });
+            }
+        }
+
+        // Helper Method
+        private string GetNewQuoteNo(string abbr, int yearDigits, DateTime date, bool resetByYear, int digits, ERPMasterWtDataContext db)
+        {
+            try
+            {
+                var existing = db.Tbl60101quotationMasters
+                    .Where(q => q.QuoteNo != null &&
+                                q.QuoteNo.Length >= digits &&
+                                (!resetByYear || (q.QuoteDate.HasValue && q.QuoteDate.Value.Year == date.Year)))
+                    .Select(q => q.QuoteNo)
+                    .ToList();
+
+                int max = existing
+                    .Select(no => int.TryParse(no.Substring(no.Length - digits), out int num) ? num : 0)
+                    .DefaultIfEmpty(0)
+                    .Max() + 1;
+
+                string year = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{year}-{max.ToString().PadLeft(digits, '0')}";
+            }
+            catch
+            {
+                string year = (yearDigits > 0) ? date.Year.ToString().Substring(4 - yearDigits) : "";
+                return $"{abbr}{year}-{"1".PadLeft(digits, '0')}";
+            }
+        }
+
+
+
+
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdateStatus([FromBody] Tbl60105quotationCostMaster model)
         {

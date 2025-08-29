@@ -1,0 +1,526 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.PropertyOperatorModel
+@{
+}
+<style>
+    .container {
+        display: none !important;
+    }
+
+    .frame {
+        display: none !important;
+    }
+
+    .footerContainer {
+        display: none !important;
+    }
+    .dx-button-text{
+        color:black;
+    }
+</style>
+<div class="p-1">
+    <table style="width:100%; border-collapse: separate; border-spacing: 10px;">
+        <tr>
+            <td style="width: 50%;">
+                @(Html.DevExtreme().TextBox()
+                                .ID("PropertyNo")
+                                .Label("Property No:")
+                                .Disabled(true)
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                           )
+            </td>
+            <td style="width: 50%;">
+                @(Html.DevExtreme().TextBox()
+                                .ID("PropertyDescription")
+                                .Disabled(true)
+                                .Label("Property / Equipment Description:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                )
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("HiddenID")
+                                .Label("ID:")
+                                .Disabled(true)
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .Value("-1"))
+            </td>
+
+            <td>
+                @(Html.DevExtreme().DropDownBox()
+                                .ID("OperatorType")
+                                .Label("Operator Type:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .DataSource(d => d.WebApi()
+                                .Controller("PropertyOperator")
+                                .LoadAction("GetAllPropertyTypes")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("PropertyOperatorTypeId")
+                                )
+                                .Option("dataGridId", "GetAllPropertyTypes-datagrid")
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .Width("100%")
+                                .ValueExpr("PropertyOperatorTypeId")
+                                .DisplayExpr("OperatorType")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .OnKeyDown("onKeyDown")
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Operator Type is required");
+                                })
+                                .ContentTemplate(new TemplateName("GetOperatorTypeContentTemplate"))
+
+                )
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().DropDownBox()
+                                .ID("EmployeeNo")
+                                .Label("Employee No:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .DataSource(d => d.WebApi()
+                                .Controller("PropertyOperator")
+                                .LoadAction("GetAllEmployee")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("EmployeeId")
+                                )
+                                .Option("dataGridId", "GetAllEmployee-datagrid")
+                                .OpenOnFieldClick(false)
+                                .ValueChangeEvent("input")
+                                .HoverStateEnabled(true)
+                                .Width("100%")
+                                .ValueExpr("EmployeeId")
+                                .DisplayExpr("EmployeeId")
+                                .OnInput("dropDownBoxOnInput")
+                                .OnOpened("onOpened")
+                                .TabIndex(1)
+                                .OnKeyDown("onKeyDown")
+                                .ContentTemplate(new TemplateName("GetTypeOfPropertyCategoryContentTemplate"))
+                                .Width("100%"))
+            </td>
+            <td>
+                @(Html.DevExtreme().TextBox()
+                                .ID("OperatorName")
+                                .Label("Operator Name:")
+                                .Disabled(true)
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .ValidationRules(rules =>
+                                {
+                                    rules.AddRequired().Message("Operator Name is required");
+                                })
+                )
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                                .ID("HourlyRate")
+                                .Label("Operator Hourly Rate: (Per Hour)")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%"))
+            </td>
+            <td>
+                @(Html.DevExtreme().NumberBox()
+                                .ID("OvertimeRate")
+                                .Label("Overtime Rate: (Per Hour)")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%"))
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                                .ID("WorkStartDate")
+                                .Label("Work Start Date:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .Value(DateTime.Now))
+            </td>
+            <td>
+                @(Html.DevExtreme().SelectBox()
+                                .ID("Shift")
+                                .Label("Shift:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .DataSource(new[] { "Day Shift","Night Shift" })
+                                .Value("Day Shift")
+                                .Width("100%"))
+            </td>
+        </tr>
+
+        <tr>
+            <td>
+                @(Html.DevExtreme().TextArea()
+                                .ID("Remarks")
+                                .Label("Remarks:")
+                                .LabelMode(EditorLabelMode.Floating)
+                                .Width("100%")
+                                .Height(60))
+            </td>
+            <td>
+                @(Html.DevExtreme().DateBox()
+                    .ID("DemobilizedOn")
+                    .Label("Demobilized On:")
+                    .LabelMode(EditorLabelMode.Floating)
+                    .Width("100%"))
+            </td>
+        </tr>
+    </table>
+    <!-- Footer buttons -->
+    <div class="footer-fixed" style="display:flex; gap:10px; margin-left: 10px;">
+        @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text("Save")
+                .Type(ButtonType.Success)
+                .Icon("save")
+                .Width(120)
+                .OnClick("btnSaveClick")
+        )
+
+        @(Html.DevExtreme().Button()
+                .ID("btnSaveClose")
+                .Text("Save & Close")        
+                .Type(ButtonType.Default)
+                .Icon("check")
+                .Width(150)
+                .ElementAttr("style", "margin-left: 10px;"))
+
+        @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text("Back")
+                .Type(ButtonType.Normal)
+                .Icon("arrowleft")
+                .Width(120)
+                .ElementAttr("style", "margin-left: 10px;"))
+    </div>
+</div>
+@using (Html.DevExtreme().NamedTemplate("GetTypeOfPropertyCategoryContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                            .ID("GetAllEmployee-datagrid")
+                            .DataSource(d => d.WebApi()
+                            .Controller("PropertyOperator")
+                            .LoadAction("GetAllEmployee")
+                            .LoadMode(DataSourceLoadMode.Raw)
+                            .Key("EmployeeId")
+                            )
+                            .WordWrapEnabled(true)
+                            .ShowBorders(true)
+                            .Selection(sl => sl.Mode(SelectionMode.Single))
+                            .OnSelectionChanged("dataGridSelectionChanged3")
+                            .OnInitialized("dataGridInitialized2")
+                            .HeaderFilter(p => p.Visible(true))
+                            .FilterRow(f => f.Visible(false))
+                            .ShowBorders(true)
+                            .HoverStateEnabled(true)
+                            .Paging(p => p.PageSize(15))
+                            .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                            .Height(345)
+                            .Selection(s => s.Mode(SelectionMode.Single))
+                            .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                            .Columns(columns =>
+                            {
+                                    columns.Add().DataField("EmployeeGroup").Caption("Employee Group");
+                                    columns.Add().DataField("EmployeeId").Caption("Employee ID");
+                                    columns.Add().DataField("EmployeeName").Caption("Employee Name");
+                                    columns.Add().DataField("NationalityEn").Caption("Nationality En");
+                                    columns.Add().DataField("NationalId").Caption("National ID");
+                                    columns.Add().DataField("PassportNo").Caption("Passport ID");
+                                    columns.Add().DataField("IsDiscontinued").Caption("Is Discontinued");
+                            })
+                            )
+}
+@using (Html.DevExtreme().NamedTemplate("GetOperatorTypeContentTemplate"))
+{
+    @(Html.DevExtreme().DataGrid()
+                                    .ID("GetAllPropertyTypes-datagrid")
+                                .DataSource(d => d.WebApi()
+                                .Controller("PropertyOperator")
+                                .LoadAction("GetAllPropertyTypes")
+                                .LoadMode(DataSourceLoadMode.Raw)
+                                .Key("PropertyOperatorTypeId")
+                                )
+                                .WordWrapEnabled(true)
+                                .ShowBorders(true)
+                                .Selection(sl => sl.Mode(SelectionMode.Single))
+                                .OnSelectionChanged("dataGridSelectionChanged")
+                                .OnInitialized("dataGridInitialized2")
+                                .HeaderFilter(p => p.Visible(true))
+                                .FilterRow(f => f.Visible(false))
+                                .ShowBorders(true)
+                                .HoverStateEnabled(true)
+                                .Paging(p => p.PageSize(15))
+                                .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+                                .Height(345)
+                                .Selection(s => s.Mode(SelectionMode.Single))
+                                .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                .Columns(columns =>
+                                {
+                                        columns.Add().DataField("PropertyOperatorTypeId").Caption("ID");
+                                        columns.Add().DataField("OperatorType").Caption("Operator Type");
+                                })
+                                )
+}
+<script>
+          $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+
+        const PropertyNo = urlParams.get("PropertyNo") || "";
+        const PropertyDescription = urlParams.get("PropertyDescription") || "";
+
+        // Wait until DevExtreme controls are initialized
+        setTimeout(() => {
+            if ($("#PropertyNo").data("dxTextBox")) {
+                $("#PropertyNo").dxTextBox("instance").option("value", PropertyNo);
+            }
+            if ($("#PropertyDescription").data("dxTextBox")) {
+                $("#PropertyDescription").dxTextBox("instance").option("value", PropertyDescription);
+            }
+        }, 300);
+    });
+
+         function dataGridSelectionChanged3(e) {
+        if (e.selectedRowsData.length > 0) {
+            var selectedRow = e.selectedRowsData[0];
+
+            var employeeId = selectedRow.EmployeeId;
+            var employeeName = selectedRow.EmployeeName;
+
+            if ($("#EmployeeNo").data("dxDropDownBox")) {
+                $("#EmployeeNo").dxDropDownBox("instance").option("value", employeeId);
+            }
+            if ($("#OperatorName").data("dxTextBox")) {
+                $("#OperatorName").dxTextBox("instance").option("value", employeeName);
+            }
+
+            if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+        }
+    }
+      function dataGridSelectionChanged(e) {
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#OperatorType").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey);
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
+      function dataGridInitialized1(e) {
+        dataGrid = e.component;
+    }
+      function onOpened(e) {
+        const gridId = e.component.option("dataGridId"); 
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (grid) {
+            grid.getDataSource().reload(); 
+        }
+
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+        function dropDownBoxOnInput(e) {
+        const ddbInstance = e.component;
+        if (!ddbInstance.option("opened")) ddbInstance.open();
+
+        const text = ddbInstance.option("text");
+        const gridId = ddbInstance.option("dataGridId");
+        if (gridId) {
+            const grid = $("#" + gridId).dxDataGrid("instance");
+            if (grid) {
+                grid.option("searchPanel.text", text);
+            }
+        }
+    }
+     function onKeyDown(e) {
+        const ddbInstance = e.component;
+        if (e.event.keyCode !== 40) return;
+
+        const gridId = ddbInstance.option("dataGridId");
+        const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
+
+        if (!ddbInstance.option("opened")) {
+            ddbInstance.open();
+        } else if (grid) {
+            let focusedIndex = grid.option("focusedRowIndex");
+            let visibleRows = grid.getVisibleRows().length - 1;
+            if (focusedIndex === -1 || visibleRows < focusedIndex) focusedIndex = 0;
+            grid.focus(grid.getRowElement(focusedIndex));
+        }
+    }
+         function dataGridInitialized2(e) {
+        dataGrid = e.component;
+    }
+
+
+  //    $(document).on("click", "#btnSave", btnSaveClick);
+
+    function btnSaveClick() {
+               const OperatorName = $("#OperatorName").dxTextBox("instance").option("value");
+           const PropertyOperatorTypeID = $("#OperatorType").dxDropDownBox("instance").option("value");
+
+       // ===== Validation Start =====
+           if (!OperatorName || OperatorName.trim() === "") {
+             DevExpress.ui.notify("Operator Name is required!", "error", 3000);
+             $("#OperatorName").dxTextBox("instance").focus();
+           return; // Stop function
+       }
+
+           if (!PropertyOperatorTypeID || PropertyOperatorTypeID.length === 0) {
+             DevExpress.ui.notify("OperatorType is required!", "error", 3000);
+             $("#OperatorType").dxDropDownBox("instance").focus();
+           return; // Stop function
+       }
+
+        try {
+            
+            const data = {
+               // PropertyOperatorTypeId: PropertyOperatorTypeId ? parseInt(PropertyOperatorTypeId) : 0, // Fixed here
+                EquipmentNo: $("#PropertyNo").dxTextBox("instance")?.option("value") || "",
+                PropertyOperatorTypeID: $("#OperatorType").dxDropDownBox("instance")?.option("value") || "",
+                OperatorName: $("#OperatorName").dxTextBox("instance")?.option("value") || "",
+                OperatorRegHourlyRate: $("#HourlyRate").dxNumberBox("instance")?.option("value") || 0,
+                EmployeeID: $("#EmployeeNo").dxDropDownBox("instance")?.option("value") || "",
+                OperatorOthourlyRate: $("#OvertimeRate").dxNumberBox("instance")?.option("value") || 0,
+                WorkStartDate: $("#WorkStartDate").dxDateBox("instance")?.option("value") || null,
+                WorkEndDate: $("#DemobilizedOn").dxDateBox("instance")?.option("value") || null,
+                OperatorRemarks: $("#Remarks").dxTextArea("instance")?.option("value") || "",
+                WorkingShift: $("#Shift").dxSelectBox("instance")?.option("value") || "",
+            };
+
+            $.ajax({
+                url: "/api/PropertyOperator/SaveOrUpdate",
+                method: "POST",
+                contentType: "application/json",
+                data: JSON.stringify(data),
+                success: function (result) {
+                    if (result?.success) {
+                        DevExpress.ui.notify(result.message, "success", 3000);
+
+                          refreshFields();
+                        // Update hidden field with new ID from API (for future updates)
+
+                        if (result.propertyOperatorTypeId) {
+                            $("#PropertyOperatorTypeId").dxTextBox("instance").option("value", result.propertyOperatorTypeId);
+                        }
+
+                    } else {
+                        DevExpress.ui.notify(result?.message || "Save failed", "error", 3000);
+                    }
+                },
+                error: function (xhr) {
+                    console.error("AJAX Error:", xhr.responseText);
+                    DevExpress.ui.notify("Error: " + xhr.responseText, "error", 3000);
+                }
+            });
+        } catch (err) {
+            console.error("btnSaveClick error:", err);
+            DevExpress.ui.notify("Form controls not initialized properly", "error", 3000);
+        }
+    }
+       function refreshFields() {
+            const editorTypes = [
+                "dxTextBox",
+                "dxNumberBox",
+                "dxTextArea",
+                "dxSelectBox",
+                "dxCheckBox",
+                "dxColorBox",
+                "dxDateBox",
+                "dxDropDownBox"
+            ];
+                 editorTypes.forEach(type => {
+            $(`.${type}`).each(function () {
+                const instance = $(this)[type]("instance");
+                if (!instance) return;
+
+                if (type === "dxCheckBox") {
+                    instance.option("value", false);
+                } else {
+                    instance.option("value", null);
+                }
+            });
+        });
+    }
+
+    $(document).ready(function () {
+        const urlParams = new URLSearchParams(window.location.search);
+        const propertyOperatorCode = urlParams.get("PropertyOperatorCode") || "";
+        const PropertyNo = urlParams.get("PropertyNo") || "";
+        const PropertyDescription = urlParams.get("PropertyDescription") || "";
+        const code = urlParams.get("code") || urlParams.get("PropertyNo") || urlParams.get("PropertyNo") || "";
+        const mode = urlParams.get("mode") || (code ? "edit" : "add");
+        // Set initial values for textboxes
+        setTimeout(() => {
+            if ($("#PropertyNo").data("dxTextBox")) {
+                $("#PropertyNo").dxTextBox("instance").option("value", PropertyNo);
+            }
+            if ($("#PropertyDescription").data("dxTextBox")) {
+                $("#PropertyDescription").dxTextBox("instance").option("value", PropertyDescription);
+            }
+        }, 300);
+
+               if (mode === "edit") {
+                $("#btnSave").dxButton("instance").option("text", "Update");
+                $("#btnSave").data("is-update", true);
+            }
+
+        if (mode === "edit" && code) {
+            console.log("Fetching operator details for EquipmentNo:", code);
+            $.ajax({
+               url: `/api/PropertyOperator/GetOperators?equipmentNo=${encodeURIComponent(code)}&propertyOperatorCode=${encodeURIComponent(propertyOperatorCode)}`,
+                type: 'GET',
+                success: function (data) {
+
+                    if (data && data.length > 0) {
+                          data.forEach(function (item) {
+                              //var data = data[0]; // Access first object in array
+
+                              $("#HiddenID").dxTextBox("instance").option("value", item.PropertyOperatorCode);
+                              $("#OperatorName").dxTextBox("instance").option("value", item.OperatorName);
+                              $("#HourlyRate").dxNumberBox("instance").option("value", item.OperatorRegHourlyRate || 0);
+                              $("#OvertimeRate").dxNumberBox("instance").option("value", item.OperatorOthourlyRate || 0);
+                              $("#WorkStartDate").dxDateBox("instance").option("value", item.WorkStartDate || null);
+                              $("#DemobilizedOn").dxDateBox("instance").option("value", item.WorkEndDate || null);
+                              $("#EmployeeNo").dxDropDownBox("instance").option("value", item.EmployeeId);
+                              $("#OperatorType").dxDropDownBox("instance").option("value", item.PropertyOperatorTypeId);
+                              $("#Remarks").dxTextArea("instance").option("value", item.OperatorRemarks || "");
+                              $("#Shift").dxSelectBox("instance").option("value", item.WorkingShift);
+                           });
+                        } else {
+                            console.warn("No operator data found.");
+                        }
+                    },
+                error: function (xhr) {
+                    console.error("API error:", xhr);
+                    DevExpress.ui.notify("Failed to load operator details", "error", 3000);
+                }
+            });
+        }
+    });
+
+</script>

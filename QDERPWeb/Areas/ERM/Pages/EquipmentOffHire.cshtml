@@ -1,0 +1,477 @@
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.EquipmentOffHireModel
+@{
+}
+
+<style>
+    .two-panel-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    .panel {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        padding: 12px;
+        border-radius: 8px;
+    }
+    .modified-info {
+        margin-top: 12px;
+        font-size: 13px;
+    }
+    .dx-tabpanel-container{
+        height:270px !important;
+    }
+    .form-grid {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 12px;
+        align-items: center;
+    }
+    .form-grid label {
+        font-weight: bold;
+        display: block;
+        margin-bottom: 4px;
+    }
+    .button-bar {
+        display: flex;
+        gap: 10px;
+    }
+</style>
+    <div class="form-grid">
+        <div>
+           @(Html.DevExtreme().TextBox()
+            .ID("OffHireRefNo")
+            .Label(new JS("formatMessage('Off Hire Note Ref No')"))
+            .LabelMode(EditorLabelMode.Floating))
+        </div>
+        <div>
+           @(Html.DevExtreme().TextBox()
+            .ID("PropertyNo")
+            .Label(new JS("formatMessage('Property No')"))
+            .LabelMode(EditorLabelMode.Floating))
+        </div>
+         <div>
+        @(Html.DevExtreme().TextBox()
+            .ID("PropertyDescription")
+            .Label(new JS("formatMessage('Property Description')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <div>
+        @(Html.DevExtreme().TextBox()
+            .ID("ClientName")
+            .Label(new JS("formatMessage('Client Name')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <div>
+        @(Html.DevExtreme().SelectBox()
+            .ID("ReasonForOffHiring")
+            .Label(new JS("formatMessage('Reason for Off Hiring')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <div>
+        @(Html.DevExtreme().TextBox()
+            .ID("ClientCode")
+            .Label(new JS("formatMessage('Client Code')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <div>
+        @(Html.DevExtreme().SelectBox()
+            .ID("ProjectName")
+            .Label(new JS("formatMessage('Project Name')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <div>
+        @(Html.DevExtreme().DateBox()
+            .ID("MobilizedOn")
+            .Label(new JS("formatMessage('Mobilized On')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <div>
+        @(Html.DevExtreme().DateBox()
+            .ID("DemobilizedOn")
+            .Label(new JS("formatMessage('Demobilized On')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <div>
+        @(Html.DevExtreme().TextBox()
+            .ID("SupplierCode")
+            .Label(new JS("formatMessage('Supplier Code')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+    </div>
+
+    <!-- Tabs Section -->
+    @(Html.DevExtreme().TabPanel()
+        .Items(items => {
+            items.Add().Title("Off Hire Details").Template(@<text>
+
+                   <div class="col-span-2">
+       @(Html.DevExtreme().Switch()
+           .ID("ReturnOffHire")
+           .Value(false))
+           <span style="margin-left:8px;">
+             Return OF Hire
+           </span>
+       </div>
+                <div class="form-grid">
+                    <div>
+                        @(Html.DevExtreme().SelectBox()
+                        .ID("ReasonOfReturning") 
+                        .Label(new JS("formatMessage('Reason of Returning:')"))
+                        .LabelMode(EditorLabelMode.Floating))
+                    </div>
+                    <div>
+                        @(Html.DevExtreme().NumberBox()
+                        .ID("DemobilizationCharges")
+                        .Label(new JS("formatMessage('Demobilization Charges:')"))
+                        .LabelMode(EditorLabelMode.Floating))
+                    </div>
+                 </div>
+                    <div>
+                        @(Html.DevExtreme().TextArea()
+                        .ID("DemobilizationRemarks")
+                        .ElementAttr("style", "height:60px !important;")
+                        .Label(new JS("formatMessage('Demobilization Remarks:')"))
+                        .LabelMode(EditorLabelMode.Floating))
+                    </div>
+                      <div class="col-span-2">
+       @(Html.DevExtreme().Switch()
+           .ID("Demoblizationclient")
+           .Value(false))
+           <span style="margin-left:8px;">
+             Demoblization Charges To be claimed From client
+           </span>
+       </div>
+            </text>);
+            items.Add().Title("Replacement Details").Template(@<text>
+               <div class="form-grid">
+                      <div class="col-span-2">
+                        @(Html.DevExtreme().Switch()
+                            .ID("Equipmentreplaced")
+                            .Value(false))
+                        <span style="margin-left:8px;">
+                           Equipment Replaced
+                        </span>
+                    </div>
+                    <!-- Row 1 -->
+                    <div>
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("ReasonOfReplacement")
+                            .Label(new JS("formatMessage('Reason of Replacement')"))
+                            .LabelMode(EditorLabelMode.Floating))
+                    </div>
+                    <div>
+                        @(Html.DevExtreme().NumberBox()
+                            .ID("ReplacementCharges")
+                            .Label(new JS("formatMessage('Replacement Charges')"))
+                            .LabelMode(EditorLabelMode.Floating))
+                    </div>
+
+                    <!-- Row 2 -->
+                    <div>
+                        @(Html.DevExtreme().TextBox()
+                            .ID("ReplacedEquipment")
+                            .Label(new JS("formatMessage('Replaced Equipment')"))
+                            .LabelMode(EditorLabelMode.Floating))
+                    </div>
+                    <div>
+                        @(Html.DevExtreme().SelectBox()
+                            .ID("ReplacedEquipmentCode")
+                            .Label(new JS("formatMessage('Equipment Code')"))
+                            .LabelMode(EditorLabelMode.Floating))
+                    </div>
+
+                    <!-- Row 3 -->
+                    <div class="col-span-2">
+                        @(Html.DevExtreme().TextArea()
+                            .ID("ReplacementRemarks")
+                            .Height(80)
+                            .Label(new JS("formatMessage('Replacement Remarks')"))
+                            .LabelMode(EditorLabelMode.Floating))
+                    </div>
+                    <div>
+                        @(Html.DevExtreme().TextBox()
+                            .ID("ReplacementDeliveryNoteNo")
+                            .Label(new JS("formatMessage('Replacement Delivery Note No')"))
+                            .LabelMode(EditorLabelMode.Floating))
+                    </div>
+
+                    <!-- Row 4 (Toggle) -->
+                    <div class="col-span-2">
+                        @(Html.DevExtreme().Switch()
+                            .ID("ReplacementChargesToggle")
+                            .Value(false))
+                        <span style="margin-left:8px;">
+                            Replacement Charges to be beared by us.
+                        </span>
+                    </div>
+
+                </div>
+                      </text>);
+            items.Add().Title("Equipment Damages")
+            .Template(@<text>
+                <div class="form-grid">
+
+    <!-- Row 1: Toggles -->
+    <div class="col-span-2 flex items-center">
+        @(Html.DevExtreme().Switch()
+            .ID("EquipmentReturnedInGoodCondition")
+            .Value(false))
+        <span style="margin-left:8px;">Equipment Returned in Good Condition</span>
+    </div>N
+
+    <div class="col-span-2 flex items-center">
+        @(Html.DevExtreme().Switch()
+            .ID("DamageChargesToBeBeared")
+            .Value(false))
+        <span style="margin-left:8px;">Damage Charges to be beared by us.</span>
+    </div>
+
+    <!-- Row 2 -->
+    <div>
+        @(Html.DevExtreme().NumberBox()
+            .ID("DamageCharges")
+            .Label(new JS("formatMessage('Damage Charges')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <!-- Row 3 -->
+    <div class="col-span-2">
+        @(Html.DevExtreme().TextArea()
+            .ID("DamageRemarks")
+            .Height(80)
+            .Label(new JS("formatMessage('Damage Remarks')"))
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+</div>
+
+                  </text>);
+            items.Add().Title("Transportation Details")    .Template(@<text>
+
+                <div class="two-panel-grid">
+
+    <!-- Left Panel : Transportation Details -->
+
+    <div class="panel">
+        @(Html.DevExtreme().DropDownBox()
+            .ID("TransportedBy")
+            
+            .DisplayExpr("Name")
+            .ValueExpr("ID")
+            .Label("Transported / Delivered By")
+            .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().TextBox()
+            .ID("VehicleNo")
+            .Label("Vehicle No")
+            .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().DropDownBox()
+            .ID("DriverName")
+            .DataSource(d => d.Mvc().Controller("Common").LoadAction("GetDrivers"))
+            .DisplayExpr("DriverName")
+            .ValueExpr("DriverID")
+            .Label("Driver’s Name")
+            .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().TextBox()
+            .ID("DriverID")
+            .Label("Driver’s ID")
+            .LabelMode(EditorLabelMode.Floating))
+    </div>
+
+    <!-- Right Panel : Meter Readings -->
+    <div class="panel">
+        @(Html.DevExtreme().NumberBox()
+            .ID("MeterReadingOffhired")
+            .Label("Meter Reading when Offhired")
+            .LabelMode(EditorLabelMode.Floating))
+
+        @(Html.DevExtreme().NumberBox()
+            .ID("MeterReadingHoursOffhired")
+            .Label("Meter Reading (Hours) when Offhired")
+            .LabelMode(EditorLabelMode.Floating))
+
+        <div class="modified-info">
+            <span><b>Modified By:</b> <span id="ModifiedBy"></span></span><br />
+            <span><b>Modified On:</b> <span id="ModifiedOn"></span></span>
+        </div>
+    </div>
+
+</div>
+
+
+                  </text>);
+            items.Add().Title("Generated Timesheets")    .Template(@<text>
+                <div style="margin-bottom:10px; display:flex; gap:10px;">
+    @(Html.DevExtreme().Button()
+        .ID("btnSaveLayout")
+        .Text("Save Layout")
+        .Icon("save")
+        //.OnClick("onSaveLayout")
+    )
+
+    @(Html.DevExtreme().Button()
+        .ID("btnPrint")
+        .Text("Print")
+        .Icon("print")
+     //   .OnClick("onPrint")
+    )
+</div>
+
+@(Html.DevExtreme().DataGrid()
+    .ID("timesheetGrid")
+    .ShowBorders(true)
+    .ColumnAutoWidth(true)
+    .AllowColumnResizing(true)
+    .RowAlternationEnabled(true)
+    .Paging(p => p.PageSize(20))
+    .Selection(s => s.Mode(SelectionMode.Single))
+    .Columns(columns =>
+    {
+        columns.Add().DataField("EqpTimesheetNo")
+            .Caption("Eqp Timesheet No")
+            .Width(150);
+
+        columns.Add().DataField("PropertyNo")
+            .Caption("Property No")
+            .Width(150);
+
+        columns.Add().DataField("PropertyDescription")
+            .Caption("Property Description")
+            .Width(250);
+
+        columns.Add().DataField("TimesheetStartDate")
+            .Caption("Timesheet Start Date")
+            .DataType(GridColumnDataType.Date)
+            .Format("dd/MM/yyyy");
+
+        columns.Add().DataField("TimesheetEndDate")
+            .Caption("Timesheet End Date")
+            .DataType(GridColumnDataType.Date)
+            .Format("dd/MM/yyyy");
+
+        columns.Add().DataField("SummaryInvoiceNo")
+            .Caption("Summary Invoice No")
+            .Width(180);
+
+        columns.Add().DataField("TimesheetRemarks")
+            .Caption("Timesheet Remarks")
+            .Width(200);
+    })
+)
+
+                  </text>);
+        })
+    )
+
+
+
+    <div class="footer-fixed">
+          @(Html.DevExtreme().Button()
+                .ID("btnSave")
+                .Text(new JS("formatMessage('Update')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save" })// Apply custom CSS class
+                )
+          @(Html.DevExtreme().Button()
+                .ID("btnSaveAndClose")
+                .Text(new JS("formatMessage('Save and Close')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("save")
+                .ElementAttr(new { @class = "dx-button-custom btn-save-close" })// Apply custom CSS class
+                )
+         @(Html.DevExtreme().Button()
+                .ID("btnBack")
+                .Text(new JS("formatMessage('Back')"))
+                .Icon("arrowleft")
+                .ElementAttr(new { @class = "dx-button-custom btn-back" }) // Apply custom CSS class
+                )
+        @(Html.DevExtreme().Button().Icon("print").Text("Print Offhire Note") )
+        @(Html.DevExtreme().Button().Text("Generate Timesheet") )
+    </div>
+
+<script>
+        $(document).ready(function () {
+            debugger;
+            const urlParams = new URLSearchParams(window.location.search);
+            const code = urlParams.get("code");
+            const mode = urlParams.get("mode");
+
+             if (mode === "edit" && code) {
+            $.ajax({
+                url: `/api/PropertyOperator/GetByOffHire?code=${encodeURIComponent(code)}`,
+                type: "GET",
+                contentType: "application/json",
+                success: function (data) {
+                console.log("✅ Property Data:", data);
+
+            $("#OffHireRefNo").dxTextBox("instance").option("value", data.OffHireNoteNo || "");
+            $("#PropertyNo").dxTextBox("instance").option("value", data.PropertyNo || "");
+            $("#PropertyDescription").dxTextBox("instance").option("value", data.propertyDescription || "");
+            $("#ClientName").dxTextBox("instance").option("value", data.clientName || "");
+            $("#ReasonForOffHiring").dxTextArea("instance").option("value", data.ReasonOffHire || "");
+            //$("#ClientCode").dxTextBox("instance").option("value", data.clientCode || "");
+            //$("#ProjectName").dxTextBox("instance").option("value", data.projectName || "");
+            //$("#MobilizedOn").dxDateBox("instance").option("value", data.mobilizedOn || null);
+            $("#DemobilizedOn").dxDateBox("instance").option("value", data.DemobilizedDate || null);
+            //$("#SupplierCode").dxTextBox("instance").option("value", data.supplierCode || "");
+
+            // 📑 Tab: Off Hire Details
+            $("#ReturnOffHire").dxCheckBox("instance").option("value", data.IsReturnOfHire || false);
+            $("#ReasonOfReturning").dxTextArea("instance").option("value", data.ReasonofReturnOfHire || "");
+            $("#DemobilizationCharges").dxNumberBox("instance").option("value", data.DemobilizationCharges || 0);
+            $("#DemobilizationRemarks").dxTextArea("instance").option("value", data.DemobilizationRemarks || "");
+            $("#Demoblizationclient").dxTextBox("instance").option("value", data.IsDemoblizationChargedToClient || "");
+
+            // 📑 Tab: Replacement Details
+            // $("#Equipmentreplaced").dxTextBox("instance").option("value", data.equipmentReplaced || "");
+            $("#ReasonOfReplacement").dxTextArea("instance").option("value", data.ReasonOfReplacement || "");
+            $("#ReplacementCharges").dxNumberBox("instance").option("value", data.ReplacementCharges || 0);
+            $("#ReplacedEquipment").dxTextBox("instance").option("value", data.ReplacementPropertyNo || "");
+            // $("#ReplacedEquipmentCode").dxTextBox("instance").option("value", data.replacedEquipmentCode || "");
+            $("#ReplacementRemarks").dxTextArea("instance").option("value", data.ReplacementRemarks || "");
+            $("#ReplacementDeliveryNoteNo").dxTextBox("instance").option("value", data.ReplacementDeliveryNoteNo || "");
+            $("#ReplacementChargesToggle").dxCheckBox("instance").option("value", data.IsReplacementChargedToClient || false);
+
+            // 📑 Tab: Equipment Damages
+            $("#EquipmentReturnedInGoodCondition").dxCheckBox("instance").option("value", data.equipmentReturnedInGoodCondition || false);
+            $("#DamageChargesToBeBeared").dxCheckBox("instance").option("value", data.damageChargesToBeBeared || false);
+            $("#DamageCharges").dxNumberBox("instance").option("value", data.damageCharges || 0);
+            $("#DamageRemarks").dxTextArea("instance").option("value", data.damageRemarks || "");
+
+            // 📑 Tab: Transportation Details
+            $("#TransportedBy").dxTextBox("instance").option("value", data.TransportationBackBy || "");
+            $("#VehicleNo").dxTextBox("instance").option("value", data.TransportingBackVehicleNo || "");
+            $("#DriverName").dxTextBox("instance").option("value", data.TransportingBackVehicleDriverName || "");
+            $("#DriverID").dxTextBox("instance").option("value", data.TransportingBackVehicleDriverID || "");
+            $("#MeterReadingOffhired").dxTextBox("instance").option("value", data.OffhireMeterReading || "");
+            $("#MeterReadingHoursOffhired").dxTextBox("instance").option("value", data.OffhireMeterReadingHours || "");
+            // Readonly spans
+            $("#ModifiedBy").text(data.OffhireDetailsModifiedBy || "");
+            $("#ModifiedOn").text(data.OffhireDetailsModifiedOn || "");
+
+            },
+            error: function (xhr) {
+                console.error("Error loading property:", xhr);
+            }
+        });
+    }
+});
+
+
+
+        </script>

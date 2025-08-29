@@ -1,7 +1,8 @@
-@page
-@model QD.ERP.Web.Areas.ERM.Pages.EquipmentsQuotationModel
+﻿@page
+@model QD.ERP.Web.Areas.ERM.Pages.DetailsCostSummaryModel
 @{
 }
+
 <style>
 	.overlay {
 		display: none;
@@ -26,8 +27,6 @@
 		border-radius: 8px;
 		overflow: hidden;
 	}
-
-
 	#overlay-frame {
 		width: 100%;
 		height: 100%;
@@ -141,19 +140,15 @@
 		width: 100%;
 		overflow: hidden;
 	}
-
 </style>
 
 <input id="formId" value="frm201LedgerView" type="hidden" />
 <div class="title">
 	<div class="header-container">
-		<div id="EquipmentsQuotation" class="no-border-input"></div>
+		<div id="RequestforQuotationList" class="no-border-input"></div>
 	</div>
 </div>
-
-
-@await Html.PartialAsync("/Pages/Shared/ERM/QuotationFooter.cshtml")
-
+@await Html.PartialAsync("/Pages/Shared/ERM/DetailsFooter.cshtml")
 <div class="dx-fieldset horizontal-container">
 	@(Html.DevExtreme().DateBox()
 		.ID("frmdateBox")
@@ -177,16 +172,15 @@
 		.TabIndex(3)
 		)
 
-
 	@(Html.DevExtreme().DropDownButton()
 		.ID("ddBtnShowRecords")
 		.Text(new JS("formatMessage('Show Records')"))
 		.Icon("smalliconslayout")
 		.Width(180)
-		.ElementAttr("class", "button-alignment-down")
+		.ElementAttr("class", "button-alignment-up")
 		.TabIndex(4)
 		.SplitButton(true)
-.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
+		.OnButtonClick("function(e) { ddBtnShowRecords_click('range'); }") // MAIN button click
 				.DropDownOptions(options => options.Width(230))
 				.Items(items =>
 				{
@@ -213,70 +207,59 @@
             </div>
         </text>)
 		)
-  
+	<div class="form-group">
+		@(Html.DevExtreme().TextBox()
+				.Label(new JS("formatMessage('Property No:*')"))
+				.LabelMode(EditorLabelMode.Floating)
+				.ID("PropertyNo")
+				.Width("100%"))
+					   	</div>
+	<div class="form-group">
+		@(Html.DevExtreme().TextBox()
+				.Label(new JS("formatMessage('Property Description:*')"))
+				.LabelMode(EditorLabelMode.Floating)
+				.ID("PropertyDescription")
+				.Width("200%"))
+					   	</div>
+
 </div>
 <div class="dx-field ledgerResult">
-	@(
-		Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry40103PropertyQuoteMasterView>()
+	@(Html.DevExtreme().DataGrid<QD.ERP.Web.DAL.Entities.Qry20184PropertyAllocationWtLedger>()
 		.ID("dataGrid")
 		.RemoteOperations(false)
 		.DataSource(new JS("[]"))
 		.Columns(columns =>
 		{
-				columns.Add().Caption(new JS("formatMessage('Quotation Details')")).Columns(subColumns =>
+		columns.Add().Caption(new JS("formatMessage('RFQ Details')")).Columns(subColumns =>
 			{
-				subColumns.AddFor(m => m.QuoteNo).Caption(new JS("formatMessage('Quote No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.QuoteDate).Caption(new JS("formatMessage('Quote Date')")).Alignment(HorizontalAlignment.Center).Visible(true).Format("dd-MMM-yyyy");
-				subColumns.AddFor(m => m.ClientName).Caption(new JS("formatMessage('Client Name')")).Alignment(HorizontalAlignment.Center).Visible(true);
-				subColumns.AddFor(m => m.SalesOrderNo).Caption(new JS("formatMessage('Sales Order No')")).Alignment(HorizontalAlignment.Center).Visible(true);
-			
-			});
-			columns.Add().Caption(new JS("formatMessage('No Of Items')")).Columns(subColumns =>
-			{
-				subColumns.AddFor(m => m.NoOfItems).Caption(new JS("formatMessage('No Of Items')")).Alignment(HorizontalAlignment.Center).Visible(true).AllowEditing(true);
-
-
-
-			});
-
-
-			columns.Add().Caption(new JS("formatMessage('Quoted Amount')")).Columns(subColumns =>
-				{
-				subColumns.AddFor(m => m.TotalGrossAmount).Caption(new JS("formatMessage('Total Gross Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.MobilizationAmount).Caption(new JS("formatMessage('Mobilixation Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.DemobilizationAmount).Caption(new JS("formatMessage('Demomobilization Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
-				subColumns.AddFor(m => m.TotalNetAmount).Caption(new JS("formatMessage('Total Net Amount')")).Alignment(HorizontalAlignment.Center).Visible(true);
-
+				subColumns.AddFor(m => m.PropertyNo).Caption(new JS("formatMessage('Property No')")).Alignment(HorizontalAlignment.Center).Visible(true).GroupIndex(0);
+				subColumns.AddFor(m => m.VoucherNo).Caption(new JS("formatMessage('Voucher No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.VoucherDate).Caption(new JS("formatMessage('Voucher Date')")).Alignment(HorizontalAlignment.Center).Format("dd-MMM-yyyy").Visible(true);
+				subColumns.AddFor(m => m.PropertyNo).Caption(new JS("formatMessage('Property No')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.PropertyDescription).Caption(new JS("formatMessage('Property Description')")).Alignment(HorizontalAlignment.Center).Visible(true);
+				subColumns.AddFor(m => m.AccountHeadName).Caption(new JS("formatMessage('Account Ledger')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.RevenueAmount).Caption(new JS("formatMessage('Revenue Amount')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.ExpenseAmount).Caption(new JS("formatMessage('Expense Amount')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.CostAndRevenueClubbed).Caption(new JS("formatMessage('Total')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Entry Narration')")).Alignment(HorizontalAlignment.Center);
+				subColumns.AddFor(m => m.VoucherNarration).Caption(new JS("formatMessage('Bill Remark')")).Alignment(HorizontalAlignment.Center);
 			});
 		})
-		.Height(680) // Fixed height for the grid
+		.Height("70vh")  
 		.ColumnAutoWidth(true)
 		.Width("98%")
 		.WordWrapEnabled(true)
 		.OnCellClick("function(e) {handleCellClick(e);}")
-		.ColumnChooser(columnChooser => columnChooser.Enabled(false).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
+		.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
 		.AllowColumnReordering(true)
 		.AllowColumnResizing(true)
 		.ColumnFixing(fixing => fixing.Enabled(true))
 		.HeaderFilter(filter => filter.Visible(false))
-		.Paging(p => p.PageSize(10)) // Set desired page size (e.g., 10 rows per page)
-		.Pager(pager =>
-		{
-			pager.ShowPageSizeSelector(true);
-			pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
-			pager.ShowNavigationButtons(true);
-			pager.Visible(true);
-		})
-
+		.Paging(p => p.Enabled(false))
+		.Pager(pager => pager.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
 		.ShowRowLines(true)
-
-		.OnContextMenuPreparing("onContextMenuPreparing")
 		.FilterRow(filterRow => filterRow.Visible(false))
 		.GroupPanel(groupPanel => groupPanel.Visible(false))
 		.ShowBorders(true)
@@ -288,32 +271,73 @@
 			.StorageKey("gridContainerState");
 		})
 		.OnInitialized("function(e) { loadGridState(); }")
+		.Summary(summary =>
+		{
+			summary.GroupItems(items =>
+			{
+				items.Add()
+			.Column("RevenueAmount")
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("Total Revenue: {0}")
+			.ShowInGroupFooter(true);
+
+				items.Add()
+			.Column("ExpenseAmount")
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("Total Expense: {0}")
+			.ShowInGroupFooter(true);
+			});
+			summary.TotalItems(items =>
+			{
+				items.Add()
+			.Column("RevenueAmount")
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("{0}");
+
+				items.Add()
+			.Column("ExpenseAmount")
+			.SummaryType(SummaryType.Sum)
+			.DisplayFormat("{0}");
+			});
+		})
 		)
 
-	
+
+
 
 </div>
 <div id="invoiceErrorPopup"></div>
 
 <script>
+	 $(document).ready(function () {
+		const urlParams = new URLSearchParams(window.location.search);
+
+		const PropertyNo = urlParams.get("PropertyNo") || "";
+		const PropertyDescription = urlParams.get("PropertyDescription") || "";
+
+		// Wait until DevExtreme controls are initialized
+		setTimeout(() => {
+			if ($("#PropertyNo").data("dxTextBox")) {
+				$("#PropertyNo").dxTextBox("instance").option("value", PropertyNo);
+			}
+			if ($("#PropertyDescription").data("dxTextBox")) {
+				$("#PropertyDescription").dxTextBox("instance").option("value", PropertyDescription);
+			}
+		}, 300);
+	});
+
 		 $(function () {
-	$("#EquipmentsQuotation").dxTextBox({
-	text: formatMessage("Equipments Quotation"),
+		ddBtnShowRecords_click('range');
+	$("#RequestforQuotationList").dxTextBox({
+	text: formatMessage("RFQ with Item Details"),
 		readOnly: true,
 		onContentReady: function (e) {
 		$(e.element).addClass("dx-textbox-heading");
 		}
 		});
 	});
-			$(function () {
-			var now = new Date();
-			var firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
-			var tillmonth = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-			$("#frmdateBox").dxDateBox("instance").option("value", firstDay);
-			$("#todateBox").dxDateBox("instance").option("value", tillmonth);
-			ddBtnShowRecords_click('range');
-	});
-	function ddBtnShowRecords_click(duration) {
+
+		function ddBtnShowRecords_click(duration) {
 		 var frmDateBox = $("#frmdateBox").dxDateBox("instance");
 			var toDateBox = $("#todateBox").dxDateBox("instance");
 			var frmDate = new Date(frmDateBox.option("value"));
@@ -373,7 +397,7 @@
 	toDate = toDate.toISOString().split('T')[0];
 
 				$.ajax({
-		url: '/api/Quotation1/GetQuotation',
+			url: '/api/AddNewProperty/GetCostDetails',
 		type: 'GET',
 		data: {
 			fromDate: frmDate,
@@ -392,121 +416,7 @@
 
 
 	}
-	function onContextMenuPreparing(e) {
-		if (e.target === "content" && e.row && e.row.data) {
-			const rowData = e.row.data;
-			const QuoteNo = encodeURIComponent(rowData.QuoteNo);
-			const tenantName = window.tenantName || "defaultTenant";
 
-			e.items = [
-				{
-					text: "Edit Quotation",
-					icon: "edit",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/AddNewQuotation?QuoteNo=${QuoteNo}`;
-						window.location.href = url;
-					}
-				},
-				{
-					text: "Duplicate Quotation",
-		icon: "copy",
-		onItemClick: function () {
-			const quoteNo = e.row.data.QuoteNo;
 
-			if (!quoteNo) {
-				DevExpress.ui.notify("Quote No not found.", "error", 2000);
-				return;
-			}
 
-			DevExpress.ui.dialog.confirm(
-				"You are about to Duplicate this Quotation. Are you sure you want to continue?",
-				"Confirm Duplicate"
-			).done(function (result) {
-				if (result) {
-					$.ajax({
-						url: "/api/Quotation1/DuplicateQuotation",
-						type: "POST",
-						contentType: "application/json",
-						data: JSON.stringify(quoteNo),
-						success: function (response) {
-							DevExpress.ui.notify(response.message, "success", 2000);
-								  ddBtnShowRecords_click('range');
-						},
-						error: function (xhr) {
-							let msg = xhr.responseJSON?.message || "Duplication failed.";
-							DevExpress.ui.notify(msg, "error", 2000);
-							console.error("Clone error:", xhr.responseJSON);
-						}
-					});
-				}
-			});
-		}
-	},
-				{
-					text: "Delete Quotation",
-					icon: "trash",
-					onItemClick: function () {
-						if (confirm(`Are you sure you want to delete RFQ ${Rfqno}?`)) {
-							// Replace with your actual delete logic, e.g., an AJAX call
-							fetch(`/${tenantName}/ERM/DeleteRFQ?Rfqno=${Rfqno}`, {
-								method: 'DELETE'
-							})
-								.then(response => {
-									if (response.ok) {
-										alert(`RFQ ${Rfqno} deleted successfully.`);
-										// Refresh the DataGrid or remove the row
-										e.component.refresh();
-									} else {
-										alert(`Failed to delete RFQ ${Rfqno}.`);
-									}
-								})
-								.catch(error => {
-									console.error('Error deleting RFQ:', error);
-									alert('An error occurred while deleting the RFQ.');
-								});
-						}
-					}
-				},
-				{
-					text: "Unlock the Quotation",
-					icon: "unlock",
-					onItemClick: function () {
-						// Replace with your actual unlock logic, e.g., an AJAX call
-						fetch(`/${tenantName}/ERM/UnlockRFQ?Rfqno=${Rfqno}`, {
-							method: 'POST'
-						})
-							.then(response => {
-								if (response.ok) {
-									alert(`RFQ ${Rfqno} unlocked successfully.`);
-									// Optionally refresh the DataGrid
-									e.component.refresh();
-								} else {
-									alert(`Failed to unlock RFQ ${Rfqno}.`);
-								}
-							})
-							.catch(error => {
-								console.error('Error unlocking RFQ:', error);
-								alert('An error occurred while unlocking the RFQ.');
-							});
-					}
-				},
-				{
-					text: "Revise Quotation",
-					icon: "preferences",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				},
-				{
-					text: "Create Sales Order",
-					icon: "add",
-					onItemClick: function () {
-						const url = `/${tenantName}/ERM/CreatePurchaseOrder?Rfqno=${Rfqno}`;
-						window.location.href = url;
-					}
-				}
-			];
-		}
-	}
 </script>
