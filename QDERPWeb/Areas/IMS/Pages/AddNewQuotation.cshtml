@@ -37,12 +37,9 @@
         overflow-x: hidden;
     }
 
-.form-container1 {
-    margin: 0px 15px;
-    width: 99%;
-    padding: 5px;
-    border-radius: 1px;
-}
+	.form-container1 {
+        padding: 5px 10px;
+    }
 
     .form-container {
         width: 100%;
@@ -273,7 +270,7 @@
                 .Icon("folder")
                 .Text("Quotation Details")
                 .Template(@<text>
-            <div class="dx-card p-3">
+            <div class="p-3">
                 <div class="row g-2">
 
                     <!-- Row 1 -->
@@ -718,7 +715,7 @@
                 </div>
         </text>);
 						item.Add().Text("Branch / Division").Icon("home").Title(new JS("formatMessage('Branch/Divisions')")).Template(@<text>
-            <div class="dx-card p-3">
+            <div class="p-3">
                 <div class="row g-2">
                     <div class="col-md-4">
                         <div style="display: flex;flex-direction: column;gap: 7px;margin-top: 1px;">
@@ -944,7 +941,7 @@
         </text>);
 						item.Add().Text("Signatories").Icon("user").Title(new JS("formatMessage('Signatories')")).Template(@<text>
             <div class="form-container">
-                <div class="dx-card p-3">
+                <div class="p-3">
                     <table class=" table-borderless w-100">
                         <thead>
                            
