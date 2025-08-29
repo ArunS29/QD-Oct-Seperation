@@ -260,6 +260,7 @@
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
+            this.xrSubreport2 = new DevExpress.XtraReports.UI.XRSubreport();
             this.xrPanel2 = new DevExpress.XtraReports.UI.XRPanel();
             this.xrLabel17 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrSubreport1 = new DevExpress.XtraReports.UI.XRSubreport();
@@ -546,14 +547,22 @@
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrSubreport2,
             this.xrPanel2,
             this.xrSubreport1,
             this.xrLabel7,
             this.xrPanel1,
             this.xrPanel3,
             this.xrLabel38});
-            this.Detail.HeightF = 91.63F;
+            this.Detail.HeightF = 91.63001F;
             this.Detail.Name = "Detail";
+            // 
+            // xrSubreport2
+            // 
+            this.xrSubreport2.LocationFloat = new DevExpress.Utils.PointFloat(446.3654F, 68.63001F);
+            this.xrSubreport2.Name = "xrSubreport2";
+            this.xrSubreport2.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.rpt201empReport();
+            this.xrSubreport2.SizeF = new System.Drawing.SizeF(465.6345F, 23F);
             // 
             // xrPanel2
             // 
@@ -599,7 +608,7 @@
             this.xrSubreport1.LocationFloat = new DevExpress.Utils.PointFloat(446.3654F, 41.83334F);
             this.xrSubreport1.Name = "xrSubreport1";
             this.xrSubreport1.ReportSource = new QD.ERP.Web.Areas.Finance.Reports.cashPayments.subCostReport();
-            this.xrSubreport1.SizeF = new System.Drawing.SizeF(465.6346F, 49.79166F);
+            this.xrSubreport1.SizeF = new System.Drawing.SizeF(465.6346F, 25.62498F);
             // 
             // xrLabel7
             // 
@@ -2456,5 +2465,6 @@
         private DevExpress.XtraReports.UI.XRPictureBox xrPictureBox3;
         private DevExpress.XtraReports.UI.XRLabel xrLabel30;
         private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
+        private DevExpress.XtraReports.UI.XRSubreport xrSubreport2;
     }
 }
