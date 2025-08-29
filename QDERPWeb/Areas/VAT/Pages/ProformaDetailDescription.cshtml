@@ -101,11 +101,11 @@
 </style>
 
 
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="DetailsDescription2" class="no-border-title"></div>
     </div>
-</div>
+</div> *@
 <div>
 
     <!-- Detailed Description Section -->
@@ -113,7 +113,7 @@
       @*   <label><b>Detailed Description / Specification:</b></label>
  *@
         <div style="position: absolute; top: 0; right: 0; display: flex; align-items: center; gap: 5px;">
-            <a href="javascript:void(0)" id="linkUseItemDesc" style="text-decoration: underline; font-size: 15px;">Use Item Description</a>
+            <a href="javascript:void(0)" id="linkUseItemDesc" style="text-decoration: underline; font-size: 15px;"></a>
                           @(Html.DevExtreme().Button()
             .ID("btnAddDescription")
             .Icon("plus")
@@ -161,14 +161,14 @@
                 @(Html.DevExtreme().TextArea()
                     .ID("txtRemarks")
                     .ElementAttr("style", "height:150px !important;")
-                    .Label("Remarks:")
+                    .Label(new JS("formatMessage('Remarks:')"))
                     .LabelMode(EditorLabelMode.Floating)
                 )
             </td>
             <td>
                 @(Html.DevExtreme().TextBox()
                                 .ID("Remarks1")
-                                .Label("Discount Text:")
+                                .Label(new JS("formatMessage('Discount Text:')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 )
             </td>
@@ -177,7 +177,7 @@
             <td>
                 @(Html.DevExtreme().TextBox()
                                 .ID("discounttxt")
-                                .Label("Discount Text:(Arabic)")
+                                .Label(new JS("formatMessage('Discount Text:(Arabic)')"))
                                 .LabelMode(EditorLabelMode.Floating)
                                 .Buttons(buttons =>
                                 {
@@ -226,4 +226,7 @@
          const arabicTranslation = await translateToArabic(englishText);
          textBox2Instance.option("value", arabicTranslation);
     }
+    $(function () {
+            $("#linkUseItemDesc").text(formatMessage("Use Item Description"));
+        });
 </script>

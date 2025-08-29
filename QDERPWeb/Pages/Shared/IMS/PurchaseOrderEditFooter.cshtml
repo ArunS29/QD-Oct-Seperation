@@ -96,6 +96,7 @@
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
                 )
+
     </div>
     <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -122,6 +123,26 @@
                     items.Add().Text(new JS("formatMessage('Save Layout')")).Icon("save").OnClick("saveLayoutClick");
                 })
                 .ShowArrowIcon(false)
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnMoveUp")
+                .Text(new JS("formatMessage('Move Up')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("spinup") // Change the icon to an up/down arrow option
+                .ElementAttr(new { @class = "bold-button" })
+                )
+    </div>
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnMoveDown")
+                .Text(new JS("formatMessage('Move Down')"))
+                .Type(ButtonType.Normal)
+                .StylingMode(ButtonStylingMode.Outlined)
+                .Icon("spindown") // Change the icon to an up/down arrow option
+                .ElementAttr(new { @class = "bold-button" })
                 )
     </div>
 </div>
