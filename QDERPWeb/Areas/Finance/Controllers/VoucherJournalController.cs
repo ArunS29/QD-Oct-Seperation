@@ -598,57 +598,91 @@ namespace QDWEB.Areas.Finance.Controllers
 
 
         [HttpPost]
-
-        public IActionResult DeleteAllVoucherEntry(string VoucherNo, string TemporaryNo)
+        public IActionResult DeleteAllVoucherEntry(string VoucherNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
             {
-                if (string.IsNullOrEmpty(VoucherNo) || string.IsNullOrEmpty(TemporaryNo))
+                if (string.IsNullOrEmpty(VoucherNo))
                 {
-                    return BadRequest("Invalid parameters. Both VoucherNo and TemporaryNo are required.");
+                    return BadRequest("Invalid parameters. VoucherNo is required.");
                 }
 
                 try
                 {
-                    using (var transaction = dbContext.Database.BeginTransaction()) // Start transaction
+                    // Use EF execution strategy for retryable operations
+                    var strategy = dbContext.Database.CreateExecutionStrategy();
+
+                    strategy.Execute(() =>
                     {
-                        // 1. Delete from tbl201VoucherEntryTemp where VoucherNo = TemporaryNo
-                        var tempEntries = dbContext.Tbl201VoucherEntryTemps
-                                                    .Where(e => e.VoucherNo == TemporaryNo)
-                                                    .ToList();
-                        if (tempEntries.Any())
+                        using (var transaction = dbContext.Database.BeginTransaction())
                         {
-                            dbContext.Tbl201VoucherEntryTemps.RemoveRange(tempEntries);
-                            dbContext.SaveChanges();
+                            // 1. Delete Temp
+                            var tempEntries = dbContext.Tbl201VoucherEntryTemps
+                                                       .Where(e => e.VoucherNo == VoucherNo)
+                                                       .ToList();
+                            if (tempEntries.Any())
+                            {
+                                dbContext.Tbl201VoucherEntryTemps.RemoveRange(tempEntries);
+                                dbContext.SaveChanges();
+                            }
+
+                            // 2. Delete Entries
+                            var entryRecords = dbContext.Tbl201VoucherEntries
+                                                        .Where(e => e.VoucherNo == VoucherNo)
+                                                        .ToList();
+                            if (entryRecords.Any())
+                            {
+                                dbContext.Tbl201VoucherEntries.RemoveRange(entryRecords);
+                                dbContext.SaveChanges();
+                            }
+
+                            // 3. Delete Masters
+                            var masterEntries = dbContext.Tbl201VoucherMasters
+                                                         .Where(m => m.VoucherNo == VoucherNo)
+                                                         .ToList();
+                            if (masterEntries.Any())
+                            {
+                                dbContext.Tbl201VoucherMasters.RemoveRange(masterEntries);
+                                dbContext.SaveChanges();
+                            }
+
+                            // 4. Delete Cost Allocation
+                            var costEntries = dbContext.Tbl201CostAllocationMasters
+                                                       .Where(m => m.VoucherNo == VoucherNo)
+                                                       .ToList();
+                            if (costEntries.Any())
+                            {
+                                dbContext.Tbl201CostAllocationMasters.RemoveRange(costEntries);
+                                dbContext.SaveChanges();
+                            }
+
+                            // 5. Delete Property
+                            var propertyEntries = dbContext.Tbl20122PropertyAllocationMasters
+                                                           .Where(m => m.VoucherNo == VoucherNo)
+                                                           .ToList();
+                            if (propertyEntries.Any())
+                            {
+                                dbContext.Tbl20122PropertyAllocationMasters.RemoveRange(propertyEntries);
+                                dbContext.SaveChanges();
+                            }
+
+                            // 6. Delete Employee
+                            var employeeEntries = dbContext.Tbl20104EmployeeAllocationMasters
+                                                           .Where(m => m.VoucherNo == VoucherNo)
+                                                           .ToList();
+                            if (employeeEntries.Any())
+                            {
+                                dbContext.Tbl20104EmployeeAllocationMasters.RemoveRange(employeeEntries);
+                                dbContext.SaveChanges();
+                            }
+
+                            transaction.Commit();
                         }
+                    });
 
-                        // 2. Delete from tbl201VoucherEntry where VoucherNo = VoucherNo
-                        var entryRecords = dbContext.Tbl201VoucherEntries
-                                                     .Where(e => e.VoucherNo == VoucherNo)
-                                                     .ToList();
-                        if (entryRecords.Any())
-                        {
-                            dbContext.Tbl201VoucherEntries.RemoveRange(entryRecords);
-                            dbContext.SaveChanges();
-                        }
-
-                        // 3. Delete from tbl201VoucherMaster where VoucherNo = VoucherNo
-                        var masterEntries = dbContext.Tbl201VoucherMasters
-                                                      .Where(m => m.VoucherNo == VoucherNo)
-                                                      .ToList();
-                        if (masterEntries.Any())
-                        {
-                            dbContext.Tbl201VoucherMasters.RemoveRange(masterEntries);
-                            dbContext.SaveChanges();
-                        }
-
-                        transaction.Commit(); // Commit only if all deletions succeed
-
-                        // Fetch updated data after deletion
-                        var updatedData = dbContext.Tbl201VoucherMasters.ToList();
-
-                        return Ok(new { data = updatedData, message = "Voucher deleted successfully" });
-                    }
+                    // Fetch updated data after deletion
+                    var updatedData = dbContext.Tbl201VoucherMasters.ToList();
+                    return Ok(new { data = updatedData, message = "Voucher deleted successfully" });
                 }
                 catch (Exception ex)
                 {
@@ -658,6 +692,7 @@ namespace QDWEB.Areas.Finance.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+
         [HttpPost]
         public async Task<ActionResult> DeleteAllEntries(DataSourceLoadOptions loadOptions, string VoucherNo)
         {
