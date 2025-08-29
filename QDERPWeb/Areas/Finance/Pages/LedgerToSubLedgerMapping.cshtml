@@ -136,7 +136,7 @@
             .Icon("smalliconslayout")
             .Width(300)
             .TabIndex(4)
-            .Text("Show Mapping Details")
+            .Text(new JS("formatMessage('Show Mapping Details')"))
             .OnClick("toggleGrids")
             )
     </div>
@@ -169,16 +169,16 @@
         )
         .Columns(columns =>
         {
-            columns.Add().DataField("AccountNoInVoucher").Caption("Account No");
+            columns.Add().DataField("AccountNoInVoucher").Caption(new JS("formatMessage('Account No')"));
            // columns.Add().DataField("AccountHead").Caption("Ledger Name");
-            columns.Add().DataField("AccountHead").Caption("Ledger Name").GroupIndex(0);
-            columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No");
-            columns.Add().DataField("VoucherType").Caption("Voucher Type");
-            columns.Add().DataField("AmountInVoucherFormatted").Caption("Voucher Amount");
-            columns.Add().DataField("AmountInSubLedgerFormatted").Caption("Adjusted/Mapped");
-            columns.Add().DataField("BalanceInVoucher").Caption("Balance Amount");
-            columns.Add().DataField("Mapping").Caption("Mapping Status");
-            columns.Add().DataField("DrCr").Caption("DrCr");
+            columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Ledger Name')")).GroupIndex(0);
+            columns.Add().DataField("VoucherNoInVoucher").Caption(new JS("formatMessage('Voucher No')"));
+            columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')"));
+            columns.Add().DataField("AmountInVoucherFormatted").Caption(new JS("formatMessage('Voucher Amount')"));
+            columns.Add().DataField("AmountInSubLedgerFormatted").Caption(new JS("formatMessage('Adjusted/Mapped')"));
+            columns.Add().DataField("BalanceInVoucher").Caption(new JS("formatMessage('Balance Amount')"));
+            columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping Status')"));
+            columns.Add().DataField("DrCr").Caption(new JS("formatMessage('DrCr')"));
         })
         )
   
@@ -202,17 +202,18 @@
         )
         .Columns(columns =>
         {
-            columns.Add().DataField("VoucherNoInVoucher").Caption("Voucher No In Voucher");
-            columns.Add().DataField("VoucherNoInSubLedger").Caption("VoucherNo InSubLedger");
-            columns.Add().DataField("VoucherRefNo").Caption("Voucher RefNo");
-            columns.Add().DataField("AccountNoInVoucher").Caption("AccountNo In Voucher");
-            columns.Add().DataField("AccountNoInSubLedger").Caption("AccountNo In SubLedger");
-            columns.Add().DataField("VoucherType").Caption("Voucher Type");
-            columns.Add().DataField("ReferenceNoInSubLedger").Caption("ReferenceNo In SubLedger");
-            columns.Add().DataField("AmountInVoucherFormatted").Caption("AmountIn Voucher Formatted");
-            columns.Add().DataField("AmountInSubLedgerFormatted").Caption("AmountIn SubLedger Formatted");
-            columns.Add().DataField("TotalAmount").Caption("TotalAmount");
-            columns.Add().DataField("Mapping").Caption("Mapping");
+            columns.Add().DataField("VoucherNoInVoucher").Caption(new JS("formatMessage('Voucher No In Voucher')"));
+            columns.Add().DataField("VoucherNoInSubLedger").Caption(new JS("formatMessage('Voucher No In SubLedger')"));
+            columns.Add().DataField("VoucherRefNo").Caption(new JS("formatMessage('Voucher Ref No')"));
+            columns.Add().DataField("AccountNoInVoucher").Caption(new JS("formatMessage('Account No In Voucher')"));
+            columns.Add().DataField("AccountNoInSubLedger").Caption(new JS("formatMessage('Account No In SubLedger')"));
+            columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')"));
+            columns.Add().DataField("ReferenceNoInSubLedger").Caption(new JS("formatMessage('Reference No In SubLedger')"));
+            columns.Add().DataField("AmountInVoucherFormatted").Caption(new JS("formatMessage('Amount In Voucher Formatted')"));
+            columns.Add().DataField("AmountInSubLedgerFormatted").Caption(new JS("formatMessage('Amount In SubLedger Formatted')"));
+            columns.Add().DataField("TotalAmount").Caption(new JS("formatMessage('Total Amount')"));
+            columns.Add().DataField("Mapping").Caption(new JS("formatMessage('Mapping')"));
+
         })
         )
 </div>

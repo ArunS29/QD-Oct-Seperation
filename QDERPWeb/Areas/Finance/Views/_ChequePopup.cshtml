@@ -200,7 +200,7 @@
                 <div class="col-md-2 col-12">
                     <div class="form-group">
                         @(Html.DevExtreme().NumberBox()
-                            .Label("CVR Amount")
+                            .Label(new JS("formatMessage('CVR Amount')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("OriginalAmount")
                             .Width("100%")
@@ -288,7 +288,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     @(Html.DevExtreme().NumberBox()
-                                                .Label("CVR")
+                                                .Label(new JS("formatMessage('CVR')"))
                                                 .LabelMode(EditorLabelMode.Floating)
                                                 .ID("txtchequeCurrencyRate")
                                                 .Value(1)

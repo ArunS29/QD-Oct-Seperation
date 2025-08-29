@@ -414,7 +414,7 @@ buttons.Add()
 
                   <div class="form-group col-md-1 col-sm-6">
                         @(Html.DevExtreme().NumberBox()
-                            .Label("CVR")
+                            .Label(new JS("formatMessage('CVR')"))
                             .LabelMode(EditorLabelMode.Floating)
                             .ID("txtCurrencyRate")
                             .Value(1)

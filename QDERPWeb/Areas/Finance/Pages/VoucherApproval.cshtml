@@ -441,7 +441,7 @@
 
                 columns.Add().DataField("AuditVerifiedBy").Caption(new JS("formatMessage('Audit')")).Width(120).Visible(false)
             ;
-                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('VoucherType')")).Width(120).Visible(true)
+                columns.Add().DataField("VoucherType").Caption(new JS("formatMessage('Voucher Type')")).Width(120).Visible(true)
             ;
                 // Checkbox Columns for Approved, Verified, and Audit
                 columns.Add().DataField("IsApproved").Caption(new JS("formatMessage('Approved')")).Width(120)
@@ -492,7 +492,7 @@
             .Visible(false)
            ;
 
-                columns.Add().DataField("VoucherEnteredOn").Caption(new JS("formatMessage('Entered On')")).Width(120)
+                columns.Add().DataField("VoucherEnteredOn").Caption(new JS("formatMessage('Entered on')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
        ;
