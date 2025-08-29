@@ -52,12 +52,6 @@
     line-height: 35px; /* Align text vertically */
 }
 
-.horizontal-container {
-    display: flex;
-    gap: 20px; /* Adds spacing between buttons */
-    justify-content: start; /* Aligns buttons to the left */
-    align-items: flex-end; /* Vertically centers the buttons */
-}
 
 * {
     /*    color: #525252;*/
@@ -229,6 +223,7 @@ body {
     font-weight: bold;
     font-size: 20px !important;
     color: white;
+    width: 340px;
     pointer-events: none; /* Prevents hover and click effects */
 }
 
@@ -365,7 +360,7 @@ body.dark-mode {
     display: flex;
     gap: 10px; /* Adds spacing between buttons */
     justify-content: start; /* Aligns buttons to the left */
-    align-items: center; /* Vertically centers the buttons */
+    align-items: flex-end; /* Vertically centers the buttons */
     margin: 0px 10px;
 }
 

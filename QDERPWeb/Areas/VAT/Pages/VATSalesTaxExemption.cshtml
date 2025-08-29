@@ -66,24 +66,38 @@
     </div>
 
     <script>
-        const reasons = [
-            "Financial services mentioned in Article 29 of the VAT Regulations",
-            "Life insurance services mentioned in Article 29 of the VAT Regulations",
-            "Real estate transactions mentioned in Article 30 of the VAT Regulations",
-            "Export of goods",
-            "Export of services",
-            "International transport of Goods",
-            "International transport of passengers",
-            "Services directly connected and incidental to a Supply of international passenger transport",
-            "International Transport of Passengers",
-            "Services directly connected and incidental to a Supply of international passenger transport",
-            "Supply of a qualifying means of transport",
-            "Any services relating to Goods or Passenger transportation, asdefined in article tw",
-            "Medicines and medical equipment",
-            "Qualifying metals",
-            "Private Education to Saudi Citizen",
-            "Private Healthcare o Saudi Citizen"
-        ];
+                   debugger;
+        let reasons = [], TaxSlabCode=0; // start with empty array
+
+            $(document).ready(function () {
+     
+        var urlParams = new URLSearchParams(window.location.search);
+        TaxSlabCode = urlParams.get('TaxSlabCode');
+            });
+
+    $.ajax({
+        url: `/api/VATModule/GetByTaxSlabCode?TaxSlabCode=${encodeURIComponent(TaxSlabCode)}`,
+        type: "GET",
+        dataType: "json",
+        success: function (response) {
+            
+            if (response && response.data) {
+                reasons = response.data.map(item => item.ReasonDescription);
+                console.log("Reasons from API:", reasons);
+
+                // Example: populate a dropdown
+                // let dropdown = $("#reasonDropdown");
+                // dropdown.empty();
+                // $.each(reasons, function (i, reason) {
+                //     dropdown.append($("<option>").val(reason).text(reason));
+                // });
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error("Error fetching reasons:", error);
+        }
+    });
+
 
         $("#radioGroup").dxRadioGroup({
             items: reasons,

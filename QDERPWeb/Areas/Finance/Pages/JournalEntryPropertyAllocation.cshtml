@@ -148,10 +148,10 @@
 			<div class="col-md-1">
 				<!-- Adjust width as necessary -->
 				<div class="form-group">
-					<label for="DrCr">Dr/Cr</label>
 					@(
 												Html.DevExtreme().SelectBox()
 												.ID("PaDrCr")
+										.Label(new JS("formatMessage('Dr/Cr')"))
 												.DataSource(new[] { drCr })
 												.Value(drCr)
 												.ReadOnly(true)
@@ -164,10 +164,9 @@
 			<!-- Expenses / Returns -->
 			<div class="col-md-3">
 				<div class="form-group">
-					<label for="VoucherRefNo">Expenses Ledger Account</label>
 					@(
 												Html.DevExtreme().SelectBox()
-												.ID("PropertyExpenses")
+										.ID("PropertyExpenses").Label(new JS("formatMessage('Expenses Ledger Account')"))
 												.DataSource(new[] { accountHead }) // Only the selected AccountHead
 												.Value(accountHead) // Pre-selected value
 												.ReadOnly(true)
@@ -178,9 +177,9 @@
 			<!-- Amount -->
 			<div class="col-md-2">
 				<div class="form-group">
-					<label for="txtVoucherAmount">Amount</label>
 					@(
 												Html.DevExtreme().NumberBox()
+										.Label(new JS("formatMessage('Amount')"))
 												.ID("propertyAmount")
 												.Value(voucherAmountParsed)
 												.ShowSpinButtons(true)
@@ -248,7 +247,7 @@
 
 						columns.Add()
 					.DataField("PropertyDescription")
-					.Caption("Property Name")
+					.Caption(new JS("formatMessage('Property Name')"))
 					.Width(500)
 					.AllowEditing(true)
 					// Normal Grid Mode
@@ -319,7 +318,7 @@
 
 		</text>);
 						columns.Add()
-					.Caption("Effective Date")
+					.Caption(new JS("formatMessage('Effective Date')"))
 					.DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
 					.AllowEditing(true)
 					// Normal Grid Mode
@@ -337,10 +336,10 @@
 			.DisplayFormat("dd-MMM-yyyy")
 			)
 		</text>);
-						@* columns.Add().Caption("Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
-						columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-						columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-						columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
+						@* columns.Add().Caption(new JS("formatMessage('Effective Date").DataField("EffectiveDate").AllowEditing(false); *@
+					columns.Add().Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+					columns.Add().Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(100).AllowEditing(false);
+					columns.Add().Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
 
 					})
 				//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
@@ -387,14 +386,14 @@
 
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertySave")
-								.Text("Save & Close")
+								.Text(new JS("formatMessage('Save & Close')"))
 								.Type(ButtonType.Normal)
 								.StylingMode(ButtonStylingMode.Outlined)
 								.Icon("save")
 								)
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertyPrint")
-								.Text("Print")
+								.Text(new JS("formatMessage('Print')"))
 								.Type(ButtonType.Normal)
 								.StylingMode(ButtonStylingMode.Outlined)
 								.Icon("print")
@@ -402,13 +401,13 @@
 								)
 				@(Html.DevExtreme().Button()
 								.ID("btnPropertyBack")
-								.Text("Back")
+								.Text(new JS("formatMessage('Back')"))
 								.Icon("arrowleft")
 								.OnClick("closeParentModal")
 								)
 				@(Html.DevExtreme().Button()
 								.ID("btnpropertyDelete")
-								.Text("Delete")
+								.Text(new JS("formatMessage('Delete')"))
 								.Icon("close")
 								)
 			</div>
@@ -452,10 +451,10 @@
 			.Selection(s => s.Mode(SelectionMode.Single))
 			.Columns(columns =>
 			{
-				columns.Add().Caption("Property No").DataField("PropertyNo");
-				columns.Add().Caption("Property Description").DataField("PropertyDescription");
-				columns.Add().Caption("Property Type").DataField("PropertyType");
-				columns.Add().Caption("Plate No").DataField("PlateNo");
+					columns.Add().Caption(new JS("formatMessage('Property No')")).DataField("PropertyNo");
+					columns.Add().Caption(new JS("formatMessage('Property Description')")).DataField("PropertyDescription");
+					columns.Add().Caption(new JS("formatMessage('Property Type')")).DataField("PropertyType");
+					columns.Add().Caption(new JS("formatMessage('Plate No')")).DataField("PlateNo");
 			})
 			)
 	}

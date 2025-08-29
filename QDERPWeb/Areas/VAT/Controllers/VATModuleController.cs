@@ -672,7 +672,7 @@ namespace QD.ERP.Web.Areas.VAT.Controllers
                 {
                     var query = from g in dbContext.Tbl20164GoodsAndServicesMasters
                                 join u in dbContext.Tbl40111PropertyUnitCodes
-                                    on g.GsgroupId equals u.UnitCode into gj
+                                    on g.GspackingUnit equals u.UnitCode into gj
                                 from unit in gj.DefaultIfEmpty()
                                 orderby g.Gscode
                                 select new
@@ -1918,7 +1918,7 @@ documentNo: unitType
 
 
         [HttpPost]
-        [RequirePermission("frm20161VATInvoiceEdit_btnVerify")]
+        //[RequirePermission("frm20161VATInvoiceEdit_btnVerify")]
         public async Task<ActionResult> VerifyVoucher(string InvoiceNo)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -1980,7 +1980,7 @@ documentNo: unitType
         }
 
         [HttpPost]
-        [RequirePermission("frm20161VATInvoiceEdit_btnApprove")]
+        //[RequirePermission("frm20161VATInvoiceEdit_btnApprove")]
         public async Task<ActionResult> ApproveVoucher(string InvoiceNo, bool IsDirectApproval)
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
@@ -5297,9 +5297,9 @@ documentNo: invoiceNo
             return PartialView("~/Areas/VAT/Pages/CreditDetailDescription.cshtml", Description); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
         [HttpGet]
-        public IActionResult VATSalesTaxExemption()
+        public IActionResult VATSalesTaxExemption(int TaxSlabCode)
         {
-
+            ViewBag.TaxSlabCode = TaxSlabCode;
             return PartialView("~/Areas/VAT/Pages/VATSalesTaxExemption.cshtml"); // Ensure this is inside /Views/VoucherEntryReceipts/
         }
 
@@ -7143,6 +7143,33 @@ documentNo: InvChildSlNo
             return Unauthorized(new { message = "Invalid tenant.", success = false });
 
         }
+
+        [HttpGet]
+        public async Task<IActionResult> GetByTaxSlabCode(int taxSlabCode)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var reasons = await dbContext.Tbl00110TaxExemptionReasons
+                        .Where(r => r.TaxSlabCode == taxSlabCode)
+                        .ToListAsync();
+
+                    if (reasons == null || !reasons.Any())
+                        return NotFound(new { message = $"No records found for TaxSlabCode = {taxSlabCode}", success = false });
+
+                    return Ok(new { data = reasons, success = true });
+                }
+
+                return Unauthorized(new { message = "Invalid tenant.", success = false });
+            }
+            catch (Exception ex)
+            {
+                // log ex here if needed
+                return StatusCode(500, new { message = "An error occurred while processing your request.", details = ex.Message, success = false });
+            }
+        }
+
 
         [HttpGet]
         public async Task<IActionResult> GetInvoiceNoFromCreditNote(string creditNoteNo)

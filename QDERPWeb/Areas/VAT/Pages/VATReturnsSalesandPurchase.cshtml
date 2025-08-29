@@ -755,45 +755,45 @@
                         <td id="standardratedsalesvatss"></td>
 
                             <td>
-                                @(Html.DevExtreme().NumberBox().ID("DssRevenue").Disabled(true).Format("#,##0.00") // 👈 Formats as 4,216.00
+                            @(Html.DevExtreme().NumberBox().ID("DssRevenue").Disabled(true).Format(new JS("getDynamicFormat()"))
                                                                 .ShowSpinButtons(false).ElementAttr("class", "text-right-number"))
                             </td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DssCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DssSalesTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DssCreditNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DssSalesTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
         </tr>
         <tr>
             <td>1a</td>
             <td id="standardratedsalesvat"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15Revenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15CreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15SalesTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("Dss15Revenue").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("Dss15CreditNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("Dss15SalesTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
         </tr>
         <tr>
             <td>2</td>
             <td id="salestocustomerinvat"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("GccRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("GccCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("GccRevenue").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("GccCreditNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr>
             <td>3</td>
             <td id="zerorateddomesticsales"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DzrRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DzrCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DzrRevenue").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DzrCreditNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr>
             <td>4</td>
             <td id="exportssalesreturns"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("ExpRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("ExpCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("ExpRevenue").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("ExpCreditNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr>
             <td>5</td>
             <td id="salesvatexemptsales"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DexRevenue").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DexCreditNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DexRevenue").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DexCreditNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
             <td></td>
         </tr>
         <tr class="total-row">
@@ -804,7 +804,7 @@
                                     @(Html.DevExtreme().NumberBox()
                                                                         .ID("RevenueTotal")
                                                                         .Disabled(true)
-                                                                        .Format("#,##0.00")
+                                                                        .Format(new JS("getDynamicFormat()"))
                                                                // .OnValueChanged("calculateRevenueTotal")
 
                                                                         .ShowSpinButtons(false)
@@ -820,7 +820,7 @@
                                     @(Html.DevExtreme().NumberBox()
                                                                         .ID("CreditNoteTotal")
                                                                         .Disabled(true)
-                                                                        .Format("#,##0.00")
+                                                                        .Format(new JS("getDynamicFormat()"))
                                                                         .ShowSpinButtons(false)
                                                                         .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
                                     <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('CreditNoteTotal', 'Total Sales - Credit Note')"></span>
@@ -832,7 +832,7 @@
                                 @(Html.DevExtreme().NumberBox()
                                                                 .ID("DSSTotalSalesTax")
                                                                 .Disabled(true)
-                                                                .Format("#,##0.00")
+                                                                .Format(new JS("getDynamicFormat()"))
                                                                 .ShowSpinButtons(false)
                                                                 .ElementAttr("class", "dx-numberbox-iconed text-right-number"))
                                 @* <span class="print-icon fas fa-print" title="Print" onclick="printNumberBox('DSSTotalSalesTax', 'Total Sales - Sales Tax')"></span> *@
@@ -863,59 +863,61 @@
                         <tr>
                             <td>7</td>
 						<td id="standadrrateddomesticpurchase"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DssDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DssPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DssDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DssPurTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
                             <td>7a</td>
                             <td id="standardratesdomesticpurchasevatreturns5"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DssPurchases15Perc").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("Dss15PerPurTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
                         </tr>
                         <tr>
-                            <td>8</td>
-                            <td id="importsasubjectvatpaid"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("IPCDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("IPCPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                        </tr>
-                        <tr>
-                            <td>8a</td>
-                            <td id="importssubjectpaidcustomer"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                        </tr>
-                        <tr>
-                            <td>9</td>
-                            <td id="importssubjecttovathru"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("RCMDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("RCMPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                        </tr>
-                        <tr>
-                            <td>9a</td>
-                            <td id="importssubjecttovatrcm"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases15Perc").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerPurTaxAfterAdj").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                        </tr>
-                        <tr>
-                            <td>10</td>
-                            <td id="zeroratepurchasevat"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DZRPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DZRDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td></td>
-                        </tr>
-                        <tr>
-                            <td>11</td>
-                            <td id="exemptpurchasevat"></td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DEXPurchases").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td>@(Html.DevExtreme().NumberBox().ID("DEXDebitNote").Disabled(true).Format("#,##0.00").ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
-                            <td></td>
-                        </tr>
+                    <tr>
+                        <td>8</td>
+                        <td id="importsasubjectvatpaid"></td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("IPCDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("IPCPurTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                    </tr>
+                    <tr>
+                        <td>8a</td>
+                        <td id="importssubjectpaidcustomer"></td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("IPCPurchases15Perc").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("IPC15PerPurTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                    </tr>
+                    <tr>
+                        <td>9</td>
+                        <td id="importssubjecttovathru"></td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("RCMDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("RCMPurTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                    </tr>
+                    <tr>
+                        <td>9a</td>
+                        <td id="importssubjecttovatrcm"></td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("RCMPurchases15Perc").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("RCM15PerPurTaxAfterAdj").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                    </tr>
+                    <tr>
+                        <td>10</td>
+                        <td id="zeroratepurchasevat"></td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DZRPurchases").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DZRDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td>11</td>
+                        <td id="exemptpurchasevat"></td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DEXPurchases").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td>@(Html.DevExtreme().NumberBox().ID("DEXDebitNote").Disabled(true).Format(new JS("getDynamicFormat()")).ShowSpinButtons(false).ElementAttr("class", "text-right-number"))</td>
+                        <td></td>
+                    </tr>
+
                         <tr class="total-row">
                             <td>12</td>
                             <td id="totalpurchasevatreturnsvat"></td>
@@ -985,6 +987,8 @@
 
     //     $("#RevenueTotal").dxNumberBox("instance").option("value", total.toFixed(2));
     // }
+
+    let currencyDecimals = 2;
 
            function calculateRevenueTotal() {
         var total =
@@ -1549,4 +1553,22 @@
                             $(function () {
                                 $("#standardratedsalesvat").text(formatMessage("Standard rated Sales 15%"));
                             });
+
+
+                                         // Fetch from API when page loads
+    $.get("/api/VATModule/GetCurrencyDecimals")
+        .done(function (decimals) {
+            currencyDecimals = decimals || 2;
+            // applyDynamicFormat(currencyDecimals);
+        })
+        .fail(function () {
+            DevExpress.ui.notify("Failed to load currency decimals, defaulting to 2", "warning", 3000);
+        });
+
+        function getDynamicFormat() {
+        // Example: currencyDecimals = 3 → "#,##0.000"
+        let decimals = currencyDecimals || 2;
+        return "#,##0." + "0".repeat(decimals);
+    }
+
 </script>

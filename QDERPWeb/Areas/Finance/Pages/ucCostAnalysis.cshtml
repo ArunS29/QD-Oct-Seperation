@@ -203,7 +203,7 @@
         <!-- Start Date Picker -->
         @(Html.DevExtreme().DateBox()
             .ID("frmdateBox")
-            .Label("Start Date")
+            .Label(new JS("formatMessage('Start Date')"))
             .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Date")
             .Type(DateBoxType.Date)
@@ -217,7 +217,7 @@
         <!-- End Date Picker -->
         @(Html.DevExtreme().DateBox()
             .ID("todateBox")
-            .Label("End Date")
+            .Label(new JS("formatMessage('End Date')"))
             .LabelMode(EditorLabelMode.Floating)
             .InputAttr("aria-label", "Date")
             .Type(DateBoxType.Date)
@@ -231,7 +231,7 @@
         <!-- Use Effective Date Checkbox -->
             @(Html.DevExtreme().CheckBox()
                         .ID("useEffectiveDate")
-                        .Text("Use Effective Date")
+                        .Text(new JS("formatMessage('Use Effective Date')"))
                         .Value(false)
                         .OnValueChanged("onEffectiveDateChange")
                         )
@@ -293,8 +293,8 @@
                 .OnSelectionChanged("onCostCenterSelected")
                 .Columns(columns =>
                 {
-                    columns.Add().DataField("CostAllocationUnit").Caption("Cost Center").Width(250);
-                    columns.Add().DataField("CostAllocationGroup").Caption("Group").Width(250);
+                    columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Center')")).Width(250);
+                    columns.Add().DataField("CostAllocationGroup").Caption(new JS("formatMessage('Group')")).Width(250);
                 })
             )
 }
@@ -679,41 +679,42 @@
         function initializePivotGrid(data) {
         $("#pivotGridContainer").dxPivotGrid({
             dataSource: {
-                fields: [
-                    { dataField: "CostAllocationMasterGroup", area: "row", caption: "Cost Master", expanded: true },
-                    { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center Group", expanded: true },
-                    { dataField: "CostAllocationUnit", area: "row", caption: "Cost Unit", expanded: true },
-                    { dataField: "PL", area: "column", caption: "Income / Expense" },
-                    { dataField: "VoucherTypeAndNo", area: "filter", caption: "Voucher No", visible: true },
+                  fields: [
+        { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Master"), expanded: true },
+        { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Cost Center Group"), expanded: true },
+        { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Unit"), expanded: true },
+        { dataField: "PL", area: "column", caption: formatMessage("Income / Expense") },
+        { dataField: "VoucherTypeAndNo", area: "filter", caption: formatMessage("Voucher No"), visible: true },
 
-                    // Hidden fields
-                    { dataField: "Income", area: "data", summaryType: "sum", caption: "Test Income", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
-                    { dataField: "ConvertedExpenses", area: "data", summaryType: "sum", caption: "Trans Expenses", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
-                    { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Trans Grand Total", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
+        // Hidden fields
+        { dataField: "Income", area: "data", summaryType: "sum", caption: formatMessage("Test Income"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
+        { dataField: "ConvertedExpenses", area: "data", summaryType: "sum", caption: formatMessage("Trans Expenses"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
+        { dataField: "CostAmount", area: "data", summaryType: "sum", caption: formatMessage("Trans Grand Total"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter, visible: false },
 
-                    // Main fields to show
-                    {
-                        dataField: "ConvertdIncome",
-                        area: "data",
-                        caption: "Income",
-                        summaryType: "sum",
-                        format: { type: "fixedPoint", precision: 2 }
-                    },
-                    {
-                        dataField: "ConvertedExpenses",
-                        area: "data",
-                        caption: "Expenses",
-                        summaryType: "sum",
-                        format: { type: "fixedPoint", precision: 2 }
-                    },
-                    {
-                        dataField: "ConvertedCostAmount",
-                        area: "data",
-                        caption: "Grand Total",
-                        summaryType: "sum",
-                        format: { type: "fixedPoint", precision: 2 }
-                    }
-                ],
+        // Main fields to show
+        {
+            dataField: "ConvertdIncome",
+            area: "data",
+            caption: formatMessage("Income"),
+            summaryType: "sum",
+            format: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            dataField: "ConvertedExpenses",
+            area: "data",
+            caption: formatMessage("Expenses"),
+            summaryType: "sum",
+            format: { type: "fixedPoint", precision: 2 }
+        },
+        {
+            dataField: "ConvertedCostAmount",
+            area: "data",
+            caption: formatMessage("Grand Total"),
+            summaryType: "sum",
+            format: { type: "fixedPoint", precision: 2 }
+        }
+    ],
+
                 store: data
             },
 
@@ -905,122 +906,88 @@
         const dataSource = pivotGrid.getDataSource();
 
         // Base fields (always visible)
-        const baseFields = [
-            { dataField: "CostAllocationMasterGroup", area: "row", caption: "Cost Master", expanded: true },
-            { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center Group", expanded: true },
-            { dataField: "CostAllocationUnit", area: "row", caption: "Cost Unit", expanded: true },
-            { dataField: "PL", area: "column", caption: "Income / Expense" },
-            { dataField: "Income", area: "data", summaryType: "sum", caption: "Income", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
-            // Expenses
-            { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Expenses", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
-            // Grand Total
-            { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total", format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter }
-        ];
+            const baseFields = [
+        { dataField: "CostAllocationMasterGroup", area: "row", caption: formatMessage("Cost Master"), expanded: true },
+        { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Cost Center Group"), expanded: true },
+        { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Unit"), expanded: true },
+        { dataField: "PL", area: "column", caption: formatMessage("Income / Expense") },
+        { dataField: "Income", area: "data", summaryType: "sum", caption: formatMessage("Income"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
+        { dataField: "Expenses", area: "data", summaryType: "sum", caption: formatMessage("Expenses"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter },
+        { dataField: "CostAmount", area: "data", summaryType: "sum", caption: formatMessage("Grand Total"), format: { type: "fixedPoint", precision: 2 }, customizeText: customFormatter }
+    ];
 
-        // Extra filter fields
-        const extraFields = [
-            { dataField: "MasterGroup", area: "filter", caption: "Account Master" },
-            { dataField: "AccountGroup", area: "filter", caption: "Account Group" },
-            { dataField: "AccountHead", area: "filter", caption: "Ledger Account Name" },
-            { dataField: "CostCenterIncharge", area: "filter", caption: "Cost Center Incharge" },
-            { dataField: "CostAllocationUnit", area: "filter", caption: "Cost Unit ID" },
-            { dataField: "VoucherType", area: "filter", caption: "Voucher Type" },
-            { dataField: "VoucherTypeAndNo", area: "filter", caption: "Voucher No" },
-            {
-                dataField: "EffectiveDate",
-                area: "filter",
-                caption: "Effective Date",
-                format: "dd-MMM-yyyy"
-            },
-            {
-                dataField: "VoucherDate", area: "filter", caption: "Voucher Date", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = date.toLocaleString('en-US', { month: 'short' });
-                    const year = date.getFullYear();
-                    return `${day}-${month}-${year}`;
-                }
-            },
-            { dataField: "VoucherEntryID", area: "filter", caption: "Voucher Entry ID" },
-            {
-                dataField: "VoucherMonth", area: "filter", caption: "Voucher Month", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
+    // Extra filter fields
+    const extraFields = [
+        { dataField: "MasterGroup", area: "filter", caption: formatMessage("Account Master") },
+        { dataField: "AccountGroup", area: "filter", caption: formatMessage("Account Group") },
+        { dataField: "AccountHead", area: "filter", caption: formatMessage("Ledger Account Name") },
+        { dataField: "CostCenterIncharge", area: "filter", caption: formatMessage("Cost Center Incharge") },
+        { dataField: "CostAllocationUnit", area: "filter", caption: formatMessage("Cost Unit ID") },
+        { dataField: "VoucherType", area: "filter", caption: formatMessage("Voucher Type") },
+        { dataField: "VoucherTypeAndNo", area: "filter", caption: formatMessage("Voucher No") },
+        { dataField: "EffectiveDate", area: "filter", caption: formatMessage("Effective Date"), format: "dd-MMM-yyyy" },
+        { dataField: "VoucherDate", area: "filter", caption: formatMessage("Voucher Date"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }},
+        { dataField: "VoucherEntryID", area: "filter", caption: formatMessage("Voucher Entry ID") },
+        { dataField: "VoucherMonth", area: "filter", caption: formatMessage("Voucher Month"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            return `${month}-${year}`;
+        }},
+        { dataField: "VoucherYear", area: "filter", caption: formatMessage("Voucher Year"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            return `${date.getFullYear()}`;
+        }},
+        { dataField: "EffectiveMonth", area: "filter", caption: formatMessage("Effective Month"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            return `${month}-${year}`;
+        }},
+        { dataField: "EffectiveYear", area: "filter", caption: formatMessage("Effective Year"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            return `${date.getFullYear()}`;
+        }},
+        { dataField: "AllocationEffectiveMonth", area: "filter", caption: formatMessage("Allocation Effective Month"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            return `${month}-${year}`;
+        }},
+        { dataField: "AllocationEffectiveDate", area: "filter", caption: formatMessage("Allocation Effective Date"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            const day = String(date.getDate()).padStart(2, '0');
+            const month = date.toLocaleString('en-US', { month: 'short' });
+            const year = date.getFullYear();
+            return `${day}-${month}-${year}`;
+        }},
+        { dataField: "AllocationEffectiveYear", area: "filter", caption: formatMessage("Allocation Effective Year"), customizeText: function (cellInfo) {
+            const date = new Date(cellInfo.value);
+            if (isNaN(date)) return "";
+            return `${date.getFullYear()}`;
+        }},
+        { dataField: "VoucherNarration", area: "filter", caption: formatMessage("Voucher Narration") },
+        { dataField: "VoucherRefNo", area: "filter", caption: formatMessage("Voucher Ref No") },
+        { dataField: "EntryNarration", area: "filter", caption: formatMessage("Entry Narration") },
+        { dataField: "SysRemarks", area: "filter", caption: formatMessage("Remarks") },
+        { dataField: "BranchName", area: "filter", caption: formatMessage("Branch Name") },
+        { dataField: "BranchCode", area: "filter", caption: formatMessage("Branch Code") },
+        { dataField: "ProjectMasterCode", area: "filter", caption: formatMessage("Project Master Code") }
+    ];
 
-                    const month = date.toLocaleString('en-US', { month: 'short' });
-                    const year = date.getFullYear();
-                    return `${month}-${year}`;
-                }
-            },
-            {
-                dataField: "VoucherYear", area: "filter", caption: "Voucher Year", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
-
-
-                    const year = date.getFullYear();
-                    return `${year}`;
-                }
-            },
-            {
-                dataField: "EffectiveMonth", area: "filter", caption: "Effective Month", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
-
-                    const month = date.toLocaleString('en-US', { month: 'short' });
-                    const year = date.getFullYear();
-                    return `${month}-${year}`;
-                }
-            },
-            {
-                dataField: "EffectiveYear", area: "filter", caption: "Effective Year", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
-
-
-                    const year = date.getFullYear();
-                    return `${year}`;
-                }
-            },
-            {
-                dataField: "AllocationEffectiveMonth", area: "filter", caption: "Allocation Effective Month", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
-
-                    const month = date.toLocaleString('en-US', { month: 'short' });
-                    const year = date.getFullYear();
-                    return `${month}-${year}`;
-                }
-            },
-            {
-                dataField: "AllocationEffectiveDate", area: "filter", caption: "Allocation Effective Date", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
-                    const day = String(date.getDate()).padStart(2, '0');
-                    const month = date.toLocaleString('en-US', { month: 'short' });
-                    const year = date.getFullYear();
-                    return `${day}-${month}-${year}`;
-                }
-            },
-            {
-                dataField: "AllocationEffectiveYear", area: "filter", caption: "Allocation Effective Year", customizeText: function (cellInfo) {
-                    const date = new Date(cellInfo.value);
-                    if (isNaN(date)) return ""; // handle invalid dates
-
-
-                    const year = date.getFullYear();
-                    return `${year}`;
-                }
-            },
-            { dataField: "VoucherNarration", area: "filter", caption: "Voucher Narration" },
-            { dataField: "VoucherRefNo", area: "filter", caption: "Voucher Ref No" },
-            { dataField: "EntryNarration", area: "filter", caption: "Entry Narration" },
-            { dataField: "SysRemarks", area: "filter", caption: "Remarks" },
-            { dataField: "BranchName", area: "filter", caption: "Branch Name" },
-            { dataField: "BranchCode", area: "filter", caption: "Branch Code" },
-            { dataField: "ProjectMasterCode", area: "filter", caption: "Project Master Code" }
-        ];
 
         if (!extraFieldsVisible) {
             // Show extra fields
@@ -1080,14 +1047,15 @@
 
         // Refresh PivotGrid with updated data
         pivotGrid.option("dataSource", {
-            fields: [
-                { dataField: "CostAllocationUnit", area: "row", caption: "Cost Group" },
-                { dataField: "CostAllocationGroup", area: "row", caption: "Cost Center" },
-                { dataField: "PL", area: "column", caption: "Income / Expense" },
-                { dataField: "Income", area: "data", summaryType: "sum", caption: "Total Income" },
-                { dataField: "Expenses", area: "data", summaryType: "sum", caption: "Total Expenses" },
-                { dataField: "CostAmount", area: "data", summaryType: "sum", caption: "Grand Total" }
-            ],
+                fields: [
+        { dataField: "CostAllocationUnit", area: "row", caption: formatMessage("Cost Group") },
+        { dataField: "CostAllocationGroup", area: "row", caption: formatMessage("Cost Center") },
+        { dataField: "PL", area: "column", caption: formatMessage("Income / Expense") },
+        { dataField: "Income", area: "data", summaryType: "sum", caption: formatMessage("Total Income") },
+        { dataField: "Expenses", area: "data", summaryType: "sum", caption: formatMessage("Total Expenses") },
+        { dataField: "CostAmount", area: "data", summaryType: "sum", caption: formatMessage("Grand Total") }
+    ],
+
             store: updatedData
         });
     }

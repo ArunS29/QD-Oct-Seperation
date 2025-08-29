@@ -496,7 +496,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
             {
                 try
                 {
-                    int debitamt = 0;
+                    decimal debitamt = 0;
 
                     var record = await dbContext.Tbl201VoucherEntries.FirstOrDefaultAsync(v => v.VoucherEntryNo == voucherEntryNo);
                     if (record == null)
@@ -532,7 +532,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
 
                     foreach (var entry in resultList)
                     {
-                        debitamt = (int)(debitamt + entry.DrAmount);
+                        debitamt = (decimal)(debitamt + entry.DrAmount);
 
                         if (entry.DrCr == "Cr")
                         {

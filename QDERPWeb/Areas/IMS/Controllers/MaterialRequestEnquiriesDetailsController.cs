@@ -259,7 +259,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
                 mpr.PurchaseRequestStatusId = 34; // Re-Initiated
 
                 await dbContext.SaveChangesAsync();
-
+                await _userActionLogger.LogAsync(
+					module: "IMS > Unlock the MPR",
+					actionDetail: $"Unlock the MPR By Id: {request.Mprno}",
+				   documentNo: $"{request.Mprno}"
+                );
                 // ✅ Optional: Logging to stored procedure
                 //string logDetails = $"IMS Purchase Request Ref No. {request.Mprno} has been Unlocked by User ID: {currentUserId}, User Name: {userName}.";
 

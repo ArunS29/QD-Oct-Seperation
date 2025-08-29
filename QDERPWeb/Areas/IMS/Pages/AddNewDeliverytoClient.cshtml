@@ -32,10 +32,7 @@
     }
 
     .form-container1 {
-    margin: 15px;
-    width: 99%;
-    padding: 5px;
-    border-radius: 1px;
+        padding: 5px 10px;
     }
 
     .form-container {
@@ -47,7 +44,6 @@
     display: flex;
     gap: 10px;
     padding: 10px;
-    margin-bottom: 15px;
     width: 100%;
     }
 
@@ -207,11 +203,6 @@
     padding: 1%;
     }
 
-    .form-row1 {
-    display: flex;
-    gap: 20px;
-    }
-
     .form-group1 {
     flex: 1;
     display: flex;
@@ -226,13 +217,8 @@
     .containers {
     display: flex;
     }
-
-    .dx-card {
-    background: var(--background-color);
-    }
-
     .important-height {
-    height: 190px !important;
+        height: 115px !important;
     }
 
 </style>
@@ -249,7 +235,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%")
+                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(220)
                     .Items(item =>
                     {
                         item.Add()
@@ -257,7 +243,7 @@
                     .Icon("folder")
                     .Text("Delivery Note Details")
                     .Template(@<text>
-            <div class="dx-card p-3">
+            <div class="p-3">
                 <div class="row g-2">
 
                     <!-- Row 1 -->
@@ -334,7 +320,7 @@
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("ddGetSalesPerson")
                         .Width(900)
-                        .OpenOnFieldClick(false)//
+                        .OpenOnFieldClick(false)
                         .ValueChangeEvent("input")
                         .HoverStateEnabled(true)
                         .ValueExpr("SalesPersonCode")
@@ -344,7 +330,6 @@
                         .TabIndex(1)
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
-                        //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
                         )
                         @(Html.DevExtreme().Button()
@@ -410,7 +395,7 @@
                         .Key("StoreId")
                         )
                         .LabelMode(EditorLabelMode.Floating)
-                        .ID("ddGetModeOfRequest")
+                        .ID("ddStockfromStore")
                         .Width(900)
                         .OpenOnFieldClick(false)//
                         .ValueChangeEvent("input")
@@ -494,8 +479,8 @@
 
         </text>);
 
-                        item.Add().Title("Delivery Details").Icon("detailslayout").Text("Delivery Details").Template(@<text>
-            <div class="dx-card layout-container" style="padding: 10px;">
+            item.Add().Title("Delivery Details").Icon("detailslayout").Text("Delivery Details").Template(@<text>
+            <div class="layout-container" style="padding: 10px;">
                 <div class="form-row" style="display: flex; gap: 20px;">
                     <!-- Left Column: Delivery Note Remarks -->
                     <div style="flex: 1;">
@@ -512,18 +497,18 @@
                     <div style="flex: 1;">
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <div style="flex: 1;">
-                                <label >Salesman:</label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("Salesman")
-                                .LabelMode(EditorLabelMode.Hidden)
+                                .Label("Sales man:")
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
                             <div style="flex: 1;">
-                                <label >Transported / Delivered By:</label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DeliveredBy")
-                                .LabelMode(EditorLabelMode.Hidden)
+                                .Label("Transported / Delivered By:")
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
@@ -531,28 +516,28 @@
 
                         <div style="display: flex; gap: 10px; margin-bottom: 10px;">
                             <div style="flex: 1;">
-                                <label >Driver's Name:</label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DriverName")
-                                .LabelMode(EditorLabelMode.Hidden)
+                                .Label("Driver's Name:")
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
                             <div style="flex: 1;">
-                                <label >Vehicle No:</label>
                                 @(Html.DevExtreme().TextBox()
                                 .ID("VehicleNo")
-                                .LabelMode(EditorLabelMode.Hidden)
+                                .Label("Vehicle No:")
+                                .LabelMode(EditorLabelMode.Floating)
                                 .Width("100%")
                                 )
                             </div>
                         </div>
 
                         <div style="margin-bottom: 10px;">
-                            <label >Driver's ID:</label>
                             @(Html.DevExtreme().TextBox()
                             .ID("DriverID")
-                            .LabelMode(EditorLabelMode.Hidden)
+                            .Label("Driver's ID:")
+                            .LabelMode(EditorLabelMode.Floating)
                             .Width("100%")
                             )
                         </div>
@@ -564,7 +549,7 @@
 
                         item.Add().Text("Signatories").Icon("user").Title("Signatories").Template(@<text>
             <div class="form-container">
-                <div class="dx-card p-3">
+                <div class="p-3">
                     <table class=" table-borderless w-100">
                         <tbody>
                             <tr>
@@ -640,7 +625,7 @@
 
         </text>);
                         item.Add().Text("Branch / Division").Icon("home").Title("Branch / Division").Template(@<text>
-            <div class="dx-card p-3">
+            <div class="p-3">
                 <div class="row g-3">
                     <!-- Row 1: Branch / Delivery Type / Inventory Group -->
                     <div class="col-md-4">
@@ -839,9 +824,9 @@
     </div>
     @(Html.DevExtreme().DataGrid()
             .ID("itemGrid")
-            .Height("65vh")
+            .Height("40vh")
             .DataSource(new JS("[]")) // using global JS array
-            .KeyExpr("ItemCode")
+            .KeyExpr("SNo")
             .Selection(s => s
             .Mode(SelectionMode.Multiple)
             .ShowCheckBoxesMode(GridSelectionShowCheckBoxesMode.Always)
@@ -859,7 +844,9 @@
                 columns.Add().DataField("StockDescription").Caption("Stock Description").Width(180);
                 columns.Add().DataField("UnitRateMethod").Caption("Unit Rate Method").Width(120);
                 columns.Add().DataField("Qty").Caption("Qty").Width(80).DataType(GridColumnDataType.Number);
-                columns.Add().DataField("UnitCostPrice").Caption("Unit Cost Price").Format("currency").Width(120);
+               // columns.Add().DataField("UnitCostPrice").Caption("Unit Cost Price").Format("currency").Width(120);
+            columns.Add().DataField("IssuedUnitPrice").Caption("Issued Unit Price").Format("currency").Width(120);
+            columns.Add().DataField("IssuedQuoteUnitPrice").Caption("Issued Quote Unit Price").Format("currency").Width(120);
                 columns.Add().DataField("EmployeeNo").Caption("Employee Name").Width(160);
                 columns.Add().DataField("PropertyNo").Caption("Property/Equipment").Width(180);
                 columns.Add().DataField("MaxQty").Caption("MaxQty").Width(180).Visible(false);
@@ -1024,7 +1011,7 @@
                             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("ModeOfRequest");
+                                    columns.Add().DataField("StoreName");
 
 
 
@@ -1208,7 +1195,7 @@
     text: formatMessage("Add New Delivery to Client"),
         readOnly: true,
         onContentReady: function (e) {
-        $(e.element).addClass(".dx-textcolor-heading");
+        $(e.element).addClass("dx-textcolor-heading");
         }
         });
     });
@@ -1265,7 +1252,7 @@
     }
     function dataGridSelectionChanged2(e) {
         const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
-        const ddbInstance = $("#ddGetModeOfRequest").dxDropDownBox("instance");
+        const ddbInstance = $("#ddStockfromStore").dxDropDownBox("instance");
 
         if (selectedKey) {
             ddbInstance.option("value", selectedKey);
@@ -1456,8 +1443,30 @@
             }
         });
     });
+        $(function () {
+              getDefaultCompany();
+                });
 
+                        function getDefaultCompany() {
+        $.ajax({
+            type: "GET",
+            url: "/api/AddNewClientRequest/GetDefaultCompany",
+            success: function (data) {
+                if (data && data.CompanyId) {
+                    console.log("Default Company:", data.CompanyId, data.CompanyName);
 
+                      const CompanyDropDown = $("#CompanyName").dxSelectBox("instance");
+                    if (CompanyDropDown) {
+                        // ✅ Bind CompanyId as value
+                        CompanyDropDown.option("value", data.CompanyId);
+                    }
+                }
+            },
+            error: function (xhr) {
+                console.error("Company fetch failed:", xhr.responseText);
+            }
+        });
+    }
         var dataGridInstance;
 
         var rowData = []; // Store the grid data
@@ -1469,6 +1478,10 @@
                 dataSource: rowData,
 
                 keyExpr: "SNo",
+                   selection: {
+                          mode: "multiple",
+                          showCheckBoxesMode: "always"
+                      },
 
                 columns: [
 
@@ -1480,8 +1493,8 @@
 
                         width: 100,
 
-                        allowEditing: false
-
+                        allowEditing: false,
+                              sortOrder: "asc"
                     },
 
                     {
@@ -1494,17 +1507,17 @@
 
                     },
                     {
-			dataField: "StockDescription",
+			dataField: "Gscode",
 			caption: formatMessage('Stock Description'),
 			width: 550,
 			cssClass: "center-header",
-			sortOrder: "asc",
+		
 			cellTemplate: function (container, options) {
 				if (!options.value) {
 					$("<span>").text("").appendTo(container);
 					return;
 				}
-				$.getJSON(`/api/VATModule/GetGoodsAndServiceByCode?code=${options.value}`)
+                    $.getJSON(`/api/GoodsandServices/GetGoodsAndServiceByCode?code=${options.value}`)
 					.done(function (data) {
 						$("<span>").text(data.GSDescrpition).appendTo(container);
 					});
@@ -1524,7 +1537,7 @@
 				load: function (loadOptions) {
 					const pageNumber = Math.floor((loadOptions.skip || 0) / loadOptions.take) + 1;
 					const pageSize = loadOptions.take;
-						return $.getJSON("/api/VATModule/GetGoodsAndServices", {
+                          return $.getJSON("/api/GoodsandServices/GetGoodsAndServices", {
 						pageNumber,
 						pageSize
 					}).then(response => {
@@ -1579,37 +1592,48 @@
 							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
 							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
 							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 },
+                                              { dataField: "MaxQty", caption: "Max Qty", width: 100 },
+                                              { dataField: "MinQty", caption: "Min Qty", width: 100 }
 						],
-						onSelectionChanged: function (selectedItems) {
-							const selectedItem = selectedItems.selectedRowsData[0];
-							if (!selectedItem) return;
+                onSelectionChanged: function (selectedItems) {
+        const selectedItem = selectedItems.selectedRowsData[0];
+        if (!selectedItem) return;
 
-							selectedItemData = selectedItem;
-							cellInfo.setValue(selectedItem.GSCode);
-							const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-							const rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+        selectedItemData = selectedItem;
+        cellInfo.setValue(selectedItem.GSCode);
 
-							if (rowIndex !== -1) {
-								dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || selectedItem.Gscode || "");
-								dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
-								dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
-								dataGrid.cellValue(rowIndex, "Qty", 1);
-								dataGrid.cellValue(rowIndex, "VAT%", "15%");
-								dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM);
+        // use the current grid instance
+        const dataGrid = cellInfo.component;
+        const rowIndex = cellInfo.row.rowIndex;
 
-								ItemNo = selectedItem.GSCode;
-								Gsdescrpition = selectedItem.GSDescrpition;
-								GsdescriptionAr = selectedItem.GsdescriptionAr;
-								ItemPartNo = selectedItem.ItemPartNo;
-								CostPrice = selectedItem.CostPrice;
-								GssellingRate = selectedItem.GSSellingRate;
-								ReorderQty = selectedItem.ReorderQty;
-								UnitOfMeasure = selectedItem.GsuoM;
-							}
+        if (rowIndex !== -1) {
+            // update fields in the same row
+            dataGrid.cellValue(rowIndex, "Item Code", selectedItem.GSCode || "");
+            dataGrid.cellValue(rowIndex, "Cost Price", selectedItem.CostPrice || 0);
+            dataGrid.cellValue(rowIndex, "GSSellingRate", selectedItem.GSSellingRate || 0);
+            dataGrid.cellValue(rowIndex, "Qty", 1);
+            dataGrid.cellValue(rowIndex, "VAT%", "15%");
+            dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.GsuoM || "");
+            dataGrid.cellValue(rowIndex, "MaxQty", selectedItem.MaxQty || 0);
+            dataGrid.cellValue(rowIndex, "MinQty", selectedItem.MinQty || 0);
 
-							e.component.close();
-						}
+            // save globally if needed
+            ItemNo = selectedItem.GSCode;
+            Gsdescrpition = selectedItem.GSDescrpition;
+            GsdescriptionAr = selectedItem.GsdescriptionAr;
+            ItemPartNo = selectedItem.ItemPartNo;
+            CostPrice = selectedItem.CostPrice;
+            GssellingRate = selectedItem.GSSellingRate;
+            ReorderQty = selectedItem.ReorderQty;
+            UnitOfMeasure = selectedItem.GsuoM;
+            MaxQty = selectedItem.MaxQty;
+            MinQty = selectedItem.MinQty;
+        }
+
+        e.component.close();
+    }
+
 					});
 				}
 			});
@@ -1618,7 +1642,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
 				},
 				width: 60,
 				height: 30
@@ -1627,7 +1651,7 @@
 				icon: "edit",
 				hint: "Edit item",
 				onClick: function () {
-					const grid = $("#B2BdataGrid").dxDataGrid("instance");
+                      const grid = $("#itemGrid").dxDataGrid("instance");
 					const visibleRows = grid.getVisibleRows();
 					const rowIndex = cellInfo.rowIndex;
 					const rowData = grid.cellValue(rowIndex, "GSCode");
@@ -1636,7 +1660,7 @@
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "", function () {
+					openModal(url, "Goods and Services", function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -1680,26 +1704,145 @@
                           }).appendTo(container);
                       }
                       },
-                            {
+                              {
 
-                            dataField: "UnitRateMethod",
+                          dataField: "UnitRateMethod",
 
-                            caption: formatMessage('UnitRate Method'),
+                          caption: formatMessage('Unit Rate Method'),
 
-                        width: 200
+                          width: 200,
+                          cellTemplate: function (container, options) {
+                              getUnitRateMethods().done(function (unitRates) {
+                                  const selectedItem = unitRates.find(item => item.UnitCode === options.value);
+                                  $("<span>").text(selectedItem ? selectedItem.UnitType : "").appendTo(container);
+                              });
+                          },
+                          editCellTemplate: function (cellElement, cellInfo) {
 
-                    },
-                           {
+                              getUnitRateMethods().done(function (unitRates) {
+
+                                  // Create container for dropdown + button
+
+                                  let $container = $("<div>").css({
+
+                                      display: "flex",
+
+                                      alignItems: "center",
+
+                                      gap: "5px",
+
+                                      width: "100%"
+
+                                  }).appendTo(cellElement);
+
+                                  // DropDownBox inside container
+
+                                  $("<div>").css({ flex: 1 }).appendTo($container).dxDropDownBox({
+
+                                      dataSource: unitRates,
+
+                                      valueExpr: "UnitCode",
+
+                                      displayExpr: "UnitType",
+
+                                      value: cellInfo.value || null,
+
+                                      placeholder: "Select Unit Rate Method",
+
+                                      dropDownOptions: { width: 200 },
+
+                                      contentTemplate: function (e) {
+
+                                          return $("<div>").dxDataGrid({
+
+                                              dataSource: unitRates,
+
+                                              keyExpr: "UnitCode",
+
+                                              selection: { mode: "single" },
+
+                                              height: 300,
+
+                                              scrolling: { mode: "virtual" },
+
+                                                  searchPanel: {
+                                                      visible: true,
+                                                      highlightCaseSensitive: true,
+                                                      width: 130,
+                                                      placeholder: "Search..."
+                                                      },
+
+                                              columns: [
+
+
+                                                      { dataField: "UnitCode", caption: formatMessage("Code"),width: 80,visible: false },
+
+                                                      //{ dataField: "UnitDesc",caption: formatMessage("Unit Rate Method"), width: 200 },
+
+                                                      //{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 },
+
+                                                      { dataField: "UnitType", caption: formatMessage("Unit Type")}
+
+
+                                              ],
+
+                                              onSelectionChanged: function (selectedItems) {
+                                                  let selectedItem = selectedItems.selectedRowsData[0];
+                                                  if (selectedItem) {
+                                                      // Set the value of the DropDownBox
+                                                      e.component.option("value", selectedItem.UnitCode);
+                                                      // Update the cell value in the grid
+                                                      cellInfo.setValue(selectedItem.UnitCode);
+                                                      // Close the DropDownBox
+                                                      e.component.close();
+                                                  }
+                                              }
+
+                                          });
+
+                                      }
+
+                                  });
+
+                                  // âœ… Add Button
+
+                                  $("<div>").dxButton({
+
+                                      icon: "plus",
+
+                                      hint: "Add new item",
+
+                                      onClick: function () {
+
+                                          let url = `/${tenantName}/IMS/UnitOfMeasure`; // Update this route if needed
+
+                                          openModal(url, "Unit Of Measure");
+
+                                      },
+
+                                      width: 60,
+
+                                      height: 30
+
+                                  }).appendTo($container);
+
+                              });
+
+                          }
+
+                      },
+
+                             {
         dataField: "MinQty",
         caption: formatMessage('MinQty'),
         width: 200,
-        visible: true // Correct way to hide the column
+        visible: false // Correct way to hide the column
     },
                                        {
         dataField: "MaxQty",
             caption: formatMessage('MaxQty'),
         width: 200,
-        visible: true // Correct way to hide the column
+        visible: false // Correct way to hide the column
     },
     {
         dataField: "Qty",
@@ -1773,20 +1916,43 @@
 
     
 
-                    {
+                //     {
 
-                        dataField: "UnitCostPrice",
+                //         dataField: "UnitCostPrice",
 
-                        caption: formatMessage('UnitCostPrice'),
+                //         caption: formatMessage('UnitCostPrice'),
 
-                    width: 200
+                //     width: 200
 
-                },
+                // },
+                  {
+
+                            dataField: "IssuedUnitPrice",
+
+                            caption: formatMessage('Issued Unit Price'),
+
+                      width: 200
+
+                    },{
+
+                              dataField: "IssuedQuoteUnitPrice",
+
+                              caption: formatMessage('Issued Quote Unit Price'),
+
+                        width: 200
+
+                    },
         {
 
                dataField: "EmployeeNo",
         caption: formatMessage('Employee Name'),
         width: 200,
+            cellTemplate: function (container, options) {
+                                      getEmployeeDropdownData().done(function (dropdownData) {
+                                        const selectedItem = dropdownData.find(item => item.EmployeeID === options.value);
+                                      $("<span>").text(selectedItem ? selectedItem.EmployeeName : "").appendTo(container);
+                                });
+                            },
         editCellTemplate: function (cellElement, cellInfo) {
             getEmployeeDropdownData().done(function (dropdownData) {
                 let $container = $("<div>").css({
@@ -1834,6 +2000,12 @@
         dataField: "PropertyNo",
         caption: formatMessage('PropertyOrEquipment'),
         width: 200,
+           cellTemplate: function (container, options) {
+                                          getPropertyDropdownData().done(function (dropdownData) {
+                                              const selectedItem = dropdownData.find(item => item.PropertyNo === options.value);
+                                          $("<span>").text(selectedItem ? selectedItem.PropertyDescription : "").appendTo(container);
+                                  });
+                              },
         editCellTemplate: function (cellElement, cellInfo) {
             getPropertyDropdownData().done(function (dropdownData) {
                 let $container = $("<div>").css({
@@ -1862,23 +2034,32 @@
                                     { dataField: "PropertyNo", caption: "Property No", width: 150 },
                                     { dataField: "PropertyDescription", caption: "Property Description", width: 150 }
                             ],
-                            onSelectionChanged: function (selectedItems) {
-                                let selectedItem = selectedItems.selectedRowsData[0];
+                                onSelectionChanged: function (selectedItems) {
+                                  const selectedData = selectedItems.selectedRowsData[0];
+                                  if (selectedData) {
+                                        e.component.option("value", selectedData.PropertyNo);
+                                        cellInfo.setValue(selectedData.PropertyNo);
+                                  }
+                              }
+                            // onSelectionChanged: function (selectedItems) {
+                            //     let selectedItem = selectedItems.selectedRowsData[0];
 
-                                if (selectedItem) {
-                                    // 1️⃣ Set the selected value in PropertyOrEquipment
-                                        cellInfo.setValue(selectedItem.PropertyNo);
+                            //     if (selectedItem) {
+                            //         // 1️⃣ Set the selected value in PropertyOrEquipment   
+                            //             cellInfo.setValue(selectedItem.PropertyNo);
+                            //                   e.component.option("value", selectedItem.PropertyNo);
+                            //           cellInfo.setValue(selectedData.EmployeeID);
 
-                                    // 2️⃣ Get the parent DataGrid instance and row index
-                                    let dataGrid = $("#itemGrid").dxDataGrid("instance");
-                                    let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
+                            //         // 2️⃣ Get the parent DataGrid instance and row index
+                            //         let dataGrid = $("#itemGrid").dxDataGrid("instance");
+                            //         let rowIndex = dataGrid.getRowIndexByKey(cellInfo.key);
 
-                                    // 3️⃣ Set UnitRateMethod column in the same row
-                                    if (rowIndex !== -1) {
-                                              dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
-                                    }
-                                }
-                            }
+                            //         // 3️⃣ Set UnitRateMethod column in the same row
+                            //         // if (rowIndex !== -1) {
+                            //         //           dataGrid.cellValue(rowIndex, "UnitRateMethod", selectedItem.PropertyNo || "");
+                            //         // }
+                            //     }
+                            // }
                         });
                     }
                 });
@@ -1886,7 +2067,8 @@
         }
     },
       { dataField: "AddlDescription", visible: false },
-            { dataField: "DeliveryRemarks", visible: false }
+            { dataField: "DeliveryRemarks", visible: false },
+              { dataField: "DeliveryNoteSlNo", visible: true },
             // { dataField: "EmployeeNo", visible: false },
             //  { dataField: "PropertyNo", visible: false }
          
@@ -1895,10 +2077,10 @@
                 editing: {
 
                     mode: "cell"
-
-                     // allowUpdating: true,
+                    
+                     //allowUpdating: true,
                      // allowAdding: false, // We'll add manually
-                     // allowDeleting: true
+                    // allowDeleting: true
 
                 },
 
@@ -1920,25 +2102,69 @@
                 var newRow = {
                     SNo: rowData.length + 1, // Auto-generate SNo
                         ItemCode: "",
-                        StockDescription: "",
-                        UnitRateMethod: 0,
+                          Gscode: "",
+                        UnitRateMethod: null,
                         Qty: 0.00,
-                        UnitCostPrice:0.00,
+                         IssuedQuoteUnitPrice:0.00,
+                         IssuedUnitPrice:0.00,
                         EmployeeNo:"",
                         PropertyNo:"",
-
+                        
                           AddlDescription: null,
                     DeliveryRemarks: null
-                      // PropertyNo:null,
-                      // EmployeeNo:null
-                  
-                   
+                 
                 };
 
                 rowData.push(newRow);
                 dataGridInstance.option("dataSource", rowData);
                 dataGridInstance.refresh();
             });
+
+      //           $("#btnAddNewPayment").on("click", function (e) {
+      //         const $btn = $("#btnSave");
+      //     $btn.dxButton("instance").option("disabled", false);
+
+      //     const grid = $("#itemGrid").dxDataGrid("instance");
+      //     const store = grid.getDataSource().store();
+      //     const currentData = grid.getDataSource().items();
+
+      //     // Calculate next SNo safely based on existing items
+      //     const nextLineOrderNo = currentData.length > 0
+      //           ? Math.max(...currentData.map(row => row.SNo || 0)) + 1
+      //         : 1;
+
+      //     const newRow = {
+             
+      //         //ItemCode: ItemNo || "",
+      //          SNo:nextLineOrderNo ,
+      //                       ItemCode: "",
+      //                       Gscode: "",
+      //                     UnitRateMethod: 0,
+      //                     Qty: 0.00,
+      //                     UnitCostPrice:0.00,
+      //                       IssuedQuoteUnitPrice:0.00,
+      //                         IssuedUnitPrice:0.00,
+      //                     EmployeeNo:"",
+      //                     PropertyNo:"",
+
+      //                       AddlDescription: null,
+      //                 DeliveryRemarks: null,
+      //                   DeliveryNoteSlNo:0
+
+      //     };
+
+      //     // Efficient insert without replacing entire dataSource
+      //     store.insert(newRow)
+      //         .then(() => {
+      //             grid.refresh(); // Ensure the UI updates with the new row
+      //                 // ✅ Update Save button text here
+      //             var button = $("#btnSave").dxButton("instance");
+      //             button.option("text", "Update");
+      //         })
+      //         .catch(error => {
+      //             DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
+      //         });
+      // });
             //     function getDropdownData() {
             //     return $.ajax({
             //         url: "/api/VATModule/GetGoodsAndServices", Update with your actual API endpoint
@@ -1986,6 +2212,22 @@
             return [];
         });
     }
+      function getUnitRateMethods() {
+                  return $.ajax({
+                      url: "/api/VATModule/GetAccountGroups", // This should match your actual backend endpoint
+                      method: "GET",
+                      dataType: "json"
+                  }).then(function (response) {
+                      console.log("Unit Rate Data", response);
+                      return response.map(item => ({
+                          UnitCode: item.UnitCode,
+                          UnitDesc: item.UnitDesc,
+                          UnitType: item.UnitType,
+
+                          UnitDescAr: item.UnitDescAr
+                      }));
+                  });
+              }
   function getEmployeeDropdownData() {
         return $.ajax({
             url: "/api/DeliveryNote/GetEmployee", // This should match the controller route
@@ -2197,4 +2439,75 @@
        $("#btnBack").on("click", function (e) {
                   history.back();
                       });
+      let selectedSNo = null;
+
+      $(document).ready(function () {
+          const grid = $("#itemGrid").dxDataGrid("instance");
+
+          // Track selected row
+          grid.on("selectionChanged", function (e) {
+              const selectedRowData = e.selectedRowsData[0];
+              if (selectedRowData) {
+                  selectedSNo = selectedRowData.SNo;
+                  console.log("Selected Row SNo: ", selectedSNo);
+              }
+          });
+
+          // Bind move up
+          $("#btnMoveUp").dxButton({
+              text: "Move Up",
+              onClick: function () {
+                  moveRow(-1); // up = -1
+              }
+          });
+
+          // Bind move down
+          $("#btnMoveDown").dxButton({
+              text: "Move Down",
+              onClick: function () {
+                  moveRow(1); // down = +1
+              }
+          });
+      });
+
+      function moveRow(direction) {
+          const grid = $("#itemGrid").dxDataGrid("instance");
+          let data = grid.getDataSource().items(); // get flat data
+
+          if (!selectedSNo) {
+              DevExpress.ui.notify("Please select a row first.", "warning", 2000);
+              return;
+          }
+
+          // Find row index
+          const rowIndex = data.findIndex(r => r.SNo === selectedSNo);
+
+          if (rowIndex === -1) return;
+
+          const targetIndex = rowIndex + direction;
+
+          // prevent moving out of range
+          if (targetIndex < 0 || targetIndex >= data.length) {
+              return;
+          }
+
+          // swap
+          const temp = data[rowIndex];
+          data[rowIndex] = data[targetIndex];
+          data[targetIndex] = temp;
+
+          // resequence SNo
+          data.forEach((row, idx) => {
+              row.SNo = idx + 1;
+          });
+
+          // rebind
+          grid.option("dataSource", data);
+
+          // select moved row
+          grid.selectRows([data[targetIndex].SNo]);
+          grid.option("focusedRowIndex", targetIndex);
+      }
+
+
    </script>
