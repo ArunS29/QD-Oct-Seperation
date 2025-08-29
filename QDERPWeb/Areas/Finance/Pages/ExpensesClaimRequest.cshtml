@@ -490,11 +490,11 @@
                                 .ID("Voucher")
                                 .Value(null)
                                 .ReadOnly(true)
-                                .Label("Voucher")
+                                .Label(new JS("formatMessage('Voucher')"))
                                 .LabelMode(EditorLabelMode.Floating))
             </div>
             </div>
-            <div class="col-4 d-flex justify-content-between align-items-center">
+            @* <div class="col-4 d-flex justify-content-between align-items-center">
                     <div class="form-group">
                 @(Html.DevExtreme().RadioGroup()
                                 .ID("radioGroup")
@@ -502,6 +502,22 @@
                                 .Value(null)
                                 .Layout(Orientation.Horizontal)
                                 .OnValueChanged("onRadioGroupValueChanged"))
+            </div> *@
+            <div class="col-4 d-flex justify-content-between align-items-center">
+                <div class="form-group">
+                    @(Html.DevExtreme().RadioGroup()
+                                        .ID("radioGroup")
+                                        .DataSource(new[]
+                                        {
+                                        new { text = new JS("formatMessage('Cash Payment')") },
+                                        new { text = new JS("formatMessage('Bank Payment')") }
+                                        })
+                                        .DisplayExpr("text")
+                                        .ValueExpr("text")
+                                       
+                                        .Layout(Orientation.Horizontal)
+                                        .OnValueChanged("onRadioGroupValueChanged")
+                                        )
             </div>
             <div class="form-group">
                 @(Html.DevExtreme().TextBox()
@@ -683,8 +699,6 @@
                     {
                         columns.Add().DataField("AccountId");
                         columns.Add().DataField("AccountHead");
-
-
                     })
                 )
 }
@@ -715,10 +729,10 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("AccountId");
-                        columns.Add().DataField("AccountHead");
-                        columns.Add().DataField("AccountHeadArabic");
-                        columns.Add().DataField("IsLedgerObselete").Alignment(HorizontalAlignment.Center)
+                        columns.Add().DataField("AccountId").Caption(new JS("formatMessage('Account ID')"));
+                        columns.Add().DataField("AccountHead").Caption(new JS("formatMessage('Account Head')"));
+                        columns.Add().DataField("AccountHeadArabic").Caption(new JS("formatMessage('Account Head Arabic')"));
+                        columns.Add().DataField("IsLedgerObselete").Caption(new JS("formatMessage('Is Ledger Obselete')")).Alignment(HorizontalAlignment.Center)
                     .CellTemplate(@<text>
     <div class="dx-icon">
         <%= data.IsLedgerObselete ? '<i style="color:green" class="fa fa-toggle-on"></i>' : '<i style="color:red" class="fa fa-toggle-off"></i>' %>
@@ -760,14 +774,8 @@
 
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("CostAllocationUnitId");
-                                columns.Add().DataField("CostAllocationUnit")
-
-
-
-                    .Alignment(HorizontalAlignment.Center);
-
-
+                                columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit ID')"));
+                                columns.Add().DataField("CostAllocationUnit").Caption(new JS("formatMessage('Cost Allocation Unit')")).Alignment(HorizontalAlignment.Center);
                             })
 
                         )
@@ -809,11 +817,11 @@
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().Caption("Account ID").DataField("AccountId");
-                            columns.Add().Caption("Account").DataField("AccountHead");
-                            columns.Add().Caption("Account Group").DataField("AccountGroup");
-                            columns.Add().Caption("AccountHead Arabic").DataField("AccountHeadArabic");
-                            columns.Add().Caption("Reference No").DataField("ReferenceNo");
+                            columns.Add().Caption(new JS("formatMessage('Account ID')")).DataField("AccountId");
+                            columns.Add().Caption(new JS("formatMessage('Account')")).DataField("AccountHead");
+                            columns.Add().Caption(new JS("formatMessage('Account Group')")).DataField("AccountGroup");
+                            columns.Add().Caption(new JS("formatMessage('AccountHead Arabic')")).DataField("AccountHeadArabic");
+                            columns.Add().Caption(new JS("formatMessage('Reference No')")).DataField("ReferenceNo");
                             columns.Add().DataField("IsLedgerObselete")
 
 
@@ -864,12 +872,8 @@
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("CostAllocationUnitId").Visible(false);
-                            columns.Add().Caption("Cost for Projects/Jobs").DataField("CostAllocationUnit");
-
-
-
-
+                            columns.Add().DataField("CostAllocationUnitId").Caption(new JS("formatMessage('Cost Allocation Unit Id')")).Visible(false);
+                            columns.Add().Caption(new JS("formatMessage('Cost for Projects/Jobs')")).DataField("CostAllocationUnit");
 
                         })
 

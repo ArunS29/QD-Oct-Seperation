@@ -101,7 +101,7 @@
         .LoadMode(DataSourceLoadMode.Raw)
         .Key("AccountId")
         )
-        .Label("Select the Supplier Name:")
+        .Label(new JS("formatMessage('Select the Supplier Name:')"))
         .LabelMode(EditorLabelMode.Floating)
         .ID("supplierDropDownBox")
         .ShowClearButton(true)
@@ -271,7 +271,7 @@
                 @(Html.DevExtreme().Button()
                                 .ID("a1btnToggleHeaderFilter")
 
-                                .Text(new JS("formatMessage(' Filter')"))
+                                .Text(new JS("formatMessage('Filter')"))
 
                 @* .Icon("filter") *@
                                 .OnClick("toggleHeaderFilter")
@@ -306,7 +306,7 @@
             <div class="btn-container">
                 @(Html.DevExtreme().Button()
                             .ID("btnaddsupplier")
-                            .Text("Create Payment Request")
+                            .Text(new JS("formatMessage('Create Payment Request')"))
                             .Icon("plus")
                             
                             .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
@@ -322,36 +322,36 @@
                             .Columns(columns =>
                             {
                                 columns.AddFor(m => m.ReferenceNo)
-                            .Caption("Reference No");
+                            .Caption(new JS("formatMessage('Reference No')"));
 
                                 columns.AddFor(m => m.PurchaseBillNo)
-                            .Caption("Supplier Bill No");
+            .Caption(new JS("formatMessage('Supplier Bill No')"));
 
                                 columns.AddFor(m => m.PurchaseOrderNo)
-                    .Caption("Purchase Order No");
+            .Caption(new JS("formatMessage('Purchase Order No')"));
 
 
                                 columns.AddFor(m => m.VoucherDate)
-                                .Caption("Voucher Date")
+            .Caption(new JS("formatMessage('Voucher Date')"))
                                 .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                                 .AllowEditing(true);
 
                                 columns.AddFor(m => m.VoucherEffectiveDate)
-                                .Caption("Effective month")
+            .Caption(new JS("formatMessage('Effective month')"))
                                 .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                                 .AllowEditing(true);
 
                                 columns.AddFor(m => m.InvoiceDueDate)
-                                .Caption("Invoice Due Date")
+            .Caption(new JS("formatMessage('Invoice Due Date')"))
                                 .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
                                 .AllowEditing(true);
 
                                 columns.AddFor(m => m.VoucherNarration)
-                    .Caption("Voucher Narration");
+            .Caption(new JS("formatMessage('Voucher Narration')"));
 
 
 						columns.AddFor(m => m.PayableAmount)
-			.Caption("Payable Amount")
+            .Caption(new JS("formatMessage('Payable Amount')"))
 			.Alignment(HorizontalAlignment.Right)
             .CustomizeText(@"
         function(e) {
@@ -361,12 +361,12 @@
     ");
 
 						columns.AddFor(m => m.Paid)
-			.Caption("Paid")
+            .Caption(new JS("formatMessage('Paid')"))
 			.Alignment(HorizontalAlignment.Right)
 			.CustomizeText("function(e) { return e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }");
 
                             columns.AddFor(m => m.Balance)
-			.Caption("Balance to Pay")
+            .Caption(new JS("formatMessage('Balance to Pay')"))
 			.Alignment(HorizontalAlignment.Right)
             .CustomizeText(@"
         function(e) {
@@ -375,7 +375,7 @@
         }
     ");
 
-						columns.AddFor(m => m.OverdueDays).Caption("Overdue Days");
+                    columns.AddFor(m => m.OverdueDays).Caption(new JS("formatMessage('Overdue Days')"));
 						
 					})
 				.Selection(selection => selection.Mode(SelectionMode.Single))

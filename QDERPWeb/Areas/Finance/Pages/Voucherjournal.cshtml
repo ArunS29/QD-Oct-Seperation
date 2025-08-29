@@ -584,13 +584,13 @@ function(data) {
             <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocation" class="no-border-input"></div>
         </li>
         <li onclick="onAllRowRemoving()">
-            <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> Delete All Line Entries
+            <i class="fas fa-trash-alt" style="margin-right: 8px;"  id=deletealllineentriesjournal></i> Delete All Line Entries
         </li>
     </ul>
     <div id="popupContainer">
         @(Html.DevExtreme().Popup()
                 .ID("CostAllocationPopup")
-                .Title("Cost Allocation")
+                .Title(new JS("formaMessage('Cost Allocation')"))
                 .Width("90%")
                 .Height(500)
                 .Visible(false)
@@ -618,7 +618,7 @@ function(data) {
     <div id="popupContainer">
         @(Html.DevExtreme().Popup()
                 .ID("PropertyAllocationPopup")
-                .Title("Property Allocation")
+                .Title(new JS("formaMessage('Property Allocation')"))
                 .Width("90%")
                 .Height(500)
                 .Visible(false)
@@ -647,7 +647,7 @@ function(data) {
     <div id="popupContainer">
         @(Html.DevExtreme().Popup()
                 .ID("BillsReceivablePopup")
-                .Title("Finance Module: Receivables / Payables")
+                .Title(new JS("formaMessage('Finance Module: Receivables / Payables')"))
                 .Width("90%")
                 .Height(500)
                 .Visible(false)
@@ -963,7 +963,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("CostAllocationPopup")
-        .Title("Cost Allocation")
+        .Title(new JS("formaMessage('Cost Allocation')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -991,7 +991,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("PropertyAllocationPopup")
-        .Title("Property Allocation")
+        .Title(new JS("formaMessage('Property Allocation')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -1019,7 +1019,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("EmployeeAllocationPopup")
-        .Title("Employee Allocation")
+        .Title(new JS("formaMessage('Employee Allocation')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -1047,7 +1047,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("BillsReceivablePopup")
-        .Title("Finance Module: Receivables / Payables")
+        .Title(new JS("formaMessage('Finance Module: Receivables / Payables')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -1076,7 +1076,7 @@ function(data) {
 <div id="popupContainer">
     @(Html.DevExtreme().Popup()
         .ID("SalaryPaidEntryPopup")
-        .Title("Finance Module: Employee Salary Payables")
+        .Title(new JS("formaMessage('Finance Module: Employee Salary Payables')"))
         .Width("90%")
         .Height(500)
         .Visible(false)
@@ -2753,7 +2753,7 @@ function(data) {
     });
 
 
-    //RightClik button  Localization
+    RightClik button  Localization
     $(function () {
         $("#EditCostAllocation").dxTextBox({
             text: formatMessage("Edit Cost Allocation"),

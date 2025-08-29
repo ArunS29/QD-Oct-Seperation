@@ -1369,7 +1369,7 @@ buttons.Add()
 
                                 // Change button label to "Update"
                                var button = $("#btnSave").dxButton("instance");
-                                button.option("text", "Update");
+                                button.option("text", formatMessage("Update"));
                                   // ✅ Sync workflow
                                 syncWorkflowFromFields();
                             } else {
@@ -4568,57 +4568,8 @@ tippy('#circle-approve', {
         }, 100);
     });
 
-            $(function () {
-                                            $("#EditCostAllocation").dxTextBox({
-                                                        text:formatMessage("Edit Cost Allocation"),
-                                                    readOnly: true
 
-                                    });
-                            });
-            $(function () {
-                                            $("#DeleteAllLineEntries").dxTextBox({
-                                                        text:formatMessage("Delete All Line Entries"),
-                                                readOnly: true
-
-                                });
-                        });
-            $(function () {
-                                            $("#EditBillReceivable").dxTextBox({
-                                                    text:formatMessage("Edit Bills Payable"),
-                                                readOnly: true
-
-                                });
-                        });
-            $(function () {
-                                                $("#EditSalaryPayable").dxTextBox({
-                                                        text:formatMessage("Edit Salary Payable"),
-                                                    readOnly: true
-
-                                    });
-                            });
-            $(function () {
-                                                $("#EditEmployeeAllocation").dxTextBox({
-                                                            text:formatMessage("Edit Employee Allocation"),
-                                                    readOnly: true
-
-                                    });
-                            });
-            $(function () {
-                                                $("#EditPropertyAllocation").dxTextBox({
-                                                        text:formatMessage("Edit Property Allocation"),
-                                                    readOnly: true
-
-                                    });
-                            });
-            $(function () {
-                                                $("#DeleteLineEntry").dxTextBox({
-                                                            text:formatMessage("Delete Line Entry"),
-                                                    readOnly: true
-
-                                    });
-                            });
-
-    const menuItems = [
+const menuItems = [
     { id: "editCostAllocation", text: "Edit Cost Allocation", icon: "edit", color: "#4CAF50" },
     { id: "editBillsReceivable", text: "Edit Bills Receivable", icon: "file", color: "#2196F3" },
     { id: "editSalaryPayable", text: "Edit Salary Payable", icon: "money", color: "#FF9800" },
@@ -4661,7 +4612,7 @@ tippy('#circle-approve', {
                  <div class="side-bar" style="background-color:${item.color};"></div>
                  <div class="item-content">
                      <div class="item-icon dx-icon dx-icon-${item.icon}" style="color:${item.color};"></div>
-                     <div class="item-title">${item.text}</div>
+                     <div class="item-title">${formatMessage(item.text)}</div>
                  </div>
              </div>
          `;

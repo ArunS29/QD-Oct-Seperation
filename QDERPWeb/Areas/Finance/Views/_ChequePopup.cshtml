@@ -118,7 +118,7 @@
             <div class="row"style="margin-top:13px;">
                 <div class="col-md-8 col-12">
                     <div class="form-group">
-                         <div style="margin-top: 4px;margin-left:481px; color: blue;">Use Ledger Account Name</div>
+                         <div style="margin-top: 4px;margin-left:481px; color: blue;" id="useledgeraccountname"></div>
                         @(Html.DevExtreme().TextBox()
                             .Label(new JS("formatMessage('Cheque Issued in favour of')"))
                             .LabelMode(EditorLabelMode.Floating)
@@ -340,7 +340,7 @@
                     .ID("btnDelete")
                     .Text(new JS("formatMessage('Delete')"))
                     .Icon("close")
-                    .ElementAttr(new { @class = "bold-button dx-button-danger" })
+                    .ElementAttr(new { @class = "bold-button" })
                     .OnClick("function() { onDeleteButtonClick(); }")
                 )
                 @(Html.DevExtreme().Button()
@@ -599,4 +599,7 @@
             }
         });
     }
+     $(function () {
+        $("#useledgeraccountname").text(formatMessage("Use Ledger Account Name"));
+    });
 </script>

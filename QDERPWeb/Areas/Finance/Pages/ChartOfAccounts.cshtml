@@ -370,7 +370,7 @@
         .ID("ledgerAccountPopup")
         .Width("80%")
         .Height("85%")
-        .Title("Add Ledger Account")
+        .Title(new JS("formatMessage('Add Ledger Account')"))
         .ShowTitle(true)
         .CloseOnOutsideClick(true)
         .Visible(false)
@@ -984,7 +984,7 @@
         $("#ledgerAccountPopup").dxPopup({
             width: 1200,
             height: 600,
-            title: "Ledger Account Details",
+            title: formatMessage("Ledger Account Details"),
             showCloseButton: true,  // Show close button
             visible: false,  // Initially hidden
             closeOnOutsideClick: true,  // Allow closing when clicking outside

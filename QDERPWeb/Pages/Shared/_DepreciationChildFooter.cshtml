@@ -193,7 +193,7 @@
     <div class="btn-container">
         @(Html.DevExtreme().Button()
             .ID("btnDepchildpost") // Unique ID for the button
-            .Text("Post Journal") // Text for the button
+            .Text(new JS("formatMessage('Post Journal')")) // Text for the button
             .Type(ButtonType.Normal)
             .StylingMode(ButtonStylingMode.Outlined)
             .Icon("upload") // Relevant FontAwesome icon

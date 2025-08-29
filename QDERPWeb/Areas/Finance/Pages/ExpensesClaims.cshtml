@@ -386,6 +386,7 @@
             @* <div class="bar"><span style="width:50%"></span></div> *@
             <div class="overlay">
                 <div class="detail"><i class="fa-solid fa-book"></i> Today: 0</div>
+                <div class="detail"><i class="fa-solid fa-book"></i> This Month: 0</div>
                 <div class="detail"><i class="fa-solid fa-book"></i> This Week: 0</div>
             
             </div>
@@ -433,15 +434,15 @@
         <div class="context-menu-item">
             <div class="menu-item">
                 <i class="fa fa-pencil-square-o" style="color:cornflowerblue;"></i>
-                <span class="spnRightClickGride">Edit Claim</span>
+                <span class="spnRightClickGride" id="editclaim"></span>
             </div>
             <div class="menu-item">
                 <i class="fa fa-times" style="color:red;"></i>
-                <span class="spnRightClickGride">Delete Claim</span>
+                <span class="spnRightClickGride" id="deleteclaim"></span>
             </div>
             <div class="menu-item">
                 <i class="fa fa-unlock" style="color:orange;"></i>
-                <span class="spnRightClickGride">Unlock Claim</span>
+                <span class="spnRightClickGride" id="unlockclaim"></span>
             </div>
         </div>
     </div>
@@ -1700,5 +1701,14 @@ columns.Add()
     });
     $(function () {
         $("#expensetotalapproved").text(formatMessage("Total Approved Amount"));
+    });
+    $(function () {
+        $("#unlockclaim").text(formatMessage("Unlock Claim"));
+    });
+    $(function () {
+        $("#deleteclaim").text(formatMessage("Delete Claim"));
+    });
+    $(function () {
+        $("#editclaim").text(formatMessage("Edit Claim"));
     });
 </script>

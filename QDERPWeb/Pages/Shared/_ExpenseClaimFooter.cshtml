@@ -1218,14 +1218,14 @@
         }
         function addExpenseButton_click(e) {
             switch (e.itemData.text) {
-
-                case ('Expense Claim Request'):
+                  
+                  case (formatMessage('Expense Claim Request')):
                     window.location.href = `/${tenantName}/Finance/ExpensesClaimRequest`;
                     break;
-                case ('Petty Cash Request'):
+                 case (formatMessage('Petty Cash Request')):
                     window.location.href = `/${tenantName}/Finance/PettyCashRequest`;
                     break;
-                case 'Supplier Payment Request':
+                 case (formatMessage('Supplier Payment Request')):
 
                     $.ajax({
 

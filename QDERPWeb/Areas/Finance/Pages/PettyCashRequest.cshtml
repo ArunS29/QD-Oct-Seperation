@@ -490,7 +490,13 @@
                                    <div class="form-group">
                     @(Html.DevExtreme().RadioGroup()
                                         .ID("radioGroup")
-                                        .Items(new[] { "Cash Payment", "Bank Payment" })
+                                        .DataSource(new[]
+                                        {
+                                        new { text = new JS("formatMessage('Cash Payment')") },
+                                        new { text = new JS("formatMessage('Bank Payment')") }
+                                        })
+                                        .DisplayExpr("text")
+                                        .ValueExpr("text")
                                         
                                         .Layout(Orientation.Horizontal)
                                         .OnValueChanged("onRadioGroupValueChanged"))
@@ -513,7 +519,7 @@
                                         .ValueChangeEvent("input")
                                         .HoverStateEnabled(true)
                                         .ValueExpr("AccountId")
-                                        .Label("Payment Accounts")
+                                        .Label(new JS("formatMessage('Payment Accounts')"))
                                         .LabelMode(EditorLabelMode.Floating)
                                         .DisplayExpr("AccountHead")
                                         .OnInput("dropDownBoxOnInput")

@@ -398,7 +398,7 @@
                     .Visible(true);
 
                     columns.AddFor(m => m.CreditAmount)
-                    .Caption("Trans Credit")
+                    .Caption(new JS("formatMessage('Trans Credit')"))
                     .Alignment(HorizontalAlignment.Right)
                     .CellTemplate(@<text>
                                        <div class="credit-pill">
@@ -408,7 +408,7 @@
                                    </text>)
                     .Visible(false);
                     columns.AddFor(m => m.DebitAmount)
-                    .Caption("Trans Debit")
+                    .Caption(new JS("formatMessage('Trans Debit')"))
                     .Alignment(HorizontalAlignment.Right)
                     .CellTemplate(@<text>
                                        <div class="debit-pill">
@@ -488,40 +488,40 @@
     </text>)
         ;
 
-                columns.Add().DataField("VoucherRefNo").Caption("Voucher Ref No").Width(120)
+                columns.Add().DataField("VoucherRefNo").Caption(new JS("formatMessage('Voucher Ref No')")).Width(120)
             .Visible(false)
            ;
 
-                columns.Add().DataField("VoucherEnteredOn").Caption("Entered On").Width(120)
+                columns.Add().DataField("VoucherEnteredOn").Caption(new JS("formatMessage('Entered On')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
        ;
 
-                columns.Add().DataField("VoucherVerifiedOn").Caption("Verified On").Width(120)
+                columns.Add().DataField("VoucherVerifiedOn").Caption(new JS("formatMessage('Verified On')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
            ;
 
-                columns.Add().DataField("VoucherApprovedOn").Caption("Approved On").Width(120)
+                columns.Add().DataField("VoucherApprovedOn").Caption(new JS("formatMessage('Approved On')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
            ;
 
-                columns.Add().DataField("VoucherEffectiveDate").Caption("Effective Date").Width(120)
+                columns.Add().DataField("VoucherEffectiveDate").Caption(new JS("formatMessage('Effective Date')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
            ;
 
-                columns.Add().DataField("VoucherModifiedBy").Caption("Modified By").Width(120)
+                columns.Add().DataField("VoucherModifiedBy").Caption(new JS("formatMessage('Modified By')")).Width(120)
             .Visible(false)
            ;
 
-                columns.Add().DataField("VoucherModifiedOn").Caption("Modified On").Width(120)
+                columns.Add().DataField("VoucherModifiedOn").Caption(new JS("formatMessage('Modified On')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
             .Visible(false)
            ;
 
-                columns.Add().DataField("AuditVerifiedOn").Caption("Audit Verified On").Width(120)
+                columns.Add().DataField("AuditVerifiedOn").Caption(new JS("formatMessage('Audit Verified On')")).Width(120)
             .DataType(GridColumnDataType.Date).Format("dd/MM/yyyy")
             .Visible(false)
         ;
