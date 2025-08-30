@@ -1,6 +1,6 @@
 ﻿namespace QD.ERP.Web.Areas.Finance.Reports.cashPayments
 {
-    partial class subCostReport
+    partial class rpt201empReport
     {
         /// <summary>
         /// Required designer variable.
@@ -47,57 +47,29 @@
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression7 = new DevExpress.DataAccess.Sql.ColumnExpression();
             DevExpress.DataAccess.Sql.Column column8 = new DevExpress.DataAccess.Sql.Column();
             DevExpress.DataAccess.Sql.ColumnExpression columnExpression8 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column9 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression9 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column10 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression10 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(subCostReport));
-            DevExpress.DataAccess.Sql.SelectQuery selectQuery2 = new DevExpress.DataAccess.Sql.SelectQuery();
-            DevExpress.DataAccess.Sql.Column column11 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression11 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Table table3 = new DevExpress.DataAccess.Sql.Table();
-            DevExpress.DataAccess.Sql.Column column12 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression12 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column13 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression13 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column14 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression14 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column15 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression15 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column16 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression16 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column17 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression17 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column18 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression18 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column19 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression19 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column20 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression20 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.Column column21 = new DevExpress.DataAccess.Sql.Column();
-            DevExpress.DataAccess.Sql.ColumnExpression columnExpression21 = new DevExpress.DataAccess.Sql.ColumnExpression();
-            DevExpress.DataAccess.Sql.AllColumns allColumns1 = new DevExpress.DataAccess.Sql.AllColumns();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(rpt201empReport));
             this.TopMargin = new DevExpress.XtraReports.UI.TopMarginBand();
             this.BottomMargin = new DevExpress.XtraReports.UI.BottomMarginBand();
+            this.GroupHeader1 = new DevExpress.XtraReports.UI.GroupHeaderBand();
             this.Detail = new DevExpress.XtraReports.UI.DetailBand();
+            this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.table2 = new DevExpress.XtraReports.UI.XRTable();
             this.tableRow2 = new DevExpress.XtraReports.UI.XRTableRow();
+            this.tableCell3 = new DevExpress.XtraReports.UI.XRTableCell();
             this.tableCell4 = new DevExpress.XtraReports.UI.XRTableCell();
-            this.tableCell5 = new DevExpress.XtraReports.UI.XRTableCell();
-            this.tableCell6 = new DevExpress.XtraReports.UI.XRTableCell();
             this.sqlDataSource1 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
             this.Title = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailCaption1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData1 = new DevExpress.XtraReports.UI.XRControlStyle();
             this.DetailData3_Odd = new DevExpress.XtraReports.UI.XRControlStyle();
             this.PageInfo = new DevExpress.XtraReports.UI.XRControlStyle();
-            this.sqlDataSource2 = new DevExpress.DataAccess.Sql.SqlDataSource(this.components);
+            this.calNamewithId = new DevExpress.XtraReports.UI.CalculatedField();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this)).BeginInit();
             // 
             // TopMargin
             // 
-            this.TopMargin.HeightF = 2.5F;
+            this.TopMargin.HeightF = 0F;
             this.TopMargin.Name = "TopMargin";
             // 
             // BottomMargin
@@ -105,12 +77,37 @@
             this.BottomMargin.HeightF = 0F;
             this.BottomMargin.Name = "BottomMargin";
             // 
+            // GroupHeader1
+            // 
+            this.GroupHeader1.GroupUnion = DevExpress.XtraReports.UI.GroupUnion.WithFirstDetail;
+            this.GroupHeader1.HeightF = 0F;
+            this.GroupHeader1.Name = "GroupHeader1";
+            // 
             // Detail
             // 
             this.Detail.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel1,
             this.table2});
             this.Detail.HeightF = 25F;
             this.Detail.Name = "Detail";
+            // 
+            // xrLabel1
+            // 
+            this.xrLabel1.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[calNamewithId]")});
+            this.xrLabel1.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F, DevExpress.Drawing.DXFontStyle.Italic);
+            this.xrLabel1.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.xrLabel1.LocationFloat = new DevExpress.Utils.PointFloat(203.3334F, 0F);
+            this.xrLabel1.Multiline = true;
+            this.xrLabel1.Name = "xrLabel1";
+            this.xrLabel1.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel1.SizeF = new System.Drawing.SizeF(372.6666F, 25F);
+            this.xrLabel1.StylePriority.UseFont = false;
+            this.xrLabel1.StylePriority.UseForeColor = false;
+            this.xrLabel1.StylePriority.UseTextAlignment = false;
+            this.xrLabel1.Text = "xrLabel1";
+            this.xrLabel1.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleJustify;
+            this.xrLabel1.WordWrap = false;
             // 
             // table2
             // 
@@ -119,82 +116,74 @@
             this.table2.OddStyleName = "DetailData3_Odd";
             this.table2.Rows.AddRange(new DevExpress.XtraReports.UI.XRTableRow[] {
             this.tableRow2});
-            this.table2.SizeF = new System.Drawing.SizeF(454F, 25F);
+            this.table2.SizeF = new System.Drawing.SizeF(203.3334F, 25F);
             // 
             // tableRow2
             // 
             this.tableRow2.Cells.AddRange(new DevExpress.XtraReports.UI.XRTableCell[] {
-            this.tableCell4,
-            this.tableCell5,
-            this.tableCell6});
+            this.tableCell3,
+            this.tableCell4});
             this.tableRow2.Name = "tableRow2";
             this.tableRow2.Weight = 11.5D;
             // 
+            // tableCell3
+            // 
+            this.tableCell3.Borders = DevExpress.XtraPrinting.BorderSide.None;
+            this.tableCell3.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[EmpAllocDrCr]")});
+            this.tableCell3.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
+            this.tableCell3.ForeColor = System.Drawing.Color.RoyalBlue;
+            this.tableCell3.Name = "tableCell3";
+            this.tableCell3.StyleName = "DetailData1";
+            this.tableCell3.StylePriority.UseBorders = false;
+            this.tableCell3.StylePriority.UseFont = false;
+            this.tableCell3.StylePriority.UseForeColor = false;
+            this.tableCell3.Weight = 0.081369957557091366D;
+            // 
             // tableCell4
             // 
-            this.tableCell4.Borders = DevExpress.XtraPrinting.BorderSide.None;
             this.tableCell4.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[CostAllocDrCr]")});
+            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[AmountAllocated]")});
+            this.tableCell4.Font = new DevExpress.Drawing.DXFont("Arial", 8.25F, DevExpress.Drawing.DXFontStyle.Italic);
+            this.tableCell4.ForeColor = System.Drawing.Color.RoyalBlue;
             this.tableCell4.Name = "tableCell4";
             this.tableCell4.StyleName = "DetailData1";
-            this.tableCell4.StylePriority.UseBorders = false;
-            this.tableCell4.Weight = 0.11383654209310584D;
-            // 
-            // tableCell5
-            // 
-            this.tableCell5.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "Iif([AmountAllocated]/ [CurrencyRate])")});
-            this.tableCell5.Name = "tableCell5";
-            this.tableCell5.StyleName = "DetailData1";
-            this.tableCell5.TextFormatString = "{0:N2}";
-            this.tableCell5.Weight = 0.32710917834897396D;
-            // 
-            // tableCell6
-            // 
-            this.tableCell6.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
-            new DevExpress.XtraReports.UI.ExpressionBinding("BeforePrint", "Text", "[CostAllocationUnit]")});
-            this.tableCell6.Name = "tableCell6";
-            this.tableCell6.StyleName = "DetailData1";
-            this.tableCell6.StylePriority.UseTextAlignment = false;
-            this.tableCell6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
-            this.tableCell6.TextFormatString = "{0:C2}";
-            this.tableCell6.Weight = 0.5590543030329802D;
+            this.tableCell4.StylePriority.UseFont = false;
+            this.tableCell4.StylePriority.UseForeColor = false;
+            this.tableCell4.StylePriority.UseTextAlignment = false;
+            this.tableCell4.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            this.tableCell4.TextFormatString = "{0:N2}";
+            this.tableCell4.Weight = 0.23145061203984393D;
             // 
             // sqlDataSource1
             // 
             this.sqlDataSource1.ConnectionName = "DBConnection";
             this.sqlDataSource1.Name = "sqlDataSource1";
-            columnExpression1.ColumnName = "CostAllocationID";
-            table1.Name = "qry201RptVoucherWithCost";
+            columnExpression1.ColumnName = "VoucherNo";
+            table1.Name = "qry20140EmpAllocationForVouchers";
             columnExpression1.Table = table1;
             column1.Expression = columnExpression1;
             columnExpression2.ColumnName = "VoucherEntryID";
             columnExpression2.Table = table1;
             column2.Expression = columnExpression2;
-            columnExpression3.ColumnName = "CostAllocationUnit";
+            columnExpression3.ColumnName = "EmployeeNo";
             columnExpression3.Table = table1;
             column3.Expression = columnExpression3;
-            columnExpression4.ColumnName = "CostAllocationGroup";
+            columnExpression4.ColumnName = "EmpAllocDrCr";
             columnExpression4.Table = table1;
             column4.Expression = columnExpression4;
-            columnExpression5.ColumnName = "CostAllocDrCr";
+            columnExpression5.ColumnName = "AmountAllocated";
             columnExpression5.Table = table1;
             column5.Expression = columnExpression5;
-            columnExpression6.ColumnName = "AmountAllocated";
+            columnExpression6.ColumnName = "EmployeeName";
             columnExpression6.Table = table1;
             column6.Expression = columnExpression6;
-            columnExpression7.ColumnName = "CostAllocRemarks";
+            columnExpression7.ColumnName = "VoucherRefNo";
             columnExpression7.Table = table1;
             column7.Expression = columnExpression7;
-            columnExpression8.ColumnName = "AccountHeadName";
+            columnExpression8.ColumnName = "NationalID";
             columnExpression8.Table = table1;
             column8.Expression = columnExpression8;
-            columnExpression9.ColumnName = "VoucherNo";
-            columnExpression9.Table = table1;
-            column9.Expression = columnExpression9;
-            columnExpression10.ColumnName = "VoucherAmountFormatted";
-            columnExpression10.Table = table1;
-            column10.Expression = columnExpression10;
             selectQuery1.Columns.Add(column1);
             selectQuery1.Columns.Add(column2);
             selectQuery1.Columns.Add(column3);
@@ -203,9 +192,7 @@
             selectQuery1.Columns.Add(column6);
             selectQuery1.Columns.Add(column7);
             selectQuery1.Columns.Add(column8);
-            selectQuery1.Columns.Add(column9);
-            selectQuery1.Columns.Add(column10);
-            selectQuery1.Name = "qry201RptVoucherWithCost";
+            selectQuery1.Name = "qry20140EmpAllocationForVouchers";
             selectQuery1.Tables.Add(table1);
             this.sqlDataSource1.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
             selectQuery1});
@@ -264,77 +251,27 @@
             this.PageInfo.Name = "PageInfo";
             this.PageInfo.Padding = new DevExpress.XtraPrinting.PaddingInfo(6, 6, 0, 0, 100F);
             // 
-            // sqlDataSource2
+            // calNamewithId
             // 
-            this.sqlDataSource2.ConnectionName = "DBConnection";
-            this.sqlDataSource2.Name = "sqlDataSource2";
-            columnExpression11.ColumnName = "CostAllocationID";
-            table3.MetaSerializable = "<Meta X=\"30\" Y=\"30\" Width=\"125\" Height=\"284\" />";
-            table3.Name = "qry201RptVoucherWithCost";
-            columnExpression11.Table = table3;
-            column11.Expression = columnExpression11;
-            columnExpression12.ColumnName = "VoucherEntryID";
-            columnExpression12.Table = table3;
-            column12.Expression = columnExpression12;
-            columnExpression13.ColumnName = "CostAllocationUnit";
-            columnExpression13.Table = table3;
-            column13.Expression = columnExpression13;
-            columnExpression14.ColumnName = "CostAllocationGroup";
-            columnExpression14.Table = table3;
-            column14.Expression = columnExpression14;
-            columnExpression15.ColumnName = "CostAllocDrCr";
-            columnExpression15.Table = table3;
-            column15.Expression = columnExpression15;
-            columnExpression16.ColumnName = "AmountAllocated";
-            columnExpression16.Table = table3;
-            column16.Expression = columnExpression16;
-            columnExpression17.ColumnName = "CostAllocRemarks";
-            columnExpression17.Table = table3;
-            column17.Expression = columnExpression17;
-            columnExpression18.ColumnName = "AccountHeadName";
-            columnExpression18.Table = table3;
-            column18.Expression = columnExpression18;
-            columnExpression19.ColumnName = "VoucherNo";
-            columnExpression19.Table = table3;
-            column19.Expression = columnExpression19;
-            columnExpression20.ColumnName = "VoucherAmountFormatted";
-            columnExpression20.Table = table3;
-            column20.Expression = columnExpression20;
-            columnExpression21.ColumnName = "CurrencyRate";
-            columnExpression21.Table = table3;
-            column21.Expression = columnExpression21;
-            allColumns1.Table = table3;
-            selectQuery2.Columns.Add(column11);
-            selectQuery2.Columns.Add(column12);
-            selectQuery2.Columns.Add(column13);
-            selectQuery2.Columns.Add(column14);
-            selectQuery2.Columns.Add(column15);
-            selectQuery2.Columns.Add(column16);
-            selectQuery2.Columns.Add(column17);
-            selectQuery2.Columns.Add(column18);
-            selectQuery2.Columns.Add(column19);
-            selectQuery2.Columns.Add(column20);
-            selectQuery2.Columns.Add(column21);
-            selectQuery2.Columns.Add(allColumns1);
-            selectQuery2.Name = "qry201RptVoucherWithCost";
-            selectQuery2.Tables.Add(table3);
-            this.sqlDataSource2.Queries.AddRange(new DevExpress.DataAccess.Sql.SqlQuery[] {
-            selectQuery2});
-            this.sqlDataSource2.ResultSchemaSerializable = resources.GetString("sqlDataSource2.ResultSchemaSerializable");
+            this.calNamewithId.DataMember = "qry20140EmpAllocationForVouchers";
+            this.calNamewithId.Expression = "Concat([EmployeeName],\'-\',[NationalID] )";
+            this.calNamewithId.Name = "calNamewithId";
             // 
-            // subCostReport
+            // rpt201empReport
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
             this.TopMargin,
             this.BottomMargin,
+            this.GroupHeader1,
             this.Detail});
+            this.CalculatedFields.AddRange(new DevExpress.XtraReports.UI.CalculatedField[] {
+            this.calNamewithId});
             this.ComponentStorage.AddRange(new System.ComponentModel.IComponent[] {
-            this.sqlDataSource1,
-            this.sqlDataSource2});
-            this.DataMember = "qry201RptVoucherWithCost";
-            this.DataSource = this.sqlDataSource2;
+            this.sqlDataSource1});
+            this.DataMember = "qry20140EmpAllocationForVouchers";
+            this.DataSource = this.sqlDataSource1;
             this.Font = new DevExpress.Drawing.DXFont("Arial", 9.75F);
-            this.Margins = new DevExpress.Drawing.DXMargins(100F, 295F, 2.5F, 0F);
+            this.Margins = new DevExpress.Drawing.DXMargins(100F, 174F, 0F, 0F);
             this.StyleSheet.AddRange(new DevExpress.XtraReports.UI.XRControlStyle[] {
             this.Title,
             this.DetailCaption1,
@@ -351,18 +288,19 @@
 
         private DevExpress.XtraReports.UI.TopMarginBand TopMargin;
         private DevExpress.XtraReports.UI.BottomMarginBand BottomMargin;
+        private DevExpress.XtraReports.UI.GroupHeaderBand GroupHeader1;
         private DevExpress.XtraReports.UI.DetailBand Detail;
         private DevExpress.XtraReports.UI.XRTable table2;
         private DevExpress.XtraReports.UI.XRTableRow tableRow2;
+        private DevExpress.XtraReports.UI.XRTableCell tableCell3;
         private DevExpress.XtraReports.UI.XRTableCell tableCell4;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell5;
-        private DevExpress.XtraReports.UI.XRTableCell tableCell6;
         private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource1;
         private DevExpress.XtraReports.UI.XRControlStyle Title;
         private DevExpress.XtraReports.UI.XRControlStyle DetailCaption1;
         private DevExpress.XtraReports.UI.XRControlStyle DetailData1;
         private DevExpress.XtraReports.UI.XRControlStyle DetailData3_Odd;
         private DevExpress.XtraReports.UI.XRControlStyle PageInfo;
-        private DevExpress.DataAccess.Sql.SqlDataSource sqlDataSource2;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel1;
+        private DevExpress.XtraReports.UI.CalculatedField calNamewithId;
     }
 }

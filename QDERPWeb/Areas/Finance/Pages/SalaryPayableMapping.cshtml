@@ -96,12 +96,20 @@
         display: none;
     }
 
+    .modal-header {
+        background-color: var(--title-background-color) !important;
+    }
+
+    .modalTitle {
+        display: flex!important;
+        color: white;
+    }
 </style>
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div id="AccountLedgertoSalaryPayableMapping" class="no-border-input"></div>
     </div>
-</div>
+</div> *@
 <div>
     @await Html.PartialAsync("SalaryPayableMappingFooter")
 </div>
