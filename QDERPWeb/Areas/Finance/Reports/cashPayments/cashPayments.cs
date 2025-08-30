@@ -46,9 +46,10 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
 
         }
 
+        // ---------------- Subreport 2 ----------------
         private void xrSubreport2_BeforePrint(object sender, EventArgs e)
         {
-            string drCr = GetCurrentColumnValue("DrCr")?.ToString(); // assuming main table has a DrCr column
+            string drCr = GetCurrentColumnValue("DrCr")?.ToString();
             string voucherNo = GetCurrentColumnValue("VoucherNo")?.ToString();
 
             if (string.IsNullOrWhiteSpace(drCr) || string.IsNullOrWhiteSpace(voucherNo))
@@ -57,20 +58,36 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
                 return;
             }
 
-            if (_drCrWithCostAllocations.Contains(drCr) &&
+            if (_drCrWithEmpAllocations.Contains(drCr) &&
                 _tenantDbContextHelper.TryGetTenantAndDbContext(out var tenant, out _))
             {
-                var subReport = new rpt201empReport(); // create another subreport for Dr/Cr based logic
+                var subReport = new rpt201empReport();
                 subReport.LoadData(voucherNo, drCr, tenant.ConnectionString);
 
-                xrSubreport2.ReportSource = subReport;
-                xrSubreport2.Visible = true;
+                // hide subreport if no rows were returned
+                if ((subReport.DataSource as DataTable)?.Rows.Count > 0)
+                {
+                    xrSubreport2.ReportSource = subReport;
+                    xrSubreport2.Visible = true;
+                }
+                else
+                {
+                    xrSubreport2.Visible = false;
+                }
             }
             else
             {
                 xrSubreport2.Visible = false;
             }
         }
+
+        // ---------------- Collections ----------------
+        // Case-insensitive so "Dr" == "DR" == "dr"
+        private HashSet<string> _drCrWithEmpAllocations =
+            new HashSet<string>(StringComparer.OrdinalIgnoreCase)
+            {
+        "Dr", "Cr"   // expected values
+            };
 
 
         private void xrSubreport1_BeforePrint(object sender, EventArgs e)
@@ -100,7 +117,6 @@ namespace QD.ERP.Web.Areas.Finance.Reports.test
             }
         }
 
-        private HashSet<string> _drCrWithCostAllocations = new HashSet<string>();
 
 
         private HashSet<string> _accountHeadsWithCostAllocations = new HashSet<string>();
