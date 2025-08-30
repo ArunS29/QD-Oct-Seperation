@@ -452,6 +452,12 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
+        public class SignatoryDropdownDto
+        {
+            public int SignatoryId { get; set; }   // use int, safer than byte for -1
+            public string SignatoryName { get; set; }
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetSignatory(DataSourceLoadOptions loadOptions)
         {
@@ -459,22 +465,26 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             {
                 try
                 {
+                    // Map DB to DTO
+                    var clientCategory = await dbContext.Tbl90104DocumentSignatories
+                        .Select(i => new SignatoryDropdownDto
+                        {
+                            SignatoryId = i.SignatoryId,
+                            SignatoryName = i.SignatoryName
+                        })
+                        .ToListAsync();
 
-
-                    var ClientCategory = dbContext.Tbl90104DocumentSignatories.Select(i => new
+                    clientCategory.Insert(0, new SignatoryDropdownDto
                     {
-                        i.SignatoryId,
-                        i.SignatoryName
-                        // SignatoryID = i.SignatoryId, // <-- Important: Ensure it matches exactly
-                        // SignatoryName = i.SignatoryName
-
+                        SignatoryId = 99,
+                        SignatoryName = "<Not Assigned>"
                     });
 
-                    return Json(await DataSourceLoader.LoadAsync(ClientCategory, loadOptions));
+                    return Json(DataSourceLoader.Load(clientCategory, loadOptions));
                 }
                 catch (Exception ex)
                 {
-                    _logger.LogError($"Error in GetProject: {ex.Message}");
+                    _logger.LogError($"Error in GetSignatory: {ex.Message}");
                     return StatusCode(500, new { message = "An error occurred while fetching the data.", error = ex.Message });
                 }
             }
