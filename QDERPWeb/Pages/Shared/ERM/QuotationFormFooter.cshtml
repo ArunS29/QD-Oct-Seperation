@@ -1,5 +1,16 @@
 ﻿<div class="dx-fieldset horizontal-container" style="gap:10px;background-color:transparent;">
+<style>
 
+        .icon-green.dx-icon-attach::before {
+            color: green !important;
+        }
+
+        .icon-red.dx-icon-attach::before {
+            color: red !important;
+        }
+
+
+ </style>
 
     <div class="btn-container">
         @(Html.DevExtreme().DropDownButton()
@@ -182,7 +193,7 @@
     </div>
 
 
-    <div class="btn-container">
+    @* <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnproposal")
                 .Text(new JS("formatMessage('Proposal')"))
@@ -190,7 +201,7 @@
                 .OnClick("onIMSAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
-    </div>
+    </div> *@
 
 
     <div class="btn-container">
@@ -198,7 +209,38 @@
                 .ID("btnAttach")
                 .Text(new JS("formatMessage('Attach')"))
                 .Icon("attach")
-                .OnClick("onIMSAttachmentButtonClick")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSubmit")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>
@@ -206,7 +248,51 @@
 </div>
 
 <script>
+
        
+
+       
+
+    async  function onERMAttachmentButtonClick(e) {
+        debugger;
+
+         let grid = $("#B2BdataGrid").dxDataGrid("instance");
+            let children = grid.getDataSource().items();   // gets current visible data
+
+                 if (!children || children.length === 0) {
+                       DevExpress.ui.notify("Data Not found  within the Grid", "Can't Enable Attachment", "error", 3000);
+                      return;
+                 }
+
+        
+        // Get Voucher No safely
+        const invoiceNoBox = $("#txtQuotationNo").dxTextBox("instance");
+        const QuoteNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+        var menuType = "ERM";
+        var formType = "Equipment Quotation";
+        // const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+        // const invoiceData = await invoiceRes.json();
+        // let folderId2 = "";
+        // if (invoiceData) {
+        //     folderId2 = [
+        //             invoiceData.SalesOrderNo,
+        //             invoiceData.QuotationNo,
+        //             invoiceData.DeliveryNoteNos,
+        //             invoiceData.ProformaInvoiceNo
+        //     ]
+        //     .filter(Boolean)   remove null/empty
+        //     .join(",");
+        // }
+        // Log and build URL
+       
+
+        const isMaster = false;
+            const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(QuoteNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+        const title = "Transaction Documents";
+
+        openModal(url, title);
+    }
+
   
         function showSubmenu(e) {
             e.event.stopPropagation();
