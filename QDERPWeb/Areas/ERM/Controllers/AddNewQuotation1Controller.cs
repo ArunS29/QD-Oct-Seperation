@@ -97,7 +97,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     // Step 4: Get NoOfDigitsToInventoryQuotation using CompanyId from Tbl901CompanyDetails02
                     int noOfDigits = dbContext.Tbl901CompanyDetails02s
                                               .Where(c => c.CompanyId == company.CompanyId)
-                                              .Select(c => c.NoOfDigitsToInventoryQuotation ?? 4)
+                                              .Select(c => c.NoOfDigitsToEquipmentQuotation ?? 4)
                                               .FirstOrDefault(); // Default to 4 if not found
 
                     // Step 5: Extract values for quotation number
@@ -130,7 +130,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         {
             try
             {
-                var mprNumbers = dbContext.Tbl60101quotationMasters
+                var mprNumbers = dbContext.Tbl40103PropertyQuoteMasters
                     .Where(d => d.QuoteNo != null &&
                                 d.QuoteNo.Length >= noOfDigits &&
                                 (!isResetByYear || (d.QuoteDate.HasValue && d.QuoteDate.Value.Year == invoiceDate.Year)))
