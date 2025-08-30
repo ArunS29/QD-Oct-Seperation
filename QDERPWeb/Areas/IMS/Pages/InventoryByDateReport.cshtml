@@ -235,6 +235,14 @@
 			.AllowColumnResizing(true)
 			.Grouping(g => g.AutoExpandAll(true))
 			.GroupPanel(p => p.Visible(true))
+			.Paging(p => p.PageSize(10))  
+			.Pager(pager =>
+			{
+				pager.ShowPageSizeSelector(true);
+				pager.AllowedPageSizes(new[] { 5, 10, 20, 50 });
+				pager.ShowNavigationButtons(true);
+				pager.Visible(true);
+			})
 			.Columns(columns =>
 			{
 				// Band column for Stock Details

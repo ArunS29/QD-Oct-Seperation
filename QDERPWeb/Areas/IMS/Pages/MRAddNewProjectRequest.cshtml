@@ -3185,7 +3185,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "Goods and Services");
 				},
 				width: 60,
 				height: 30
@@ -3203,7 +3203,7 @@
 						return;
 					}
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(rowData)}`;
-					openModal(url, "", function () {
+					openModal(url, "Goods and Services", function () {
 					getDropdownData().done(function (newData) {
 					let dropDownBox = cellElement.find(".dx-dropdownbox").dxDropDownBox("instance");
 					if (dropDownBox) {
@@ -3939,7 +3939,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/IMS/VATGoodsandService`, "");
+					openModal(`/${tenantName}/IMS/GoodsAndService`, "");
 				},
 				width: 60,
 				height: 30
@@ -3950,7 +3950,7 @@
 				hint: "Edit item",
 				onClick: function () {
 					const url = `/${tenantName}/IMS/GoodsAndService?gscode=${encodeURIComponent(ItemNo)}`;
-					openModal(url, "");
+					openModal(url, "Goods and Services");
 				},
 				width: 60,
 				height: 30

@@ -1023,7 +1023,7 @@
                 .ShowColumnLines(true)
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
                 .Columns(columns =>
                 {
                     columns.Add().Caption(new JS("formatMessage('Doc No')")).DataField("DocumentNo");
@@ -1068,7 +1068,7 @@
                         .OnInitialized("OnmobilzationInitialize")
                         .OnContextMenuPreparing("onDeliveryContextMenu")
                         .RowAlternationEnabled(true)
-                        .Height(300)
+                        .Height("40vh")
                         .DataSource(d => d.WebApi()
                         .Controller("AddNewProperty")
                         .LoadAction("GetByMobilzation")
@@ -1100,7 +1100,7 @@
                 .OnInitialized("OnMaintenance")
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
                 .DataSource(d => d.WebApi()
                 .Controller("AddNewProperty")
                 .LoadAction("GetByMaintenance")
@@ -1129,8 +1129,9 @@
                         .ID("Checkclick")
                         .Icon("smalliconslayout")
                         .Text(new JS("formatMessage('Details Report By Date')"))
-                        .OnClick("ShowDatePopup"))
-                        )
+                        .OnClick("ShowDatePopup")
+            )
+                        
         </div>
 
         <!-- Document DataGrid -->
@@ -1141,7 +1142,7 @@
                 .OnInitialized("OnCostSummary")
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
                 .DataSource(d => d.WebApi()
                 .Controller("AddNewProperty")
                 .LoadAction("GetByCostSummary")
@@ -1206,7 +1207,7 @@
                 .ShowColumnLines(true)
                 .ColumnAutoWidth(true)
                 .RowAlternationEnabled(true)
-                .Height(300)
+                .Height("40vh")
                 .OnContextMenuPreparing("onClientsGridContextMenu1")
                 .OnInitialized("onItemReceivedGridInitialized")
                 .DataSource(d => d.WebApi()
@@ -1218,16 +1219,16 @@
                 )
                 .Columns(columns =>
                 {
-                    columns.Add().Caption("Employee ID").DataField("EmployeeId");
-                    columns.Add().Caption("Operator Type").DataField("PropertyOperatorTypeId");
-                    columns.Add().Caption("Operator Name").DataField("OperatorName");
-                    columns.Add().Caption("Start Date").DataField("WorkStartDate").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption("End Date").DataField("WorkEndDate").DataType(GridColumnDataType.Date);
-                    columns.Add().Caption("Hourly Rate").DataField("OperatorRegHourlyRate");
-                    columns.Add().Caption("Overtime Rate").DataField("OperatorOthourlyRate");
-                    columns.Add().Caption("Working Shift").DataField("WorkingShift");
-                    columns.Add().Caption("EquipmentNo").DataField("EquipmentNo").Visible(false);
-                    columns.Add().Caption("PropertyOperatorCode").DataField("PropertyOperatorCode").Visible(false);
+                    columns.Add().Caption(new JS("formatMessage('Employee ID')")).DataField("EmployeeId");
+                    columns.Add().Caption(new JS("formatMessage('Operator Type')")).DataField("PropertyOperatorTypeId");
+                    columns.Add().Caption(new JS("formatMessage('Operator Name')")).DataField("OperatorName");
+                    columns.Add().Caption(new JS("formatMessage('Start Date')")).DataField("WorkStartDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('End Date')")).DataField("WorkEndDate").DataType(GridColumnDataType.Date);
+                    columns.Add().Caption(new JS("formatMessage('Hourly Rate')")).DataField("OperatorRegHourlyRate");
+                    columns.Add().Caption(new JS("formatMessage('Overtime Rate')")).DataField("OperatorOthourlyRate");
+                    columns.Add().Caption(new JS("formatMessage('Working Shift')")).DataField("WorkingShift");
+                    columns.Add().Caption(new JS("formatMessage('Equipment No')")).DataField("EquipmentNo").Visible(false);
+                    columns.Add().Caption(new JS("formatMessage('Property OperatorC ode')")).DataField("PropertyOperatorCode").Visible(false);
                 })
                 )
     </div> 
@@ -1292,7 +1293,7 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                    columns.Add().DataField("PropertyCategoryName").Caption("Property Category");
+                            columns.Add().DataField("PropertyCategoryName").Caption(new JS("formatMessage('Property Category')"));
                     })
                     )
                     }
@@ -1322,7 +1323,7 @@
                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                     .Columns(columns =>
                     {
-                    columns.Add().DataField("SupplierName");
+                            columns.Add().DataField("SupplierName").Caption(new JS("formatMessage('Supplier Name')"));
                     })
                     )
                     }
@@ -1352,8 +1353,8 @@
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
                         .Columns(columns =>
                         {
-                            columns.Add().DataField("PropertyGroup").Caption("Property Group");
-                            columns.Add().DataField("PropertyGroupCode").Caption("Property Group Code");
+                                columns.Add().DataField("PropertyGroup").Caption(new JS("formatMessage('Property Group')"));
+                                columns.Add().DataField("PropertyGroupCode").Caption(new JS("formatMessage('Property Group Code')"));
                         })
                      )
 }
@@ -1924,8 +1925,8 @@
                     openModal(url, title);
             }
               function Propertycategory(){
-                  const url = `/${tenantName}/IMS/Propertycategory`;
-                const title = "";
+                  const url = `/${tenantName}/ERM/Propertycategory`;
+                const title = "Property Category";
                     openModal(url, title);
             }
               function ItemClassification(){
@@ -2272,5 +2273,9 @@
             ];
         }
     }
+
+
+
+
 
 </script>

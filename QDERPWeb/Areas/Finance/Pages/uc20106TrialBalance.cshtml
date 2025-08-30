@@ -462,18 +462,19 @@ function ddBtnShowRecords_click(option, mode = null) {
                 type: "array",
                 data: data
             },
-            fields: [
-                { dataField: "MasterGroup", area: "row", caption: "Master Group" },
-                { dataField: "AccountGroup", area: "row", caption: "Account Group" },
-                { dataField: "AccountHeadName", area: "row", caption: "Account Group" },
-                { dataField: "MonthYear", area: "column", caption: "Month Year" },
-                { dataField: "DrCr", area: "column", caption: "Dr Cr" },
-                { dataField: "VoucherType", area: "column", caption: "Voucher Type" },
-                { dataField: "DrAmount", area: "data", caption: "Debit Amount", summaryType: "sum",format: { type: "fixedPoint", precision: 2, useGrouping: true } },
-                { dataField: "CrAmount", area: "data", caption: "Credit Amount", summaryType: "sum",format: { type: "fixedPoint", precision: 2, useGrouping: true } },
-                { dataField: "VoucherAmountFormatted", area: "data", caption: "Voucher Amount", summaryType: "sum",format: { type: "fixedPoint", precision: 2, useGrouping: true } },
-                { dataField: "OpeningBalance", area: "data", caption: "Opening Balance", summaryType: "sum" ,format: { type: "fixedPoint", precision: 2, useGrouping: true }}
-            ]
+           fields: [
+    { dataField: "MasterGroup", area: "row", caption: formatMessage("Master Group") },
+    { dataField: "AccountGroup", area: "row", caption: formatMessage("Account Group") },
+    { dataField: "AccountHeadName", area: "row", caption: formatMessage("Account Head Name") },
+    { dataField: "MonthYear", area: "column", caption: formatMessage("Month Year") },
+    { dataField: "DrCr", area: "column", caption: formatMessage("Dr Cr") },
+    { dataField: "VoucherType", area: "column", caption: formatMessage("Voucher Type") },
+    { dataField: "DrAmount", area: "data", caption: formatMessage("Debit Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2, useGrouping: true } },
+    { dataField: "CrAmount", area: "data", caption: formatMessage("Credit Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2, useGrouping: true } },
+    { dataField: "VoucherAmountFormatted", area: "data", caption: formatMessage("Voucher Amount"), summaryType: "sum", format: { type: "fixedPoint", precision: 2, useGrouping: true } },
+    { dataField: "OpeningBalance", area: "data", caption: formatMessage("Opening Balance"), summaryType: "sum", format: { type: "fixedPoint", precision: 2, useGrouping: true } }
+]
+
         },
         width: "100%",
         height: "550px",
@@ -552,7 +553,7 @@ $("#pivotChartContainer").dxChart({
         }
     ],
     title: {
-        text: "Trial Balance - Debit vs Credit with Percentage",
+    text: formatMessage("Trial Balance - Debit vs Credit with Percentage"),
         font: {
             size: 18,
             weight: 600
@@ -592,7 +593,7 @@ $("#pivotChartContainer").dxChart({
     },
     valueAxis: {
         title: {
-            text: "Amount (SAR)",
+           text: formatMessage("Amount (SAR)"),
             font: {
                 size: 14,
                 weight: 500
@@ -612,7 +613,7 @@ $("#pivotChartContainer").dxChart({
     },
     argumentAxis: {
         title: {
-            text: "Account Name",
+        text: formatMessage("Account Name"),
             font: {
                 size: 14,
                 weight: 500
@@ -695,24 +696,21 @@ $("#pivotChartContainer").dxChart({
         const dataSource = pivotGrid.getDataSource();
         const currentFields = dataSource.fields();
 
-        const allFields = [
+       const allFields = [
+    { dataField: "AccountGroup", caption: formatMessage("Account Group") },
+    { dataField: "Category", caption: formatMessage("Category") },
+    { dataField: "VoucherNo", caption: formatMessage("Voucher No") },
+    { dataField: "VoucherDate", caption: formatMessage("Voucher Date"), dataType: "date", format: "shortDate" },
+    { dataField: "VoucherEntryNo", caption: formatMessage("Voucher Entry No") },
+    { dataField: "VoucherNarration", caption: formatMessage("Voucher Narration") },
+    { dataField: "EntryNarration", caption: formatMessage("Entry Narration") },
+    { dataField: "SysRemarks", caption: formatMessage("System Remarks") },
+    { dataField: "VoucherRefNo", caption: formatMessage("Voucher Ref No") },
+    { dataField: "Transactions", caption: formatMessage("Transactions") },
+    { dataField: "MonthYear", caption: formatMessage("Month Year") },
+    { dataField: "MonthNumber", caption: formatMessage("Month Number") }
+];
 
-            { dataField: "AccountGroup", caption: "Account Group" },
-
-            { dataField: "Category",  caption: "Category" },
-            { dataField: "VoucherNo",  caption: "Voucher No" },
-            { dataField: "VoucherDate",  caption: "Voucher Date", dataType: "date", format: "shortDate" },
-            { dataField: "VoucherEntryNo",  caption: "Voucher Entry No" },
-
-            { dataField: "VoucherNarration",  caption: "Voucher Narration" },
-            { dataField: "EntryNarration", caption: "Entry Narration" },
-            { dataField: "SysRemarks", caption: "System Remarks" },
-            { dataField: "VoucherRefNo",  caption: "Voucher Ref No" },
-            { dataField: "Transactions",  caption: "Transactions" },
-
-            { dataField: "MonthYear",  caption: "Month Year" },
-            { dataField: "MonthNumber", caption: "Month Number" }
-        ];
 
         // Check if all fields are already in the "filter" area
         const allInFilter = allFields.every(f =>
@@ -741,10 +739,10 @@ $("#pivotChartContainer").dxChart({
     const chartContainer = $("#pivotChartContainer");
     if (chartContainer.is(":visible")) {
         chartContainer.hide();
-        $(this).text("Show Chart");
+       $(this).text(formatMessage("Show Chart"));
     } else {
         chartContainer.show();
-        $(this).text("Hide Chart");
+        $(this).text(formatMessage("Hide Chart"));
     }
 
     // Resize grid

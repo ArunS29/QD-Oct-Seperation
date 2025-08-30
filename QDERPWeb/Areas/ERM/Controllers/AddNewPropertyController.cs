@@ -62,7 +62,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         public async Task<IActionResult> GetByMobilzation(string PropertyNo)
         {
             if (string.IsNullOrEmpty(PropertyNo))
-                return Ok(null); 
+                return Ok(new object[0]);  // 🔑 send empty array instead of null
 
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized("Invalid tenant");
@@ -79,14 +79,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     x.OffHireNoteNo
                 })
                 .ToListAsync();
-                 data = data != null ? data : [];
             return Ok(data);   // already empty list [] if no rows found
         }
         [HttpGet]
         public async Task<IActionResult> GetByCostSummary(string PropertyNo)
         {
             if (string.IsNullOrEmpty(PropertyNo))
-                return Ok(null);
+                return Ok(new object[0]);  // 🔑 send empty array instead of null
 
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized("Invalid tenant");
@@ -105,14 +104,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     x.CostAndRevenueClubbed
                 })
                 .ToListAsync();
-              data = data != null ? data : [];
             return Ok(data);   // already empty list [] if no rows found
         }
         [HttpGet]
         public async Task<IActionResult> GetByMaintenance(string PropertyNo)
         {
             if (string.IsNullOrEmpty(PropertyNo))
-                return Ok(null);
+                return Ok(new object[0]);  // 🔑 send empty array instead of null
 
             if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
                 return Unauthorized("Invalid tenant");
@@ -129,9 +127,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     x.PropertyNo
                 })
                 .ToListAsync();
-            data = data != null ? data : [];
-            return Ok(data);   // already empty list [] if no rows found
+            // no need to check null, ToListAsync always returns a list (empty if no records)
+            return Ok(data);
         }
+
         public async Task<IActionResult> GetDocumentExpiry()
         {
             try
@@ -620,7 +619,39 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                 return StatusCode(500, "An error occurred: " + ex.Message);
             }
         }
+        [HttpDelete("{propertyNo}")]
+        public async Task<IActionResult> DeletePropertyMaster(string propertyNo)
+        {
+            if (string.IsNullOrWhiteSpace(propertyNo))
+            {
+                return BadRequest(new { success = false, message = "Property No. is required." });
+            }
 
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
+
+            try
+            {
+                var existing = await dbContext.Tbl40101PropertyMasters
+                    .FirstOrDefaultAsync(x => x.PropertyNo == propertyNo);
+
+                if (existing == null)
+                {
+                    return NotFound(new { success = false, message = "Property not found." });
+                }
+
+                dbContext.Tbl40101PropertyMasters.Remove(existing);
+                await dbContext.SaveChangesAsync();
+
+                return Ok(new { success = true, message = $"Property {propertyNo} deleted successfully." });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { success = false, message = ex.Message });
+            }
+        }
         [HttpPost]
         public async Task<IActionResult> SaveOrUpdatePropertyMaster([FromBody] PropertyMasterViewModel VM)
         {

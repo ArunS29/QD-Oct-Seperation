@@ -112,7 +112,7 @@
 		@(Html.DevExtreme().Button()
 				.ID("btnSaveCostAllocation")
 				.Icon("save")
-				.Text("Save")
+				.Text(new JS("formatMessage('Save')"))
 				.OnClick("function() { saveCostAllocation(); }")
 				)
 	</div>
@@ -131,10 +131,10 @@
 			<div class="col-md-1">
 				<!-- Adjust width as necessary -->
 				<div class="form-group">
-					<label for="DrCr">Dr/Cr</label>
 					@(
 												Html.DevExtreme().SelectBox()
 												.ID("DrCr")
+									        	.Label(new JS("formatMessage('Dr/Cr')"))
 												.DataSource(new[] { "Dr", "Cr" })
 												.Value(drCr)
 												.Placeholder("Select Transaction Type")
@@ -146,10 +146,10 @@
 			<!-- Expenses / Returns -->
 			<div class="col-md-3">
 				<div class="form-group">
-					<label for="VoucherRefNo">Expenses / Returns for</label>
 					@(
 												Html.DevExtreme().TextBox()
 												.ID("AccountHd")
+										.Label(new JS("formatMessage('Expenses / Returns for')"))
 												.Value(accountHead)
 												.ReadOnly(true)
 												)
@@ -159,13 +159,13 @@
 			<!-- Amount -->
 			<div class="col-md-2">
 				<div class="form-group">
-					<label for="txtVoucherAmount">Amount</label>
 					@(
 												Html.DevExtreme().NumberBox()
 												.ID("vAmount")
 												.Value(voucherAmountParsed)
 
 
+										.Label(new JS("formatMessage('Amount')"))
 												.Format("#,##0.000")
 
 												)
@@ -180,10 +180,10 @@
 													Html.DevExtreme().CheckBox()
 													.ID("IsApproved1")
 													)
-						<span style="margin-left:5px">Approved By:</span>
+						<span style="margin-left:5px" id="voucherapprovedby"></span>
 					</div>
 					<div style="margin-left:25px">
-						Approved On: <span id="VoucherApprovedOn"></span>
+						<span id="VoucherApprovedOn"></span>
 					</div>
 				</div>
 			</div>
@@ -229,8 +229,8 @@
 					.DataSource(new object[] { })
 					.Columns(columns =>
 					{
-						columns.Add().Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
-						columns.Add().Caption("EmployeeName")
+					columns.Add().Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(100).AllowEditing(false);
+					columns.Add().Caption(new JS("formatMessage('EmployeeName')"))
 					.Width(400).AllowEditing(false)
 					.CellTemplate(@<text>
 			<div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
@@ -285,11 +285,11 @@
 				</div>
 			</div>
 		</text>);
-						columns.Add().Caption("Effective Date").DataField("EffectiveDate").AllowEditing(false);
-						columns.Add().Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
-						columns.Add().Caption("Remarks").DataField("Remarks").AllowEditing(true);
-						columns.AddFor(m => m.EnteredOn).Caption("Add Loan Schedule");
-						columns.AddFor(m => m.LoanId).Caption("Loan Doc ID");
+					columns.Add().Caption(new JS("formatMessage('Effective Date')")).DataField("EffectiveDate").AllowEditing(false);
+					columns.Add().Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true);
+					columns.Add().Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
+					columns.AddFor(m => m.EnteredOn).Caption(new JS("formatMessage('Add Loan Schedule')"));
+					columns.AddFor(m => m.LoanId).Caption(new JS("formatMessage('Loan Doc ID')"));
 					})
 				//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
 				.AllowColumnReordering(true) // Enable column reordering
@@ -324,14 +324,14 @@
 
 				@(Html.DevExtreme().Button()
 								.ID("AEbtnSave")
-								.Text("Save & Close")
+								.Text(new JS("formatMessage('Save & Close')"))
 								.Type(ButtonType.Normal)
 								.StylingMode(ButtonStylingMode.Outlined)
 								.Icon("save")
 								)
 				@(Html.DevExtreme().Button()
 								.ID("AEbtnPrint")
-								.Text("Print")
+								.Text(new JS("formatMessage('Print')"))
 								.Type(ButtonType.Normal)
 								.StylingMode(ButtonStylingMode.Outlined)
 								.Icon("print")
@@ -339,13 +339,13 @@
 								)
 				@(Html.DevExtreme().Button()
 								.ID("AEbtnBack")
-								.Text("Back")
+								.Text(new JS("formatMessage('Back')"))
 								.Icon("arrowleft")
 								//.OnClick("navigateToHome")
 								)
 				@(Html.DevExtreme().Button()
 								.ID("AEbtnDelete")
-								.Text("Delete")
+								.Text(new JS("formatMessage('Delete')"))
 								.Icon("close")
 								)
 			</div>
@@ -379,9 +379,9 @@
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.Columns(columns =>
 					{
-						columns.Add().Caption("EmployeeID").DataField("EmployeeId");
-						columns.Add().Caption("EmployeeName").DataField("EmployeeName");
-						columns.Add().Caption("NationalID").DataField("NationalId");
+				columns.Add().Caption(new JS("formatMessage('Employee ID')")).DataField("EmployeeId");
+				columns.Add().Caption(new JS("formatMessage('Employee Name')")).DataField("EmployeeName");
+						columns.Add().Caption(new JS("formatMessage('National ID')")).DataField("NationalId");
 
 					})
 					)
@@ -669,9 +669,7 @@
 							DevExpress.ui.notify("Cost Allocation Details updated Successfully.", "success", 2000);
 						  //     window.location.reload();
 								 // CostAllocationPopup.hide();
-								 $("#CostAllocation
-
-").modal('hide');
+								 $("#CostAllocation").modal('hide');
 
 						} else {
 							alert("Update failed: " + response.message);
@@ -685,7 +683,12 @@
 
 
 			});
-
+	 $(function () {
+					$("#VoucherApprovedOn").text(formatMessage("Approved On:"));
+		});
+	 $(function () {
+					$("#voucherapprovedby").text(formatMessage("Approved By:"));
+		});
 
 
 

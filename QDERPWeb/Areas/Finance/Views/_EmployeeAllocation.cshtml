@@ -186,7 +186,7 @@
 		@(Html.DevExtreme().Button()
 				.ID("btnSaveCostAllocation")
 				.Icon("save")
-				.Text("Save")
+				.Text(new JS("formatMessage('Save")
 				.OnClick("function() { saveCostAllocation(); }")
 				)
 	</div>
@@ -278,11 +278,11 @@
 					.DataSource(new object[] { })
 					.Columns(columns =>
 					{
-						columns.AddFor(m => m.EmployeeAllocationId).Caption("EmployeeAllocation Id").DataField("EmployeeAllocationId").Width(100).AllowEditing(false).Visible(false);
-						columns.AddFor(m => m.EmpAllocDrCr).Caption("Dr/Cr").DataField("DrCr").Width(100).AllowEditing(false);
+					columns.AddFor(m => m.EmployeeAllocationId).Caption(new JS("formatMessage('EmployeeAllocation Id')")).DataField("EmployeeAllocationId").Width(100).AllowEditing(false).Visible(false);
+					columns.AddFor(m => m.EmpAllocDrCr).Caption(new JS("formatMessage('Dr/Cr')")).DataField("DrCr").Width(100).AllowEditing(false);
 							columns.AddFor(m => m.EmployeeNo)
 							.DataField("EmployeeId")
-							.Caption("Employee Name")
+					.Caption(new JS("formatMessage('Employee Name')"))
 							.Width(500)
 							.AllowEditing(true)
 												// Normal Grid Mode
@@ -353,7 +353,7 @@
 
 				</text>);
 						columns.AddFor(m => m.EffectiveDate)
-					.Caption("Effective Date")
+					.Caption(new JS("formatMessage('Effective Date')"))
 					.DataField("EffectiveDate").DataType(GridColumnDataType.Date).Format("dd-MMM-yyyy")
 					.AllowEditing(true)
 					// Normal Grid Mode
@@ -372,7 +372,7 @@
 			)
 		</text>);
 
-					columns.AddFor(m => m.AmountAllocated).Caption("Amount").DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
+					columns.AddFor(m => m.AmountAllocated).Caption(new JS("formatMessage('Amount')")).DataField("VoucherAmount").DataType(GridColumnDataType.Number).Format("#,##0.00").AllowEditing(true).CalculateCellValue("function(data) { " +
 					"    if (data.VoucherAmount != null && currencyRate != 0) { " +
 					"        var val = data.VoucherAmount / currencyRate; " +
 					"        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
@@ -382,10 +382,10 @@
 					.CustomizeText("function(e) { " +
 					"return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
 					"}");
-					
-						columns.AddFor(m => m.CostAllocRemarks).Caption("Remarks").DataField("Remarks").AllowEditing(true);
-						columns.AddFor(m => m.EnteredOn).Caption("Add Loan Schedule");
-						columns.AddFor(m => m.LoanId).Caption("Loan Doc ID");
+
+					columns.AddFor(m => m.CostAllocRemarks).Caption(new JS("formatMessage('Remarks')")).DataField("Remarks").AllowEditing(true);
+					columns.AddFor(m => m.EnteredOn).Caption(new JS("formatMessage('Add Loan Schedule')"));
+						columns.AddFor(m => m.LoanId).Caption(new JS("formatMessage('Loan Doc ID')"));
 					})
 				//.ColumnChooser(columnChooser => columnChooser.Enabled(true).Title("Column Chooser").Mode(GridColumnChooserMode.DragAndDrop))
 				.AllowColumnReordering(true) // Enable column reordering
@@ -418,7 +418,7 @@
 		<div class="fixed-footer-toolbar">
 			@(Html.DevExtreme().Button()
 						.ID("AEbtnSave")
-						.Text("Save & Close")
+				.Text(new JS("formatMessage('Save & Close')"))
 						.Type(ButtonType.Normal)
 						.StylingMode(ButtonStylingMode.Contained)
 						.Icon("save")
@@ -427,7 +427,7 @@
 
 			@(Html.DevExtreme().Button()
 						.ID("AEbtnPrint")
-						.Text("Print")
+				.Text(new JS("formatMessage('Print')"))
 						.Type(ButtonType.Normal)
 						.StylingMode(ButtonStylingMode.Contained)
 						.Icon("print")
@@ -436,7 +436,7 @@
 
 			@(Html.DevExtreme().Button()
 						.ID("AEbtnBack")
-						.Text("Back")
+				.Text(new JS("formatMessage('Back')"))
 						.Icon("arrowleft")
 						.StylingMode(ButtonStylingMode.Contained)
 						.OnClick("CloseEmployeeModel")
@@ -445,7 +445,7 @@
 
 			@(Html.DevExtreme().Button()
 						.ID("AEbtnDelete")
-						.Text("Delete")
+				        .Text(new JS("formatMessage('Delete')"))
 						.Icon("close")
 						.StylingMode(ButtonStylingMode.Contained)
 						.ElementAttr(new { @class = "footer-button delete-btn" })
@@ -490,9 +490,9 @@
 					.Selection(s => s.Mode(SelectionMode.Single))
 					.Columns(columns =>
 					{
-						columns.Add().Caption("EmployeeID").DataField("EmployeeId");
-						columns.Add().Caption("Employee Name").DataField("EmployeeName");
-						columns.Add().Caption("NationalID").DataField("NationalId");
+					columns.Add().Caption(new JS("formatMessage('EmployeeID')")).DataField("EmployeeId");
+					columns.Add().Caption(new JS("formatMessage('Employee Name')")).DataField("EmployeeName");
+					columns.Add().Caption(new JS("formatMessage('NationalID')")).DataField("NationalId");
 					})
 					)
 		}

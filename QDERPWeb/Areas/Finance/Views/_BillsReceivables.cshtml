@@ -64,17 +64,17 @@
     let selectedRowData = null;   // Store selected row data
 </script>
 <div class="content-container-top" style="background-color:#909ead00;" >
-<div class="title">
+@* <div class="title">
     <div class="header-container">
         <div class="title">Bills Receivables / Receivables </div>
     </div>
-</div>
+</div> *@
     <div class="row w-100 align-items-center" style="margin-top: 8px;">
         <div class="form-group col-3">
                     
                     @(
                         Html.DevExtreme().TextBox()
-                        .Label("Voucher Entry ID :")
+                        .Label(new JS("formatMessage('Voucher Entry ID :')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ID("VoucherNoId")
                         .Value(voucherNo)
@@ -90,7 +90,7 @@
                     @(Html.DevExtreme().SelectBox()
                     .ID("PaymentNameDropdown")
                     .DataSource(new[] { accountHead }) // Only the selected AccountHead
-                        .Label("Payment Account:")
+                        .Label(new JS("formatMessage('Payment Account:')"))
                         .LabelMode(EditorLabelMode.Floating)
                     .Value(accountHead) // Pre-selected value
                     .Disabled(true) // Make the dropdown read-onlyr
@@ -103,7 +103,7 @@
         <div class="form-group col-3">
                     @(Html.DevExtreme().NumberBox()
                         .ID("AmountId")
-                        .Label("Amount:")
+                        .Label(new JS("formatMessage('Amount')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .Value(originalAmount)
                         .ShowSpinButtons(true)
@@ -120,7 +120,7 @@
                     @(
                         Html.DevExtreme().SelectBox()
                         .ID("DrCrId")
-                        .Label("DrCr:")
+                        .Label(new JS("formatMessage('DrCr:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .DataSource(new[] { drCr })
                         .Value(drCr)
@@ -143,7 +143,7 @@
             @(
                 Html.DevExtreme().SelectBox()
                 .ID("Reference")
-                .Label("Reference:")
+                        .Label(new JS("formatMessage('Reference:')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .DataSource(new[] { "New Reference", "Against Reference" })
                 .Value(referenceType)
@@ -154,7 +154,7 @@
         <div class="form-group col-4">
             @(Html.DevExtreme().DropDownBox()
                         .ID("ReferenceAcountHead")
-                        .Label("Reference No:")
+                        .Label(new JS("formatMessage('Reference No:')"))
                         .LabelMode(EditorLabelMode.Floating)
                         .ShowClearButton(true)
                         .AcceptCustomValue(true)
@@ -193,36 +193,36 @@
                                 .Scrolling(s => s.Mode(GridScrollingMode.Virtual)) 
                                 .Columns(columns =>
                                 {
-                                    columns.Add().DataField("ReferenceNo").Caption("Reference No");
-                                    columns.Add().DataField("ReceivableAmount").Caption("Receivable Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    columns.Add().DataField("ReferenceNo").Caption(new JS("formatMessage('Reference No')"));
+                                    columns.Add().DataField("ReceivableAmount").Caption(new JS("formatMessage('Receivable Amount')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
                                     "    if (data.ReceivableAmount != null && currencyRate != 0) { " +
                                     "        var val = data.ReceivableAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
                                     "    return null; " +
                                     "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("Received").Caption("Received").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    columns.Add().DataField("Received").Caption(new JS("formatMessage('Received')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
                                     "    if (data.Received != null && currencyRate != 0) { " +
                                     "        var val = data.Received / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
                                     "    return null; " +
                                     "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("Balance").Caption("Balance").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    columns.Add().DataField("Balance").Caption(new JS("formatMessage('Balance')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
                                     "    if (data.Balance != null && currencyRate != 0) { " +
                                     "        var val = data.Balance / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
                                     "    return null; " +
                                     "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("RetentionAmount").Caption("Retention Amount").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    columns.Add().DataField("RetentionAmount").Caption(new JS("formatMessage('Retention Amount')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
                                     "    if (data.RetentionAmount != null && currencyRate != 0) { " +
                                     "        var val = data.RetentionAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
                                     "    return null; " +
                                     "}").CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
-                                    columns.Add().DataField("BalanceDueWithOutRetention").Caption("Balance Due Without Retention").Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
+                                    columns.Add().DataField("BalanceDueWithOutRetention").Caption(new JS("formatMessage('Balance Due Without Retention')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CalculateCellValue("function(data) { " +
                                     "    if (data.BalanceDueWithOutRetention != null && currencyRate != 0) { " +
                                     "        var val = data.BalanceDueWithOutRetention / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
@@ -242,7 +242,7 @@
                                 
                                 )
 
-                <label for="Amount">Show Retained Value</label>
+                <label for="Amount" id="showretainedvalues"></label>
             </div>
         </div>
        
@@ -252,7 +252,7 @@
             @(
                 Html.DevExtreme().NumberBox()
                 .ID("txtAmount2")
-                .Label("Amount:")
+                        .Label(new JS("formatMessage('Amount')"))
                 .LabelMode(EditorLabelMode.Floating)
                 .Value(0)
                         .ValidationRules(rules =>
@@ -276,7 +276,7 @@
         <div class="form-group col-2">
             @(Html.DevExtreme().Button()
                 .ID("btnBillsVoucherEntry")
-                .Text("ADD")
+                .Text(new JS("formatMessage('ADD')"))
                 .Height(50)
                 .Width(150)
                 .Icon("plus")
@@ -302,12 +302,12 @@
             
             .Columns(columns =>
             {
-                columns.AddFor(m => m.SubLedgerId).Caption("ledgerid").Alignment(HorizontalAlignment.Center).AllowEditing(false).Visible(false);
-                columns.AddFor(m => m.VoucherEntryNo).Caption("#").Alignment(HorizontalAlignment.Center).AllowEditing(false);
-                columns.AddFor(m => m.DrCr).Caption("DrCr").Alignment(HorizontalAlignment.Center).AllowEditing(false);
-                columns.AddFor(m => m.ReferenceType).Caption("Reference Type").Alignment(HorizontalAlignment.Left).AllowEditing(false);
-                columns.AddFor(m => m.ReferenceNo).Caption("Reference No").Alignment(HorizontalAlignment.Center).AllowEditing(false);
-                    columns.AddFor(m => m.Amount).Caption("Amount").Alignment(HorizontalAlignment.Right).AllowEditing(false).CalculateCellValue("function(data) { " +
+            columns.AddFor(m => m.SubLedgerId).Caption(new JS("formatMessage('ledger id')")).Alignment(HorizontalAlignment.Center).AllowEditing(false).Visible(false);
+            columns.AddFor(m => m.VoucherEntryNo).Caption(new JS("formatMessage('#')")).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+            columns.AddFor(m => m.DrCr).Caption(new JS("formatMessage('DrCr')")).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+            columns.AddFor(m => m.ReferenceType).Caption(new JS("formatMessage('Reference Type')")).Alignment(HorizontalAlignment.Left).AllowEditing(false);
+            columns.AddFor(m => m.ReferenceNo).Caption(new JS("formatMessage('Reference No')")).Alignment(HorizontalAlignment.Center).AllowEditing(false);
+            columns.AddFor(m => m.Amount).Caption(new JS("formatMessage('Amount')")).Alignment(HorizontalAlignment.Right).AllowEditing(false).CalculateCellValue("function(data) { " +
                     "    if (data.Amount != null && currencyRate != 0) { " +
                     "        var val = data.Amount / currencyRate; " +
                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
@@ -317,7 +317,7 @@
                     .CustomizeText("function(e) { " +
                     "return e.value !== undefined && e.value !== null ? e.value.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 }) : ''; " +
                     "}");
-                columns.AddFor(m => m.RetentionAmount).Caption("Retention Amount").Alignment(HorizontalAlignment.Center).Visible(!hideRetentionAmount).CustomizeText(@"
+                    columns.AddFor(m => m.RetentionAmount).Caption(new JS("formatMessage('Retention Amount')")).Alignment(HorizontalAlignment.Center).Visible(!hideRetentionAmount).CustomizeText(@"
                 function(e) {
                 if(e.value === null || e.value === undefined) {
                 return ''; // Return empty string for null values
@@ -818,5 +818,8 @@
                 grid.columnOption("Received", "caption", "Received");
             }
         });
+    });
+     $(function () {
+        $("#showretainedvalues").text(formatMessage("Show Retained Value"));
     });
 </script>
