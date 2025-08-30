@@ -645,20 +645,19 @@
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Value(false).Text("Show Item Line No instead of Sl.No"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text("Print Item Code with Description"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
+                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text("Print Item Part No with Description"))
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text("Print Item Part No with Arabic Desc"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(true).Text("Print Footer At Bottom"))
+
                                 </td>
                             </tr>
                         </tbody>
