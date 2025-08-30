@@ -998,6 +998,7 @@
                         .ID("Addattach")
                         .Icon("attach")
                         .Text(new JS("formatMessage('Add & Attach File')"))
+                        .OnClick("OnAttachfile")
                         .Width("97%")
                         )
 
@@ -2274,7 +2275,61 @@
         }
     }
 
+        // Attachment
+     function OnAttachfile() {
+           // Get Voucher No safely
+           const PropertyNoBox = $("#PropertyNo").dxTextBox("instance");
+            const PropertyNo = PropertyNoBox ? PropertyNoBox.option("value") : null;
+           var button = $("#btnSave").dxButton("instance");
+           var buttonText = button ? button.option("text") : "";
 
+
+              if (!PropertyNo || PropertyNo == null || PropertyNo == "") {
+               DevExpress.ui.notify(
+                   "Fill Property No",
+                   "warning",
+                   4000
+               );
+               return;
+           }
+
+
+           if (buttonText !== "Update") {
+               DevExpress.ui.notify(
+                   "Please, Save Property Detail",
+                   "warning",
+                       4000
+               );
+               return;
+           }
+           var menuType = "erm";
+
+
+            var formType ="Equipment Property";
+         //    let folderId2 = "";
+           // Log and build URL
+            console.log("Property No", PropertyNo);
+           console.log("Equipment Property");
+           const isMaster = false;
+           const url = `/${tenantName}/Finance/LedgerDocuments?ReferenceNo=${encodeURIComponent(PropertyNo)}&ModuleType=${encodeURIComponent(formType)}&isMaster=${encodeURIComponent(isMaster)}&menuType=${encodeURIComponent(menuType)}&modal=true`;
+           const title = "Transaction Documents";
+
+           openModal(url, title);
+       }
+
+       function dropDownBoxOnInput(e) {
+           const ddbInstance = e.component;
+           if (!ddbInstance.option("opened")) ddbInstance.open();
+
+           const text = ddbInstance.option("text");
+           const gridId = ddbInstance.option("dataGridId");
+           if (gridId) {
+               const grid = $("#" + gridId).dxDataGrid("instance");
+               if (grid) {
+                   grid.option("searchPanel.text", text);
+               }
+           }
+       }
 
 
 
