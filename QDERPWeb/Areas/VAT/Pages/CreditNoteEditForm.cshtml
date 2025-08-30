@@ -455,14 +455,14 @@
 
 <div class="context-menuInvoice" id="contextMenu">
 	<div class="context-menu-itemInvoice">
-		<i class="dx-icon-plus"></i> Add Line Item
+		<i class="dx-icon-plus" id="creditnoteaddline"></i>
 	</div>
 
 	<div class="context-menu-itemInvoice">
-		<i class="dx-icon-close"></i> Delete Line Item
+		<i class="dx-icon-close" id="creditnotedeleteline"></i>
 	</div>
 	<div class="context-menu-itemInvoice">
-		<i class="dx-icon-close"></i> Delete All Line Items
+		<i class="dx-icon-close" id="creditnotedeleteallline"></i>
 	</div>
 	
 </div>
@@ -2732,7 +2732,7 @@
 														.Columns(columns =>
 
 														{
-															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')")).Alignment(HorizontalAlignment.Center);
 														})
 
 													)
@@ -3840,13 +3840,13 @@
 						},
 						selection: { mode: "single" },
 						columns: [
-							{ dataField: "GSCode", caption: "Code", width: 80 },
-							{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-							{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-							{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-							{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-							{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-							{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+								{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+						{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+						{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+						{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+						{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+						{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+						{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 						],
 						onSelectionChanged: function (selectedItems) {
 							const selectedItem = selectedItems.selectedRowsData[0];
@@ -3881,7 +3881,7 @@
 				icon: "plus",
 				hint: "Add new item",
 				onClick: function () {
-					openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+						openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -3898,7 +3898,7 @@
 
 					const selected = selectedItemData;
 					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-					openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 				},
 				width: 60,
 				height: 30
@@ -4123,10 +4123,10 @@
                                     height: 300,
                                     scrolling: { mode: "virtual" },
                                     columns: [
-                                        { dataField: "UnitCode", caption: "Code", width: 80 },
-                                        { dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-                                        { dataField: "UnitType", caption: "Unit Type", width: 150 },
-                                        { dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+	                            { dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+								{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+								{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+								{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
                                     ],
                                     onSelectionChanged: function (selectedItems) {
                                         let selectedItem = selectedItems.selectedRowsData[0];
@@ -4151,7 +4151,7 @@
                             hint: "Add new item",
                             onClick: function () {
                                 let url = `/${tenantName}/VAT/VATMasterModule`;
-                                let title = "Unit of Measure";
+                                let title = formatMessage("Unit of Measure");
                                 openModal(url, title);
                             },
                             width: 60,
@@ -4249,8 +4249,8 @@
                         height: 300,
                         scrolling: { mode: "virtual" },
                         columns: [
-                            { dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-                            { dataField: "TaxRate", caption: "TaxRate", width: 80 }
+                            { dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+                            { dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
                         ],
                         onSelectionChanged: function (selectedItems) {
                             let selectedItem = selectedItems.selectedRowsData[0];
@@ -4471,13 +4471,13 @@
 					},
 					selection: { mode: "single" },
 					columns: [
-						{ dataField: "GSCode", caption: "Code", width: 80 },
-						{ dataField: "GSDescrpition", caption: "Description", width: 200 },
-						{ dataField: "GsdescriptionAr", caption: "Arabic Description", width: 200 },
-						{ dataField: "ItemPartNo", caption: "Item Part No", width: 100 },
-						{ dataField: "CostPrice", caption: "Cost Price", width: 100 },
-						{ dataField: "GSSellingRate", caption: "Selling Rate", width: 100 },
-						{ dataField: "ReorderQty", caption: "Current Qty", width: 100 }
+							{ dataField: "GSCode", caption: formatMessage("Code"), width: 80 },
+						{ dataField: "GSDescrpition", caption: formatMessage("Description"), width: 200 },
+						{ dataField: "GsdescriptionAr", caption: formatMessage("Arabic Description"), width: 200 },
+						{ dataField: "ItemPartNo", caption: formatMessage("Item Part No"), width: 100 },
+						{ dataField: "CostPrice", caption: formatMessage("Cost Price"), width: 100 },
+						{ dataField: "GSSellingRate", caption: formatMessage("Selling Rate"), width: 100 },
+						{ dataField: "ReorderQty", caption: formatMessage("Current Qty"), width: 100 }
 					],
 					onSelectionChanged: function (selectedItems) {
 						const selectedItem = selectedItems.selectedRowsData[0];
@@ -4521,7 +4521,7 @@
 			icon: "plus",
 			hint: "Add new item",
 			onClick: function () {
-				openModal(`/${tenantName}/VAT/VATGoodsandServices`, "");
+					openModal(`/${tenantName}/VAT/VATGoodsandServices`, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4534,7 +4534,7 @@
 		
 					const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(ItemNo)}&GsdescriptionAr=${encodeURIComponent(GsdescriptionAr)}&Gsdescrpition=${encodeURIComponent(Gsdescrpition)}&ReorderQty=${encodeURIComponent(ReorderQty)}&GssellingRate=${encodeURIComponent(GssellingRate)}&CostPrice=${encodeURIComponent(CostPrice)}&ItemPartNo=${encodeURIComponent(ItemPartNo)}&UnitOfMeasure=${encodeURIComponent(UnitOfMeasure)}`; // Example add page
 				//const url = `/${tenantName}/VAT/VATGoodsandServices?ItemNo=${encodeURIComponent(selected.GSCode || selected.Gscode || "")}&GsdescriptionAr=${encodeURIComponent(selected.GsdescriptionAr || "")}&Gsdescrpition=${encodeURIComponent(selected.GSDescrpition || selected.Gsdescrpition || "")}&ReorderQty=${encodeURIComponent(selected.ReorderQty || 0)}&GssellingRate=${encodeURIComponent(selected.GSSellingRate || 0)}&CostPrice=${encodeURIComponent(selected.CostPrice || 0)}&ItemPartNo=${encodeURIComponent(selected.ItemPartNo || "")}&UnitOfMeasure=${encodeURIComponent(selected.UnitDescription || "")}`;
-				openModal(url, "Goods and Services");
+					openModal(url, formatMessage("Goods and Services"));
 			},
 			width: 60,
 			height: 30
@@ -4994,13 +4994,11 @@
 
 											columns: [
 
-													{ dataField: "UnitCode", caption: "Code", width: 80 },
-
-												{ dataField: "UnitDesc", caption: "Unit Rate Method", width: 200 },
-
-												{ dataField: "UnitType", caption: "Unit Type", width: 150 },
-
-												{ dataField: "UnitDescAr", caption: "Unit Code", width: 100 }
+														{ dataField: "UnitCode", caption: formatMessage("Code"), width: 80 },
+								{ dataField: "UnitDesc", caption: formatMessage("Unit Rate Method"), width: 200 },
+								{ dataField: "UnitType", caption: formatMessage("Unit Type"), width: 150 },
+								{ dataField: "UnitDescAr", caption: formatMessage("Unit Code"), width: 100 }
+												
 
 											],
 
@@ -5049,7 +5047,7 @@
 										let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
 																	
-let title = "Unit of Measure";
+let title = formatMessage("Unit of Measure");
 openModal(url, title);
 
 									},
@@ -5138,8 +5136,8 @@ openModal(url, title);
 							height: 300,
 							scrolling: { mode: "virtual" },
 							columns: [
-								{ dataField: "TaxSlab", caption: "TaxSlab", width: 200 },
-								{ dataField: "TaxRate", caption: "TaxRate", width: 80 }
+								{ dataField: "TaxSlab", caption: formatMessage("TaxSlab"), width: 200 },
+								{ dataField: "TaxRate", caption: formatMessage("TaxRate"), width: 80 }
 							],
 							onSelectionChanged: function(selectedItems) {
 								let selectedItem = selectedItems.selectedRowsData[0];
@@ -8443,7 +8441,7 @@ $(function () {
 			
 $(document).ready(function () {
 		var button = $("#btnSave").dxButton("instance");
-		button.option("text", "Update");
+		button.option("text", formatMessage("Update"));
 	});
 
 		$(document).ready(function () {
@@ -8843,6 +8841,14 @@ $(document).ready(function () {
 		const count = docs.length;
 		updateAttachButtonCount("#btnAttach", count);
 	}
-
+		 $(function () {
+		   $("#creditnotedeleteallline").text(formatMessage("Delete All Line Items"));
+	  });
+	$(function () {
+		   $("#creditnotedeleteline").text(formatMessage("Delete Line Item"));
+	  });
+	$(function () {
+		   $("#creditnoteaddline").text(formatMessage("Add Line Item"));
+	  });
 </script>
 

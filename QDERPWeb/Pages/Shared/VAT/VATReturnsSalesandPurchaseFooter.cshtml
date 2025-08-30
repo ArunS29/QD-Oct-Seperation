@@ -168,13 +168,13 @@
         .Items(items =>
         {
             items.Add()
-                .Text("VAT Returns Form")
+                .Text(new JS("formatMessage('VAT Returns Form')"))
                 .Icon("file")
                 .Option("color", "#FF7043") // Orange
                 .Option("reportType", "vatReturns");
 
             items.Add()
-                .Text("VAT Summary Report ▸")
+                .Text( new JS("formatMessage('VAT Summary Report')"))
                 .Icon("file")
                 .Option("color", "#00ACC1") // Cyan
                 .OnClick("showSubmenu10");

@@ -2172,7 +2172,7 @@
 													.Columns(columns =>
 													{
 														columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('Currency Exchange ID')"));
-														columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('CurrencyName')"));
+														columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
 														columns.Add().DataField("CurrencyNameAr").Caption(new JS("formatMessage('CurrencyNameAr')"));
 														columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')"));
 														columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('CurrencyCode')"));
@@ -2290,7 +2290,7 @@
 
 																columns.Add().DataField("SalesPersonCode").Caption(new JS("formatMessage('SalesPersonCode')"));
 
-																columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('SalesPersonName')"));
+																columns.Add().DataField("SalesPersonName").Caption(new JS("formatMessage('Sales Person Name')"));
 
 																columns.Add().DataField("UserCode").Caption(new JS("formatMessage('UserCode')"));
 
@@ -3238,7 +3238,7 @@
 	                                        }
 
 											 var button = $("#btnSave").dxButton("instance");
-											 button.option("text", "Update");
+											 button.option("text", formatMessagr("Update"));
 											 getDocumentCount();
 								// Now call the second AJAX to get grid details
 							$.ajax({
@@ -8286,7 +8286,7 @@
 
 			$(document).ready(function () {
 			var button = $("#btnSave").dxButton("instance");
-			button.option("text", "Save");
+			button.option("text", formatMessage("Save"));
 		});
 
 
