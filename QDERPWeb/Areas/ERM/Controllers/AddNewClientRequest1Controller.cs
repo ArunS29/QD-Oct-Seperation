@@ -31,6 +31,36 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 		
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 		[HttpGet]
 		public ActionResult<string> GetNewRequestNoApi()
 		{
@@ -81,10 +111,10 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 			try
 			{
 				// Retrieve MPR numbers into memory
-				var mprNumbers = dbContext.Tbl60601purchaseRequestMasters
-					.Where(d => d.Mprno != null && d.Mprno.Length >= 5 &&
-								(!isResetByYear || (d.Mprdate.HasValue && d.Mprdate.Value.Year == invoiceDate.Year)))
-					.Select(d => d.Mprno)
+				var mprNumbers = dbContext.Tbl40136PropertyRequestMasters
+                    .Where(d => d.EqiupmentRequestNo != null && d.EqiupmentRequestNo.Length >= 5 &&
+								(!isResetByYear || (d.RequestDate.HasValue && d.RequestDate.Value.Year == invoiceDate.Year)))
+					.Select(d => d.EqiupmentRequestNo)
 					.ToList();
 
 				// Extract numeric parts and determine the maximum
@@ -509,141 +539,124 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 		}
 
 
-		[HttpPost]
-		public async Task<IActionResult> SaveOrUpdatePurchaseRequest([FromBody] PurchaseRequestViewModel VM)
-		{
-			if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
-			{
-				return Unauthorized(new { success = false, message = "Invalid tenant context." });
-			}
+        public class PropertyRequestViewModel
+        {
+            // Tbl40136PropertyRequestMaster fields
+            public string EqiupmentRequestNo { get; set; }
+            public DateTime? RequestDate { get; set; }
+            public string ClientCode { get; set; }
+            public string RequestedBy { get; set; }
+            public string RequesterContactEmail { get; set; }
+            public string RequesterContact { get; set; }
+            public byte? ModeOfRequest { get; set; }
+            public byte? TypeOfRequest { get; set; }
+            public string ClientRefNo { get; set; }
 
-			if (VM == null || string.IsNullOrEmpty(VM.Mprno))
-			{
-				return BadRequest(new { success = false, message = "MPR No. is required." });
-			}
-
-			try
-			{
-				// Check if the master record exists
-				var existingMaster = await dbContext.Tbl60601purchaseRequestMasters
-					.FirstOrDefaultAsync(x => x.Mprno == VM.Mprno);
-
-				if (existingMaster != null)
-				{
-					//Update existing master with manual property mapping
-
-			existingMaster.Mprdate = VM.Mprdate;
-					existingMaster.ClientCode = VM.ClientCode;
-					existingMaster.RequestedBy = VM.RequestedBy;
-					existingMaster.RequesterContactEmail = VM.RequesterContactEmail;
-					existingMaster.RequesterContact = VM.RequesterContact;
-					existingMaster.SalesPersonCode = VM.SalesPersonCode;
-					existingMaster.ClientRefNo = VM.ClientRefNo;
-					existingMaster.PurposeOfRequest = VM.PurposeOfRequest;
-					existingMaster.Priority = VM.Priority;
-					existingMaster.CostCenterText = VM.CostCenterText;
-					existingMaster.ExpectedDate = VM.ExpectedDate;
-					existingMaster.Remarks = VM.Remarks;
-					existingMaster.ProjectMasterCode = VM.ProjectMasterCode;
-					existingMaster.BidClosingDate = VM.BidClosingDate;
-					existingMaster.BidReminderOn = VM.BidReminderOn;
-					existingMaster.ClientProject = VM.ClientProject;
-					existingMaster.ProjectSubUnitCode = VM.ProjectSubUnitCode.HasValue ? (byte?)VM.ProjectSubUnitCode.Value : null;
-					existingMaster.StoreCode = VM.StoreCode;
-					existingMaster.TypeOfMpr = VM.TypeOfMpr.HasValue ? (byte?)VM.TypeOfMpr.Value : null;
-					existingMaster.ModeOfRequest = VM.ModeOfRequest.HasValue ? (byte?)VM.ModeOfRequest.Value : null;
-					existingMaster.TypeOfRequest = VM.TypeOfRequest.HasValue ? (byte?)VM.TypeOfRequest.Value : null;
-					existingMaster.ExpectedVatrate = VM.ExpectedVatrate.HasValue ? (byte?)VM.ExpectedVatrate.Value : null;
-					existingMaster.CompanyBranch = VM.CompanyBranch.HasValue ? (byte?)VM.CompanyBranch.Value : null;
-					existingMaster.PurchaseRequestStatusId = VM.PurchaseRequestStatusId.HasValue ? (byte?)VM.PurchaseRequestStatusId.Value : null;
-					existingMaster.InventoryMasterGroupId = VM.InventoryMasterGroupId.HasValue ? (byte?)VM.InventoryMasterGroupId.Value : null;
-					existingMaster.RequestSignatory = VM.RequestSignatory.HasValue ? (byte?)VM.RequestSignatory.Value : null;
-					existingMaster.MprverifiedSign = VM.MprverifiedSign.HasValue ? (byte?)VM.MprverifiedSign.Value : null;
-					existingMaster.MprapprovedSign = VM.MprapprovedSign.HasValue ? (byte?)VM.MprapprovedSign.Value : null;
+            // Tbl60601purchaseRequestMaster fields
+            public string PurposeOfRequest { get; set; }
+            public DateTime? ExpectedDate { get; set; }
+            public string Remarks { get; set; }
+            public byte? CompanyBranch { get; set; }
+        }
 
 
-				}
-				else
-				{
-					// Insert new master
-					var newMaster = new Tbl60601purchaseRequestMaster
-					{
-						Mprno = VM.Mprno,
-						Mprdate = VM.Mprdate,
-						ClientCode = VM.ClientCode,
-						RequestedBy = VM.RequestedBy,
-						RequesterContactEmail = VM.RequesterContactEmail,
-						RequesterContact = VM.RequesterContact,
-						ModeOfRequest = Convert.ToByte(VM.ModeOfRequest),
-						TypeOfRequest = Convert.ToByte(VM.TypeOfRequest),
-						SalesPersonCode = VM.SalesPersonCode,
-						ClientRefNo = VM.ClientRefNo,
-						PurposeOfRequest = VM.PurposeOfRequest,
-						Priority = VM.Priority,
-						CostCenterText = VM.CostCenterText,
-						ExpectedDate = VM.ExpectedDate,
-						ExpectedVatrate = Convert.ToByte(VM.ExpectedVatrate),
-						Remarks = VM.Remarks,
-						CompanyBranch = Convert.ToByte(VM.CompanyBranch),
-						PurchaseRequestStatusId = Convert.ToByte(VM.PurchaseRequestStatusId),
-						InventoryMasterGroupId = Convert.ToByte(VM.InventoryMasterGroupId),
-						ProjectMasterCode = VM.ProjectMasterCode,
-						BidClosingDate = VM.BidClosingDate,
-						BidReminderOn = VM.BidReminderOn,
-						ClientProject = VM.ClientProject,
-						RequestSignatory=VM.RequestSignatory,
-						MprverifiedSign=VM.MprverifiedSign,
-						MprapprovedSign=VM.MprapprovedSign,
-						ProjectSubUnitCode= Convert.ToByte(VM.ProjectSubUnitCode),
-						StoreCode = VM.StoreCode,
-						TypeOfMpr=Convert.ToByte(VM.TypeOfMpr)
-			
-,
+        [HttpPost]
+        public async Task<IActionResult> SaveOrUpdatePropertyRequest([FromBody] PropertyRequestViewModel VM)
+        {
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                return Unauthorized(new { success = false, message = "Invalid tenant context." });
+            }
 
-					};
+            if (VM == null || string.IsNullOrEmpty(VM.EqiupmentRequestNo))
+            {
+                return BadRequest(new { success = false, message = "Equipment Request No is required." });
+            }
 
-					await dbContext.Tbl60601purchaseRequestMasters.AddAsync(newMaster);
-				}
+    //       using var transaction = await dbContext.Database.BeginTransactionAsync();
+            try
+            {
+                // ===== MASTER TABLE =====
+                var existingMaster = await dbContext.Tbl40136PropertyRequestMasters
+                    .FirstOrDefaultAsync(x => x.EqiupmentRequestNo == VM.EqiupmentRequestNo);
 
-				// Handle child entries
-				var existingChildren = await dbContext.Tbl60602purchaseRequestChildren
-					.Where(x => x.Mprno == VM.Mprno)
-					.ToListAsync();
+                if (existingMaster != null)
+                {
+                    existingMaster.RequestDate = VM.RequestDate;
+                    existingMaster.ClientCode = VM.ClientCode;
+                    existingMaster.RequestedBy = VM.RequestedBy;
+                    existingMaster.RequesterContactEmail = VM.RequesterContactEmail;
+                    existingMaster.RequesterContact = VM.RequesterContact;
+                    existingMaster.ModeOfRequest = VM.ModeOfRequest;
+                    existingMaster.TypeOfRequest = VM.TypeOfRequest;
+                    existingMaster.ClientRefNo = VM.ClientRefNo;
+                    existingMaster.ModifiedBy = "System";
+                    existingMaster.ModifiedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    var newMaster = new Tbl40136PropertyRequestMaster
+                    {
+                        EqiupmentRequestNo = VM.EqiupmentRequestNo,
+                        RequestDate = VM.RequestDate,
+                        ClientCode = VM.ClientCode,
+                        RequestedBy = VM.RequestedBy,
+                        RequesterContactEmail = VM.RequesterContactEmail,
+                        RequesterContact = VM.RequesterContact,
+                        ModeOfRequest = VM.ModeOfRequest,
+                        TypeOfRequest = VM.TypeOfRequest,
+                        ClientRefNo = VM.ClientRefNo,
+                        ModifiedBy = "System",
+                        ModifiedOn = DateTime.UtcNow
+                    };
 
-				foreach (var child in VM.PurchaseRequestDetails)
-				{
-					if (child.MprchildSlNo == 0)
-					{
-						// New child entry
-						child.Mprno = VM.Mprno; // Ensure foreign key is set
-						await dbContext.Tbl60602purchaseRequestChildren.AddAsync(child);
-					}
-					else
-					{
-						// Existing child entry
-						var existingChild = existingChildren
-							.FirstOrDefault(x => x.MprchildSlNo == child.MprchildSlNo);
+                    await dbContext.Tbl40136PropertyRequestMasters.AddAsync(newMaster);
+                }
 
-						if (existingChild != null)
-						{
-							dbContext.Entry(existingChild).CurrentValues.SetValues(child);
-						}
-					}
-				}
+                // ===== SECOND TABLE =====
+                var existingPurchase = await dbContext.Tbl60601purchaseRequestMasters
+                    .FirstOrDefaultAsync(x => x.ClientCode == VM.ClientCode);
 
-				await dbContext.SaveChangesAsync();
+                if (existingPurchase != null)
+                {
+                    existingPurchase.PurposeOfRequest = VM.PurposeOfRequest;
+                    existingPurchase.ExpectedDate = VM.ExpectedDate;
+                    existingPurchase.Remarks = VM.Remarks;
+                    existingPurchase.CompanyBranch = VM.CompanyBranch;
+                    existingPurchase.ModifiedBy = "System";
+                    existingPurchase.ModifiedOn = DateTime.UtcNow;
+                }
+                else
+                {
+                    var newPurchase = new Tbl60601purchaseRequestMaster
+                    {
+                        PurposeOfRequest = VM.PurposeOfRequest,
+                        ExpectedDate = VM.ExpectedDate,
+                        Remarks = VM.Remarks,
+                        CompanyBranch = VM.CompanyBranch,
+                        ModifiedBy = "System",
+                        ModifiedOn = DateTime.UtcNow
+                    };
 
-				return Ok(new { success = true, message = "Purchase Request saved/updated successfully." });
-			}
-			catch (Exception ex)
-			{
-				_logger.LogError($"Error in GetProject: {ex.Message}");
-				return StatusCode(500, new { success = false, message = ex.Message });
-			}
-		}
+                    await dbContext.Tbl60601purchaseRequestMasters.AddAsync(newPurchase);
+                }
+
+                await dbContext.SaveChangesAsync();
+              //  await transaction.CommitAsync();
+
+                return Ok(new { success = true, message = "Property and Purchase Request saved/updated successfully." });
+            }
+            catch (Exception ex)
+            {
+          //      await transaction.RollbackAsync();
+                _logger.LogError($"Error in SaveOrUpdatePropertyRequest: {ex.Message}", ex);
+                return StatusCode(500, new { success = false, message = "Internal server error. Please try again later." });
+            }
+        }
 
 
-		[HttpGet]
+
+        [HttpGet]
 		public async Task<IActionResult> GetClientdataByCode(string Mprno)
 		{
 			if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

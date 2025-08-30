@@ -423,14 +423,14 @@
 							return;
 						}
 
-						const { Mprno, RequestEnquiry } = rowData;
+							const { EqiupmentRequestNo, RequestEnquiry } = rowData;
 						const tenantName = window.tenantName || "defaultTenant";
 						let url = "";
 						let title = "";
 
 						switch (RequestEnquiry) {
 							case "Client Request":
-								url = `/${tenantName}/ERM/AddNewClientRequest?Mprno=${Mprno}`;
+										url = `/${tenantName}/ERM/EquipmentClientRequest?EqiupmentRequestNo=${EqiupmentRequestNo}`;
 								title = "Edit Client Request";
 								break;
 							case "Project Request":

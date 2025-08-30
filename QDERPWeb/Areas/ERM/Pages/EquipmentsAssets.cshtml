@@ -346,17 +346,33 @@
                          window.location.href = url;
                     }
                 },
-                {
-                    text: "Delete Property",
-                    icon: "trash",
-                    onItemClick: function () {
-                        DevExpress.ui.dialog.confirm("Are you sure you want to delete this Property?", "Confirm Delete")
-                            .done(function (dialogResult) {
-                                if (dialogResult) {
-                                    deleteProperty(PropertyNo);
+                   {
+        text: "Delete Property",
+        icon: "trash",
+        onItemClick: function () {
+            DevExpress.ui.dialog.confirm("Are you sure you want to delete this Property?", "Confirm Delete")
+                .done(function (dialogResult) {
+                    if (dialogResult) {
+                        // 🔥 Call the delete API
+                        $.ajax({
+                            url: "/api/AddNewProperty/DeletePropertyMaster/" + PropertyNo,
+                            type: "DELETE",
+                            success: function (res) {
+                                if (res.success) {
+                                    DevExpress.ui.notify(res.message, "success", 2000);
+                                    // refresh dxDataGrid after delete
+                                    $("#dataGrid").dxDataGrid("instance").refresh();
+                                } else {
+                                    DevExpress.ui.notify(res.message, "error", 3000);
                                 }
-                            });
+                            },
+                            error: function (xhr) {
+                                DevExpress.ui.notify("Delete failed: " + xhr.responseText, "error", 3000);
+                            }
+                        });
                     }
+                });
+        }
                 }
             ];
         }

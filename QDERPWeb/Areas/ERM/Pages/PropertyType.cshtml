@@ -224,13 +224,13 @@
 				.Columns(columns =>
 				{
 					columns.Add().DataField("PropertyTypeId")
-					.Caption("ID")
+					.Caption(new JS("formatMessage('ID')"))
 					.Width(100)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(false);
 
 					columns.Add().DataField("PropertyType")
-					.Caption("Property Type")
+					.Caption(new JS("formatMessage('Property Type')"))
 					.Width(300)
 					.Alignment(HorizontalAlignment.Center)
 					.AllowEditing(true);
