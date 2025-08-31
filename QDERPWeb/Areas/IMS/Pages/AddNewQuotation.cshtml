@@ -1064,20 +1064,20 @@
 
 								<!-- Verified By Checkboxes -->
 								<td>
-									@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
+									@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Value(false).Text(new JS("formatMessage('Page Break before Terms')")) )
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text(new JS("formatMessage('Page Break after Terms')")) )
+									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Page Break after Terms')")) )
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text(new JS("formatMessage('Print Client Acknowledgement')")) )
+									@(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text(new JS("formatMessage('Print Client Acknowledgement')")) )
 								</td>
 
 								<!-- Approved By Checkboxes -->
 								<td>
-									@(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text(new JS("formatMessage('Print Item Code with Description')")) )
+									@(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text(new JS("formatMessage('Print Item Code with Description')")) )
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text(new JS("formatMessage('Print Item Part No with Description')")) )
+									@(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Description')")) )
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
+									@(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
 								</td>
                             </tr>
                         </tbody>
@@ -2759,8 +2759,9 @@ placeholder: "Search..."
     width: 50,
     allowEditing: false,
     cellTemplate: function (container, options) {
-        const quoteChildId = options.data.QuoteChildId; // ✅ Get QuoteChildId from row
-        const url = `/${tenantName}/IMS/IMSDetailsDescription?quoteChildId=${encodeURIComponent(quoteChildId)}`;
+        const quoteChildId = options.data.QuoteChildId;
+		// ✅ Get QuoteChildId from row
+        const url = `/${tenantName}/IMS/QuotationGridForm?quoteChildId=${encodeURIComponent(quoteChildId)}`;
 
         $("<div>")
             .addClass("dx-link")
@@ -3434,7 +3435,7 @@ placeholder: "Search..."
     allowEditing: false,
     cellTemplate: function (container, options) {
         const quoteChildId = options.data.QuoteChildId; // ✅ Get QuoteChildId from row
-        const url = `/${tenantName}/IMS/IMSDetailsDescription?quoteChildId=${encodeURIComponent(quoteChildId)}`;
+        const url = `/${tenantName}/IMS/QuotationGridForm?quoteChildId=${encodeURIComponent(quoteChildId)}`;
 
         $("<div>")
             .addClass("dx-link")

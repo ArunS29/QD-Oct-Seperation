@@ -208,24 +208,39 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
         [HttpGet]
-        public IActionResult GetReportedByvalue()
+        public IActionResult GetReportedByValue()
         {
-            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            try
             {
-                _logger.LogWarning("GetReportrdByvalue failed: Invalid tenant context.");
-                return Unauthorized("Invalid tenant.");
-            }
+                if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    _logger.LogWarning("GetReportedByValue failed: Invalid tenant context.");
+                    return Unauthorized(new { success = false, message = "Invalid tenant." });
+                }
 
-            var userName = HttpContext.Session.GetString("UserName");
-            if (string.IsNullOrEmpty(userName))
+                var userName = HttpContext.Session.GetString("UserName");
+                if (string.IsNullOrEmpty(userName))
+                {
+                    _logger.LogWarning("GetReportedByValue failed: UserName is missing in session.");
+                    return Unauthorized(new { success = false, message = "User is not logged in." });
+                }
+
+                _logger.LogInformation("Returning UserName: {UserName}", userName);
+
+                // ✅ Always return consistent JSON response
+                return Ok(new
+                {
+                    success = true,
+                    reportedBy = userName
+                });
+            }
+            catch (Exception ex)
             {
-                _logger.LogWarning("GetReportrdByvalue failed: UserName is missing in session.");
-                return Unauthorized("User is not logged in.");
+                _logger.LogError(ex, "Error in GetReportedByValue");
+                return StatusCode(500, new { success = false, message = ex.Message });
             }
-
-            _logger.LogInformation("Returning UserName: {UserName}", userName);
-            return Ok(userName);
         }
+
 
     }
 }
