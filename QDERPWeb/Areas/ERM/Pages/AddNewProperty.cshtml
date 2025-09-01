@@ -1023,8 +1023,14 @@
                 .ShowBorders(true)
                 .ShowColumnLines(true)
                 .ColumnAutoWidth(true)
+                .OnInitialized("OnDocument")
                 .RowAlternationEnabled(true)
                 .Height("40vh")
+                .DataSource(d => d.WebApi()
+                .Controller("AddNewProperty")
+                .LoadAction("GetByDocument")
+                .LoadMode(DataSourceLoadMode.Raw)
+                )
                 .Columns(columns =>
                 {
                     columns.Add().Caption(new JS("formatMessage('Doc No')")).DataField("DocumentNo");
@@ -1472,6 +1478,28 @@
              }
          });
      }
+       function OnDocument(e) {
+          const grid = e.component;
+          const urlParams = new URLSearchParams(window.location.search);
+          const propertyNo = urlParams.get("code");
+
+          console.log("PropertyNo from query:", propertyNo);
+
+          $.ajax({
+                url: `/api/AddNewProperty/GetByDocument`,
+              type: "GET",
+              data: { PropertyNo: propertyNo },
+              success: function (data) {
+                  console.log("API Data:", data);
+
+                  grid.option("dataSource", data);
+                  grid.refresh();
+              },
+              error: function (xhr, status, error) {
+                  console.error("Error fetching mobilization data:", error);
+              }
+          });
+      }
         function OnMaintenance(e) {
           const grid = e.component;
           const urlParams = new URLSearchParams(window.location.search);
