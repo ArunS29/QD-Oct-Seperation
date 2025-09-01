@@ -29,9 +29,9 @@
         border: 1px solid #ccc;
         border-radius: 12px;
         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-        padding: 20px;
-        margin-bottom: 20px;
-        background-color: AliceBlue; /* Set background to AliceBlue */
+        padding: 15px;
+        margin-bottom: 0px;
+        background-color: var(--header-color) !important; /* Set background to AliceBlue */
     }
 </style>
 <div class="dx-card">
@@ -100,7 +100,10 @@
                                     )
                                     .WordWrapEnabled(true)
                                     .ShowBorders(true)
-                                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                                     .SearchPanel(sp => sp.Visible(false)
+                                       .HighlightSearchText(true)
+                                       .SearchVisibleColumnsOnly(false))
+                                    .Selection(sl => sl.Mode(SelectionMode.Single)) 
                                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                                     .OnSelectionChanged("dataGridpercentageSelectionChanged")
 
@@ -109,11 +112,12 @@
                                     .ShowBorders(true)
                                     .HoverStateEnabled(true)
                                     .Paging(p => p.PageSize(15))
-                                    .FilterRow(f => f.Visible(true))
+                                    .FilterRow(f => f.Visible(false))
                                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                     .Height(400)
                                     .Selection(s => s.Mode(SelectionMode.Single))
                                     .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                    .OnToolbarPreparing("accountHeadToolbarPreparing")
 
 
                                     .Columns(columns =>
@@ -273,7 +277,10 @@
                                         )
                                         .WordWrapEnabled(true)
                                         .ShowBorders(true)
-                                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                                         .SearchPanel(sp => sp.Visible(false)
+                                           .HighlightSearchText(true)
+                                           .SearchVisibleColumnsOnly(false))
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) 
                                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                                         .OnSelectionChanged("dataGridsupplierSelectionChanged")
 
@@ -282,11 +289,12 @@
                                         .ShowBorders(true)
                                         .HoverStateEnabled(true)
                                         .Paging(p => p.PageSize(15))
-                                        .FilterRow(f => f.Visible(true))
+                                        .FilterRow(f => f.Visible(false))
                                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                         .Height(400)
                                         .Selection(s => s.Mode(SelectionMode.Single))
                                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                                        .OnToolbarPreparing("accountHeadToolbarPreparing")
 
 
                                         .Columns(columns =>
@@ -423,7 +431,10 @@
                                         )
                                         .WordWrapEnabled(true)
                                         .ShowBorders(true)
-                                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                                         .SearchPanel(sp => sp.Visible(false)
+                                           .HighlightSearchText(true)
+                                           .SearchVisibleColumnsOnly(false))
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) 
                                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                                         .OnSelectionChanged("dataGridemployeeSelectionChanged")
 
@@ -432,7 +443,7 @@
                                         .ShowBorders(true)
                                         .HoverStateEnabled(true)
                                         .Paging(p => p.PageSize(15))
-                                        .FilterRow(f => f.Visible(true))
+                                        .FilterRow(f => f.Visible(false))
                                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                         .Height(400)
                                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -442,6 +453,7 @@
                                         .Enabled(true)
                                         .Mode(GridColumnChooserMode.DragAndDrop) // Optional: use "dragAndDrop" or "select"
                                         )
+                                        .OnToolbarPreparing("accountHeadToolbarPreparing")
 
 
                                         .Columns(columns =>
@@ -501,7 +513,10 @@
                                         )
                                         .WordWrapEnabled(true)
                                         .ShowBorders(true)
-                                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                                         .SearchPanel(sp => sp.Visible(false)
+                                           .HighlightSearchText(true)
+                                           .SearchVisibleColumnsOnly(false))
+                                        .Selection(sl => sl.Mode(SelectionMode.Single)) 
                                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                                         .OnSelectionChanged("dataGridpropertySelectionChanged")
 
@@ -510,7 +525,7 @@
                                         .ShowBorders(true)
                                         .HoverStateEnabled(true)
                                         .Paging(p => p.PageSize(15))
-                                        .FilterRow(f => f.Visible(true))
+                                        .FilterRow(f => f.Visible(false))
                                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                                         .Height(400)
                                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -520,6 +535,7 @@
                                         .Enabled(true)
                                         .Mode(GridColumnChooserMode.DragAndDrop) // Optional: use "dragAndDrop" or "select"
                                         )
+                                        .OnToolbarPreparing("accountHeadToolbarPreparing")
 
 
                                         .Columns(columns =>
@@ -658,7 +674,7 @@
             if (grid && propertyname) {
                 grid.selectRows([propertyname], false);
             }
-        }, 400);
+        }, 200);
     }
     function onKeyDown(e) {
         const ddbInstance = e.component;

@@ -117,7 +117,7 @@
         .OnOpened("onOpened")
         .Width(440)
         .TabIndex(1)
-        .DropDownOptions(o => o.Width(1000))
+        .DropDownOptions(o => o.Width(500))
         .OnKeyDown("onKeyDown")
         .ContentTemplate(new TemplateName("SupplierContentTemplate"))
         )
@@ -449,11 +449,11 @@
             .Height(345)
             .Selection(s => s.Mode(SelectionMode.Single))
             .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
+            .Width(500)
 
             .Columns(columns =>
             {
-                columns.Add().DataField("AccountId");
+                columns.Add().DataField("AccountId").MinWidth(150).Alignment(HorizontalAlignment.Center);
                 columns.Add().DataField("AccountHead")
                 .Alignment(HorizontalAlignment.Center);
 
