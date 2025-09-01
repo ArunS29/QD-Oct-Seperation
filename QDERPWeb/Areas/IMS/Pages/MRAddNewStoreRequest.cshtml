@@ -401,7 +401,7 @@
 
 		<!-- Tab Content -->
 		<div class="dx-fieldset">
-			<div id="tab-content-1" class="tab-content" style="height:200px;">
+			<div id="tab-content-1" class="tab-content" style="height:180px;">
 				<table style="width:100%;">
 					<tr style="display:flex; gap: 10px; align-items:end; width:100%;">
 						<td colspan="3" style="width:100%;">
@@ -773,7 +773,7 @@
 
 
 
-			<div id="tab-content-2" class="tab-content" style="height:200px;" >
+			<div id="tab-content-2" class="tab-content" style="height:180px;" >
 
 				<div class="card-container">
 
@@ -869,11 +869,12 @@
 						<tr>
 
 							<td>
-								<label id="Remarks1">Remarks:</label>
 								@(Html.DevExtreme().TextArea()
-															.ID("txtRemarks")
-															.ElementAttr("style", "height:150px !important;")
-															.Width(775))
+									.ID("txtRemarks")
+									.Label(new JS("formatMessage('Remarks:')"))
+									.ElementAttr("style", "height:150px !important;")
+									.LabelMode(EditorLabelMode.Floating)
+									.Width(775))
 							</td>
 						</tr>
 					</table>
@@ -881,7 +882,7 @@
 
 			</div>
 
-			<div id="tab-content-3" class="tab-content" style="height:200px;">
+			<div id="tab-content-3" class="tab-content" style="height:180px;">
 				<div class="row">
 					<!-- Card 1: 8 columns -->
 					<div class="col-6">
@@ -1136,7 +1137,7 @@
 			</div>
 
 
-			<div id="tab-content-4" class="tab-content" style="height:200px;" >
+			<div id="tab-content-4" class="tab-content" style="height:180px;" >
 
 
 				<div class="row">
@@ -1270,33 +1271,23 @@
 				<div class="row">
 					<div class="col-3">
 						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Show Signature')"))
-													.ID("txtShowSign")
-													.Value(true)
-													)
+						.Text(new JS("formatMessage('Show Signature')"))
+						.ID("txtShowSign")
+						.Value(true)
+						)
 					</div>
-
-				</div>
-					<div class="row">
 					<div class="col-3">
 						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Print Signatures At Bottom')"))
-													.ID("txtShowSign")
-													.Value(true)
-													)
+						.Text(new JS("formatMessage('Print Signatures At Bottom')"))
+						.ID("txtShowSign1")
+						.Value(true)
+						)
 					</div>
-					</div><div class="col-3">
-							@(Html.DevExtreme().CheckBox()
-														.Text(new JS("formatMessage('Print Signatures At Bottom')"))
-														.ID("txtShowSign")
-														.Value(true)
-														)
-						</div>
 				</div>
 			</div>
 
 
-			<div id="tab-content-5" class="tab-content" style="height:200px;" >
+			<div id="tab-content-5" class="tab-content" style="height:180px;" >
 
 					 <div class="p-3">
 								 <table style="width:100%; font-size:14px; margin:5px;">
