@@ -1210,7 +1210,7 @@
 							@(Html.DevExtreme().CheckBox()
 														.Text(new JS("formatMessage('Print in Letter Head')"))
 														.ID("txtLetter")
-														.Value(null)
+														.Value(true)
 														)
 						</div>
 					</div>
@@ -1221,7 +1221,7 @@
 							@(Html.DevExtreme().CheckBox()
 														.Text(new JS("formatMessage('Show Company Seal')"))
 														.ID("txtShowSeal")
-														.Value(null)
+														.Value(true)
 														)
 						</div>
 					</div>
@@ -1232,10 +1232,15 @@
 							@(Html.DevExtreme().CheckBox()
 														.Text(new JS("formatMessage('Show Signature')"))
 														.ID("txtShowSign")
-														.Value(null)
+														.Value(true)
+														)
+						</div><div class="col-3">
+							@(Html.DevExtreme().CheckBox()
+														.Text(new JS("formatMessage('Print Signatures At Bottom')"))
+														.ID("txtShowSign")
+														.Value(true)
 														)
 						</div>
-
 					</div>
 
 			</div>
