@@ -1064,7 +1064,8 @@
 
 								<!-- Verified By Checkboxes -->
 								<td>
-									@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Value(false).Text(new JS("formatMessage('Page Break before Terms')")) )
+									@(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text(new JS("formatMessage('Page Break before Terms')")) )
+									<input type="hidden" id="hdnPageBreakBefore" name="hdnPageBreakBefore" value="false" />
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Page Break after Terms')")) )
 									<br />
@@ -1916,7 +1917,34 @@
 <div id="cardPopover"></div>
 <div id="CalcardPopover"></div>
 <script>
+    $(function() {
+        $("#pageBreakBefore").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageBreakBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
 
+    @* function openQuotationReport(reportName) {
+        const tenantName = window.tenantName || "";
+        const quotationNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+        const pageBreakBefore = $("#hdnPageBreakBefore").val(); // get from hidden field
+
+        if (!quotationNo) {
+            DevExpress.ui.notify("Quotation number is required.", "error", 2000);
+            return;
+        }
+
+        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}&pageBreakBefore=${pageBreakBefore}`;
+        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+    } *@
+
+    // Attach to your print button or dropdown as needed
+    @* $("#btnPrint").dxButton({
+        onClick: function() {
+            openQuotationReport("PreviewQuotations");
+        }
+    }); *@
 	  function onOpened(e) {
     const gridId = e.component.option("dataGridId"); // 👈 Get common ID
     const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
