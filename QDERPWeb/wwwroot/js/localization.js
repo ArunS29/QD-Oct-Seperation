@@ -2,6 +2,13 @@
 var dictionary = {
 
     "en": {
+        "Print Footer At Bottom": "Print Footer At Bottom",
+        "Print Signatures At Bottom": "Print Signatures At Bottom",
+        "Show Item Line No instead of Sl.No": "Show Item Line No instead of Sl.No",
+        "Print Item Code with Description": "Print Item Code with Description",
+        "Print Item Part No with Description": "Print Item Part No with Description",
+        "Print Item Part No with Arabic Desc": "Print Item Part No with Arabic Desc",
+
         "Issued Unit Price": "Issued Unit Price",
         "Issued Quote Unit Price": "Issued Quote Unit Price",
         "Add New Delivery to Client":"Add New Delivery to Client",
