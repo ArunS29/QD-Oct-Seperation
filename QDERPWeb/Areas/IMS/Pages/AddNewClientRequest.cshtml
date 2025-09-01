@@ -2662,6 +2662,7 @@
 	
 		var rvNo=null;
 		let Approved=null;
+let edit=false;
 		$(document).ready(function () {
 			const urlParams = new URLSearchParams(window.location.search);
 			const mprnos = urlParams.get('Mprno');
@@ -2673,13 +2674,19 @@
 				$('#ddRevNo').dxTextBox("instance").option("value", RevisionNo);
 			}
 		   
-				getSalesPersonByUser();
+				//getSalesPersonByUser();
 				getDefaultCompany();
 			if (mprno) {
 				// If Mprno is present, load client details
 				loadClientDetails(mprno);
+				edit=true;
 			} else  {
-				// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
+		    NewNoGeneration();
+			}
+		});
+
+		function NewNoGeneration(){
+					// If Mprno is not present and IsCurrent is not "true", generate a Autogenerate request number
 				$.ajax({
 					url: "/api/AddNewClientRequest/GetNewRequestNoApi",
 					type: "GET",
@@ -2698,10 +2705,15 @@
 						DevExpress.ui.dialog.alert("Failed to load Rquest No details.", "Error");
 					}
 				});
-			}
-		});
+	}
+	//For concurrency
 
-
+	function NewNoGeneration1() {
+    return $.ajax({
+       url: "/api/AddNewClientRequest/GetNewRequestNoApi",
+        type: "GET"
+    });
+}
 	function loadClientDetails(mprno) {
 		$.ajax({
 			url: `/api/AddNewClientRequest/GetClientdataByCode?Mprno=${encodeURIComponent(mprno)}`,
@@ -6273,8 +6285,8 @@ $("#btnAddNew").on("click", function (e) {
 		}
 
 
-	$("#btnSave").on("click", function (e) {
-		const $btn = $(this).dxButton("instance");
+		$("#btnSave").on("click", function (e) {
+    const $btn = $(this).dxButton("instance");
 
 		// ✅ Step 1: Validate required field
 		const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
@@ -6291,9 +6303,28 @@ $("#btnAddNew").on("click", function (e) {
 		// ✅ Step 2: Disable the button after validation passes
 		$btn.option("disabled", true);
 
-		// ✅ Step 3: Build master object
-		const master = {
-			Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+    if (edit === false) {
+        // 🔹 New entry → check again before saving
+        NewNoGeneration1().done(function (data) {
+            var mprNoNew = data;
+            $("#txtRequestNo").dxTextBox("instance").option("value", mprNoNew);
+
+            saveQuotation(mprNoNew, $btn);
+        }).fail(function () {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
+        });
+    } else {
+        // 🔹 Edit → no need to regenerate
+        var mprNoNew = $('#txtRequestNo').dxTextBox("instance").option("value") || null;
+        saveQuotation(mprNoNew, $btn);
+    }
+});
+
+function saveQuotation(mprNoNew, $btn) {
+    debugger;
+			const master = {
+			Mprno:mprNoNew, 
 			Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
 			ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
 			RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
@@ -6370,7 +6401,107 @@ $("#btnAddNew").on("click", function (e) {
 				$btn.option("disabled", false); // Re-enable on error
 			}
 		});
-	});
+}
+
+
+	// $("#btnSave").on("click", function (e) {
+	// 	const $btn = $(this).dxButton("instance");
+
+	// 	// ✅ Step 1: Validate required field
+	// 	const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+	// 	const clientnameValidation = clientnameValidator.validate();
+
+	// 	if (!clientnameValidation.isValid) {
+	// 		DevExpress.ui.dialog.alert(
+	// 			"Cannot continue saving with errors, please clear the errors and continue.",
+	// 			"Clear Errors"
+	// 		);
+	// 		return;
+	// 	}
+
+	// 	// ✅ Step 2: Disable the button after validation passes
+	// 	$btn.option("disabled", true);
+
+	// 	// ✅ Step 3: Build master object
+	// 	const master = {
+	// 		Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+	// 		Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+	// 		ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+	// 		RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+	// 		RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+	// 		RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+	// 		ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+	// 		TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+	// 		SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+	// 		ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+	// 		PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+	// 		Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+	// 		CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+	// 		ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+	// 		ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+	// 		Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+	// 		CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+	// 		PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+	// 		InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+	// 		ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+	// 		BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+	// 		BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+	// 		ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+	// 		RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+	// 		MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+	// 		MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+	// 		TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+	// 		CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+ //            BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+ //            CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+	// 	};
+
+	// 	// ✅ Step 4: Get child records
+	// 	//const children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+	// 		const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+
+	// 	if (!children || children.length === 0) {
+	// 		DevExpress.ui.notify("No child records to save.", "error", 3000);
+	// 		$btn.option("disabled", false); // Re-enable the button
+	// 		return;
+	// 	}
+
+	// 	const model = {
+	// 		...master,
+	// 		PurchaseRequestDetails: children
+	// 	};
+
+	// 	// ✅ Step 5: Send data via AJAX
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/api/AddNewClientRequest/SaveOrUpdatePurchaseRequest",
+	// 		contentType: "application/json",
+	// 		data: JSON.stringify(model),
+	// 		success: function (response) {
+	// 				  isVoucherSaved = true; // Mark Updated step as done
+ //                      updateWorkflowVisual(getWorkflowStatusFromFields());
+
+	// 			DevExpress.ui.notify(response.message, "success", 3000);
+
+	// 			 const mprno = response.mprno;
+				
+	// 			 loadChildDataAndBindGrid(mprno);
+
+	// 			// Refresh parent DataGrid if present
+	// 			if (window.parent && window.parent.$("#dataGrid").length) {
+	// 				const dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+	// 				if (dataGrid) {
+	// 					dataGrid.refresh();
+	// 				}
+	// 			}
+
+	// 		},
+	// 		error: function (xhr) {
+	// 			DevExpress.ui.notify("Error: " + (xhr.responseJSON?.message || xhr.statusText), "error", 3000);
+	// 			$btn.option("disabled", false); // Re-enable on error
+	// 		}
+	// 	});
+	// });
 	function loadChildDataAndBindGrid(mprno) {
 		//
     if (!mprno) {

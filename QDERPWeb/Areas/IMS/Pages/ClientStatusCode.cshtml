@@ -261,9 +261,10 @@
                 $("#Status").dxValidator("instance").reset();
       
             },
+           
                error: function (xhr) {
-        const msg = xhr.responseJSON?.message || "Error occurred while saving.";
-        DevExpress.ui.notify(msg, "error", 3000); // ✅ Shows backend duplicate message
+         const msg = xhr.responseJSON?.message || "Failed to save client Status.";
+                DevExpress.ui.notify(msg, "error", 3000);
     }
         });
          } else {
