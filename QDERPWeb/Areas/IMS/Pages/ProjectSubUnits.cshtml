@@ -294,8 +294,8 @@
                      $("#txtProjectSubUnit").dxTextBox("instance").option("value","");
                 },
                 error: function (xhr) {
-                    const msg = xhr.responseJSON?.message || "Failed to save.";
-                    DevExpress.ui.notify("Failed to save signatory.", "error", 2000);
+                    const msg = xhr.responseJSON?.message || "Failed to save signatory.";
+                 DevExpress.ui.notify(msg, "error", 3000);
            
                 }
             });
