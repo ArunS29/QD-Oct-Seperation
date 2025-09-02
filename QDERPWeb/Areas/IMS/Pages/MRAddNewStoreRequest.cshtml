@@ -8051,4 +8051,161 @@ function onIMSAttachmentButtonClick(e) {
             }
         }
     }
+	function onUploadButtonClick() {
+	const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+	const totalCount = gridInstance.totalCount();
+	console.log("Total Count from DataSource:", totalCount);
+
+    const requestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
+    if (!requestNo) {
+        DevExpress.ui.notify("Request No is required.", "error", 2000);
+        return;
+    }
+	const requestBody = {
+		Mprno: $('#txtRequestNo').dxTextBox("instance").option("value") || null,
+		Mprdate: $("#InvoiceDueDate").dxDateBox("instance").option("value") || null,
+		ClientCode: $("#GetProjectDropDown").dxDropDownBox("instance").option("value") || null,
+		RequestedBy: $('#txtContactName').dxTextBox("instance").option("value") || null,
+		RequesterContactEmail: $('#txtReqEmail').dxTextBox("instance").option("value") || null,
+		RequesterContact: $('#ContactNo').dxTextBox("instance").option("value") || null,
+		ModeOfRequest: $("#ddGetModeOfRequest").dxDropDownBox("instance").option("value") || null,
+		TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
+		SalesPersonCode: $("#ddGetSalesPerson").dxDropDownBox("instance").option("value") || null,
+		ClientRefNo: $('#txtReferenceNo').dxTextBox("instance").option("value") || null,
+		PurposeOfRequest: $('#txtPurpose').dxTextBox("instance").option("value") || null,
+		Priority: $('#txtPriority').dxTextBox("instance").option("value") || null,
+		CostCenterText: $('#txtCostCenter').dxTextBox("instance").option("value") || null,
+		ExpectedDate: $("#txtExpectedDate").dxDateBox("instance").option("value") || null,
+		ExpectedVatrate: $("#ddGetTax").dxDropDownBox("instance").option("value") || null,
+		Remarks: $("#txtRemarks").dxTextArea("instance").option("value") || null,
+		CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+		PurchaseRequestStatusId: $("#ddGetEnquiry").dxDropDownBox("instance").option("value") || null,
+		InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+		ProjectSubUnitCode: $("#ddGetRequesstingUnit").dxDropDownBox("instance").option("value") || null,
+		BidClosingDate: $("#ddBitCls").dxDateBox("instance").option("value") || null,
+		BidReminderOn: $("#ddReminder").dxDateBox("instance").option("value") || null,
+		ClientProject: $('#txtClientProject').dxTextBox("instance").option("value") || null,
+		RequestSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+		MprverifiedSign: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
+		MprapprovedSign: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+		TypeOfMpr: $("#ddRequestedBy").dxDropDownBox("instance").option("value") || null,
+		CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+        BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+		PurchaseRequestDetails:[],
+    };
+	$.ajax({
+        url: "/api/InventoryUpload/SaveMprno",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(requestBody),
+        success: function (result) {
+            DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
+			if(totalCount > 0){
+				handleUploadConfirm(requestNo);
+			}else{
+				window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+			}
+        },
+        error: function (xhr) {
+            console.error("UploadStock error:", xhr);
+            DevExpress.ui.notify("Failed to upload stock.", "error", 3000);
+        }
+    });
+}
+
+	(function(){
+      const dialog = document.getElementById('confirmDialog');
+      const form = document.getElementById('confirmForm');
+      const titleEl = document.getElementById('confirmTitle');
+      const messageEl = document.getElementById('confirmMessage');
+      const stepChoice = document.getElementById('stepChoice');
+      const stepType = document.getElementById('stepType');
+      const phraseInput = document.getElementById('confirmPhrase');
+      const phraseBadge = document.getElementById('phraseBadge');
+      const phraseError = document.getElementById('phraseError');
+      const btnConfirm = document.getElementById('btnConfirm');
+      const chooseYes = document.getElementById('chooseYes');
+      const chooseNo = document.getElementById('chooseNo');
+      
+      let REQUIRED_PHRASE = 'Replace by user';
+      
+      function resetSteps(){
+        stepChoice.classList.add('active');
+        stepType.classList.remove('active');
+        phraseInput.value = '';
+        phraseError.classList.remove('show');
+        btnConfirm.disabled = true;
+      }
+
+      function openDialog(opts){
+        const { title, message, phrase } = opts || {};
+        if(title) titleEl.textContent = title;
+        if(message) messageEl.textContent = message;
+        REQUIRED_PHRASE = phrase || 'Replace by user';
+        phraseBadge.textContent = REQUIRED_PHRASE;
+        resetSteps();
+        if(typeof dialog.showModal === 'function'){
+          dialog.showModal();
+        } else {
+          dialog.setAttribute('open','');
+        }
+      }
+      function closeDialog(){
+        if(dialog.open) dialog.close();
+        dialog.removeAttribute('open');
+      }
+
+      function validate() {
+        const ok = (phraseInput.value || '').trim() === REQUIRED_PHRASE;
+        btnConfirm.disabled = !ok;
+        phraseError.classList.toggle('show', !ok && phraseInput.value.length > 0);
+        return ok;
+      }
+
+      phraseInput.addEventListener('input', validate);
+      form.addEventListener('submit', e => e.preventDefault());
+
+      chooseYes.addEventListener('click', (e)=>{
+        e.preventDefault();
+        stepChoice.classList.remove('active');
+        stepType.classList.add('active');
+        setTimeout(()=>phraseInput.focus(), 0);
+      });
+
+      chooseNo.addEventListener('click', (e)=>{
+        e.preventDefault();
+        closeDialog();
+        if(currentResolver) { currentResolver(false); currentResolver=null; }
+      });
+
+      btnConfirm.addEventListener('click', (e)=>{
+        e.preventDefault();
+        if(validate()){
+          closeDialog();
+          if(currentResolver) { currentResolver(true); currentResolver=null; }
+        }
+      });
+
+	let currentResolver = null;
+	window.confirmDeleteWithPhrase = function(options){
+		debugger;
+		openDialog(options || {});
+		return new Promise(resolve => { currentResolver = resolve; });
+	}
+
+	window.handleUploadConfirm = async function (requestNo) {
+		const ok = await window.confirmDeleteWithPhrase({
+			title: 'Upload via Excel?',
+			message: 'This cannot be undone. Related data may also be removed.',
+			phrase: 'Replace by user'
+		});
+
+		if (ok) {
+			window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+		} else {
+			window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}&exist=true`;
+		}
+	}
+    })();
 </script>

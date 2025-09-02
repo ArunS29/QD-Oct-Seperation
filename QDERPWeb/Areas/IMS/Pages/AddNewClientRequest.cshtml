@@ -845,10 +845,11 @@
 						<tr>
 
 							<td>
-								<label id="remark"></label>
 								@(Html.DevExtreme().TextArea()
 																.ID("txtRemarks")
+																.Label(new JS("formatMessage('Remarks:')"))
 																.ElementAttr("style", "height:150px !important;")
+																.LabelMode(EditorLabelMode.Floating)
 																.Width(775))
 																		</td>
 																	</tr>
@@ -7912,6 +7913,10 @@ $(document).ready(function () {
 	});
 
 function onUploadButtonClick() {
+	const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+	const totalCount = gridInstance.totalCount();
+	console.log("Total Count from DataSource:", totalCount);
+
     const requestNo = $('#txtRequestNo').dxTextBox("instance").option("value");
     if (!requestNo) {
         DevExpress.ui.notify("Request No is required.", "error", 2000);
@@ -7967,8 +7972,11 @@ function onUploadButtonClick() {
         data: JSON.stringify(requestBody),
         success: function (result) {
             DevExpress.ui.notify("Stock uploaded successfully.", "success", 3000);
-			handleUploadConfirm(requestNo);
-			
+			if(totalCount > 0){
+				handleUploadConfirm(requestNo);
+			}else{
+				window.location.href = `/${tenantName}/IMS/InventoryListToUpload?requestNo=${encodeURIComponent(requestNo)}`;
+			}
         },
         error: function (xhr) {
             console.error("UploadStock error:", xhr);
