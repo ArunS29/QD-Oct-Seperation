@@ -18,6 +18,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
         }
 
         public QuotationWOvat(
+               bool pageBreakBefore,
             string quotationNo,
             string tenantName,
             string companyName,
@@ -32,11 +33,16 @@ namespace QD.ERP.Web.Areas.IMS.Reports.quotationstoClients
             _tenantDbContextHelper = tenantDbContextHelper;
 
             InitializeComponent();
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress,companyNameAr, companyAddressAr,username);
+            SetReportParameters(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress,companyNameAr, companyAddressAr,username);
             LoadReportData(quotationNo);
+
+
+            this.ReportFooter.PageBreak = pageBreakBefore
+? DevExpress.XtraReports.UI.PageBreak.BeforeBand
+: DevExpress.XtraReports.UI.PageBreak.None;
         }
 
-        private void SetReportParameters(string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage,
+        private void SetReportParameters(bool pageBreakBefore, string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage,
             string companyAddress,string companyNameAr, string companyAddressAr, string username)
         {
             void AddOrUpdateParameter(string name, object value, Type type, bool visible = false)

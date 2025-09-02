@@ -32,6 +32,7 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
         public PreviewQuotations(
 
+            bool pageBreakBefore,
             string quotationNo,
 
             string tenantName,
@@ -57,13 +58,18 @@ namespace QD.ERP.Web.Areas.IMS.Reports.InventoryReports
 
             InitializeComponent();
 
-            SetReportParameters(quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
+            SetReportParameters(pageBreakBefore, quotationNo, tenantName, companyName, logoImage, sealImage, companyAddress, companyNameAr, companyAddressAr);
 
             LoadReportData(quotationNo);
+            
+                this.ReportFooter.PageBreak = pageBreakBefore
+        ? DevExpress.XtraReports.UI.PageBreak.BeforeBand
+        : DevExpress.XtraReports.UI.PageBreak.None;
+
 
         }
 
-        private void SetReportParameters(string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage, string companyAddress,
+        private void SetReportParameters( bool pageBreakBefore, string quotationNo, string tenantName, string companyName, Image logoImage, Image sealImage, string companyAddress,
 
              string companyNameAr, string companyAddressAr)
 

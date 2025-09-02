@@ -50,7 +50,7 @@ namespace QD.ERP.Web.Pages
         public string VoucherNo { get; private set; }
         public string ReportName { get; private set; }
 
-        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo)
+        public IActionResult OnGet(string reportName, string voucherNo, string invoiceNo, bool isApproved, string debitNoteNo, string CreditNoteNo,string RequestNo,string quotationNo,string salesOrderNo, string deliveryNoteNo,string rfqNo, string purchaseOrderNo, bool pageBreakBefore = false)
         {
             if (string.IsNullOrEmpty(reportName))
             {
@@ -460,44 +460,44 @@ namespace QD.ERP.Web.Pages
                 {
                     case "PreviewQuotations":
                      
-                        Report = new PreviewQuotations(quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewQuotations(pageBreakBefore,quotationNo, tenantName, companyName, logoImage,companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationwithadditionalDetails":
 
-                        Report = new PreviewQuotationwithadditionalDetails(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewQuotationwithadditionalDetails(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationwithoutPrice":
 
-                        Report = new PreviewQuotationwithoutPrice(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new PreviewQuotationwithoutPrice(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "QuotationWOvat":
                      
-                        Report = new QuotationWOvat(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new QuotationWOvat(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress, companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "vatTotalPricewithout":
 
-                        Report = new vatTotalPricewithout(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new vatTotalPricewithout(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "withoutvatDiscount":
 
-                        Report = new withoutvatDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new withoutvatDiscount(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
 
                     case "GroupCode":
 
-                        Report = new GroupCode(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
+                        Report = new GroupCode(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, userName, _tenantDbContextHelper);
                         break;
                     case "wtDiscount":
 
-                        Report = new wtDiscount(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
+                        Report = new wtDiscount(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,userName, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationWithImage":
 
-                        Report = new PreviewQuotationWithImage(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
+                        Report = new PreviewQuotationWithImage(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr, _tenantDbContextHelper);
                         break;
                     case "PreviewQuotationWithSubGroup":
 
-                        Report = new PreviewQuotationWithSubGroup(quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
+                        Report = new PreviewQuotationWithSubGroup(pageBreakBefore,quotationNo, tenantName, companyName, logoImage, companySealImage, companyAddress,  companyNameAr, companyAddressAr,  _tenantDbContextHelper);
                         break;
 
                     default:

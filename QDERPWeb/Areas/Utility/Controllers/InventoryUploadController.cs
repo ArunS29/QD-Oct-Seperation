@@ -68,31 +68,31 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
         }
         public class UploadItemDto
         {
-            public string GSCode { get; set; }
+            public string Code { get; set; }
 
-            [JsonPropertyName("gsDescription")]
-            public string GSDescription { get; set; }
+            [JsonPropertyName("Description")]
+            public string Description { get; set; }
 
-            public string GsdescriptionAr { get; set; }
+            public string ArabicDescription { get; set; }
 
             [Range(1, int.MaxValue, ErrorMessage = "RequestQty must be greater than 0.")]
-            public decimal RequestQty { get; set; }
+            public decimal QtyRequested { get; set; }
 
             [Range(0, double.MaxValue, ErrorMessage = "UnitPrice cannot be negative.")]
             public decimal UnitPrice { get; set; }
 
             public string UnitCode { get; set; }
-            public string GsuomDesc { get; set; }
+            public string Unit { get; set; }
             public string PlanNo { get; set; }
             public string Manufacturer { get; set; }
             public string DeliveryPeriod { get; set; }
             public string Remarks { get; set; }
-            public string ItemSize { get; set; }
-            public string ItemPartNo { get; set; }
-            public string ItemBrand { get; set; }
-            public string ItemColor { get; set; }
-            public string ItemDimension { get; set; }
-            public object ItemThickness { get; set; }
+            public string Size { get; set; }
+            public string PartNo { get; set; }
+            public string Brand { get; set; }
+            public string Color { get; set; }
+            public string Dimension { get; set; }
+            public object Thickness { get; set; }
         }
 
         [HttpPost]
@@ -156,10 +156,10 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             foreach (var item in request.Items)
             {
-                if (string.IsNullOrEmpty(item.GSDescription))
+                if (string.IsNullOrEmpty(item.Description))
                     return BadRequest(new { success = false, message = "Each item must have a GSDescription." });
 
-                if (item.RequestQty <= 0)
+                if (item.QtyRequested <= 0)
                     return BadRequest(new { success = false, message = "Each item must have a positive RequestQty." });
 
                 if (item.UnitPrice < 0)
@@ -193,7 +193,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     foreach (var item in request.Items)
                     {
                         bool exists = await dbContext.Tbl60005inventoryUploads
-                            .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
+                            .AnyAsync(x => x.Gscode == item.Code);
 
                         if (!exists)
                         {
@@ -201,27 +201,27 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
-                                Gscode = item.GSCode ?? "",
-                                Gsdescription = item.GSDescription,
-                                RequestQty = item.RequestQty,
+                                Gscode = item.Code ?? "",
+                                Gsdescription = item.Description,
+                                RequestQty = item.QtyRequested,
                                 UnitPrice = item.UnitPrice,
                                 PlanNo = item.PlanNo,
                                 Manufacturer = item.Manufacturer,
                                 DeliveryPeriod = item.DeliveryPeriod,
                                 Remarks = item.Remarks,
-                                GsuomDesc = item.GsuomDesc,
-                                ItemSize = item.ItemSize,
-                                ItemPartNo = item.ItemPartNo,
-                                ItemBrand = item.ItemBrand,
-                                ItemColor = item.ItemColor,
-                                ItemDimension = item.ItemDimension,
-                                ItemThickness = item.ItemThickness?.ToString(),
-                                GsdescriptionAr = item.GsdescriptionAr
+                                GsuomDesc = item.Unit,
+                                ItemSize = item.Size,
+                                ItemPartNo = item.PartNo,
+                                ItemBrand = item.Brand,
+                                ItemColor = item.Color,
+                                ItemDimension = item.Dimension,
+                                ItemThickness = item.Thickness?.ToString(),
+                                GsdescriptionAr = item.ArabicDescription
                             });
                         }
                         else
                         {
-                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.GSCode, item.PlanNo);
+                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.Code, item.PlanNo);
                         }
                     }
 
@@ -381,11 +381,11 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             foreach (var item in request.Items)
             {
-                if (string.IsNullOrEmpty(item.GSDescription))
-                    return BadRequest(new { success = false, message = "Each item must have a GSDescription." });
+                if (string.IsNullOrEmpty(item.Description))
+                    return BadRequest(new { success = false, message = "Each item must have a Description." });
 
-                if (item.RequestQty <= 0)
-                    return BadRequest(new { success = false, message = "Each item must have a positive RequestQty." });
+                if (item.QtyRequested <= 0)
+                    return BadRequest(new { success = false, message = "Each item must have a positive Quantity Requested." });
 
                 if (item.UnitPrice < 0)
                     return BadRequest(new { success = false, message = "UnitPrice cannot be negative." });
@@ -403,7 +403,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     foreach (var item in request.Items)
                     {
                         bool exists = await dbContext.Tbl60005inventoryUploads
-                            .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
+                            .AnyAsync(x => x.Gscode == item.Code);
 
                         if (!exists)
                         {
@@ -411,27 +411,27 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
-                                Gscode = item.GSCode ?? "",
-                                Gsdescription = item.GSDescription,
-                                RequestQty = item.RequestQty,
+                                Gscode = item.Code ?? "",
+                                Gsdescription = item.Description,
+                                RequestQty = item.QtyRequested,
                                 UnitPrice = item.UnitPrice,
                                 PlanNo = item.PlanNo,
                                 Manufacturer = item.Manufacturer,
                                 DeliveryPeriod = item.DeliveryPeriod,
                                 Remarks = item.Remarks,
-                                GsuomDesc = item.GsuomDesc,
-                                ItemSize = item.ItemSize,
-                                ItemPartNo = item.ItemPartNo,
-                                ItemBrand = item.ItemBrand,
-                                ItemColor = item.ItemColor,
-                                ItemDimension = item.ItemDimension,
-                                ItemThickness = item.ItemThickness?.ToString(),
-                                GsdescriptionAr = item.GsdescriptionAr
+                                GsuomDesc = item.Unit,
+                                ItemSize = item.Size,
+                                ItemPartNo = item.PartNo,
+                                ItemBrand = item.Brand,
+                                ItemColor = item.Color,
+                                ItemDimension = item.Dimension,
+                                ItemThickness = item.Thickness?.ToString(),
+                                GsdescriptionAr = item.ArabicDescription
                             });
                         }
                         else
                         {
-                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.GSCode, item.PlanNo);
+                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.Code, item.PlanNo);
                         }
                     }
 
@@ -524,10 +524,10 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             foreach (var item in request.Items)
             {
-                if (string.IsNullOrEmpty(item.GSDescription))
+                if (string.IsNullOrEmpty(item.Description))
                     return BadRequest(new { success = false, message = "Each item must have a GSDescription." });
 
-                if (item.RequestQty <= 0)
+                if (item.QtyRequested <= 0)
                     return BadRequest(new { success = false, message = "Each item must have a positive RequestQty." });
 
                 if (item.UnitPrice < 0)
@@ -546,7 +546,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     foreach (var item in request.Items)
                     {
                         bool exists = await dbContext.Tbl60005inventoryUploads
-                            .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
+                            .AnyAsync(x => x.Gscode == item.Code);
 
                         if (!exists)
                         {
@@ -554,27 +554,27 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
-                                Gscode = item.GSCode ?? "",
-                                Gsdescription = item.GSDescription,
-                                RequestQty = item.RequestQty,
+                                Gscode = item.Code ?? "",
+                                Gsdescription = item.Description,
+                                RequestQty = item.QtyRequested,
                                 UnitPrice = item.UnitPrice,
                                 PlanNo = item.PlanNo,
                                 Manufacturer = item.Manufacturer,
                                 DeliveryPeriod = item.DeliveryPeriod,
                                 Remarks = item.Remarks,
-                                GsuomDesc = item.GsuomDesc,
-                                ItemSize = item.ItemSize,
-                                ItemPartNo = item.ItemPartNo,
-                                ItemBrand = item.ItemBrand,
-                                ItemColor = item.ItemColor,
-                                ItemDimension = item.ItemDimension,
-                                ItemThickness = item.ItemThickness?.ToString(),
-                                GsdescriptionAr = item.GsdescriptionAr
+                                GsuomDesc = item.Unit,
+                                ItemSize = item.Size,
+                                ItemPartNo = item.PartNo,
+                                ItemBrand = item.Brand,
+                                ItemColor = item.Color,
+                                ItemDimension = item.Dimension,
+                                ItemThickness = item.Thickness?.ToString(),
+                                GsdescriptionAr = item.ArabicDescription
                             });
                         }
                         else
                         {
-                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.GSCode, item.PlanNo);
+                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.Code, item.PlanNo);
                         }
                     }
 
@@ -667,10 +667,10 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
 
             foreach (var item in request.Items)
             {
-                if (string.IsNullOrEmpty(item.GSDescription))
+                if (string.IsNullOrEmpty(item.Description))
                     return BadRequest(new { success = false, message = "Each item must have a GSDescription." });
 
-                if (item.RequestQty <= 0)
+                if (item.QtyRequested <= 0)
                     return BadRequest(new { success = false, message = "Each item must have a positive RequestQty." });
 
                 if (item.UnitPrice < 0)
@@ -689,7 +689,7 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                     foreach (var item in request.Items)
                     {
                         bool exists = await dbContext.Tbl60005inventoryUploads
-                            .AnyAsync(x => x.PlanNo == item.PlanNo && x.Gscode == item.GSCode);
+                            .AnyAsync(x => x.Gscode == item.Code);
 
                         if (!exists)
                         {
@@ -697,27 +697,27 @@ namespace QD.ERP.Web.Areas.Utility.Controllers
                             dbContext.Tbl60005inventoryUploads.Add(new Tbl60005inventoryUpload
                             {
                                 SlNo = slNoCounter,
-                                Gscode = item.GSCode ?? "",
-                                Gsdescription = item.GSDescription,
-                                RequestQty = item.RequestQty,
+                                Gscode = item.Code ?? "",
+                                Gsdescription = item.Description,
+                                RequestQty = item.QtyRequested,
                                 UnitPrice = item.UnitPrice,
                                 PlanNo = item.PlanNo,
                                 Manufacturer = item.Manufacturer,
                                 DeliveryPeriod = item.DeliveryPeriod,
                                 Remarks = item.Remarks,
-                                GsuomDesc = item.GsuomDesc,
-                                ItemSize = item.ItemSize,
-                                ItemPartNo = item.ItemPartNo,
-                                ItemBrand = item.ItemBrand,
-                                ItemColor = item.ItemColor,
-                                ItemDimension = item.ItemDimension,
-                                ItemThickness = item.ItemThickness?.ToString(),
-                                GsdescriptionAr = item.GsdescriptionAr
+                                GsuomDesc = item.Unit,
+                                ItemSize = item.Size,
+                                ItemPartNo = item.PartNo,
+                                ItemBrand = item.Brand,
+                                ItemColor = item.Color,
+                                ItemDimension = item.Dimension,
+                                ItemThickness = item.Thickness?.ToString(),
+                                GsdescriptionAr = item.ArabicDescription
                             });
                         }
                         else
                         {
-                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.GSCode, item.PlanNo);
+                            _logger.LogInformation("Skipped duplicate item with GSCode: {GSCode}, PlanNo: {PlanNo}", item.Code, item.PlanNo);
                         }
                     }
 

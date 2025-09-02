@@ -133,7 +133,6 @@
     }
 
     .layout-container {
-    padding: 1rem;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -218,7 +217,7 @@
     display: flex;
     }
     .important-height {
-        height: 115px !important;
+        height: 135px !important;
     }
 
 </style>
@@ -235,7 +234,7 @@
     <div class="form-container">
         <!-- Tab Menu -->
         @(
-                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(220)
+                    Html.DevExtreme().TabPanel().DeferRendering(false).ID("SupplierTabs").Width("100%").Height(210)
                     .Items(item =>
                     {
                         item.Add()
@@ -247,7 +246,7 @@
                 <div class="row g-2">
 
                     <!-- Row 1 -->
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
                         .ID("deliveryNoteNo")
                         .Value("") // leave it blank initially
@@ -268,7 +267,7 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-6" style="display:flex; align-items:end;">
+                    <div class="col-md-4" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
                         .ID("GetProjectDropDown")
                         .DataSource(d => d.WebApi()
@@ -285,30 +284,55 @@
                         .ValueChangeEvent("change")
                         .OnValueChanged("onClientSelected")
                         .Width("100%")
-                        )
+                        .ValidationRules(rules =>
+							{
+								rules.AddRequired()
+									.Message(new JS("formatMessage('Client Name should be entered')"));
+							})
+                        .Buttons(buttons => {
+                            // Clear Button
+                            buttons.Add()
+                                .Name("clear");
 
+                            // Add Client Button
+                            buttons.Add()
+                                .Name("AddDebits")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("redirecttoClientLeadmaster1")
+                                );
 
-                        @(Html.DevExtreme().Button()
-                        .ID("editClient")
-                        .Icon("edit")
-                        .Hint("Add Client")
-                        .Width(18)
-                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                        .OnClick("redirecttoClientLeadmaster")
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddClient")
-                        .Icon("plus")
-                        .Hint("Add Client")
-                        .Width(18)
-                        .ElementAttr("style", "margin-left: 5px; vertical-align: top;")
-                        .OnClick("redirecttoClientLeadmaster1")
+                            // Edit Client Button
+                            buttons.Add()
+                                .Name("btnEditClient")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("edit")
+                                    .ElementAttr(new { @class = "custom-hover-button edit-hover" })
+                                    .OnClick("redirecttoClientLeadmaster")
+                                );
+                                    buttons.Add()
+                                    .Name("dropDown");
+                        })
                         )
 
                     </div>
+                    <div class="col-md-2">
+                        @(Html.DevExtreme().TextBox()
+                        .ID("ClientContactNo")
+                        .Label("Client Contact No:")
+                        .LabelMode(EditorLabelMode.Floating)
+                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
+                        .Width("100%")
+                        )
+                    </div>
 
                     <!-- Row 2 -->
-                    <div class="col-md-2" style="display:flex; align-items:end;">
+                    <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
                         .Label("Sales Person / Store Incharge :")
                         .DataSource(d => d.WebApi()
@@ -331,14 +355,22 @@
                         .Width("100%")
                         .OnKeyDown("onKeyDown")
                         .ContentTemplate(new TemplateName("GetSalesPersonContentTemplate"))
+                        .Buttons(buttons => {
+                            buttons.Add()
+                                .Name("clear");
+                            buttons.Add()
+                                .Name("btnAddSalesperson")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("redirecttosalespersonmaster")
+                                );
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
                         )
-                        @(Html.DevExtreme().Button()
-                        .ID("btnAddSalesperson")
-                        .Icon("plus")
-                        .ElementAttr("class", "button-alignment-down button-group")
-                        .OnClick("redirecttosalespersonmaster")
-                        )
-
                     </div>
                     <div class="col-md-3">
                         @(Html.DevExtreme().TextBox()
@@ -348,7 +380,7 @@
                         .Width("100%")
                         )
                     </div>
-                    <div class="col-md-2">
+                    <div class="col-md-3">
                         @(Html.DevExtreme().DateBox()
                         .ID("ClientPODate")
                         .Label("Client PO Date:")
@@ -374,18 +406,10 @@
 						.OnClick("onClientContactClick"));
 					   }))
                     </div>
-                    <div class="col-md-2">
-                        @(Html.DevExtreme().TextBox()
-                        .ID("ClientContactNo")
-                        .Label("Client Contact No:")
-                        .LabelMode(EditorLabelMode.Floating)
-                        .InputAttr(new { onkeypress = "return event.charCode >= 48 && event.charCode <= 57", type = "text", maxlength = "15" })
-                        .Width("100%")
-                        )
-                    </div>
+                    
 
                     <!-- Row 3 -->
-                    <div class="col-md-2" style="display:flex; align-items:end;">
+                    <div class="col-md-3" style="display:flex; align-items:end;">
                         @(Html.DevExtreme().DropDownBox()
                         .Label("Stock Delivery From Store:")
                         .DataSource(d => d.WebApi()
@@ -409,14 +433,21 @@
                         .OnKeyDown("onKeyDown")
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetModeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddModeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddModeReq")
+                        .Buttons(buttons => {
+                            buttons.Add()
+                                .Name("clear");
+                            buttons.Add()
+                                .Name("AddModeReq")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("AddModeReq")
+                                );
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
                         )
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
@@ -444,15 +475,21 @@
                         .Disabled(true)
                         //.OnValueChanged("dropDownBoxValueChanged")
                         .ContentTemplate(new TemplateName("GetTypeOfRequestContentTemplate"))
-                        )
-                        @(Html.DevExtreme().Button()
-                        .ID("AddTypeReq")
-                        .Icon("plus")
-                        .Hint("Add Description")
-                        .Width(40)
-                        .ElementAttr("style", "margin-top:18px;")
-                        .OnClick("AddTypeReq")
-                        .Disabled(true)
+                        .Buttons(buttons => {
+                            buttons.Add()
+                                .Name("clear");
+                            buttons.Add()
+                                .Name("AddTypeReq")
+                                .Location(TextEditorButtonLocation.After)
+                                .Widget(w => w.Button()
+                                    .Type(ButtonType.Default)
+                                    .Icon("plus")
+                                    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                    .OnClick("AddTypeReq")
+                                );
+                            buttons.Add()
+                            .Name("dropDown");
+                        })
                         )
                     </div>
                     <div class="col-md-3" style="display:flex; align-items:end;">
@@ -480,22 +517,22 @@
         </text>);
 
             item.Add().Title("Delivery Details").Icon("detailslayout").Text("Delivery Details").Template(@<text>
-            <div class="layout-container" style="padding: 10px;">
+            <div class="layout-container">
                 <div class="form-row" style="display: flex; gap: 20px;">
                     <!-- Left Column: Delivery Note Remarks -->
                     <div style="flex: 1;">
-                        <label >Delivery Note Remarks:</label>
                         @(Html.DevExtreme().TextArea()
                         .ID("DeliveryNoteRemarks")
                         .ElementAttr("class", "important-height")
-                        .LabelMode(EditorLabelMode.Hidden)
+                        .Label("Delivery Note Remarks:")
+                        .LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
                         )
                     </div>
 
                     <!-- Right Column: Other Fields -->
                     <div style="flex: 1;">
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 10px;">
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("Salesman")
@@ -514,7 +551,7 @@
                             </div>
                         </div>
 
-                        <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                        <div style="display: flex; gap: 10px;">
                             <div style="flex: 1;">
                                 @(Html.DevExtreme().TextBox()
                                 .ID("DriverName")
@@ -533,7 +570,7 @@
                             </div>
                         </div>
 
-                        <div style="margin-bottom: 10px;">
+                        <div>
                             @(Html.DevExtreme().TextBox()
                             .ID("DriverID")
                             .Label("Driver's ID:")
@@ -577,15 +614,21 @@
                                     .DropDownOptions(o => o.Width(1000))
                                     .ContentTemplate(new TemplateName("PreparedByTemplate"))
                                     .Width("100%")
-                                    )
-
-                                    @(Html.DevExtreme().Button()
-                                    .ID("AddPreparedBy")
-                                    .Icon("plus")
-                                    .Hint("Add Sales Person")
-                                    .Width(40)
-                                    .ElementAttr("style", "margin-top:25px;")
-                                    .OnClick("AddPreparedBy")
+                                    .Buttons(buttons => {
+                                        buttons.Add()
+                                            .Name("clear");
+                                        buttons.Add()
+                                            .Name("AddPreparedBy")
+                                            .Location(TextEditorButtonLocation.After)
+                                            .Widget(w => w.Button()
+                                                .Type(ButtonType.Default)
+                                                .Icon("plus")
+                                                .ElementAttr(new { @class = "custom-hover-button add-hover" })
+                                                .OnClick("AddPreparedBy")
+                                            );
+                                        buttons.Add()
+                                        .Name("dropDown");
+                                    })
                                     )
                                 </td>
                             </tr>
@@ -602,20 +645,19 @@
 
                                 <!-- Verified By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Text("Page Break before Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakBefore").Value(false).Text("Show Item Line No instead of Sl.No"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Text("Page Break after Terms"))
+                                    @(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text("Print Item Code with Description"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Text("Print Client Acknowledgement"))
+                                    @(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text("Print Item Part No with Description"))
                                 </td>
 
                                 <!-- Approved By Checkboxes -->
                                 <td>
-                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Text("Print Item Code with Description"))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text("Print Item Part No with Arabic Desc"))
                                     <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Text("Print Item Part No with Description"))
-                                    <br />
-                                    @(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Text("Print Item Part No with Arabic Desc."))
+                                    @(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(true).Text("Print Footer At Bottom"))
+
                                 </td>
                             </tr>
                         </tbody>
@@ -639,7 +681,7 @@
                         .DisplayExpr("CompanyName")
                         .ValueExpr("CompanyId")
                         .LabelMode(EditorLabelMode.Floating)
-                        .Width("95%")
+                        .Width("100%")
                         )
                     </div>
 
@@ -824,7 +866,7 @@
     </div>
     @(Html.DevExtreme().DataGrid()
             .ID("itemGrid")
-            .Height("40vh")
+            .Height("46vh")
             .DataSource(new JS("[]")) // using global JS array
             .KeyExpr("SNo")
             .Selection(s => s
@@ -1244,7 +1286,7 @@
     }
     function AddModeReq(){
         const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-        const title = "";
+        const title = "Quotation Mode of Request";
         openModal(url, title);
     }
     function dataGridInitialized2(e) {
@@ -1268,27 +1310,30 @@
     }
     function AddQuoteStatus(){
         const url = `/${tenantName}/IMS/PurchaseOrderCategories`;
-        const title = "";
+        const title = "Purchase Order Categories";
             openModal(url, title);
     }
     function redirecttosalespersonmaster(){
         const url = `/${tenantName}/VAT/SalesPersonMaster`;
-        const title = "";
+        const title = "Sales Person Master";
             openModal(url, title);
     }
     function redirecttoClientLeadmaster1(){
         const url = `/${tenantName}/IMS/ClientLeadMaster`;
-        const title = "";
+        const title = "Client Master";
             openModal(url, title);
     }
         function redirecttoClientLeadmaster() {
         // Get the selected client code from the DropDownBox
         var clientCode = $("#GetProjectDropDown").dxDropDownBox("instance").option("value");
 
-        if (!clientCode) {
-            alert("Please select a client to edit.");
-            return;
-        }
+        const clientnameValidator = $("#GetProjectDropDown").dxValidator("instance");
+		const clientnameValidation = clientnameValidator.validate();
+
+		if (!clientnameValidation.isValid) {
+            DevExpress.ui.notify("Cannot continue saving with errors, please clear the errors and continue.", "error", 2000);
+			return;
+		}
 
         // Assuming tenantName is defined globally or you can set it here
         const url = `/${tenantName}/IMS/ClientLeadMaster?clientCode=${clientCode}`;
