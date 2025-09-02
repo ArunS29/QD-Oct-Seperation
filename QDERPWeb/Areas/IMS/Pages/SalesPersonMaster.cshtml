@@ -204,13 +204,20 @@
         <!-- Row 2: Contact No, Code, Add Button -->
         <div class="col-md-4">
             <div class="form-group">
-                @(
-                                Html.DevExtreme().TextBox()
-                                .Label(new JS("formatMessage('Contact Number')"))
-                                .LabelMode(EditorLabelMode.Floating)
-                                .ID("txtSalesPersonContactNo")
-                                .Value(null)
-                                )
+               @(Html.DevExtreme().TextBox()
+                    .Label(new JS("formatMessage('Contact Number')"))
+                    .LabelMode(EditorLabelMode.Floating)
+                    .ID("txtSalesPersonContactNo")
+                    .Width("100%")
+                    .Value(null)
+                    .OnChange("validateContactNumber")
+                    .ValidationRules(rules =>
+                    {
+                        rules.AddRequired()
+                            .Message("Contact number is required");
+                    })
+                )
+
             </div>
         </div>
 
@@ -246,8 +253,7 @@
         </div>
         <div class="col-2">
             <div class="form-group">
-                @(
-                                Html.DevExtreme().Button()
+                @(Html.DevExtreme().Button()
                                 .ID("btnAddSalesPerson")
                                 .Text(new JS("formatMessage('ADD')"))
                                 .Height(50)
@@ -371,7 +377,7 @@
             columns: [
                 { dataField: "UserCode", caption: formatMessage("User Code"), allowFiltering: true },
                 { dataField: "SalesPersonName", caption: formatMessage("Sales Person Name"), allowFiltering: true },
-                { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true },
+                { dataField: "EmailAddress", caption: formatMessage("Email Address"), allowFiltering: true, },
                 { dataField: "SalesPersonContactNo", caption: formatMessage("Sales Person Contact Number"), allowFiltering: true },
                 { dataField: "TargetPerMonth", caption: formatMessage("Sales Target"), allowFiltering: true },
                 {
@@ -513,7 +519,7 @@
             //         confirmButtonText: 'OK'
             //     });
             // },
-            height: "60%",
+            height: "68vh",
             width: "100%"
         });
     });
@@ -540,6 +546,12 @@
         if (!emailAddress) {
             missingFields.push("Email Address");
         }
+        // Check if Email Address is empty
+        const ContactNo = $("#txtSalesPersonContactNo").dxTextBox("instance").option("value");
+        if (!ContactNo) {
+            missingFields.push("Contact No");
+        }
+
 
         // Check if Sales Person Code is empty
         const salesPersonCode = $("#txtSalesPersonCode").dxTextBox("instance").option("value");
@@ -584,7 +596,8 @@
 
                var SalesPersonCodevalidator = $("#txtSalesPersonCode").dxValidator("instance");
             var SalesPersonCodevalidation = SalesPersonCodevalidator.validate();
-
+             var SalesPersonContactNovalidator = $("#txtSalesPersonContactNo").dxValidator("instance");
+            var SalesPersonContactNovalidation = SalesPersonContactNovalidator.validate();
         
             if (Salespersonuservalidation.isValid && emailAddressvalidation.isValid && SalesPersonCodevalidation.isValid) {
 
