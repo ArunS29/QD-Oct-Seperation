@@ -837,7 +837,8 @@
                  // Adjust time if needed
             } else {
                 // If exists, go straight to submit
-                    proceedWithVerify();
+
+                     saveverifydetails();
                     syncWorkflowFromFields();
             }
         },
@@ -846,59 +847,7 @@
         }
     });
         }
-            function saveverifydetails(){
-            var dataGrid = $("#dataGrid").dxDataGrid("instance");
-        var rowCount = dataGrid.getVisibleRows().length;
-
-        if (rowCount !== 0) {
-            var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
-
-            var VM = {
-                ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
-                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
-                ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
-                ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
-                PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
-                FundRequestTypeId: 2,
-                ExpenseDetails: gridData // 🔁 Add the grid rows here
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "/api/ExpenseClaim/UpdateVoucher",
-                contentType: "application/json",
-                data: JSON.stringify(VM),
-                dataType: "json",
-                success: function (response) {
-                    if (response.success) {
-                             proceedWithVerify();
-                    } else {
-                        alert("Update failed: " + response.message);
-                    }
-                },
-                error: function () {
-                    DevExpress.ui.dialog.alert(
-                        "Voucher has no line items to be saved, please enter transaction to save.!",
-                        "No Line Items"
-                    );
-                }
-            });
-        } else {
-            if (IsNotification === true) {
-                DevExpress.ui.dialog.alert(
-                    "Cannot continue saving with errors, please clear the errors and continue.",
-                    "Clear Errors"
-                );
-            } else {
-                DevExpress.ui.dialog.alert(
-                    "Voucher has no line items to be saved, please enter transaction to save.!",
-                    "No Line Items"
-                );
-            }
-        }
-        }
+          
             function proceedWithVerify() {
         const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
@@ -909,15 +858,16 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.success) {
-                    DevExpress.ui.dialog.alert("Claim has been Verified for Approval.", "Verified Successfull")
-                        .done(function () {
+                   
                             $("#VerifiedOntext").dxTextBox("instance").option("value", response.verifiedBy);
                             $("#VerifiedBytext").dxTextBox("instance").option("value", response.verifiedOn);
                             $("#IsVerified").dxCheckBox("instance").option("value", true);
 
                             disableclaim();
                             syncWorkflowFromFields();
-                        });
+
+                            DevExpress.ui.notify("Claim has been Verified for Approval.", "success", 3000);
+                        
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
                 }
@@ -970,59 +920,7 @@
             }
         });
             }
-                function saveapprovedetails(){
-                var dataGrid = $("#dataGrid").dxDataGrid("instance");
-            var rowCount = dataGrid.getVisibleRows().length;
-
-            if (rowCount !== 0) {
-                var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
-
-                var VM = {
-                    ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
-                ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
-                ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
-                ProjectClaimedFor: paymentaccheadId,
-                ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
-                PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
-                PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
-                FundRequestTypeId: 2,
-                ExpenseDetails: gridData // 🔁 Add the grid rows here
-                };
-
-                $.ajax({
-                    type: "POST",
-                    url: "/api/ExpenseClaim/UpdateVoucher",
-                    contentType: "application/json",
-                    data: JSON.stringify(VM),
-                    dataType: "json",
-                    success: function (response) {
-                        if (response.success) {
-                                 proceedWithApprove();
-                        } else {
-                            alert("Update failed: " + response.message);
-                        }
-                    },
-                    error: function () {
-                        DevExpress.ui.dialog.alert(
-                            "Voucher has no line items to be saved, please enter transaction to save.!",
-                            "No Line Items"
-                        );
-                    }
-                });
-            } else {
-                if (IsNotification === true) {
-                    DevExpress.ui.dialog.alert(
-                        "Cannot continue saving with errors, please clear the errors and continue.",
-                        "Clear Errors"
-                    );
-                } else {
-                    DevExpress.ui.dialog.alert(
-                        "Voucher has no line items to be saved, please enter transaction to save.!",
-                        "No Line Items"
-                    );
-                }
-            }
-            }
+                
                 function proceedWithApprove() {
             const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
 
@@ -1033,15 +931,14 @@
                 contentType: "application/json; charset=utf-8",
                 success: function (response) {
                     if (response.success) {
-                    DevExpress.ui.dialog.alert("Claim has been Approved Successfully.", "Approved Successfull")
-                        .done(function () {
+                   
                             $("#ApprovedOntext").dxTextBox("instance").option("value", response.approvedBy);
                             $("#ApprovedBytext").dxTextBox("instance").option("value", response.approvedOn);
                             $("#IsApproved").dxCheckBox("instance").option("value", true);
 
                             disableclaim();
-
-                        });
+                            DevExpress.ui.notify("Claim has been Approved Successfully.", "success", 3000);
+                      
                     } else {
                         DevExpress.ui.notify("Submission failed.", "error", 2000);
                     }

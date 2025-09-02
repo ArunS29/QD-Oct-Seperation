@@ -11,12 +11,32 @@
         color: var(--title-background-color);
     }
 
+    /* Hover row (applies to all grids in dropdowns) */
+    .dx-dropdowneditor-overlay .dx-datagrid-rowsview .dx-row.dx-state-hover > td {
+        background-color: var(--title-background-color) !important; /* light red */
+        color: #000 !important;
+    }
+
+    /* Selected row (all dropdown grids) */
+    .dx-dropdowneditor-overlay .dx-datagrid-rowsview .dx-row.dx-selection > td,
+    .dx-dropdowneditor-overlay .dx-datagrid-rowsview .dx-row.dx-row-focused > td {
+        background-color: var(--title-background-color) !important; /* strong red */
+        color: #fff !important;
+    }
+
+    .dx-dropdowneditor-overlay .dx-datagrid-rowsview .dx-row {
+        background-color: var(--header-color) !important; /* ✅ light background for all rows */
+    }
+
+       /* #accounthead-datagrid .dx-datagrid-rowsview .dx-row:nth-child(even) {
+            background-color: #e9eff5; 
+        } */
     .form-container {
         padding: 5px;
         border-radius: 8px;
         background-color: white;
-        max-width: 900px;
-        margin: auto;
+        max-width: 985px;
+        margin: 0px;
         color: black;
     }
 
@@ -153,7 +173,7 @@
 
     /* ✅ Force borders for all cells in the grid */
     #dataGrid .dx-row > td {
-        border: 1px solid #ddd !important;
+        border: 1px solid var(--title-background-color) !important;
     }
 
     /* ✅ Highlight empty row */
@@ -282,9 +302,9 @@
 
                         .OnInput("dropDownBoxOnInput")
                         .OnOpened("onclaimOpened")
-                       
+                        .OnValueChanged("oncostValueChanged")
                         .TabIndex(1)
-                        .DropDownOptions(o => o.Width(1000))
+                        .DropDownOptions(o => o.Width(500))
                         .OnKeyDown("onKeyDown")
                         .ContentTemplate(new TemplateName("PaymentAmountContentTemplate"))
                         )
@@ -359,7 +379,7 @@
                     @(Html.DevExtreme().Button()
                                     .Icon("card")
                                     .Type(ButtonType.Default)
-                                    .OnClick("onCardClick"))
+                                    .OnClick("onCardClick").Disabled(new JS("Isapproved === true")))
             </div>
         </text>).Alignment(HorizontalAlignment.Center);
 
@@ -433,7 +453,7 @@
                                     .DisplayExpr("CostAllocationUnit")
                                     .Placeholder("Select Cost Center")
                                     .Width(350)
-                                    .DropDownOptions(o => o.Width(800))
+                                    .DropDownOptions(o => o.Width(400))
                                     .Value(new JS("data.CostCenterCode"))
                                     .ContentTemplate(new TemplateName("CostDropdownContentTemplate"))
                                     )
@@ -515,6 +535,7 @@
                 @(Html.DevExtreme().DropDownBox()
                                 .LabelMode(EditorLabelMode.Floating)
                                 .ID("ddAccountHead")
+                                 .DataSource(Enumerable.Empty<object>())
                                 .ShowClearButton(true)
                                 .AcceptCustomValue(true)
                                 .OpenOnFieldClick(false)
@@ -526,8 +547,9 @@
                                 .DisplayExpr("AccountHead")
                                 .OnInput("dropDownBoxOnInput")
                                 .OnOpened("onPaymentOpened")
+                                .OnValueChanged("onAccountHeadValueChanged") 
                                 .TabIndex(1)
-                                .DropDownOptions(o => o.Width(1000))
+                                .DropDownOptions(o => o.Width(400))
                                 .OnKeyDown("onKeyDown")
                                 .ContentTemplate(new TemplateName("AccountHeadContentTemplate")))
             </div>
@@ -663,10 +685,10 @@
 {
     @(Html.DevExtreme().DataGrid()
                     .ID("accounthead-datagrid")
-
+                     .DataSource(Enumerable.Empty<object>())
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                    .FocusedRowEnabled(true)
                     .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                     .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
                     .OnInitialized("dataGridAccountHeadInitialized")
@@ -674,15 +696,20 @@
                     .ShowBorders(true)
                     .HoverStateEnabled(true)
                     .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
+                    .FilterRow(f => f.Visible(false))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(345)
+                    .Width(400)
                     .Selection(s => s.Mode(SelectionMode.Single))
-                    .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+                   .SelectedRowKeys(new JS(@"[]")) 
+                    .SearchPanel(sp => sp.Visible(false)
+                       .HighlightSearchText(true)
+                       .SearchVisibleColumnsOnly(false))
+                       .OnToolbarPreparing("accountHeadToolbarPreparing")
                     .Columns(columns =>
                     {
-                        columns.Add().DataField("AccountId");
-                        columns.Add().DataField("AccountHead");
+                            columns.Add().DataField("AccountId").Alignment(HorizontalAlignment.Center);
+                            columns.Add().DataField("AccountHead").Alignment(HorizontalAlignment.Center);
 
 
                     })
@@ -733,7 +760,7 @@
 {
     @(
                             Html.DevExtreme().DataGrid()
-                            .ID("suppliername-datagrid")
+                            .ID("Costcenter-datagrid")
                             .DataSource(d => d.WebApi()
                             .Controller("CostAllocation")
                             .LoadAction("GetCostAllocationUnits")
@@ -742,30 +769,29 @@
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
-                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                             .SearchPanel(sp => sp.Visible(false)
+                               .HighlightSearchText(true)
+                               .SearchVisibleColumnsOnly(false))
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
                             .OnSelectionChanged("dataGridSelectionChanged")
-
+                            .FocusedRowEnabled(true)
                             .OnInitialized("dataGridInitialized")
                             .HeaderFilter(p => p.Visible(true))
                             .ShowBorders(true)
                             .HoverStateEnabled(true)
                             .Paging(p => p.PageSize(15))
-                            .FilterRow(f => f.Visible(true))
+                            .FilterRow(f => f.Visible(false))
                             .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                             .Height(345)
+                            .Width(500)
                             .Selection(s => s.Mode(SelectionMode.Single))
                         .SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
-
+                            .OnToolbarPreparing("accountHeadToolbarPreparing")
 
                             .Columns(columns =>
                             {
-                                columns.Add().DataField("CostAllocationUnitId");
-                                columns.Add().DataField("CostAllocationUnit")
-
-
-
-                    .Alignment(HorizontalAlignment.Center);
+                                    columns.Add().DataField("CostAllocationUnitId").MinWidth(100).Alignment(HorizontalAlignment.Center);
+                                columns.Add().DataField("CostAllocationUnit").Alignment(HorizontalAlignment.Center);
 
 
                             })
@@ -786,7 +812,9 @@
                         )
                         .WordWrapEnabled(true)
                         .ShowBorders(true)
-                        .SearchPanel(sp => sp.HighlightSearchText(true))
+                         .SearchPanel(sp => sp.Visible(false)
+                           .HighlightSearchText(true)
+                           .SearchVisibleColumnsOnly(false))
                         .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
                         .SelectedRowKeys(new JS(@"component.option(""value"")"))
@@ -803,7 +831,7 @@
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
                         .Selection(s => s.Mode(SelectionMode.Single))
@@ -825,6 +853,7 @@
 </text>);
 
                         })
+                            .OnToolbarPreparing("accountHeadToolbarPreparing")
                             .OnRowPrepared("onAccountHeadRowPrepared")
                         )
 }
@@ -841,7 +870,9 @@
                             )
                             .WordWrapEnabled(true)
                             .ShowBorders(true)
-                            .SearchPanel(sp => sp.HighlightSearchText(true))
+                             .SearchPanel(sp => sp.Visible(false)
+                               .HighlightSearchText(true)
+                               .SearchVisibleColumnsOnly(false))
                             .Selection(sl => sl.Mode(SelectionMode.Single)) // Set to Single selection mode
 
                             .SelectedRowKeys(new JS(@"component.option(""value"")"))
@@ -858,9 +889,10 @@
                         .ShowBorders(true)
                         .HoverStateEnabled(true)
                         .Paging(p => p.PageSize(15))
-                        .FilterRow(f => f.Visible(true))
+                        .FilterRow(f => f.Visible(false))
                         .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                         .Height(345)
+                        .Width(400)
                         .Selection(s => s.Mode(SelectionMode.Single))
                         .Columns(columns =>
                         {
@@ -872,7 +904,7 @@
 
 
                         })
-
+                            .OnToolbarPreparing("accountHeadToolbarPreparing")
                             )
 }
 
@@ -955,19 +987,19 @@
             }
         }
 
-        function onPaymentOpened(e) {
-            setTimeout(() => {
-                e.component.focus();
-            });
-            const grid = $("#accounthead-datagrid").dxDataGrid("instance");
+        // function onPaymentOpened(e) {
+        //     setTimeout(() => {
+        //         e.component.focus();
+        //     });
+        //     const grid = $("#accounthead-datagrid").dxDataGrid("instance");
 
-            // Wait for content template rendering
-            setTimeout(() => {
-                if (grid && Accountname) {
-                    grid.selectRows([Accountname], false);
-                }
-            }, 1000);
-        }
+        //     // Wait for content template rendering
+        //     setTimeout(() => {
+        //         if (grid && Accountname) {
+        //             grid.selectRows([Accountname], false);
+        //         }
+        //     }, 1000);
+        // }
 
         function onKeyDown(e) {
             const ddbInstance = e.component;
@@ -984,30 +1016,31 @@
 
 
         function dataGridAccountHeadInitialized(e) {
-            dataGrid = e.component;
+           accountHeadGrid = e.component;
         }
-        function dataGridAccountHeadSelectionChanged(e) {
-            const selectedKey = e.selectedRowKeys[0];
-            const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
+          function dataGridAccountHeadSelectionChanged(e) {
+              debugger;
+        const selectedRowData = e.selectedRowsData[0]; // get selected row
+        const ddbInstance = $("#ddAccountHead").dxDropDownBox("instance");
 
-            if (selectedKey) {
-                ddbInstance.option("value", selectedKey);
-                if (ddbInstance.option("opened")) {
-                    ddbInstance.close();
-                }
-                 var selectedRowData = $("#accounthead-datagrid").dxDataGrid("instance").getSelectedRowsData();
-                // Get ReferenceNo from selected row
-                if (selectedRowData.length > 0) {
-                    accheadId = selectedRowData[0].AccountId;
-                    accheadname = selectedRowData[0].AccountHead;
+        if (selectedRowData) {
+            // Store value as AccountId
+            ddbInstance.option("value", selectedRowData.AccountId);
 
+             // Manually set the visible text in the input field
+            ddbInstance.element().find(".dx-texteditor-input").val(selectedRowData.AccountHead);
 
-
-
-                }
+            // Close dropdown after selection
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
             }
 
+            // Save globally if needed
+            accheadId = selectedRowData.AccountId;
+            accheadname = selectedRowData.AccountHead;
         }
+    }
+
         function dataGridAccountHeadInitialized1(e) {
             dataGrid = e.component;
         }
@@ -1072,7 +1105,7 @@
                 if (ddbInstance.option("opened")) {
                     ddbInstance.close();
                 }
-                var selectedRowData = $("#suppliername-datagrid").dxDataGrid("instance").getSelectedRowsData();
+                var selectedRowData = $("#Costcenter-datagrid").dxDataGrid("instance").getSelectedRowsData();
                 // Get ReferenceNo from selected row
                 if (selectedRowData.length > 0) {
 
@@ -1292,7 +1325,10 @@
                     data: { voucherNo: voucherNo },
                     success: function (data) {
                         dataGrid.option("dataSource", data);
-                        addEmptyRowIfNeeded();
+                       if (!Isapproved){
+
+                                addEmptyRowIfNeeded();
+                       }
                     }
                 });
 
@@ -1338,7 +1374,7 @@
                         contentType: "application/json",
                         data: JSON.stringify(e.data),
                         success: function () {
-                            DevExpress.ui.notify("Row updated successfully", "success", 1500);
+                            // DevExpress.ui.notify("Row updated successfully", "success", 1500);
                             // ✅ Reload updated data (with new ClaimChildNo, etc.)
                             $.ajax({
                                 url: "/api/ExpenseClaim/GetChildClaimsByVoucherNo",
@@ -1379,6 +1415,8 @@
             if (voucherNoFromUrl) {
                 // ✅ Bind voucher number from URL
                 voucherNoField.option("value", voucherNoFromUrl);
+                  // ✅ Quick fix: also initialize grid in edit mode
+                 initializeDataGrid(voucherNoFromUrl);
             } else {
                 // ❌ If not available, generate new one
                 $.ajax({
@@ -1409,6 +1447,7 @@
         let claimRefNo = null;
         let claimproject = null;
         let Accountname = null;
+        let Isapproved = null ;
 
         $(document).ready(function () {
             claimRefNo = getUrlParameter('claimRefNo');
@@ -1424,17 +1463,18 @@
                     data: { claimRefNo: claimRefNo },
                     success: function (data) {
                         const entry = data.find(d => d.ClaimRefNo === claimRefNo); // optional check
-                        
+                        debugger;
                         if (entry) {
-                            Accountname = entry.PaymentAccountname || null;
+                            Accountname = entry.PaymentAccount || null;
                             claimproject = entry.Claimedproject || null;
+                                Isapproved = entry.IsApproved || null;
                             $("#VoucherNo").dxTextBox("instance").option("value", entry.ClaimRefNo);
                             $("#claimerdate").dxDateBox("instance").option("value", entry.ClaimDate);
                             $("#claimerEffectiveDate").dxDateBox("instance").option("value", entry.ClaimEffectiveDate ? new Date(entry.ClaimEffectiveDate) : new Date());
                             $("#txtEntryNarration").dxTextArea("instance").option("value", entry.ClaimRemarks);
                              $("#Priorityclaim").dxSelectBox("instance").option("value", entry.Priority);
                             $("#accountDropDownBox").dxDropDownBox("instance").option("value", entry.ProjectClaimedFor);
-                            $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccountname);
+                            $("#ddAccountHead").dxDropDownBox("instance").option("value", entry.PaymentAccount);
                             let radioGroup = $("#radioGroup").dxRadioGroup("instance");
                             radioGroup.option("value", entry.PaymentType);
 
@@ -1506,9 +1546,11 @@
                             // ✅ Initialize popovers
                             initWorkflowTippyPopovers();
                              checkVoucherDateLock(entry.ClaimDate);
+                             initializeEditMode(entry);
+
                             getchilddatas();
                         } else {
-                            DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                            // DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
                             getDocumentCount();
                         }
 
@@ -1541,35 +1583,48 @@
                                     const entry = data.find(d => d.ClaimRefNo === claimRefNo);
                                     if (entry) {
                                         const gridInstance = $("#dataGrid").dxDataGrid("instance");
+                                      
                                         gridInstance.option("dataSource", data);
+                                             if (!Isapproved) {
+                                                      const dataSource = gridInstance.option("dataSource") || [];
+                                                       dataSource.push({
+                                                    ClaimedAmount: 0.00,
+                                                    ApprovedAmount: 0.00,
+                                                    VoucherNo: claimRefNo
+                                                });
+                                                gridInstance.option("dataSource", dataSource);
+                                             
+                                             
+                                             }
+                                        
                                         gridInstance.refresh();
                                         
                                     } else {
-                                        DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
+                                        // DevExpress.ui.notify("No entry found with the given reference number.", "warning", 3000);
                                     }
                                 }
                                 return;
                             }
 
-                            // If `data` is an object (wrapped format: { success: true, data: [...] })
-                            if (!data.success) {
-                                DevExpress.ui.notify(data.message || "No child records found.", "warning", 3000);
+                            // // If `data` is an object (wrapped format: { success: true, data: [...] })
+                            // if (!data.success) {
+                            //     // DevExpress.ui.notify(data.message || "No child records found.", "warning", 3000);
                                 
-                                const dataGrid = $("#dataGrid").dxDataGrid("instance");
-                                const dataSource = dataGrid.option("dataSource") || [];
+                            //     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+                            //     const dataSource = dataGrid.option("dataSource") || [];
 
-                                if (!Array.isArray(dataSource)) return;
+                            //     if (!Array.isArray(dataSource)) return;
 
-                                if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
-                                    dataSource.push({
-                                        ClaimedAmount: 0.00,
-                                        ApprovedAmount: 0.00,
-                                        VoucherNo: claimRefNo
-                                    });
-                                    dataGrid.option("dataSource", dataSource);
-                                }
-                                return;
-                            }
+                            //     if (dataSource.length === 0 || Object.keys(dataSource[dataSource.length - 1]).length !== 0) {
+                            //         dataSource.push({
+                            //             ClaimedAmount: 0.00,
+                            //             ApprovedAmount: 0.00,
+                            //             VoucherNo: claimRefNo
+                            //         });
+                            //         dataGrid.option("dataSource", dataSource);
+                            //     }
+                            //     return;
+                            // }
 
                             // If `data.success === true` and data.data exists
                             if (Array.isArray(data.data)) {
@@ -1593,36 +1648,83 @@
             }
         }
 
+            var accountHeadGrid = null;      // Reference to the DataGrid
+    var currentRadioValue = null;    // Keep track of the currently selected radio
 
-        function onRadioGroupValueChanged(e) {
-            
-            let selectedValue = e.value;
-            let loadAction = selectedValue === "Cash Payment" ? "GetCPPaymentAccounts" : "GetBPPaymentAccounts";
+    // // Capture DataGrid instance when initialized
+    // function dataGridAccountHeadInitialized(e) {
+    //     accountHeadGrid = e.component;
+    // }
 
-            // Safely get DropDownBox instance
-            let dropDownBoxElement = $("#ddAccountHead");
-            if (dropDownBoxElement.length > 0) {
-                let dropDownBox = dropDownBoxElement.dxDropDownBox("instance");
-                if (dropDownBox) {
-                    dropDownBox.option("dataSource", DevExpress.data.AspNet.createStore({
-                        key: "AccountId",
-                        loadUrl: "/api/ExpenseClaim/" + loadAction
-                    }));
-                }
-            }
+    // RadioGroup change: just update the current value
+    function onRadioGroupValueChanged(e) {
+        currentRadioValue = e.value;
+        const accountHeadGrid = $("#accounthead-datagrid").dxDataGrid("instance");
+        const dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
 
-            // Safely get DataGrid instance
-            let dataGridElement = $("#accounthead-datagrid");
-            if (dataGridElement.length > 0) {
-                let dataGrid = dataGridElement.dxDataGrid("instance");
-                if (dataGrid) {
-                    dataGrid.option("dataSource", DevExpress.data.AspNet.createStore({
-                        key: "AccountId",
-                        loadUrl: "/api/ExpenseClaim/" + loadAction
-                    }));
-                }
-            }
+        // 🔹 Clear any previous selection in dropdown
+        dropDownBox.option("value", null);
+        dropDownBox.element().find(".dx-texteditor-input").val("");
+
+        // 🔹 Reload the grid with fresh data for new Radio selection
+        if (accountHeadGrid) {
+            accountHeadGrid.option("dataSource", getAccountHeadData(currentRadioValue));
+            accountHeadGrid.option("focusedRowKey", null);
+            accountHeadGrid.clearSelection();
+            // updateAccountHeadGrid();
         }
+        
+    }
+        function getAccountHeadData(type) {
+        let loadAction = type === "Cash Payment"
+            ? "GetCPPaymentAccounts"
+            : "GetBPPaymentAccounts";
+
+        return DevExpress.data.AspNet.createStore({
+            key: "AccountId",
+            loadUrl: "/api/ExpenseClaim/" + loadAction
+        });
+    }
+
+
+    // DropDownBox opened: always ensure grid shows correct data
+    function onPaymentOpened(e) {
+        if (!currentRadioValue) return; // nothing selected
+        updateAccountHeadGrid();
+        setTimeout(() => {
+                e.component.focus();
+            });
+            const grid = $("#accounthead-datagrid").dxDataGrid("instance");
+
+            // Wait for content template rendering
+            setTimeout(() => {
+                if (grid && Accountname) {
+                    grid.selectRows([Accountname], false);
+                     grid.option("focusedRowKey", Accountname);
+                }
+            }, 1000);
+    }
+
+    // Function to update the DataGrid's data based on current radio selection
+    function updateAccountHeadGrid() {
+        if (!accountHeadGrid) return;
+
+        let loadAction = currentRadioValue === "Cash Payment"
+            ? "GetCPPaymentAccounts"
+            : "GetBPPaymentAccounts";
+
+        let newStore = DevExpress.data.AspNet.createStore({
+            key: "AccountId",
+            loadUrl: "/api/ExpenseClaim/" + loadAction
+        });
+
+        accountHeadGrid.option("dataSource", newStore);
+        newStore.load(); // ensure first load happens immediately
+    }
+
+
+
+
 
 
              $("#btnSave").on("click", function (e) {
@@ -1657,10 +1759,7 @@
                     if (response.success) {
                               isVoucherSaved = true; // Mark Updated step as done
                          updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
-                        DevExpress.ui.dialog.alert(
-                            "Expense Claim Request Details updated Successfully.",
-                            "Update Successful"
-                        );
+                               DevExpress.ui.notify("Expense Claim Request Details updated Successfully.", "success", 3000);
                         var button = $("#btnSave").dxButton("instance");
                             button.option("text", "Update");
                         
@@ -1722,12 +1821,10 @@
                     if (response.success) {
                            isVoucherSaved = true; // Mark Updated step as done
                          updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
-                        DevExpress.ui.dialog.alert(
-                                "Expenses Claim Request Details Updated Sucessfully.",
-                                "Data Saved Successfully"
-                            ).done(function () {
-                                history.back(); // Go back to the previous page
-                            });
+                            DevExpress.ui.notify("Expense Claim Request Details updated Successfully.", "success", 3000);
+                                setTimeout(function () {
+                          history.back(); // refresh the previous page
+                }, 500);
                     } else {
                         alert("Update failed: " + response.message);
                     }
@@ -1899,15 +1996,14 @@
             contentType: "application/json; charset=utf-8",
             success: function (response) {
                 if (response.success) {
-                        DevExpress.ui.dialog.alert("Claim has been submitted to finance for Approval.", "Submit Successfull")
-                            .done(function () {
+                       
                                 $("#SubmittedBytext").dxTextBox("instance").option("value", response.submittedBy);
                                 $("#SubmittedOnDate").dxTextBox("instance").option("value", response.submittedOn);
                                 $("#IsSubmitted").dxCheckBox("instance").option("value", true);
                                 syncWorkflowFromFields();
                                 disableclaim();
-                                
-                            });
+                                DevExpress.ui.notify("Claim has been submitted to finance for Approval.", "success", 3000);
+                           
                 } else {
                     DevExpress.ui.notify("Submission failed.", "error", 2000);
                 }
@@ -2613,11 +2709,16 @@
                 DevExpress.ui.dialog.confirm("Are you sure you want to delete this claim?", "Confirm Deletion")
                     .done(function (dialogResult) {
                         if (dialogResult) {
+                            debugger;
                              const voucherNo = $("#VoucherNo").dxTextBox("instance").option("value");
                             $.post("/api/ExpenseClaim/DeleteClaim", { voucherNo: voucherNo })
                                 .done(function (deleteResult) {
                                     if (deleteResult.success) {
-                                        DevExpress.ui.notify("Claim deleted successfully", "success", 3000);
+                                        DevExpress.ui.dialog.alert("Claim Successfully   removed from the database", "Success")
+                                                    .done(function () {
+                                                        sessionStorage.setItem("refreshPage", "true");
+                                                        history.back();
+                                                    });
                                     } else {
                                         DevExpress.ui.notify(deleteResult.message, "error", 3000);
                                     }
@@ -2660,6 +2761,193 @@
             }
             });
         });
+    function onAccountHeadValueChanged(e) {
+    if (!e.value) {  // when cleared
+        var grid = $("#accounthead-datagrid").dxDataGrid("instance");
+        if (grid) {  // ✅ only call if initialized
+            grid.clearSelection();
+        }
+    }
+}
+ 
+    function oncostValueChanged(e) {
+        if (!e.value) {  // when cleared
+            var grid = $("#Costcenter-datagrid").dxDataGrid("instance");
+            grid.clearSelection();   // ✅ clears selected row
+        }
+    }
+    function accountHeadToolbarPreparing(e) {
+        const grid = e.component;
+        const items = e.toolbarOptions.items;
 
+        // Build our toggle button
+        const searchToggle = {
+            location: "after",
+            widget: "dxButton",
+            options: {
+                icon: "search",
+                hint: "Toggle Search Panel",
+               onClick: function () {
+                    const visible = grid.option("filterRow.visible");
+                    grid.option("filterRow.visible", !visible);
+                }
 
+            }
+        };
+
+        // Insert right after the built-in Column Chooser button if present
+        const ccIndex = items.findIndex(i => i.name === "columnChooserButton");
+        if (ccIndex >= 0) {
+            items.splice(ccIndex + 1, 0, searchToggle);
+        } else {
+            // Fallback: just add it to the right side
+            items.push(searchToggle);
+        }
+    }
+        function initializeEditMode(entry) {
+        // 1️⃣ Set RadioGroup
+        let radioGroup = $("#radioGroup").dxRadioGroup("instance");
+        radioGroup.option("value", entry.PaymentType);
+        currentRadioValue = entry.PaymentType;
+
+        // 2️⃣ Prepare correct store
+        let loadAction = currentRadioValue === "Cash Payment"
+            ? "GetCPPaymentAccounts"
+            : "GetBPPaymentAccounts";
+
+        let newStore = DevExpress.data.AspNet.createStore({
+            key: "AccountId",
+            loadUrl: "/api/ExpenseClaim/" + loadAction
+        });
+
+        // 3️⃣ Apply to DataGrid + DropDownBox
+        const accountHeadGrid = $("#accounthead-datagrid").dxDataGrid("instance");
+        const dropDownBox = $("#ddAccountHead").dxDropDownBox("instance");
+
+        if (accountHeadGrid) {
+            accountHeadGrid.option("dataSource", newStore);
+        }
+        dropDownBox.option("dataSource", newStore);
+
+        // 4️⃣ Pre-set value to saved AccountId
+        dropDownBox.option("value", entry.PaymentAccount);
+
+        // 5️⃣ Also select in grid after it binds
+        newStore.load().done(function (data) {
+            if (accountHeadGrid && entry.PaymentAccount) {
+                accountHeadGrid.selectRows([entry.PaymentAccount], false);
+                accountHeadGrid.option("focusedRowKey", entry.PaymentAccount);
+            }
+        });
+    }
+        function saveapprovedetails(){
+                    var dataGrid = $("#dataGrid").dxDataGrid("instance");
+                var rowCount = dataGrid.getVisibleRows().length;
+
+                if (rowCount !== 0) {
+                    var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+                    var VM = {
+                            ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                    ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+                    ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
+                    ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                    ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                    PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
+                    PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+                    Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
+                    FundRequestTypeId: 1,
+                    ExpenseDetails: gridData // 🔁 Add the grid rows here
+                    };
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/api/ExpenseClaim/UpdateVoucher",
+                        contentType: "application/json",
+                        data: JSON.stringify(VM),
+                        dataType: "json",
+                        success: function (response) {
+                            if (response.success) {
+                                     proceedWithApprove();
+                            } else {
+                                alert("Update failed: " + response.message);
+                            }
+                        },
+                        error: function () {
+                            DevExpress.ui.dialog.alert(
+                                "Voucher has no line items to be saved, please enter transaction to save.!",
+                                "No Line Items"
+                            );
+                        }
+                    });
+                } else {
+                    if (IsNotification === true) {
+                        DevExpress.ui.dialog.alert(
+                            "Cannot continue saving with errors, please clear the errors and continue.",
+                            "Clear Errors"
+                        );
+                    } else {
+                        DevExpress.ui.dialog.alert(
+                            "Voucher has no line items to be saved, please enter transaction to save.!",
+                            "No Line Items"
+                        );
+                    }
+                }
+                }
+                      function saveverifydetails(){
+                          debugger;
+                var dataGrid = $("#dataGrid").dxDataGrid("instance");
+            var rowCount = dataGrid.getVisibleRows().length;
+
+            if (rowCount !== 0) {
+                var gridData = dataGrid.getDataSource().items(); // Gets all current grid data
+
+                var VM = {
+                   
+                            ClaimRefNo: $("#VoucherNo").dxTextBox("instance").option("value"),
+                        ClaimDate: $("#claimerdate").dxDateBox("instance").option("value")|| new Date(),
+                        ClaimEffectiveDate:$("#claimerEffectiveDate").dxDateBox("instance").option("value")|| new Date(),
+                        ProjectClaimedFor: $("#accountDropDownBox").dxDropDownBox("instance").option("value")||null,
+                        ClaimRemarks: $("#txtEntryNarration").dxTextArea("instance").option("value"),
+                        PaymentType: $("#radioGroup").dxRadioGroup("instance").option("value") || null,
+                        PaymentAccount: $("#ddAccountHead").dxDropDownBox("instance").option("value")||null,
+                        Priority: $("#Priorityclaim").dxSelectBox("instance").option("value")||null,
+                        FundRequestTypeId: 1,
+                        ExpenseDetails: gridData // 🔁 Add the grid rows here
+                };
+                debugger;
+                $.ajax({
+                    type: "POST",
+                    url: "/api/ExpenseClaim/UpdateVoucher",
+                    contentType: "application/json",
+                    data: JSON.stringify(VM),
+                    dataType: "json",
+                    success: function (response) {
+                        if (response.success) {
+                                 proceedWithVerify();
+                        } else {
+                            alert("Update failed: " + response.message);
+                        }
+                    },
+                    error: function () {
+                        DevExpress.ui.dialog.alert(
+                            "Voucher has no line items to be saved, please enter transaction to save.!",
+                            "No Line Items"
+                        );
+                    }
+                });
+            } else {
+                if (IsNotification === true) {
+                    DevExpress.ui.dialog.alert(
+                        "Cannot continue saving with errors, please clear the errors and continue.",
+                        "Clear Errors"
+                    );
+                } else {
+                    DevExpress.ui.dialog.alert(
+                        "Voucher has no line items to be saved, please enter transaction to save.!",
+                        "No Line Items"
+                    );
+                }
+            }
+            }
 </script>
