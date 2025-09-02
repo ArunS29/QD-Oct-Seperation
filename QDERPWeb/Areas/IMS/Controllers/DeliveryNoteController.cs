@@ -1,4 +1,4 @@
-using DevExtreme.AspNet.Data;
+﻿using DevExtreme.AspNet.Data;
 using DevExtreme.AspNet.Data.ResponseModel;
 using DevExtreme.AspNet.Mvc;
 using Humanizer;
@@ -103,6 +103,7 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
 
                 var existingNote = await dbContext.Tbl60301deliveryNoteMasters
                     .FirstOrDefaultAsync(x => x.DeliveryNoteNo == model.DeliveryNoteNo);
+               
 
                 if (existingNote == null)
                 {
