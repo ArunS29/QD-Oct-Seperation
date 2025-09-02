@@ -9695,6 +9695,7 @@ SaveAndClosebtn.option("disabled", false);
 
 			if (action === "add") {
 				grid.addRow();
+               grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -9749,6 +9750,7 @@ SaveAndClosebtn.option("disabled", false);
 							});
 						}
 					}
+					grid.saveEditData();
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 				}

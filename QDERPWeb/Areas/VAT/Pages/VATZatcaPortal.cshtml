@@ -898,6 +898,8 @@
 
 <script>
 
+	let InvNo=null;
+
 	$(document).ready(function () {
 
 				var selectedTabIndex = 0;
@@ -911,6 +913,170 @@
 					var selectedTabIndex = e.component.option("selectedIndex");
 					$("#tab-content-" + (selectedTabIndex + 1)).show();
 				}
+
+					 $(document).ready(function () {
+						 debugger;
+			 var urlParams = new URLSearchParams(window.location.search);
+			 var InvoiceNo = urlParams.get('InvoiceNo');
+				InvNo=InvoiceNo;
+				
+				 $.ajax({
+					 url: `/api/VATModule/GetInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+					 type: 'GET',
+					 dataType: 'json',
+					 success: function (response) {
+						 console.log("InvoiceDetails", response);
+
+						 if (response && response.length > 0) {
+							 var account = response[0];
+							 debugger;
+
+							 // accheadid=account.ClientCode;
+
+								// 	   $('#InvoiceNo').dxTextBox("instance")?.option("value", account.InvoiceNo);
+								// 	   ClientCodedataGridSelectionChanged({ selectedRowKeys: [account.ClientCode] });
+								// 	   ClientNamedataGridSelectionChanged({ selectedRowKeys: [account.BuyerName] });
+								// 	   $('#InvoiceDate').dxDateBox("instance")?.option("value", account.InvoiceDate);
+								// 	   $('#InvoiceIssuedDateTime').dxDateBox("instance")?.option("value", account.InvoiceDateWtTime);
+								// 	   $("#SupplyDate").dxDateBox("instance").option("value",account.InvoiceDeliveryDate);
+								// 	   $("#InvoiceDueDate").dxDateBox("instance").option("value",account.InvoiceDueDate);
+								// 	   $("#EffectiveDate").dxDateBox("instance").option("value",account.InvoiceEffectiveDate);
+
+								// 	   $('#GroupVATNo').dxTextBox("instance")?.option("value", account.BuyerGroupVatnumber);
+								// 	   $('#ClientVATNo').dxTextBox("instance")?.option("value", account.BuyerVatnumber);
+								// 	   $('#ClientNameArabic').dxTextBox("instance")?.option("value", account.BuyerNameAr);
+								// 	   dataGridSelectionChanged({ selectedRowKeys: [account.BuyerOtherIdtype] });
+								// 	   $('#ClientOtherID').dxTextBox("instance")?.option("value", account.BuyerOtherId);
+								// 	   $('#InvoiceCounterValue').dxTextBox("instance")?.option("value", account.InvoiceCounterValue);
+								// 	   $('#UUID').dxTextBox("instance")?.option("value", account.InvoiceUuid);
+								// 	   $('#InvoiceStartDate').dxDateBox("instance")?.option("value", account.InvoiceStartDate);
+								// 	   $('#InvoiceEndDate').dxDateBox("instance")?.option("value", account.InvoiceEndDate);
+								// 		 dataGridRevenueAccountSelectionChanged({ selectedRowKeys: [account.RevenueAccount]});
+								// 		 dataGridCostCenterAccountHeadSelectionChanged({ selectedRowKeys: [account.CostCenterCode]});
+
+								// 	   $('#txtInvoiceNotes').dxTextArea("instance")?.option("value", account.RemarksInEn);
+								// 	   $('#txtNotesinArabic').dxTextArea("instance")?.option("value", account.RemarksInAr);
+								// 	   ClientSalesOrderNodataGridSelectionChanged({ selectedRowKeys: [account.SalesOrderNo]});
+								// 	   $('#ClientPONo').dxTextBox("instance")?.option("value", account.Pono);
+
+								// 	   $('#PODate').dxDateBox("instance")?.option("value", account.Podate);
+								// 	   $('#ProjectRef').dxTextBox("instance")?.option("value", account.ReferenceNo);
+								// 	   $('#SESReference').dxTextBox("instance")?.option("value", account.SesreferenceNo);
+								// 	   $('#PaymentTerms').dxTextBox("instance")?.option("value", account.PaymentTerms);
+								// 	   $('#QuotationNo').dxTextBox("instance")?.option("value", account.ReferenceNo);
+								// 	   $('#DeliveryNotes').dxTextBox("instance")?.option("value", account.DeliveryNoteNos);
+								// 	   $('#ClientGRNReference').dxTextBox("instance")?.option("value", account.ClientGrnreferenceNo);
+								// 	   dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyCode]});
+								// 	   $('#currencyexchangerate').dxNumberBox("instance")?.option("value", account.ExchangeRate);
+								// 	   $('#OurCompanyRegisteredName').dxTextBox("instance")?.option("value", account.SellerName);
+								// 	   $('#OurVATNo').dxTextBox("instance")?.option("value", account.SellerVATNumber);
+								// 	   $('#OurGroupVATNo').dxTextBox("instance")?.option("value", account.SellerGroupVatnumber);
+								// 	   $('#OurCompanyNameinArabic').dxTextBox("instance")?.option("value", account.SellerNameAr);
+								// 	   $('#SubmittedBytext').dxTextBox("instance")?.option("value", account.InvoiceSubmittedBy);										 											 $('#SubmittedBytext').dxTextBox("instance")?.option("value", account.InvoiceSubmittedBy);
+								// 	   $('#ddlinvoicesubmittedon').dxDateBox("instance")?.option("value", account.InvoiceSubmittedOn);
+
+								// 	   $('#OtherID1').dxTextBox("instance")?.option("value", account.SellerOtherSellerId);
+								// 	   //dataGridInvoiceCurrencyHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCurrencyExchangeId]});
+								// 	   //dataGridTaxCurrencyHeadSelectionChanged({ selectedRowKeys: [account.TaxCurrencyCode]});
+								// 	   dataGridDivisionHeadSelectionChanged({ selectedRowKeys: [account.BranchCode]});
+								// 	   dataGridSalesPersonHeadSelectionChanged({ selectedRowKeys: [account.InvoiceSalesPerson]});
+								// 	   dataGridCompanyBranchHeadSelectionChanged({ selectedRowKeys: [account.CompanyId]});
+								// 	   dataGridOtherIDTypeHeadSelectionChanged({ selectedRowKeys: [account.SellerOtherIdtype]});
+								// 	   dataGridPreparedByHeadSelectionChanged({ selectedRowKeys: [account.InvoicePreparedBy]});
+								// 	   dataGridCheckedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceCheckedBy]});
+								// 	   dataGridApprovedByHeadSelectionChanged({ selectedRowKeys: [account.InvoiceApprovedBy]});
+								// 	   $('#LessAdvance').dxTextBox("instance")?.option("value", account.AdvanceText);
+								// 	   $('#currencyexchangerate3').dxNumberBox("instance")?.option("value", account.AdvanceAmount);
+								// 	   $('#LessAdvanceAr').dxTextBox("instance")?.option("value", account.AdvanceTextAr);
+								// 	   $('#LessOtherDeductions').dxTextBox("instance")?.option("value", account.OtherDeductionText);
+								// 	   $('#currencyexchangerate4').dxNumberBox("instance")?.option("value", account.OtherDeductionAmount);
+								// 	   $('#LessAdvanceAr1').dxTextBox("instance")?.option("value", account.OtherDeductionTextAr);
+								// 	   $('#LessRetention').dxTextBox("instance")?.option("value", account.RetentionText);
+								// 	   $('#currencyexchangerate5').dxNumberBox("instance")?.option("value", account.RetentionAmount);
+								// 	   $('#LessAdvanceAr2').dxTextBox("instance")?.option("value", account.RetentionTextAr);
+
+								// 	   $("#StreetName").dxTextBox("instance")?.option("value",account.BuyerAddressStreet);
+								// 	   $("#StreetNameArabic").dxTextBox("instance")?.option("value", account.BuyerAddressStreetAr);
+								// 	   $("#AdditionalAddress").dxTextBox("instance")?.option("value", account.BuyerAdditionalStreet);
+								// 	   $("#AdditionalAddressArabic").dxTextBox("instance").option("value", account.BuyerAdditionalStreetAr);
+								// 	   $("#BuildingNumber").dxTextBox("instance").option("value", account.BuyerBuildingNumber);
+								// 	   $("#ClientCity").dxTextBox("instance").option("value", account.BuyerCity);
+								// 	   $("#ClientCityArabic").dxTextBox("instance").option("value", account.BuyerCityAr);
+								// 	   $("#AdditionalNumber").dxTextBox("instance").option("value",  account.BuyerAdditionalNumber);
+								// 	   $("#Province").dxTextBox("instance").option("value", account.BuyerProvince);
+								// 	   $("#ProvinceArabic").dxTextBox("instance").option("value", account.BuyerProvinceAr);
+								// 	   $("#PostalCode").dxTextBox("instance").option("value", account.BuyerPostalCode);
+								// 	   $("#District").dxTextBox("instance").option("value", account.BuyerNeighborhood);
+								// 	   $("#DistrictArabic").dxTextBox("instance").option("value", account.BuyerNeighborhoodAr);
+								// 	   $("#CountryCodeNumeric").dxDropDownBox("instance").option("value",account.BuyerCountryCode);
+
+								// 	   $("#OurStreetName").dxTextBox("instance").option("value", account.SellerAddressStreet);
+								// 	   $("#OurStreetNameArabic").dxTextBox("instance").option("value", account.SellerAddressStreetAr);
+								// 	   $("#OurAdditionalAddress").dxTextBox("instance").option("value", account.SellerAdditionalStreet);
+								// 	   $("#OurAdditionalAddressArabic").dxTextBox("instance").option("value", account.SellerAdditionalStreetAr);
+								// 	   $("#OurBuildingNumber").dxTextBox("instance").option("value", account.SellerBuildingNumber);
+								// 	   $("#OurClientCity").dxTextBox("instance").option("value", account.SellerCity);
+								// 	   $("#OurClientCityArabic").dxTextBox("instance").option("value", account.SellerCityAr);
+								// 	   $("#OurAdditionalNumber").dxTextBox("instance").option("value", account.SellerAdditionalNumber);
+								// 	   $("#OurProvince").dxTextBox("instance").option("value", account.SellerProvince);
+								// 	   $("#OurProvinceArabic").dxTextBox("instance").option("value", account.SellerProvinceAr);
+								// 	   $("#OurPostalCode").dxTextBox("instance").option("value", account.SellerPostalCode);
+								// 	   $("#OurDistrict").dxTextBox("instance").option("value", account.SellerNeighborhood);
+								// 	   $("#OurDistrictArabic").dxTextBox("instance").option("value", account.SellerNeighborhoodAr);
+
+								// 		 $("#VerifiedBy").dxCheckBox("instance").option("value", account.IsVerified);
+								// 		 $("#VerifiedBytext").dxTextBox("instance").option("value", account.VoucherVerifiedBy || "N/A");
+								// 		 $("#VerifiedOnDate").dxTextBox("instance").option("value", account.VerifiedOn || "N/A");
+
+								// 		 $("#ApprovedBytext").dxTextBox("instance").option("value", account.ApprovedBy || "N/A");
+								// 		 $("#ApprovedOntext").dxTextBox("instance").option("value", account.ApprovedOn || "N/A");
+								// 		 $("#ApprovedBy").dxCheckBox("instance").option("value", account.IsApproved);
+
+								// 			if(account.IsVerified==true)
+								// 			 {
+								// 				 btnVerifydisableEditing();
+								// 			 }
+
+								// 			 if(account.IsApproved==true)
+								// 			 {
+								// 				 disableEditing();
+								// 			 }
+								// 			 if(account.IsPosted==true)
+								// 			 {
+								// 				 btnPostToLedgerdisableEditing();
+								// 			 }
+								// 			  var button = $("#btnSave").dxButton("instance");
+								// 			  button.option("text", "Update");
+								// 			  getDocumentCount();
+								 // Now call the second AJAX to get grid details
+							 $.ajax({
+								 type: "GET",
+								 url: `/api/VATModule/GetGridInvoiceDetails?InvoiceNo=${encodeURIComponent(InvoiceNo)}`,
+									 dataType: 'json',
+								 success: function (response) {
+										 console.log("Grid",response)
+										 let rowData = response.map((item, index) => ({
+										 SNo: index + 1,
+										...item
+									 }));
+									 // let rowData = response;
+
+									 // ✅ Now safely initialize the grid here
+									 initializeDataGrid(rowData);
+								 },
+								 error: function (xhr, status, error) {
+									 console.error("Error fetching grid data:", error);
+								 }
+							 });
+						 } else {
+							 console.warn("No account details found in the response.");
+						 }
+					 },
+					 error: function (xhr, status, error) {
+						 console.error("Error fetching invoice details:", error);
+					 }
+				 });
+		 });
 
    var qrText = "Sample QR Data for Invoice or anything else";
 
@@ -940,43 +1106,68 @@
 	 });
 
 
-		function generateZatcaInvoice() {
+	// 	function generateZatcaInvoice() {
 			
-		const invoiceData = {
-			invoiceNo: "INV-001",
-			buyerName: "Customer ABC",
-			buyerVATNumber: "312345678900003",
-			invoiceDate: new Date().toISOString(),
-			invoiceTotal: 115.00,
-			vatAmount: 15.00,
-			sellerName: "JUICE SHOP",
-			sellerVATNumber: "123456789000003"
-		};
+	// 	const invoiceData = {
+	// 		invoiceNo: "INV-001",
+	// 		buyerName: "Customer ABC",
+	// 		buyerVATNumber: "312345678900003",
+	// 		invoiceDate: new Date().toISOString(),
+	// 		invoiceTotal: 115.00,
+	// 		vatAmount: 15.00,
+	// 		sellerName: "JUICE SHOP",
+	// 		sellerVATNumber: "123456789000003"
+	// 	};
+
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: "/api/VATModule/GenerateZatcaInvoiceXml",
+	// 		contentType: "application/json",
+	// 		data: JSON.stringify(invoiceData),
+	// 		success: function (response) {
+	// 			console.log("ZATCA XML:", response.InvoiceXml);
+	// 			 console.log("TLV Base64:", response.TLVBase64);
+	// 			 console.log("QR Code Base64:", response.QRBase64);
+
+	// 			// Show QR image on the page
+	// 			  $("#qrcode").attr("src", "data:image/png;base64," + response.QRBase64);
+
+	// 			// Show raw XML (optional)
+	// 			$("#zatcaXml").text(response.invoiceXml);
+	// 		},
+	// 		error: function (xhr) {
+	// 			console.error("Error:", xhr.responseText);
+	// 			DevExpress.ui.notify("Failed to generate ZATCA Invoice XML", "error", 3000);
+	// 		}
+	// 	});
+	// }
+
+			function generateZatcaInvoice() {
+		debugger;
+		let ConnectionStatus = "Connected";
 
 		$.ajax({
+			url: "/api/VATZatca/ConnectToPortal",
 			type: "POST",
-			url: "/api/VATModule/GenerateZatcaInvoiceXml",
 			contentType: "application/json",
-			data: JSON.stringify(invoiceData),
-			success: function (response) {
-				console.log("ZATCA XML:", response.InvoiceXml);
-				 console.log("TLV Base64:", response.TLVBase64);
-				 console.log("QR Code Base64:", response.QRBase64);
-
-				// Show QR image on the page
-				  $("#qrcode").attr("src", "data:image/png;base64," + response.QRBase64);
-
-				// Show raw XML (optional)
-				$("#zatcaXml").text(response.invoiceXml);
+			data: JSON.stringify({
+				InvNo: InvNo,                 // pass invoice number
+				ConnectionStatus: ConnectionStatus // pass connection status
+			}),
+			success: function (res) {
+				if (res.Success) {
+					DevExpress.ui.notify(res.Message, "success", 2000);
+				} else {
+					DevExpress.ui.notify(res.Message || "Connection failed", "error", 3000);
+				}
 			},
 			error: function (xhr) {
-				console.error("Error:", xhr.responseText);
-				DevExpress.ui.notify("Failed to generate ZATCA Invoice XML", "error", 3000);
+				let errMsg = xhr.responseJSON?.Error || xhr.responseText || "Unexpected error";
+				DevExpress.ui.notify("Error: " + errMsg, "error", 3000);
 			}
 		});
 	}
 
-		
 
 
 </script>

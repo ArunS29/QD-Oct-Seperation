@@ -5,6 +5,7 @@
 @* @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
 } *@
+<link rel="stylesheet" href="~/css/loader.css" />
 <style>
 	.titleCard-toggle1 {
 		display: none;
@@ -589,7 +590,9 @@
         background-color: #eee;
     }
 </style>
-
+<div id="loadingSpinner" class="spinner-overlay">
+    <div id="loader" class="loader"></div>
+</div>
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -6022,10 +6025,6 @@ if (popover.option("visible")) {
 			});
 		}
 
-	
-
-
-
 
 		  function PaymentMeansdataGridSelectionChanged(e) {
 				const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
@@ -7747,14 +7746,8 @@ if (popover.option("visible")) {
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-			var button = $("#btnSave").dxButton("instance");
-            button.option("disabled", true);
 
-			
-			var SaveAndClosebtn = $("#btnSaveAndClose").dxButton("instance");
-			SaveAndClosebtn.option("disabled", true);
-
-
+		    document.getElementById('loadingSpinner').style.display = 'block';
 			
 			RevenueAccount = $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value");
 
@@ -7939,37 +7932,34 @@ if (popover.option("visible")) {
 									error: function (xhr, status, error) {
 
 										console.error("Error fetching grid data:", error);
-   button.option("disabled", false);
-  SaveAndClosebtn.option("disabled", false);
+	                                 document.getElementById('loadingSpinner').style.display = 'none';
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-								  button.option("disabled", false);
+								
 								  getDocumentCount();
-								  SaveAndClosebtn.option("disabled", false);
+						 document.getElementById('loadingSpinner').style.display = 'none';
 							 
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-							 button.option("disabled", false);
-							  SaveAndClosebtn.option("disabled", false);
+						
+							 document.getElementById('loadingSpinner').style.display = 'none';
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-                         button.option("disabled", false);
-						  SaveAndClosebtn.option("disabled", false);
+                     document.getElementById('loadingSpinner').style.display = 'none';
 				}
 			});
 			}
 			else
 			{
 				  DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-				  button.option("disabled", false);
-				   SaveAndClosebtn.option("disabled", false);
+				 document.getElementById('loadingSpinner').style.display = 'none';
 			}
 
 		 }
@@ -7980,11 +7970,8 @@ if (popover.option("visible")) {
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-			var button = $("#btnSaveAndClose").dxButton("instance");
-             button.option("disabled", true);
-
-			 	var Savebtn = $("#btnSave").dxButton("instance");
-            Savebtn.option("disabled", true);
+   	          document.getElementById('loadingSpinner').style.display = 'block';
+	       
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
@@ -8170,37 +8157,32 @@ if (popover.option("visible")) {
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
-										       button.option("disabled", false);
-										       Savebtn.option("disabled", false);
+										 document.getElementById('loadingSpinner').style.display = 'none';
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 							 history.back();
-							  button.option("disabled", false);
-							      Savebtn.option("disabled", false);
+			 document.getElementById('loadingSpinner').style.display = 'none';
 						},
 
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-                           button.option("disabled", false);
-						       Savebtn.option("disabled", false);
+             document.getElementById('loadingSpinner').style.display = 'none';
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-					 button.option("disabled", false);
-						   Savebtn.option("disabled", false);
+					 document.getElementById('loadingSpinner').style.display = 'none';
 				}
 			});
 			}
 			else
 			{
                    DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-				   		 button.option("disabled", false);
-						   Savebtn.option("disabled", false);
+              document.getElementById('loadingSpinner').style.display = 'none';
 
 			}
 
@@ -8608,7 +8590,7 @@ if (popover.option("visible")) {
         result.done(function (dialogResult) {
             if (dialogResult) {
                 // ✅ Navigate to VATZatcaPortal.cshtml
-					let url = `/${tenantName}/VAT/VATZatcaPortal?InvoiceNo=${encodeURIComponent(InvoiceNo)}`; // Update this route if needed
+					let url = `/${tenantName}/VAT/VATZatcaPortal?InvoiceNo=${encodeURIComponent(vno)}`; // Update this route if needed
 				window.location.href = url;
              
             }
@@ -9308,6 +9290,7 @@ if (popover.option("visible")) {
 
 			if (action === "add") {
 				grid.addRow();
+				grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -9363,6 +9346,7 @@ if (popover.option("visible")) {
 							});
 						}
 					}
+					grid.saveEditData();
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 				}
@@ -9370,8 +9354,8 @@ if (popover.option("visible")) {
 			else if (action === "deleteAll") {
     if (selectedRowKey !== null) {
         const rowIndex = grid.getRowIndexByKey(selectedRowKey);
-        if (rowIndex >= 0) {
-            debugger;
+        // if (rowIndex >= 0) {
+        //     debugger;
             const rowData = grid.getDataSource().items()[rowIndex];
             const InvoiceNo = rowData.InvoiceNo; // ✅ Only the string
 
@@ -9424,9 +9408,9 @@ if (popover.option("visible")) {
                 });
             }
         }
-    } else {
-        DevExpress.ui.notify("No row selected to delete.", "error", 2000);
-    }
+    // } else {
+    //     DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+    // }
 }
 
 
