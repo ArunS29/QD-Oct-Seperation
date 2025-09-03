@@ -597,6 +597,7 @@
 							.Label(new JS("formatMessage('Subject:')"))
 							.LabelMode(EditorLabelMode.Floating)
 							.Width("100%")
+							.ElementAttr("style", "height: 50px !important;")
 							.Buttons(buttons =>
 							{
 							
@@ -634,16 +635,18 @@
                         .ID("QuoteSummary")
 						.Label(new JS("formatMessage('Quote Summary:')"))
 						.LabelMode(EditorLabelMode.Floating)
-                       .ElementAttr("style", "height: 80% !important;")
+                       .ElementAttr("style", "height: 50px !important;")
                         .Width("100%")
 						) 
 						 @(Html.DevExtreme().Button()
                         .ID("AddSupplier")
                         .Icon("upload")
+						.ElementAttr("style", "height: 50px !important;")
                         .OnClick("function() { saveField('ReportSummary', 'QuoteSummary','Quote summary'); }")
                         .Hint("Set Default")) 
                         @(Html.DevExtreme().Button()
                         .ID("EditSupplier")
+						.ElementAttr("style", "height: 50px !important;")
                         .Icon("fa fa-font")
                       //.OnClick("editSelectedSupplier") 
                         .Hint("Reset"))
@@ -660,6 +663,7 @@
 						.Label(new JS("formatMessage('Project:')"))
 						.LabelMode(EditorLabelMode.Floating)
                         .Width("100%")
+						.ElementAttr("style", "height: 50px !important;")
                         .Buttons(buttons =>
 						{
 						
@@ -697,16 +701,18 @@
                         .ID("QuoteThanks")
 						.Label(new JS("formatMessage('Quote Thanks:')"))
 						.LabelMode(EditorLabelMode.Floating)
-                        .Height(80)
+                        .ElementAttr("style", "height: 50px !important;")
                         .Width("100%")
 						) 
 						 @(Html.DevExtreme().Button()
                         .ID("Addreset")
                         .Icon("upload")
                         .OnClick("function() { saveField('ReportThanksNote','QuoteThanks','Quote Thanks'); }")
+						.ElementAttr("style", "height: 50px !important;")
                         .Hint("Set Default")) 
                         @(Html.DevExtreme().Button()
                         .ID("tnxreset")
+						.ElementAttr("style", "height: 50px !important;")
                         .Icon("fa fa-font")
                       //.OnClick("editSelectedSupplier") 
                         .Hint("Reset"))
@@ -718,7 +724,7 @@
             <div class="p-3">
                 <div class="row g-2">
                     <div class="col-md-4">
-                        <div style="display: flex;flex-direction: column;gap: 7px;margin-top: 1px;">
+                        <div style="display: flex;flex-direction: column;margin-top: 1px;">
                             @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                             .Label(new JS("formatMessage('Company Branch/Division:')"))
                             .DataSource(d => d.WebApi()
@@ -794,7 +800,7 @@
                             .Width("100%")
                             )
 
-                            <div class="row mt-3">
+                            <div class="row ">
                                 <div class="col-md-6">
                                     @(Html.DevExtreme().DateBox()
                                     .ID("SubmittedOn")
@@ -847,7 +853,7 @@
                     </div>
 
                     <div class="col-md-3" >
-                        <div style="display: flex;flex-direction: column;gap: 3px;margin-top: 7px;">
+                        <div style="display: flex;flex-direction: column;">
                             <div class="row mb-2">
                                 <div class="col-6">
                                     @(Html.DevExtreme().TextBox()
@@ -887,8 +893,8 @@
                             </div>
 
                             <!-- Quotation Status with add button -->
-                            <div class="row mb-2 align-items-end">
-                                <div class="col-10">
+                            <div class="row align-items-end">
+                                <div class="col-15">
                                     @(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
                                     .Label(new JS("formatMessage('Quotation Status:')"))
                                     .DataSource(d => d.WebApi()
@@ -2038,17 +2044,17 @@
 	}
 	function AddQuoteStatus() {
 		const url = `/${tenantName}/IMS/AddNewQuotationStatus`;
-		const title = " ";
+		const title = "Quotation Status";
 		openModal(url, title);
 	}
 	function redirecttosalespersonmaster() {
 		const url = `/${tenantName}/IMS/SalesPersonMaster`;
-		const title = " ";
+		const title = "Sales Person Master";
 		openModal(url, title);
 	}
 	function redirecttoClientLeadmaster() {
 		const url = `/${tenantName}/IMS/ClientLeadMaster`;
-		const title = " ";
+		const title = "Client Master";
 		openModal(url, title);
 	}
 	function dataGridSelectionChanged3(e) {
@@ -2199,14 +2205,6 @@
 		}
 	}
 
-
-	function navigateToLedgerAccountForm() {
-		// make sure this is available in the view
-		const url = `/${tenantName}/VAT/VATDatabaseSignatories`;
-		const title = "";
-		openModal(url, title); // opens in modal instead of new window
-	}
-
 	let ItemNo = null, paymentmeanstypecode = null, amt = 0, accheadid = null, revaccheadid = null, InvoiceCurrencyExchangeId = null, TaxCurrencyExchangeId = null, branchcode = null, salespersoncode = null, companyid = null, SellerOtherIdtype = null,
 		SignatoryID = null, ChkbySignatoryID = null, ApproedbySignatoryID = null, IsCurrent = "false", ExchangeRate = null;
 	let dropDownInstance;
@@ -2224,6 +2222,7 @@
 		const QuoteNos = urlParams.get('QuoteNo');
 		const QuoteNo = QuoteNos ? QuoteNos.split("?")[0] : null;
 		//getSalesPersonByUser();
+		getDefaultCompany("ddGetCompany");
 		loadClientDetails(QuoteNo);
 
 		if (QuoteNo) {
@@ -2642,7 +2641,7 @@ function checkDateLocking() {
 						window.currentDescriptionCell = options;
 
 										let url = `/${tenantName}/IMS/DetailedDescriptionQuotation?QuoteChildId=${encodeURIComponent(QuoteChildId)}&gsCode=${encodeURIComponent(gsCode)}`;
-						let title = " ";
+						let title = "Detailed Description";
 
 						openModal(url, title,"65%","60%");
 					}
@@ -2695,7 +2694,7 @@ function checkDateLocking() {
 
 								placeholder: "Select Unit Rate Method",
 
-								dropDownOptions: { width: 600 },
+								dropDownOptions: { width: 530 },
 
 								contentTemplate: function (e) {
 
@@ -2773,7 +2772,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
-									openModal(url, "");
+									openModal(url, "Unit of Measure");
 
 								},
 
@@ -2879,7 +2878,7 @@ placeholder: "Search..."
 
 								placeholder: "Select TaxSlab Method",
 
-								dropDownOptions: { width: 600 },
+								dropDownOptions: { width: 280 },
 
 								contentTemplate: function (e) {
 
@@ -2898,7 +2897,7 @@ placeholder: "Search..."
 										searchPanel: {
 										visible: true,
 										highlightCaseSensitive: true,
-										width: 600,
+										width: 280,
 										placeholder: "Search..."
 										},
 
@@ -2943,29 +2942,6 @@ placeholder: "Search..."
 								}
 
 							});
-
-							// âœ… Add Button
-
-							$("<div>").dxButton({
-
-								icon: "plus",
-
-								hint: "Add new item",
-
-								onClick: function () {
-
-									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
-
-									openModal(url, "");
-
-								},
-
-								width: 60,
-
-								height: 30
-
-							}).appendTo($container);
-
 						});
 
 					}
@@ -3330,7 +3306,7 @@ placeholder: "Search..."
                 window.currentDescriptionCell = options;
 
                 const url = `/${tenantName}/IMS/DetailedDescriptionQuotation?gsCode=${encodeURIComponent(gsCode)}`;
-                const title = " ";
+                const title = "Detailed Description";
 
                 openModal(url, title,"65%","60%");
             }
@@ -3383,7 +3359,7 @@ placeholder: "Search..."
 
 								placeholder: "Select Unit Rate Method",
 
-								dropDownOptions: { width: 600 },
+								dropDownOptions: { width: 280 },
 
 								contentTemplate: function (e) {
 
@@ -3448,7 +3424,7 @@ placeholder: "Search..."
 
 									let url = `/${tenantName}/VAT/VATMasterModule`; // Update this route if needed
 
-									openModal(url, "");
+									openModal(url, "Unit of Measure");
 
 								},
 
@@ -3556,7 +3532,7 @@ placeholder: "Search..."
 
 								placeholder: "Select Tax Slab Method",
 
-								dropDownOptions: { width: 600 },
+								dropDownOptions: { width: 280 },
 
 								contentTemplate: function (e) {
 
@@ -3575,7 +3551,7 @@ placeholder: "Search..."
 										searchPanel: {
 										visible: true,
 										highlightCaseSensitive: true,
-										width: 600,
+										width: 280,
 										placeholder: "Search..."
 										},
 
@@ -3751,7 +3727,7 @@ placeholder: "Search..."
 		const newRow = {
 			LineOrderNo: nextLineOrderNo,
 	// 		//ItemCode: ItemNo || "",  // Ensure this is defined or provide fallback
-			GSCode: ItemNo,
+			GSCode: null,
 			Description: null,
 			UnitRateMethod: null,
 			QuotedQuantity: 0,
@@ -7113,9 +7089,10 @@ function loadChildDataAndBindGrid(quoteno) {
 	}
 	
 	 function AddNewClient(){
-				const url = `/${tenantName}/IMS/ClientLeadMaster`;
-  const title = " ";
-  }   openModal(url, title,"96%","75%");
+		const url = `/${tenantName}/IMS/ClientLeadMaster`;
+		const title = "Client Master";
+		openModal(url, title,"96%","75%");
+	}   
 
 	$(function () {
 		$("#AddNewQuotation").dxTextBox({
@@ -7589,7 +7566,7 @@ function onIMSAttachmentButtonClick(e) {
         }
 		 function CurrencyClick() {
         let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
-        let title = " ";
+        let title = "Currency";
         openModal(url, title);
     }
 	  function dataGridInvoiceCurrencyHeadSelectionChanged(e) {

@@ -6,7 +6,7 @@
 @using DevExtreme.AspNet.Mvc.Builders
 <style>
     .quotation-form-container {
-        padding: 20px;
+        padding: 10px;
     }
 
     .form-row {
@@ -84,10 +84,6 @@
         background-color: var(--background-color);
     }
 
-    .mainContainer {
-        margin-top: 1em;
-    }
-
     .playIcon {
         display: none;
     }
@@ -105,8 +101,6 @@
     <h3 class="card-title-text">Quotation Status</h3>
 </div> *@
 <div class="quotation-form-container">
-    <div id="DatabaseSignatories" class="no-border-title"></div>
-
     <div class="form-row">
         <div class="col-md-6">
             @(Html.DevExtreme().TextBox()
@@ -174,7 +168,7 @@
                 .OnClick("onDeleteButtonClick");
                 });
             })
-            .Height(500)
+            .Height("70vh")
             .ColumnAutoWidth(true)
             .AllowColumnReordering(true)
             .AllowColumnResizing(true)
@@ -194,39 +188,30 @@
 
     </div>
 
+    <div class="footer-fixed" style="display:flex; gap:20px;">
+        <div class="btn-container">
+            @(Html.DevExtreme().Button()
+                            .ID("btnUpdate")
+                            .Text(new JS("formatMessage('Save')"))
+                            .Type(ButtonType.Normal)
+                            .StylingMode(ButtonStylingMode.Outlined)
+                            .Icon("save")
+                    .ElementAttr(new { @class = "dx-button-custom btn-save" })
+                            )
 
-    <div class="footer-fixed">
-    @await Html.PartialAsync("InventoryModuleFooter")
+        </div>
+        <div class="btn-container">
+
+            @(Html.DevExtreme().Button()
+                            .ID("btnBack")
+                            .Text(new JS("formatMessage('Back')"))
+                            .Icon("arrowleft")
+                            .OnClick("onBack")
+                    .ElementAttr(new { @class = "dx-button-custom btn-back" })
+                    )
+        </div>
     </div>
     <script>
-
-        $(document).ready(function () {
-
-              $(".limited-footer .btn-containerIvoiceEdit").each(function () {
-
-                  if (!$(this).find("#btnUpdate,#btnBack").length) {
-
-                      $(this).remove();
-
-                  }
-
-              });
-
-          });
-
-        $(document).on("click", "#btnBack", function () {
-            window.history.back();
-        });
-
-        
-          $(function () {
-                $("#DatabaseSignatories").dxTextBox({
-                    text: formatMessage("Database "),
-                    readOnly: true,
-
-
-                });
-            });
 
         $(function () {
         $("#QuotationStatus").dxTextBox({
@@ -300,6 +285,10 @@
             grid.saveEditData(); // 🔥 only triggers on manual click
         });
 
+
+        function onBack(){
+            window.parent.closeModal();
+        }
 
         function onQuotationStatusUpdating(e) {
             const data = {
