@@ -76,4 +76,8 @@ public partial class Tbl40136PropertyRequestMaster
     public byte? ERapprovedSign { get; set; }
 
     public byte? PurchaseRequestStatusId { get; set; }
+
+    public decimal? CurrencyRate { get; set; }
+    public int? BaseCurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
 }

@@ -240,6 +240,7 @@
                 .ID("btnDelete")
                 .Text(new JS("formatMessage('Delete')"))
                 .Icon("close")
+                .OnClick("onDeleteRequest")
                 .ElementAttr(new { @class = "dx-button-custom btn-delete" })// Apply custom CSS class
                 )
     </div>
@@ -279,7 +280,7 @@
                 )
     </div>
 
-    <div class="btn-container">
+   @*  <div class="btn-container">
         @(Html.DevExtreme().Button()
                 .ID("btnCancel")
                 .Text(new JS("formatMessage('Cancel')"))
@@ -287,7 +288,7 @@
                 .ElementAttr(new { @class = "bold-button" }) // Apply custom CSS class
 
                 )
-    </div>
+    </div> *@
 
     @* <div class="btn-container">
         @(Html.DevExtreme().Button()
@@ -399,8 +400,6 @@
 
 <script>
 
-
-
         function showSubmenu(e) {
             e.event.stopPropagation();
             var $submenu = $('#submenuContainer');
@@ -421,25 +420,7 @@
         function closeSubmenu() {
             $("#submenuContainer").hide();
         }
-             function addNewMaterialRequest(e) {
-            let url = ''; // Declare once
-            switch (e.itemData.text) {
-                case formatMessage('Add New Client Request'):
-                    url = `/${tenantName}/IMS/AddNewClientRequest`;
-                    break;
-                case formatMessage('Add New Store Request'):
-                    url = `/${tenantName}/IMS/MRAddNewStoreRequest`;
-                    break;
-                case formatMessage('Add New Project Request'):
-                    url = `/${tenantName}/IMS/MRAddNewProjectRequest`;
-                    break;
-                default:
-                    console.log("Clicked item: ", e.itemData.text);
-                    return;
-            }
-
-            window.location.href = url;
-        }
+            
                  async function handleCreditReportPrinting(e) {
 
 
