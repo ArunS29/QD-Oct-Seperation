@@ -4630,7 +4630,7 @@
 		}
 	},
 				{
-  dataField: 'ExcemptionCode',
+  dataField: 'TaxExemptionReasonCode',
   caption: formatMessage('Excemption Code'),
   cssClass: "center-header",
   width: 150,
@@ -4675,7 +4675,7 @@
               $("#radioGroup_" + options.rowIndex).dxRadioGroup({
                 items: reasons,
                 layout: "vertical",
-                value: options.data.ExcemptionCode || null,  // ✅ preselect
+                value: options.data.TaxExemptionReasonCode || null,  // ✅ preselect
                 stylingMode: "outlined",
                 displayExpr: "TaxExemptionReason",
                 valueExpr: "TaxExemptionReasonCode"
@@ -4697,7 +4697,7 @@
                   DevExpress.ui.notify("Selected: " + selectedText, "success", 2000);
 
                   const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                  grid.cellValue(options.rowIndex, "ExcemptionCode", selectedCode);
+                  grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
 				    grid.saveEditData();
                   // Update visible text in cell
                   $(e.currentTarget).text(selectedText || "Select Reason");
@@ -5602,7 +5602,7 @@
 					},
 
 			{
-  dataField: 'ExcemptionCode',
+  dataField: 'TaxExemptionReasonCode',
   caption: formatMessage('Excemption Code'),
   cssClass: "center-header",
   width: 150,
@@ -5615,7 +5615,7 @@
 
     // Show the current value (code or text)
     $("<div>")
-     .text(options.data.ExcemptionCode || "Select Reason")
+     .text(options.data.TaxExemptionReasonCode || "Select Reason")
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -5647,7 +5647,7 @@
               $("#radioGroup_" + options.rowIndex).dxRadioGroup({
                 items: reasons,
                 layout: "vertical",
-                value: options.data.ExcemptionCode || null,  // ✅ preselect
+                value: options.data.TaxExemptionReasonCode || null,  // ✅ preselect
                 stylingMode: "outlined",
                 displayExpr: "TaxExemptionReason",
                 valueExpr: "TaxExemptionReasonCode"
@@ -5669,7 +5669,7 @@
                   DevExpress.ui.notify("Selected: " + selectedText, "success", 2000);
 
                   const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                  grid.cellValue(options.rowIndex, "ExcemptionCode", selectedCode);
+                  grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
 				    grid.saveEditData();
                   // Update visible text in cell
                   $(e.currentTarget).text(selectedText || "Select Reason");
@@ -9695,6 +9695,7 @@ SaveAndClosebtn.option("disabled", false);
 
 			if (action === "add") {
 				grid.addRow();
+               grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -9749,6 +9750,7 @@ SaveAndClosebtn.option("disabled", false);
 							});
 						}
 					}
+					grid.saveEditData();
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 				}
@@ -9818,20 +9820,7 @@ SaveAndClosebtn.option("disabled", false);
 			$("#contextMenu").hide();
 		});
 	});
-		// 	$("#btnPrint1").on("click", function (e) {
-		// 	var dropdown = $("#btnPrint1").dxDropDownButton("instance");
-		// 	var items = dropdown.option("items");
-
-		// 	// Set disabled flag on specific items
-		// 	items.forEach(function (item) {
-		// 			if (item.text === "Print Simplified TAX Invoice" ) {
-		// 			item.disabled = true;
-		// 		}
-		// 	});
-
-		// 	dropdown.option("items", items);
-		// });
-
+	
 
 
 			function applyDiscount() {
@@ -10010,22 +9999,6 @@ SaveAndClosebtn.option("disabled", false);
 				}
 			});
 		}
-
-					$("#btnPrint1").on("click", function (e) {
-				var dropdown = $("#btnPrint1").dxDropDownButton("instance");
-				var items = dropdown.option("items");
-
-				// Set disabled flag on specific items
-				items.forEach(function (item) {
-						if (item.text === "Print Simplified TAX Invoice" ) {
-						item.disabled = true;
-					}
-				});
-
-				dropdown.option("items", items);
-			});
-
-
 		
 	function disableEditing() {
 		// Disable all input fields and buttons except for specific ones
@@ -10517,23 +10490,6 @@ function onClientLinkClick(e) {
         }
     });
 }
-
-
-$("#btnPrint1").on("click", function (e) {
-			var dropdown = $("#btnPrint1").dxDropDownButton("instance");
-			var items = dropdown.option("items");
-
-			// Set disabled flag on specific items
-			items.forEach(function (item) {
-					if (item.text === "Print Simplified TAX Invoice" ) {
-				   DevExpress.ui.notify("This Invoice is not SIMPLIFIED TAX INVOICE", "error", 2000);
-					item.disabled = true;
-				}
-			});
-
-			dropdown.option("items", items);
-		});
-
 
 		 // Fetch from API when page loads
 $.get("/api/VATModule/GetCurrencyDecimals")

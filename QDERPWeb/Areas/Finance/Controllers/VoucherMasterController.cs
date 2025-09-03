@@ -3018,6 +3018,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 DiscountInOc = child.Discount,
                                 UnitsToBill = 1,
                                 UnitRateMethod = child.UnitRateMethod,
+                                TaxExemptionReasonCode = child.TaxExemptionReasonCode,
                                 ItemCode = child.ItemCode ?? string.Empty,
                                 UoM = "Each"
                             };
@@ -3050,6 +3051,7 @@ namespace QD.ERP.Web.Areas.Finance.Controllers
                                 existingChild.Discount = child.Discount;
                                 existingChild.UnitRateInOc = child.UnitRate;
                                 existingChild.DiscountInOc = child.Discount;
+                                existingChild.TaxExemptionReasonCode = child.TaxExemptionReasonCode;
                                 dbContext.Tbl20162VatinvoiceChildren.Update(existingChild);
                                 savedChildren.Add(existingChild);
                             }
