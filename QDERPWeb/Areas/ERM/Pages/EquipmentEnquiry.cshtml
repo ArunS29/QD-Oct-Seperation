@@ -12,7 +12,7 @@
 </style>
 
 <div class="title" id="kpiCarousel">
-	<input id="formId" value="frm60112PurchaseRequestView" type="hidden" />
+	<input id="formId" value="EquipmentEnquiryMainScreen" type="hidden" />
 	<div class="card blue shine compact with-sidebar">
 		<div class="tile-content">
 			<div class="title-text">
@@ -201,6 +201,11 @@
                     .Alignment(HorizontalAlignment.Center)
                     .Visible(true);
 
+				subColumns.AddFor(m => m.RequestType)
+			.Caption(new JS("formatMessage('Request Type')"))
+			.Alignment(HorizontalAlignment.Center).GroupIndex(0)
+			.Visible(true);
+
 					    subColumns.AddFor(m => m.ExpectedDate)
                     .Caption(new JS("formatMessage('Expected Date')"))
                     .Alignment(HorizontalAlignment.Center)
@@ -210,11 +215,31 @@
                     .Caption(new JS("formatMessage('Project Description')"))
                     .Alignment(HorizontalAlignment.Center);
 
-					    subColumns.AddFor(m => m.TotalRequestCost)
-                    .Caption(new JS("formatMessage('Total Request Cost')"))
-                    .Alignment(HorizontalAlignment.Center)
-                    .Visible(true);
-
+					  subColumns.AddFor(m => m.TotalRequestCost)
+						.Caption(new JS("formatMessage('Total Request Cost')"))
+						.Alignment(HorizontalAlignment.Center)
+						.DataType(GridColumnDataType.Number).CellTemplate(new JS(@"
+						function(cellElement, cellInfo) {
+						if (cellInfo.value != null) {
+						const formattedValue = new Intl.NumberFormat('en-US', {
+						minimumFractionDigits: 2,
+						maximumFractionDigits: 2
+						}).format(cellInfo.value);
+						$('<span>')
+						.text(formattedValue)
+						.css({
+						display: 'inline-block',
+						backgroundColor: '#C0C0FF',
+						color: '#2951A7',
+						fontWeight: 'bold',
+						padding: '4px 10px',
+						borderRadius: '20px'
+						})
+						.appendTo(cellElement);
+						}
+						}
+						"));
+						
 				       subColumns.AddFor(m => m.NoOfItems)
                     .Caption(new JS("formatMessage('No Of Items')"))
                     .Alignment(HorizontalAlignment.Center)
@@ -399,31 +424,29 @@
 	}
 
 	function onContextMenuPreparing(e) {
-		debugger;
+		
 		if (e.target === "content" && e.row) {
 			e.items = [
 					{
 						text: "Edit Request / Enquiry",
 						icon: "edit",
 						onItemClick: function () {
-							debugger;
 						const rowData = e.row.data;
 						if (!rowData) {
 							console.error("Row data is unavailable.");
 							return;
 						}
-									const { EqiupmentRequestNo, RequestType} = rowData;
+							const { EqiupmentRequestNo, RequestType} = rowData;
 							const tenantName = window.tenantName || "defaultTenant";
 							let url = "";
 							let title = "";
-
 									switch (RequestType) {
 									case "Client Request":
-									url = `/${tenantName}/ERM/EquipmentClientRequest?code=${EqiupmentRequestNo}&mode=edit`;
+									url = `/${tenantName}/ERM/EquipmentClientRequest?code=${EqiupmentRequestNo}`;
 									title = "";
 									break;
 									case "Project Request":
-										url = `/${tenantName}/ERM/EquipmentProjectRequest?code=${EqiupmentRequestNo}&mode=edit`;
+										url = `/${tenantName}/ERM/EquipmentProjectRequest?code=${EqiupmentRequestNo}`;
 									title = "";
 									break;
 								default:
@@ -442,9 +465,9 @@
 							"Confirm Delete"
 						).done(function (dialogResult) {
 							if (dialogResult) {
-								var Mprno=e.row.data.Mprno;
-								console.log("number", Mprno);
-								onDeleteRequest(Mprno);
+										var EqiupmentRequestNo=e.row.data.EqiupmentRequestNo;
+								console.log("number",);
+									onDeleteRequest(EqiupmentRequestNo);
 							}
 						});
 					}
@@ -501,14 +524,14 @@
 			});
 		});
 
-	function onDeleteRequest(Mprno) {
-		if (!Mprno) {
-			DevExpress.ui.notify('MPRNo is missing.', 'error', 3000);
+		function onDeleteRequest(EqiupmentRequestNo) {
+			if (!EqiupmentRequestNo) {
+			DevExpress.ui.notify('Equipment No is missing.', 'error', 3000);
 			return;
 		}
 
 		$.ajax({
-			url: `/api/MaterialRequestEnquiriesDetails1/DeletePurchaseRequest?Mprno=${Mprno}`,
+			url: `/api/AddNewClientRequest1/DeletePropertyRequest?EquipmentRequestNo=${EqiupmentRequestNo}`,
 			method: 'POST',
 			success: function (response) {
 				if (response.success) {
@@ -523,40 +546,83 @@
 			}
 		});
 	}
+	$(document).ready(function () {
+		console.log('Start permission handling AccountingLedgers');
+		// Form ID
+		var formId = "EquipmentEnquiryMainScreen";
 
-// 	function onCloneRequest(originalData) {
-//     if (!originalData) {
-//         console.error("No data to clone.");
-//         return;
-//     }
+		// Call the API to get permissions
+		$.ajax({
+			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+			type: 'GET',
+			contentType: 'application/json',
+			success: function (response) {
+				console.log("API Response:", response); // Log the API response
 
-//     Create a deep copy of the original data
-//     const clonedData = JSON.parse(JSON.stringify(originalData));
+				if (response.success && response.permissions) {
+					// Default visibility and enable status for buttons
+					var controlStates = {
+						"ddButtonLayout": { "Visible": false, "Enabled": false },
+						"rowHeightProperties": { "Visible": false, "Enabled": false },
+						"btnPrint": { "Visible": false, "Enabled": false },
+						"btnToggleSearch": { "Visible": false, "Enabled": false },
+						"btntoggleGroupPanel": { "Visible": false, "Enabled": false },
+						"btnToggleHeaderFilter": { "Visible": false, "Enabled": false },
+						"btnColumnChooser": { "Visible": false, "Enabled": false },
+						"btnPurchaseEditDetails": { "Visible": false, "Enabled": false },
+						"btnAddMaterialRequest": { "Visible": false, "Enabled": false },
+						"ddBtnShowRecords": { "Visible": false, "Enabled": false },
+					};
 
-//     Reset fields that should be unique or re-initialized
-//     clonedData.Mprno = null; Assuming Mprno is a unique identifier
-//     clonedData.MprrevisionNo = false;
-//     clonedData.Mprdate = new Date().toISOString().split('T')[0]; Set to today's date
-//     clonedData.IsSubmitted = false;
-//     clonedData.IsVerified = false;
-//     clonedData.IsApproved = false;
-//     clonedData.IsCancelled = false;
-//     clonedData.AddedOn = new Date().toISOString().split('T')[0];
-//     clonedData.ModifiedOn = null;
-//     clonedData.SubmittedOn = null;
-//     clonedData.VerifiedOn = null;
-//     clonedData.ApprovedOn = null;
-//     clonedData.CancelledOn = null;
-//     clonedData.Remarks = "Cloned from MPR";
+					// Check for full access
+					var fullAccess = response.permissions.find(p =>
+						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+					);
 
-//     Insert the cloned data into the DataGrid
-//     const dataGrid = $("#dataGrid").dxDataGrid("instance");
-//     dataGrid.getDataSource().store().insert(clonedData).then(() => {
-//         dataGrid.refresh();
-//     }).catch((error) => {
-//         console.error("Error inserting cloned data:", error);
-//     });
-// }
+					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+						// Grant full access: make all controls visible and enabled
+						Object.keys(controlStates).forEach(key => {
+							controlStates[key] = { "Visible": true, "Enabled": true };
+						});
+					} else {
+						// Update states based on specific permissions for each control
+						Object.keys(controlStates).forEach(key => {
+							var controlPermission = response.permissions.find(p =>
+								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+							);
+							if (controlPermission) {
+								controlStates[key] = {
+									"Visible": controlPermission.ItemVisible || false,
+									"Enabled": controlPermission.ItemEnabled || false
+								};
+							}
+						});
+					}
 
+					console.log("Control States:", controlStates);
+					Object.keys(controlStates).forEach(key => {
+						var button = document.getElementById(key);
+						if (button) {
+							// Handle visibility
+							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+							// Handle enable/disable state
+							button.disabled = !controlStates[key].Enabled;
+							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+						} else {
+							console.warn(`Button with ID "${key}" not found in the DOM.`);
+						}
+					});
+				} else {
+					console.warn("Failed to fetch permissions or no permissions available.");
+				}
+			},
+			error: function (xhr, status, error) {
+				console.error("Error fetching permissions:", error);
+				alert('An error occurred while fetching permissions. Please try again.');
+			}
+		});
+
+		console.log('End permission handling');
+	});
 
 </script>	
