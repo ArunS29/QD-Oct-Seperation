@@ -40,7 +40,24 @@ namespace QD.ERP.Web.Areas.Finance.Models
         public string ClientCategory { get; set; }
         public short ClientCategoryCode { get; set; }
     }
-
+    public class PostAvgCostDto
+    {
+        public string GSCode { get; set; }
+    public DateTime EndDate { get; set; }
+    public long DeliveryNoteSlNo { get; set; }   // use long (or long?)
+    public decimal IssuedUnitPrice { get; set; }
+    }
+    public class ApproveDeliveryNoteDto
+    {
+        public string DeliveryNoteNo { get; set; }
+        public string ApprovedBy { get; set; }
+    }
+    public class PostJournalDto
+    {
+        public string DeliveryNoteNo { get; set; }
+        public DateTime DeliveryDate { get; set; }
+        public int DeliveryType { get; set; } 
+    }
     public class VoucherEntryDisplayDTO
     {
         public string VoucherNo { get; set; }
