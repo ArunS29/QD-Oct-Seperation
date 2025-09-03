@@ -107,6 +107,30 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
             return Ok(data);   // already empty list [] if no rows found
         }
         [HttpGet]
+        public async Task<IActionResult> GetByDocument(string PropertyNo)
+        {
+            if (string.IsNullOrEmpty(PropertyNo))
+                return Ok(new object[0]);  // 🔑 send empty array instead of null
+
+            if (!_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                return Unauthorized("Invalid tenant");
+
+            var data = await dbContext.Tbl40109PropertyDocuments
+                .Where(x => x.PropertyNo == PropertyNo)
+                .Select(x => new {
+                    x.DocumentNo,
+                    x.DocumentType,
+                    x.DocumentRefNo,
+                    x.DocumentRemarks,
+                    x.DocumentExpDate,
+                    x.DocumentExpDateAr,
+                    x.NotifiedOn,
+                    x.PropertyNo,
+                })
+                .ToListAsync();
+            return Ok(data);   // already empty list [] if no rows found
+        }
+        [HttpGet]
         public async Task<IActionResult> GetByMaintenance(string PropertyNo)
         {
             if (string.IsNullOrEmpty(PropertyNo))
@@ -206,7 +230,7 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
             return Unauthorized(new { message = "Invalid tenant." });
         }
-        [HttpGet("GetAllPropertyTypes")]
+        [HttpGet]
         public IActionResult GetAllPropertyTypes()
         {
             if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))

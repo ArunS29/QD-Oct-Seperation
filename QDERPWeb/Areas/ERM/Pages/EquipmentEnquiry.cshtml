@@ -1,4 +1,4 @@
-@page
+﻿@page
 @model QD.ERP.Web.Areas.ERM.Pages.EquipmentEnquiryModel
 @{
 }
@@ -242,7 +242,7 @@
 				.ShowRowLines(true)
 				.Editing(editing => editing
 				.Mode(GridEditMode.Row)
-				.AllowUpdating(false)  // You can enable editing as needed
+				.AllowUpdating(false)   
 				.AllowAdding(false)
 				.AllowDeleting(false))
 				.Paging(p => p.PageSize(10))
@@ -255,18 +255,6 @@
 				})
 			)
 </div>
-
-<ul id="submenu" class="custom-submenu">
-	<li id="addCreditNote">Add new e-Invoice Credit Note</li>
-</ul>
-<div id="overlay" class="overlay">
-	<div class="overlay-content">
-		<span class="close-btn" onclick="closeOverlay()">&times;</span>
-		<iframe id="overlay-frame" src="" frameborder="0"></iframe>
-	</div>
-</div>
-
-
 <script>
 
 	function onToolbarPreparing(e) {
@@ -411,60 +399,40 @@
 	}
 
 	function onContextMenuPreparing(e) {
+		debugger;
 		if (e.target === "content" && e.row) {
 			e.items = [
-				{
-					text: "Edit Request / Enquiry",
-					icon: "edit",
-					onItemClick: function () {
+					{
+						text: "Edit Request / Enquiry",
+						icon: "edit",
+						onItemClick: function () {
+							debugger;
 						const rowData = e.row.data;
 						if (!rowData) {
 							console.error("Row data is unavailable.");
 							return;
 						}
+									const { EqiupmentRequestNo, RequestType} = rowData;
+							const tenantName = window.tenantName || "defaultTenant";
+							let url = "";
+							let title = "";
 
-							const { EqiupmentRequestNo, RequestEnquiry } = rowData;
-						const tenantName = window.tenantName || "defaultTenant";
-						let url = "";
-						let title = "";
-
-						switch (RequestEnquiry) {
-							case "Client Request":
-										url = `/${tenantName}/ERM/EquipmentClientRequest?EqiupmentRequestNo=${EqiupmentRequestNo}`;
-								title = "Edit Client Request";
-								break;
-							case "Project Request":
-								url = `/${tenantName}/ERM/MRAddNewProjectRequest?Mprno=${Mprno}`;
-								title = "Edit Project Request";
-								break;
-							case "Store Request":
-								url = `/${tenantName}/ERM/MRAddNewStoreRequest?Mprno=${Mprno}`;
-								title = "Edit Store Request";
-								break;
-							default:
-								console.warn("Unknown RequestEnquiry type:", RequestEnquiry);
-								return;
+									switch (RequestType) {
+									case "Client Request":
+									url = `/${tenantName}/ERM/EquipmentClientRequest?code=${EqiupmentRequestNo}&mode=edit`;
+									title = "";
+									break;
+									case "Project Request":
+										url = `/${tenantName}/ERM/EquipmentProjectRequest?code=${EqiupmentRequestNo}&mode=edit`;
+									title = "";
+									break;
+								default:
+									console.warn("Unknown RequestEnquiry type:", RequestType);
+									return;
+							}
+							window.location.href=url;
 						}
-
-						//openModal(url, title);
-						window.location.href=url;
-					}
-				},
-
-				{
-					text: "Clone Request / Enquiry",
-					icon: "copy",
-					onItemClick: function () {
-						onCloneRequest(e.row.data);
-					}
-				},
-				{
-					text: "Revise the Request / Enquiry",
-					icon: "repeat",
-					onItemClick: function () {
-						onReviseRequest(e.row.data);
-					}
-				},
+					},
 				{
 					text: "Delete Request / Enquiry",
 					icon: "trash",
@@ -481,13 +449,31 @@
 						});
 					}
 				},
-				{
-					text: "Unlock the Request / Enquiry",
-					icon: "unlock",
-					onItemClick: function () {
-						onUnlockRequest(e.row.data);
+					{
+			text: "Unlock the Request / Enquiry",
+			icon: "unlock",
+			onItemClick: function () {
+						const EqiupmentRequestNo = e.row.data.EqiupmentRequestNo;
+
+				$.ajax({
+						url: "/api/AddNewClientRequest1/UnlockPurchaseRequest",
+						type: "POST",
+						contentType: "application/json",
+						data: JSON.stringify({ EqiupmentRequestNo: EqiupmentRequestNo }), // ✅ sending request data
+						success: function (response) {
+						DevExpress.ui.notify(response.message, response.success ? "success" : "warning", 2000);
+						if (response.success) {
+							ddBtnShowRecords_click('range');
+						}
+					},
+					error: function (xhr) {
+						let msg = xhr.responseJSON?.message || "An error occurred while unlocking the Request / Enquiry.";
+						DevExpress.ui.notify(msg, "error", 2000);
+						console.error("Unlock failed:", xhr.responseJSON);
 					}
-				},
+				});
+			}
+		},
 				{
 					text: "Create a RFQ",
 					icon: "plus",
@@ -500,39 +486,6 @@
 					icon: "plus",
 					onItemClick: function () {
 						onCreateQuotation(e.row.data);
-					}
-				},
-				{
-					text: "Create a Purchase Order",
-					icon: "cart",
-					onItemClick: function () {
-						onCreatePO(e.row.data);
-					}
-				},
-				{
-					text: "Create Material Receipt",
-					icon: "box",
-					onItemClick: function () {
-						onCreateMaterialReceipt(e.row.data);
-					}
-				},
-				{
-					text: "Create Material Issue Note",
-					icon: "export",
-					onItemClick: function () {
-						onCreateMaterialIssueNote(e.row.data);
-					}
-				},
-				{
-					text: "View Revision History",
-					icon: "clock",
-					onItemClick: function () {
-						let Mprno = e.row.data.Mprno;
-						let tenantName = window.tenantName || "defaultTenant"; // replace with dynamic tenant logic if needed
-						let url = `/${tenantName}/ERM/MPRRevisionHistory?Mprno=${Mprno}`;
-						let title = `MPRRevisionHistory - ${Mprno}`;
-						openModal(url, title);
-						
 					}
 				}
 			];
@@ -571,39 +524,39 @@
 		});
 	}
 
-	function onCloneRequest(originalData) {
-    if (!originalData) {
-        console.error("No data to clone.");
-        return;
-    }
+// 	function onCloneRequest(originalData) {
+//     if (!originalData) {
+//         console.error("No data to clone.");
+//         return;
+//     }
 
-    // Create a deep copy of the original data
-    const clonedData = JSON.parse(JSON.stringify(originalData));
+//     Create a deep copy of the original data
+//     const clonedData = JSON.parse(JSON.stringify(originalData));
 
-    // Reset fields that should be unique or re-initialized
-    clonedData.Mprno = null; // Assuming Mprno is a unique identifier
-    clonedData.MprrevisionNo = false;
-    clonedData.Mprdate = new Date().toISOString().split('T')[0]; // Set to today's date
-    clonedData.IsSubmitted = false;
-    clonedData.IsVerified = false;
-    clonedData.IsApproved = false;
-    clonedData.IsCancelled = false;
-    clonedData.AddedOn = new Date().toISOString().split('T')[0];
-    clonedData.ModifiedOn = null;
-    clonedData.SubmittedOn = null;
-    clonedData.VerifiedOn = null;
-    clonedData.ApprovedOn = null;
-    clonedData.CancelledOn = null;
-    clonedData.Remarks = "Cloned from MPR";
+//     Reset fields that should be unique or re-initialized
+//     clonedData.Mprno = null; Assuming Mprno is a unique identifier
+//     clonedData.MprrevisionNo = false;
+//     clonedData.Mprdate = new Date().toISOString().split('T')[0]; Set to today's date
+//     clonedData.IsSubmitted = false;
+//     clonedData.IsVerified = false;
+//     clonedData.IsApproved = false;
+//     clonedData.IsCancelled = false;
+//     clonedData.AddedOn = new Date().toISOString().split('T')[0];
+//     clonedData.ModifiedOn = null;
+//     clonedData.SubmittedOn = null;
+//     clonedData.VerifiedOn = null;
+//     clonedData.ApprovedOn = null;
+//     clonedData.CancelledOn = null;
+//     clonedData.Remarks = "Cloned from MPR";
 
-    // Insert the cloned data into the DataGrid
-    const dataGrid = $("#dataGrid").dxDataGrid("instance");
-    dataGrid.getDataSource().store().insert(clonedData).then(() => {
-        dataGrid.refresh();
-    }).catch((error) => {
-        console.error("Error inserting cloned data:", error);
-    });
-}
+//     Insert the cloned data into the DataGrid
+//     const dataGrid = $("#dataGrid").dxDataGrid("instance");
+//     dataGrid.getDataSource().store().insert(clonedData).then(() => {
+//         dataGrid.refresh();
+//     }).catch((error) => {
+//         console.error("Error inserting cloned data:", error);
+//     });
+// }
 
 
 </script>	
