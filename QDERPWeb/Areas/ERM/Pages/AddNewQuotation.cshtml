@@ -569,7 +569,7 @@
                            <div class="col-md-2">
     @(Html.DevExtreme().TextBox()
         .ID("Jobsite")
-        .Label("Job Site")
+		.Label(new JS("formatMessage('Job Site')"))
         .LabelMode(EditorLabelMode.Floating)
         .Width("100%")
     )
@@ -578,7 +578,7 @@
                              <div class="col">
     @(Html.DevExtreme().TextBox()
         .ID("TrnScope")
-        .Label("Transportation Scope")
+		.Label(new JS("formatMessage('Transportation Scope')"))
         .LabelMode(EditorLabelMode.Floating)
         .Width("100%")
     )
@@ -1112,6 +1112,109 @@
             </div>
 
         </text>);
+		  item.Add().Title("Deductions & Currency Details").Icon("card").Text(new JS("formatMessage('Deductions & Currency Details')")).Template(@<text>
+    <div class="p-3">
+    <table style="width:100%; font-size:14px; margin:5px;">
+					<tr>
+                        <td style="width: 30%;">
+						@(Html.DevExtreme().DropDownBox()
+						.Label(new JS("formatMessage('Base Currency')"))
+						.DataSource(d => d.WebApi()
+						.Controller("VATModule")
+						.LoadAction("GetTaxCurrency")
+						.LoadMode(DataSourceLoadMode.Raw)
+						.Key("CurrencyExchangeId"))
+						.LabelMode(EditorLabelMode.Floating)
+						.ID("ddlGoodsGroup4")
+						.ShowClearButton(true)
+						@* .Value("Saudi Arabian Riyals") *@
+						.AcceptCustomValue(true)
+						.OpenOnFieldClick(false)
+						.ValueChangeEvent("input")
+						.HoverStateEnabled(true)
+                        .OnInitialized("onBaseCurrencyInitialized")
+						.ValueExpr("CurrencyExchangeId")
+						.DisplayExpr("CurrencyName")
+						.OnInput("dropDownBoxOnInput")
+						.OnOpened("onOpened")
+						.TabIndex(1)
+						.Disabled(true) // Entire DropDownBox is disabled
+						.DropDownOptions(o => o.Width(430))
+						.ContentTemplate(new TemplateName("TaxCurrencyTemplate"))
+						.Width("100%")
+						.Buttons(buttons =>
+						{
+							buttons.Add()
+							.Name("btnEditTaxCurrency")
+							.Location(TextEditorButtonLocation.After)
+							.Widget(w => w.Button()
+							.Type(ButtonType.Default)
+							.Icon("edit")
+							.Disabled(true) // Button is also disabled
+							.ElementAttr(new { @class = "custom-hover-button add-hover" })
+							.OnClick("CurrencyClick"));
+
+							buttons.Add().Name("dropDown");
+						}))
+					</td>
+					<td style="width: 30%;">
+						@(Html.DevExtreme().DropDownBox()
+					    .Label(new JS("formatMessage('Convertion Currency')"))
+					    .DataSource(d => d.WebApi()
+					    .Controller("VATModule")
+					    .LoadAction("GetInvoiceCurrency")
+					    .LoadMode(DataSourceLoadMode.Raw)
+					    .Key("CurrencyExchangeId"))
+					    .LabelMode(EditorLabelMode.Floating)
+					    .ID("ddlGoodsGroup3")
+					    .ShowClearButton(true)
+					    @* .Value("Saudi Arabian Riyals") *@
+					    .AcceptCustomValue(true)
+					    .OpenOnFieldClick(false)
+					    .ValueChangeEvent("input")
+					    .HoverStateEnabled(true)
+                        .OnInitialized("onBaseCurrencyInitialized")
+					    .ValueExpr("CurrencyExchangeId")
+					    .DisplayExpr("CurrencyName")
+					    .OnInput("dropDownBoxOnInput")
+					    .OnOpened("onOpened")
+					    .TabIndex(1)
+					    .DropDownOptions(o => o.Width(425))
+					    .ContentTemplate(new TemplateName("InvoiceCurrencyTemplate"))
+					    .Width("100%")
+					    .Buttons(buttons =>
+					    {
+						    buttons.Add()
+						    .Name("btnAddInvoiceCurrency")
+						    .Location(TextEditorButtonLocation.After)
+						    .Widget(w => w.Button()
+						    .Type(ButtonType.Default)
+						    .Icon("edit") // Use "plus" or any other if needed
+						    .Hint("Edit Description")
+						    .ElementAttr(new { @class = "custom-hover-button add-hover" })
+						    .OnClick("CurrencyClick")); // 👈 your existing handler
+
+						    buttons.Add().Name("dropDown");
+					    }))
+				    </td>
+					<td>
+						@(Html.DevExtreme().NumberBox()
+						.ID("currencyexchangerate")
+						.Label(new JS("formatMessage('Currency Exchange Rate:')"))
+						.LabelMode(EditorLabelMode.Floating)
+						.Min(1)
+						.Step(1)
+						.ShowSpinButtons(true)
+						.Value(1)
+						.Width("100%")
+						)
+					</td>
+				</tr>
+			</table>
+    </div>
+
+
+</text>);
                 })
             )
 
@@ -1123,7 +1226,7 @@
     @(Html.DevExtreme().DropDownBox()
         .ID("EquipmentQuotedFor")
 		.AcceptCustomValue(true)
-        .Label("Equipment Quoted for:")
+        .Label(new JS("formatMessage('Equipment Quoted for:')"))
         .LabelMode(EditorLabelMode.Floating)
         .Width(800)
 		 .DataSource(d => d.WebApi()
@@ -1168,7 +1271,7 @@
    @(Html.DevExtreme().DropDownBox()
     .ID("QuoteMethod")
 	.AcceptCustomValue(true)
-    .Label("Quote Method:")
+	 .Label(new JS("formatMessage('Quote Method:')"))
     .LabelMode(EditorLabelMode.Floating)
     .Width("100%")
 
@@ -1223,7 +1326,7 @@
 
    @(Html.DevExtreme().NumberBox()
     .ID("Quantity")
-    .Label("Quantity:")
+	.Label(new JS("formatMessage('Quantity:')"))
     .LabelMode(EditorLabelMode.Floating)
     .Width(120)
     .ShowSpinButtons(true)     
@@ -1235,7 +1338,7 @@
 
   @(Html.DevExtreme().NumberBox()
     .ID("UnitRate")
-    .Label("Unit Rate:")
+	.Label(new JS("formatMessage('Unit Rate:')"))
     .LabelMode(EditorLabelMode.Floating)
     .Format("#,##0.00")        
     .Width(120)
@@ -1265,8 +1368,8 @@
    @(Html.DevExtreme().Button()
     .ID("btnFinalAdd")
     .Type(ButtonType.Success)
-    .Text("Add")
-    .OnClick("onFinalAddClick")   
+	.Text(new JS("formatMessage('Add')"))
+     .OnClick("onFinalAddClick")   
 )
 
 
@@ -1285,35 +1388,50 @@
             .Caption("#")
             .Width(100);
 
+
+
         columns.Add().DataField("Description")
-            .Caption("Description")
-            .Width(300)
-            .AllowEditing(true);
+    .Caption(new JS("formatMessage('Description')"))
+    .Width(300)
+    .Lookup(lookup => lookup
+        .DataSource(d => d.WebApi()
+            .Controller("AddNewProperty")
+            .LoadAction("GetAllPropertyTypes")
+            .LoadMode(DataSourceLoadMode.Raw)
+            .Key("PropertyTypeId")   // unique key from API
+        )
+        .ValueExpr("PropertyType")   // value saved in your Description column
+        .DisplayExpr("PropertyType") // text shown in dropdown and cell
+    )
+    .AllowEditing(true);
+
+
+
 
         columns.Add().DataField("DetailedDescription")
-            .Caption("Detailed Description")
-            .Width(300)
+		.Caption(new JS("formatMessage('Detailed Description')"))
+             .Width(300)
             .AllowEditing(true);
 
         columns.Add().DataField("Qty")
-            .Caption("Qty")
-            .Width(120);
+		.Caption(new JS("formatMessage('Qty')"))
+             .Width(120);
 
         columns.Add().DataField("UnitMethod")
-            .Caption("Unit Method (1)")
-            .Width(150);
+		.Caption(new JS("formatMessage('Unit Method (1)')"))
+             .Width(150);
 
         columns.Add().DataField("Rate1")
-            .Caption("Rate (1)")
-            .Width(150);
+		.Caption(new JS("formatMessage('Rate (1)')"))
+             .Width(150);
 
         columns.Add().DataField("MobRate")
-            .Caption("Mob Rate")
-            .Width(150);
+		.Caption(new JS("formatMessage('Mob Rate')"))
+             .Width(150);
 
         columns.Add().DataField("DemobRate")
-            .Caption("Demob Rate")
-            .Width(150);
+		.Caption(new JS("formatMessage('Demob Rate')"))
+             .Width(150);
     })
     .Selection(selection => selection.Mode(SelectionMode.Single))
     .AllowColumnReordering(true)
@@ -1747,7 +1865,44 @@
 
 
 
+@using (Html.DevExtreme().NamedTemplate("InvoiceCurrencyTemplate"))
+{
+	@(Html.DevExtreme().DataGrid()
 
+											.ID("invoicecurrecy-datagrid")
+										.DataSource(d => d.WebApi()
+										.Controller("VATModule")
+												.LoadAction("GetInvoiceCurrency")
+										.LoadMode(DataSourceLoadMode.Raw)
+												///   .Key("AccountHead") //salary paid entry
+												.Key("CurrencyExchangeId")
+
+										)
+										.WordWrapEnabled(true)
+										.ShowBorders(true)
+										.SearchPanel(sp => sp.HighlightSearchText(true))
+										.Selection(sl => sl.Mode(SelectionMode.Single)) 
+										.OnSelectionChanged("dataGridInvoiceCurrencyHeadSelectionChanged")
+										.OnInitialized("onBaseCurrencyInitialized")
+										.ShowBorders(true)
+										.HoverStateEnabled(true)
+										.Paging(p => p.PageSize(15))
+										.FilterRow(f => f.Visible(false))
+										.Scrolling(s => s.Mode(GridScrollingMode.Virtual))
+										.Height(345)
+										.Selection(s => s.Mode(SelectionMode.Single))
+										.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
+										.Columns(columns =>
+										{
+											columns.Add().DataField("CurrencyExchangeId").Caption("#").Alignment(HorizontalAlignment.Center).Width(50);
+											columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+											columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency')")).Alignment(HorizontalAlignment.Center);
+											columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('ExchangeRate')")).Alignment(HorizontalAlignment.Center);
+
+
+										})
+									)
+}
 
 
 
@@ -2091,6 +2246,405 @@ function quoteMethodSelectionChanged(e) {
 
 
 
+// $("#btnVerify").off("click").on("click", function (e) {
+// 	debugger;
+// 		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+// 		IsDirect = false;
+// 		// Ensure dataGrid exists
+// 		if (!dataGrid) {
+// 			console.error("DataGrid instance not found.");
+// 			return;
+// 		}
+
+// 		const rowCount = dataGrid.getVisibleRows().length;
+
+
+// 		// Check if DataGrid contains rows
+// 		if (rowCount === 0) {
+// 			DevExpress.ui.dialog.custom({
+// 				title: "Quotation verification has failed.",
+// 				message: "Quotation has not been Verified. Please enter transactions to proceed with verification.",
+// 				buttons: [{ text: "Ok", onClick: () => false }],
+// 				showTitle: true
+// 			}).show();
+// 		} else {
+// 			DevExpress.ui.dialog.custom({
+// 				title: "Confirm Verification",
+// 				messageHtml: "Are you sure you want to verify this Quotation?",
+// 				buttons: [
+// 					{ 
+// 						text: "Yes", 
+// 						onClick: () => { 
+// 							proceedWithVerification();
+// 							return true;
+// 						}
+// 					},
+// 					{ text: "No", onClick: () => false }
+// 				],
+// 				showTitle: true
+// 			}).show();
+
+// 		}
+// 	});
+
+
+
+
+
+
+
+
+
+
+
+
+function onVerifyClickERM(e) {
+    const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+    IsDirect = false;
+
+    if (!dataGrid) {
+        console.error("DataGrid instance not found.");
+        return;
+    }
+
+    const rowCount = dataGrid.getVisibleRows().length;
+
+    if (rowCount === 0) {
+        DevExpress.ui.dialog.custom({
+            title: "Quotation verification has failed.",
+            messageHtml: "Quotation has not been Verified. Please enter transactions to proceed with verification.",
+            buttons: [{ text: "Ok", onClick: () => false }],
+            showTitle: true
+        }).show();
+    } else {
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Verification",
+            messageHtml: "Are you sure you want to verify this Quotation?",
+            buttons: [
+                {
+                    text: "Yes",
+                    onClick: () => {
+                        proceedWithVerification();
+                        return true;
+                    }
+                },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show();
+    }
+}
+
+
+
+
+
+
+function proceedWithVerification() {
+	debugger;
+  const verifyButton = $("#btnVerify").dxButton("instance");
+  verifyButton.option("disabled", true);
+
+  const quoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+  if (!quoteNo) {
+    DevExpress.ui.notify("Quotation number is required!", "error", 2000);
+    verifyButton.option("disabled", false);
+    return;
+  }
+
+  $.ajax({
+    type: "POST",
+    url: `/api/AddNewQuotation1/VerifyQuotation?quoteNo=${encodeURIComponent(quoteNo)}`,
+    contentType: "application/json",
+    success: function (response) {
+      if (response?.message) {
+        const verifiedBy = response.VerifiedBy;
+        const approvedByBox = $("#ddVerifiedby").dxDropDownBox("instance");
+
+        if (approvedByBox) {
+          approvedByBox.option("value", verifiedBy);
+          approvedByBox.getDataSource().reload(); // refresh data
+          approvedByBox.repaint();              // update display text
+        }
+		 //syncWorkflowFromFields();
+       DevExpress.ui.notify("Quotation has been verified and processed for Approval.", "success", 3000);
+
+	    verifyButton.option({
+                    text: "Verified",
+                    disabled: true
+                });
+
+      } else {
+        DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
+        verifyButton.option("disabled", false);
+      }
+    },
+    error: function (xhr) {
+      verifyButton.option("disabled", false);
+      const msg = xhr.responseJSON?.message || "An error occurred.";
+      DevExpress.ui.notify(msg, "error", 2000);
+    }
+  });
+}
+
+// $("#btnApprove").on("click", function (e) {
+// 		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+
+// 		// Ensure dataGrid exists
+// 		if (!dataGrid) {
+// 			console.error("DataGrid instance not found.");
+// 			return;
+// 		}
+
+// 		const rowCount = dataGrid.getVisibleRows().length;
+
+// 		// Check if DataGrid contains rows
+// 		if (rowCount === 0) {
+// 			DevExpress.ui.dialog.custom({
+// 				title: "Quotation approval has failed.",
+// 				message: "Quotation has not been Approved. Please enter transactions to proceed with approval.",
+// 				buttons: [{ text: "Ok", onClick: () => false }],
+// 				showTitle: true
+// 			}).show();
+// 		} else {
+// 			DevExpress.ui.dialog.custom({
+// 				title: "Confirm Approval",
+// 				message: "Are you sure want to approve this Quotation?",
+// 				buttons: [
+// 					{ text: "Yes", onClick: () => true },
+// 					{ text: "No", onClick: () => false }
+// 				],
+// 				showTitle: true
+// 			}).show().done(function (dialogResult) {
+// 				if (dialogResult) {
+// 					proceedWithApproval(); // Proceed if user clicks Yes
+// 				}
+// 			});
+// 		}
+// 	});
+
+
+
+
+function onApproveClickERM(e) {
+	debugger;
+    const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+
+    if (!dataGrid) {
+        console.error("DataGrid instance not found.");
+        return;
+    }
+
+    const rowCount = dataGrid.getVisibleRows().length;
+
+    if (rowCount === 0) {
+        DevExpress.ui.dialog.custom({
+            title: "Quotation approval has failed.",
+            messageHtml: "Quotation has not been Approved. Please enter transactions to proceed with approval.",
+            buttons: [{ text: "Ok", onClick: () => false }],
+            showTitle: true
+        }).show();
+    } else {
+        DevExpress.ui.dialog.custom({
+            title: "Confirm Approval",
+            messageHtml: "Are you sure you want to approve this Quotation?",
+            buttons: [
+                {
+                    text: "Yes",
+                    onClick: () => {
+                        proceedWithApproval();
+                        return true;
+                    }
+                },
+                { text: "No", onClick: () => false }
+            ],
+            showTitle: true
+        }).show();
+    }
+}
+
+
+	function proceedWithApproval() {
+    const approveBtn = $("#btnApprove").dxButton("instance");
+    approveBtn.option("disabled", true);
+
+    const quoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+    if (!quoteNo) {
+        DevExpress.ui.notify("Quote No is required!", "error", 2000);
+        approveBtn.option("disabled", false);
+        return;
+    }
+
+    $.ajax({
+        type: "POST",
+        url: `/api/AddNewQuotation1/ApproveQuotation?QuoteNo=${encodeURIComponent(quoteNo)}`,
+        contentType: "application/json",
+        success: function (response) {
+            if (response && response.Message) {
+                if (response.VoucherApprovedBy) {
+                    const approvedByBox = $("#ddApprovedby").dxDropDownBox("instance");
+                    if (approvedByBox) {
+                        approvedByBox.option("value", response.VoucherApprovedBy);
+                        approvedByBox.getDataSource().reload();
+                        approvedByBox.repaint();
+                    }
+                }
+
+               // syncWorkflowFromFields();
+                DevExpress.ui.notify("Quotation has been Approved.", "success", 3000);
+
+                hideAllButtonsExcept([
+                    "btnPrint",
+                    "ddButtonLayout",
+                    "btnBack",
+                    "btnAttach"
+                ]);
+
+                // ✅ Disable DataGrid after approval
+                const gridInstance = $("#B2BdataGrid").dxDataGrid("instance");
+                if (gridInstance) {
+                    gridInstance.option({
+                        editing: {
+                            allowUpdating: false,
+                            allowAdding: false,
+                            allowDeleting: false
+                        },
+                        selection: {
+                            mode: "none"
+                        }
+                    });
+                }
+				  disableAllDropDownsAndSelects();
+            } else {
+                DevExpress.ui.notify("Update failed: Unable to apply changes!", "error", 2000);
+                approveBtn.option("disabled", false);
+            }
+        },
+        error: function (xhr) {
+            approveBtn.option("disabled", false);
+            const msg = xhr.responseJSON?.Message || "An error occurred.";
+            DevExpress.ui.notify(msg, "error", 2000);
+        }
+    });
+}
+
+
+function hideAllButtonsExcept(exceptions) {
+			const allButtonIds = [
+				"btnAddNew",
+				"btnSave",
+				"btnSaveAndClose",
+				"btnDelete",
+				"btnSubmit",
+				"btnVerify",
+				"btnApprove",
+				"btnCancel",
+				"btnUpload",
+				"btnMoveUp",
+				"btnMoveDown",
+				"btnTerms",
+				"rowHeightProperties",
+				"btnPrint",         // should stay enabled
+				"ddButtonLayout",    // should stay enabled
+				"btnBack",           // should stay enabled
+				"btnAttach"          // should stay enabled
+			];
+
+			allButtonIds.forEach(id => {
+				const keepEnabled = exceptions.includes(id);
+				const $el = $("#" + id);
+
+				if ($el.length) {
+					let instance = DevExpress.ui.dxButton.getInstance($el[0]);
+					if (!instance) {
+						instance = DevExpress.ui.dxDropDownButton.getInstance($el[0]);
+					}
+
+					if (instance) {
+						instance.option("disabled", !keepEnabled);
+					} else {
+						console.warn("Instance not found for:", id);
+					}
+				}
+			});
+    }
+
+
+
+
+
+
+ function syncWorkflowFromFields() {
+            const status = getWorkflowStatusFromFields();
+            updateWorkflowVisual(status);
+ }
+
+ function getWorkflowStatusFromFields() {
+    const preparedVal = $("#ddPreparedby").dxDropDownBox("instance").option("value");
+    const verifiedVal = $("#ddVerifiedby").dxDropDownBox("instance").option("value");
+    const approvedVal = $("#ddApprovedby").dxDropDownBox("instance").option("value");
+
+    const submitted = preparedVal !== null && preparedVal !== "";
+    const verified = verifiedVal !== null && verifiedVal !== "";
+    const approved = approvedVal !== null && approvedVal !== "";
+
+    if (approved) return 4;
+    if (verified) return 3;
+    if (submitted) return 2;
+    if (isVoucherSaved) return 1;
+
+    return 0;
+}
+
+
+    function updateWorkflowVisual(status) {
+            const steps = [
+        { id: "step-update", icon: "fas fa-user" },
+        { id: "step-submit", icon: "fas fa-paper-plane" },
+        { id: "step-verify", icon: "fas fa-briefcase" },
+        { id: "step-approve", icon: "fas fa-file-alt" }
+    ];
+
+        steps.forEach((step, index) => {
+            const el = document.getElementById(step.id);
+            const statusMsg = el.querySelector(".step-status-msg");
+            const icon = el.querySelector("i");
+
+            el.classList.remove("completed", "current", "upcoming", "done");
+            icon.className = step.icon;
+
+            if (index < status) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            } else if (index === status && status < 3) {
+                el.classList.add("current");
+                statusMsg.textContent = "In Progress";
+                icon.className = "fas fa-spinner fa-spin";
+            } else {
+                el.classList.add("upcoming");
+                statusMsg.textContent = "Pending";
+            }
+
+            // Final Approved state
+                        if (status === 4 && index === 4) {
+                el.classList.add("completed");
+                statusMsg.textContent = "Done";
+                icon.className = "fas fa-check-circle";
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -2259,6 +2813,7 @@ function quoteMethodSelectionChanged(e) {
 
 	
 				if (response) {
+					debugger;
 					console.log("res", response);
 					$("#btnSave").dxButton("instance").option("text", "Update");
 					// Populate DevExtreme controls with the response data
@@ -2301,20 +2856,22 @@ function quoteMethodSelectionChanged(e) {
 					// --- Tab 4: Branch / Division ---
 					$("#ddGetCompany").dxDropDownBox("instance").option("value", response.CompanyBranch);
 					$("#ReferenceNo").dxTextBox("instance").option("value", response.ReferenceNo);
-					$("#ddGetInventoryGroup").dxDropDownBox("instance").option("value", response.VatapplicableRate);
+					$("#ddGetInventoryGroup").dxSelectBox("instance").option("value", response.VatapplicableRate);
 
 					// --- Tab 5: Signatories ---
 					$("#ddPreparedby").dxDropDownBox("instance").option("value", response.PreparedBy);
 					$("#ddVerifiedby").dxDropDownBox("instance").option("value", response.VerifiedSignatory);
 					$("#ddApprovedby").dxDropDownBox("instance").option("value", response.ApprovedSignatory);
 					$("#ddGetQuoteStatus").dxDropDownBox("instance").option("value", response.QuoteType);
-
+					$("#currencyexchangerate").dxNumberBox("instance").option("value", response.CurrencyRate);
+					$("#ddlGoodsGroup3").dxDropDownBox("instance").option("value", response.CurrencyId);
+					$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value", response.BaseCurrencyId);
 
 
 					// Fetch and initialize the data grid with invoice details
 					$.ajax({
 						type: "GET",
-						url: `/api/AddNewQuotation1/GetQuotationChildren?QuoteNo=${encodeURIComponent(QuoteNo)}`,
+						url: `/api/AddNewQuotation1/GetQuoteGridData?QuoteNo=${encodeURIComponent(QuoteNo)}`,
 						dataType: 'json',
 						success: function (gridResponse) {
 							console.log("Grid", gridResponse);
@@ -2323,6 +2880,7 @@ function quoteMethodSelectionChanged(e) {
 								SNo: index + 1,
 								...item
 							}));
+							$("#B2BdataGrid").dxDataGrid("instance").option("dataSource", rowData);
 
 							// Initialize the data grid with the fetched row data
 							//initializeDataGrid(rowData);
@@ -2369,7 +2927,7 @@ function onFinalAddClick(e) {
     const description = eqQuotedFor.option("text");
 
     const qty        = $("#Quantity").dxNumberBox("instance").option("value");
-    const unitMethod = $("#QuoteMethod").dxDropDownBox("instance").option("value");
+    const unitMethod = $("#QuoteMethod").dxDropDownBox("instance").option("text");
     const rate1      = $("#UnitRate").dxNumberBox("instance").option("value");
 
     // get grid instance
@@ -4019,6 +4577,60 @@ function onFinalAddClick(e) {
 
 	}
 
+	function onBaseCurrencyInitialized(e) {
+            const ddb = e.component;
+
+            setTimeout(() => {
+                const ds = ddb.getDataSource();
+
+                if (ds) {
+                    ds.load().done(function (data) {
+                        if (data && data.length > 0) {
+                            const firstItemId = data[0].CurrencyExchangeId;
+                            ddb.option("value", firstItemId);
+                        }
+                    });
+                } else {
+                    console.warn("DataSource is not available yet.");
+                }
+            }, 100);
+    }
+
+		 function CurrencyClick() {
+        let url = `/${tenantName}/VAT/DatabaseMasterModule`; // Example edit page
+        let title = " ";
+        openModal(url, title);
+    }
+	  function dataGridInvoiceCurrencyHeadSelectionChanged(e) {
+        const selectedRow = e.selectedRowsData[0]; // full object
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#ddlGoodsGroup3").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey); // CurrencyId
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+
+            // Set CurrencyRate from the selected grid row
+            const exchangeRate = selectedRow?.ExchangeRate ?? 1.00;
+            $("#currencyexchangerate").dxNumberBox("instance").option("value", exchangeRate);
+        }
+    }
+
+    function dataGridTaxCurrencyHeadSelectionChanged(e) {
+        
+        const selectedKey = e.selectedRowKeys[0];
+        const ddbInstance = $("#ddlGoodsGroup4").dxDropDownBox("instance");
+
+        if (selectedKey) {
+            ddbInstance.option("value", selectedKey); // BaseCurrencyId
+            if (ddbInstance.option("opened")) {
+                ddbInstance.close();
+            }
+        }
+    }
+
 	function dataGridCompanyBranchHeadInitialized(e) {
 
 		dataGrid = e.component;
@@ -5382,10 +5994,14 @@ function onFinalAddClick(e) {
 				QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
 				ReferenceNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-				VATApplicableRate: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+                VATApplicableRate: $("#ddGetInventoryGroup").dxSelectBox("instance").option("value") || null,
 				PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null
+				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+				CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance").option("value") || null,
+				CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || null,
+				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null
+
 
 				
 			};
@@ -5398,10 +6014,25 @@ function onFinalAddClick(e) {
                       return;
                  }
 			
+			// map grid rows to exactly the 8 fields API expects
+			let mappedChildren = children.map(row => ({
+				QuoteChildId: row.QuoteChildId || 0, 
+				LineOrderNo: row.LineOrderNo,
+				EquipmentQuotedFor: row.Description,     // <-- maps to EquipmentQuotedFor
+				PropertyAddlDescription: row.DetailedDescription,
+				QuotedQuantity: row.Qty,
+				QuoteMethod: row.UnitMethod,
+				UnitRate1: row.Rate1,
+				MobRate: row.MobRate,
+				DemobRate: row.DemobRate
+			}));
+
+
+
 
 			const model = {
 				...master,
-				QuotationDetailses: children
+				QuotationDetailses: mappedChildren
 			};
 
 			$.ajax({
@@ -5506,10 +6137,14 @@ function onFinalAddClick(e) {
 				QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
 				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
 				ReferenceNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-				VATApplicableRate: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+                VATApplicableRate: $("#ddGetInventoryGroup").dxSelectBox("instance").option("value") || null,
 				PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null
+				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+				CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance").option("value") || null,
+				CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value") || null,
+				BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value")|| null
+
 			};
 
 			 let grid = $("#B2BdataGrid").dxDataGrid("instance");
@@ -5827,7 +6462,7 @@ function onFinalAddClick(e) {
 					contentType: "application/json",
 					success: function (response) {
 						//disableEditing();
-						DevExpress.ui.dialog.alert("Quotation has been submitted for Approval.", "Submit Successful");
+						DevExpress.ui.dialog.alert("Quotation has been submitted for Verify.", "Submit Successful");
 						// Update UI elements as needed
 					},
 					error: function (xhr, status, error) {
@@ -5848,155 +6483,155 @@ function onFinalAddClick(e) {
 
 
 
-	$("#btnVerify").on("click", function (e) {
-		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-		IsDirect = false;
-		// Ensure dataGrid exists
-		if (!dataGrid) {
-			console.error("DataGrid instance not found.");
-			return;
-		}
+	// $("#btnVerify").on("click", function (e) {
+	// 	const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
+	// 	IsDirect = false;
+	// 	// Ensure dataGrid exists
+	// 	if (!dataGrid) {
+	// 		console.error("DataGrid instance not found.");
+	// 		return;
+	// 	}
 
-		const rowCount = dataGrid.getVisibleRows().length;
-
-
-		// Check if DataGrid contains rows
-		if (rowCount === 0) {
-			DevExpress.ui.dialog.custom({
-				title: "Quotation verification has failed.",
-				message: "Quotation has not been Verified. Please enter transactions to proceed with verification.",
-				buttons: [{ text: "Ok", onClick: () => false }],
-				showTitle: true
-			}).show();
-		} else {
-			DevExpress.ui.dialog.custom({
-				title: "Confirm Verification",
-				// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
-				message: "Are you sure want to verify this Quotation?",
-				buttons: [
-					{ text: "Yes", onClick: () => true },
-					{ text: "No", onClick: () => false }
-				],
-				showTitle: true
-			}).show().done(function (dialogResult) {
-				if (dialogResult) {
-					proceedWithVerification(); // Proceed if user clicks Yes
-				}
-			});
-		}
-	});
-	function proceedWithVerification() {
-		const VerifyButton = $("#btnVerify").dxButton("instance");
-		VerifyButton.option("disabled", true);
-
-		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
-
-		if (!QuoteNo) {
-			DevExpress.ui.notify("Quote No is required!", "error", 2000);
-			return;
-		}
-
-		$.ajax({
-			type: "POST",
-			url: `/api/AddNewQuotation1/VerifyQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-			contentType: "application/json",
-			success: function (response) {
-				if (response && response.message) {
-					DevExpress.ui.dialog.alert(
-						response.message,
-						"Verified"
-					);
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				VerifyButton.option("disabled", false);
-				let errorMessage = xhr.responseJSON && xhr.responseJSON.message
-					? xhr.responseJSON.message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
-			}
-		});
-	}
+	// 	const rowCount = dataGrid.getVisibleRows().length;
 
 
+	// 	// Check if DataGrid contains rows
+	// 	if (rowCount === 0) {
+	// 		DevExpress.ui.dialog.custom({
+	// 			title: "Quotation verification has failed.",
+	// 			message: "Quotation has not been Verified. Please enter transactions to proceed with verification.",
+	// 			buttons: [{ text: "Ok", onClick: () => false }],
+	// 			showTitle: true
+	// 		}).show();
+	// 	} else {
+	// 		DevExpress.ui.dialog.custom({
+	// 			title: "Confirm Verification",
+	// 			// message: "Voucher has not been Verified. Click Yes if you want to Verify this Voucher.",
+	// 			message: "Are you sure want to verify this Quotation?",
+	// 			buttons: [
+	// 				{ text: "Yes", onClick: () => true },
+	// 				{ text: "No", onClick: () => false }
+	// 			],
+	// 			showTitle: true
+	// 		}).show().done(function (dialogResult) {
+	// 			if (dialogResult) {
+	// 				proceedWithVerification(); // Proceed if user clicks Yes
+	// 			}
+	// 		});
+	// 	}
+	// });
+	// function proceedWithVerification() {
+	// 	const VerifyButton = $("#btnVerify").dxButton("instance");
+	// 	VerifyButton.option("disabled", true);
+
+	// 	var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+
+	// 	if (!QuoteNo) {
+	// 		DevExpress.ui.notify("Quote No is required!", "error", 2000);
+	// 		return;
+	// 	}
+
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: `/api/AddNewQuotation1/VerifyQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
+	// 		contentType: "application/json",
+	// 		success: function (response) {
+	// 			if (response && response.message) {
+	// 				DevExpress.ui.dialog.alert(
+	// 					response.message,
+	// 					"Verified"
+	// 				);
+	// 			} else {
+	// 				DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+	// 			}
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			VerifyButton.option("disabled", false);
+	// 			let errorMessage = xhr.responseJSON && xhr.responseJSON.message
+	// 				? xhr.responseJSON.message
+	// 				: "An error occurred.";
+	// 			DevExpress.ui.notify(errorMessage, "error", 2000);
+	// 		}
+	// 	});
+	// }
 
 
 
 
-	$("#btnApprove").on("click", function (e) {
-		const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
-
-		// Ensure dataGrid exists
-		if (!dataGrid) {
-			console.error("DataGrid instance not found.");
-			return;
-		}
-
-		const rowCount = dataGrid.getVisibleRows().length;
-
-		// Check if DataGrid contains rows
-		if (rowCount === 0) {
-			DevExpress.ui.dialog.custom({
-				title: "Quotation approval has failed.",
-				message: "Quotation has not been Approved. Please enter transactions to proceed with approval.",
-				buttons: [{ text: "Ok", onClick: () => false }],
-				showTitle: true
-			}).show();
-		} else {
-			DevExpress.ui.dialog.custom({
-				title: "Confirm Approval",
-				message: "Are you sure want to approve this Quotation?",
-				buttons: [
-					{ text: "Yes", onClick: () => true },
-					{ text: "No", onClick: () => false }
-				],
-				showTitle: true
-			}).show().done(function (dialogResult) {
-				if (dialogResult) {
-					proceedWithApproval(); // Proceed if user clicks Yes
-				}
-			});
-		}
-	});
 
 
-	function proceedWithApproval() {
-			const VerifyButton = $("#btnApprove").dxButton("instance");
-		VerifyButton.option("disabled", true);
+	// $("#btnApprove").on("click", function (e) {
+	// 	const dataGrid = $("#B2BdataGrid").dxDataGrid("instance");
 
-		var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+	// 	// Ensure dataGrid exists
+	// 	if (!dataGrid) {
+	// 		console.error("DataGrid instance not found.");
+	// 		return;
+	// 	}
 
-		if (!QuoteNo) {
-			DevExpress.ui.notify("Quote No is required!", "error", 2000);
-			return;
-		}
+	// 	const rowCount = dataGrid.getVisibleRows().length;
 
-		$.ajax({
-			type: "POST",
-			url: `/api/AddNewQuotation1/ApproveQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
-			contentType: "application/json",
-			success: function (response) {
-				if (response && response.Message) {
-					DevExpress.ui.dialog.alert(
-						response.Message,
-						"Approved"
-					).done(() => {
-						//disableEditing(); // Function to disable editing controls
-					});
-				} else {
-					DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
-				}
-			},
-			error: function (xhr, status, error) {
-				let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
-					? xhr.responseJSON.Message
-					: "An error occurred.";
-				DevExpress.ui.notify(errorMessage, "error", 2000);
-			}
-		});
-	}
+	// 	// Check if DataGrid contains rows
+	// 	if (rowCount === 0) {
+	// 		DevExpress.ui.dialog.custom({
+	// 			title: "Quotation approval has failed.",
+	// 			message: "Quotation has not been Approved. Please enter transactions to proceed with approval.",
+	// 			buttons: [{ text: "Ok", onClick: () => false }],
+	// 			showTitle: true
+	// 		}).show();
+	// 	} else {
+	// 		DevExpress.ui.dialog.custom({
+	// 			title: "Confirm Approval",
+	// 			message: "Are you sure want to approve this Quotation?",
+	// 			buttons: [
+	// 				{ text: "Yes", onClick: () => true },
+	// 				{ text: "No", onClick: () => false }
+	// 			],
+	// 			showTitle: true
+	// 		}).show().done(function (dialogResult) {
+	// 			if (dialogResult) {
+	// 				proceedWithApproval(); // Proceed if user clicks Yes
+	// 			}
+	// 		});
+	// 	}
+	// });
+
+
+	// function proceedWithApproval() {
+	// 		const VerifyButton = $("#btnApprove").dxButton("instance");
+	// 	VerifyButton.option("disabled", true);
+
+	// 	var QuoteNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
+
+	// 	if (!QuoteNo) {
+	// 		DevExpress.ui.notify("Quote No is required!", "error", 2000);
+	// 		return;
+	// 	}
+
+	// 	$.ajax({
+	// 		type: "POST",
+	// 		url: `/api/AddNewQuotation1/ApproveQuotation?QuoteNo=${encodeURIComponent(QuoteNo)}`,
+	// 		contentType: "application/json",
+	// 		success: function (response) {
+	// 			if (response && response.Message) {
+	// 				DevExpress.ui.dialog.alert(
+	// 					response.Message,
+	// 					"Approved"
+	// 				).done(() => {
+	// 					//disableEditing(); // Function to disable editing controls
+	// 				});
+	// 			} else {
+	// 				DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
+	// 			}
+	// 		},
+	// 		error: function (xhr, status, error) {
+	// 			let errorMessage = (xhr.responseJSON && xhr.responseJSON.Message)
+	// 				? xhr.responseJSON.Message
+	// 				: "An error occurred.";
+	// 			DevExpress.ui.notify(errorMessage, "error", 2000);
+	// 		}
+	// 	});
+	// }
 
 
 

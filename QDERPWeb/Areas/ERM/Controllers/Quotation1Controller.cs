@@ -27,7 +27,8 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
         private readonly IUserActionLogger _userActionLogger;
 
         public Quotation1Controller(ILogger<Quotation1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
-        {_userActionLogger = userActionLogger;
+        {
+            _userActionLogger = userActionLogger;
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
         }
@@ -217,6 +218,12 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                                  module: "ERM > Save Quoted Cost item",
+                                 actionDetail: $"Saved Quoted Cost item {model}",
+                                  documentNo: $"{model}"
+                        );
+
 
                         return Ok(new { success = true, message = "Updated successfully", id = existingRecord.QuoteCostSlNo });
                     }
@@ -235,6 +242,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                         dbContext.Tbl60104quotationItemCosts.Add(model);
                         await dbContext.SaveChangesAsync();
+                        await _userActionLogger.LogAsync(
+                                  module: "ERM > Save Quoted Cost item",
+                                 actionDetail: $"Saved Quoted Cost item {model}",
+                                  documentNo: $"{model}"
+                        );
 
                         return Ok(new { success = true, message = "Saved successfully", id = model.QuoteCostSlNo });
                     }
@@ -265,6 +277,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl60104quotationItemCosts.Remove(record);
                     dbContext.SaveChanges();
+                     _userActionLogger.LogAsync(
+                                  module: "ERM > Delete",
+                                 actionDetail: $"Deleted {key}",
+                                  documentNo: $"{key}"
+                     );
                     return Ok();
                 }
 
@@ -437,6 +454,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
                     }
 
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                              module: "ERM > Save Status",
+                             actionDetail: $"Saved Status {model}",
+                              documentNo: $"{model}"
+                    );
 
                     return Ok(new
                     {
@@ -596,6 +618,11 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
                     dbContext.Tbl60105quotationCostMasters.Remove(existing);
                     await dbContext.SaveChangesAsync();
+                    await _userActionLogger.LogAsync(
+                              module: "ERM > Delete CostItem",
+                             actionDetail: $"Deleted CostItem {id}",
+                              documentNo: $"{id}"
+                    );
 
                     return Ok(new { success = true, message = "Deleted successfully" });
                 }

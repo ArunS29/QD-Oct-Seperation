@@ -9,6 +9,7 @@ using QD.ERP.Web.Areas.Finance.Models;
 using QD.ERP.Web.Areas.VAT.Controllers;
 using QD.ERP.Web.DAL.Entities;
 using QD.ERP.Web.Service;
+using QD.ERP.Web.Services.Logging;
 using SkiaSharp;
 using System.Data;
 using System.Dynamic;
@@ -23,11 +24,16 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
     {
         private readonly TenantDbContextHelper _tenantDbContextHelper;
         private readonly ILogger<AddNewClientRequest1Controller> _logger;
+        private readonly IUserActionLogger _userActionLogger;
 
-        public AddNewClientRequest1Controller(ILogger<AddNewClientRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper)
+
+        public AddNewClientRequest1Controller(ILogger<AddNewClientRequest1Controller> logger, TenantDbContextHelper tenantDbContextHelper, IUserActionLogger userActionLogger)
         {
             _tenantDbContextHelper = tenantDbContextHelper;
             _logger = logger;
+            _userActionLogger = userActionLogger;
+
+
         }
 		[HttpGet]
 		public ActionResult<string> GetNewRequestNoApi()
@@ -841,8 +847,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				dbContext.Tbl60601purchaseRequestMasters.Remove(masterRecord);
 
 				await dbContext.SaveChangesAsync();
+                await _userActionLogger.LogAsync(
+					module: "ERM > Delete Purchase Request",
+				   actionDetail: $"Deleted Purchase Request {Mprno}",
+					documentNo: $"{Mprno}"
+				);
 
-				return Ok(new { success = true, message = "Purchase Request and its details deleted successfully." });
+                return Ok(new { success = true, message = "Purchase Request and its details deleted successfully." });
 			}
 			catch (Exception ex)
 			{
@@ -924,8 +935,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 			// Save changes to the database
 			await dbContext.SaveChangesAsync();
+            await _userActionLogger.LogAsync(
+				module: "ERM > Submit MPR",
+			   actionDetail: $"Submited MPR {mprNo}",
+				documentNo: $"{mprNo}"
+			);
 
-			return Ok(new { success = true, message = "MPR submitted successfully." });
+            return Ok(new { success = true, message = "MPR submitted successfully." });
 		}
 
         [HttpPost]
@@ -972,8 +988,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 				}
 
 				await dbContext.SaveChangesAsync();
+				   await _userActionLogger.LogAsync(
+					   module: "ERM > Verify MPR",
+					  actionDetail: $"Verify MPR {mprNo}",
+					   documentNo: $"{mprNo}"
+				   );
 
-				return Ok(new
+                return Ok(new
 				{
 					message = "Material Purchase Request has been Verified and processed for Approval."
 				});
@@ -1219,7 +1240,13 @@ namespace QD.ERP.Web.Areas.ERM.Controllers
 
 					dbContext.SaveChanges();
 
-					return Ok(new
+                    await _userActionLogger.LogAsync(
+                      module: "ERM > Cancel MPR",
+                     actionDetail: $"Canceled MPR: {mprNo}",
+                      documentNo: $"{mprNo}"
+                    );
+
+                    return Ok(new
 					{
 						Message = "Material Purchase Request has been Cancelled.",
 						VoucherCancelledBy = userName
