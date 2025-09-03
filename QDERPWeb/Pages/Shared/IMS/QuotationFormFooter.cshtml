@@ -547,7 +547,7 @@
          };
 
 
-        function handleQuatation(e) {
+       function handleQuatation(e) {
         const itemText = e.itemData?.text;
         const tenantName = window.tenantName || "";
         const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
@@ -567,7 +567,7 @@
 
             let url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}`;
 
-            // For all quotation reports, add the pageBreakBefore parameter
+            // For all quotation reports, add conditional parameters
             const quotationReports = [
                 "Preview Quotation",
                 "Preview Quotation(W/O Discount Column)",
@@ -582,8 +582,25 @@
             ];
 
             if (quotationReports.includes(itemText)) {
-                const pageBreakBefore = $("#hdnPageBreakBefore").val();
-                url += `&pageBreakBefore=${pageBreakBefore}`;
+                // Collect parameters only if true
+                const params = {
+                    pageBreakBefore: $("#hdnPageBreakBefore").val(),
+                    pageBreakAfter: $("#hdnPageAfterBefore").val(),
+                    clientAcknowledgement: $("#hdnclientAcknowledgement").val(),
+                    printItemPartArabicDesc: $("#hdnprintItemPartArabicDesc").val(),
+                    printItemPartNoDesc: $("#hdnprintItemPartNoDesc").val(),
+                    printItemCodeDesc: $("#hdnprintItemCodeDesc").val(),
+                    showSeal: $("#hdnshowSeal").val(),
+                    showSignature: $("#hdnshowSignature").val(),
+                    printLetterhead: $("#hdnprintLetterhead").val()
+                };
+
+                // Append only those that are "true"
+                Object.keys(params).forEach(key => {
+                    if (params[key] === "true") {
+                        url += `&${key}=true`;
+                    }
+                });
             }
 
             window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
@@ -593,6 +610,7 @@
             alert("An error occurred while trying to open the report.");
         }
     }
+
 
 
 </script>

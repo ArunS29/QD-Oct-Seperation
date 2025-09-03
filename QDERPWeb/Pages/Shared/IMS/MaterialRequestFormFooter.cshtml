@@ -404,37 +404,63 @@
             }
            window.location.href = url;
         }
-                 async function handleCreditReportPrinting(e) {
-          
-       const itemText = e.itemData?.text;
-       let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
-       if (!requestNo) {
-           alert("RequestNo  is required.");
-           return;
-       }
-       try {
-           const isApproved = await checkInvoiceApprovalStatus1(requestNo);
-           const watermarkText = isApproved ? "" : "Draft Copy";
-           let reportName = "";
-           switch (itemText) {
-               case "Preview Request":
-                       reportName = "MaterialRequestInventory";
-                   break;
-               case "Preview Request(With Expected Unit Price)":
-                   reportName = "MaterialPurcchaseRequestion";
-                   break;
-               default:
-                   alert("Invalid report format selected.");
-                   return;
-           }
-           const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&RequestNo=${encodeURIComponent(requestNo)}&skipPreview=true&watermark=${encodeURIComponent(watermarkText)}&isApproved=${isApproved}`;
-           window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-       } catch (error) {
-           console.error("Error checking approval status:", error);
-           alert("Failed to check invoice approval status.");
-       }
-   }
-   async function checkInvoiceApprovalStatus1(requestNo) {
+      async function handleCreditReportPrinting(e) {
+        const itemText = e.itemData?.text;
+        let requestNo = $("#txtRequestNo").dxTextBox("instance").option("value");
+        if (!requestNo) {
+            alert("RequestNo is required.");
+            return;
+        }
+        try {
+            const isApproved = await checkInvoiceApprovalStatus1(requestNo);
+            const watermarkText = isApproved ? "" : "Draft Copy";
+            let reportName = "";
+
+            switch (itemText) {
+                case "Preview Request":
+                    reportName = "MaterialRequestInventory";
+                    break;
+                case "Preview Request(With Expected Unit Price)":
+                    reportName = "MaterialPurcchaseRequestion";
+                    break;
+                default:
+                    alert("Invalid report format selected.");
+                    return;
+            }
+
+            // ✅ collect checkbox hidden field values
+            const params = {
+                showSign1: $("#hdntxtShowSign1").val(),
+                showSeal: $("#hdnshowSeal").val(),
+                showSignature: $("#hdnshowSignature").val(),
+                printLetterhead: $("#hdnprintLetterhead").val()
+            };
+
+            // ✅ base url
+            let url = `/${tenantName}/VoucherViewer`
+                + `?reportName=${encodeURIComponent(reportName)}`
+                + `&RequestNo=${encodeURIComponent(requestNo)}`
+                + `&skipPreview=true`
+                + `&watermark=${encodeURIComponent(watermarkText)}`
+                + `&isApproved=${isApproved}`;
+
+            // ✅ append only true values
+            Object.keys(params).forEach(key => {
+                if (params[key] === "true") {
+                    url += `&${key}=true`;
+                }
+            });
+
+            window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
+        } catch (error) {
+            console.error("Error checking approval status:", error);
+            alert("Failed to check invoice approval status.");
+        }
+    }
+
+
+
+       async function checkInvoiceApprovalStatus1(requestNo) {
        try {
            const response = await $.ajax({
 

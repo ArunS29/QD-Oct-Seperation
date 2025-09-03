@@ -1246,41 +1246,32 @@
 				<!-- Row 2: CheckBox 1 -->
 				<div class="row">
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Print in Letter Head')"))
-													.ID("txtLetter")
-													.Value(true)
-													)
+					@(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
 					</div>
 				</div>
 
 				<!-- Row 3: CheckBox 2 -->
 				<div class="row">
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-													.Text(new JS("formatMessage('Show Company Seal')"))
-													.ID("txtShowSeal")
-													.Value(true)
-													)
+							@(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
 					</div>
 				</div>
 
 				<!-- Row 4: CheckBox 3 -->
 				<div class="row">
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-						.Text(new JS("formatMessage('Show Signature')"))
-						.ID("txtShowSign")
-						.Value(true)
-						)
+						@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
 					</div>
 					<div class="col-3">
-						@(Html.DevExtreme().CheckBox()
-						.Text(new JS("formatMessage('Print Signatures At Bottom')"))
-						.ID("txtShowSign1")
-						.Value(true)
-						)
-					</div>
+							@(Html.DevExtreme().CheckBox()
+							.Text(new JS("formatMessage('Print Signatures At Bottom')"))
+							.ID("txtShowSign1")
+							.Value(false)
+							)
+						<input type="hidden" id="hdntxtShowSign1" name="hdntxtShowSign1" value="false" />
 				</div>
 			</div>
 
@@ -2458,6 +2449,35 @@
 </div>
 
 <script>
+
+	  $(function() {
+        $("#txtShowSign1").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdntxtShowSign1").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	$(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
 	
 
 	function onOpened(e) {

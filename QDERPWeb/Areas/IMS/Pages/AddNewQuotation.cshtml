@@ -1061,11 +1061,17 @@
                             <tr>
                                 <!-- Prepared By Checkboxes -->
 								<td>
-									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(true).Text(new JS("formatMessage('Show Company Seal')")) )
+									@(Html.DevExtreme().CheckBox().ID("showSeal").Value(false).Text(new JS("formatMessage('Show Company Seal')")) )
+									<input type="hidden" id="hdnshowSeal" name="hdnshowSeal" value="false" />
+
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(true).Text(new JS("formatMessage('Show Signature')")) )
+									@(Html.DevExtreme().CheckBox().ID("showSignature").Value(false).Text(new JS("formatMessage('Show Signature')")) )
+									<input type="hidden" id="hdnshowSignature" name="hdnshowSignature" value="false" />
+
 									<br />
-									@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(true).Text(new JS("formatMessage('Print in Letter Head')")) )
+									@(Html.DevExtreme().CheckBox().ID("printLetterhead").Value(false).Text(new JS("formatMessage('Print in Letter Head')")) )
+									<input type="hidden" id="hdnprintLetterhead" name="hdnprintLetterhead" value="false" />
+
 								</td>
 
 								<!-- Verified By Checkboxes -->
@@ -1074,17 +1080,24 @@
 									<input type="hidden" id="hdnPageBreakBefore" name="hdnPageBreakBefore" value="false" />
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("pageBreakAfter").Value(false).Text(new JS("formatMessage('Page Break after Terms')")) )
+									<input type="hidden" id="hdnPageAfterBefore" name="hdnPageAfterBefore" value="false" />
+
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("clientAcknowledgement").Value(false).Text(new JS("formatMessage('Print Client Acknowledgement')")) )
+									<input type="hidden" id="hdnclientAcknowledgement" name="hdnclientAcknowledgement" value="false" />
+
 								</td>
 
 								<!-- Approved By Checkboxes -->
 								<td>
 									@(Html.DevExtreme().CheckBox().ID("printItemCodeDesc").Value(false).Text(new JS("formatMessage('Print Item Code with Description')")) )
+										<input type="hidden" id="hdnprintItemCodeDesc" name="hdnprintItemCodeDesc" value="false" />
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("printItemPartNoDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Description')")) )
+										<input type="hidden" id="hdnprintItemPartNoDesc" name="hdnprintItemPartNoDesc" value="false" />
 									<br />
 									@(Html.DevExtreme().CheckBox().ID("printItemPartArabicDesc").Value(false).Text(new JS("formatMessage('Print Item Part No with Arabic Desc')")) )
+										<input type="hidden" id="hdnprintItemPartArabicDesc" name="hdnprintItemPartArabicDesc" value="false" />
 								</td>
                             </tr>
                         </tbody>
@@ -1930,27 +1943,66 @@
             }
         });
     });
-
-    @* function openQuotationReport(reportName) {
-        const tenantName = window.tenantName || "";
-        const quotationNo = $('#txtQuotationNo').dxTextBox("instance").option("value");
-        const pageBreakBefore = $("#hdnPageBreakBefore").val(); // get from hidden field
-
-        if (!quotationNo) {
-            DevExpress.ui.notify("Quotation number is required.", "error", 2000);
-            return;
-        }
-
-        const url = `/${tenantName}/VoucherViewer?reportName=${encodeURIComponent(reportName)}&QuotationNo=${encodeURIComponent(quotationNo)}&pageBreakBefore=${pageBreakBefore}`;
-        window.open(url, '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
-    } *@
-
-    // Attach to your print button or dropdown as needed
-    @* $("#btnPrint").dxButton({
-        onClick: function() {
-            openQuotationReport("PreviewQuotations");
-        }
-    }); *@
+	  $(function() {
+        $("#pageBreakAfter").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnPageAfterBefore").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#clientAcknowledgement").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnclientAcknowledgement").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemPartArabicDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemPartArabicDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemPartNoDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemPartNoDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
+	  $(function() {
+        $("#printItemCodeDesc").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintItemCodeDesc").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#printLetterhead").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnprintLetterhead").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSignature").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSignature").val(e.value ? "true" : "false");
+            }
+        });
+    });
+	  $(function() {
+        $("#showSeal").dxCheckBox({
+            onValueChanged: function(e) {
+                $("#hdnshowSeal").val(e.value ? "true" : "false");
+            }
+        });
+    });
+   
 	  function onOpened(e) {
     const gridId = e.component.option("dataGridId"); // 👈 Get common ID
     const grid = gridId ? $("#" + gridId).dxDataGrid("instance") : null;
