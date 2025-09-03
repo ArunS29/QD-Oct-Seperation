@@ -453,6 +453,46 @@
             const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
             const ddbInstance = $("#QuoteMethod3").dxDropDownBox("instance");
 
+
+
+
+            function onOpened(e) {
+        setTimeout(() => {
+            e.component.focus();
+        });
+    }
+
+
+
+    function quoteMethodSelectionChanged(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#QuoteMethod2").dxDropDownBox("instance");
+
+
+            if (selectedKey) {
+                ddbInstance.option("value", selectedKey);
+                if (ddbInstance.option("opened")) {
+                    ddbInstance.close();
+                }
+            }
+    }
+
+    function quoteMethodGridInitialized(e) {
+        dataGrid = e.component;
+    }
+
+
+
+        function savePropertyQuoteChild() {
+        debugger;
+
+        // get ?code=... from URL
+        const params = new URLSearchParams(window.location.search);
+        const quotationNo = params.get("code");
+    function quoteMethodSelectionChanged2(e) {
+            const selectedKey = e.selectedRowKeys[0]; // Get the first selected key, if any
+            const ddbInstance = $("#QuoteMethod3").dxDropDownBox("instance");
+
             if (selectedKey) {
                 ddbInstance.option("value", selectedKey);
                 if (ddbInstance.option("opened")) {
@@ -468,12 +508,14 @@
 
 
 
-        function savePropertyQuoteChild() {
+
+    function savePropertyQuoteChild() {
         debugger;
 
         // get ?code=... from URL
         const params = new URLSearchParams(window.location.search);
         const quotationNo = params.get("code");
+
 
         if (!quotationNo) {
             DevExpress.ui.notify("QuotationNo (code) is missing in the URL.", "error", 3000);
@@ -495,6 +537,7 @@
             return inst ? inst.option("text") : null;
         };
 
+
         const data = {
             QuoteNo: quotationNo,
 
@@ -503,16 +546,28 @@
             Capacity: getVal("Capacity", "dxTextBox"),
             Operator: getVal("Operator", "dxSelectBox"),
             Attachment: getVal("Attachment", "dxSelectBox"),
+
             UnitRateMethod2: getText("QuoteMethod2", "dxDropDownBox"),
             UnitRate2: getVal("Rate2", "dxNumberBox"),
             UnitRateMethod3: getText("QuoteMethod3", "dxDropDownBox"),   // ID
             UnitRate3: getVal("Rate3", "dxNumberBox"),
+
+            QuoteMethod2: getVal("QuoteMethod2", "dxDropDownBox"),
+            Rate2: getVal("Rate2", "dxNumberBox"),
+            QuoteMethod3: getVal("QuoteMethod3", "dxDropDownBox"),
+            Rate3: getVal("Rate3", "dxNumberBox"),
+
             Notes: getVal("Notes", "dxTextBox"),
             AdditionalNotes: getVal("AdditionalNotes", "dxTextBox"),
             MobilizationRate: getVal("MobilizationRate", "dxNumberBox"),
             DemobRate: getVal("DemobRate", "dxNumberBox"),
             DeliveryDetails: getVal("DeliveryDetails", "dxTextBox")
         };
+
+
+
+        // derive tenant dynamically (first segment of URL path)
+        const tenant = window.location.pathname.split("/").filter(Boolean)[0];
 
         const apiUrl = `/api/AddNewQuotation1/SaveOrUpdateQuotationChild`;
 
@@ -534,11 +589,4 @@
             }
         });
     }
-
-
-
-
-
-
-
     </script>

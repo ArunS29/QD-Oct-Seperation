@@ -219,6 +219,32 @@
                 .ID("btnSubmit")
                 .Text(new JS("formatMessage('Submit')"))
                 .Icon("check")
+                .ID("btnVerify")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnApprove")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+                .ElementAttr(new { @class = "dx-button-custom btn-attach" })
+                )
+    </div>
+
+    <div class="btn-container">
+        @(Html.DevExtreme().Button()
+                .ID("btnSubmit")
+                .Text(new JS("formatMessage('Attach')"))
+                .Icon("attach")
+                .OnClick("onERMAttachmentButtonClick")
+
                 .ElementAttr(new { @class = "dx-button-custom btn-attach" })
                 )
     </div>
