@@ -990,6 +990,9 @@ dx-item-content dx-list-item-content:hover{
 .dx-datagrid .dx-header-row {
     background: var(--background-color);
 }
+.dx-datagrid .dx-datagrid-content-fixed .dx-datagrid-table .dx-col-fixed{
+    background: var(--background-color);
+}
 .dx-button-mode-contained.dx-button-default.dx-state-focused {
     background-color: none;
 }
