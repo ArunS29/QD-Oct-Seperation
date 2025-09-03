@@ -1991,6 +1991,25 @@ documentNo: unitType
                     var UserId = HttpContext.Session.GetString("UserId");
                     var TenantName = HttpContext.Session.GetString("TenantName");
 
+
+                    string defaultCompanyString = HttpContext.Session.GetString("DefaultcompanyID") ?? "";
+                    byte defaultCompanyByte = 0; // or any default value you want
+
+                    if (!string.IsNullOrEmpty(defaultCompanyString))
+                    {
+                        // Safest way (avoids exceptions):
+                        byte.TryParse(defaultCompanyString, out defaultCompanyByte);
+                        // Now defaultCompanyByte holds the parsed value, or 0 if parsing failed.
+                    }
+
+                    // Now use defaultCompanyByte as needed
+
+                    byte companyId = defaultCompanyByte;
+
+
+                    var company = dbContext.Tbl901CompanyDetails
+                   .FirstOrDefault(c => c.CompanyId == companyId);
+
                     if (string.IsNullOrEmpty(InvoiceNo))
                     {
                         return BadRequest(new { Message = "InvoiceNo number is required." });
@@ -2036,8 +2055,11 @@ documentNo: unitType
                     return Ok(new
                     {
                         Message = "InvoiceNo verified successfully.",
-                        VoucherApprovedBy = UserName,  // Example, replace with actual data if needed
-                                                       //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
+                        VoucherApprovedBy = UserName,
+                        IsOnBoard = company.IsOnboarded
+
+                        // Example, replace with actual data if needed
+                        //VoucherVerifiedOn = voucher.VoucherApprovedOn.ToString("dd-MMM-yyyy")
                     });
                 }
                 catch (Exception ex)
@@ -7281,6 +7303,199 @@ documentNo: InvChildSlNo
                 return Ok(null); // No data found
             }
             return Unauthorized(new { message = "Invalid tenant" });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCreditNoteInvoiceAllLineItem([FromBody] string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Invoice number is required." });
+                    }
+
+                    // Call the stored procedure
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_81DeleteAllCreditNoteChildLineItems @p0",
+                        InvoiceNo);
+
+                    if (result > 0)
+                    {
+                        return Ok(new { Message = "Invoice child records deleted successfully." });
+                    }
+                    else
+                    {
+                        return NotFound(new { Message = "Invoice not found or no records deleted." });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        Message = "Error while deleting invoice child records.",
+                        Error = ex.Message
+                    });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteCreditInvoiceChild([FromBody] int InvoiceChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+
+                    // Call the stored procedure with SerialNumber
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_81DeleteCreditNoteChild @p0", InvoiceChildSlNo);
+                    string InvChildSlNo = InvoiceChildSlNo.ToString();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Delete sales invoice child",
+actionDetail: $"Sales invoice child number: {InvChildSlNo}",
+documentNo: InvChildSlNo
+);
+                    return Ok(new { success = true, message = "Line item deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePurchaseInvoiceAllLineItem([FromBody] string InvoiceNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+                    if (string.IsNullOrWhiteSpace(InvoiceNo))
+                    {
+                        return BadRequest(new { Message = "Invoice number is required." });
+                    }
+
+                    // Call the stored procedure
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_71DeleteAllVATChildLineItems @p0",
+                        InvoiceNo);
+
+                    if (result > 0)
+                    {
+                        return Ok(new { Message = "Invoice child records deleted successfully." });
+                    }
+                    else
+                    {
+                        return NotFound(new { Message = "Invoice not found or no records deleted." });
+                    }
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new
+                    {
+                        Message = "Error while deleting invoice child records.",
+                        Error = ex.Message
+                    });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeletePurchaseInvoiceChild([FromBody] int InvoiceChildSlNo)
+        {
+            if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+            {
+                try
+                {
+
+
+                    // Call the stored procedure with SerialNumber
+                    var result = await dbContext.Database.ExecuteSqlRawAsync(
+                        "EXEC sp201_71DeleteVATPurchaseChild @p0", InvoiceChildSlNo);
+                    string InvChildSlNo = InvoiceChildSlNo.ToString();
+                    await _userActionLogger.LogAsync(
+module: "VAT> Delete sales invoice child",
+actionDetail: $"Sales invoice child number: {InvChildSlNo}",
+documentNo: InvChildSlNo
+);
+                    return Ok(new { success = true, message = "Line item deleted successfully." });
+                }
+                catch (Exception ex)
+                {
+                    return StatusCode(500, new { success = false, message = "Server error occurred.", error = ex.Message });
+                }
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetvatpurchaseGoodsInTransitLedgers(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = dbContext.Qry201724vatpurchaseGoodsInTransitLedgers
+                   .Select(p => new
+                   {
+                       p.AccountId,
+                       p.AccountHead
+                   })
+                   .ToList();
+
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> GetvatpurchaseCostPostingForPurchaseVoucher(DataSourceLoadOptions loadOptions)
+        {
+            try
+            {
+                if (_tenantDbContextHelper.TryGetTenantAndDbContext(out Tenant tenant, out ERPMasterWtDataContext dbContext))
+                {
+                    var result = dbContext.Qry201724vatpurchaseCostPostingForPurchaseVouchers
+                   .Select(p => new
+                   {
+                       p.PurchaseVoucherNo,
+                       p.PurchaseBillNo,
+                       p.PurchaseVoucherDate
+
+                   })
+                   .ToList();
+
+
+                    return Ok(result);
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+
+            return Unauthorized(new { message = "Invalid tenant.", success = false });
         }
 
     }
