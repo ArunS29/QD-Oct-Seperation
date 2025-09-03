@@ -173,6 +173,7 @@
                         .DisplayExpr("AccountHead")
                         .OnInput("dropDownBoxOnInput")
                         .OnOpened("onOpened")
+                        .OnClosed("onPaymentDownBoxClosed")
                         .TabIndex(3)
                         .DropDownOptions(o => o.Width(1000)) 
                         .ElementAttr(new { @class = "white-dropdownbox" })
@@ -372,7 +373,7 @@ buttons.Add()
                                                         columns.Add().DataField("CurrencyExchangeId").Caption(new JS("formatMessage('ID')")).Visible(true);
                                                         columns.Add().DataField("CurrencyName").Caption(new JS("formatMessage('Currency Name')"));
                                                         columns.Add().DataField("CurrencyCode").Caption(new JS("formatMessage('Symbol')"));
-                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(2)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(2) + ')'; } return cellInfo.value.toFixed(2); }");
+                                                        columns.Add().DataField("ExchangeRate").Caption(new JS("formatMessage('Exchange Rate')")).Format(format => format.Type(Format.FixedPoint).Precision(3)).CustomizeText("function(cellInfo) { if (cellInfo.value < 0) { return '(' + Math.abs(cellInfo.value).toFixed(3) + ')'; } return cellInfo.value.toFixed(3); }");
                                                         columns.Add().DataField("CurrencyMasterCode").Caption(new JS("formatMessage('unicode')")).DataType(GridColumnDataType.Boolean);
                                                         columns.Add().DataField("CurrencyPoints").Caption(new JS("formatMessage('point')")).DataType(GridColumnDataType.Boolean);
                                                     })
@@ -389,12 +390,12 @@ buttons.Add()
                                                 .Min(0)
                                                 .Max(99999)
                                                 .TabIndex(10)
-                                                .Format("#,##0.00")
+                                                .Format("#,##0.000")
                                                 .InputAttr(new
                                                 {
                                                     style = "font-family: Cambria; font-size: 11pt; font-weight: bold; color: maroon; text-align: right;",
                                                     type = "number",
-                                                    step = "0.01"
+                                                    step = "0.001"
                                                 })
                                                 .ElementAttr(new { @class = "white-box" })
                                                 )
@@ -551,6 +552,7 @@ buttons.Add()
                                     columns.AddFor(m => m.DrAmount).Caption(new JS("formatMessage('Debit')")).Alignment(HorizontalAlignment.Right).AllowEditing(false)  .CalculateCellValue("function(data) { " +
                                     "    if (data.DrAmount != null) { " +
                                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
                                     "        var val = data.DrAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
@@ -564,6 +566,7 @@ buttons.Add()
                                     "    debugger; " +
                                     "    if (data.CrAmount != null) { " +
                                     "        var currencyRate = $('#txtCurrencyRate').dxNumberBox('instance').option('value'); " +
+                                    "        currencyRate = Math.round(currencyRate * 1000) / 1000; " +
                                     "        var val = data.CrAmount / currencyRate; " +
                                     "        return Math.round(val * 100) / 100; " + // keep 2 decimals as number
                                     "    } " +
@@ -635,26 +638,7 @@ buttons.Add()
         <div id="chequePopupContainer"></div>
 
 
-        <!-- Context Menu for Actions -->
-        <ul id="contextMenu" class="context-menu" style="display: none;">
-            <li onclick="editCostAllocation()">
-                <i class="fas fa-edit" style="margin-right: 8px;"></i><div id="EditCostAllocationreceipt"></div>
-            </li>
-            <li onclick="editBillsReceivable()">
-                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i><div id="EditBillReceivablereceipt"></div>
-            </li>
-
-            <li onclick="editEmployeeAllocation()">
-                <i class="fas fa-file-invoice" style="margin-right: 8px;"></i> <div id="EditEmployeeAllocationreceipt"></div>
-            </li>
-            <li onclick="editPropertyAllocation()">
-                <i class="fas fa-cogs" style="margin-right: 8px;"></i><div id="EditPropertyAllocationreceipt"></div>
-            </li>
-
-            <li onclick="onAllRowRemoving()">
-                <i class="fas fa-trash-alt" style="margin-right: 8px;"></i> <div id="DeleteAllLineEntriesreceipt"></div>
-            </li>
-        </ul>
+        
 
         <ul id="contextMenu" class="context-menu" style="display:none; position:absolute;"></ul>
 
@@ -1256,10 +1240,10 @@ buttons.Add()
 
              var voucherAmount = $("#Amount").dxNumberBox("instance").option("value") || 0;
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
-             currencyRate = Math.round(currencyRate * 100) / 100;
+             currencyRate = Math.round(currencyRate * 1000) / 1000;
 
     // Format to always have 2 decimals
-    currencyRate = parseFloat(currencyRate).toFixed(2);
+    currencyRate = parseFloat(currencyRate).toFixed(3);
             var amount = voucherAmount * currencyRate;
               
              var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
@@ -1793,10 +1777,22 @@ buttons.Add()
             e.component.option("value", null); // clear if no match found
         }
     }
-    function onOpened(e) {
-        setTimeout(() => {
-            e.component.focus();
-        });
+    
+                 function onOpened(e) {
+        setTimeout(() => e.component.focus(), 0);
+
+        // Use the stored grid instance
+        const grid = e.component.__contentGridInstance;
+
+        if (grid) {
+            const currentValue = e.component.option("value");
+            grid.getDataSource().reload().done(() => {
+                if (currentValue) {
+                    grid.selectRows([currentValue], false);
+                    grid.option("focusedRowKey", currentValue);
+                }
+            });
+        }
     }
 
     function onKeyDown(e) {
@@ -1843,10 +1839,13 @@ buttons.Add()
     }
 
 
-    function dataGridAccountHeadInitialized(e) {
-        dataGrid = e.component;
-
-    }
+     function dataGridAccountHeadInitialized(e) {
+               // Store grid instance on the parent DropDownBox
+        const dropDownBox = $(e.element).closest(".dx-dropdownbox").dxDropDownBox("instance");
+        if (dropDownBox) {
+            dropDownBox.__contentGridInstance = e.component;  // store reference safely
+        }
+            }
 
 
 
@@ -1885,8 +1884,12 @@ buttons.Add()
 
 
 
-    function dataGridInitialized(e) {
-        dataGrid = e.component;
+       function dataGridInitialized(e) {
+        // Store grid instance on the parent DropDownBox
+        const dropDownBox = $(e.element).closest(".dx-dropdownbox").dxDropDownBox("instance");
+        if (dropDownBox) {
+            dropDownBox.__contentGridInstance = e.component;  // store reference safely
+        }
     }
 
       $("#btnSave").on("click", function (e) {
@@ -1905,7 +1908,10 @@ buttons.Add()
                 // alert($("#VoucherNo").dxTextBox("instance").option("value"));
                      "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                     "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                    "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                    "currencyrate": Number(
+        ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+            .toFixed(3)
+    ),
                 "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
@@ -2012,7 +2018,10 @@ buttons.Add()
                 // alert($("#VoucherNo").dxTextBox("instance").option("value"));
                      "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                     "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                    "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                    "currencyrate": Number(
+        ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+            .toFixed(3)
+    ),
                 "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
                 "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
@@ -2474,6 +2483,8 @@ buttons.Add()
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+             currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -2516,6 +2527,8 @@ buttons.Add()
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+             currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -2559,6 +2572,8 @@ buttons.Add()
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+             currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
                 return;
@@ -2601,6 +2616,8 @@ buttons.Add()
             let rowIndex = document.getElementById("contextMenu").dataset.rowIndex;
             let dataGrid = $("#dataGrid").dxDataGrid("instance");
             var currencyRate = $("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1;
+             currencyRate = Math.round(currencyRate * 1000) / 1000;
+        currencyRate = parseFloat(currencyRate).toFixed(3);
              var CurrencyId = $("#ddCurrency").dxDropDownBox("instance").option("value");
             if (!rowIndex || rowIndex < 0) {
                 console.error("Invalid row index detected.");
@@ -3482,7 +3499,10 @@ function onBaseCurrencyInit(e) {
                  // alert($("#VoucherNo").dxTextBox("instance").option("value"));
                       "basecurrencyid": $("#ddlBaseCurrency").dxDropDownBox("instance").option("value"),
                      "currencyid": $("#ddCurrency").dxDropDownBox("instance").option("value"),
-                     "currencyrate": $("#txtCurrencyRate").dxNumberBox("instance").option("value"),
+                     "currencyrate": Number(
+        ($("#txtCurrencyRate").dxNumberBox("instance").option("value") || 1)
+            .toFixed(3)
+    ),
                  "VoucherNo": $("#VoucherNo").dxTextBox("instance").option("value"),
 
                  "VoucherDate": $("#VoucherDate").dxDateBox("instance").option("value"),
@@ -4004,5 +4024,23 @@ tippy('#circle-approve', {
         text: formatMessage("ADD")
     });
 }
+ function onPaymentDownBoxClosed(e) {
+            const typedText = e.component.option("text");
+            const grid = $(e.component.content()).find("#accountpaymentamount-datagrid").first().dxDataGrid("instance");
+
+            if (!grid || !typedText) return;
+
+            const visibleRows = grid.getVisibleRows();
+            const match = visibleRows.find(r => r.data.AccountHead === typedText);
+            debugger;
+            if (match) {
+                const selectedKey = match.data.AccountId;
+                grid.selectRows([selectedKey], false); // select the row in the grid
+                e.component.option("value", selectedKey); // bind the selected key to DropDownBox
+                grid.option("focusedRowIndex", match.rowIndex); // optional: focus the matched row
+            } else {
+                e.component.option("value", null); // clear if no match found
+            }
+        }
 
 </script>
