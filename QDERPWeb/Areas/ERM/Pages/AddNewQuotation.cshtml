@@ -4,6 +4,9 @@
 }
 <style>
     
+	.btn-black-text .dx-button-text {
+    color: black !important;
+}
 
 
 
@@ -262,7 +265,7 @@
 	
 </style>
 <meta charset="UTF-8">
-<input id="formId" value="frm60101QuotationEdit" type="hidden" />
+<input id="formId" value="equipmentquotation" type="hidden" />
 <div class="title">
     <div class="header-container">
         <div id="AddNewQuotation1" class="no-border-title"></div>
@@ -900,22 +903,22 @@
 
 
 
+							@(Html.DevExtreme().SelectBox()
+							.ID("ddGetInventoryGroup")
+							.Label(new JS("formatMessage('VAT Applicable % :')"))
+							.LabelMode(EditorLabelMode.Floating)
+							.Width("100%")
+							.DataSource(new[] {
+								"15% Domestic Standard Sales",
+								"5% Domestic Standard Sales",
+								"0% Domestic Zero Tax Sales",
+								"0% Domestic Exempted Tax Sales",
+								"0% GCC Sales",
+								"0% Exports Sales"
+							})
+							.Value("15% Domestic Standard Sales") // default selected value
+                            )
 
-										 @(Html.DevExtreme().DropDownBox()
-										.Label(new JS("formatMessage('VAT Applicable % :')"))
-										.ID("ddGetInventoryGroup")
-										.LabelMode(EditorLabelMode.Floating)
-										.Width("100%")
-										.DataSource(new[] {
-											"15% Domestic Standard Sales",
-											"5% Domestic Standard Sales",
-											"0% Domestic Zero Tax Sales",
-											"0% Domestic Exempted Tax Sales",
-											"0% GCC Sales",
-											"0% Exports Sales"
-										})
-										.Value("15% Domestic Standard Sales") 
-)
 
 
                            
@@ -937,7 +940,7 @@
                             <tr>
                                 <!-- Prepared By SelectBox -->
                                 <td>
-                                    @(Html.DevExtreme().DropDownBox()
+                                    @* @(Html.DevExtreme().DropDownBox()
                                     .Label(new JS("formatMessage('Prepared By:')"))
                                     .DataSource(d => d.WebApi()
                                     .Controller("AddNewClientRequest1")
@@ -947,9 +950,7 @@
                                     )
                                     .LabelMode(EditorLabelMode.Floating)
                                     .ID("ddPreparedby")
-                                    .Width(900)
-                                    @*  .ShowClearButton(true)
-                                    .AcceptCustomValue(true) *@
+                                    .Width(900)                                   
                                     .OpenOnFieldClick(false)//
                                     .ValueChangeEvent("input")
                                     .HoverStateEnabled(true)
@@ -962,7 +963,58 @@
                                     .OnKeyDown("onKeyDown")
                                     //.OnValueChanged("dropDownBoxValueChanged")
                                     .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+                                    ) *@
+
+
+
+
+									@(Html.DevExtreme().DropDownBox().AcceptCustomValue(true)
+                                    .Label(new JS("formatMessage('Prepared By:')"))
+                                    .DataSource(d => d.WebApi()
+                                    .Controller("AddNewClientRequest1")
+                                    .LoadAction("GetSignatory")
+                                    .LoadMode(DataSourceLoadMode.Raw)
+                                    .Key("SignatoryName")
                                     )
+									.Option("ddPreparedby", "GetPreparedby-datagrid")  
+                                    .LabelMode(EditorLabelMode.Floating)
+                                    .ID("ddPreparedby")
+                                    .Width(900)                                  
+                                    .OpenOnFieldClick(false)//
+                                    .ValueChangeEvent("input")
+                                    .HoverStateEnabled(true)
+                                    .ValueExpr("SignatoryName")
+                                    .DisplayExpr("SignatoryName")
+                                    .OnInput("dropDownBoxOnInput")
+                                    .OnOpened("onOpened")
+                                    .TabIndex(1)
+                                    .Width("100%")
+                                    .OnKeyDown("onKeyDown")
+                                    //.OnValueChanged("dropDownBoxValueChanged")
+                                    .ContentTemplate(new TemplateName("GetPreparedByContentTemplate"))
+									   .Buttons(buttons =>
+									   {
+										   buttons.Add()
+										   .Name("AddPreparedBy")
+										   .Location(TextEditorButtonLocation.After)
+										   .Widget(w => w.Button()
+										   .Type(ButtonType.Default)
+										   .Icon("plus")
+										   .ElementAttr(new { @class = "custom-hover-button add-hover" })
+											.OnClick("AddPreparedBy"));
+										   buttons.Add()
+										   .Name("dropDown");
+									   }))
+
+
+
+
+
+
+
+
+
+
                                 </td>
 
                                 <!-- Verified By SelectBox -->
@@ -1073,7 +1125,7 @@
 		.AcceptCustomValue(true)
         .Label("Equipment Quoted for:")
         .LabelMode(EditorLabelMode.Floating)
-        .Width(250)
+        .Width(800)
 		 .DataSource(d => d.WebApi()
         .Controller("AddNewProperty")
         .LoadAction("GetAllPropertyTypes")
@@ -1695,6 +1747,11 @@
 
 
 
+
+
+
+
+
 @using (Html.DevExtreme().NamedTemplate("GetTypeOfQuoteMethodContentTemplate"))
 {
     @(Html.DevExtreme().DataGrid()
@@ -1762,6 +1819,11 @@ const quotationNo = $("#txtQuotationNo").dxTextBox("instance").option("value");
 
 
 
+	function AddPreparedBy() {
+		const url = `/${tenantName}/IMS/Signatories`;
+		const title = "Signatories";
+		openModal(url, title,"","75%");
+	}
 
 
 
@@ -2056,6 +2118,93 @@ function quoteMethodSelectionChanged(e) {
 	let dropDownInstance;
 	let vatListInstance;
 
+	 function setAttachCount(count) {
+        updateAttachButtonCount("#btnAttach", count);
+     }
+
+
+
+	 async function getDocumentCount() {
+		 debugger;
+        const invoiceNoBox = $("#txtQuotationNo").dxTextBox("instance");
+        const QuoteNo = invoiceNoBox ? invoiceNoBox.option("value") : null;
+        var menuType = "ERM";
+        var formType = "Equipment Quotation";
+        // const invoiceRes = await fetch(`/api/VATModule/GetSONoDNoteNoFromInvoice?invoiceNo=${encodeURIComponent(invoiceNo)}`);
+        // const invoiceData = await invoiceRes.json();
+
+        // let folderId2 = "";
+        // if (invoiceData) {
+        //     folderId2 = [
+        //             invoiceData.SalesOrderNo,
+        //             invoiceData.QuotationNo,
+        //             invoiceData.DeliveryNoteNos,
+        //             invoiceData.ProformaInvoiceNo
+        //     ]
+        //     .filter(Boolean)   // remove null/empty
+        //     .join(",");
+        // }
+        // // Log and build URL
+        // console.log("Voucher No:", invoiceNo);
+        // console.log("Voucher Type:", formType);
+
+
+        const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(QuoteNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}`);
+        const docs = await res.json();
+        const count = docs.length;
+
+        updateAttachButtonCount("#btnAttach", count);
+     }
+	  function updateAttachButtonCount(buttonSelector, count) {
+		  debugger;
+        var btn = $(buttonSelector);
+        var btnInstance = btn.dxButton("instance");
+        if (!btnInstance) return;
+
+        var originalText = btnInstance.option("text");
+        var color = count > 0 ? "green" : "red";
+
+        btnInstance.option({
+            template: function() {
+                // Icon element
+                var iconElement = $("<span>")
+                .addClass("dx-icon dx-icon-attach")
+                .addClass(count > 0 ? "icon-green" : "icon-red")
+                .css({
+                    "font-size": "15px",
+                    "vertical-align": "middle",
+                    "margin-right": "4px"
+                })[0];
+
+                // Create fragment
+                var fragment = document.createDocumentFragment();
+                fragment.appendChild(iconElement);
+
+                // Append count only if > 0
+                if (count > 0) {
+                    var countSpan = document.createElement("span");
+                    countSpan.style.color = color;
+                    countSpan.style.fontWeight = "bold";
+                    countSpan.style.fontSize = "15px";
+                    countSpan.style.marginRight = "2px";
+                    countSpan.textContent = count;
+                    fragment.appendChild(countSpan);
+                }
+
+                // Append original text
+                fragment.appendChild(document.createTextNode(originalText));
+
+                return fragment;
+            }
+        });
+      }
+
+
+
+
+
+
+
 
 
 	//View e-Invoice
@@ -2083,6 +2232,8 @@ function quoteMethodSelectionChanged(e) {
 					const invoiceBox = $("#txtQuotationNo").dxTextBox("instance");
 					if (invoiceBox) {
 						invoiceBox.option("value", data || "");
+						getDocumentCount();
+
 					} else {
 						console.warn("Invoice TextBox not initialized.");
 					}
@@ -2180,6 +2331,8 @@ function quoteMethodSelectionChanged(e) {
 							console.error("Error fetching grid data:", error);
 						}
 					});
+
+					getDocumentCount();
 
 				} else {
 					console.warn("No Quotation details found in the response.");
@@ -5330,51 +5483,42 @@ function onFinalAddClick(e) {
 				QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value") || null,
 				ClientCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
 				SalesPersonCode: $('#ddGetSalesPerson').dxDropDownBox("instance").option("value") || null,
-
-				MPRNo: $('#MprNumber').dxTextBox("instance").option("value") || null,
+				ClientRefNo: $('#MprNumber').dxTextBox("instance").option("value") || null,
 				Attention: $('#ClientRefName').dxTextBox("instance").option("value") || null,
 				ClientContactEmail: $('#ClientEmail').dxTextBox("instance").option("value") || null,
 				ClientContactNo: $('#ClientContactNo').dxTextBox("instance").option("value") || null,
 				ModeOfRequest: $('#ddGetModeOfRequest').dxDropDownBox("instance").option("value") || null,
 				TypeOfRequest: $("#ddGetTypeOfRequest").dxDropDownBox("instance").option("value") || null,
-				ProjectMasterCode: $('#GetProjectDataDropDown').dxDropDownBox("instance").option("value") || null,
-				Project: $('#ClientProjectRef').dxTextBox("instance").option("value") || null,
+				Project: $('#Project').dxTextBox("instance").option("value") || null,
 				JobSite: $('#Jobsite').dxTextBox("instance").option("value") || null,
-
+				TransportationScope: $("#TrnScope").dxTextBox("instance").option("value") || null,
 				SubjectTitle: $('#Subject').dxTextBox("instance").option("value") || null,
 				QuotationSummary: $("#QuoteSummary").dxTextArea("instance").option("value") || null,
 				QuoteIntro: $('#QuoteIntro').dxTextBox("instance").option("value") || null,
 				QuoteThanksNote: $("#QuoteThanks").dxTextArea("instance").option("value") || null,
-				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
-
-
-				InventoryMasterGroupId: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
-				ClientRefNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
-				QuoteSubmittedBy: $("#SubmittedBy").dxTextBox("instance").option("value") || null,
-
-				QuoteSubmittedOn: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
-				BidClosingDate: $("#BidClosingDate").dxDateBox("instance").option("value") || null,
-
-				QuoteStatus: $("#ddGetQuoteStatus").dxDropDownBox("instance").option("value") || null,
-
-				TransportationScope: $("#txtTransportationScope").dxTextBox("instance").option("value") || null,
-
+				AddedBy: $("#SubmittedBy").dxTextBox("instance").option("value") || null,
+				AddedOn: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
+				QuoteDueDate: $("#SubmittedOn").dxDateBox("instance").option("value") || null,
+				QuoteType: $("#ddGetQuoteStatus").dxDropDownBox("instance").option("value") || null,
 				AdditionsText: $('#txtAdditions').dxTextBox("instance").option("value") || null,
 				QuoteTransport: $("#QuoteTransport").dxNumberBox("instance").option("value") || null,
 				DiscountsText: $("#txtDeductions").dxTextBox("instance").option("value") || null,
 				QuoteDiscount: $("#QuoteDiscount").dxNumberBox("instance").option("value") || null,
-
-				QuoteSignatory: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
+				CompanyBranch: $("#ddGetCompany").dxDropDownBox("instance").option("value") || null,
+				ReferenceNo: $("#ReferenceNo").dxTextBox("instance").option("value") || null,
+				VATApplicableRate: $("#ddGetInventoryGroup").dxDropDownBox("instance").option("value") || null,
+				PreparedBy: $("#ddPreparedby").dxDropDownBox("instance").option("value") || null,
 				VerifiedSignatory: $("#ddVerifiedby").dxDropDownBox("instance").option("value") || null,
-				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null,
+				ApprovedSignatory: $("#ddApprovedby").dxDropDownBox("instance").option("value") || null
 			};
 
-			let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+			 let grid = $("#B2BdataGrid").dxDataGrid("instance");
+            let children = grid.getDataSource().items();   // gets current visible data
 
-			if (!children || children.length === 0) {
-				DevExpress.ui.notify("No child records to save.", "error", 3000);
-				return;
-			}
+                 if (!children || children.length === 0) {
+                       DevExpress.ui.notify("No child records to save.", "error", 3000);
+                      return;
+                 }
 
 			const model = {
 				...master,
@@ -6424,88 +6568,88 @@ function onFinalAddClick(e) {
 	});
 
 
-$(document).ready(function () {
-		console.log('Start permission handling AccountingLedgers');
-		// Form ID
-		var formId = "frm60101QuotationEdit";
-
-		// Call the API to get permissions
-		$.ajax({	
-			url: '/api/Permissions/GetAccessDetails?formId=' + formId,
-			type: 'GET',
-			contentType: 'application/json',
-			success: function (response) {
-				console.log("API Response:", response); // Log the API response
-
-				if (response.success && response.permissions) {
-					// Default visibility and enable status for buttons
-					var controlStates = {
-						"ddButtonLayout": { "Visible": false, "Enabled": false },
-						"rowHeightProperties": { "Visible": false, "Enabled": false },
-						"btnMoveUp": { "Visible": false, "Enabled": false },
-						"btnMoveDown": { "Visible": false, "Enabled": false },
-						"btnSave": { "Visible": false, "Enabled": false },
-						"btnSaveAndClose": { "Visible": false, "Enabled": false },
-						"btnPrint": { "Visible": false, "Enabled": false },
-						"btnDelete": { "Visible": false, "Enabled": false },
-						"btnAddNew": { "Visible": false, "Enabled": false },
-						"btnTerms": { "Visible": false, "Enabled": false },
-						"btnBack": { "Visible": false, "Enabled": false },
-						"btnAttach": { "Visible": false, "Enabled": false },
-						"btnSubmit": { "Visible": false, "Enabled": false },
-						"btnVerify": { "Visible": false, "Enabled": false },
-						"btnApprove": { "Visible": false, "Enabled": false },
-					};
-					// Check for full access
-					var fullAccess = response.permissions.find(p =>
-						p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
-					);
-
-					if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
-						// Grant full access: make all controls visible and enabled
+ $(document).ready(function () {
+			console.log('Start permission handling AccountingLedgers');
+			// Form ID
+			var formId = "equipmentquotation";
+ 
+			// Call the API to get permissions
+			$.ajax({
+				url: '/api/Permissions/GetAccessDetails?formId=' + formId,
+				type: 'GET',
+				contentType: 'application/json',
+				success: function (response) {
+					console.log("API Response:", response); // Log the API response
+ 
+					if (response.success && response.permissions) {
+						// Default visibility and enable status for buttons
+						var controlStates = {
+							"ddButtonLayout": { "Visible": false, "Enabled": false },
+							"rowHeightProperties": { "Visible": false, "Enabled": false },
+							"btnMoveUp": { "Visible": false, "Enabled": false },
+							"btnMoveDown": { "Visible": false, "Enabled": false },
+							"btnSave": { "Visible": false, "Enabled": false },
+							"btnSaveAndClose": { "Visible": false, "Enabled": false },
+							"btnPrint": { "Visible": false, "Enabled": false },
+							"btnDelete": { "Visible": false, "Enabled": false },
+							"btnAddNew": { "Visible": false, "Enabled": false },
+							"btnTerms": { "Visible": false, "Enabled": false },
+							"btnBack": { "Visible": false, "Enabled": false },
+							"btnAttach": { "Visible": false, "Enabled": false },
+							"btnSubmit": { "Visible": false, "Enabled": false },
+							"btnVerify": { "Visible": false, "Enabled": false },
+							"btnApprove": { "Visible": false, "Enabled": false },
+						};
+						// Check for full access
+						var fullAccess = response.permissions.find(p =>
+							p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_FullAccess").trim().toLowerCase()
+						);
+ 
+						if (fullAccess && fullAccess.ItemEnabled && fullAccess.ItemVisible) {
+							// Grant full access: make all controls visible and enabled
+							Object.keys(controlStates).forEach(key => {
+								controlStates[key] = { "Visible": true, "Enabled": true };
+							});
+						} else {
+							// Update states based on specific permissions for each control
+							Object.keys(controlStates).forEach(key => {
+								var controlPermission = response.permissions.find(p =>
+									p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
+								);
+								if (controlPermission) {
+									controlStates[key] = {
+										"Visible": controlPermission.ItemVisible || false,
+										"Enabled": controlPermission.ItemEnabled || false
+									};
+								}
+							});
+						}
+ 
+						console.log("Control States:", controlStates);
 						Object.keys(controlStates).forEach(key => {
-							controlStates[key] = { "Visible": true, "Enabled": true };
-						});
-					} else {
-						// Update states based on specific permissions for each control
-						Object.keys(controlStates).forEach(key => {
-							var controlPermission = response.permissions.find(p =>
-								p.ItemName && p.ItemName.trim().toLowerCase() === (formId + "_" + key).trim().toLowerCase()
-							);
-							if (controlPermission) {
-								controlStates[key] = {
-									"Visible": controlPermission.ItemVisible || false,
-									"Enabled": controlPermission.ItemEnabled || false
-								};
+							var button = document.getElementById(key);
+							if (button) {
+								// Handle visibility
+								button.style.display = controlStates[key].Visible ? "inline-block" : "none";
+								// Handle enable/disable state
+								button.disabled = !controlStates[key].Enabled;
+								console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
+							} else {
+								console.warn(`Button with ID "${key}" not found in the DOM.`);
 							}
 						});
+					} else {
+						console.warn("Failed to fetch permissions or no permissions available.");
 					}
-
-					console.log("Control States:", controlStates);
-					Object.keys(controlStates).forEach(key => {
-						var button = document.getElementById(key);
-						if (button) {
-							// Handle visibility
-							button.style.display = controlStates[key].Visible ? "inline-block" : "none";
-							// Handle enable/disable state
-							button.disabled = !controlStates[key].Enabled;
-							console.log(`Button ${key} - Visible: ${controlStates[key].Visible}, Enabled: ${controlStates[key].Enabled}`); // Log button state
-						} else {
-							console.warn(`Button with ID "${key}" not found in the DOM.`);
-						}
-					});
-				} else {
-					console.warn("Failed to fetch permissions or no permissions available.");
+				},
+				error: function (xhr, status, error) {
+					console.error("Error fetching permissions:", error);
+					alert('An error occurred while fetching permissions. Please try again.');
 				}
-			},
-			error: function (xhr, status, error) {
-				console.error("Error fetching permissions:", error);
-				alert('An error occurred while fetching permissions. Please try again.');
-			}
-		});
-
-		console.log('End permission handling');
-	});
+			});
+ 
+			console.log('End permission handling');
+ });
 	 function UnitOfMeasure() {
               const url = `/${tenantName}/IMS/UnitOfMeasure`;
 			  const title = "Unit Of Measure";
