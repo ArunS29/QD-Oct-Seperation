@@ -166,8 +166,11 @@ namespace QD.ERP.Web.Areas.IMS.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Error in CreateClientCategory: {ex.Message}");
-                return StatusCode(500, new { success = false, message = ex.Message });
+                
+                _logger.LogError($"Error in SaveOrUpdateMode: {ex}");
+                return StatusCode(500, new { success = false, message = "An error occurred while saving Client Status." });
+
+
             }
         }
 

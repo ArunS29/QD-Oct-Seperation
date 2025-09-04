@@ -5,6 +5,7 @@
 @* @model QD.ERP.Web.Areas.Finance.Pages.LedgerAccountModel
 @{
 } *@
+<link rel="stylesheet" href="~/css/loader.css" />
 <style>
 	.titleCard-toggle1 {
 		display: none;
@@ -589,7 +590,9 @@
         background-color: #eee;
     }
 </style>
-
+<div id="loadingSpinner" class="spinner-overlay">
+    <div id="loader" class="loader"></div>
+</div>
 <input id="formId" value="frm20161VATInvoiceEdit" type="hidden" />
 <link rel="stylesheet" href="~/css/Site.css" />
 <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet" />
@@ -4618,7 +4621,7 @@
 	//   }
 	// },
 {
-  dataField: 'ExcemptionCode',
+  dataField: 'TaxExemptionReasonCode',
   caption: formatMessage('Excemption Code'),
   cssClass: "center-header",
   width: 150,
@@ -4631,7 +4634,8 @@
 
     // Show the current value (code or text)
     $("<div>")
-      .text(options.data.ExcemptionCode || formatMessage("Select Reason"))
+
+      .text(options.data.TaxExemptionReasonCode || formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -4663,7 +4667,7 @@
               $("#radioGroup_" + options.rowIndex).dxRadioGroup({
                 items: reasons,
                 layout: "vertical",
-                value: options.data.ExcemptionCode || null,  // ✅ preselect
+                value: options.data.TaxExemptionReasonCode || null,  // ✅ preselect
                 stylingMode: "outlined",
                 displayExpr: "TaxExemptionReason",
                 valueExpr: "TaxExemptionReasonCode"
@@ -4685,8 +4689,8 @@
                   DevExpress.ui.notify(formatMessage("Selected") + ": " + selectedText, "success", 2000);
 
                   const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                  grid.cellValue(options.rowIndex, "ExcemptionCode", selectedCode);
-                  grid.saveEditData();
+                  grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
+				    grid.saveEditData();
                   // Update visible text in cell
                   $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
 
@@ -5487,7 +5491,7 @@ editCellTemplate: function (cellElement, cellInfo) {
 	//   }
 	// },
 {
-  dataField: 'ExcemptionCode',
+  dataField: 'TaxExemptionReasonCode',
   caption: formatMessage('Excemption Code'),
   cssClass: "center-header",
   width: 150,
@@ -5500,7 +5504,8 @@ editCellTemplate: function (cellElement, cellInfo) {
 
     // Show the current value (code or text)
     $("<div>")
-      .text(options.data.ExcemptionCode || formatMessage("Select Reason"))
+
+      .text(options.data.TaxExemptionReasonCode ||formatMessage("Select Reason"))
       .addClass("exemption-cell")
       .css({ cursor: "pointer", color: "#007bff", "text-decoration": "underline" })
       .appendTo(container)
@@ -5532,7 +5537,7 @@ editCellTemplate: function (cellElement, cellInfo) {
               $("#radioGroup_" + options.rowIndex).dxRadioGroup({
                 items: reasons,
                 layout: "vertical",
-                value: options.data.ExcemptionCode || null,  // ✅ preselect
+                value: options.data.TaxExemptionReasonCode || null,  // ✅ preselect
                 stylingMode: "outlined",
                 displayExpr: "TaxExemptionReason",
                 valueExpr: "TaxExemptionReasonCode"
@@ -5554,7 +5559,7 @@ editCellTemplate: function (cellElement, cellInfo) {
                   DevExpress.ui.notify("Selected: " + selectedText, "success", 2000);
 
                   const grid = $("#B2BdataGrid").dxDataGrid("instance");
-                  grid.cellValue(options.rowIndex, "ExcemptionCode", selectedCode);
+                  grid.cellValue(options.rowIndex, "TaxExemptionReasonCode", selectedCode);
 				   grid.saveEditData();
                   // Update visible text in cell
                   $(e.currentTarget).text(selectedText || formatMessage("Select Reason"));
@@ -5615,43 +5620,6 @@ editCellTemplate: function (cellElement, cellInfo) {
 
 	});
 
-
-
-// 	$("#btnAddNew").on("click", function (e) {
-//     const grid = $("#B2BdataGrid").dxDataGrid("instance");
-//     const store = grid.getDataSource().store();
-//     const currentData = grid.getDataSource().items();
-
-//     const nextSNo = currentData.length > 0
-//         ? Math.max(...currentData.map(row => row.SNo || 0)) + 1
-//         : 1;
-
-//     const newRow = {
-//         SNo: nextSNo,
-//         ItemCode: "", 
-//         DetailedDescription: "",
-//         DescriptionDetails: "",
-//         QuantityInvoiced: 0,
-//         UnitRate: 0.00,
-//         CalcLineAmountBeforeDiscount: 0.00,
-//         Discount: 0,
-//         DiscountDetails: "",
-//         CalcLineAmount: 0.00,
-//         ExcemptionCode: "",
-//         CalcTaxAmount: "",
-//         LineTotal: 0.00
-//     };
-
-//     store.insert(newRow)
-//         .then(() => {
-//             grid.refresh();
-//             // ✅ Show the action button containers
-//             $(".action-buttons-container").show();
-//         })
-//         .catch(error => {
-//             DevExpress.ui.notify("Error adding row: " + error.message, "error", 3000);
-//         });
-// });
 
 
 $("#btnAddNew").on("click", function (e) {
@@ -6055,10 +6023,6 @@ if (popover.option("visible")) {
 
 			});
 		}
-
-	
-
-
 
 
 		  function PaymentMeansdataGridSelectionChanged(e) {
@@ -7781,14 +7745,8 @@ if (popover.option("visible")) {
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-			var button = $("#btnSave").dxButton("instance");
-            button.option("disabled", true);
 
-			
-			var SaveAndClosebtn = $("#btnSaveAndClose").dxButton("instance");
-			SaveAndClosebtn.option("disabled", true);
-
-
+		    document.getElementById('loadingSpinner').style.display = 'block';
 			
 			RevenueAccount = $("#ddlGoodsGroup2").dxDropDownBox("instance").option("value");
 
@@ -7954,10 +7912,7 @@ if (popover.option("visible")) {
 										dataType: 'json',
 									success: function (response) {
 											console.log("Grid",response)
-										// if (!response || !response.data || response.data.length === 0) {
-										// 	console.warn("No voucher entries found.");
-										// 	return;
-										// }
+									
 
 											let rowData = response.map((item, index) => {
 		
@@ -7976,37 +7931,34 @@ if (popover.option("visible")) {
 									error: function (xhr, status, error) {
 
 										console.error("Error fetching grid data:", error);
-   button.option("disabled", false);
-  SaveAndClosebtn.option("disabled", false);
+	                                 document.getElementById('loadingSpinner').style.display = 'none';
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
-								  button.option("disabled", false);
+								
 								  getDocumentCount();
-								  SaveAndClosebtn.option("disabled", false);
+						 document.getElementById('loadingSpinner').style.display = 'none';
 							 
 						},
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-							 button.option("disabled", false);
-							  SaveAndClosebtn.option("disabled", false);
+						
+							 document.getElementById('loadingSpinner').style.display = 'none';
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-                         button.option("disabled", false);
-						  SaveAndClosebtn.option("disabled", false);
+                     document.getElementById('loadingSpinner').style.display = 'none';
 				}
 			});
 			}
 			else
 			{
 				  DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-				  button.option("disabled", false);
-				   SaveAndClosebtn.option("disabled", false);
+				 document.getElementById('loadingSpinner').style.display = 'none';
 			}
 
 		 }
@@ -8017,11 +7969,8 @@ if (popover.option("visible")) {
 			var clientnameValidator = $("#ddclientname").dxValidator("instance");
 			var clientnameValidation = clientnameValidator.validate();
 
-			var button = $("#btnSaveAndClose").dxButton("instance");
-             button.option("disabled", true);
-
-			 	var Savebtn = $("#btnSave").dxButton("instance");
-            Savebtn.option("disabled", true);
+   	          document.getElementById('loadingSpinner').style.display = 'block';
+	       
 
 		  //  InvoiceCurrencyCode = $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value");
 		  if(revaccheadid==null)
@@ -8207,37 +8156,32 @@ if (popover.option("visible")) {
 									},
 									error: function (xhr, status, error) {
 										console.error("Error fetching grid data:", error);
-										       button.option("disabled", false);
-										       Savebtn.option("disabled", false);
+										 document.getElementById('loadingSpinner').style.display = 'none';
 									}
 								});
 								 isVoucherSaved = true; // Mark Updated step as done
 								updateWorkflowVisual(getWorkflowStatusFromFields()); // Refresh workflow UI
 								 DevExpress.ui.notify("Invoice Details updated Successfully.", "success", 2000);
 							 history.back();
-							  button.option("disabled", false);
-							      Savebtn.option("disabled", false);
+			 document.getElementById('loadingSpinner').style.display = 'none';
 						},
 
 						error: function (xhr) {
 							DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-                           button.option("disabled", false);
-						       Savebtn.option("disabled", false);
+             document.getElementById('loadingSpinner').style.display = 'none';
 						}
 					});
 				},
 				error: function (xhr) {
 					DevExpress.ui.notify("Error: " + xhr.responseJSON.message, "error", 3000);
-					 button.option("disabled", false);
-						   Savebtn.option("disabled", false);
+					 document.getElementById('loadingSpinner').style.display = 'none';
 				}
 			});
 			}
 			else
 			{
                    DevExpress.ui.notify("Cannot continue saving with errors,please clear the errors and continue.", "error", 3000);
-				   		 button.option("disabled", false);
-						   Savebtn.option("disabled", false);
+              document.getElementById('loadingSpinner').style.display = 'none';
 
 			}
 
@@ -8603,7 +8547,7 @@ if (popover.option("visible")) {
 				DevExpress.ui.notify("Invoice number is required!", "error", 2000);
 				return;
 			}
-
+			
 			const currentDate = new Date();
 			const formattedDate = currentDate.toLocaleDateString("en-GB", {
 				day: "2-digit",
@@ -8620,21 +8564,39 @@ if (popover.option("visible")) {
 				// data: JSON.stringify({ voucherNo: vno }),
 				success: function (response) {
 					if (response && response.Message) {
-						DevExpress.ui.notify(
-							"VAT InvoiceNo has been Approved.","success",2000
-						);
-						$("#ApprovedBy").dxCheckBox("instance").option("value", true);
-							disableEditing();
-							$("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-							$("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
+    DevExpress.ui.notify( 
+        "VAT InvoiceNo has been Approved.", "success", 2000
+    );
+    $("#ApprovedBy").dxCheckBox("instance").option("value", true);
+    disableEditing();
+    $("#ApprovedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+    $("#ApprovedOntext").dxTextBox("instance").option("value", formattedDate || "N/A");
 
-							if (IsDirect === true) {
-								$("#VerifiedBy").dxCheckBox("instance").option("value", true);
-								$("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
-								$("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
-							}
-					
-					} else {
+    // if (IsDirect === true) {
+    //     $("#VerifiedBy").dxCheckBox("instance").option("value", true);
+    //     $("#VerifiedBytext").dxTextBox("instance").option("value", response.VoucherApprovedBy || "N/A");
+    //     $("#VerifiedOnDate").dxTextBox("instance").option("value", formattedDate || "N/A");
+    // }
+
+	console.log("response",response)
+
+    if (response.IsOnBoard === true) {
+        var result = DevExpress.ui.dialog.confirm(
+            "Do you want to connect to ZATCA Fatoora?",
+            "ZATCA Connection"
+        );
+
+        result.done(function (dialogResult) {
+            if (dialogResult) {
+                // ✅ Navigate to VATZatcaPortal.cshtml
+					let url = `/${tenantName}/VAT/VATZatcaPortal?InvoiceNo=${encodeURIComponent(vno)}`; // Update this route if needed
+				window.location.href = url;
+             
+            }
+        });
+    }
+}
+ else {
 						DevExpress.ui.notify("Update failed: Unable to reload details!", "error", 2000);
 					}
 				},
@@ -9330,6 +9292,7 @@ if (popover.option("visible")) {
 
 			if (action === "add") {
 				grid.addRow();
+				grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -9385,6 +9348,7 @@ if (popover.option("visible")) {
 							});
 						}
 					}
+					grid.saveEditData();
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
 				}
@@ -9392,8 +9356,8 @@ if (popover.option("visible")) {
 			else if (action === "deleteAll") {
     if (selectedRowKey !== null) {
         const rowIndex = grid.getRowIndexByKey(selectedRowKey);
-        if (rowIndex >= 0) {
-            debugger;
+        // if (rowIndex >= 0) {
+        //     debugger;
             const rowData = grid.getDataSource().items()[rowIndex];
             const InvoiceNo = rowData.InvoiceNo; // ✅ Only the string
 
@@ -9446,9 +9410,9 @@ if (popover.option("visible")) {
                 });
             }
         }
-    } else {
-        DevExpress.ui.notify("No row selected to delete.", "error", 2000);
-    }
+    // } else {
+    //     DevExpress.ui.notify("No row selected to delete.", "error", 2000);
+    // }
 }
 
 

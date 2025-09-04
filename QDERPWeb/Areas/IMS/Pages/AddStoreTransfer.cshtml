@@ -1295,6 +1295,7 @@
     @await Html.PartialAsync("/Pages/Shared/IMS/DeliveryNotesFooter.cshtml")
 </div>
 <script>
+    window.edits = false;
 
     $(function () {
     $("#addNewDeliverytoClient").dxTextBox({
@@ -1350,7 +1351,7 @@
     }
     function AddModeReq(){
         const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-        const title = "";
+        const title = "Quotation Mode Of Request";
         openModal(url, title);
     }
     function dataGridInitialized2(e) {

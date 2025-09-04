@@ -1030,7 +1030,7 @@
 								
 								@(Html.DevExtreme().DropDownBox()
 																						.Label(new JS("formatMessage('Company Branch / Division')"))
-																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDebitNoteDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
 																						.LabelMode(EditorLabelMode.Floating)
 																						.ID("ddlDivision")
 																						.ShowClearButton(true)
@@ -1038,8 +1038,8 @@
 																						.OpenOnFieldClick(false)
 																						.ValueChangeEvent("input")
 																						.HoverStateEnabled(true)
-																						.ValueExpr("BranchCode")
-																						.DisplayExpr("BranchName")
+																						.ValueExpr("CompanyId")
+																						.DisplayExpr("CompanyName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
 																						.DropDownOptions(o => o.Width(700))
@@ -1052,7 +1052,7 @@
 								
 								@(Html.DevExtreme().DropDownBox()
 																						.Label(new JS("formatMessage('Division')"))
-																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDebitNoteDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
+																						.DataSource(d => d.WebApi().Controller("VATModule").LoadAction("GetDivision").LoadMode(DataSourceLoadMode.Raw).Key("BranchCode"))
 																						.LabelMode(EditorLabelMode.Floating)
 																						.ID("ddlDebitNoteDivision")
 																						.ShowClearButton(true)
@@ -1060,8 +1060,8 @@
 																						.OpenOnFieldClick(false)
 																						.ValueChangeEvent("input")
 																						.HoverStateEnabled(true)
-																						.ValueExpr("CompanyId")
-																						.DisplayExpr("CompanyName")
+																						.ValueExpr("BranchCode")
+																						.DisplayExpr("BranchName")
 																						.OnInput("dropDownBoxOnInput")
 																						.OnOpened("onOpened")
 																						.DropDownOptions(o => o.Width(700))
@@ -1748,10 +1748,10 @@
 														.ID("division-datagrid")
 													.DataSource(d => d.WebApi()
 													.Controller("VATModule")
-															.LoadAction("GetDivision")
+															.LoadAction("GetDebitNoteDivision")
 													.LoadMode(DataSourceLoadMode.Raw)
 															///   .Key("AccountHead") //salary paid entry
-															.Key("BranchCode")
+															.Key("CompanyId")
 
 													)
 													.WordWrapEnabled(true)
@@ -1780,8 +1780,9 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center).Width(100);
-														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
+															columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('Company ID')")).Alignment(HorizontalAlignment.Center).Width(100);
+															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')")).Alignment(HorizontalAlignment.Center);
+														
 													})
 
 												)
@@ -1844,11 +1845,9 @@
 														.Columns(columns =>
 
 														{
-
-															columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('CompanyId')")).Alignment(HorizontalAlignment.Center).Width(100);
-
-															columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('CompanyName')")).Alignment(HorizontalAlignment.Center);
-
+														
+														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('BranchCode')")).Alignment(HorizontalAlignment.Center).Width(100);
+														columns.Add().DataField("BranchName").Caption(new JS("formatMessage('BranchName')")).Alignment(HorizontalAlignment.Center);
 
 														})
 
@@ -1990,10 +1989,10 @@
 														.ID("debitnotedivision-datagrid")
 													.DataSource(d => d.WebApi()
 													.Controller("VATModule")
-															.LoadAction("GetDebitNoteDivision")
+															.LoadAction("GetDivision")
 													.LoadMode(DataSourceLoadMode.Raw)
 															///   .Key("AccountHead") //salary paid entry
-															.Key("CompanyId")
+															.Key("BranchCode")
 
 													)
 													.WordWrapEnabled(true)
@@ -2022,8 +2021,8 @@
 													.SelectedRowKeys(new JS(@"component.option(""value"") ? [component.option(""value"")] : []"))
 													.Columns(columns =>
 													{
-														columns.Add().DataField("CompanyId").Caption(new JS("formatMessage('Company ID')")).Alignment(HorizontalAlignment.Center).Width(100);
-														columns.Add().DataField("CompanyName").Caption(new JS("formatMessage('Company Name')")).Alignment(HorizontalAlignment.Center);
+														columns.Add().DataField("BranchCode").Caption(new JS("formatMessage('Branch Code')")).Alignment(HorizontalAlignment.Center).Width(100);
+                                                        columns.Add().DataField("BranchName").Caption(new JS("formatMessage('Branch Name')")).Alignment(HorizontalAlignment.Center);
 													})
 
 												)
@@ -2823,7 +2822,7 @@
                         }
                     } },
 
-						{ dataField: "UnitRate", caption: formatMeessage('Unit Price'), width: 150,format: getDecimalFormat(currencyDecimals),
+						{ dataField: "UnitRate", caption: formatMessage('Unit Price'), width: 150,format: getDecimalFormat(currencyDecimals),
 						editorOptions: {
 							onInput: function(e) {
 							let maxLength = 8; // Example: allow max 5 digits
@@ -6845,6 +6844,7 @@ $(function () {
 
 			if (action === "add") {
 				grid.addRow();
+				grid.saveEditData();
 			}
 			else if (action === "delete") {
 				if (selectedRowKey !== null) {
@@ -6899,6 +6899,7 @@ $(function () {
 								}
 							});
 						}
+						grid.saveEditData();
 					}
 				} else {
 					DevExpress.ui.notify("No row selected to delete.", "error", 2000);
@@ -7031,7 +7032,7 @@ $(function () {
             }
         }
 
-		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(creditNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
+		const res = await fetch(`/api/LedgerDocumentsF/GetDocuments?folderId=${encodeURIComponent(debitNoteNo)}&module=${encodeURIComponent(formType)}&menuType=${encodeURIComponent(menuType)}&folderId2=${encodeURIComponent(folderId2)}`);
 		const docs = await res.json();
 		const count = docs.length;
 		updateAttachButtonCount("#btnAttach", count);

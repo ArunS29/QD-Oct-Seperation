@@ -1936,14 +1936,15 @@
                     openModal(url, title);
             }
 
-
+             let edit=false;
+             var salesno = null;
             $(function () {
             // Helper to get query string parameter
             function getQueryParam(name) {
                 const url = new URL(window.location.href);
                 return url.searchParams.get(name);
             }
-
+           
             const salesOrderNo = getQueryParam("SalesOrderNo");
             const salesOrderTextBox = $("#SalesOrderNO").dxTextBox("instance");
             if (!salesOrderTextBox) {
@@ -1952,6 +1953,7 @@
             }
            
             if (salesOrderNo) {
+                edit=true;
                 // Editing: fetch and bind existing order (do NOT generate new number)
                 $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
                     .done(function (data) {
@@ -1970,21 +1972,44 @@
                         DevExpress.ui.notify("Failed to load sales order details.", "error", 2000);
                     });
             } else {
-                // Creating new: generate new order number
-                $.get("/api/SalesOrders/SalesOrderNoIncrease")
-                    .done(function (response) {
-                        if (response && response.salesOrderNo) {
-                            salesOrderTextBox.option("value", response.salesOrderNo);
-                        } else {
-                            DevExpress.ui.notify("Sales order number not found", "warning", 2000);
-                        }
-                    })
-                    .fail(function (jqXHR, textStatus, errorThrown) {
-                        DevExpress.ui.notify("Failed to fetch Sales Order NO", "error", 2000);
-                        console.error("AJAX Error:", jqXHR.responseText, errorThrown);
-                    });
+               NewSalesOrderNo();
             }
         });
+        function  NewSalesOrderNo(){
+		   $.ajax({
+        url: "/api/SalesOrders/SalesOrderNoIncrease",  // 🔹 your API endpoint
+        type: "GET",
+       success: function (data) {
+         //  salesno = data.salesno
+    const soBox = $("#SalesOrderNO").dxTextBox("instance");
+    if (soBox && data && data.salesOrderNo) {
+        soBox.option("value", data.salesOrderNo); // ✅ bind only the string
+    } else {
+        soBox.option("value", "");
+        DevExpress.ui.notify("Sales order number not found.", "warning", 2000);
+    }
+},
+        error: function (xhr) {
+            DevExpress.ui.dialog.alert("Failed to load new Sales Order No.", "Error");
+        }
+    });
+	}
+	// For concurrency-safe saving
+function NewSalesOrderNoForSave() {
+    return $.ajax({
+        url: "/api/SalesOrders/SalesOrderNoIncrease",
+        type: "GET"
+    }).then(function (data) {
+        if (data && data.salesOrderNo) {
+            return data.salesOrderNo; // ✅ return just the string
+        } else {
+            return $.Deferred().reject("Sales order number not found.");
+        }
+    }).fail(function (xhr) {
+        console.error("Error fetching Sales Order No:", xhr);
+        return $.Deferred().reject("Error fetching Sales Order No");
+    });
+}
 
           //ProjectID
             function onCodeSelected(e) {
@@ -2119,150 +2144,253 @@
 }
 
 
-            $("#btnSave").on("click", function (e) {
-            e.preventDefault();
+$("#btnSave").on("click", function (e) {
+    e.preventDefault();
+    const $btn = $(this).dxButton("instance");
+    $btn.option("disabled", true);
 
-            const gridInstance = $("#itemGrid").dxDataGrid("instance");
-
-            // ✅ Save pending cell edits before proceeding
-            if (gridInstance.hasEditData()) {
-                gridInstance.saveEditData().done(() => {
-                    validateAndSave();
-                });
-            } else {
-                validateAndSave();
-            }
-
-            function validateAndSave() {
-                // ✅ Validate required DropDown fields
-                const requiredFields = [
-                    { id: "#ClientNames", label: "Client Name" },
-                    // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
-                    // { id: "#CompanyBranch", label: "Company Branch" },
-                    // Add more if needed
-                ];
-
-                let allValid = true;
-                let missingLabels = [];
-
-                requiredFields.forEach(field => {
-                    const $el = $(field.id);
-                    const inst = $el.dxDropDownBox("instance");
-
-                    if (inst) {
-                        const value = inst.option("value");
-                        if (!value) {
-                            allValid = false;
-                            missingLabels.push(field.label);
-                            $el.addClass("dx-invalid");
-                        } else {
-                            $el.removeClass("dx-invalid");
-                        }
-                    } else {
-                        console.warn("Instance not found:", field.id);
-                    }
-                });
-
-                if (!allValid) {
-                    DevExpress.ui.dialog.alert(
-                        "Please fill the required field(s): " + missingLabels.join(", "),
-                        "Validation Failed"
-                    );
-                    return;
-                }
-
-                // ✅ Helper to extract date in yyyy-MM-dd format
-                   function getDateOnlyValue(dateBoxId) {
-        var val = $(dateBoxId).dxDateBox("instance").option("value");
-        if (!val) return null;
-        // Format as yyyy-MM-dd (local date, no time)
-        return val instanceof Date
-            ? val.getFullYear() + '-' +
-              String(val.getMonth() + 1).padStart(2, '0') + '-' +
-              String(val.getDate()).padStart(2, '0')
-            : val;
+    if (edit === false) {
+        // New entry → regenerate number safely
+        NewSalesOrderNoForSave().done(function (soNoNew) {
+            $("#SalesOrderNO").dxTextBox("instance").option("value", soNoNew);
+            saveSalesOrder(soNoNew, $btn);
+        }).fail(function (err) {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert(err || "Failed to generate Sales Order No.", "Error");
+        });
+    } else {
+        // Edit → keep existing no
+        var soNoExisting = $("#SalesOrderNO").dxTextBox("instance").option("value") || null;
+        saveSalesOrder(soNoExisting, $btn);
     }
 
-                // ✅ Collect children grid data
-                const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
-                const children = gridInstance.getDataSource().items().map(row => ({
-                    SalesOrderChildId: row.SalesOrderChildId ?? 0,
-                    SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                    QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                    QuotedQuantity: row.QuotedQuantity ?? null,
-                    UnitRateMethod: row.UnitRateMethod ?? null,
-                    Gscode: row.Gscode ?? "",
-                    QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
-                    QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
-                    QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
-                    CostPrice: (row.CostPrice * CurrencyRate) ?? null,
-                    AddlDescription:row.AddlDescription ?? null,
-                    QuoteRemarks:row.QuoteRemarks ?? null,
-                    DeliveryPeriod:row.DeliveryPeriod ?? null,
-                    PlanNo:row.PlanNo ?? null,
-                }));
+});
 
-                // ✅ Prepare full model for submission
-                const model = {
-                    SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
-                    SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
-                    ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
-                    ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
-                    QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
-                    QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
-                    OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
-                    ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
-                    Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
-                    ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
-                    SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
-                    ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
-                    TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
-                    ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
-                        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
-                        ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
-                                    ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
-                    QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
-                    SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
-                    AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
-                    DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
-                    QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
-                    QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
-                    CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
-                    CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
-                    InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
-                    CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                    BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
-                    CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
-                    // CurrencyId : 1,
-                    // BaseCurrencyId :1,
-                    // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
-                    SalesOrderChildren: children
-                };
+function saveSalesOrder(salesOrderNo, $btn) {
+    const gridInstance = $("#itemGrid").dxDataGrid("instance");
 
-                console.log("Saving model:", model);
+    // ✅ collect children
+    const children = gridInstance.getDataSource().items().map(row => ({
+        SalesOrderChildId: row.SalesOrderChildId ?? 0,
+        SalesOrderNo: salesOrderNo,
+        Gscode: row.Gscode ?? "",
+        QuotedQuantity: row.QuotedQuantity ?? null,
+        UnitRateMethod: row.UnitRateMethod ?? null,
+        QuotedUnitPrice: row.QuotedUnitPrice ?? null,
+        QuotedDiscount: row.QuotedDiscount ?? null,
+        QuotedTaxSlab: row.QuotedTaxSlab ?? null,
+        CostPrice: row.CostPrice ?? null,
+        AddlDescription: row.AddlDescription ?? null,
+        QuoteRemarks: row.QuoteRemarks ?? null,
+        DeliveryPeriod: row.DeliveryPeriod ?? null,
+        PlanNo: row.PlanNo ?? null,
+    }));
 
-                // ✅ AJAX Save Call
-                $.ajax({
-                    url: "/api/SalesOrders/SaveSalesOrder",
-                    type: "POST",
-                    contentType: "application/json",
-                    data: JSON.stringify(model),
-                    success: function (response) {
-                        DevExpress.ui.notify(response.message, "success", 2000);
-                         location.reload();
-                        // ✅ Reload grid after save
+    // ✅ master
+    const master = {
+        SalesOrderNo: salesOrderNo,
+        SalesOrderDate: $("#SalesOrderDate").dxDateBox("instance").option("value"),
+        ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
+        ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+        QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+        QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
+        OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
+        ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
+        Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+        ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+        SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
+        ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
+        TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
+        ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
+        Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
+        ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
+        ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
+        QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
+        SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+        AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
+        DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
+        QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
+        QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
+        CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+        CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
+        InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
+        CurrencyRate: $("#currencyexchangerate").dxNumberBox("instance").option("value"),
+        BaseCurrencyId: $("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+        CurrencyId: $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+        SalesOrderChildren: children
+    };
+
+    // ✅ post data
+    $.ajax({
+        url: "/api/SalesOrders/SaveSalesOrder",
+        type: "POST",
+        contentType: "application/json",
+        data: JSON.stringify(master),
+        success: function (response) {
+            DevExpress.ui.notify(response.message, "success", 3000);
+
+            if (response.salesOrderNo) {
+                $("#SalesOrderNO").dxTextBox("instance").option("value", response.salesOrderNo);
+            }
+
+            $btn.option("disabled", false);
+             // ✅ Reload grid after save
                         $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
                             window.itemGridDataSource = data;
                             gridInstance.option("dataSource", data);
                         });
-                    },
-                    error: function (xhr) {
-                        DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
-                        console.error("Save error:", xhr.responseText);
-                    }
-                });
-            }
-        });
+        },
+        error: function (xhr) {
+            DevExpress.ui.notify("Failed to save sales order.", "error", 3000);
+            $btn.option("disabled", false);
+        }
+    });
+}
+
+    //         $("#btnSave").on("click", function (e) {
+    //         e.preventDefault();
+
+    //         const gridInstance = $("#itemGrid").dxDataGrid("instance");
+
+    //         // ✅ Save pending cell edits before proceeding
+    //         if (gridInstance.hasEditData()) {
+    //             gridInstance.saveEditData().done(() => {
+    //                 validateAndSave();
+    //             });
+    //         } else {
+    //             validateAndSave();
+    //         }
+
+    //         function validateAndSave() {
+    //             // ✅ Validate required DropDown fields
+    //             const requiredFields = [
+    //                 { id: "#ClientNames", label: "Client Name" },
+    //                 // { id: "#TypeOFSalesOrder", label: "Type of Sales Order" },
+    //                 // { id: "#CompanyBranch", label: "Company Branch" },
+    //                 // Add more if needed
+    //             ];
+
+    //             let allValid = true;
+    //             let missingLabels = [];
+
+    //             requiredFields.forEach(field => {
+    //                 const $el = $(field.id);
+    //                 const inst = $el.dxDropDownBox("instance");
+
+    //                 if (inst) {
+    //                     const value = inst.option("value");
+    //                     if (!value) {
+    //                         allValid = false;
+    //                         missingLabels.push(field.label);
+    //                         $el.addClass("dx-invalid");
+    //                     } else {
+    //                         $el.removeClass("dx-invalid");
+    //                     }
+    //                 } else {
+    //                     console.warn("Instance not found:", field.id);
+    //                 }
+    //             });
+
+    //             if (!allValid) {
+    //                 DevExpress.ui.dialog.alert(
+    //                     "Please fill the required field(s): " + missingLabels.join(", "),
+    //                     "Validation Failed"
+    //                 );
+    //                 return;
+    //             }
+
+    //             // ✅ Helper to extract date in yyyy-MM-dd format
+    //                function getDateOnlyValue(dateBoxId) {
+    //     var val = $(dateBoxId).dxDateBox("instance").option("value");
+    //     if (!val) return null;
+    //     // Format as yyyy-MM-dd (local date, no time)
+    //     return val instanceof Date
+    //         ? val.getFullYear() + '-' +
+    //           String(val.getMonth() + 1).padStart(2, '0') + '-' +
+    //           String(val.getDate()).padStart(2, '0')
+    //         : val;
+    // }
+
+    //             // ✅ Collect children grid data
+    //             const CurrencyRate = $('#currencyexchangerate').dxNumberBox("instance")?.option("value")
+    //             const children = gridInstance.getDataSource().items().map(row => ({
+    //                 SalesOrderChildId: row.SalesOrderChildId ?? 0,
+    //                 SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+    //                 QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+    //                 QuotedQuantity: row.QuotedQuantity ?? null,
+    //                 UnitRateMethod: row.UnitRateMethod ?? null,
+    //                 Gscode: row.Gscode ?? "",
+    //                 QuotedUnitPrice: (row.QuotedUnitPrice * CurrencyRate) ?? null,
+    //                 QuotedDiscount: (row.QuotedDiscount * CurrencyRate) ?? null,
+    //                 QuotedTaxSlab: row.QuotedTaxSlab != null ? parseInt(row.QuotedTaxSlab) : null,
+    //                 CostPrice: (row.CostPrice * CurrencyRate) ?? null,
+    //                 AddlDescription:row.AddlDescription ?? null,
+    //                 QuoteRemarks:row.QuoteRemarks ?? null,
+    //                 DeliveryPeriod:row.DeliveryPeriod ?? null,
+    //                 PlanNo:row.PlanNo ?? null,
+    //             }));
+
+    //             // ✅ Prepare full model for submission
+    //             const model = {
+    //                 SalesOrderNo: $("#SalesOrderNO").dxTextBox("instance").option("value"),
+    //                 SalesOrderDate: getDateOnlyValue("#SalesOrderDate"),
+    //                 ClientPono: $("#ClientPoNo").dxTextBox("instance").option("value"),
+    //                 ClientPodate: $("#ClientPoDate").dxDateBox("instance").option("value"),
+    //                 QuoteNo: $("#QuotationNo").dxTextBox("instance").option("value"),
+    //                 QuoteDate: $("#QuotationDate").dxDateBox("instance").option("value"),
+    //                 OrderExpiryDate: $("#OrderExpiryDate").dxDateBox("instance").option("value"),
+    //                 ExpectedDeliveryDate: $("#ExpectedDeliveryDate").dxDateBox("instance").option("value"),
+    //                 Attention: $("#ClientRefName").dxTextBox("instance").option("value"),
+    //                 ClientContactEmail: $("#ClientEmail").dxTextBox("instance").option("value"),
+    //                 SalesOrderRemarks: $("#SalesOrderRemarks").dxTextArea("instance").option("value"),
+    //                 ClientContactNo: $("#ClientContact").dxTextBox("instance").option("value"),
+    //                 TypeOfRequest: $("#TypeOFSalesOrder").dxDropDownBox("instance").option("value"),
+    //                 ClientCode: $("#ClientNames").dxDropDownBox("instance").option("value"),
+    //                     Project: $("#ReferenceNo").dxTextBox("instance").option("value"),
+    //                     ProjectMasterCode: $("#Project").dxDropDownBox("instance").option("value"),
+    //                                 ClientRefNo: $("#ReferenceNo1").dxTextBox("instance").option("value"),
+    //                 QuoteSignatory: $("#preparedBy").dxDropDownBox("instance").option("value"),
+    //                 SalesPersonCode: $("#SalesPerson").dxDropDownBox("instance").option("value"),
+    //                 AdditionsText: $("#AdditionsText").dxTextBox("instance").option("value"),
+    //                 DiscountsText: $("#DeductionsText").dxTextBox("instance").option("value"),
+    //                 QuoteDiscount: $("#DeductionsAmount").dxNumberBox("instance").option("value"),
+    //                 QuoteTransport: $("#AdditionsAmount").dxNumberBox("instance").option("value"),
+    //                 CostAllocationMasterGroup: $("#CostCenter").dxDropDownBox("instance").option("value"),
+    //                 CompanyBranch: $("#CompanyBranch").dxDropDownBox("instance").option("value"),
+    //                 InventoryMasterGroupId: $("#InventoryGroup").dxDropDownBox("instance").option("value"),
+    //                 CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+    //                 BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+    //                 CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value"),
+    //                 // CurrencyId : 1,
+    //                 // BaseCurrencyId :1,
+    //                 // CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+    //                 SalesOrderChildren: children
+    //             };
+
+    //             console.log("Saving model:", model);
+
+    //             // ✅ AJAX Save Call
+    //             $.ajax({
+    //                 url: "/api/SalesOrders/SaveSalesOrder",
+    //                 type: "POST",
+    //                 contentType: "application/json",
+    //                 data: JSON.stringify(model),
+    //                 success: function (response) {
+    //                     DevExpress.ui.notify(response.message, "success", 2000);
+    //                      location.reload();
+    //                     // ✅ Reload grid after save
+    //                     $.get("/api/SalesOrders/GetSalesOrderChildren?quoteNo=" + model.SalesOrderNo, function (data) {
+    //                         window.itemGridDataSource = data;
+    //                         gridInstance.option("dataSource", data);
+    //                     });
+    //                 },
+    //                 error: function (xhr) {
+    //                     DevExpress.ui.notify("Failed to save sales order.", "error", 2000);
+    //                     console.error("Save error:", xhr.responseText);
+    //                 }
+    //             });
+    //         }
+    //     });
          $("#btnSaveAndClose").on("click", function (e) {
             e.preventDefault();
 
@@ -2428,6 +2556,7 @@
 
             const salesOrderNo = getQueryParam("SalesOrderNo");
             if (salesOrderNo) {
+                 edit=true;
                 // Fetch sales order details from your API
                 $.get(`/api/SalesOrders/GetSalesOrderByNo`, { salesOrderNo: salesOrderNo })
                     .done(function (data) {

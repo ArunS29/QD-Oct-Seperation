@@ -870,9 +870,10 @@ function(data) {
                     .LoadMode(DataSourceLoadMode.Raw)
                     .Key("AccountId")
                     )
+                    .FocusedRowEnabled(true)
                     .WordWrapEnabled(true)
                     .ShowBorders(true)
-                    .SearchPanel(sp => sp.HighlightSearchText(true))
+                    
                     .Selection(sl => sl.Mode(SelectionMode.Single))
                     .OnSelectionChanged("dataGridAccountHeadSelectionChanged")
                     .OnInitialized("dataGridAccountHeadInitialized")
@@ -880,7 +881,7 @@ function(data) {
                     .ShowBorders(true)
                     .HoverStateEnabled(true)
                     .Paging(p => p.PageSize(15))
-                    .FilterRow(f => f.Visible(true))
+                    .FilterRow(f => f.Visible(false))
                     .Scrolling(s => s.Mode(GridScrollingMode.Virtual))
                     .Height(345)
                     .Selection(s => s.Mode(SelectionMode.Single))
@@ -909,9 +910,13 @@ function(data) {
 
 
                     })
+                    .SearchPanel(sp => sp.Visible(false)
+                          .HighlightSearchText(true)
+                          .SearchVisibleColumnsOnly(false))
         .ColumnChooser(c => c.Enabled(true).Title(new JS("formatMessage('Show/Hide Column')")).Mode(GridColumnChooserMode.DragAndDrop))
         .OnRowPrepared("onRowPrepared")
-
+        // 👇 Add our button without losing DevExtreme's default toolbar items
+    .OnToolbarPreparing("accountHeadToolbarPreparing")
                 )
 }
 @*  </div> *@
@@ -3750,6 +3755,34 @@ function showMainFooter() {
             hideContextMenu();
         }
     }, true); // <- capture mode so we intercept before DataGrid
+    function accountHeadToolbarPreparing(e) {
+    const grid = e.component;
+    const items = e.toolbarOptions.items;
+
+    // Build our toggle button
+    const searchToggle = {
+        location: "after",
+        widget: "dxButton",
+        options: {
+            icon: "search",
+            hint: "Toggle Search Panel",
+           onClick: function () {
+                const visible = grid.option("filterRow.visible");
+                grid.option("filterRow.visible", !visible);
+            }
+
+        }
+    };
+
+    // Insert right after the built-in Column Chooser button if present
+    const ccIndex = items.findIndex(i => i.name === "columnChooserButton");
+    if (ccIndex >= 0) {
+        items.splice(ccIndex + 1, 0, searchToggle);
+    } else {
+        // Fallback: just add it to the right side
+        items.push(searchToggle);
+    }
+}
 
 
 

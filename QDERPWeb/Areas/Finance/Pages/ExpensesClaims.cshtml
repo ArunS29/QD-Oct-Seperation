@@ -1671,7 +1671,13 @@ columns.Add()
     }
 
 
-
+     $(document).ready(function () {
+        if (sessionStorage.getItem("refreshPage") === "true") {
+            sessionStorage.removeItem("refreshPage"); // Clear flag
+            location.reload(); // Refresh the page
+        }
+       
+    });
 
         // Utility: check if two dates are the same (ignoring time)
         function isSameDate(d1, d2) {

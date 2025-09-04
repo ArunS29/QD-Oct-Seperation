@@ -74,3 +74,23 @@ DevExpress.ui.notify = function (options, type, displayTime) {
     const result = originalNotify(options);
     return result;
 };
+function getDefaultCompany(id = "ddGetCompany") {
+    $.ajax({
+        type: "GET",
+        url: "/api/AddNewClientRequest/GetDefaultCompany",
+        success: function (data) {
+            if (data && data.CompanyId) {
+                console.log("Default Company:", data.CompanyId, data.CompanyName);
+
+                const CompanyDropDown = $(`#${id}`).dxDropDownBox("instance");
+                if (CompanyDropDown) {
+                    // ✅ Bind CompanyId as value
+                    CompanyDropDown.option("value", data.CompanyId);
+                }
+            }
+        },
+        error: function (xhr) {
+            console.error("Company fetch failed:", xhr.responseText);
+        }
+    });
+}

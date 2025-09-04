@@ -1400,7 +1400,7 @@
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "";
+		const title = "Quotation Mode Of Request";
 		openModal(url, title);
 	}
 	function dataGridInitialized2(e) {
@@ -1565,20 +1565,26 @@
 
 	//View Material Receipt
 	let Approved=null;
+	let edit=false;
 	$(document).ready(function () {
 
 		const urlParams = new URLSearchParams(window.location.search);
 		const ReceiptNos = urlParams.get('ReceiptNo');
 		const ReceiptNo = ReceiptNos ? ReceiptNos.split("?")[0] : null;
 
-		getSalesPersonByUser();
+		//getSalesPersonByUser();
 		loadClientDetails(ReceiptNo);
 
 		if (ReceiptNo) {
 			// If Mprno is present, load client details
 			loadClientDetails(ReceiptNo);
+			edit=true;
 		} else {
-			$.ajax({
+			NewNoGeneration();
+		}
+	});
+	function NewNoGeneration(){
+					$.ajax({
 				url: "/api/MaterialReceipt/GetNewDebitNoteNoApi",
 				type: "GET",
 				success: function (data) {
@@ -1596,9 +1602,15 @@
 					DevExpress.ui.dialog.alert("Failed to load ReceiptNo details.", "Error");
 				}
 			});
-		}
-	});
+	}
+	//For concurrency
 
+	function NewNoGeneration1() {
+    return $.ajax({
+      url: "/api/MaterialReceipt/GetNewDebitNoteNoApi",
+        type: "GET"
+    });
+}
 
 	function loadClientDetails(ReceiptNo) {
 		$.ajax({
@@ -4785,10 +4797,8 @@
 		DevExpress.ui.notify("Details saved", "success", 1500);
 	}
 
-
 	$("#btnSave").on("click", function (e) {
-
-			const $btn = $(this).dxButton("instance");
+const $btn = $(this).dxButton("instance");
 
 			// ✅ Step 1: Validate required field
 			var suppliernameValidator = $("#GetProjectDropDown").dxValidator("instance");
@@ -4804,8 +4814,29 @@
 			// ✅ Step 2: Disable the button after validation passes
 			$btn.option("disabled", true);
 
-				const master = {
-				ReceiptNo: $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null,
+
+    if (edit === false) {
+        // 🔹 New entry → check again before saving
+        NewNoGeneration1().done(function (data) {
+            var receiptNoNew = data;
+            $("#txtMaterialReceiptNo").dxTextBox("instance").option("value", receiptNoNew);
+
+            saveQuotation(receiptNoNew, $btn);
+        }).fail(function () {
+            $btn.option("disabled", false);
+            DevExpress.ui.dialog.alert("Failed to generate new Quotation No.", "Error");
+        });
+    } else {
+        // 🔹 Edit → no need to regenerate
+        var receiptNoNew = $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null;
+        saveQuotation(receiptNoNew, $btn);
+    }
+});
+
+function saveQuotation(receiptNoNew, $btn) {
+    debugger;
+			const master = {
+				ReceiptNo:receiptNoNew ,
 				ReceiptDate: $("#ReceiptDate").dxDateBox("instance").option("value") || null,
 				SupplierDeliveryNoteNo: $("#SupplierDeliveryNoteNo").dxTextBox("instance").option("value") || null,
 
@@ -4883,7 +4914,106 @@
 				}
 			});
 		
-	});
+}
+
+	// $("#btnSave").on("click", function (e) {
+
+	// 		const $btn = $(this).dxButton("instance");
+
+	// 		// ✅ Step 1: Validate required field
+	// 		var suppliernameValidator = $("#GetProjectDropDown").dxValidator("instance");
+	// 		var suppliernameValidation = suppliernameValidator.validate();
+	// 		if (!suppliernameValidation.isValid) {
+	// 			DevExpress.ui.dialog.alert(
+	// 				"Cannot continue saving with errors, please clear the errors and continue.",
+	// 				"Clear Errors"
+	// 			);
+	// 			return;
+	// 		}
+
+	// 		// ✅ Step 2: Disable the button after validation passes
+	// 		$btn.option("disabled", true);
+
+	// 			const master = {
+	// 			ReceiptNo: $('#txtMaterialReceiptNo').dxTextBox("instance").option("value") || null,
+	// 			ReceiptDate: $("#ReceiptDate").dxDateBox("instance").option("value") || null,
+	// 			SupplierDeliveryNoteNo: $("#SupplierDeliveryNoteNo").dxTextBox("instance").option("value") || null,
+
+	// 			SupplierCode: $('#GetProjectDropDown').dxDropDownBox("instance").option("value") || null,
+
+	// 			Mprno: $('#MaterialRequestNo').dxTextBox("instance").option("value") || null,
+
+	// 			SupplierQuotationNo: $('#SupplierQuotationNo').dxTextBox("instance").option("value") || null,
+
+	// 			JobCode: $('#txtjobCode').dxTextBox("instance").option("value") || null,
+
+	// 			ClientCode: $('#ddClient').dxDropDownBox("instance").option("value") || null,
+	// 			Rfqno: $('#RFQNo').dxTextBox("instance").option("value") || null,
+
+	// 			OurPurchaseOrderNo: $("#PurchaseOrderNo").dxTextBox("instance").option("value") || null,
+
+	// 			SalesPersonCode: $('#ddSalesPerson').dxDropDownBox("instance").option("value") || null,
+
+	// 			StoreReceivedIn: $('#ddStore').dxDropDownBox("instance").option("value") || null,
+
+	// 			ProjectMasterCode: $('#ddProject').dxDropDownBox("instance").option("value") || null,
+
+	// 			ReceiptSignatory: $("#ddSignatory").dxDropDownBox("instance").option("value") || null,
+
+	// 			IssueRemarks: $('#RemarksNotes').dxTextArea("instance").option("value") || null,
+
+	// 			CompanyBranch: $("#ddCompany").dxDropDownBox("instance").option("value") || null,
+
+	// 			InventoryMasterGroupId: $("#ddInventory").dxDropDownBox("instance").option("value") || null,
+
+	// 			ModeOfReceiptId: $("#ddRecivedType").dxDropDownBox("instance").option("value") || null,
+
+	// 			CurrencyRate : $('#currencyexchangerate').dxNumberBox("instance")?.option("value"),
+
+	// 			BaseCurrencyId :$("#ddlGoodsGroup4").dxDropDownBox("instance").option("value"),
+
+	// 			CurrencyId : $("#ddlGoodsGroup3").dxDropDownBox("instance").option("value")
+	// 		};
+
+	// 		//let children = $("#B2BdataGrid").dxDataGrid("instance").option("dataSource");
+	// 			const children = $("#B2BdataGrid").dxDataGrid("instance").getDataSource().items();
+
+	// 		if (!children || children.length === 0) {
+	// 			DevExpress.ui.notify("No child records to save.", "error", 3000);
+	// 			return;
+	// 		}
+
+	// 		const model = {
+	// 			...master,
+	// 			MaterialReceiptDetailses: children
+	// 		};
+
+	// 		$.ajax({
+	// 			type: "POST",
+	// 			url: "/api/MaterialReceipt/SaveOrUpdateMaterialReceipt",
+	// 			contentType: "application/json",
+	// 			data: JSON.stringify(model),
+	// 			success: function (response) {
+	// 				DevExpress.ui.notify(response.message, "success", 3000);
+
+	// 							 const receiptno = response.receiptno;
+
+	// 					 loadChildDataAndBindGrid(receiptno);
+	// 				if (window.parent && window.parent.$("#dataGrid").length) {
+	// 					let dataGrid = window.parent.$("#dataGrid").dxDataGrid("instance");
+	// 					if (dataGrid) {
+	// 						dataGrid.refresh();
+	// 					}
+	// 				}
+
+
+	// 			},
+	// 			error: function (xhr) {
+	// 				DevExpress.ui.notify("Error: " + xhr.responseJSON?.message, "error", 3000);
+	// 			}
+	// 		});
+		
+	// });
 
 			function loadChildDataAndBindGrid(receiptno) {
 			
@@ -6047,7 +6177,7 @@ $("#btnBack").on("click", function (e) {
 	}
 	function AddModeReq() {
 		const url = `/${tenantName}/IMS/QuotationModeOfRequest`;
-		const title = "";
+		const title = "Quotation Mode Of Request";
 		openModal(url, title);
 	}
 	$(function () {
